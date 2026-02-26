@@ -1,2 +1,4 @@
 pydantic==2.12.5
-label-studio==1.22.0
+pdf2image
+PyQt5>=5.15,<5.16
+pytest>=8,<9

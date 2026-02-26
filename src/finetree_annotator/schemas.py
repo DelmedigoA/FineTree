@@ -21,6 +21,19 @@ class ValueType(str, Enum):
     regular = "amount"
 
 
+class Currency(str, Enum):
+    ils = "ILS"
+    usd = "USD"
+    eur = "EUR"
+    gbp = "GBP"
+
+
+class Scale(int, Enum):
+    one = 1
+    thousand = 1000
+    million = 1000000
+
+
 class PageMeta(BaseModel):
     entity_name: Optional[str] = None
     page_num: Optional[str] = None
@@ -33,13 +46,13 @@ class Fact(BaseModel):
     value: str
     date: Optional[str] = None
     path: List[str]
-    currency:  Optional[str] = None
-    scale: Optional[int] = None
+    currency: Optional[Currency] = None
+    scale: Optional[Scale] = None
     value_type: Optional[ValueType] = None
     model_config = ConfigDict(extra="forbid")
 
 
-class Page:
+class Page(BaseModel):
     meta: PageMeta
     facts: List[Fact]
     model_config = ConfigDict(extra="forbid")
