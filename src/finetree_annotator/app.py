@@ -10,13 +10,17 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QPointF, QRectF, Qt, pyqtSignal
+from PyQt5.QtCore import QPoint, QPointF, QRectF, Qt, pyqtSignal
 from PyQt5.QtGui import QFont, QKeySequence, QPainter, QPen, QPixmap, QTransform
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
     QApplication,
+    QCheckBox,
     QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
     QFormLayout,
     QGraphicsPixmapItem,
     QGraphicsRectItem,
@@ -31,6 +35,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QPlainTextEdit,
     QShortcut,
     QSplitter,
     QVBoxLayout,
@@ -43,8 +48,10 @@ from .annotation_core import (
     PageState,
     SCALE_OPTIONS,
     build_annotations_payload,
+    denormalize_bbox_from_1000,
     default_page_meta,
     load_page_states,
+    parse_import_payload,
     normalize_bbox_data,
     normalize_fact_data,
     propagate_entity_to_next_page,
@@ -81,6 +88,19 @@ class AnnotationView(QGraphicsView):
     zoom_requested = pyqtSignal(float)
     _PAN_STEP = 60
 
+    def __init__(self, scene: QGraphicsScene, parent: Optional[QWidget] = None) -> None:
+        super().__init__(scene, parent)
+        self._is_view_panning = False
+        self._pan_last = QPoint()
+        self._pan_button: Optional[int] = None
+
+    def pan_by_view_pixels(self, dx: int, dy: int) -> None:
+        if dx == 0 and dy == 0:
+            return
+        center_view = self.viewport().rect().center()
+        target_scene = self.mapToScene(center_view + QPoint(dx, dy))
+        self.centerOn(target_scene)
+
     def wheelEvent(self, event) -> None:
         if event.modifiers() & Qt.ControlModifier:
             delta = event.angleDelta().y()
@@ -92,21 +112,47 @@ class AnnotationView(QGraphicsView):
         super().wheelEvent(event)
 
     def mousePressEvent(self, event) -> None:
+        if event.button() in (Qt.MiddleButton, Qt.RightButton):
+            self.setFocus()
+            self._is_view_panning = True
+            self._pan_button = int(event.button())
+            self._pan_last = event.pos()
+            self.setCursor(Qt.ClosedHandCursor)
+            event.accept()
+            return
         self.setFocus()
         super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event) -> None:
+        if self._is_view_panning:
+            delta = event.pos() - self._pan_last
+            self._pan_last = event.pos()
+            self.pan_by_view_pixels(-delta.x(), -delta.y())
+            event.accept()
+            return
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event) -> None:
+        if self._is_view_panning and self._pan_button == int(event.button()):
+            self._is_view_panning = False
+            self._pan_button = None
+            self.setCursor(Qt.ArrowCursor)
+            event.accept()
+            return
+        super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:
         key = event.key()
         if key in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Up, Qt.Key_Down):
             step = self._PAN_STEP * (3 if event.modifiers() & Qt.ShiftModifier else 1)
             if key == Qt.Key_Left:
-                self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() - step)
+                self.pan_by_view_pixels(-step, 0)
             elif key == Qt.Key_Right:
-                self.horizontalScrollBar().setValue(self.horizontalScrollBar().value() + step)
+                self.pan_by_view_pixels(step, 0)
             elif key == Qt.Key_Up:
-                self.verticalScrollBar().setValue(self.verticalScrollBar().value() - step)
+                self.pan_by_view_pixels(0, -step)
             elif key == Qt.Key_Down:
-                self.verticalScrollBar().setValue(self.verticalScrollBar().value() + step)
+                self.pan_by_view_pixels(0, step)
             event.accept()
             return
         super().keyPressEvent(event)
@@ -375,7 +421,7 @@ class AnnotationScene(QGraphicsScene):
                 self._drawing = True
                 self._draw_start = event.scenePos()
                 self._temp_rect_item = QGraphicsRectItem(QRectF(self._draw_start, self._draw_start))
-                temp_pen = QPen(Qt.yellow)
+                temp_pen = QPen(Qt.blue)
                 temp_pen.setWidth(1)
                 temp_pen.setStyle(Qt.DashLine)
                 self._temp_rect_item.setPen(temp_pen)
@@ -418,6 +464,67 @@ class AnnotationScene(QGraphicsScene):
             event.accept()
             return
         super().mouseDoubleClickEvent(event)
+
+
+class JsonImportDialog(QDialog):
+    def __init__(self, default_page_name: str, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("Import Annotations JSON")
+        self.resize(920, 640)
+
+        root = QVBoxLayout(self)
+        hint = QLabel(
+            "Paste JSON to import.\n"
+            "Supported shapes: "
+            '{"meta": {...}, "facts": [...]} or {"image": "...", "meta": {...}, "facts": [...]} '
+            'or full {"pages": [...]} document.\n'
+            f'If "image" is omitted, current page "{default_page_name}" is used.\n'
+            'Use the checkbox below for Gemini-style normalized coordinates (0..1000).'
+        )
+        hint.setWordWrap(True)
+        root.addWidget(hint)
+
+        self.normalized_1000_check = QCheckBox("Import bbox as normalized 0..1000 (Gemini)")
+        self.normalized_1000_check.setChecked(True)
+        root.addWidget(self.normalized_1000_check)
+
+        self.text_edit = QPlainTextEdit()
+        root.addWidget(self.text_edit, 1)
+
+        actions = QHBoxLayout()
+        self.load_file_btn = QPushButton("Load From File...")
+        actions.addWidget(self.load_file_btn)
+        actions.addStretch(1)
+        root.addLayout(actions)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        root.addWidget(self.button_box)
+
+        self.load_file_btn.clicked.connect(self._load_from_file)
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+
+    def _load_from_file(self) -> None:
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Choose JSON file",
+            "",
+            "JSON Files (*.json);;All Files (*)",
+        )
+        if not path:
+            return
+        try:
+            text = Path(path).read_text(encoding="utf-8")
+        except Exception as exc:
+            QMessageBox.warning(self, "Import file error", str(exc))
+            return
+        self.text_edit.setPlainText(text)
+
+    def json_text(self) -> str:
+        return self.text_edit.toPlainText()
+
+    def import_normalized_1000_enabled(self) -> bool:
+        return self.normalized_1000_check.isChecked()
 
 
 class AnnotationWindow(QMainWindow):
@@ -465,9 +572,11 @@ class AnnotationWindow(QMainWindow):
         self.page_label = QLabel("-")
         self.undo_btn = QPushButton("Undo")
         self.redo_btn = QPushButton("Redo")
+        self.import_btn = QPushButton("Import JSON")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
         self.zoom_in_btn = QPushButton("Zoom +")
+        self.copy_image_btn = QPushButton("Copy Image")
         self.fit_btn = QPushButton("Fit")
         self.save_btn = QPushButton("Save (Ctrl+S)")
         nav.addWidget(self.prev_btn)
@@ -475,9 +584,11 @@ class AnnotationWindow(QMainWindow):
         nav.addWidget(self.page_label)
         nav.addWidget(self.undo_btn)
         nav.addWidget(self.redo_btn)
+        nav.addWidget(self.import_btn)
         nav.addWidget(self.delete_nav_btn)
         nav.addWidget(self.zoom_out_btn)
         nav.addWidget(self.zoom_in_btn)
+        nav.addWidget(self.copy_image_btn)
         nav.addWidget(self.fit_btn)
         nav.addStretch(1)
         self.output_path_label = QLabel(str(self.annotations_path))
@@ -499,6 +610,8 @@ class AnnotationWindow(QMainWindow):
         self.view.setRenderHint(QPainter.Antialiasing, True)
         self.view.setDragMode(QGraphicsView.NoDrag)
         self.view.setFocusPolicy(Qt.StrongFocus)
+        self.view.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.view.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.view.zoom_requested.connect(self._apply_zoom)
         splitter.addWidget(self.view)
 
@@ -618,7 +731,8 @@ class AnnotationWindow(QMainWindow):
 
         tip = QLabel(
             "Select a box to edit fields here. "
-            "Use +/Remove and Move Up/Move Down to manage path hierarchy."
+            "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
+            "Pan page with Arrow keys or right/middle mouse drag."
         )
         tip.setObjectName("hintText")
         tip.setWordWrap(True)
@@ -635,8 +749,10 @@ class AnnotationWindow(QMainWindow):
         self.redo_btn.clicked.connect(self.redo)
         self.zoom_out_btn.clicked.connect(self.zoom_out)
         self.zoom_in_btn.clicked.connect(self.zoom_in)
+        self.copy_image_btn.clicked.connect(self.copy_displayed_image)
         self.fit_btn.clicked.connect(self._fit_view)
         self.save_btn.clicked.connect(self.save_annotations)
+        self.import_btn.clicked.connect(self.import_annotations_json)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
@@ -663,6 +779,8 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Ctrl+Z"), self, activated=self.undo)
         QShortcut(QKeySequence("Ctrl+Y"), self, activated=self.redo)
         QShortcut(QKeySequence("Ctrl+Shift+Z"), self, activated=self.redo)
+        QShortcut(QKeySequence("Ctrl+I"), self, activated=self.import_annotations_json)
+        QShortcut(QKeySequence("Meta+I"), self, activated=self.import_annotations_json)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
         QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
         delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self.delete_selected_fact)
@@ -1092,6 +1210,131 @@ class AnnotationWindow(QMainWindow):
     def _default_state(self, index: int) -> PageState:
         return PageState(meta=self._default_meta(index), facts=[])
 
+    def _page_index_by_name(self, page_name: str) -> int:
+        for idx, image_path in enumerate(self.page_images):
+            if image_path.name == page_name:
+                return idx
+        return -1
+
+    def _image_dimensions_for_page(self, page_name: str) -> Optional[tuple[float, float]]:
+        image_path = self.images_dir / page_name
+        pixmap = QPixmap(str(image_path))
+        if pixmap.isNull():
+            return None
+        return float(pixmap.width()), float(pixmap.height())
+
+    @staticmethod
+    def _bbox_looks_normalized_1000(bbox: Dict[str, Any]) -> bool:
+        try:
+            x = float(bbox.get("x", 0.0))
+            y = float(bbox.get("y", 0.0))
+            w = float(bbox.get("w", 0.0))
+            h = float(bbox.get("h", 0.0))
+        except Exception:
+            return False
+        limit = 1000.0 + 1e-6
+        return (
+            0.0 <= x <= limit
+            and 0.0 <= y <= limit
+            and 0.0 <= w <= limit
+            and 0.0 <= h <= limit
+            and (x + w) <= limit
+            and (y + h) <= limit
+        )
+
+    def import_annotations_json(self) -> None:
+        if not self.page_images:
+            QMessageBox.warning(self, "Import error", "No pages are loaded.")
+            return
+
+        default_page_name = self.page_images[self.current_index if self.current_index >= 0 else 0].name
+        dialog = JsonImportDialog(default_page_name=default_page_name, parent=self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        raw_text = dialog.json_text().strip()
+        if not raw_text:
+            QMessageBox.information(self, "Import canceled", "No JSON text was provided.")
+            return
+
+        try:
+            payload = json.loads(raw_text)
+        except Exception as exc:
+            QMessageBox.warning(self, "Invalid JSON", str(exc))
+            return
+
+        import_normalized_1000 = dialog.import_normalized_1000_enabled()
+        if isinstance(payload, dict):
+            bbox_space = str(payload.get("bbox_space") or "").strip().lower()
+            if bbox_space in {"normalized_1000", "norm1000", "1000"}:
+                import_normalized_1000 = True
+            elif bbox_space in {"pixel", "pixels", "absolute"}:
+                import_normalized_1000 = False
+
+        imported_states = parse_import_payload(
+            payload,
+            [p.name for p in self.page_images],
+            default_page_image_name=default_page_name,
+        )
+        if not imported_states:
+            QMessageBox.warning(
+                self,
+                "Import did not match any pages",
+                "No importable pages were found. Check 'image' names or use a current-page shape.",
+            )
+            return
+
+        self._capture_current_state()
+        imported_count = 0
+        converted_bbox_count = 0
+        for page_name, imported_state in imported_states.items():
+            page_idx = self._page_index_by_name(page_name)
+            if page_idx < 0:
+                continue
+            normalized_meta = {**self._default_meta(page_idx), **(imported_state.meta or {})}
+            image_dims = self._image_dimensions_for_page(page_name)
+            normalized_facts: List[BoxRecord] = []
+            for record in imported_state.facts:
+                bbox = normalize_bbox_data(record.bbox)
+                if import_normalized_1000 and image_dims and self._bbox_looks_normalized_1000(bbox):
+                    bbox = denormalize_bbox_from_1000(bbox, image_dims[0], image_dims[1])
+                    converted_bbox_count += 1
+                normalized_facts.append(
+                    BoxRecord(
+                        bbox=bbox,
+                        fact=normalize_fact_data(record.fact),
+                    )
+                )
+            self.page_states[page_name] = PageState(meta=normalized_meta, facts=normalized_facts)
+            imported_count += 1
+
+        if imported_count == 0:
+            QMessageBox.warning(self, "Import skipped", "Imported JSON did not match any existing page images.")
+            return
+
+        target_index = self.current_index if self.current_index >= 0 else 0
+        if imported_count == 1:
+            single_page = next(iter(imported_states.keys()))
+            single_idx = self._page_index_by_name(single_page)
+            if single_idx >= 0:
+                target_index = single_idx
+
+        was_restoring = self._is_restoring_history
+        self._is_restoring_history = True
+        try:
+            self.show_page(target_index)
+        finally:
+            self._is_restoring_history = was_restoring
+
+        self._record_history_snapshot()
+        if converted_bbox_count:
+            self.statusBar().showMessage(
+                f"Imported {imported_count} page(s); converted {converted_bbox_count} normalized bbox(es).",
+                5500,
+            )
+        else:
+            self.statusBar().showMessage(f"Imported annotations for {imported_count} page(s).", 4500)
+
     def _capture_current_state(self) -> None:
         if self.current_index < 0 or self._is_restoring_history:
             return
@@ -1138,8 +1381,10 @@ class AnnotationWindow(QMainWindow):
         self.scene.clear()
         pix = self.scene.addPixmap(pixmap)
         pix.setZValue(-10)
-        self.scene.setSceneRect(QRectF(pixmap.rect()))
-        self.scene.set_image_rect(QRectF(pixmap.rect()))
+        image_rect = QRectF(pixmap.rect())
+        pan_margin = max(400.0, max(image_rect.width(), image_rect.height()) * 0.75)
+        self.scene.setSceneRect(image_rect.adjusted(-pan_margin, -pan_margin, pan_margin, pan_margin))
+        self.scene.set_image_rect(image_rect)
 
         for record in state.facts:
             rect = dict_to_rect(record.bbox).intersected(self.scene.image_rect)
@@ -1331,6 +1576,24 @@ class AnnotationWindow(QMainWindow):
         self.annotations_path.parent.mkdir(parents=True, exist_ok=True)
         self.annotations_path.write_text(serialize_annotations_json(payload), encoding="utf-8")
         self.statusBar().showMessage(f"Saved: {self.annotations_path}", 6000)
+
+    def copy_displayed_image(self) -> None:
+        if self.scene.image_rect.isNull():
+            self.statusBar().showMessage("No image to copy.", 2000)
+            return
+
+        source_rect = QRectF(self.scene.image_rect)
+        width = max(1, int(round(source_rect.width())))
+        height = max(1, int(round(source_rect.height())))
+        target_pixmap = QPixmap(width, height)
+        target_pixmap.fill(Qt.white)
+
+        painter = QPainter(target_pixmap)
+        self.scene.render(painter, QRectF(0, 0, width, height), source_rect)
+        painter.end()
+
+        QApplication.clipboard().setPixmap(target_pixmap)
+        self.statusBar().showMessage("Copied displayed page image to clipboard.", 2500)
 
 
 def parse_args() -> argparse.Namespace:
