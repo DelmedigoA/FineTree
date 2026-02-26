@@ -1,0 +1,83 @@
+<View>
+  <View style="display:flex; gap:24px;">
+
+    <!-- LEFT: page + bboxes -->
+    <View style="flex: 1;">
+      <Image name="page" value="$image" zoom="true"/>
+
+      <RectangleLabels name="bbox" toName="page">
+        <Label value="value"/>
+      </RectangleLabels>
+    </View>
+
+    <!-- RIGHT: fields per bbox -->
+    <View style="flex: 1;">
+      <Header value="Fact (per bounding box)"/>
+
+      <!-- matches Fact.value -->
+      <TextArea name="value"
+                toName="page"
+                perRegion="true"
+                required="true"
+                rows="1"
+                placeholder="Value text (e.g. 1,193)"/>
+
+      <!-- matches Fact.date -->
+      <TextArea name="date"
+                toName="page"
+                perRegion="true"
+                rows="1"
+                placeholder="Date (YYYY-MM-DD, optional)"/>
+
+      <!-- matches Fact.currency -->
+      <Choices name="currency"
+               toName="page"
+               perRegion="true"
+               choice="single"
+               showInLine="true">
+        <Choice value="ILS"/>
+        <Choice value="USD"/>
+        <Choice value="EUR"/>
+        <Choice value="GBP"/>
+      </Choices>
+
+      <!-- matches Fact.scale (int) -->
+      <Choices name="scale"
+               toName="page"
+               perRegion="true"
+               choice="single"
+               showInLine="true">
+        <Choice value="1"/>
+        <Choice value="1000"/>
+        <Choice value="1000000"/>
+      </Choices>
+
+      <!-- matches Fact.value_type (enum values are "%" and "amount") -->
+      <Choices name="value_type"
+               toName="page"
+               perRegion="true"
+               choice="single"
+               showInLine="true">
+        <Choice value="amount"/>
+        <Choice value="%"/>
+      </Choices>
+
+      <Header value="Path levels (will become List[str])"/>
+
+      <!-- static N levels; you turn into List[str] by collecting non-empty -->
+      <TextArea name="path_1" toName="page" perRegion="true" rows="1" placeholder="path[0]"/>
+      <TextArea name="path_2" toName="page" perRegion="true" rows="1" placeholder="path[1]"/>
+      <TextArea name="path_3" toName="page" perRegion="true" rows="1" placeholder="path[2]"/>
+      <TextArea name="path_4" toName="page" perRegion="true" rows="1" placeholder="path[3]"/>
+      <TextArea name="path_5" toName="page" perRegion="true" rows="1" placeholder="path[4]"/>
+      <TextArea name="path_6" toName="page" perRegion="true" rows="1" placeholder="path[5]"/>
+      <TextArea name="path_7" toName="page" perRegion="true" rows="1" placeholder="path[6]"/>
+      <TextArea name="path_8" toName="page" perRegion="true" rows="1" placeholder="path[7]"/>
+      <TextArea name="path_9" toName="page" perRegion="true" rows="1" placeholder="path[8]"/>
+      <TextArea name="path_10" toName="page" perRegion="true" rows="1" placeholder="path[9]"/>
+
+      <Header value="Tip: draw many boxes, then Submit once"/>
+    </View>
+
+  </View>
+</View>
