@@ -83,10 +83,24 @@ def normalize_bbox_data(data: Optional[Dict[str, Any]]) -> Dict[str, float]:
     return {"x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "h": round(h, 2)}
 
 
+def denormalize_bbox_from_1000(data: Optional[Dict[str, Any]], image_width: float, image_height: float) -> Dict[str, float]:
+    bbox = normalize_bbox_data(data)
+    width = max(float(image_width), 1.0)
+    height = max(float(image_height), 1.0)
+    return normalize_bbox_data(
+        {
+            "x": (bbox["x"] * width) / 1000.0,
+            "y": (bbox["y"] * height) / 1000.0,
+            "w": (bbox["w"] * width) / 1000.0,
+            "h": (bbox["h"] * height) / 1000.0,
+        }
+    )
+
+
 def default_page_meta(index: int) -> Dict[str, Any]:
     return {
         "entity_name": None,
-        "page_num": str(index + 1),
+        "page_num": None,
         "type": PageType.other.value,
         "title": None,
     }
@@ -124,6 +138,35 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
                 facts.append(BoxRecord(bbox=bbox, fact=_coerce_raw_fact(raw_fact)))
         states[str(page_name)] = PageState(meta=meta, facts=facts)
     return states
+
+
+def parse_import_payload(
+    payload: Any,
+    page_image_names: Sequence[str],
+    default_page_image_name: Optional[str],
+) -> Dict[str, PageState]:
+    if isinstance(payload, list):
+        payload = {"meta": {}, "facts": payload}
+    if not isinstance(payload, dict):
+        return {}
+
+    if isinstance(payload.get("pages"), list):
+        return load_page_states(payload, page_image_names)
+
+    default_image = default_page_image_name or (page_image_names[0] if page_image_names else None)
+    if not default_image:
+        return {}
+
+    image_name = payload.get("image")
+    if not isinstance(image_name, str) or not image_name.strip():
+        image_name = default_image
+
+    page_obj = {
+        "image": image_name,
+        "meta": payload.get("meta", {}),
+        "facts": payload.get("facts", []),
+    }
+    return load_page_states({"pages": [page_obj]}, page_image_names)
 
 
 def build_annotations_payload(
@@ -181,9 +224,11 @@ __all__ = [
     "PageState",
     "SCALE_OPTIONS",
     "build_annotations_payload",
+    "denormalize_bbox_from_1000",
     "default_fact_data",
     "default_page_meta",
     "load_page_states",
+    "parse_import_payload",
     "normalize_bbox_data",
     "normalize_fact_data",
     "propagate_entity_to_next_page",
