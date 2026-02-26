@@ -9,14 +9,14 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from pydantic import ValidationError
+from PyQt5 import sip
 from PyQt5.QtCore import QPointF, QRectF, Qt, pyqtSignal
-from PyQt5.QtGui import QKeySequence, QPainter, QPen, QPixmap, QTransform
+from PyQt5.QtGui import QFont, QKeySequence, QPainter, QPen, QPixmap, QTransform
 from PyQt5.QtWidgets import (
     QAction,
+    QAbstractItemView,
     QApplication,
     QComboBox,
-    QDialog,
-    QDialogButtonBox,
     QFormLayout,
     QGraphicsPixmapItem,
     QGraphicsRectItem,
@@ -50,7 +50,7 @@ from .annotation_core import (
     propagate_entity_to_next_page,
     serialize_annotations_json,
 )
-from .schemas import Fact, PageType
+from .schemas import PageType
 
 
 def bbox_to_dict(rect: QRectF) -> Dict[str, float]:
@@ -70,7 +70,11 @@ def dict_to_rect(data: Dict[str, Any]) -> QRectF:
 
 
 def item_scene_rect(item: QGraphicsRectItem) -> QRectF:
-    return item.mapRectToScene(item.rect())
+    try:
+        return item.mapRectToScene(item.rect())
+    except RuntimeError:
+        # Can happen if selection callbacks run while scene items are being cleared.
+        return QRectF()
 
 
 class AnnotationView(QGraphicsView):
@@ -338,6 +342,7 @@ class AnnotRectItem(QGraphicsRectItem):
 
 class AnnotationScene(QGraphicsScene):
     box_created = pyqtSignal(object)
+    box_duplicated = pyqtSignal(object)
     box_double_clicked = pyqtSignal(object)
     box_moved = pyqtSignal(object)
 
@@ -354,6 +359,18 @@ class AnnotationScene(QGraphicsScene):
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.LeftButton and self.image_rect.contains(event.scenePos()):
             item = self.itemAt(event.scenePos(), QTransform())
+            duplicate_drag_mod = Qt.MetaModifier | Qt.ControlModifier
+            if isinstance(item, AnnotRectItem) and (event.modifiers() & duplicate_drag_mod):
+                rect = item_scene_rect(item).intersected(self.image_rect)
+                if rect.width() >= 1 and rect.height() >= 1:
+                    copy_item = AnnotRectItem(rect, deepcopy(item.fact_data))
+                    self.addItem(copy_item)
+                    self.clearSelection()
+                    copy_item.setSelected(True)
+                    self.box_duplicated.emit(copy_item)
+                    # Keep the mouse press flow so users can Cmd/Ctrl-drag the new copy immediately.
+                    super().mousePressEvent(event)
+                    return
             if item is None or isinstance(item, QGraphicsPixmapItem):
                 self._drawing = True
                 self._draw_start = event.scenePos()
@@ -403,91 +420,6 @@ class AnnotationScene(QGraphicsScene):
         super().mouseDoubleClickEvent(event)
 
 
-class FactDialog(QDialog):
-    def __init__(self, fact_data: Optional[Dict[str, Any]] = None, parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-        self.setWindowTitle("Edit Fact")
-        self.result_data: Optional[Dict[str, Any]] = None
-        normalized = normalize_fact_data(fact_data)
-
-        root = QVBoxLayout(self)
-
-        fields_box = QGroupBox("Fact Fields")
-        fields_form = QFormLayout(fields_box)
-        self.value_edit = QLineEdit(normalized.get("value", ""))
-        self.date_edit = QLineEdit(normalized.get("date") or "")
-        self.currency_combo = QComboBox()
-        self.currency_combo.addItems(["", *CURRENCY_OPTIONS])
-        current_currency = normalized.get("currency") or ""
-        currency_idx = self.currency_combo.findText(str(current_currency))
-        self.currency_combo.setCurrentIndex(max(0, currency_idx))
-
-        self.scale_combo = QComboBox()
-        self.scale_combo.addItems(["", *[str(s) for s in SCALE_OPTIONS]])
-        current_scale = normalized.get("scale")
-        scale_idx = self.scale_combo.findText("" if current_scale is None else str(current_scale))
-        self.scale_combo.setCurrentIndex(max(0, scale_idx))
-
-        self.value_type_combo = QComboBox()
-        self.value_type_combo.addItems(["", "amount", "%"])
-        current_type = normalized.get("value_type") or ""
-        idx = self.value_type_combo.findText(str(current_type))
-        self.value_type_combo.setCurrentIndex(max(0, idx))
-        fields_form.addRow("value*", self.value_edit)
-        fields_form.addRow("date", self.date_edit)
-        fields_form.addRow("currency", self.currency_combo)
-        fields_form.addRow("scale", self.scale_combo)
-        fields_form.addRow("value_type", self.value_type_combo)
-        root.addWidget(fields_box)
-
-        path_box = QGroupBox("Path Levels")
-        path_form = QFormLayout(path_box)
-        self.path_edits: List[QLineEdit] = []
-        paths = normalized.get("path", [])
-        for i in range(10):
-            edit = QLineEdit(paths[i] if i < len(paths) else "")
-            self.path_edits.append(edit)
-            path_form.addRow(f"path[{i}]", edit)
-        root.addWidget(path_box)
-
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        self.button_box.accepted.connect(self._on_accept)
-        self.button_box.rejected.connect(self.reject)
-        root.addWidget(self.button_box)
-
-    def _on_accept(self) -> None:
-        value = self.value_edit.text().strip()
-        if not value:
-            QMessageBox.warning(self, "Missing value", "Fact.value is required.")
-            return
-
-        raw_currency = self.currency_combo.currentText().strip()
-        currency = raw_currency or None
-
-        scale_text = self.scale_combo.currentText().strip()
-        scale: Optional[int] = int(scale_text) if scale_text else None
-
-        raw_value_type = self.value_type_combo.currentText().strip()
-        value_type = raw_value_type or None
-        paths = [p.text().strip() for p in self.path_edits if p.text().strip()]
-
-        try:
-            fact = Fact(
-                value=value,
-                date=self.date_edit.text().strip() or None,
-                path=paths,
-                currency=currency,
-                scale=scale,
-                value_type=value_type,
-            )
-        except ValidationError as exc:
-            QMessageBox.warning(self, "Invalid fact", str(exc))
-            return
-
-        self.result_data = fact.model_dump(mode="json")
-        self.accept()
-
-
 class AnnotationWindow(QMainWindow):
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -503,6 +435,7 @@ class AnnotationWindow(QMainWindow):
         self._fitting_view = False
         self._is_restoring_history = False
         self._is_loading_page = False
+        self._is_loading_fact_editor = False
         self._history_limit = 200
         self._history: List[Dict[str, Any]] = []
         self._history_index = -1
@@ -520,14 +453,19 @@ class AnnotationWindow(QMainWindow):
     def _build_ui(self) -> None:
         central = QWidget(self)
         self.setCentralWidget(central)
+        self._apply_ui_sizing()
         root = QVBoxLayout(central)
+        root.setSpacing(12)
+        root.setContentsMargins(10, 10, 10, 10)
 
         nav = QHBoxLayout()
+        nav.setSpacing(10)
         self.prev_btn = QPushButton("Prev")
         self.next_btn = QPushButton("Next")
         self.page_label = QLabel("-")
         self.undo_btn = QPushButton("Undo")
         self.redo_btn = QPushButton("Redo")
+        self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
         self.zoom_in_btn = QPushButton("Zoom +")
         self.fit_btn = QPushButton("Fit")
@@ -537,11 +475,14 @@ class AnnotationWindow(QMainWindow):
         nav.addWidget(self.page_label)
         nav.addWidget(self.undo_btn)
         nav.addWidget(self.redo_btn)
+        nav.addWidget(self.delete_nav_btn)
         nav.addWidget(self.zoom_out_btn)
         nav.addWidget(self.zoom_in_btn)
         nav.addWidget(self.fit_btn)
         nav.addStretch(1)
-        nav.addWidget(QLabel(str(self.annotations_path)))
+        self.output_path_label = QLabel(str(self.annotations_path))
+        self.output_path_label.setObjectName("outputPathLabel")
+        nav.addWidget(self.output_path_label)
         nav.addWidget(self.save_btn)
         root.addLayout(nav)
 
@@ -551,6 +492,7 @@ class AnnotationWindow(QMainWindow):
         self.scene = AnnotationScene(self)
         self.scene.selectionChanged.connect(self._on_scene_selection_changed)
         self.scene.box_created.connect(self._on_box_created)
+        self.scene.box_duplicated.connect(self._on_box_duplicated)
         self.scene.box_double_clicked.connect(self._on_box_double_clicked)
         self.scene.box_moved.connect(self._on_box_geometry_changed)
         self.view = AnnotationView(self.scene)
@@ -561,15 +503,27 @@ class AnnotationWindow(QMainWindow):
         splitter.addWidget(self.view)
 
         right = QWidget()
+        right.setMinimumWidth(560)
         right_layout = QVBoxLayout(right)
+        right_layout.setSpacing(12)
 
         meta_box = QGroupBox("Page Metadata")
         meta_form = QFormLayout(meta_box)
+        meta_form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        meta_form.setLabelAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        meta_form.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        meta_form.setHorizontalSpacing(16)
+        meta_form.setVerticalSpacing(12)
         self.entity_name_edit = QLineEdit()
         self.page_num_edit = QLineEdit()
         self.type_combo = QComboBox()
         self.type_combo.addItems([p.value for p in PageType])
         self.title_edit = QLineEdit()
+        field_min_width = 500
+        self.entity_name_edit.setMinimumWidth(field_min_width)
+        self.page_num_edit.setMinimumWidth(field_min_width)
+        self.type_combo.setMinimumWidth(field_min_width)
+        self.title_edit.setMinimumWidth(field_min_width)
         meta_form.addRow("entity_name", self.entity_name_edit)
         meta_form.addRow("page_num", self.page_num_edit)
         meta_form.addRow("type*", self.type_combo)
@@ -578,21 +532,102 @@ class AnnotationWindow(QMainWindow):
 
         fact_box = QGroupBox("Facts (Bounding Boxes)")
         fact_layout = QVBoxLayout(fact_box)
+        fact_layout.setSpacing(10)
         self.facts_list = QListWidget()
-        self.edit_fact_btn = QPushButton("Edit Selected Fact")
-        self.dup_fact_btn = QPushButton("Duplicate BBox (Ctrl+D)")
+        self.facts_list.setSpacing(4)
+        self.fact_bbox_label = QLabel("bbox: -")
+        self.fact_value_edit = QLineEdit()
+        self.fact_refference_edit = QLineEdit()
+        self.fact_date_edit = QLineEdit()
+        self.fact_currency_combo = QComboBox()
+        self.fact_currency_combo.addItems(["", *CURRENCY_OPTIONS])
+        self.fact_scale_combo = QComboBox()
+        self.fact_scale_combo.addItems(["", *[str(s) for s in SCALE_OPTIONS]])
+        self.fact_value_type_combo = QComboBox()
+        self.fact_value_type_combo.addItems(["", "amount", "%"])
+        self.fact_path_list = QListWidget()
+        self.fact_path_list.setObjectName("pathList")
+        self.fact_path_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.fact_path_list.setEditTriggers(
+            QAbstractItemView.DoubleClicked
+            | QAbstractItemView.EditKeyPressed
+            | QAbstractItemView.SelectedClicked
+        )
+        self.fact_path_list.setDragDropMode(QAbstractItemView.InternalMove)
+        self.fact_path_list.setDefaultDropAction(Qt.MoveAction)
+        self.fact_path_list.setDragEnabled(True)
+        self.fact_path_list.viewport().setAcceptDrops(True)
+        self.fact_path_list.setDropIndicatorShown(True)
+        self.fact_path_list.setMinimumHeight(150)
+
+        self.path_add_btn = QPushButton("+ Add Level")
+        self.path_remove_btn = QPushButton("Remove")
+        self.path_up_btn = QPushButton("Move Up")
+        self.path_down_btn = QPushButton("Move Down")
+        self.path_add_btn.setObjectName("smallActionBtn")
+        self.path_remove_btn.setObjectName("smallActionBtn")
+        self.path_up_btn.setObjectName("smallActionBtn")
+        self.path_down_btn.setObjectName("smallActionBtn")
+
+        path_actions = QHBoxLayout()
+        path_actions.setSpacing(8)
+        path_actions.addWidget(self.path_add_btn)
+        path_actions.addWidget(self.path_remove_btn)
+        path_actions.addWidget(self.path_up_btn)
+        path_actions.addWidget(self.path_down_btn)
+        path_actions.addStretch(1)
+
+        path_panel = QWidget()
+        path_panel_layout = QVBoxLayout(path_panel)
+        path_panel_layout.setContentsMargins(0, 0, 0, 0)
+        path_panel_layout.setSpacing(8)
+        path_panel_layout.addWidget(self.fact_path_list)
+        path_panel_layout.addLayout(path_actions)
+
+        self.fact_editor_box = QGroupBox("Selected Fact")
+        fact_editor_form = QFormLayout(self.fact_editor_box)
+        fact_editor_form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
+        fact_editor_form.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        fact_editor_form.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
+        fact_editor_form.setHorizontalSpacing(14)
+        fact_editor_form.setVerticalSpacing(10)
+        fact_editor_form.addRow("bbox", self.fact_bbox_label)
+        fact_editor_form.addRow("value*", self.fact_value_edit)
+        fact_editor_form.addRow("refference*", self.fact_refference_edit)
+        fact_editor_form.addRow("date", self.fact_date_edit)
+        fact_editor_form.addRow("currency", self.fact_currency_combo)
+        fact_editor_form.addRow("scale", self.fact_scale_combo)
+        fact_editor_form.addRow("value_type", self.fact_value_type_combo)
+        fact_editor_form.addRow("path", path_panel)
+        self.fact_bbox_label.setObjectName("factBboxLabel")
+        self.fact_value_edit.setMinimumWidth(field_min_width)
+        self.fact_refference_edit.setMinimumWidth(field_min_width)
+        self.fact_date_edit.setMinimumWidth(field_min_width)
+        self.fact_currency_combo.setMinimumWidth(field_min_width)
+        self.fact_scale_combo.setMinimumWidth(field_min_width)
+        self.fact_value_type_combo.setMinimumWidth(field_min_width)
+        self.fact_path_list.setMinimumWidth(field_min_width)
+
+        self.dup_fact_btn = QPushButton("Duplicate BBox (Cmd/Ctrl+D)")
         self.del_fact_btn = QPushButton("Delete Selected (Del)")
         fact_layout.addWidget(self.facts_list, 1)
-        fact_layout.addWidget(self.edit_fact_btn)
+        fact_layout.addWidget(self.fact_editor_box)
         fact_layout.addWidget(self.dup_fact_btn)
         fact_layout.addWidget(self.del_fact_btn)
         right_layout.addWidget(fact_box, 1)
 
-        tip = QLabel("Draw a box on the page. Double-click inside a box to annotate it.")
+        tip = QLabel(
+            "Select a box to edit fields here. "
+            "Use +/Remove and Move Up/Move Down to manage path hierarchy."
+        )
+        tip.setObjectName("hintText")
         tip.setWordWrap(True)
         right_layout.addWidget(tip)
         splitter.addWidget(right)
-        splitter.setSizes([950, 370])
+        splitter.setChildrenCollapsible(False)
+        splitter.setStretchFactor(0, 3)
+        splitter.setStretchFactor(1, 2)
+        splitter.setSizes([860, 560])
 
         self.prev_btn.clicked.connect(lambda: self.show_page(self.current_index - 1))
         self.next_btn.clicked.connect(lambda: self.show_page(self.current_index + 1))
@@ -602,7 +637,7 @@ class AnnotationWindow(QMainWindow):
         self.zoom_in_btn.clicked.connect(self.zoom_in)
         self.fit_btn.clicked.connect(self._fit_view)
         self.save_btn.clicked.connect(self.save_annotations)
-        self.edit_fact_btn.clicked.connect(self.edit_selected_fact)
+        self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
         self.facts_list.currentRowChanged.connect(self._on_fact_row_changed)
@@ -610,13 +645,30 @@ class AnnotationWindow(QMainWindow):
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
+        self.fact_value_edit.editingFinished.connect(self._on_fact_editor_edited)
+        self.fact_refference_edit.editingFinished.connect(self._on_fact_editor_edited)
+        self.fact_date_edit.editingFinished.connect(self._on_fact_editor_edited)
+        self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_edited())
+        self.fact_scale_combo.activated.connect(lambda _: self._on_fact_editor_edited())
+        self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_edited())
+        self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_edited())
+        self.fact_path_list.itemSelectionChanged.connect(self._update_path_controls)
+        self.fact_path_list.model().rowsMoved.connect(lambda *_: self._on_path_reordered())
+        self.path_add_btn.clicked.connect(self.add_path_level)
+        self.path_remove_btn.clicked.connect(self.remove_selected_path_level)
+        self.path_up_btn.clicked.connect(self.move_selected_path_up)
+        self.path_down_btn.clicked.connect(self.move_selected_path_down)
 
         QShortcut(QKeySequence("Ctrl+S"), self, activated=self.save_annotations)
         QShortcut(QKeySequence("Ctrl+Z"), self, activated=self.undo)
         QShortcut(QKeySequence("Ctrl+Y"), self, activated=self.redo)
         QShortcut(QKeySequence("Ctrl+Shift+Z"), self, activated=self.redo)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
-        QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self.delete_selected_fact)
+        QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
+        delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self.delete_selected_fact)
+        delete_shortcut.setContext(Qt.ApplicationShortcut)
+        backspace_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self.delete_selected_fact)
+        backspace_shortcut.setContext(Qt.ApplicationShortcut)
         QShortcut(QKeySequence("Ctrl+="), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl+-"), self, activated=self.zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self._fit_view)
@@ -625,8 +677,326 @@ class AnnotationWindow(QMainWindow):
         save_action.setShortcut(QKeySequence("Ctrl+S"))
         save_action.triggered.connect(self.save_annotations)
         self.addAction(save_action)
+        self.page_label.setObjectName("pageIndicator")
         self.statusBar().showMessage("Ready")
+        self._set_fact_editor_enabled(False)
+        self._clear_fact_editor()
+        self._update_path_controls()
         self._update_history_controls()
+
+    def _apply_ui_sizing(self) -> None:
+        base_font = QFont(self.font())
+        if base_font.pointSize() < 12:
+            base_font.setPointSize(12)
+        self.setFont(base_font)
+        self.setStyleSheet(
+            """
+            QMainWindow, QWidget {
+                background: #eef2f8;
+                color: #1f2a3d;
+            }
+            QGroupBox {
+                background: #ffffff;
+                border: 1px solid #d7e1ef;
+                border-radius: 12px;
+                font-size: 14pt;
+                font-weight: 600;
+                margin-top: 14px;
+                padding-top: 12px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 12px;
+                padding: 0 6px;
+                color: #1f2a3d;
+            }
+            QLabel, QStatusBar {
+                background: transparent;
+                color: #1f2a3d;
+                font-size: 12pt;
+            }
+            QLabel#pageIndicator {
+                color: #37537d;
+                font-size: 12pt;
+                font-weight: 600;
+                padding: 0 8px;
+            }
+            QLabel#outputPathLabel {
+                color: #4e6183;
+                font-size: 10pt;
+            }
+            QLabel#hintText {
+                color: #3d5379;
+                font-size: 11pt;
+                padding-top: 2px;
+            }
+            QLabel#factBboxLabel {
+                color: #4b5f82;
+                font-weight: 600;
+            }
+            QLineEdit,
+            QComboBox {
+                background: #f8fbff;
+                border: 1px solid #c6d3e8;
+                border-radius: 10px;
+                font-size: 13pt;
+                min-height: 36px;
+                padding: 2px 10px;
+            }
+            QLineEdit:focus,
+            QComboBox:focus {
+                border: 2px solid #5b8ff9;
+                background: #ffffff;
+            }
+            QPushButton {
+                background: #e7efff;
+                border: 1px solid #c4d4f3;
+                border-radius: 10px;
+                color: #253a5f;
+                font-size: 12pt;
+                min-height: 38px;
+                padding: 4px 12px;
+                font-weight: 600;
+            }
+            QPushButton:hover {
+                background: #d8e6ff;
+            }
+            QPushButton:pressed {
+                background: #c8dcff;
+            }
+            QPushButton:disabled {
+                color: #8a99b6;
+                background: #eef2f9;
+                border: 1px solid #dde5f2;
+            }
+            QPushButton#smallActionBtn {
+                min-height: 32px;
+                font-size: 11pt;
+                padding: 2px 10px;
+            }
+            QListWidget {
+                background: #f8fbff;
+                border: 1px solid #c6d3e8;
+                border-radius: 10px;
+                font-size: 12pt;
+                padding: 4px;
+            }
+            QListWidget::item {
+                min-height: 26px;
+                border-radius: 6px;
+                padding: 2px 6px;
+            }
+            QListWidget::item:selected {
+                background: #cfe0ff;
+                color: #1f2a3d;
+            }
+            QGraphicsView {
+                background: #dfe8f6;
+                border: 1px solid #c3d2e7;
+                border-radius: 12px;
+            }
+            QStatusBar {
+                background: #e7edf7;
+            }
+            """
+        )
+
+    def _make_path_item(self, text: str) -> QListWidgetItem:
+        item = QListWidgetItem(text)
+        item.setFlags(
+            item.flags()
+            | Qt.ItemIsEditable
+            | Qt.ItemIsDragEnabled
+            | Qt.ItemIsDropEnabled
+            | Qt.ItemIsSelectable
+            | Qt.ItemIsEnabled
+        )
+        return item
+
+    def _update_path_controls(self) -> None:
+        enabled = self.fact_path_list.isEnabled()
+        row = self.fact_path_list.currentRow()
+        count = self.fact_path_list.count()
+        self.path_add_btn.setEnabled(enabled)
+        self.path_remove_btn.setEnabled(enabled and row >= 0)
+        self.path_up_btn.setEnabled(enabled and row > 0)
+        self.path_down_btn.setEnabled(enabled and 0 <= row < count - 1)
+
+    def add_path_level(self) -> None:
+        if not self.fact_path_list.isEnabled():
+            return
+        target_row = self.fact_path_list.count()
+        next_idx = target_row + 1
+        item = self._make_path_item(f"path_{next_idx}")
+        self._is_loading_fact_editor = True
+        try:
+            self.fact_path_list.addItem(item)
+            self.fact_path_list.setCurrentItem(item)
+        finally:
+            self._is_loading_fact_editor = False
+        self._update_path_controls()
+        self._on_fact_editor_edited()
+        if 0 <= target_row < self.fact_path_list.count():
+            refreshed_item = self.fact_path_list.item(target_row)
+            if refreshed_item is not None:
+                self.fact_path_list.setCurrentRow(target_row)
+                self.fact_path_list.editItem(refreshed_item)
+
+    def remove_selected_path_level(self) -> None:
+        if not self.fact_path_list.isEnabled():
+            return
+        row = self.fact_path_list.currentRow()
+        if row < 0:
+            return
+        self.fact_path_list.takeItem(row)
+        if self.fact_path_list.count() > 0:
+            self.fact_path_list.setCurrentRow(min(row, self.fact_path_list.count() - 1))
+        self._update_path_controls()
+        self._on_fact_editor_edited()
+
+    def move_selected_path_up(self) -> None:
+        if not self.fact_path_list.isEnabled():
+            return
+        row = self.fact_path_list.currentRow()
+        if row <= 0:
+            return
+        item = self.fact_path_list.takeItem(row)
+        self.fact_path_list.insertItem(row - 1, item)
+        self.fact_path_list.setCurrentRow(row - 1)
+        self._update_path_controls()
+        self._on_fact_editor_edited()
+
+    def move_selected_path_down(self) -> None:
+        if not self.fact_path_list.isEnabled():
+            return
+        row = self.fact_path_list.currentRow()
+        if row < 0 or row >= (self.fact_path_list.count() - 1):
+            return
+        item = self.fact_path_list.takeItem(row)
+        self.fact_path_list.insertItem(row + 1, item)
+        self.fact_path_list.setCurrentRow(row + 1)
+        self._update_path_controls()
+        self._on_fact_editor_edited()
+
+    def _on_path_reordered(self) -> None:
+        self._update_path_controls()
+        self._on_fact_editor_edited()
+
+    def _set_fact_editor_enabled(self, enabled: bool) -> None:
+        self.fact_value_edit.setEnabled(enabled)
+        self.fact_refference_edit.setEnabled(enabled)
+        self.fact_date_edit.setEnabled(enabled)
+        self.fact_currency_combo.setEnabled(enabled)
+        self.fact_scale_combo.setEnabled(enabled)
+        self.fact_value_type_combo.setEnabled(enabled)
+        self.fact_path_list.setEnabled(enabled)
+        self.dup_fact_btn.setEnabled(enabled)
+        self.del_fact_btn.setEnabled(enabled)
+        self._update_path_controls()
+
+    def _clear_fact_editor(self) -> None:
+        self._is_loading_fact_editor = True
+        try:
+            self.fact_bbox_label.setText("-")
+            self.fact_value_edit.setText("")
+            self.fact_refference_edit.setText("")
+            self.fact_date_edit.setText("")
+            self.fact_currency_combo.setCurrentIndex(0)
+            self.fact_scale_combo.setCurrentIndex(0)
+            self.fact_value_type_combo.setCurrentIndex(0)
+            self.fact_path_list.clear()
+        finally:
+            self._is_loading_fact_editor = False
+        self._update_path_controls()
+
+    def _populate_fact_editor(self, item: AnnotRectItem) -> None:
+        if not self._is_alive_fact_item(item):
+            self._clear_fact_editor()
+            return
+        fact = normalize_fact_data(item.fact_data)
+        rect = item_scene_rect(item)
+        self._is_loading_fact_editor = True
+        try:
+            self.fact_bbox_label.setText(
+                f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
+            )
+            self.fact_value_edit.setText(str(fact.get("value", "")))
+            self.fact_refference_edit.setText(str(fact.get("refference") or ""))
+            self.fact_date_edit.setText(str(fact.get("date") or ""))
+            self.fact_path_list.clear()
+            for path_level in fact.get("path") or []:
+                self.fact_path_list.addItem(self._make_path_item(str(path_level)))
+            if self.fact_path_list.count() > 0:
+                self.fact_path_list.setCurrentRow(0)
+
+            currency = str(fact.get("currency") or "")
+            idx_currency = self.fact_currency_combo.findText(currency)
+            self.fact_currency_combo.setCurrentIndex(max(0, idx_currency))
+
+            scale = "" if fact.get("scale") is None else str(fact.get("scale"))
+            idx_scale = self.fact_scale_combo.findText(scale)
+            self.fact_scale_combo.setCurrentIndex(max(0, idx_scale))
+
+            value_type = str(fact.get("value_type") or "")
+            idx_value_type = self.fact_value_type_combo.findText(value_type)
+            self.fact_value_type_combo.setCurrentIndex(max(0, idx_value_type))
+        finally:
+            self._is_loading_fact_editor = False
+        self._update_path_controls()
+
+    def _fact_data_from_editor(self) -> Dict[str, Any]:
+        path_parts: List[str] = []
+        for idx in range(self.fact_path_list.count()):
+            item = self.fact_path_list.item(idx)
+            if item is None:
+                continue
+            text = item.text().strip()
+            if text:
+                path_parts.append(text)
+        scale_text = self.fact_scale_combo.currentText().strip()
+        return normalize_fact_data(
+            {
+                "value": self.fact_value_edit.text().strip(),
+                "refference": self.fact_refference_edit.text().strip(),
+                "date": self.fact_date_edit.text().strip() or None,
+                "path": path_parts,
+                "currency": self.fact_currency_combo.currentText().strip() or None,
+                "scale": int(scale_text) if scale_text else None,
+                "value_type": self.fact_value_type_combo.currentText().strip() or None,
+            }
+        )
+
+    def _is_alive_fact_item(self, item: Optional[AnnotRectItem]) -> bool:
+        if not isinstance(item, AnnotRectItem):
+            return False
+        try:
+            if sip.isdeleted(item):
+                return False
+            return item.scene() is self.scene
+        except RuntimeError:
+            return False
+
+    def _sync_fact_editor_from_selection(self) -> None:
+        item = self._selected_fact_item()
+        if item is None or not self._is_alive_fact_item(item):
+            self._clear_fact_editor()
+            self._set_fact_editor_enabled(False)
+            return
+        self._set_fact_editor_enabled(True)
+        self._populate_fact_editor(item)
+
+    def _on_fact_editor_edited(self) -> None:
+        if self._is_loading_fact_editor or self._syncing_selection:
+            return
+        item = self._selected_fact_item()
+        if item is None or not self._is_alive_fact_item(item):
+            return
+        updated_fact = self._fact_data_from_editor()
+        if updated_fact == normalize_fact_data(item.fact_data):
+            return
+        item.fact_data = updated_fact
+        self.refresh_facts_list()
+        self._record_history_snapshot()
 
     def _fit_view(self) -> None:
         if self._fitting_view:
@@ -796,7 +1166,7 @@ class AnnotationWindow(QMainWindow):
         self._fit_view()
 
     def _sorted_fact_items(self) -> List[AnnotRectItem]:
-        items = [i for i in self.scene.items() if isinstance(i, AnnotRectItem)]
+        items = [i for i in self.scene.items() if isinstance(i, AnnotRectItem) and self._is_alive_fact_item(i)]
         def sort_key(item: AnnotRectItem):
             rect = item_scene_rect(item)
             return (rect.y(), rect.x(), rect.width(), rect.height())
@@ -823,41 +1193,40 @@ class AnnotationWindow(QMainWindow):
         if selected_row >= 0:
             self.facts_list.setCurrentRow(selected_row)
         self._syncing_selection = False
+        self._sync_fact_editor_from_selection()
 
     def _selected_fact_item(self) -> Optional[AnnotRectItem]:
         for item in self.scene.selectedItems():
-            if isinstance(item, AnnotRectItem):
+            if isinstance(item, AnnotRectItem) and self._is_alive_fact_item(item):
                 return item
         row = self.facts_list.currentRow()
         if 0 <= row < len(self._fact_items):
-            return self._fact_items[row]
+            item = self._fact_items[row]
+            if self._is_alive_fact_item(item):
+                return item
         return None
 
-    def _open_fact_dialog(self, item: AnnotRectItem) -> None:
-        before = normalize_fact_data(deepcopy(item.fact_data))
-        dialog = FactDialog(item.fact_data, self)
-        if dialog.exec_() == QDialog.Accepted and dialog.result_data is not None:
-            item.fact_data = normalize_fact_data(dialog.result_data)
-            self.refresh_facts_list()
-            if item.fact_data != before:
-                self._record_history_snapshot()
-            return
-        self.refresh_facts_list()
-
     def _on_box_created(self, item: AnnotRectItem) -> None:
-        dialog = FactDialog(item.fact_data, self)
-        if dialog.exec_() == QDialog.Accepted and dialog.result_data is not None:
-            item.fact_data = normalize_fact_data(dialog.result_data)
-            self.refresh_facts_list()
-            self._record_history_snapshot()
-            return
-        self.scene.removeItem(item)
+        self.scene.clearSelection()
+        item.setSelected(True)
         self.refresh_facts_list()
+        self.fact_value_edit.setFocus()
+        self.fact_value_edit.selectAll()
+        self._record_history_snapshot()
+
+    def _on_box_duplicated(self, item: AnnotRectItem) -> None:
+        if not self._is_alive_fact_item(item):
+            return
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self.statusBar().showMessage("Duplicated bbox. Drag to place it.", 2500)
 
     def _on_box_double_clicked(self, item: AnnotRectItem) -> None:
         self.scene.clearSelection()
         item.setSelected(True)
-        self._open_fact_dialog(item)
+        self.refresh_facts_list()
+        self.fact_value_edit.setFocus()
+        self.fact_value_edit.selectAll()
 
     def _on_box_geometry_changed(self, _item: AnnotRectItem) -> None:
         self.refresh_facts_list()
@@ -881,20 +1250,17 @@ class AnnotationWindow(QMainWindow):
                     self.facts_list.setCurrentRow(row)
                     break
         self._syncing_selection = False
+        self._sync_fact_editor_from_selection()
 
     def _on_fact_row_changed(self, row: int) -> None:
         if self._syncing_selection:
             return
         self.scene.clearSelection()
         if 0 <= row < len(self._fact_items):
-            self._fact_items[row].setSelected(True)
-
-    def edit_selected_fact(self) -> None:
-        item = self._selected_fact_item()
-        if item is None:
-            QMessageBox.information(self, "No selection", "Select a bounding box first.")
-            return
-        self._open_fact_dialog(item)
+            item = self._fact_items[row]
+            if self._is_alive_fact_item(item):
+                item.setSelected(True)
+        self._sync_fact_editor_from_selection()
 
     def _shift_rect_inside_image(self, rect: QRectF) -> QRectF:
         bounds = self.scene.image_rect
@@ -909,15 +1275,33 @@ class AnnotationWindow(QMainWindow):
             shifted.moveTop(bounds.top())
         return shifted
 
+    def _suggest_duplicate_rect(self, source_rect: QRectF) -> QRectF:
+        offsets = [
+            (12, 12),
+            (-12, -12),
+            (12, -12),
+            (-12, 12),
+            (24, 0),
+            (0, 24),
+            (-24, 0),
+            (0, -24),
+        ]
+        for dx, dy in offsets:
+            candidate = QRectF(source_rect)
+            candidate.translate(dx, dy)
+            candidate = self._shift_rect_inside_image(candidate)
+            if abs(candidate.x() - source_rect.x()) > 0.01 or abs(candidate.y() - source_rect.y()) > 0.01:
+                return candidate
+        return QRectF(source_rect)
+
     def duplicate_selected_fact(self) -> None:
         item = self._selected_fact_item()
         if item is None:
             QMessageBox.information(self, "No selection", "Select a bounding box to duplicate.")
             return
 
-        new_rect = QRectF(item_scene_rect(item))
-        new_rect.translate(12, 12)
-        new_rect = self._shift_rect_inside_image(new_rect)
+        source_rect = QRectF(item_scene_rect(item))
+        new_rect = self._suggest_duplicate_rect(source_rect)
         copy_fact = normalize_fact_data(deepcopy(item.fact_data))
         new_item = AnnotRectItem(new_rect, copy_fact)
         self.scene.addItem(new_item)
@@ -925,14 +1309,17 @@ class AnnotationWindow(QMainWindow):
         new_item.setSelected(True)
         self.refresh_facts_list()
         self._record_history_snapshot()
+        self.statusBar().showMessage("Duplicated selected bbox.", 2500)
 
     def delete_selected_fact(self) -> None:
         item = self._selected_fact_item()
         if item is None:
+            self.statusBar().showMessage("No bbox selected to delete.", 2000)
             return
         self.scene.removeItem(item)
         self.refresh_facts_list()
         self._record_history_snapshot()
+        self.statusBar().showMessage("Deleted selected bbox.", 2000)
 
     def save_annotations(self) -> None:
         self._capture_current_state()
@@ -972,6 +1359,11 @@ def main() -> int:
         annotations_path = Path(args.annotations)
     else:
         annotations_path = Path("data/annotations") / f"{images_dir.name}.json"
+
+    if hasattr(Qt, "AA_EnableHighDpiScaling"):
+        QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    if hasattr(Qt, "AA_UseHighDpiPixmaps"):
+        QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
     app = QApplication(sys.argv)
     try:

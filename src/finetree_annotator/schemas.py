@@ -44,6 +44,7 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
+    refference: str
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
