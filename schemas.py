@@ -1,7 +1,6 @@
 from __future__ import annotations
-
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -32,26 +31,20 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
-    date: str
+    date: Optional[str] = None
     path: List[str]
-    currency: str
-    scale: int
-    value_type: ValueType
+    currency:  Optional[str] = None
+    scale: Optional[int] = None
+    value_type: Optional[ValueType] = None
+    model_config = ConfigDict(extra="forbid")
 
 
 class Page:
-    meta: 
-    facts: List[Fact]
-
-
-class Page(BaseModel):
     meta: PageMeta
-    facts: List[Fact] = Field(default_factory=list)
-
+    facts: List[Fact]
     model_config = ConfigDict(extra="forbid")
 
 
 class Document(BaseModel):
     pages: List[Page] = Field(default_factory=list)
-
     model_config = ConfigDict(extra="forbid")
