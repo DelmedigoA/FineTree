@@ -11,11 +11,13 @@ dependencies = [
   "pydantic==2.12.5",
   "pdf2image",
   "PyQt5>=5.15,<5.16",
+  "google-genai",
 ]
 
 [project.scripts]
 finetree-annotator = "finetree_annotator.app:main"
 finetree-pdf-to-images = "finetree_annotator.pdf_to_images:main"
+finetree-gemini-vlm = "finetree_annotator.gemini_vlm:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
