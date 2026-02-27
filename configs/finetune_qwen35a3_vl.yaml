@@ -1,0 +1,82 @@
+run:
+  name: qwen35a3-vl-finetree
+  seed: 3407
+  output_dir: artifacts/qwen35a3-vl-finetree
+
+model:
+  base_model: unsloth/Qwen3.5-VL-32B-A3B-Instruct
+  max_seq_length: 4096
+  load_in_4bit: true
+  dtype: bfloat16
+  trust_remote_code: true
+
+data:
+  annotations_glob: data/annotations/*.json
+  images_root: .
+  output_train_jsonl: data/finetune/train.jsonl
+  output_val_jsonl: data/finetune/val.jsonl
+  split_strategy: by_document
+  val_ratio: 0.1
+  include_empty_pages: false
+  bbox_policy: include_if_present
+  bbox_space: pixel
+  target_schema: finetree_exact_json
+  sample_granularity: page
+
+prompt:
+  use_custom_prompt: true
+  prompt_path: prompt.txt
+  fallback_template: |
+    You are extracting financial statement annotations from a single page image.
+    Return strict JSON with keys: meta, facts.
+
+adapter:
+  mode: lora
+  r: 32
+  alpha: 64
+  dropout: 0.0
+  bias: none
+  target_modules: auto
+  use_rslora: false
+  gradient_checkpointing: unsloth
+
+training:
+  per_device_train_batch_size: 1
+  gradient_accumulation_steps: 16
+  learning_rate: 0.0002
+  num_train_epochs: 2
+  warmup_ratio: 0.03
+  weight_decay: 0.01
+  lr_scheduler_type: cosine
+  optim: adamw_8bit
+  logging_steps: 10
+  save_strategy: steps
+  save_steps: 100
+  bf16: true
+  fp16: false
+  report_to: none
+
+infra:
+  single_gpu_offload: true
+  enable_model_cpu_offload: true
+  dataloader_num_workers: 2
+
+push_to_hub:
+  enabled: false
+  repo_id: null
+  hf_token: null
+  hf_token_env: FINETREE_HF_TOKEN
+  default_artifact: adapters_only
+
+inference:
+  model_path: null
+  adapter_path: null
+  parser_mode: streaming_page_extraction
+  max_new_tokens: 4096
+  temperature: 0.0
+  top_p: 0.95
+  do_sample: false
+  torch_dtype: auto
+  device_map: auto
+  trust_remote_code: true
+  load_in_4bit: false

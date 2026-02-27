@@ -11,8 +11,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QObject, QPoint, QPointF, QRectF, Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont, QKeySequence, QPainter, QPen, QPixmap, QTextCursor, QTransform
+from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QColor, QFont, QIcon, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QTextCursor, QTransform
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -33,6 +33,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QListWidget,
     QListWidgetItem,
+    QListView,
     QMainWindow,
     QMessageBox,
     QPushButton,
@@ -98,6 +99,27 @@ class AnnotationView(QGraphicsView):
         self._is_view_panning = False
         self._pan_last = QPoint()
         self._pan_button: Optional[int] = None
+        self._lens_enabled = False
+        self._lens_zoom = 2.8
+        self._lens_radius = 74
+        self._lens_view_pos: Optional[QPoint] = None
+        self.setMouseTracking(True)
+        self.viewport().setMouseTracking(True)
+
+    def set_lens_enabled(self, enabled: bool) -> None:
+        self._lens_enabled = bool(enabled)
+        if not self._lens_enabled:
+            self._lens_view_pos = None
+        self.viewport().update()
+
+    def _update_lens_pos(self, pos: QPoint) -> None:
+        if not self._lens_enabled:
+            return
+        if self.viewport().rect().contains(pos):
+            self._lens_view_pos = QPoint(pos)
+        else:
+            self._lens_view_pos = None
+        self.viewport().update()
 
     def pan_by_view_pixels(self, dx: int, dy: int) -> None:
         if dx == 0 and dy == 0:
@@ -123,12 +145,16 @@ class AnnotationView(QGraphicsView):
             self._pan_button = int(event.button())
             self._pan_last = event.pos()
             self.setCursor(Qt.ClosedHandCursor)
+            self._lens_view_pos = None
+            self.viewport().update()
             event.accept()
             return
         self.setFocus()
+        self._update_lens_pos(event.pos())
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event) -> None:
+        self._update_lens_pos(event.pos())
         if self._is_view_panning:
             delta = event.pos() - self._pan_last
             self._pan_last = event.pos()
@@ -142,8 +168,10 @@ class AnnotationView(QGraphicsView):
             self._is_view_panning = False
             self._pan_button = None
             self.setCursor(Qt.ArrowCursor)
+            self._update_lens_pos(event.pos())
             event.accept()
             return
+        self._update_lens_pos(event.pos())
         super().mouseReleaseEvent(event)
 
     def keyPressEvent(self, event) -> None:
@@ -187,6 +215,81 @@ class AnnotationView(QGraphicsView):
             event.accept()
             return
         super().keyPressEvent(event)
+
+    def leaveEvent(self, event) -> None:
+        self._lens_view_pos = None
+        self.viewport().update()
+        super().leaveEvent(event)
+
+    def paintEvent(self, event) -> None:
+        super().paintEvent(event)
+        self._paint_zoom_lens()
+
+    def _paint_zoom_lens(self) -> None:
+        if not self._lens_enabled or self._lens_view_pos is None:
+            return
+        scene = self.scene()
+        if scene is None:
+            return
+        view_rect = self.viewport().rect()
+        if not view_rect.contains(self._lens_view_pos):
+            return
+
+        radius = int(self._lens_radius)
+        lens_rect = QRect(
+            self._lens_view_pos.x() - radius,
+            self._lens_view_pos.y() - radius,
+            radius * 2,
+            radius * 2,
+        )
+        if lens_rect.left() < view_rect.left():
+            lens_rect.moveLeft(view_rect.left())
+        if lens_rect.top() < view_rect.top():
+            lens_rect.moveTop(view_rect.top())
+        if lens_rect.right() > view_rect.right():
+            lens_rect.moveRight(view_rect.right())
+        if lens_rect.bottom() > view_rect.bottom():
+            lens_rect.moveBottom(view_rect.bottom())
+
+        source_half = max(6, int(radius / max(1.2, self._lens_zoom)))
+        source_view_rect = QRect(
+            self._lens_view_pos.x() - source_half,
+            self._lens_view_pos.y() - source_half,
+            source_half * 2,
+            source_half * 2,
+        ).intersected(view_rect)
+        if source_view_rect.width() < 2 or source_view_rect.height() < 2:
+            return
+
+        source_scene_rect = self.mapToScene(source_view_rect).boundingRect()
+        sampled = QPixmap(source_view_rect.size())
+        sampled.fill(Qt.transparent)
+        sample_painter = QPainter(sampled)
+        sample_painter.setRenderHint(QPainter.Antialiasing, True)
+        sample_painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+        scene.render(
+            sample_painter,
+            QRectF(0, 0, sampled.width(), sampled.height()),
+            source_scene_rect,
+            Qt.IgnoreAspectRatio,
+        )
+        sample_painter.end()
+
+        magnified = sampled.scaled(lens_rect.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation)
+        painter = QPainter(self.viewport())
+        painter.setRenderHint(QPainter.Antialiasing, True)
+        clip_path = QPainterPath()
+        clip_path.addEllipse(QRectF(lens_rect))
+        painter.setClipPath(clip_path)
+        painter.drawPixmap(lens_rect, magnified)
+        painter.setClipping(False)
+        painter.setPen(QPen(QColor(34, 53, 88), 2))
+        painter.drawEllipse(QRectF(lens_rect).adjusted(1, 1, -1, -1))
+        center = lens_rect.center()
+        painter.setPen(QPen(QColor(34, 53, 88, 180), 1))
+        painter.drawLine(center.x() - 8, center.y(), center.x() + 8, center.y())
+        painter.drawLine(center.x(), center.y() - 8, center.x(), center.y() + 8)
+        painter.end()
 
 
 class AnnotRectItem(QGraphicsRectItem):
@@ -727,6 +830,80 @@ class GeminiStreamWorker(QObject):
             self.finished.emit()
 
 
+class QwenPromptDialog(GeminiPromptDialog):
+    def __init__(self, prompt_text: str, model_name: str, parent: Optional[QWidget] = None) -> None:
+        super().__init__(prompt_text=prompt_text, model_name=model_name, parent=parent)
+        self.setWindowTitle("Qwen Prompt")
+        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
+        if ok_btn is not None:
+            ok_btn.setText("Start Qwen GT")
+
+
+class QwenStreamDialog(GeminiStreamDialog):
+    def __init__(self, page_name: str, parent: Optional[QWidget] = None) -> None:
+        super().__init__(page_name=page_name, parent=parent)
+        self.setWindowTitle(f"Qwen GT Stream - {page_name}")
+        self.set_status("Connecting to Qwen...")
+
+
+class QwenStreamWorker(QObject):
+    chunk_received = pyqtSignal(str)
+    meta_received = pyqtSignal(dict)
+    fact_received = pyqtSignal(dict)
+    completed = pyqtSignal(object)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        image_path: Path,
+        prompt: str,
+        model: str,
+        config_path: Optional[str] = None,
+        parent: Optional[QObject] = None,
+    ) -> None:
+        super().__init__(parent)
+        self.image_path = image_path
+        self.prompt = prompt
+        self.model = model
+        self.config_path = config_path
+        self._cancel_requested = False
+
+    def request_cancel(self) -> None:
+        self._cancel_requested = True
+
+    def run(self) -> None:
+        try:
+            from .gemini_vlm import StreamingPageExtractionParser
+            from .qwen_vlm import stream_content_from_image
+
+            parser = StreamingPageExtractionParser()
+            for chunk in stream_content_from_image(
+                image_path=self.image_path,
+                prompt=self.prompt,
+                model=self.model,
+                config_path=self.config_path,
+            ):
+                if self._cancel_requested:
+                    break
+                if not chunk:
+                    continue
+                self.chunk_received.emit(chunk)
+                meta, facts = parser.feed(chunk)
+                if meta is not None:
+                    self.meta_received.emit(meta)
+                for fact in facts:
+                    self.fact_received.emit(fact)
+
+            if not self._cancel_requested:
+                extraction = parser.finalize()
+                self.completed.emit(extraction)
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
 class AnnotationWindow(QMainWindow):
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -746,7 +923,6 @@ class AnnotationWindow(QMainWindow):
         self._history_limit = 200
         self._history: List[Dict[str, Any]] = []
         self._history_index = -1
-        self._did_initial_view_setup = False
         self._gemini_stream_thread: Optional[QThread] = None
         self._gemini_stream_worker: Optional[GeminiStreamWorker] = None
         self._gemini_stream_dialog: Optional[GeminiStreamDialog] = None
@@ -755,6 +931,14 @@ class AnnotationWindow(QMainWindow):
         self._gemini_stream_fact_count = 0
         self._gemini_stream_cancel_requested = False
         self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", "gemini-3-flash-preview")
+        self._qwen_stream_thread: Optional[QThread] = None
+        self._qwen_stream_worker: Optional[QwenStreamWorker] = None
+        self._qwen_stream_dialog: Optional[QwenStreamDialog] = None
+        self._qwen_stream_target_page: Optional[str] = None
+        self._qwen_stream_seen_facts: set[tuple[Any, ...]] = set()
+        self._qwen_stream_fact_count = 0
+        self._qwen_stream_cancel_requested = False
+        self._qwen_model_name = os.getenv("FINETREE_QWEN_MODEL", "local-qwen")
 
         if not self.page_images:
             raise RuntimeError(f"No page images found under: {self.images_dir}")
@@ -779,13 +963,22 @@ class AnnotationWindow(QMainWindow):
         self.prev_btn = QPushButton("Prev")
         self.next_btn = QPushButton("Next")
         self.page_label = QLabel("-")
+        self.page_jump_spin = QSpinBox()
+        self.page_jump_spin.setRange(1, len(self.page_images))
+        self.page_jump_spin.setKeyboardTracking(False)
+        self.page_jump_spin.setValue(1)
+        self.page_jump_spin.setMinimumWidth(88)
+        self.page_jump_btn = QPushButton("Go")
         self.undo_btn = QPushButton("Undo")
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
         self.gemini_gt_btn = QPushButton("Gemini GT")
+        self.qwen_gt_btn = QPushButton("Qwen GT")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
         self.zoom_in_btn = QPushButton("Zoom +")
+        self.lens_btn = QPushButton("Lens")
+        self.lens_btn.setCheckable(True)
         self.copy_image_btn = QPushButton("Copy Image")
         self.fit_btn = QPushButton("Fit")
         self.page_json_btn = QPushButton("Page JSON")
@@ -794,13 +987,18 @@ class AnnotationWindow(QMainWindow):
         nav.addWidget(self.prev_btn)
         nav.addWidget(self.next_btn)
         nav.addWidget(self.page_label)
+        nav.addWidget(QLabel("Go to page"))
+        nav.addWidget(self.page_jump_spin)
+        nav.addWidget(self.page_jump_btn)
         nav.addWidget(self.undo_btn)
         nav.addWidget(self.redo_btn)
         nav.addWidget(self.import_btn)
         nav.addWidget(self.gemini_gt_btn)
+        nav.addWidget(self.qwen_gt_btn)
         nav.addWidget(self.delete_nav_btn)
         nav.addWidget(self.zoom_out_btn)
         nav.addWidget(self.zoom_in_btn)
+        nav.addWidget(self.lens_btn)
         nav.addWidget(self.copy_image_btn)
         nav.addWidget(self.fit_btn)
         nav.addWidget(self.page_json_btn)
@@ -831,6 +1029,31 @@ class AnnotationWindow(QMainWindow):
         self.view.zoom_requested.connect(self._apply_zoom)
         self.view.nudge_selected_requested.connect(self._nudge_selected_facts)
         self.view.resize_selected_requested.connect(self.batch_expand_selected)
+        self.page_thumb_list = QListWidget()
+        self.page_thumb_list.setObjectName("thumbList")
+        self.page_thumb_list.setViewMode(QListView.IconMode)
+        self.page_thumb_list.setFlow(QListView.TopToBottom)
+        self.page_thumb_list.setMovement(QListView.Static)
+        self.page_thumb_list.setResizeMode(QListView.Adjust)
+        self.page_thumb_list.setWrapping(False)
+        self.page_thumb_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.page_thumb_list.setVerticalScrollMode(QAbstractItemView.ScrollPerPixel)
+        self.page_thumb_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.page_thumb_list.setIconSize(QSize(96, 132))
+        self.page_thumb_list.setSpacing(8)
+
+        thumb_panel = QWidget()
+        thumb_panel.setMinimumWidth(130)
+        thumb_panel.setMaximumWidth(220)
+        thumb_layout = QVBoxLayout(thumb_panel)
+        thumb_layout.setContentsMargins(0, 0, 0, 0)
+        thumb_layout.setSpacing(6)
+        thumb_title = QLabel("Pages")
+        thumb_title.setObjectName("hintText")
+        thumb_layout.addWidget(thumb_title)
+        thumb_layout.addWidget(self.page_thumb_list, 1)
+
+        splitter.addWidget(thumb_panel)
         splitter.addWidget(self.view)
 
         right = QWidget()
@@ -954,8 +1177,13 @@ class AnnotationWindow(QMainWindow):
         self.batch_path_level_edit.setPlaceholderText("Path level (e.g. נכסים)")
         self.batch_prepend_path_btn = QPushButton("Add As Parent")
         self.batch_append_path_btn = QPushButton("Add As Child")
+        self.batch_insert_index_spin = QSpinBox()
+        self.batch_insert_index_spin.setRange(1, 99)
+        self.batch_insert_index_spin.setValue(2)
+        self.batch_insert_path_btn = QPushButton("Insert At Position")
         self.batch_remove_first_btn = QPushButton("Remove First Level")
         self.batch_remove_last_btn = QPushButton("Remove Last Level")
+        self.batch_clear_refference_btn = QPushButton("Clear Refference")
         self.batch_resize_step_spin = QSpinBox()
         self.batch_resize_step_spin.setRange(1, 500)
         self.batch_resize_step_spin.setSingleStep(1)
@@ -968,10 +1196,17 @@ class AnnotationWindow(QMainWindow):
         batch_row_1.setSpacing(8)
         batch_row_1.addWidget(self.batch_prepend_path_btn)
         batch_row_1.addWidget(self.batch_append_path_btn)
+        batch_row_insert = QHBoxLayout()
+        batch_row_insert.setSpacing(8)
+        batch_row_insert.addWidget(QLabel("Insert pos:"))
+        batch_row_insert.addWidget(self.batch_insert_index_spin)
+        batch_row_insert.addWidget(self.batch_insert_path_btn)
+        batch_row_insert.addStretch(1)
         batch_row_2 = QHBoxLayout()
         batch_row_2.setSpacing(8)
         batch_row_2.addWidget(self.batch_remove_first_btn)
         batch_row_2.addWidget(self.batch_remove_last_btn)
+        batch_row_2.addWidget(self.batch_clear_refference_btn)
         batch_resize_head = QHBoxLayout()
         batch_resize_head.setSpacing(8)
         batch_resize_head.addWidget(QLabel("Grow step (px):"))
@@ -986,6 +1221,7 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addWidget(self.batch_selected_label)
         batch_layout.addWidget(self.batch_path_level_edit)
         batch_layout.addLayout(batch_row_1)
+        batch_layout.addLayout(batch_row_insert)
         batch_layout.addLayout(batch_row_2)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
@@ -995,7 +1231,7 @@ class AnnotationWindow(QMainWindow):
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+drag on the page to select multiple boxes. "
-            "Use Batch Edit to add/remove path levels across selected boxes. "
+            "Use Batch Edit to add/remove path levels (including insert by position) and clear references across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -1013,23 +1249,29 @@ class AnnotationWindow(QMainWindow):
         right_scroll.setWidget(right)
         splitter.addWidget(right_scroll)
         splitter.setChildrenCollapsible(False)
-        splitter.setStretchFactor(0, 3)
-        splitter.setStretchFactor(1, 2)
-        splitter.setSizes([860, 560])
+        splitter.setStretchFactor(0, 0)
+        splitter.setStretchFactor(1, 3)
+        splitter.setStretchFactor(2, 2)
+        splitter.setSizes([170, 860, 560])
 
         self.prev_btn.clicked.connect(lambda: self.show_page(self.current_index - 1))
         self.next_btn.clicked.connect(lambda: self.show_page(self.current_index + 1))
+        self.page_jump_spin.valueChanged.connect(self._on_page_jump_requested)
+        self.page_jump_btn.clicked.connect(lambda: self._on_page_jump_requested(self.page_jump_spin.value()))
+        self.page_thumb_list.currentRowChanged.connect(self._on_thumbnail_row_changed)
         self.undo_btn.clicked.connect(self.undo)
         self.redo_btn.clicked.connect(self.redo)
         self.zoom_out_btn.clicked.connect(self.zoom_out)
         self.zoom_in_btn.clicked.connect(self.zoom_in)
+        self.lens_btn.toggled.connect(self._on_lens_toggled)
         self.copy_image_btn.clicked.connect(self.copy_displayed_image)
-        self.fit_btn.clicked.connect(self._fit_view)
+        self.fit_btn.clicked.connect(self._fit_view_height)
         self.page_json_btn.clicked.connect(self.show_current_page_json)
         self.help_btn.clicked.connect(self.show_help_dialog)
         self.save_btn.clicked.connect(self.save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.gemini_gt_btn.clicked.connect(self.generate_gemini_ground_truth)
+        self.qwen_gt_btn.clicked.connect(self.generate_qwen_ground_truth)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
@@ -1054,8 +1296,10 @@ class AnnotationWindow(QMainWindow):
         self.batch_path_level_edit.textChanged.connect(self._update_batch_controls)
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
+        self.batch_insert_path_btn.clicked.connect(self.batch_insert_path_level)
         self.batch_remove_first_btn.clicked.connect(self.batch_remove_first_level)
         self.batch_remove_last_btn.clicked.connect(self.batch_remove_last_level)
+        self.batch_clear_refference_btn.clicked.connect(self.batch_clear_refference)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
         self.batch_expand_right_btn.clicked.connect(lambda: self.batch_expand_selected("right"))
         self.batch_expand_up_btn.clicked.connect(lambda: self.batch_expand_selected("up"))
@@ -1069,6 +1313,8 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Meta+I"), self, activated=self.import_annotations_json)
         QShortcut(QKeySequence("Ctrl+G"), self, activated=self.generate_gemini_ground_truth)
         QShortcut(QKeySequence("Meta+G"), self, activated=self.generate_gemini_ground_truth)
+        QShortcut(QKeySequence("Ctrl+Shift+G"), self, activated=self.generate_qwen_ground_truth)
+        QShortcut(QKeySequence("Meta+Shift+G"), self, activated=self.generate_qwen_ground_truth)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
         QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
         delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self.delete_selected_fact)
@@ -1077,7 +1323,7 @@ class AnnotationWindow(QMainWindow):
         backspace_shortcut.setContext(Qt.ApplicationShortcut)
         QShortcut(QKeySequence("Ctrl+="), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl+-"), self, activated=self.zoom_out)
-        QShortcut(QKeySequence("Ctrl+0"), self, activated=self._fit_view)
+        QShortcut(QKeySequence("Ctrl+0"), self, activated=self._fit_view_height)
         QShortcut(QKeySequence("F1"), self, activated=self.show_help_dialog)
 
         save_action = QAction("Save", self)
@@ -1085,6 +1331,7 @@ class AnnotationWindow(QMainWindow):
         save_action.triggered.connect(self.save_annotations)
         self.addAction(save_action)
         self.page_label.setObjectName("pageIndicator")
+        self._populate_page_thumbnails()
         self.statusBar().showMessage("Ready")
         self._set_fact_editor_enabled(False)
         self._clear_fact_editor()
@@ -1198,6 +1445,24 @@ class AnnotationWindow(QMainWindow):
                 background: #cfe0ff;
                 color: #1f2a3d;
             }
+            QListWidget#thumbList {
+                background: #f3f7ff;
+                border: 1px solid #c6d3e8;
+                border-radius: 10px;
+                padding: 6px;
+            }
+            QListWidget#thumbList::item {
+                min-height: 126px;
+                border: 1px solid #d6e0ef;
+                background: #ffffff;
+                margin: 2px;
+                padding: 4px;
+            }
+            QListWidget#thumbList::item:selected {
+                border: 2px solid #5b8ff9;
+                background: #dfeaff;
+                color: #1f2a3d;
+            }
             QGraphicsView {
                 background: #dfe8f6;
                 border: 1px solid #c3d2e7;
@@ -1300,10 +1565,16 @@ class AnnotationWindow(QMainWindow):
             self.batch_prepend_path_btn.setEnabled(has_selection and has_text)
         if hasattr(self, "batch_append_path_btn"):
             self.batch_append_path_btn.setEnabled(has_selection and has_text)
+        if hasattr(self, "batch_insert_path_btn"):
+            self.batch_insert_path_btn.setEnabled(has_selection and has_text)
+        if hasattr(self, "batch_insert_index_spin"):
+            self.batch_insert_index_spin.setEnabled(has_selection)
         if hasattr(self, "batch_remove_first_btn"):
             self.batch_remove_first_btn.setEnabled(has_selection)
         if hasattr(self, "batch_remove_last_btn"):
             self.batch_remove_last_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_clear_refference_btn"):
+            self.batch_clear_refference_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_left_btn"):
             self.batch_expand_left_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_right_btn"):
@@ -1372,6 +1643,23 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, f"Added child path '{level}'")
 
+    def batch_insert_path_level(self) -> None:
+        level = self.batch_path_level_edit.text().strip()
+        if not level:
+            self.statusBar().showMessage("Enter a path level first.", 2500)
+            return
+        position = int(self.batch_insert_index_spin.value()) if hasattr(self, "batch_insert_index_spin") else 1
+        insert_index = max(0, position - 1)
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            path = [str(p).strip() for p in (fact.get("path") or []) if str(p).strip()]
+            idx = min(insert_index, len(path))
+            path.insert(idx, level)
+            fact["path"] = path
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Inserted path '{level}' at position {position}")
+
     def batch_remove_first_level(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
             path = [str(p).strip() for p in (fact.get("path") or []) if str(p).strip()]
@@ -1387,6 +1675,50 @@ class AnnotationWindow(QMainWindow):
             return fact
 
         self._batch_update_selected_facts(_transform, "Removed last path level")
+
+    def _selected_path_signatures(self, selected_items: List[AnnotRectItem]) -> List[tuple[str, ...]]:
+        signatures: set[tuple[str, ...]] = set()
+        for item in selected_items:
+            fact = normalize_fact_data(item.fact_data)
+            path = tuple(str(part).strip() for part in (fact.get("path") or []) if str(part).strip())
+            signatures.add(path)
+        return sorted(signatures)
+
+    def batch_clear_refference(self) -> None:
+        selected_items = self._selected_fact_items()
+        if not selected_items:
+            self.statusBar().showMessage("No selected bboxes for batch update.", 2500)
+            return
+
+        path_signatures = self._selected_path_signatures(selected_items)
+        if len(path_signatures) > 1:
+            sample_paths = [
+                " > ".join(path) if path else "(empty path)"
+                for path in path_signatures[:3]
+            ]
+            more_count = len(path_signatures) - len(sample_paths)
+            detail = ", ".join(sample_paths)
+            if more_count > 0:
+                detail = f"{detail}, +{more_count} more"
+            choice = QMessageBox.warning(
+                self,
+                "Different attributes selected",
+                (
+                    "Selected bboxes do not all share the same attribute path.\n"
+                    f"Found paths: {detail}\n\n"
+                    "Clear refference for all selected bboxes anyway?"
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if choice != QMessageBox.Yes:
+                return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["refference"] = ""
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared refference")
 
     def _batch_resize_step(self, multiplier: int = 1) -> float:
         base = float(self.batch_resize_step_spin.value()) if hasattr(self, "batch_resize_step_spin") else 1.0
@@ -1599,6 +1931,37 @@ class AnnotationWindow(QMainWindow):
         self.view.fitInView(scene_rect, Qt.KeepAspectRatio)
         self._fitting_view = False
 
+    def _fit_view_height(self) -> None:
+        if self._fitting_view:
+            return
+        image_rect = self.scene.image_rect
+        if image_rect.isNull():
+            return
+        viewport_h = float(self.view.viewport().height())
+        if viewport_h <= 2.0:
+            return
+        scale = max(0.05, min(40.0, viewport_h / image_rect.height()))
+        self._fitting_view = True
+        try:
+            self.view.resetTransform()
+            self.view.scale(scale, scale)
+            self.view.centerOn(image_rect.center())
+        finally:
+            self._fitting_view = False
+
+    def _on_lens_toggled(self, enabled: bool) -> None:
+        self.view.set_lens_enabled(enabled)
+        if enabled:
+            self.statusBar().showMessage("Zoom lens enabled.", 2000)
+        else:
+            self.statusBar().showMessage("Zoom lens disabled.", 2000)
+
+    def _set_gt_buttons_enabled(self, enabled: bool) -> None:
+        if hasattr(self, "gemini_gt_btn"):
+            self.gemini_gt_btn.setEnabled(enabled)
+        if hasattr(self, "qwen_gt_btn"):
+            self.qwen_gt_btn.setEnabled(enabled)
+
     def _apply_zoom(self, factor: float) -> None:
         current_zoom = self.view.transform().m11()
         next_zoom = current_zoom * factor
@@ -1734,6 +2097,25 @@ class AnnotationWindow(QMainWindow):
                 return resolved
         return None
 
+    def _resolve_qwen_config_path(self) -> Optional[Path]:
+        candidates: List[Path] = []
+        env_path = os.getenv("FINETREE_QWEN_CONFIG")
+        if env_path:
+            candidates.append(Path(env_path).expanduser())
+        candidates.append(Path.cwd() / "configs/finetune_qwen35a3_vl.yaml")
+        for parent in Path(__file__).resolve().parents:
+            candidates.append(parent / "configs/finetune_qwen35a3_vl.yaml")
+
+        seen: set[Path] = set()
+        for path in candidates:
+            resolved = path.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            if resolved.is_file():
+                return resolved
+        return None
+
     def _build_prompt_from_template(self, template: str, page_image_path: Path) -> str:
         prompt = template.replace("{{PAGE_IMAGE}}", str(page_image_path))
         prompt = prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
@@ -1773,11 +2155,17 @@ class AnnotationWindow(QMainWindow):
             finally:
                 self._is_loading_page = False
 
-    def _apply_stream_fact(self, page_name: str, fact_payload: Dict[str, Any]) -> bool:
+    def _apply_stream_fact(
+        self,
+        page_name: str,
+        fact_payload: Dict[str, Any],
+        seen_facts: Optional[set[tuple[Any, ...]]] = None,
+    ) -> bool:
+        active_seen = seen_facts if seen_facts is not None else self._gemini_stream_seen_facts
         fact_key = self._fact_uniqueness_key(fact_payload)
-        if fact_key in self._gemini_stream_seen_facts:
+        if fact_key in active_seen:
             return False
-        self._gemini_stream_seen_facts.add(fact_key)
+        active_seen.add(fact_key)
 
         page_idx = self._page_index_by_name(page_name)
         if page_idx < 0:
@@ -1813,7 +2201,6 @@ class AnnotationWindow(QMainWindow):
                 self.scene.addItem(AnnotRectItem(rect, fact_data))
                 self.refresh_facts_list()
                 self._capture_current_state()
-        self._gemini_stream_fact_count += 1
         return True
 
     def import_annotations_json(self) -> None:
@@ -1910,6 +2297,9 @@ class AnnotationWindow(QMainWindow):
             self.statusBar().showMessage(f"Imported annotations for {imported_count} page(s).", 4500)
 
     def generate_gemini_ground_truth(self) -> None:
+        if self._qwen_stream_thread is not None:
+            QMessageBox.information(self, "Gemini GT", "A Qwen stream is already running.")
+            return
         if self._gemini_stream_thread is not None:
             QMessageBox.information(self, "Gemini GT", "A Gemini stream is already running.")
             return
@@ -2011,7 +2401,7 @@ class AnnotationWindow(QMainWindow):
 
         self._gemini_stream_worker = worker
         self._gemini_stream_thread = thread
-        self.gemini_gt_btn.setEnabled(False)
+        self._set_gt_buttons_enabled(False)
         self.statusBar().showMessage(f"Streaming Gemini GT for {page_name}...", 3000)
         thread.start()
 
@@ -2038,8 +2428,9 @@ class AnnotationWindow(QMainWindow):
         page_name = self._gemini_stream_target_page
         if page_name is None:
             return
-        added = self._apply_stream_fact(page_name, fact_payload)
+        added = self._apply_stream_fact(page_name, fact_payload, seen_facts=self._gemini_stream_seen_facts)
         if added and self._gemini_stream_dialog is not None:
+            self._gemini_stream_fact_count += 1
             self._gemini_stream_dialog.set_status(f"Streaming facts... {self._gemini_stream_fact_count} parsed")
 
     def _on_gemini_stream_completed(self, extraction_obj: Any) -> None:
@@ -2050,7 +2441,13 @@ class AnnotationWindow(QMainWindow):
             meta_payload = extraction_obj.meta.model_dump(mode="json")
             self._apply_stream_meta(page_name, meta_payload)
             for fact in extraction_obj.facts:
-                self._apply_stream_fact(page_name, fact.model_dump(mode="json"))
+                added = self._apply_stream_fact(
+                    page_name,
+                    fact.model_dump(mode="json"),
+                    seen_facts=self._gemini_stream_seen_facts,
+                )
+                if added:
+                    self._gemini_stream_fact_count += 1
         except Exception as exc:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
             return
@@ -2080,10 +2477,211 @@ class AnnotationWindow(QMainWindow):
                 f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed).",
                 5000,
             )
-        self.gemini_gt_btn.setEnabled(True)
         self._gemini_stream_thread = None
         self._gemini_stream_worker = None
         self._gemini_stream_target_page = None
+        if self._qwen_stream_thread is None:
+            self._set_gt_buttons_enabled(True)
+
+    def generate_qwen_ground_truth(self) -> None:
+        if self._gemini_stream_thread is not None:
+            QMessageBox.information(self, "Qwen GT", "A Gemini stream is already running.")
+            return
+        if self._qwen_stream_thread is not None:
+            QMessageBox.information(self, "Qwen GT", "A Qwen stream is already running.")
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            QMessageBox.warning(self, "Qwen GT", "No current page is loaded.")
+            return
+
+        qwen_config_path = self._resolve_qwen_config_path()
+        if qwen_config_path is None:
+            QMessageBox.warning(
+                self,
+                "Qwen GT",
+                (
+                    "Could not find Qwen fine-tune config.\n"
+                    "Expected configs/finetune_qwen35a3_vl.yaml or FINETREE_QWEN_CONFIG."
+                ),
+            )
+            return
+
+        page_path = self.page_images[self.current_index]
+        page_name = page_path.name
+        self._capture_current_state()
+
+        current_state = self.page_states.get(page_name, self._default_state(self.current_index))
+        if current_state.facts:
+            answer = QMessageBox.question(
+                self,
+                "Replace current annotations?",
+                (
+                    f"Current page already has {len(current_state.facts)} bbox(es).\n"
+                    "Generate Qwen ground truth and replace this page annotations?"
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if answer != QMessageBox.Yes:
+                return
+
+        prompt_path = self._resolve_prompt_txt_path()
+        if prompt_path is None:
+            QMessageBox.warning(
+                self,
+                "Qwen GT",
+                "Could not find prompt.txt. Place it in the current working directory or set FINETREE_PROMPT_PATH.",
+            )
+            return
+
+        try:
+            prompt_template = prompt_path.read_text(encoding="utf-8")
+        except Exception as exc:
+            QMessageBox.warning(self, "Qwen GT", f"Failed to read prompt template:\n{exc}")
+            return
+
+        prompt_text = self._build_prompt_from_template(prompt_template, page_path)
+        prompt_dialog = QwenPromptDialog(
+            prompt_text=prompt_text,
+            model_name=self._qwen_model_name,
+            parent=self,
+        )
+        if prompt_dialog.exec_() != QDialog.Accepted:
+            return
+        prompt_text = prompt_dialog.prompt().strip()
+        model_name = prompt_dialog.model().strip() or self._qwen_model_name
+        if not prompt_text:
+            QMessageBox.warning(self, "Qwen GT", "Prompt cannot be empty.")
+            return
+
+        self._qwen_model_name = model_name
+
+        page_idx = self.current_index
+        existing_meta = self.page_states.get(page_name, self._default_state(page_idx)).meta or {}
+        self.page_states[page_name] = PageState(
+            meta={**self._default_meta(page_idx), **existing_meta},
+            facts=[],
+        )
+        was_restoring = self._is_restoring_history
+        self._is_restoring_history = True
+        try:
+            self.show_page(page_idx)
+        finally:
+            self._is_restoring_history = was_restoring
+
+        self._qwen_stream_target_page = page_name
+        self._qwen_stream_seen_facts = set()
+        self._qwen_stream_fact_count = 0
+        self._qwen_stream_cancel_requested = False
+
+        self._qwen_stream_dialog = QwenStreamDialog(page_name=page_name, parent=None)
+        self._qwen_stream_dialog.set_status(f"Streaming from {model_name} ...")
+        self._qwen_stream_dialog.stop_requested.connect(self._cancel_qwen_stream)
+        self._qwen_stream_dialog.show()
+
+        worker = QwenStreamWorker(
+            image_path=page_path,
+            prompt=prompt_text,
+            model=model_name,
+            config_path=str(qwen_config_path),
+        )
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.chunk_received.connect(self._on_qwen_stream_chunk)
+        worker.meta_received.connect(self._on_qwen_stream_meta)
+        worker.fact_received.connect(self._on_qwen_stream_fact)
+        worker.completed.connect(self._on_qwen_stream_completed)
+        worker.failed.connect(self._on_qwen_stream_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_qwen_stream_finished)
+
+        self._qwen_stream_worker = worker
+        self._qwen_stream_thread = thread
+        self._set_gt_buttons_enabled(False)
+        self.statusBar().showMessage(f"Streaming Qwen GT for {page_name}...", 3000)
+        thread.start()
+
+    def _cancel_qwen_stream(self) -> None:
+        if self._qwen_stream_worker is not None:
+            self._qwen_stream_cancel_requested = True
+            self._qwen_stream_worker.request_cancel()
+            if self._qwen_stream_dialog is not None:
+                self._qwen_stream_dialog.set_status("Stopping stream...")
+
+    def _on_qwen_stream_chunk(self, text: str) -> None:
+        if self._qwen_stream_dialog is not None:
+            self._qwen_stream_dialog.append_text(text)
+
+    def _on_qwen_stream_meta(self, meta_payload: Dict[str, Any]) -> None:
+        page_name = self._qwen_stream_target_page
+        if page_name is None:
+            return
+        self._apply_stream_meta(page_name, meta_payload)
+        if self._qwen_stream_dialog is not None:
+            self._qwen_stream_dialog.set_status("Meta received. Streaming facts...")
+
+    def _on_qwen_stream_fact(self, fact_payload: Dict[str, Any]) -> None:
+        page_name = self._qwen_stream_target_page
+        if page_name is None:
+            return
+        added = self._apply_stream_fact(page_name, fact_payload, seen_facts=self._qwen_stream_seen_facts)
+        if added:
+            self._qwen_stream_fact_count += 1
+            if self._qwen_stream_dialog is not None:
+                self._qwen_stream_dialog.set_status(f"Streaming facts... {self._qwen_stream_fact_count} parsed")
+
+    def _on_qwen_stream_completed(self, extraction_obj: Any) -> None:
+        page_name = self._qwen_stream_target_page
+        if page_name is None:
+            return
+        try:
+            meta_payload = extraction_obj.meta.model_dump(mode="json")
+            self._apply_stream_meta(page_name, meta_payload)
+            for fact in extraction_obj.facts:
+                added = self._apply_stream_fact(
+                    page_name,
+                    fact.model_dump(mode="json"),
+                    seen_facts=self._qwen_stream_seen_facts,
+                )
+                if added:
+                    self._qwen_stream_fact_count += 1
+        except Exception as exc:
+            self._on_qwen_stream_failed(f"Final parse failed: {exc}")
+            return
+
+        self._record_history_snapshot()
+        if self._qwen_stream_dialog is not None:
+            self._qwen_stream_dialog.mark_done(
+                f"Qwen GT complete. Parsed {self._qwen_stream_fact_count} fact(s)."
+            )
+        self.statusBar().showMessage(f"Qwen GT complete ({self._qwen_stream_fact_count} fact(s)).", 6000)
+
+    def _on_qwen_stream_failed(self, message: str) -> None:
+        if self._qwen_stream_dialog is not None:
+            self._qwen_stream_dialog.mark_error(f"Error: {message}")
+        QMessageBox.warning(
+            self,
+            "Qwen GT failed",
+            f"{message}\n\nAny facts already streamed remain on the page.",
+        )
+
+    def _on_qwen_stream_finished(self) -> None:
+        if self._qwen_stream_cancel_requested and self._qwen_stream_dialog is not None:
+            self._qwen_stream_dialog.mark_done(
+                f"Qwen GT stopped. Parsed {self._qwen_stream_fact_count} fact(s) before stop."
+            )
+            self.statusBar().showMessage(
+                f"Qwen GT stopped ({self._qwen_stream_fact_count} fact(s) parsed).",
+                5000,
+            )
+        self._qwen_stream_thread = None
+        self._qwen_stream_worker = None
+        self._qwen_stream_target_page = None
+        if self._gemini_stream_thread is None:
+            self._set_gt_buttons_enabled(True)
 
     def _capture_current_state(self) -> None:
         if self.current_index < 0 or self._is_restoring_history:
@@ -2110,6 +2708,39 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.warning(self, "Failed to load annotations", str(exc))
             return
         self.page_states = load_page_states(payload, [p.name for p in self.page_images])
+
+    def _populate_page_thumbnails(self) -> None:
+        if not hasattr(self, "page_thumb_list"):
+            return
+        self.page_thumb_list.blockSignals(True)
+        self.page_thumb_list.clear()
+        icon_size = self.page_thumb_list.iconSize()
+        for idx, page_path in enumerate(self.page_images):
+            item = QListWidgetItem(str(idx + 1))
+            item.setToolTip(page_path.name)
+            item.setTextAlignment(Qt.AlignCenter)
+            pixmap = QPixmap(str(page_path))
+            if not pixmap.isNull():
+                thumb = pixmap.scaled(icon_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                item.setIcon(QIcon(thumb))
+            item.setSizeHint(QSize(icon_size.width() + 20, icon_size.height() + 30))
+            self.page_thumb_list.addItem(item)
+        self.page_thumb_list.blockSignals(False)
+
+    def _on_page_jump_requested(self, page_number: int) -> None:
+        if not self.page_images:
+            return
+        index = max(0, min(int(page_number) - 1, len(self.page_images) - 1))
+        if index == self.current_index:
+            return
+        self.show_page(index)
+
+    def _on_thumbnail_row_changed(self, row: int) -> None:
+        if row < 0 or row >= len(self.page_images):
+            return
+        if row == self.current_index:
+            return
+        self.show_page(row)
 
     def show_page(self, index: int) -> None:
         if index < 0 or index >= len(self.page_images):
@@ -2158,12 +2789,17 @@ class AnnotationWindow(QMainWindow):
         self.page_label.setText(f"Page {index + 1}/{len(self.page_images)} - {page_name}")
         self.prev_btn.setEnabled(index > 0)
         self.next_btn.setEnabled(index < len(self.page_images) - 1)
+        self.page_jump_spin.blockSignals(True)
+        self.page_jump_spin.setValue(index + 1)
+        self.page_jump_spin.blockSignals(False)
+        self.page_thumb_list.blockSignals(True)
+        self.page_thumb_list.setCurrentRow(index)
+        current_thumb = self.page_thumb_list.item(index)
+        if current_thumb is not None:
+            self.page_thumb_list.scrollToItem(current_thumb, QAbstractItemView.PositionAtCenter)
+        self.page_thumb_list.blockSignals(False)
         self.refresh_facts_list()
-        if not self._did_initial_view_setup:
-            # Keep initial rendering at native resolution to preserve text clarity.
-            self.view.resetTransform()
-            self.view.centerOn(self.scene.image_rect.center())
-            self._did_initial_view_setup = True
+        self._fit_view_height()
 
     def _sorted_fact_items(self) -> List[AnnotRectItem]:
         items = [i for i in self.scene.items() if isinstance(i, AnnotRectItem) and self._is_alive_fact_item(i)]
@@ -2453,12 +3089,19 @@ class AnnotationWindow(QMainWindow):
             "- Ctrl/Cmd+Y or Ctrl/Cmd+Shift+Z: Redo\n"
             "- Ctrl/Cmd+I: Import JSON\n"
             "- Ctrl/Cmd+G: Gemini GT (current page)\n"
+            "- Ctrl/Cmd+Shift+G: Qwen GT (current page)\n"
             "- Ctrl/Cmd+D: Duplicate selected bbox\n"
             "- Delete or Backspace: Delete selected bbox(es)\n"
             "- Ctrl+=: Zoom in\n"
             "- Ctrl+-: Zoom out\n"
-            "- Ctrl+0: Fit page to view\n"
+            "- Ctrl+0: Fit page height to panel\n"
             "- F1: Open this help\n"
+            "\n"
+            "Page navigation\n"
+            "- Use Prev/Next buttons\n"
+            "- Use the Go to page spinner in the top bar\n"
+            "- Scroll and click the Pages thumbnail strip on the left\n"
+            "- Toggle Lens in the top bar for magnified cursor inspection\n"
             "\n"
             "Selection and editing\n"
             "- Shift + left-drag on page: Rectangle-select multiple bboxes\n"

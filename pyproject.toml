@@ -12,12 +12,25 @@ dependencies = [
   "pdf2image",
   "PyQt5>=5.15,<5.16",
   "google-genai",
+  "PyYAML",
+  "Pillow",
+  "transformers",
+  "datasets",
+  "trl",
+  "peft",
+  "huggingface_hub",
+  "unsloth",
 ]
 
 [project.scripts]
 finetree-annotator = "finetree_annotator.app:main"
 finetree-pdf-to-images = "finetree_annotator.pdf_to_images:main"
 finetree-gemini-vlm = "finetree_annotator.gemini_vlm:main"
+finetree-qwen-gt = "finetree_annotator.qwen_vlm:main"
+finetree-ft-build-dataset = "finetree_annotator.finetune.dataset_builder:main"
+finetree-ft-preflight = "finetree_annotator.finetune.preflight:main"
+finetree-ft-train = "finetree_annotator.finetune.trainer_unsloth:main"
+finetree-ft-merge-push = "finetree_annotator.finetune.merge_push:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
