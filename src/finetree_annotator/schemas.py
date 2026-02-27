@@ -53,6 +53,32 @@ class Fact(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class BBox(BaseModel):
+    x: float
+    y: float
+    w: float
+    h: float
+    model_config = ConfigDict(extra="forbid")
+
+
+class ExtractedFact(BaseModel):
+    bbox: BBox
+    value: str
+    refference: str
+    date: Optional[str] = None
+    path: List[str]
+    currency: Optional[Currency] = None
+    scale: Optional[Scale] = None
+    value_type: Optional[ValueType] = None
+    model_config = ConfigDict(extra="forbid")
+
+
+class PageExtraction(BaseModel):
+    meta: PageMeta
+    facts: List[ExtractedFact]
+    model_config = ConfigDict(extra="forbid")
+
+
 class Page(BaseModel):
     meta: PageMeta
     facts: List[Fact]
