@@ -2,4 +2,12 @@ pydantic==2.12.5
 pdf2image
 PyQt5>=5.15,<5.16
 google-genai
+PyYAML
+Pillow
+transformers
+datasets
+trl
+peft
+huggingface_hub
+unsloth
 pytest>=8,<9
