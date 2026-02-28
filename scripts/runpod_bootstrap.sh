@@ -158,4 +158,7 @@ Next steps:
   2) Validate and train:
        ./scripts/runpod_validate_data.sh
        ./scripts/runpod_train.sh
+     Optional multi-GPU:
+       export MULTI_GPU=1
+       export NPROC_PER_NODE=<gpu_count>
 EOF

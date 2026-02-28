@@ -172,6 +172,24 @@ Build dataset + train in one command:
 ./scripts/runpod_train.sh
 ```
 
+Multi-GPU launch (RunPod with 2+ GPUs):
+
+```bash
+export MULTI_GPU=1
+# Optional override. Defaults to detected GPU count.
+export NPROC_PER_NODE=2
+./scripts/runpod_train.sh
+```
+
+Launch modes for `runpod_train.sh`:
+
+- `MULTI_GPU=auto` (default): uses distributed launch when more than 1 GPU is visible.
+- `MULTI_GPU=1`: force distributed launch, fail fast if fewer than 2 GPUs are available.
+- `MULTI_GPU=0`: force single-process launch.
+
+Distributed runs use `torchrun --standalone --nproc_per_node ...`.
+Use `training.ddp_find_unused_parameters: false` (default) unless your adapter/module setup requires otherwise.
+
 Or explicit smoke path:
 
 ```bash
