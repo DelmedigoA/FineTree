@@ -84,9 +84,21 @@ fi
 train_cmd=(finetree-ft-train --config "${CONFIG_PATH}")
 if [[ "${multi_gpu_enabled}" == "1" ]]; then
   if command -v torchrun >/dev/null 2>&1; then
-    train_cmd=(torchrun --standalone --nproc_per_node "${NPROC_PER_NODE}" finetree-ft-train --config "${CONFIG_PATH}")
+    train_cmd=(
+      torchrun
+      --standalone
+      --nproc_per_node "${NPROC_PER_NODE}"
+      --module finetree_annotator.finetune.trainer_unsloth
+      --config "${CONFIG_PATH}"
+    )
   else
-    train_cmd=(python -m torch.distributed.run --standalone --nproc_per_node "${NPROC_PER_NODE}" finetree-ft-train --config "${CONFIG_PATH}")
+    train_cmd=(
+      python -m torch.distributed.run
+      --standalone
+      --nproc_per_node "${NPROC_PER_NODE}"
+      --module finetree_annotator.finetune.trainer_unsloth
+      --config "${CONFIG_PATH}"
+    )
   fi
 fi
 
