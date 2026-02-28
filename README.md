@@ -107,6 +107,12 @@ Train adapters:
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
 ```
 
+Run browser-native web UI (Qwen GT + annotations):
+
+```bash
+finetree-web-ui --images-dir data/pdf_images/test --port 1234
+```
+
 Push existing adapters to Hub (without retraining):
 
 ```bash
@@ -177,6 +183,16 @@ Build dataset + train in one command:
 ```bash
 ./scripts/runpod_train.sh
 ```
+
+Launch browser-native web UI on RunPod (Qwen GT enabled):
+
+```bash
+export FINETREE_QWEN_CONFIG=configs/finetune_qwen35a3_vl.yaml
+export PORT=1234
+./scripts/runpod_webui.sh
+```
+
+This starts a Gradio app on `0.0.0.0:1234` and avoids X11/noVNC.
 
 Multi-GPU launch (RunPod with 2+ GPUs):
 
