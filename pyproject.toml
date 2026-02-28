@@ -20,6 +20,7 @@ dependencies = [
   "peft",
   "huggingface_hub",
   "unsloth",
+  "gradio>=5,<6",
 ]
 
 [project.scripts]
@@ -31,6 +32,7 @@ finetree-ft-build-dataset = "finetree_annotator.finetune.dataset_builder:main"
 finetree-ft-preflight = "finetree_annotator.finetune.preflight:main"
 finetree-ft-train = "finetree_annotator.finetune.trainer_unsloth:main"
 finetree-ft-merge-push = "finetree_annotator.finetune.merge_push:main"
+finetree-web-ui = "finetree_annotator.webapp:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
