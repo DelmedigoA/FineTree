@@ -138,14 +138,6 @@ bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infin
 
 `sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
 
-Sync your dataset before preflight/training:
-
-```bash
-# required folders
-data/annotations/
-data/pdf_images/
-```
-
 Validate environment + data:
 
 ```bash

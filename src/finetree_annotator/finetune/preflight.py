@@ -11,8 +11,8 @@ from typing import Iterable, List
 from .config import FinetuneConfig, load_finetune_config, resolve_hf_token
 
 _DATA_SYNC_HINT = (
-    "If this is a fresh clone, sync dataset folders into the repo before training: "
-    "data/annotations/ and data/pdf_images/."
+    "Expected dataset folders: data/annotations/ and data/pdf_images/. "
+    "If they are missing, add/sync them before training."
 )
 
 
