@@ -14,7 +14,7 @@ class RunConfig(BaseModel):
 
 
 class ModelConfig(BaseModel):
-    base_model: str = "unsloth/Qwen3-VL-32B-Instruct"
+    base_model: str = "unsloth/Qwen3.5-35B-A3B"
     max_seq_length: int = 4096
     load_in_4bit: bool = True
     dtype: Literal["auto", "bfloat16", "float16", "float32"] = "bfloat16"

@@ -130,6 +130,12 @@ cd FineTree
 ./scripts/runpod_bootstrap.sh
 ```
 
+Single-command smoke test (bootstrap + preflight + trainer dry-run):
+
+```bash
+./scripts/runpod_smoke_test.sh
+```
+
 If you use this as pod start command, use:
 
 ```bash
@@ -137,7 +143,9 @@ bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infin
 ```
 
 `sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
-`runpod_bootstrap.sh` also auto-repairs broken Unsloth installs when imports fail.
+`runpod_bootstrap.sh` auto-repairs broken Unsloth installs when imports fail.
+If your config uses `unsloth/Qwen3.5-35B-A3B`, it also applies the notebook-style Qwen3.5 MoE patch
+(installs `unsloth` + `unsloth-zoo` from GitHub and upgrades `transformers` to `5.2.0` when needed).
 
 Validate environment + data:
 
@@ -162,6 +170,12 @@ Build dataset + train in one command:
 
 ```bash
 ./scripts/runpod_train.sh
+```
+
+Or explicit smoke path:
+
+```bash
+./scripts/runpod_smoke_test.sh
 ```
 
 Optional manual steps:
@@ -216,4 +230,22 @@ Enable Hub push in config only when needed:
 
 ```bash
 pytest -q
+```
+
+### Build + Push Docker Image
+
+RunPod GPU image (Qwen3.5 MoE stack, `linux/amd64`):
+
+```bash
+export IMAGE_NAME=<registry>/<namespace>/finetree-runpod
+export IMAGE_TAG=qwen35-moe
+docker buildx build --platform linux/amd64 -f Dockerfile -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
+```
+
+Local CPU image (macOS/PC data tooling, no Unsloth GPU training):
+
+```bash
+export LOCAL_IMAGE_NAME=<registry>/<namespace>/finetree-local
+export LOCAL_IMAGE_TAG=cpu
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.mac -t "${LOCAL_IMAGE_NAME}:${LOCAL_IMAGE_TAG}" --push .
 ```
