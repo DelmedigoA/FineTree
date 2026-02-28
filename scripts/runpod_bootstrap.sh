@@ -81,6 +81,11 @@ else
   python -m pip install -e . --no-deps
 fi
 
+target_base_model=""
+if [[ -f "${CONFIG_PATH}" ]]; then
+  target_base_model="$(awk '/^[[:space:]]*base_model:[[:space:]]*/ {print $2; exit}' "${CONFIG_PATH}")"
+fi
+
 stack_needs_repair="$(python - <<'PY'
 import contextlib
 import io
@@ -97,16 +102,13 @@ print(",".join(issues))
 PY
 )"
 
-if [[ -n "${stack_needs_repair}" ]]; then
+if [[ -n "${stack_needs_repair}" && "${target_base_model}" != "unsloth/Qwen3.5-35B-A3B" ]]; then
   echo "Repairing Unsloth/Transformers stack (${stack_needs_repair})..."
   python -m pip install --upgrade --force-reinstall --no-cache-dir \
     "unsloth" \
     "unsloth_zoo"
-fi
-
-target_base_model=""
-if [[ -f "${CONFIG_PATH}" ]]; then
-  target_base_model="$(awk '/^[[:space:]]*base_model:[[:space:]]*/ {print $2; exit}' "${CONFIG_PATH}")"
+elif [[ -n "${stack_needs_repair}" ]]; then
+  echo "Skipping generic stack repair for Qwen3.5 target (${stack_needs_repair}); using Qwen3.5 patch path."
 fi
 
 if [[ "${target_base_model}" == "unsloth/Qwen3.5-35B-A3B" ]]; then
