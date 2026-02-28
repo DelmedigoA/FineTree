@@ -45,9 +45,7 @@ def _check_training_stack() -> CheckResult:
     required = ("torch", "transformers", "datasets", "trl", "peft", "huggingface_hub", "unsloth", "yaml")
     missing: List[str] = []
     for mod in required:
-        try:
-            importlib.import_module(mod)
-        except Exception:
+        if importlib.util.find_spec(mod) is None:
             missing.append(mod)
     if missing:
         return CheckResult(
