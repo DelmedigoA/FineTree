@@ -6,6 +6,9 @@ CONFIG_PATH="${CONFIG_PATH:-configs/finetune_qwen35a3_vl.yaml}"
 LOG_DIR="${LOG_DIR:-logs}"
 MULTI_GPU="${MULTI_GPU:-auto}" # auto|0|1
 NPROC_PER_NODE="${NPROC_PER_NODE:-}"
+PREFETCH_MODEL="${PREFETCH_MODEL:-auto}" # auto|0|1
+HF_HOME="${HF_HOME:-/workspace/.cache/huggingface}"
+HF_HUB_DISABLE_XET="${HF_HUB_DISABLE_XET:-1}"
 
 cd "${REPO_DIR}"
 
@@ -44,6 +47,8 @@ fi
 mkdir -p "${LOG_DIR}"
 ts="$(date +%Y%m%d_%H%M%S)"
 log_file="${LOG_DIR}/train_${ts}.log"
+torchrun_log_dir="${LOG_DIR}/torchrun_${ts}"
+mkdir -p "${HF_HOME}"
 
 gpu_count="1"
 if command -v nvidia-smi >/dev/null 2>&1; then
@@ -81,12 +86,67 @@ if [[ -z "${NPROC_PER_NODE}" ]]; then
   NPROC_PER_NODE="${gpu_count}"
 fi
 
+prefetch_enabled="0"
+case "${PREFETCH_MODEL}" in
+  1|true|TRUE|yes|YES)
+    prefetch_enabled="1"
+    ;;
+  0|false|FALSE|no|NO)
+    prefetch_enabled="0"
+    ;;
+  auto|AUTO)
+    if [[ "${multi_gpu_enabled}" == "1" ]]; then
+      prefetch_enabled="1"
+    fi
+    ;;
+  *)
+    echo "Invalid PREFETCH_MODEL value: ${PREFETCH_MODEL}. Use auto, 0, or 1."
+    exit 4
+    ;;
+esac
+
+model_ref="$(
+  python - "${CONFIG_PATH}" <<'PY'
+import sys
+from pathlib import Path
+import yaml
+
+cfg_path = Path(sys.argv[1])
+raw = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+model_ref = (raw.get("model") or {}).get("base_model", "")
+print(str(model_ref).strip())
+PY
+)"
+
+if [[ -z "${model_ref}" ]]; then
+  echo "Could not resolve model.base_model from ${CONFIG_PATH}."
+  exit 4
+fi
+
+if [[ "${prefetch_enabled}" == "1" && ! -d "${model_ref}" ]]; then
+  echo "Prefetch enabled: warming Hugging Face cache for ${model_ref}"
+  python - "${model_ref}" <<'PY'
+import sys
+from huggingface_hub import snapshot_download
+
+repo_id = sys.argv[1]
+snapshot_download(repo_id=repo_id, resume_download=True)
+print(f"Prefetch complete: {repo_id}")
+PY
+fi
+
 train_cmd=(finetree-ft-train --config "${CONFIG_PATH}")
 if [[ "${multi_gpu_enabled}" == "1" ]]; then
+  export TORCH_DISTRIBUTED_DEBUG="${TORCH_DISTRIBUTED_DEBUG:-DETAIL}"
+  export NCCL_DEBUG="${NCCL_DEBUG:-WARN}"
+  export PYTHONFAULTHANDLER="${PYTHONFAULTHANDLER:-1}"
   if command -v torchrun >/dev/null 2>&1; then
     train_cmd=(
       torchrun
       --standalone
+      --log-dir "${torchrun_log_dir}"
+      --redirects 3
+      --tee 3
       --nproc_per_node "${NPROC_PER_NODE}"
       --module finetree_annotator.finetune.trainer_unsloth
       --config "${CONFIG_PATH}"
@@ -95,6 +155,9 @@ if [[ "${multi_gpu_enabled}" == "1" ]]; then
     train_cmd=(
       python -m torch.distributed.run
       --standalone
+      --log-dir "${torchrun_log_dir}"
+      --redirects 3
+      --tee 3
       --nproc_per_node "${NPROC_PER_NODE}"
       --module finetree_annotator.finetune.trainer_unsloth
       --config "${CONFIG_PATH}"
@@ -104,6 +167,12 @@ fi
 
 echo "Starting fine-tune on ${gpu_count} visible GPU(s). Log: ${log_file}"
 echo "Launch mode: $([[ "${multi_gpu_enabled}" == "1" ]] && echo "multi-gpu (${NPROC_PER_NODE} proc)" || echo "single-gpu")"
+echo "HF_HOME: ${HF_HOME}"
+echo "HF_HUB_DISABLE_XET: ${HF_HUB_DISABLE_XET}"
+echo "Prefetch model: $([[ "${prefetch_enabled}" == "1" ]] && echo "enabled" || echo "disabled")"
+if [[ "${multi_gpu_enabled}" == "1" ]]; then
+  echo "Torchrun rank logs: ${torchrun_log_dir}"
+fi
 echo "Train command: ${train_cmd[*]}"
 "${train_cmd[@]}" 2>&1 | tee "${log_file}"
 
