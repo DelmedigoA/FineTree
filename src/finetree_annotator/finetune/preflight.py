@@ -10,6 +10,11 @@ from typing import Iterable, List
 
 from .config import FinetuneConfig, load_finetune_config, resolve_hf_token
 
+_DATA_SYNC_HINT = (
+    "If this is a fresh clone, sync dataset folders into the repo before training: "
+    "data/annotations/ and data/pdf_images/."
+)
+
 
 @dataclass
 class CheckResult:
@@ -84,7 +89,7 @@ def _check_config_paths(cfg: FinetuneConfig) -> CheckResult:
         return CheckResult(
             name="config-paths",
             ok=False,
-            message=f"No annotation files matched: {cfg.data.annotations_glob}",
+            message=f"No annotation files matched: {cfg.data.annotations_glob}. {_DATA_SYNC_HINT}",
         )
     return CheckResult(name="config-paths", ok=True, message=f"Found {len(ann_files)} annotation file(s).")
 
@@ -92,7 +97,7 @@ def _check_config_paths(cfg: FinetuneConfig) -> CheckResult:
 def _check_annotations_and_images(cfg: FinetuneConfig, probe_pages: int = 200) -> CheckResult:
     ann_files = list(_iter_annotation_files(cfg.data.annotations_glob))
     if not ann_files:
-        return CheckResult(name="annotations", ok=False, message="No annotations to inspect.")
+        return CheckResult(name="annotations", ok=False, message=f"No annotations to inspect. {_DATA_SYNC_HINT}")
 
     pages_seen = 0
     fact_pages = 0
