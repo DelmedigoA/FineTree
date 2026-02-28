@@ -15,7 +15,7 @@ RUN uv python install 3.12 && uv venv --python 3.12 --seed /opt/venv
 
 WORKDIR /opt/finetree
 
-# Install a pinned stack to avoid long pip backtracking during every pod startup.
+# Install core runtime plus latest compatible Unsloth training stack.
 RUN python -m pip install --upgrade pip setuptools wheel && \
     python -m pip install \
       "pydantic==2.12.5" \
@@ -24,14 +24,14 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
       "google-genai==1.65.0" \
       "PyYAML==6.0.3" \
       "Pillow==12.1.1" \
-      "transformers==5.2.0" \
-      "datasets==4.6.0" \
-      "trl==0.22.2" \
-      "peft==0.18.1" \
-      "huggingface_hub==0.36.2" \
-      "tokenizers" \
       "unsloth" \
-      "unsloth_zoo"
+      "unsloth_zoo" \
+      "transformers" \
+      "trl" \
+      "datasets" \
+      "peft" \
+      "huggingface_hub" \
+      "tokenizers"
 
 WORKDIR /workspace
 CMD ["bash", "-lc", "sleep infinity"]
