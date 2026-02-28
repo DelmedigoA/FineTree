@@ -1,0 +1,17 @@
+FROM docker.io/runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONUNBUFFERED=1 \
+    HF_HOME=/workspace/.cache/huggingface \
+    TRANSFORMERS_CACHE=/workspace/.cache/huggingface
+
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace/FineTree
+COPY . /workspace/FineTree
+
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    python -m pip install -e . --no-build-isolation
+
+CMD ["finetree-runpod-worker", "--serve"]

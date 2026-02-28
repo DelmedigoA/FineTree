@@ -1,0 +1,8 @@
+{
+  "input": {
+    "image_path": "data/pdf_images/test/page_0001.png",
+    "prompt": "Extract page JSON using the FineTree schema.",
+    "response_mode": "page_extraction",
+    "config_path": "configs/finetune_qwen35a3_vl_100gb_safe.yaml"
+  }
+}

@@ -80,6 +80,8 @@ Optional flags:
 ### Qwen VLM (Local, Multimodal)
 
 `Qwen GT` uses local model inference and requires CUDA.
+The loader supports any Qwen 3.5 A3-family model id (not only a single repo name),
+and `inference.adapter_path` can be either a local folder or a Hugging Face repo id.
 
 ```bash
 finetree-qwen-gt --config configs/finetune_qwen35a3_vl.yaml --image data/pdf_images/test/page_0001.png --stream
@@ -107,19 +109,6 @@ Train adapters:
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
 ```
 
-Run browser-native web UI (Qwen GT + annotations):
-
-```bash
-finetree-web-ui --images-dir data/pdf_images/test --port 1234
-```
-
-Web UI behavior:
-
-- Runs Qwen GT for the selected page.
-- Auto-draws predicted bounding boxes on the image.
-- Lets you edit bbox + fact fields in the facts table and apply changes.
-- Saves in the same FineTree annotations JSON structure.
-
 Push existing adapters to Hub (without retraining):
 
 ```bash
@@ -136,6 +125,12 @@ Optional merge after training:
 
 ```bash
 finetree-ft-merge-push --config configs/finetune_qwen35a3_vl.yaml
+```
+
+Build + export + push dataset JSONL/images to Hugging Face Dataset Hub:
+
+```bash
+finetree-ft-push-dataset --config configs/finetune_qwen35a3_vl.yaml --repo-id <user>/<dataset-repo>
 ```
 
 ### RunPod GPU Validation + Full Fine-Tune
@@ -163,7 +158,7 @@ bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infin
 
 `sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
 `runpod_bootstrap.sh` auto-repairs broken Unsloth installs when imports fail.
-If your config uses `unsloth/Qwen3.5-35B-A3B`, it also applies the notebook-style Qwen3.5 MoE patch
+If your config targets a Qwen3.5-A3 model family id, it also applies the notebook-style Qwen3.5 patch
 (installs `unsloth` + `unsloth-zoo` from GitHub and upgrades `transformers` to `5.2.0` when needed).
 
 Validate environment + data:
@@ -191,22 +186,14 @@ Build dataset + train in one command:
 ./scripts/runpod_train.sh
 ```
 
-Launch browser-native web UI on RunPod (Qwen GT enabled):
-
-```bash
-export FINETREE_QWEN_CONFIG=configs/finetune_qwen35a3_vl.yaml
-export PORT=1234
-./scripts/runpod_webui.sh
-```
-
-This starts a Gradio app on `0.0.0.0:1234` and avoids X11/noVNC.
-
 Multi-GPU launch (RunPod with 2+ GPUs):
 
 ```bash
 export MULTI_GPU=1
 # Optional override. Defaults to detected GPU count.
 export NPROC_PER_NODE=2
+# Optional cache warmup for remote adapter repo in inference.adapter_path.
+export PREFETCH_ADAPTER=1
 ./scripts/runpod_train.sh
 ```
 
@@ -233,6 +220,35 @@ finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --dry-run
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
 ```
 
+### RunPod Endpoint Prep
+
+Generate endpoint env values directly from your FineTree config:
+
+```bash
+finetree-runpod-endpoint-env \
+  --config configs/finetune_qwen35a3_vl.yaml \
+  --served-model-name qwenasaf \
+  --output artifacts/runpod/endpoint.env
+```
+
+This creates a sorted `.env`-style file with values like:
+
+- `MODEL_NAME`
+- `MAX_MODEL_LEN`
+- `GPU_MEMORY_UTILIZATION`
+- `OPENAI_SERVED_MODEL_NAME_OVERRIDE` (if provided)
+- `FINETREE_ADAPTER_REF` (when `inference.adapter_path` is set)
+
+To use PyQt Qwen GT via RunPod OpenAI-compatible endpoint, set in your config:
+
+```yaml
+inference:
+  backend: runpod_openai
+  endpoint_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>/openai/v1
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: qwenasaf
+```
+
 Enable Hub push in config only when needed:
 
 ```bash
@@ -245,6 +261,61 @@ Push adapters after training with current config:
 
 ```bash
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --push-adapter-only
+```
+
+### RunPod Serverless Queue Worker
+
+This repo now includes a queue-style RunPod Serverless worker implementation:
+
+- module: `src/finetree_annotator/deploy/runpod_serverless_worker.py`
+- CLI entrypoint: `finetree-runpod-worker`
+- sample payload: `deploy/runpod/test_input.json`
+
+Local payload test:
+
+```bash
+finetree-runpod-worker --test-input deploy/runpod/test_input.json --pretty
+```
+
+Run as Serverless worker process:
+
+```bash
+finetree-runpod-worker --serve
+```
+
+Recommended RunPod endpoint container command:
+
+```bash
+finetree-runpod-worker --serve
+```
+
+Build and push a Serverless worker image:
+
+```bash
+export IMAGE_NAME=<registry>/<namespace>/finetree-serverless
+export IMAGE_TAG=latest
+docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.serverless -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
+```
+
+Supported request `input` keys:
+
+- `image_path` (local path inside container) OR `image_data_uri` OR `image_base64`
+- `image_mime_type` (used with `image_base64`, default `image/png`)
+- `prompt` (optional; default uses FineTree extraction prompt)
+- `response_mode`: `page_extraction` (default) or `text`
+- `model` (optional inference model override)
+- `config_path` (optional fine-tune YAML path override)
+
+Minimal API request body example:
+
+```json
+{
+  "input": {
+    "image_base64": "<base64-png-or-jpg>",
+    "image_mime_type": "image/png",
+    "response_mode": "page_extraction"
+  }
+}
 ```
 
 ### Controls
