@@ -123,6 +123,43 @@ def _build_vision_data_collator(collator_cls: Any, model: Any, tokenizer: Any) -
     raise RuntimeError("Failed to initialize UnslothVisionDataCollator with current Unsloth version.")
 
 
+def _adapter_gc_value(raw: str) -> str | bool:
+    if raw == "true":
+        return True
+    if raw == "false":
+        return False
+    return raw
+
+
+def _build_peft_kwargs(fast_vision_model: Any, cfg: FinetuneConfig) -> dict[str, Any]:
+    target_modules: Any = cfg.adapter.target_modules
+    if target_modules == "auto":
+        target_modules = None
+
+    requested_kwargs: dict[str, Any] = {
+        "r": int(cfg.adapter.r),
+        "lora_alpha": int(cfg.adapter.alpha),
+        "lora_dropout": float(cfg.adapter.dropout),
+        "bias": str(cfg.adapter.bias),
+        "use_rslora": bool(cfg.adapter.use_rslora),
+        "target_modules": target_modules,
+        # Unsloth supports "unsloth" here for maximum memory savings.
+        "use_gradient_checkpointing": _adapter_gc_value(str(cfg.adapter.gradient_checkpointing)),
+        "random_state": int(cfg.run.seed),
+        "finetune_vision_layers": bool(cfg.adapter.finetune_vision_layers),
+        "finetune_language_layers": bool(cfg.adapter.finetune_language_layers),
+        "finetune_attention_modules": bool(cfg.adapter.finetune_attention_modules),
+        "finetune_mlp_modules": bool(cfg.adapter.finetune_mlp_modules),
+    }
+
+    try:
+        params = inspect.signature(fast_vision_model.get_peft_model).parameters
+    except Exception:
+        return requested_kwargs
+
+    return {key: value for key, value in requested_kwargs.items() if key in params}
+
+
 def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     _ensure_cuda_available()
     _verify_training_dependencies()
@@ -163,15 +200,7 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     )
 
     # QLoRA is exposed by config, but MoE-style models often perform better with standard LoRA.
-    model = FastVisionModel.get_peft_model(
-        model,
-        r=int(cfg.adapter.r),
-        lora_alpha=int(cfg.adapter.alpha),
-        lora_dropout=float(cfg.adapter.dropout),
-        bias=str(cfg.adapter.bias),
-        use_rslora=bool(cfg.adapter.use_rslora),
-        target_modules=None if cfg.adapter.target_modules == "auto" else cfg.adapter.target_modules,
-    )
+    model = FastVisionModel.get_peft_model(model, **_build_peft_kwargs(FastVisionModel, cfg))
 
     train_ds = load_dataset("json", data_files=str(cfg.data.output_train_jsonl), split="train")
     eval_ds = load_dataset("json", data_files=str(cfg.data.output_val_jsonl), split="train") if eval_rows > 0 else None

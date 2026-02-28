@@ -53,9 +53,13 @@ class AdapterConfig(BaseModel):
     alpha: int = 64
     dropout: float = 0.0
     bias: Literal["none", "all", "lora_only"] = "none"
-    target_modules: str = "auto"
+    target_modules: str | list[str] = "auto"
     use_rslora: bool = False
-    gradient_checkpointing: str = "unsloth"
+    gradient_checkpointing: Literal["unsloth", "true", "false"] = "unsloth"
+    finetune_vision_layers: bool = True
+    finetune_language_layers: bool = True
+    finetune_attention_modules: bool = True
+    finetune_mlp_modules: bool = True
 
 
 class TrainingConfig(BaseModel):
