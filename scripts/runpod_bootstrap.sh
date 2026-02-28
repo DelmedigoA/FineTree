@@ -143,6 +143,7 @@ PY
     python -m pip install --no-deps git+https://github.com/unslothai/unsloth.git
     python -m pip install --upgrade --no-deps tokenizers trl==0.22.2 unsloth unsloth_zoo
     python -m pip install --upgrade "transformers==5.2.0"
+    python -m pip install --upgrade "torchvision==0.25.0" "bitsandbytes==0.49.2" "xformers==0.0.35"
   else
     echo "Qwen3.5 MoE stack already ready; skipping patch."
   fi
