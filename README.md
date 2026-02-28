@@ -113,6 +113,13 @@ Run browser-native web UI (Qwen GT + annotations):
 finetree-web-ui --images-dir data/pdf_images/test --port 1234
 ```
 
+Web UI behavior:
+
+- Runs Qwen GT for the selected page.
+- Auto-draws predicted bounding boxes on the image.
+- Lets you edit bbox + fact fields in the facts table and apply changes.
+- Saves in the same FineTree annotations JSON structure.
+
 Push existing adapters to Hub (without retraining):
 
 ```bash
