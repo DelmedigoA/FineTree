@@ -249,3 +249,5 @@ export LOCAL_IMAGE_NAME=<registry>/<namespace>/finetree-local
 export LOCAL_IMAGE_TAG=cpu
 docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.mac -t "${LOCAL_IMAGE_NAME}:${LOCAL_IMAGE_TAG}" --push .
 ```
+
+Note: `Dockerfile.mac` is for CLI/data tooling and does not include `PyQt5`.
