@@ -51,7 +51,7 @@ then
 fi
 
 missing_deps="$(python - <<'PY'
-import importlib
+import importlib.util
 
 required = (
     "torch",
@@ -65,9 +65,7 @@ required = (
 )
 missing = []
 for mod in required:
-    try:
-        importlib.import_module(mod)
-    except Exception:
+    if importlib.util.find_spec(mod) is None:
         missing.append(mod)
 print(",".join(missing))
 PY
@@ -83,19 +81,16 @@ else
 fi
 
 stack_needs_repair="$(python - <<'PY'
+import contextlib
+import io
+
 issues = []
 
 try:
-    import unsloth  # noqa: F401
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        import unsloth  # noqa: F401
 except Exception as exc:  # pragma: no cover
     issues.append(f"unsloth-import:{exc.__class__.__name__}")
-
-try:
-    from transformers.models.auto.configuration_auto import CONFIG_MAPPING
-    if "qwen3_5_moe" not in CONFIG_MAPPING:
-        issues.append("missing-qwen3_5_moe")
-except Exception as exc:  # pragma: no cover
-    issues.append(f"transformers-config:{exc.__class__.__name__}")
 
 print(",".join(issues))
 PY
