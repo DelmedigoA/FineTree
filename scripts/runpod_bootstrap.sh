@@ -29,6 +29,7 @@ else
   source .env/bin/activate
 fi
 
+editable_active="0"
 if python - <<'PY'
 import importlib.util
 from pathlib import Path
@@ -46,6 +47,36 @@ if repo in mod_path.parents:
 raise SystemExit(1)
 PY
 then
+  editable_active="1"
+fi
+
+missing_deps="$(python - <<'PY'
+import importlib
+
+required = (
+    "torch",
+    "transformers",
+    "datasets",
+    "trl",
+    "peft",
+    "huggingface_hub",
+    "unsloth",
+    "yaml",
+)
+missing = []
+for mod in required:
+    try:
+        importlib.import_module(mod)
+    except Exception:
+        missing.append(mod)
+print(",".join(missing))
+PY
+)"
+
+if [[ -n "${missing_deps}" ]]; then
+  echo "Missing dependencies detected (${missing_deps}). Installing full project dependencies..."
+  python -m pip install -e .
+elif [[ "${editable_active}" == "1" ]]; then
   echo "Editable install already active; skipping pip install."
 else
   python -m pip install -e . --no-deps
@@ -54,13 +85,10 @@ fi
 cat <<'EOF'
 Bootstrap complete.
 Next steps:
-  1) Copy data into:
-       data/annotations/
-       data/pdf_images/
-  2) Export required secrets:
+  1) Export required secrets:
        export FINETREE_HF_TOKEN=...
        export GEMINI_API_KEY=...
-  3) Validate and train:
+  2) Validate and train:
        ./scripts/runpod_validate_data.sh
        ./scripts/runpod_train.sh
 EOF
