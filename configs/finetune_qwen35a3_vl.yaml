@@ -4,7 +4,7 @@ run:
   output_dir: artifacts/qwen35a3-vl-finetree
 
 model:
-  base_model: unsloth/Qwen3.5-35B-A3B
+  base_model: unsloth/Qwen3-VL-32B-Instruct
   max_seq_length: 4096
   load_in_4bit: true
   dtype: bfloat16

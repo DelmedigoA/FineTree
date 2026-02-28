@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-import importlib
+import importlib.util
 import json
 from pathlib import Path
 from typing import Any
@@ -33,9 +33,7 @@ def _verify_training_dependencies() -> None:
     )
     missing: list[str] = []
     for module_name in required_modules:
-        try:
-            importlib.import_module(module_name)
-        except Exception:
+        if importlib.util.find_spec(module_name) is None:
             missing.append(module_name)
     if missing:
         raise RuntimeError(
@@ -109,11 +107,11 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
         return cfg.run.output_dir / "adapter"
 
     try:
+        from unsloth import FastVisionModel, UnslothVisionDataCollator
+
         from datasets import load_dataset
         from trl import SFTTrainer
         from transformers import TrainingArguments
-
-        from unsloth import FastVisionModel, UnslothVisionDataCollator
     except Exception as exc:  # pragma: no cover
         raise RuntimeError(
             "Training dependencies are missing. Install unsloth + trl + datasets + transformers."

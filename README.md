@@ -137,7 +137,7 @@ bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infin
 ```
 
 `sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
-`runpod_bootstrap.sh` also auto-repairs incompatible Unsloth/Transformers installs for Qwen3.5 MoE checkpoints.
+`runpod_bootstrap.sh` also auto-repairs broken Unsloth installs when imports fail.
 
 Validate environment + data:
 
