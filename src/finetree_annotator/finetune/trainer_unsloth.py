@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.util
+import inspect
 import json
 from pathlib import Path
 from typing import Any
@@ -90,6 +91,38 @@ def _push_adapter_folder(cfg: FinetuneConfig, adapter_dir: Path) -> None:
     )
 
 
+def _build_vision_data_collator(collator_cls: Any, model: Any, tokenizer: Any) -> Any:
+    try:
+        params = inspect.signature(collator_cls).parameters
+    except Exception:
+        params = {}
+
+    kwargs: dict[str, Any] = {}
+    if "model" in params:
+        kwargs["model"] = model
+    if "tokenizer" in params:
+        kwargs["tokenizer"] = tokenizer
+    elif "processor" in params:
+        kwargs["processor"] = tokenizer
+
+    if kwargs:
+        return collator_cls(**kwargs)
+
+    for fallback_kwargs in (
+        {"model": model, "tokenizer": tokenizer},
+        {"model": model},
+        {"processor": tokenizer},
+        {"tokenizer": tokenizer},
+        {},
+    ):
+        try:
+            return collator_cls(**fallback_kwargs)
+        except TypeError:
+            continue
+
+    raise RuntimeError("Failed to initialize UnslothVisionDataCollator with current Unsloth version.")
+
+
 def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     _ensure_cuda_available()
     _verify_training_dependencies()
@@ -164,7 +197,7 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
         remove_unused_columns=False,
     )
 
-    data_collator = UnslothVisionDataCollator(model=model, tokenizer=tokenizer)
+    data_collator = _build_vision_data_collator(UnslothVisionDataCollator, model, tokenizer)
 
     trainer = SFTTrainer(
         model=model,
