@@ -1,0 +1,239 @@
+pdf_2.json
+├── page 4: page_0004.png
+│   ├── רכוש שוטף
+│   │   ├── מזומנים ושווי מזומנים
+│   │   │   ├── 31.12.2022: 8196 | currency=ILS | scale=1 | type=amount
+│   │   │   └── 31.12.2023: 2002 | currency=ILS | scale=1 | type=amount
+│   │   ├── דמי חבר לקבל / לקוחות
+│   │   │   ├── 31.12.2022: 3800 | currency=ILS | scale=1 | type=amount
+│   │   │   └── 31.12.2023: 14854 | currency=ILS | scale=1 | type=amount
+│   │   └── סה״כ
+│   │       ├── 31.12.2022: 11996 | currency=ILS | scale=1 | type=amount
+│   │       └── 31.12.2023: 16856 | currency=ILS | scale=1 | type=amount
+│   ├── רכוש קבוע
+│   │   ├── 31.12.2023: 26003 | ref=3 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2022: 8281 | ref=3 | currency=ILS | scale=1 | type=amount
+│   ├── סה"כ נכסים
+│   │   ├── 31.12.2022: 20277 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2023: 42859 | currency=ILS | scale=1 | type=amount
+│   ├── התחייבויות שוטפות
+│   │   ├── אשראי מתאגידים בנקאיים
+│   │   │   ├── 31.12.2023: 27709 | currency=ILS | scale=1 | type=amount
+│   │   │   └── 31.12.2022: 11460 | currency=ILS | scale=1 | type=amount
+│   │   ├── ספקים ונותני שרותים
+│   │   │   ├── 31.12.2022: 12230 | currency=ILS | scale=1 | type=amount
+│   │   │   └── 31.12.2023: 15927 | currency=ILS | scale=1 | type=amount
+│   │   ├── זכאים שונים ויתרות זכות
+│   │   │   ├── 31.12.2023: 37348 | ref=4 | currency=ILS | scale=1 | type=amount
+│   │   │   └── 31.12.2022: 30594 | ref=4 | currency=ILS | scale=1 | type=amount
+│   │   └── סה״כ
+│   │       ├── 31.12.2023: 80984 | currency=ILS | scale=1 | type=amount
+│   │       └── 31.12.2022: 54284 | currency=ILS | scale=1 | type=amount
+│   ├── סה"כ התחייבויות
+│   │   ├── 31.12.2022: 54284 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2023: 80984 | currency=ILS | scale=1 | type=amount
+│   ├── גרעון בהון
+│   │   ├── נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)
+│   │   │   ├── נכסים נטו לשימוש לפעילויות
+│   │   │   │   ├── שיועדו על ידי מוסדות המלכ"ר
+│   │   │   │   │   ├── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+│   │   │   │   │   └── 31.12.2023: - | currency=ILS | scale=1 | type=amount
+│   │   │   │   └── סה"כ
+│   │   │   │       ├── 31.12.2022: (42288) | currency=ILS | scale=1 | type=amount
+│   │   │   │       └── 31.12.2023: (64128) | currency=ILS | scale=1 | type=amount
+│   │   │   └── נכסים נטו ששימשו לרכוש קבוע
+│   │   │       ├── 31.12.2023: 26003 | currency=ILS | scale=1 | type=amount
+│   │   │       └── 31.12.2022: 8281 | currency=ILS | scale=1 | type=amount
+│   │   ├── נכסים נטו לשימוש לפעילויות
+│   │   │   └── נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)
+│   │   │       └── שלא יועדו על ידי מוסדות המלכ"ר
+│   │   │           ├── 31.12.2023: (64128) | currency=ILS | scale=1 | type=amount
+│   │   │           └── 31.12.2022: (42288) | currency=ILS | scale=1 | type=amount
+│   │   └── סה״כ
+│   │       ├── 31.12.2023: (38125) | currency=ILS | scale=1 | type=amount
+│   │       └── 31.12.2022: (34007) | currency=ILS | scale=1 | type=amount
+│   └── סה"כ התחייבויות ונכסים נטו
+│       ├── 31.12.2022: 20277 | currency=ILS | scale=1 | type=amount
+│       └── 31.12.2023: 42859 | currency=ILS | scale=1 | type=amount
+├── page 5: page_0005.png
+│   ├── מחזור הפעילויות
+│   │   └── הכנסות ממתן שירותים
+│   │       ├── 31.12.2022: 1280395 | currency=ILS | scale=1 | type=amount
+│   │       └── 31.12.2023: 1445674 | currency=ILS | scale=1 | type=amount
+│   ├── עלות הפעילויות
+│   │   ├── 31.12.2022: 1344239 | ref=5 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2023: 1304248 | ref=5 | currency=ILS | scale=1 | type=amount
+│   ├── הכנסות (הוצאות) נטו מפעילויות (לפעילויות)
+│   │   ├── 31.12.2023: 141426 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2022: (63844) | currency=ILS | scale=1 | type=amount
+│   ├── הוצאות הנהלה וכלליות
+│   │   ├── 31.12.2022: 142051 | ref=6 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2023: 134960 | ref=6 | currency=ILS | scale=1 | type=amount
+│   ├── הכנסות (הוצאות) נטו לפני מימון
+│   │   ├── 31.12.2022: (205895) | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2023: 6466 | currency=ILS | scale=1 | type=amount
+│   ├── מימון, נטו
+│   │   ├── 31.12.2023: 10584 | currency=ILS | scale=1 | type=amount
+│   │   └── 31.12.2022: 9102 | currency=ILS | scale=1 | type=amount
+│   └── גרעון לתקופה
+│       ├── 31.12.2023: (4118) | currency=ILS | scale=1 | type=amount
+│       └── 31.12.2022: (214997) | currency=ILS | scale=1 | type=amount
+├── page 6: page_0006.png
+│   ├── יתרות ליום 1 בינואר 2022
+│   │   ├── שאין לגביהם הגבלה
+│   │   │   ├── לשימוש לפעילויות שיועדו על ידי מוסדות המלכ"ר
+│   │   │   │   └── 01.01.2022: - | currency=ILS | scale=1 | type=amount
+│   │   │   ├── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │   │   │   └── 01.01.2022: 180,990 | currency=ILS | scale=1 | type=amount
+│   │   │   └── נכסים נטו ששימשו לרכוש קבוע
+│   │   │       └── 01.01.2022: - | currency=ILS | scale=1 | type=amount
+│   │   └── סה"כ
+│   │       └── 01.01.2022: 180,990 | currency=ILS | scale=1 | type=amount
+│   ├── תוספות במהלך השנה
+│   │   └── גרעון לשנה
+│   │       ├── שאין לגביהם הגבלה
+│   │       │   ├── נכסים נטו ששימשו לרכוש קבוע
+│   │       │   │   └── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+│   │       │   ├── לשימוש לפעילויות שיועדו על ידי מוסדות המלכ"ר
+│   │       │   │   └── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+│   │       │   └── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │       │       ├── 31.12.2022: (214,997) | currency=ILS | scale=1 | type=amount
+│   │       │       └── 31.12.2023: (4,118) | currency=ILS | scale=1 | type=amount
+│   │       └── סה"כ
+│   │           ├── 31.12.2022: (214,997) | currency=ILS | scale=1 | type=amount
+│   │           └── 31.12.2023: (4,118) | currency=ILS | scale=1 | type=amount
+│   ├── העברת סכומים שלא קיימת לגביהם הגבלה
+│   │   ├── ששימשו לרכוש קבוע
+│   │   │   ├── שאין לגביהם הגבלה
+│   │   │   │   ├── לשימוש לפעילויות שיועדו על ידי מוסדות המלכ"ר
+│   │   │   │   │   └── 31.12.2022: (9,401) | currency=ILS | scale=1 | type=amount
+│   │   │   │   ├── נכסים נטו ששימשו לרכוש קבוע
+│   │   │   │   │   ├── 31.12.2022: 9,401 | currency=ILS | scale=1 | type=amount
+│   │   │   │   │   └── 31.12.2023: 20,160 | currency=ILS | scale=1 | type=amount
+│   │   │   │   └── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │   │   │       └── 31.12.2023: (20,160) | currency=ILS | scale=1 | type=amount
+│   │   │   └── סה"כ
+│   │   │       ├── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+│   │   │       └── 31.12.2023: - | currency=ILS | scale=1 | type=amount
+│   │   └── סכומים שהועברו לכיסוי הוצאות פחת
+│   │       ├── שאין לגביהם הגבלה
+│   │       │   ├── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │       │   │   ├── 31.12.2022: 1,120 | currency=ILS | scale=1 | type=amount
+│   │       │   │   └── 31.12.2023: 2,438 | currency=ILS | scale=1 | type=amount
+│   │       │   └── נכסים נטו ששימשו לרכוש קבוע
+│   │       │       ├── 31.12.2022: (1,120) | currency=ILS | scale=1 | type=amount
+│   │       │       └── 31.12.2023: (2,438) | currency=ILS | scale=1 | type=amount
+│   │       └── סה"כ
+│   │           ├── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+│   │           └── 31.12.2023: - | currency=ILS | scale=1 | type=amount
+│   ├── גריעות במהלך השנה
+│   │   └── העברת סכומים שלא קיימת לגביהם הגבלה
+│   │       └── ששימשו לרכוש קבוע
+│   │           └── שאין לגביהם הגבלה
+│   │               └── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │                   └── 31.12.2022: (9,401) | currency=ILS | scale=1 | type=amount
+│   ├── יתרות ליום 31 בדצמבר 2022
+│   │   ├── סה"כ
+│   │   │   └── 31.12.2022: (34,007) | currency=ILS | scale=1 | type=amount
+│   │   └── שאין לגביהם הגבלה
+│   │       ├── נכסים נטו ששימשו לרכוש קבוע
+│   │       │   └── 31.12.2022: 8,281 | currency=ILS | scale=1 | type=amount
+│   │       └── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│   │           └── 31.12.2022: (42,288) | currency=ILS | scale=1 | type=amount
+│   └── יתרות ליום 31 בדצמבר 2023
+│       ├── סה"כ
+│       │   └── 31.12.2023: (38,125) | currency=ILS | scale=1 | type=amount
+│       └── שאין לגביהם הגבלה
+│           ├── נכסים נטו ששימשו לרכוש קבוע
+│           │   └── 31.12.2023: 26,003 | currency=ILS | scale=1 | type=amount
+│           └── לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ"ר
+│               └── 31.12.2023: (64,128) | currency=ILS | scale=1 | type=amount
+├── page 7: page_0007.png
+│   └── באור 3 - רכוש קבוע
+│       └── ריהוט וציוד משרדי
+│           ├── עלות
+│           │   └── 31.12.2023: 29,561 | currency=ILS | scale=1 | type=amount
+│           ├── עלות מופחתת
+│           │   ├── 31.12.2023: 26,003 | currency=ILS | scale=1 | type=amount
+│           │   └── 31.12.2022: 8,281 | currency=ILS | scale=1 | type=amount
+│           └── פחת שנצבר
+│               └── 31.12.2023: 3,558 | currency=ILS | scale=1 | type=amount
+└── page 8: page_0008.png
+    ├── באור 4 - זכאים שונים ויתרות זכות
+    │   ├── מוסדות
+    │   │   ├── 31.12.2022: 20,021 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 8,230 | currency=ILS | scale=1 | type=amount
+    │   ├── עובדים
+    │   │   ├── 31.12.2022: 10,573 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 25,780 | currency=ILS | scale=1 | type=amount
+    │   ├── אחרים
+    │   │   ├── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 3,338 | currency=ILS | scale=1 | type=amount
+    │   └── סה"כ
+    │       ├── 31.12.2022: 30,594 | currency=ILS | scale=1 | type=amount
+    │       └── 31.12.2023: 37,348 | currency=ILS | scale=1 | type=amount
+    ├── באור 5 - עלות הפעילויות
+    │   ├── שכר עבודה
+    │   │   ├── 31.12.2022: 389,331 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 483,409 | currency=ILS | scale=1 | type=amount
+    │   ├── הוצאות נלוות לשכר
+    │   │   ├── 31.12.2022: 80,649 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 88,943 | currency=ILS | scale=1 | type=amount
+    │   ├── קבלני משנה ועבודות חוץ
+    │   │   ├── 31.12.2022: 434,594 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 330,793 | currency=ILS | scale=1 | type=amount
+    │   ├── שכירות מתקנים ומגרשים
+    │   │   ├── 31.12.2023: 118,105 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2022: 168,043 | currency=ILS | scale=1 | type=amount
+    │   ├── הסעות והובלות
+    │   │   ├── 31.12.2023: 4,461 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2022: 8,495 | currency=ILS | scale=1 | type=amount
+    │   ├── קניות פרסים, ציוד וביגוד
+    │   │   ├── 31.12.2022: 91,309 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 80,865 | currency=ILS | scale=1 | type=amount
+    │   ├── הפקת פרוייקטים ואירועים
+    │   │   ├── 31.12.2022: 171,818 | currency=ILS | scale=1 | type=amount
+    │   │   └── 31.12.2023: 197,672 | currency=ILS | scale=1 | type=amount
+    │   └── סה"כ
+    │       ├── 31.12.2022: 1,344,239 | currency=ILS | scale=1 | type=amount
+    │       └── 31.12.2023: 1,304,248 | currency=ILS | scale=1 | type=amount
+    └── באור 6 - הוצאות הנהלה וכלליות
+        ├── משרדיות
+        │   ├── 31.12.2022: 11,572 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 10,389 | currency=ILS | scale=1 | type=amount
+        ├── אחזקה
+        │   ├── 31.12.2022: 4,983 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 10,134 | currency=ILS | scale=1 | type=amount
+        ├── שירותים מקצועיים
+        │   ├── 31.12.2022: 39,560 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 31,856 | currency=ILS | scale=1 | type=amount
+        ├── כיבודים ואש"ל
+        │   ├── 31.12.2023: - | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2022: 4,384 | currency=ILS | scale=1 | type=amount
+        ├── ביטוחים
+        │   ├── 31.12.2022: 12,971 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 11,658 | currency=ILS | scale=1 | type=amount
+        ├── אחזקת רכב
+        │   ├── 31.12.2022: 45,984 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 45,309 | currency=ILS | scale=1 | type=amount
+        ├── משפטיות
+        │   ├── 31.12.2022: - | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 702 | currency=ILS | scale=1 | type=amount
+        ├── פרסום
+        │   ├── 31.12.2022: 13,122 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 18,964 | currency=ILS | scale=1 | type=amount
+        ├── מיסים ואגרות
+        │   ├── 31.12.2022: 4,966 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2023: 1,715 | currency=ILS | scale=1 | type=amount
+        ├── שונות ובטולי יתרות
+        │   ├── 31.12.2023: (35) | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2022: (261) | currency=ILS | scale=1 | type=amount
+        ├── מתנות
+        │   ├── 31.12.2023: 1,830 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2022: 3,650 | currency=ILS | scale=1 | type=amount
+        ├── הוצאות פחת
+        │   ├── 31.12.2023: 2,438 | currency=ILS | scale=1 | type=amount
+        │   └── 31.12.2022: 1,120 | currency=ILS | scale=1 | type=amount
+        └── סה"כ
+            ├── 31.12.2023: 134,960 | currency=ILS | scale=1 | type=amount
+            └── 31.12.2022: 142,051 | currency=ILS | scale=1 | type=amount

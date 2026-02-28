@@ -121,88 +121,70 @@ finetree-ft-merge-push --config configs/finetune_qwen35a3_vl.yaml
 
 ### RunPod GPU Validation + Full Fine-Tune
 
-On a fresh RunPod GPU VM:
+Recommended workflow on a fresh RunPod pod:
 
 ```bash
+cd /workspace
 git clone <YOUR_REPO_URL> FineTree
 cd FineTree
-python3 -m venv .env
-source .env/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-pip install -e . --no-build-isolation
+./scripts/runpod_bootstrap.sh
 ```
 
-GPU preflight tests (CUDA + stack + dataset smoke):
+If you use this as pod start command, use:
 
 ```bash
-export FINETREE_RUN_GPU_TESTS=1
-pytest -q -m gpu
+bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infinity"
 ```
 
-Fail-fast preflight command (recommended before any training run):
+`sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
+
+Sync your dataset before preflight/training:
 
 ```bash
-finetree-ft-preflight --config configs/finetune_qwen35a3_vl.yaml
+# required folders
+data/annotations/
+data/pdf_images/
 ```
 
-Include Hugging Face connectivity/auth validation:
+Validate environment + data:
+
+```bash
+./scripts/runpod_validate_data.sh
+```
+
+Or run preflight directly (adds HF auth check):
 
 ```bash
 finetree-ft-preflight --config configs/finetune_qwen35a3_vl.yaml --check-hf
 ```
 
-Run GPU tests plus explicit HF API test:
-
-```bash
-export FINETREE_RUN_GPU_TESTS=1
-export FINETREE_RUN_HF_TESTS=1
-pytest -q -m "gpu or hf"
-```
-
-Optional full test suite:
-
-```bash
-pytest -q
-```
-
-Enable Hub push in config and set your repo id:
-
-```bash
-# edit configs/finetune_qwen35a3_vl.yaml:
-# push_to_hub.enabled: true
-# push_to_hub.repo_id: <your_org>/<your_model_repo>
-# keep push_to_hub.hf_token: null (do not commit secrets)
-```
-
-Set HF token via environment (recommended):
+Set secrets:
 
 ```bash
 export FINETREE_HF_TOKEN=<your_hf_token>
+export GEMINI_API_KEY=<your_gemini_key>
 ```
 
-Build datasets:
+Build dataset + train in one command:
+
+```bash
+./scripts/runpod_train.sh
+```
+
+Optional manual steps:
 
 ```bash
 finetree-ft-build-dataset --config configs/finetune_qwen35a3_vl.yaml
-```
-
-Training dry-run (verifies CUDA + deps + dataset pathing):
-
-```bash
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --dry-run
-```
-
-Run full fine-tune:
-
-```bash
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
 ```
 
-Optional merge after training:
+Enable Hub push in config only when needed:
 
 ```bash
-finetree-ft-merge-push --config configs/finetune_qwen35a3_vl.yaml
+# push_to_hub.enabled: true
+# push_to_hub.repo_id: <your_org>/<your_model_repo>
+# keep push_to_hub.hf_token: null (use FINETREE_HF_TOKEN env var)
 ```
 
 ### Controls
