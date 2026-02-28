@@ -4,11 +4,15 @@ import argparse
 import importlib.util
 import inspect
 import json
+import re
 from pathlib import Path
 from typing import Any
 
 from .config import FinetuneConfig, load_finetune_config, resolve_hf_token
 from .dataset_builder import build_unsloth_chat_datasets
+
+_MIN_VISION_MAX_SEQ_LENGTH = 512
+_RECOMMENDED_VISION_MAX_SEQ_LENGTH = 768
 
 
 def _ensure_cuda_available() -> None:
@@ -160,6 +164,27 @@ def _build_peft_kwargs(fast_vision_model: Any, cfg: FinetuneConfig) -> dict[str,
     return {key: value for key, value in requested_kwargs.items() if key in params}
 
 
+def _effective_vision_max_seq_length(configured: int) -> int:
+    if configured >= _MIN_VISION_MAX_SEQ_LENGTH:
+        return configured
+    print(
+        "[WARN] model.max_seq_length="
+        f"{configured} is too small for Qwen3.5-VL image tokenization. "
+        f"Using {_MIN_VISION_MAX_SEQ_LENGTH} instead."
+    )
+    return _MIN_VISION_MAX_SEQ_LENGTH
+
+
+def _extract_mm_token_count(error_message: str, key: str) -> int | None:
+    match = re.search(rf"{key}=\[(\d+)\]", error_message)
+    if not match:
+        return None
+    try:
+        return int(match.group(1))
+    except ValueError:
+        return None
+
+
 def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     _ensure_cuda_available()
     _verify_training_dependencies()
@@ -190,10 +215,11 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     cfg.run.output_dir.mkdir(parents=True, exist_ok=True)
     adapter_dir = cfg.run.output_dir / "adapter"
     adapter_dir.mkdir(parents=True, exist_ok=True)
+    effective_max_seq_length = _effective_vision_max_seq_length(int(cfg.model.max_seq_length))
 
     model, tokenizer = FastVisionModel.from_pretrained(
         model_name=cfg.model.base_model,
-        max_seq_length=cfg.model.max_seq_length,
+        max_seq_length=effective_max_seq_length,
         dtype=_dtype_from_config(cfg),
         load_in_4bit=bool(cfg.model.load_in_4bit),
         trust_remote_code=bool(cfg.model.trust_remote_code),
@@ -240,7 +266,23 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
     )
 
     FastVisionModel.for_training(model)
-    trainer.train()
+    try:
+        trainer.train()
+    except ValueError as exc:
+        msg = str(exc)
+        if "Mismatch in `image` token count" in msg and "truncation='max_length'" in msg:
+            text_tokens = _extract_mm_token_count(msg, "text")
+            recommended = _RECOMMENDED_VISION_MAX_SEQ_LENGTH
+            if text_tokens is not None:
+                # Keep headroom for prompt + answer tokens on top of image tokens.
+                recommended = max(recommended, text_tokens + 128)
+            raise RuntimeError(
+                "Multimodal tokenization failed due to sequence truncation. "
+                f"Configured model.max_seq_length={cfg.model.max_seq_length}; "
+                f"effective={effective_max_seq_length}. "
+                f"Increase model.max_seq_length to at least {recommended} and retry."
+            ) from exc
+        raise
 
     model.save_pretrained(str(adapter_dir))
     tokenizer.save_pretrained(str(adapter_dir))
