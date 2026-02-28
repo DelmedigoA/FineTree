@@ -77,6 +77,7 @@ class TrainingConfig(BaseModel):
     bf16: bool = True
     fp16: bool = False
     report_to: str = "none"
+    ddp_find_unused_parameters: bool = False
 
 
 class InfraConfig(BaseModel):

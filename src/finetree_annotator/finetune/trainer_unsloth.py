@@ -248,6 +248,7 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
         bf16=bool(cfg.training.bf16),
         fp16=bool(cfg.training.fp16),
         report_to=str(cfg.training.report_to),
+        ddp_find_unused_parameters=bool(cfg.training.ddp_find_unused_parameters),
         dataloader_num_workers=int(cfg.infra.dataloader_num_workers),
         remove_unused_columns=False,
     )
@@ -284,10 +285,10 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
             ) from exc
         raise
 
-    model.save_pretrained(str(adapter_dir))
-    tokenizer.save_pretrained(str(adapter_dir))
-
-    _push_adapter_folder(cfg, adapter_dir)
+    if trainer.is_world_process_zero():
+        model.save_pretrained(str(adapter_dir))
+        tokenizer.save_pretrained(str(adapter_dir))
+        _push_adapter_folder(cfg, adapter_dir)
     return adapter_dir
 
 

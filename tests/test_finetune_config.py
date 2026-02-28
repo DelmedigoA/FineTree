@@ -10,6 +10,7 @@ def test_finetune_config_defaults_validate() -> None:
     assert cfg.model.base_model
     assert cfg.data.bbox_policy == "include_if_present"
     assert cfg.prompt.use_custom_prompt is True
+    assert cfg.training.ddp_find_unused_parameters is False
 
 
 def test_push_to_hub_requires_repo_and_token_when_enabled(monkeypatch) -> None:
