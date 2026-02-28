@@ -3,6 +3,7 @@ set -euo pipefail
 
 REPO_DIR="${REPO_DIR:-/workspace/FineTree}"
 REPO_URL="${REPO_URL:-https://github.com/DelmedigoA/FineTree.git}"
+CONFIG_PATH="${CONFIG_PATH:-configs/finetune_qwen35a3_vl.yaml}"
 
 if [[ ! -d /workspace ]]; then
   echo "Expected /workspace mount is missing."
@@ -101,6 +102,48 @@ if [[ -n "${stack_needs_repair}" ]]; then
   python -m pip install --upgrade --force-reinstall --no-cache-dir \
     "unsloth" \
     "unsloth_zoo"
+fi
+
+target_base_model=""
+if [[ -f "${CONFIG_PATH}" ]]; then
+  target_base_model="$(awk '/^[[:space:]]*base_model:[[:space:]]*/ {print $2; exit}' "${CONFIG_PATH}")"
+fi
+
+if [[ "${target_base_model}" == "unsloth/Qwen3.5-35B-A3B" ]]; then
+  qwen35_stack_status="$(python - <<'PY'
+import contextlib
+import io
+
+issues = []
+
+try:
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        from transformers.models.auto.configuration_auto import CONFIG_MAPPING
+    if "qwen3_5_moe" not in CONFIG_MAPPING:
+        issues.append("missing-qwen3_5_moe")
+except Exception as exc:  # pragma: no cover
+    issues.append(f"transformers-config:{exc.__class__.__name__}")
+
+try:
+    with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+        import unsloth  # noqa: F401
+except Exception as exc:  # pragma: no cover
+    issues.append(f"unsloth-import:{exc.__class__.__name__}")
+
+print(",".join(issues))
+PY
+)"
+
+  if [[ -n "${qwen35_stack_status}" ]]; then
+    echo "Applying Qwen3.5 MoE stack patch (${qwen35_stack_status})..."
+    python -m pip uninstall -y unsloth unsloth_zoo
+    python -m pip install --no-deps git+https://github.com/unslothai/unsloth-zoo.git
+    python -m pip install --no-deps git+https://github.com/unslothai/unsloth.git
+    python -m pip install --upgrade --no-deps tokenizers trl==0.22.2 unsloth unsloth_zoo
+    python -m pip install --upgrade "transformers==5.2.0"
+  else
+    echo "Qwen3.5 MoE stack already ready; skipping patch."
+  fi
 fi
 
 cat <<'EOF'
