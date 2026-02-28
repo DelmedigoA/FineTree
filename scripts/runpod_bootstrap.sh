@@ -82,6 +82,45 @@ else
   python -m pip install -e . --no-deps
 fi
 
+stack_needs_upgrade="$(python - <<'PY'
+import re
+from importlib import metadata
+
+
+def parse_ver(raw: str) -> tuple[int, int, int]:
+    nums = [int(x) for x in re.findall(r"\d+", raw)]
+    nums += [0, 0, 0]
+    return tuple(nums[:3])
+
+
+required = {
+    "transformers": (5, 2, 0),
+    "trl": (0, 22, 2),
+}
+issues: list[str] = []
+for pkg, min_ver in required.items():
+    try:
+        current = metadata.version(pkg)
+    except metadata.PackageNotFoundError:
+        issues.append(f"{pkg}:missing")
+        continue
+    if parse_ver(current) < min_ver:
+        issues.append(f"{pkg}:{current}")
+
+print(",".join(issues))
+PY
+)"
+
+if [[ -n "${stack_needs_upgrade}" ]]; then
+  echo "Upgrading Qwen3.5-compatible stack (${stack_needs_upgrade})..."
+  python -m pip install --upgrade \
+    "transformers==5.2.0" \
+    "trl==0.22.2" \
+    "unsloth" \
+    "unsloth_zoo" \
+    "tokenizers"
+fi
+
 cat <<'EOF'
 Bootstrap complete.
 Next steps:
