@@ -82,43 +82,30 @@ else
   python -m pip install -e . --no-deps
 fi
 
-stack_needs_upgrade="$(python - <<'PY'
-import re
-from importlib import metadata
+stack_needs_repair="$(python - <<'PY'
+issues = []
 
+try:
+    import unsloth  # noqa: F401
+except Exception as exc:  # pragma: no cover
+    issues.append(f"unsloth-import:{exc.__class__.__name__}")
 
-def parse_ver(raw: str) -> tuple[int, int, int]:
-    nums = [int(x) for x in re.findall(r"\d+", raw)]
-    nums += [0, 0, 0]
-    return tuple(nums[:3])
-
-
-required = {
-    "transformers": (5, 2, 0),
-    "trl": (0, 22, 2),
-}
-issues: list[str] = []
-for pkg, min_ver in required.items():
-    try:
-        current = metadata.version(pkg)
-    except metadata.PackageNotFoundError:
-        issues.append(f"{pkg}:missing")
-        continue
-    if parse_ver(current) < min_ver:
-        issues.append(f"{pkg}:{current}")
+try:
+    from transformers.models.auto.configuration_auto import CONFIG_MAPPING
+    if "qwen3_5_moe" not in CONFIG_MAPPING:
+        issues.append("missing-qwen3_5_moe")
+except Exception as exc:  # pragma: no cover
+    issues.append(f"transformers-config:{exc.__class__.__name__}")
 
 print(",".join(issues))
 PY
 )"
 
-if [[ -n "${stack_needs_upgrade}" ]]; then
-  echo "Upgrading Qwen3.5-compatible stack (${stack_needs_upgrade})..."
-  python -m pip install --upgrade \
-    "transformers==5.2.0" \
-    "trl==0.22.2" \
+if [[ -n "${stack_needs_repair}" ]]; then
+  echo "Repairing Unsloth/Transformers stack (${stack_needs_repair})..."
+  python -m pip install --upgrade --force-reinstall --no-cache-dir \
     "unsloth" \
-    "unsloth_zoo" \
-    "tokenizers"
+    "unsloth_zoo"
 fi
 
 cat <<'EOF'
