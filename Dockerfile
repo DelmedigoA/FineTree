@@ -24,12 +24,14 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
       "google-genai==1.65.0" \
       "PyYAML==6.0.3" \
       "Pillow==12.1.1" \
-      "transformers==4.57.2" \
+      "transformers==5.2.0" \
       "datasets==4.6.0" \
-      "trl==0.23.0" \
+      "trl==0.22.2" \
       "peft==0.18.1" \
       "huggingface_hub==0.36.2" \
-      "unsloth==2025.11.1"
+      "tokenizers" \
+      "unsloth" \
+      "unsloth_zoo"
 
 WORKDIR /workspace
 CMD ["bash", "-lc", "sleep infinity"]
