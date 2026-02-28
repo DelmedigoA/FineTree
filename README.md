@@ -107,6 +107,12 @@ Train adapters:
 finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
 ```
 
+Push existing adapters to Hub (without retraining):
+
+```bash
+finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --push-adapter-only
+```
+
 Validate environment/config without training:
 
 ```bash
@@ -210,6 +216,12 @@ Enable Hub push in config only when needed:
 # push_to_hub.enabled: true
 # push_to_hub.repo_id: <your_org>/<your_model_repo>
 # keep push_to_hub.hf_token: null (use FINETREE_HF_TOKEN env var)
+```
+
+Push adapters after training with current config:
+
+```bash
+finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --push-adapter-only
 ```
 
 ### Controls

@@ -95,6 +95,22 @@ def _push_adapter_folder(cfg: FinetuneConfig, adapter_dir: Path) -> None:
     )
 
 
+def push_existing_adapter(cfg: FinetuneConfig) -> Path:
+    adapter_dir = cfg.run.output_dir / "adapter"
+    if not adapter_dir.is_dir():
+        raise FileNotFoundError(
+            f"Adapter directory not found: {adapter_dir}. Run finetree-ft-train first."
+        )
+    if not cfg.push_to_hub.enabled:
+        raise RuntimeError("push_to_hub.enabled is false in config.")
+    if cfg.push_to_hub.default_artifact not in {"adapters_only", "both"}:
+        raise RuntimeError(
+            "push_to_hub.default_artifact must be adapters_only or both to push adapters."
+        )
+    _push_adapter_folder(cfg, adapter_dir)
+    return adapter_dir
+
+
 def _build_vision_data_collator(collator_cls: Any, model: Any, tokenizer: Any) -> Any:
     try:
         params = inspect.signature(collator_cls).parameters
@@ -296,12 +312,24 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train multimodal Qwen model with Unsloth from FineTree datasets.")
     parser.add_argument("--config", required=True, help="Path to fine-tune YAML config.")
     parser.add_argument("--dry-run", action="store_true", help="Validate environment and config without training.")
-    return parser.parse_args(argv)
+    parser.add_argument(
+        "--push-adapter-only",
+        action="store_true",
+        help="Push an existing adapter folder using push_to_hub config without running training.",
+    )
+    args = parser.parse_args(argv)
+    if args.dry_run and args.push_adapter_only:
+        parser.error("--dry-run and --push-adapter-only cannot be used together.")
+    return args
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     cfg = load_finetune_config(args.config)
+    if args.push_adapter_only:
+        adapter_dir = push_existing_adapter(cfg)
+        print(f"Adapter push complete. Source directory: {adapter_dir}")
+        return 0
     adapter_dir = run_training(cfg, dry_run=bool(args.dry_run))
     if args.dry_run:
         print(f"Dry-run successful. Adapter output path: {adapter_dir}")
@@ -310,7 +338,7 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-__all__ = ["run_training", "main"]
+__all__ = ["run_training", "push_existing_adapter", "main"]
 
 
 if __name__ == "__main__":
