@@ -26,6 +26,7 @@ Commands:
   stop                  Stop background service started by this tool.
   status                Show process/port/health summary.
   check                 Run extended diagnostics (GPU, disk, health, auth).
+  flow-check [config]   Validate pod deployment flow/config logic.
   warmup [args...]      Run local warmup against 127.0.0.1:6666.
   logs [n]              Tail service log (default 120 lines).
   logs-find <id> [n]    Show recent log lines around an error id (e.g. poderr-abc123).
@@ -44,6 +45,121 @@ ensure_state_dir() {
 
 have_cmd() {
   command -v "$1" >/dev/null 2>&1
+}
+
+config_inference_value() {
+  local config_path="$1"
+  local key="$2"
+  awk -v wanted_key="${key}" '
+    BEGIN { in_inference = 0 }
+    /^inference:[[:space:]]*$/ { in_inference = 1; next }
+    in_inference && /^[^[:space:]]/ { in_inference = 0 }
+    in_inference {
+      line = $0
+      sub(/^[[:space:]]+/, "", line)
+      if (index(line, wanted_key ":") == 1) {
+        value = substr(line, length(wanted_key) + 2)
+        sub(/^[[:space:]]+/, "", value)
+        sub(/[[:space:]]+#.*$/, "", value)
+        gsub(/^"/, "", value)
+        gsub(/"$/, "", value)
+        gsub(/^'\''/, "", value)
+        gsub(/'\''$/, "", value)
+        print value
+        exit
+      }
+    }
+  ' "${config_path}"
+}
+
+is_null_like() {
+  local v="${1:-}"
+  [[ -z "${v}" || "${v}" == "null" || "${v}" == "None" || "${v}" == "~" ]]
+}
+
+flow_check() {
+  local config="${1:-${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_8bit.yaml}}"
+  local errors=0
+  local warnings=0
+
+  if [[ ! -f "${config}" ]]; then
+    log "FLOW-ERROR missing config file: ${config}"
+    return 1
+  fi
+
+  local backend endpoint_base_url model_path endpoint_model adapter_path api_key
+  backend="$(config_inference_value "${config}" "backend")"
+  endpoint_base_url="$(config_inference_value "${config}" "endpoint_base_url")"
+  model_path="$(config_inference_value "${config}" "model_path")"
+  endpoint_model="$(config_inference_value "${config}" "endpoint_model")"
+  adapter_path="$(config_inference_value "${config}" "adapter_path")"
+  api_key="${FINETREE_POD_API_KEY:-}"
+
+  log "flow-check config=${config}"
+  log "flow-check backend=${backend:-<missing>} model_path=${model_path:-<missing>} endpoint_model=${endpoint_model:-<missing>}"
+  log "flow-check endpoint_base_url=${endpoint_base_url:-<missing>} adapter_path=${adapter_path:-<missing>}"
+
+  if [[ -z "${backend}" ]]; then
+    log "FLOW-ERROR inference.backend is missing."
+    errors=$((errors + 1))
+  fi
+
+  if [[ -z "${api_key}" ]]; then
+    log "FLOW-ERROR FINETREE_POD_API_KEY is not set."
+    errors=$((errors + 1))
+  fi
+
+  case "${backend}" in
+    local)
+      if is_null_like "${model_path}" && [[ -z "${FINETREE_QWEN_MODEL:-}" ]]; then
+        log "FLOW-ERROR local backend requires inference.model_path or FINETREE_QWEN_MODEL."
+        errors=$((errors + 1))
+      fi
+      if ! is_null_like "${endpoint_base_url}"; then
+        log "FLOW-ERROR local backend should not set inference.endpoint_base_url."
+        errors=$((errors + 1))
+      fi
+      if is_null_like "${adapter_path}" && [[ -z "${FINETREE_ADAPTER_REF:-}" ]]; then
+        log "FLOW-WARN no adapter configured (inference.adapter_path and FINETREE_ADAPTER_REF are empty)."
+        warnings=$((warnings + 1))
+      fi
+      ;;
+    runpod_openai)
+      if is_null_like "${endpoint_base_url}"; then
+        log "FLOW-ERROR runpod_openai backend requires inference.endpoint_base_url."
+        errors=$((errors + 1))
+      fi
+      if [[ "${endpoint_base_url}" == *"/chat/completions" ]]; then
+        log "FLOW-ERROR endpoint_base_url must be OpenAI base URL ending with /v1, not /chat/completions."
+        errors=$((errors + 1))
+      fi
+      if [[ "${endpoint_base_url}" == *"127.0.0.1:6666"* || "${endpoint_base_url}" == *"localhost:6666"* ]]; then
+        log "FLOW-ERROR runpod_openai endpoint points to local pod API (recursive self-call)."
+        errors=$((errors + 1))
+      fi
+      ;;
+    runpod_queue)
+      if is_null_like "${endpoint_base_url}"; then
+        log "FLOW-ERROR runpod_queue backend requires inference.endpoint_base_url."
+        errors=$((errors + 1))
+      fi
+      if [[ "${endpoint_base_url}" == *"/openai/v1"* || "${endpoint_base_url}" == *"/chat/completions" ]]; then
+        log "FLOW-ERROR runpod_queue must target queue endpoint base (for /run and /status), not OpenAI URL."
+        errors=$((errors + 1))
+      fi
+      ;;
+    *)
+      log "FLOW-ERROR unsupported inference.backend=${backend}"
+      errors=$((errors + 1))
+      ;;
+  esac
+
+  if [[ "${errors}" -gt 0 ]]; then
+    log "flow-check result=FAIL errors=${errors} warnings=${warnings}"
+    return 1
+  fi
+  log "flow-check result=PASS warnings=${warnings}"
+  return 0
 }
 
 pid_from_file() {
@@ -172,6 +288,7 @@ check_service() {
   df -h /runpod-volume 2>/dev/null || true
 
   show_models_auth
+  flow_check "${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_8bit.yaml}"
 }
 
 warmup_local() {
@@ -240,6 +357,7 @@ main() {
     stop) stop_service ;;
     status) status_service ;;
     check) check_service ;;
+    flow-check) flow_check "$@" ;;
     warmup) warmup_local "$@" ;;
     logs) tail_logs "$@" ;;
     logs-find) find_log_error "$@" ;;
