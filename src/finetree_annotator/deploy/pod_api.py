@@ -227,6 +227,7 @@ def create_app(
         req_id = f"chatcmpl-{secrets.token_hex(8)}"
         stream = bool(payload.get("stream"))
         model_name, inference_model_override = _resolve_model_selection(payload.get("model"), model_id)
+        max_tokens_int: Optional[int] = None
         max_tokens = payload.get("max_tokens")
         if max_tokens is not None:
             try:
@@ -254,6 +255,7 @@ def create_app(
                         prompt=prompt,
                         model=inference_model_override,
                         config_path=cfg_path,
+                        max_new_tokens=max_tokens_int,
                     ):
                         if not token:
                             continue
@@ -282,6 +284,7 @@ def create_app(
                     prompt=prompt,
                     model=inference_model_override,
                     config_path=cfg_path,
+                    max_new_tokens=max_tokens_int,
                 )
 
         try:

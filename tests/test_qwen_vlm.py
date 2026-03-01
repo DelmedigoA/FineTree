@@ -36,6 +36,24 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     assert extraction.facts[0].bbox.x == 1
 
 
+def test_generate_content_from_image_passes_max_new_tokens(monkeypatch) -> None:
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        return iter(["ok"])
+
+    monkeypatch.setattr(qwen_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+    output = qwen_vlm.generate_content_from_image(
+        image_path=Path("/tmp/fake.png"),
+        prompt="hello",
+        max_new_tokens=7,
+    )
+
+    assert output == "ok"
+    assert seen["max_new_tokens"] == 7
+
+
 def test_resolve_adapter_reference_supports_hub_repo() -> None:
     adapter_ref, is_local = qwen_vlm._resolve_adapter_reference("asafd60/qwen35-test")
     assert adapter_ref == "asafd60/qwen35-test"
@@ -318,6 +336,81 @@ def test_stream_content_from_image_uses_runpod_endpoint_backend(tmp_path: Path, 
     )
     assert output == "hello world"
     assert seen["endpoint"] == "https://api.runpod.ai/v2/abc/openai/v1/chat/completions"
+    payload = seen["json"]  # type: ignore[assignment]
+    assert payload["max_tokens"] == 120
+    assert "temperature" not in payload
+    assert "top_p" not in payload
+
+
+def test_stream_content_from_image_runpod_endpoint_adds_sampling_fields_when_enabled(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "backend": "runpod_openai",
+                "endpoint_base_url": "https://api.runpod.ai/v2/abc/openai/v1",
+                "endpoint_api_key": "rp_test",
+                "endpoint_model": "qwenasaf",
+                "do_sample": True,
+                "temperature": 0.2,
+                "top_p": 0.8,
+            },
+        }
+    )
+
+    monkeypatch.setattr(qwen_vlm, "_resolve_config_path", lambda _cfg: tmp_path / "cfg.yaml")
+    monkeypatch.setattr(qwen_vlm, "load_finetune_config", lambda _path: cfg)
+
+    seen: dict[str, object] = {}
+
+    class _Response:
+        status_code = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def iter_lines(self):
+            return iter(["data: [DONE]"])
+
+        def read(self):
+            return b""
+
+    class _Client:
+        def __init__(self, timeout):
+            seen["timeout"] = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def stream(self, method, endpoint, headers=None, json=None):
+            seen["json"] = json
+            return _Response()
+
+    fake_httpx = types.ModuleType("httpx")
+    fake_httpx.Client = _Client
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
+
+    output = "".join(
+        qwen_vlm.stream_content_from_image(
+            image_path=image_path,
+            prompt="test prompt",
+            model=None,
+            config_path=str(tmp_path / "cfg.yaml"),
+        )
+    )
+    assert output == ""
+    payload = seen["json"]  # type: ignore[assignment]
+    assert payload["temperature"] == 0.2
+    assert payload["top_p"] == 0.8
 
 
 def test_stream_content_from_image_uses_runpod_queue_backend(tmp_path: Path, monkeypatch) -> None:
@@ -390,6 +483,7 @@ def test_stream_content_from_image_uses_runpod_queue_backend(tmp_path: Path, mon
             prompt="test prompt",
             model=None,
             config_path=str(tmp_path / "cfg.yaml"),
+            max_new_tokens=17,
         )
     )
 
@@ -406,6 +500,7 @@ def test_stream_content_from_image_uses_runpod_queue_backend(tmp_path: Path, mon
     payload_input = seen["run_json"]["input"]  # type: ignore[index]
     assert payload_input["response_mode"] == "text"
     assert payload_input["model"] == "qwenasaf"
+    assert payload_input["max_tokens"] == 17
     assert isinstance(payload_input["image_base64"], str)
 
 
