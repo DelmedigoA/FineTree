@@ -5,8 +5,23 @@ import sys
 import types
 from pathlib import Path
 
+import pytest
+
 from finetree_annotator import qwen_vlm
 from finetree_annotator.finetune.config import FinetuneConfig
+
+
+@pytest.fixture(autouse=True)
+def _clear_qwen_env(monkeypatch) -> None:
+    for name in (
+        "FINETREE_QWEN_MODEL",
+        "FINETREE_ADAPTER_REF",
+        "FINETREE_QWEN_ADAPTER_PATH",
+        "FINETREE_QWEN_QUANTIZATION",
+        "FINETREE_QWEN_LOAD_IN_4BIT",
+        "FINETREE_QWEN_CONFIG",
+    ):
+        monkeypatch.delenv(name, raising=False)
 
 
 def test_resolve_config_path_uses_env(tmp_path: Path, monkeypatch) -> None:
