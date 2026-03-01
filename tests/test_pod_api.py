@@ -28,6 +28,26 @@ def test_extract_prompt_and_image_url_supports_openai_multimodal_shape() -> None
     assert image_url == "data:image/png;base64,AAAA"
 
 
+def test_extract_prompt_and_image_url_includes_system_text() -> None:
+    prompt, image_url = pod_api._extract_prompt_and_image_url(
+        {
+            "messages": [
+                {"role": "system", "content": "You are strict."},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": "Describe this"},
+                        {"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}},
+                    ],
+                },
+            ]
+        }
+    )
+    assert "System instructions:\nYou are strict." in prompt
+    assert "User request:\nDescribe this" in prompt
+    assert image_url == "data:image/png;base64,AAAA"
+
+
 def test_extract_prompt_and_image_url_rejects_missing_image() -> None:
     with pytest.raises(ValueError):
         pod_api._extract_prompt_and_image_url(
@@ -40,6 +60,15 @@ def test_extract_prompt_and_image_url_rejects_missing_image() -> None:
                 ]
             }
         )
+
+
+def test_extract_sampling_controls_parses_and_enables_sampling() -> None:
+    do_sample, temperature, top_p = pod_api._extract_sampling_controls(
+        {"temperature": 0.4, "top_p": 0.8}
+    )
+    assert do_sample is True
+    assert temperature == 0.4
+    assert top_p == 0.8
 
 
 def test_image_path_from_data_uri_writes_file(tmp_path: Path) -> None:
@@ -120,6 +149,45 @@ def test_chat_completions_passes_max_tokens_to_inference(monkeypatch) -> None:
 
     assert response.status_code == 200
     assert seen["max_new_tokens"] == 13
+
+
+def test_chat_completions_passes_sampling_to_inference(monkeypatch) -> None:
+    seen: dict[str, object] = {}
+
+    def _fake_generate_content_from_image(**kwargs) -> str:
+        seen.update(kwargs)
+        return "ok"
+
+    monkeypatch.setattr(pod_api, "generate_content_from_image", _fake_generate_content_from_image)
+    app = pod_api.create_app(api_key="test-key")
+    route = next(r for r in app.routes if getattr(r, "path", "") == "/v1/chat/completions")
+    image_data_uri = "data:image/png;base64," + base64.b64encode(b"\x89PNG\r\n\x1a\n").decode("ascii")
+
+    response = asyncio.run(
+        route.endpoint(
+            payload={
+                "model": "qwen-gt",
+                "max_tokens": 13,
+                "temperature": 0.6,
+                "top_p": 0.7,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "hello"},
+                            {"type": "image_url", "image_url": {"url": image_data_uri}},
+                        ],
+                    }
+                ],
+            },
+            authorization="Bearer test-key",
+        )
+    )
+
+    assert response.status_code == 200
+    assert seen["do_sample"] is True
+    assert seen["temperature"] == 0.6
+    assert seen["top_p"] == 0.7
 
 
 def test_chat_completions_internal_error_returns_error_id(monkeypatch) -> None:

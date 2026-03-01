@@ -16,10 +16,10 @@ def _build_child_env() -> dict[str, str]:
 
 
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Start FineTree Pod API (6666) + Gradio (5555).")
+    parser = argparse.ArgumentParser(description="Start FineTree Pod API (6666) + Playground (5555).")
     parser.add_argument("--config", default=None, help="FineTree YAML config path.")
     parser.add_argument("--api-port", type=int, default=6666, help="Pod API port.")
-    parser.add_argument("--gradio-port", type=int, default=5555, help="Gradio app port.")
+    parser.add_argument("--gradio-port", type=int, default=5555, help="Playground app port.")
     parser.add_argument(
         "--max-concurrency",
         type=int,

@@ -361,7 +361,7 @@ finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_local_8bit.yaml
 This starts:
 
 - API on `6666` (`/v1/chat/completions`, supports streaming)
-- Gradio test app on `5555`
+- Playground UI on `5555` (system prompt + generation params + image upload)
 
 Required Pod auth env vars:
 

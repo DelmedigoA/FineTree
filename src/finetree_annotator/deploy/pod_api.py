@@ -52,17 +52,20 @@ def _extract_prompt_and_image_url(payload: Dict[str, Any]) -> tuple[str, str]:
     if not isinstance(messages, list) or not messages:
         raise ValueError("messages must be a non-empty list.")
 
-    prompt_parts: list[str] = []
+    system_parts: list[str] = []
+    user_parts: list[str] = []
     image_url: Optional[str] = None
     for message in messages:
         if not isinstance(message, dict):
             continue
-        if str(message.get("role") or "").strip().lower() != "user":
-            continue
+        role = str(message.get("role") or "").strip().lower()
         content = message.get("content")
         if isinstance(content, str):
             if content.strip():
-                prompt_parts.append(content.strip())
+                if role == "system":
+                    system_parts.append(content.strip())
+                elif role == "user":
+                    user_parts.append(content.strip())
             continue
         if not isinstance(content, list):
             continue
@@ -73,19 +76,64 @@ def _extract_prompt_and_image_url(payload: Dict[str, Any]) -> tuple[str, str]:
             if item_type == "text":
                 text = item.get("text")
                 if isinstance(text, str) and text.strip():
-                    prompt_parts.append(text.strip())
+                    if role == "system":
+                        system_parts.append(text.strip())
+                    elif role == "user":
+                        user_parts.append(text.strip())
                 continue
-            if item_type == "image_url":
+            if role == "user" and item_type == "image_url":
                 raw_image_url = item.get("image_url")
                 if isinstance(raw_image_url, dict):
                     url_value = raw_image_url.get("url")
                     if isinstance(url_value, str) and url_value.strip():
                         image_url = url_value.strip()
 
-    prompt = "\n".join(part for part in prompt_parts if part).strip() or DEFAULT_PROMPT
+    user_prompt = "\n".join(part for part in user_parts if part).strip() or DEFAULT_PROMPT
+    if system_parts:
+        system_prompt = "\n".join(part for part in system_parts if part).strip()
+        prompt = f"System instructions:\n{system_prompt}\n\nUser request:\n{user_prompt}"
+    else:
+        prompt = user_prompt
+
     if not image_url:
         raise ValueError("messages must include user content with an image_url item.")
     return prompt, image_url
+
+
+def _extract_sampling_controls(payload: Dict[str, Any]) -> tuple[Optional[bool], Optional[float], Optional[float]]:
+    do_sample_raw = payload.get("do_sample")
+    temperature_raw = payload.get("temperature")
+    top_p_raw = payload.get("top_p")
+
+    do_sample: Optional[bool] = None
+    if do_sample_raw is not None:
+        if isinstance(do_sample_raw, bool):
+            do_sample = do_sample_raw
+        else:
+            raise ValueError("do_sample must be a boolean when provided.")
+
+    temperature: Optional[float] = None
+    if temperature_raw is not None:
+        try:
+            temperature = float(temperature_raw)
+        except Exception as exc:
+            raise ValueError("temperature must be numeric when provided.") from exc
+        if temperature < 0.0:
+            raise ValueError("temperature must be >= 0.")
+
+    top_p: Optional[float] = None
+    if top_p_raw is not None:
+        try:
+            top_p = float(top_p_raw)
+        except Exception as exc:
+            raise ValueError("top_p must be numeric when provided.") from exc
+        if top_p <= 0.0 or top_p > 1.0:
+            raise ValueError("top_p must be in the range (0, 1].")
+
+    if do_sample is None and temperature is not None and temperature > 0.0:
+        do_sample = True
+
+    return do_sample, temperature, top_p
 
 
 def _build_completion_chunk(
@@ -247,6 +295,11 @@ def create_app(
         except ValueError as exc:
             _release_lease()
             raise HTTPException(status_code=400, detail=str(exc))
+        try:
+            do_sample_override, temperature_override, top_p_override = _extract_sampling_controls(payload)
+        except ValueError as exc:
+            _release_lease()
+            raise HTTPException(status_code=400, detail=str(exc))
 
         def _stream_sse() -> Iterator[bytes]:
             try:
@@ -259,6 +312,9 @@ def create_app(
                         model=inference_model_override,
                         config_path=cfg_path,
                         max_new_tokens=max_tokens_int,
+                        do_sample=do_sample_override,
+                        temperature=temperature_override,
+                        top_p=top_p_override,
                     ):
                         if not token:
                             continue
@@ -303,6 +359,9 @@ def create_app(
                     model=inference_model_override,
                     config_path=cfg_path,
                     max_new_tokens=max_tokens_int,
+                    do_sample=do_sample_override,
+                    temperature=temperature_override,
+                    top_p=top_p_override,
                 )
 
         try:
