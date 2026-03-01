@@ -107,6 +107,19 @@ def _load_with_optional_token(load_fn: Any, ref: str, token: Optional[str], **kw
         raise
 
 
+def _is_missing_flash_attn_error(exc: BaseException) -> bool:
+    message = str(exc).lower()
+    if not message:
+        return False
+    candidates = (
+        "flash_attn",
+        "flashattention2",
+        "flash attention 2",
+        "flash attention",
+    )
+    return any(token in message for token in candidates)
+
+
 def _env_flag(name: str) -> Optional[bool]:
     raw = str(os.getenv(name) or "").strip().lower()
     if not raw:
@@ -204,7 +217,22 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
     elif quant_mode == "bnb_8bit":
         model_kwargs["load_in_8bit"] = True
 
-    model = _load_with_optional_token(AutoModelForImageTextToText.from_pretrained, model_name, hf_token, **model_kwargs)
+    try:
+        model = _load_with_optional_token(AutoModelForImageTextToText.from_pretrained, model_name, hf_token, **model_kwargs)
+    except ImportError as exc:
+        requested_attn = str(model_kwargs.get("attn_implementation") or "").strip().lower()
+        if requested_attn != "flash_attention_2" or bool(cfg.inference.require_flash_attention):
+            raise
+        if not _is_missing_flash_attn_error(exc):
+            raise
+        fallback_model_kwargs = dict(model_kwargs)
+        fallback_model_kwargs["attn_implementation"] = "sdpa"
+        model = _load_with_optional_token(
+            AutoModelForImageTextToText.from_pretrained,
+            model_name,
+            hf_token,
+            **fallback_model_kwargs,
+        )
     processor = _load_with_optional_token(
         AutoProcessor.from_pretrained,
         model_name,
