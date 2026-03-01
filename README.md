@@ -331,14 +331,15 @@ docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.serverles
 
 Serverless queue flow remains supported and unchanged. Pod services are an additional path.
 
-Pod Qwen config template:
+Pod Qwen config templates:
 
-- `configs/qwen_ui_runpod_pod_openai.yaml`
+- `configs/qwen_ui_runpod_pod_openai.yaml` (proxy mode to external OpenAI-compatible endpoint)
+- `configs/qwen_ui_runpod_pod_local_8bit.yaml` (local model loading, 8-bit quantized)
 
 Start both Pod services in one process group:
 
 ```bash
-finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_openai.yaml
+finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_local_8bit.yaml
 ```
 
 This starts:
@@ -352,7 +353,12 @@ Required Pod auth env vars:
 export FINETREE_POD_API_KEY=<token-for-6666>
 export FINETREE_GRADIO_USER=<gradio-user>
 export FINETREE_GRADIO_PASS=<gradio-pass>
+export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>
+export FINETREE_QWEN_QUANTIZATION=bnb_8bit
 ```
+
+`FINETREE_ADAPTER_REF` overrides `inference.adapter_path` for local pod inference and is the recommended
+way to point the pod to a fine-tuned LoRA adapter repo.
 
 Build and push a Pod image:
 
@@ -361,6 +367,18 @@ export IMAGE_NAME=<registry>/<namespace>/finetree-pod
 export IMAGE_TAG=latest
 docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.pod -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
 ```
+
+Recommended post-deploy warmup flow (first request can take time for HF download + weight materialization):
+
+```bash
+git clone https://github.com/DelmedigoA/FineTree.git
+cd FineTree
+export POD_ID=<your-pod-id>
+export FINETREE_POD_API_KEY=<your-pod-api-key>
+./scripts/runpod_api_warmup.sh --pod-id "${POD_ID}" --max-tokens 10
+```
+
+The warmup script retries until the pod can return a real `/v1/chat/completions` response.
 
 Export quantized artifacts (default 8-bit):
 
