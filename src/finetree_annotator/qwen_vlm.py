@@ -101,9 +101,11 @@ def _load_with_optional_token(load_fn: Any, ref: str, token: Optional[str], **kw
         if token:
             return load_fn(ref, token=token, **kwargs)
         return load_fn(ref, **kwargs)
-    except TypeError:
+    except TypeError as exc:
         if token:
-            return load_fn(ref, use_auth_token=token, **kwargs)
+            message = str(exc)
+            if "token" in message or "use_auth_token" in message:
+                return load_fn(ref, use_auth_token=token, **kwargs)
         raise
 
 
@@ -189,6 +191,27 @@ def _ensure_flash_attention(cfg: FinetuneConfig, model_obj: Any) -> None:
     )
 
 
+def _build_quantization_kwargs(cfg: FinetuneConfig, quant_mode: str, transformers_module: Any) -> dict[str, Any]:
+    if quant_mode not in {"bnb_4bit", "bnb_8bit"}:
+        return {}
+
+    bits_and_bytes_config_cls = getattr(transformers_module, "BitsAndBytesConfig", None)
+    if bits_and_bytes_config_cls is None:
+        if quant_mode == "bnb_4bit":
+            return {"load_in_4bit": True}
+        return {"load_in_8bit": True}
+
+    bnb_kwargs: dict[str, Any] = {}
+    if quant_mode == "bnb_4bit":
+        bnb_kwargs["load_in_4bit"] = True
+        compute_dtype = _dtype_from_name(cfg.inference.torch_dtype)
+        if compute_dtype is not None:
+            bnb_kwargs["bnb_4bit_compute_dtype"] = compute_dtype
+    else:
+        bnb_kwargs["load_in_8bit"] = True
+    return {"quantization_config": bits_and_bytes_config_cls(**bnb_kwargs)}
+
+
 def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
     _ensure_cuda()
 
@@ -202,9 +225,12 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
     hf_token = resolve_hf_token_from_env()
 
     try:
-        from transformers import AutoModelForImageTextToText, AutoProcessor
+        import transformers
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("transformers is required for Qwen GT local inference.") from exc
+
+    auto_model_cls = getattr(transformers, "AutoModelForImageTextToText")
+    auto_processor_cls = getattr(transformers, "AutoProcessor")
 
     model_kwargs: dict[str, Any] = {
         "trust_remote_code": bool(cfg.inference.trust_remote_code),
@@ -212,13 +238,10 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
         "torch_dtype": _dtype_from_name(cfg.inference.torch_dtype),
         "attn_implementation": str(cfg.inference.attn_implementation),
     }
-    if quant_mode == "bnb_4bit":
-        model_kwargs["load_in_4bit"] = True
-    elif quant_mode == "bnb_8bit":
-        model_kwargs["load_in_8bit"] = True
+    model_kwargs.update(_build_quantization_kwargs(cfg, quant_mode, transformers))
 
     try:
-        model = _load_with_optional_token(AutoModelForImageTextToText.from_pretrained, model_name, hf_token, **model_kwargs)
+        model = _load_with_optional_token(auto_model_cls.from_pretrained, model_name, hf_token, **model_kwargs)
     except ImportError as exc:
         requested_attn = str(model_kwargs.get("attn_implementation") or "").strip().lower()
         if requested_attn != "flash_attention_2" or bool(cfg.inference.require_flash_attention):
@@ -228,13 +251,13 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
         fallback_model_kwargs = dict(model_kwargs)
         fallback_model_kwargs["attn_implementation"] = "sdpa"
         model = _load_with_optional_token(
-            AutoModelForImageTextToText.from_pretrained,
+            auto_model_cls.from_pretrained,
             model_name,
             hf_token,
             **fallback_model_kwargs,
         )
     processor = _load_with_optional_token(
-        AutoProcessor.from_pretrained,
+        auto_processor_cls.from_pretrained,
         model_name,
         hf_token,
         trust_remote_code=bool(cfg.inference.trust_remote_code),
