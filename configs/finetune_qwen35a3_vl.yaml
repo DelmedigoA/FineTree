@@ -17,7 +17,7 @@ data:
   output_val_jsonl: data/finetune/val.jsonl
   split_strategy: by_document
   val_ratio: 0.1
-  include_empty_pages: false
+  include_empty_pages: true
   bbox_policy: include_if_present
   bbox_space: pixel
   target_schema: finetree_exact_json
@@ -52,6 +52,15 @@ training:
   logging_steps: 10
   save_strategy: steps
   save_steps: 100
+  eval_strategy: steps
+  eval_steps: 100
+  load_best_model_at_end: true
+  metric_for_best_model: eval_loss
+  greater_is_better: false
+  save_total_limit: 3
+  logging_first_step: true
+  require_val_set: true
+  compute_token_accuracy: true
   bf16: true
   fp16: false
   report_to: none
@@ -67,10 +76,19 @@ push_to_hub:
   hf_token: null
   hf_token_env: FINETREE_HF_TOKEN
   default_artifact: adapters_only
+  upload_training_logs: false
+  training_logs_path_in_repo: training_logs
 
 inference:
+  backend: local
   model_path: null
   adapter_path: null
+  endpoint_base_url: null
+  endpoint_status_base_url: null
+  endpoint_api_key: null
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: null
+  endpoint_timeout_sec: 180
   parser_mode: streaming_page_extraction
   max_new_tokens: 4096
   temperature: 0.0

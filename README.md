@@ -249,6 +249,28 @@ inference:
   endpoint_model: qwenasaf
 ```
 
+To use PyQt Qwen GT via RunPod Serverless queue endpoint (`/run` + `/status`), set:
+
+```yaml
+inference:
+  backend: runpod_queue
+  endpoint_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: Qwen/Qwen3.5-35B-A3B
+  endpoint_timeout_sec: 600
+```
+
+Template for original (non-finetuned) Qwen:
+
+- `configs/qwen_ui_runpod_queue_qwen35_original.template.yaml`
+
+Optional override when status polling is on a different URL:
+
+```yaml
+inference:
+  endpoint_status_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>/status
+```
+
 Enable Hub push in config only when needed:
 
 ```bash
@@ -270,6 +292,7 @@ This repo now includes a queue-style RunPod Serverless worker implementation:
 - module: `src/finetree_annotator/deploy/runpod_serverless_worker.py`
 - CLI entrypoint: `finetree-runpod-worker`
 - sample payload: `deploy/runpod/test_input.json`
+- worker is configured for streaming (`yield`) with `return_aggregate_stream=true`
 
 Local payload test:
 
@@ -288,6 +311,13 @@ Recommended RunPod endpoint container command:
 ```bash
 finetree-runpod-worker --serve
 ```
+
+For true token streaming in UI, the endpoint must expose both:
+
+- `POST /run` (submit job)
+- `GET /stream/{job_id}` (stream events)
+
+The UI queue backend uses `/stream/{job_id}` first and falls back to `/status/{job_id}` when streaming is unavailable.
 
 Build and push a Serverless worker image:
 

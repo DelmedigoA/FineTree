@@ -28,7 +28,7 @@ class DataConfig(BaseModel):
     output_val_jsonl: Path = Path("data/finetune/val.jsonl")
     split_strategy: Literal["by_document"] = "by_document"
     val_ratio: float = 0.1
-    include_empty_pages: bool = False
+    include_empty_pages: bool = True
     bbox_policy: Literal["include_if_present", "drop_all"] = "include_if_present"
     bbox_space: Literal["pixel", "normalized_1000"] = "pixel"
     target_schema: Literal["finetree_exact_json"] = "finetree_exact_json"
@@ -74,6 +74,15 @@ class TrainingConfig(BaseModel):
     logging_steps: int = 10
     save_strategy: str = "steps"
     save_steps: int = 100
+    eval_strategy: Literal["no", "steps", "epoch"] = "steps"
+    eval_steps: int = 100
+    load_best_model_at_end: bool = True
+    metric_for_best_model: str = "eval_loss"
+    greater_is_better: bool = False
+    save_total_limit: int = 3
+    logging_first_step: bool = True
+    require_val_set: bool = True
+    compute_token_accuracy: bool = True
     bf16: bool = True
     fp16: bool = False
     report_to: str = "none"
@@ -92,6 +101,8 @@ class PushToHubConfig(BaseModel):
     hf_token: Optional[str] = None
     hf_token_env: str = "FINETREE_HF_TOKEN"
     default_artifact: Literal["adapters_only", "merged_only", "both"] = "adapters_only"
+    upload_training_logs: bool = False
+    training_logs_path_in_repo: str = "training_logs"
 
     @model_validator(mode="after")
     def _validate_enabled(self) -> "PushToHubConfig":
@@ -106,8 +117,15 @@ class PushToHubConfig(BaseModel):
 
 
 class InferenceConfig(BaseModel):
+    backend: Literal["local", "runpod_openai", "runpod_queue"] = "local"
     model_path: Optional[str] = None
     adapter_path: Optional[str] = None
+    endpoint_base_url: Optional[str] = None
+    endpoint_status_base_url: Optional[str] = None
+    endpoint_api_key: Optional[str] = None
+    endpoint_api_key_env: str = "RUNPOD_API_KEY"
+    endpoint_model: Optional[str] = None
+    endpoint_timeout_sec: int = 180
     parser_mode: Literal["streaming_page_extraction"] = "streaming_page_extraction"
     max_new_tokens: int = 4096
     temperature: float = 0.0

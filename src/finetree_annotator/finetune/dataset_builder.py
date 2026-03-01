@@ -49,6 +49,25 @@ def _doc_in_val_split(doc_id: str, val_ratio: float) -> bool:
     return bucket < val_ratio
 
 
+def _doc_split_map(annotation_files: List[Path], val_ratio: float) -> Dict[str, bool]:
+    doc_ids = [p.stem for p in annotation_files]
+    if not doc_ids or val_ratio <= 0.0:
+        return {doc_id: False for doc_id in doc_ids}
+
+    if len(doc_ids) == 1:
+        # Keep single-doc datasets in train by default. Validation requirement is
+        # enforced later in training when needed.
+        return {doc_ids[0]: False}
+
+    in_val = {doc_id for doc_id in doc_ids if _doc_in_val_split(doc_id, val_ratio)}
+    if not in_val:
+        in_val = {sorted(doc_ids)[0]}
+    if len(in_val) == len(doc_ids):
+        in_val.remove(sorted(doc_ids)[0])
+
+    return {doc_id: (doc_id in in_val) for doc_id in doc_ids}
+
+
 def _resolve_page_image_path(
     cfg: FinetuneConfig,
     annotation_path: Path,
@@ -85,16 +104,18 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
     stats = DatasetBuildStats()
 
     prompt_template = _resolve_prompt_template(cfg)
+    annotation_files = list(_iter_annotation_files(cfg.data.annotations_glob))
+    split_map = _doc_split_map(annotation_files, cfg.data.val_ratio)
     train_path = cfg.data.output_train_jsonl
     val_path = cfg.data.output_val_jsonl
     train_path.parent.mkdir(parents=True, exist_ok=True)
     val_path.parent.mkdir(parents=True, exist_ok=True)
 
     with train_path.open("w", encoding="utf-8") as train_f, val_path.open("w", encoding="utf-8") as val_f:
-        for annotation_path in _iter_annotation_files(cfg.data.annotations_glob):
+        for annotation_path in annotation_files:
             stats.annotation_files += 1
             doc_id = annotation_path.stem
-            is_val_doc = _doc_in_val_split(doc_id, cfg.data.val_ratio)
+            is_val_doc = bool(split_map.get(doc_id, False))
             out_f = val_f if is_val_doc else train_f
 
             payload = json.loads(annotation_path.read_text(encoding="utf-8"))

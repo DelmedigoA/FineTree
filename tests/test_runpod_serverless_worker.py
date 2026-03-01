@@ -93,3 +93,34 @@ def test_run_inference_rejects_invalid_response_mode(tmp_path: Path) -> None:
     image_path.write_bytes(b"fake")
     with pytest.raises(ValueError):
         worker.run_inference({"image_path": str(image_path), "response_mode": "invalid"})
+
+
+def test_stream_inference_text_mode_yields_chunks(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"fake")
+
+    def _fake_stream_content_from_image(
+        image_path: Path,
+        prompt: str,
+        model: str | None = None,
+        config_path: str | None = None,
+    ):
+        yield "hello "
+        yield "world"
+
+    monkeypatch.setattr(worker, "stream_content_from_image", _fake_stream_content_from_image)
+
+    chunks = list(
+        worker.stream_inference(
+            {
+                "image_path": str(image_path),
+                "response_mode": "text",
+                "prompt": "p",
+            }
+        )
+    )
+
+    assert chunks == [
+        {"ok": True, "mode": "text", "chunk": "hello "},
+        {"ok": True, "mode": "text", "chunk": "world"},
+    ]

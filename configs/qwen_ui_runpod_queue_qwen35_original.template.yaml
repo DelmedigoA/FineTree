@@ -1,0 +1,14 @@
+inference:
+  backend: runpod_queue
+  endpoint_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>
+  endpoint_status_base_url: null
+  endpoint_api_key: null
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: Qwen/Qwen3.5-35B-A3B
+  model_path: Qwen/Qwen3.5-35B-A3B
+  adapter_path: null
+  endpoint_timeout_sec: 600
+  max_new_tokens: 120
+  temperature: 0.0
+  top_p: 0.95
+  do_sample: false

@@ -12,6 +12,24 @@ WORKDIR /workspace/FineTree
 COPY . /workspace/FineTree
 
 RUN python -m pip install --upgrade pip setuptools wheel && \
-    python -m pip install -e . --no-build-isolation
+    python -m pip install -e . --no-deps --no-build-isolation && \
+    python -m pip install \
+      "pydantic==2.12.5" \
+      "PyYAML==6.0.3" \
+      "Pillow==12.1.1" \
+      "datasets==3.6.0" \
+      "peft==0.18.1" \
+      "huggingface_hub==1.5.0" \
+      "tokenizers==0.22.2" \
+      "trl==0.22.2" \
+      "transformers==5.2.0" \
+      "runpod"
+
+RUN python - <<'PY'
+from transformers.models.auto.configuration_auto import CONFIG_MAPPING
+if "qwen3_5_moe" not in CONFIG_MAPPING:
+    raise SystemExit("qwen3_5_moe not available in CONFIG_MAPPING")
+print("Qwen3.5 MoE stack check passed.")
+PY
 
 CMD ["finetree-runpod-worker", "--serve"]

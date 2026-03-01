@@ -61,6 +61,7 @@ from .annotation_core import (
     propagate_entity_to_next_page,
     serialize_annotations_json,
 )
+from .finetune.config import load_finetune_config
 from .schemas import PageType
 
 
@@ -938,7 +939,7 @@ class AnnotationWindow(QMainWindow):
         self._qwen_stream_seen_facts: set[tuple[Any, ...]] = set()
         self._qwen_stream_fact_count = 0
         self._qwen_stream_cancel_requested = False
-        self._qwen_model_name = os.getenv("FINETREE_QWEN_MODEL", "local-qwen")
+        self._qwen_model_name = self._initial_qwen_model_name()
 
         if not self.page_images:
             raise RuntimeError(f"No page images found under: {self.images_dir}")
@@ -2102,8 +2103,10 @@ class AnnotationWindow(QMainWindow):
         env_path = os.getenv("FINETREE_QWEN_CONFIG")
         if env_path:
             candidates.append(Path(env_path).expanduser())
+        candidates.append(Path.cwd() / "configs/qwen_ui_runpod_queue.yaml")
         candidates.append(Path.cwd() / "configs/finetune_qwen35a3_vl.yaml")
         for parent in Path(__file__).resolve().parents:
+            candidates.append(parent / "configs/qwen_ui_runpod_queue.yaml")
             candidates.append(parent / "configs/finetune_qwen35a3_vl.yaml")
 
         seen: set[Path] = set()
@@ -2115,6 +2118,28 @@ class AnnotationWindow(QMainWindow):
             if resolved.is_file():
                 return resolved
         return None
+
+    def _initial_qwen_model_name(self) -> str:
+        env_model = os.getenv("FINETREE_QWEN_MODEL")
+        if isinstance(env_model, str) and env_model.strip():
+            return env_model.strip()
+
+        cfg_path = self._resolve_qwen_config_path()
+        if cfg_path is None:
+            return "local-qwen"
+
+        try:
+            cfg = load_finetune_config(cfg_path)
+        except Exception:
+            return "local-qwen"
+
+        model_name = (
+            cfg.inference.endpoint_model
+            or cfg.inference.model_path
+            or cfg.model.base_model
+            or "local-qwen"
+        )
+        return str(model_name).strip() or "local-qwen"
 
     def _build_prompt_from_template(self, template: str, page_image_path: Path) -> str:
         prompt = template.replace("{{PAGE_IMAGE}}", str(page_image_path))
@@ -2501,7 +2526,8 @@ class AnnotationWindow(QMainWindow):
                 "Qwen GT",
                 (
                     "Could not find Qwen fine-tune config.\n"
-                    "Expected configs/finetune_qwen35a3_vl.yaml or FINETREE_QWEN_CONFIG."
+                    "Expected configs/qwen_ui_runpod_queue.yaml, "
+                    "configs/finetune_qwen35a3_vl.yaml, or FINETREE_QWEN_CONFIG."
                 ),
             )
             return

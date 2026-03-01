@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import numpy as np
+
 from finetree_annotator.finetune import trainer_unsloth
 
 
@@ -20,3 +22,15 @@ def test_extract_mm_token_count_parses_expected_field() -> None:
     assert trainer_unsloth._extract_mm_token_count(msg, "ids") == 252
     assert trainer_unsloth._extract_mm_token_count(msg, "text") == 352
     assert trainer_unsloth._extract_mm_token_count(msg, "missing") is None
+
+
+def test_token_accuracy_metric_ignores_masked_positions() -> None:
+    class _EvalPred:
+        predictions = np.array([[1, 2, 3, 4]])
+        label_ids = np.array([[-100, 2, 8, 4]])
+
+    metrics = trainer_unsloth._token_accuracy_metric(_EvalPred())
+    # Shifted predictions: [1,2,3], shifted labels: [2,8,4]
+    # Valid positions: 3 => only middle matches (2==8 false, 3==4 false?) Actually none.
+    assert "token_accuracy" in metrics
+    assert metrics["token_accuracy"] == 0.0

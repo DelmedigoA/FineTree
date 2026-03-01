@@ -7,8 +7,11 @@ LOG_DIR="${LOG_DIR:-logs}"
 MULTI_GPU="${MULTI_GPU:-auto}" # auto|0|1
 NPROC_PER_NODE="${NPROC_PER_NODE:-}"
 PREFETCH_MODEL="${PREFETCH_MODEL:-auto}" # auto|0|1
+PREFETCH_ADAPTER="${PREFETCH_ADAPTER:-auto}" # auto|0|1
 HF_HOME="${HF_HOME:-/workspace/.cache/huggingface}"
 HF_HUB_DISABLE_XET="${HF_HUB_DISABLE_XET:-1}"
+HF_HUB_ENABLE_HF_TRANSFER="${HF_HUB_ENABLE_HF_TRANSFER:-1}"
+export HF_HOME HF_HUB_DISABLE_XET HF_HUB_ENABLE_HF_TRANSFER
 
 cd "${REPO_DIR}"
 
@@ -49,6 +52,9 @@ ts="$(date +%Y%m%d_%H%M%S)"
 log_file="${LOG_DIR}/train_${ts}.log"
 torchrun_log_dir="${LOG_DIR}/torchrun_${ts}"
 mkdir -p "${HF_HOME}"
+export FINETREE_TRAIN_RUN_ID="${ts}"
+export FINETREE_TRAIN_LOG_FILE="${log_file}"
+export FINETREE_TORCHRUN_LOG_DIR="${torchrun_log_dir}"
 
 gpu_count="1"
 if command -v nvidia-smi >/dev/null 2>&1; then
@@ -105,7 +111,7 @@ case "${PREFETCH_MODEL}" in
     ;;
 esac
 
-model_ref="$(
+cfg_refs="$(
   python - "${CONFIG_PATH}" <<'PY'
 import sys
 from pathlib import Path
@@ -113,15 +119,38 @@ import yaml
 
 cfg_path = Path(sys.argv[1])
 raw = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
-model_ref = (raw.get("model") or {}).get("base_model", "")
-print(str(model_ref).strip())
+model_ref = str((raw.get("model") or {}).get("base_model", "")).strip()
+adapter_ref = str((raw.get("inference") or {}).get("adapter_path", "")).strip()
+print(model_ref)
+print(adapter_ref)
 PY
 )"
+model_ref="$(printf '%s\n' "${cfg_refs}" | sed -n '1p')"
+adapter_ref="$(printf '%s\n' "${cfg_refs}" | sed -n '2p')"
 
 if [[ -z "${model_ref}" ]]; then
   echo "Could not resolve model.base_model from ${CONFIG_PATH}."
   exit 4
 fi
+
+prefetch_adapter_enabled="0"
+case "${PREFETCH_ADAPTER}" in
+  1|true|TRUE|yes|YES)
+    prefetch_adapter_enabled="1"
+    ;;
+  0|false|FALSE|no|NO)
+    prefetch_adapter_enabled="0"
+    ;;
+  auto|AUTO)
+    if [[ "${multi_gpu_enabled}" == "1" ]]; then
+      prefetch_adapter_enabled="1"
+    fi
+    ;;
+  *)
+    echo "Invalid PREFETCH_ADAPTER value: ${PREFETCH_ADAPTER}. Use auto, 0, or 1."
+    exit 4
+    ;;
+esac
 
 if [[ "${prefetch_enabled}" == "1" && ! -d "${model_ref}" ]]; then
   echo "Prefetch enabled: warming Hugging Face cache for ${model_ref}"
@@ -133,6 +162,22 @@ repo_id = sys.argv[1]
 snapshot_download(repo_id=repo_id, resume_download=True)
 print(f"Prefetch complete: {repo_id}")
 PY
+fi
+
+if [[ "${prefetch_adapter_enabled}" == "1" && -n "${adapter_ref}" && ! -d "${adapter_ref}" ]]; then
+  if [[ "${adapter_ref}" == /* || "${adapter_ref}" == ./* || "${adapter_ref}" == ../* || "${adapter_ref}" == ~* ]]; then
+    echo "Skipping adapter prefetch for unresolved local path: ${adapter_ref}"
+  else
+    echo "Adapter prefetch enabled: warming Hugging Face cache for ${adapter_ref}"
+    python - "${adapter_ref}" <<'PY'
+import sys
+from huggingface_hub import snapshot_download
+
+repo_id = sys.argv[1]
+snapshot_download(repo_id=repo_id, resume_download=True)
+print(f"Adapter prefetch complete: {repo_id}")
+PY
+  fi
 fi
 
 train_cmd=(finetree-ft-train --config "${CONFIG_PATH}")
@@ -169,7 +214,9 @@ echo "Starting fine-tune on ${gpu_count} visible GPU(s). Log: ${log_file}"
 echo "Launch mode: $([[ "${multi_gpu_enabled}" == "1" ]] && echo "multi-gpu (${NPROC_PER_NODE} proc)" || echo "single-gpu")"
 echo "HF_HOME: ${HF_HOME}"
 echo "HF_HUB_DISABLE_XET: ${HF_HUB_DISABLE_XET}"
+echo "HF_HUB_ENABLE_HF_TRANSFER: ${HF_HUB_ENABLE_HF_TRANSFER}"
 echo "Prefetch model: $([[ "${prefetch_enabled}" == "1" ]] && echo "enabled" || echo "disabled")"
+echo "Prefetch adapter: $([[ "${prefetch_adapter_enabled}" == "1" ]] && echo "enabled" || echo "disabled")"
 if [[ "${multi_gpu_enabled}" == "1" ]]; then
   echo "Torchrun rank logs: ${torchrun_log_dir}"
 fi

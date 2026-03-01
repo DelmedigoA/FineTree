@@ -1,13 +1,17 @@
 from __future__ import annotations
 
 import argparse
+import base64
+import json
+import mimetypes
 import os
+import time
 from pathlib import Path
 from threading import Thread
-from typing import Any, Iterator, Optional
+from typing import Any, Iterator, Optional, Tuple
 
 from .finetune.config import FinetuneConfig, load_finetune_config
-from .gemini_vlm import parse_page_extraction_text
+from .inference.auth import resolve_hf_token_from_env
 
 _DEFAULT_CONFIG_PATH = Path("configs/finetune_qwen35a3_vl.yaml")
 
@@ -71,15 +75,45 @@ def _cache_key(model_name: str, adapter_path: Optional[str], cfg: FinetuneConfig
     )
 
 
+def _resolve_adapter_reference(adapter_path: Optional[str]) -> Tuple[Optional[str], bool]:
+    if not adapter_path:
+        return None, False
+
+    raw = str(adapter_path).strip()
+    if not raw:
+        return None, False
+
+    expanded = Path(raw).expanduser()
+    if expanded.exists():
+        return str(expanded.resolve()), True
+
+    if raw.startswith(("/", "./", "../", "~")):
+        raise FileNotFoundError(f"Configured inference.adapter_path not found: {expanded}")
+
+    return raw, False
+
+
+def _load_with_optional_token(load_fn: Any, ref: str, token: Optional[str], **kwargs: Any) -> Any:
+    try:
+        if token:
+            return load_fn(ref, token=token, **kwargs)
+        return load_fn(ref, **kwargs)
+    except TypeError:
+        if token:
+            return load_fn(ref, use_auth_token=token, **kwargs)
+        raise
+
+
 def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
     _ensure_cuda()
 
     model_name = str(model_override or cfg.inference.model_path or cfg.model.base_model)
-    adapter_path = cfg.inference.adapter_path
-    key = _cache_key(model_name, adapter_path, cfg)
+    adapter_ref, _ = _resolve_adapter_reference(cfg.inference.adapter_path)
+    key = _cache_key(model_name, adapter_ref, cfg)
     cached = _MODEL_CACHE.get(key)
     if cached is not None:
         return cached
+    hf_token = resolve_hf_token_from_env()
 
     try:
         from transformers import AutoModelForImageTextToText, AutoProcessor
@@ -94,18 +128,29 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
     if cfg.inference.load_in_4bit:
         model_kwargs["load_in_4bit"] = True
 
-    model = AutoModelForImageTextToText.from_pretrained(model_name, **model_kwargs)
-    processor = AutoProcessor.from_pretrained(model_name, trust_remote_code=bool(cfg.inference.trust_remote_code))
+    model = _load_with_optional_token(AutoModelForImageTextToText.from_pretrained, model_name, hf_token, **model_kwargs)
+    processor = _load_with_optional_token(
+        AutoProcessor.from_pretrained,
+        model_name,
+        hf_token,
+        trust_remote_code=bool(cfg.inference.trust_remote_code),
+    )
 
-    if adapter_path:
-        adapter = Path(adapter_path).expanduser()
-        if not adapter.exists():
-            raise FileNotFoundError(f"Configured inference.adapter_path not found: {adapter}")
+    if adapter_ref:
         try:
             from peft import PeftModel
         except Exception as exc:  # pragma: no cover
             raise RuntimeError("peft is required to load LoRA adapters for Qwen GT.") from exc
-        model = PeftModel.from_pretrained(model, str(adapter))
+        try:
+            if hf_token:
+                model = PeftModel.from_pretrained(model, adapter_ref, token=hf_token)
+            else:
+                model = PeftModel.from_pretrained(model, adapter_ref)
+        except TypeError:
+            if hf_token:
+                model = PeftModel.from_pretrained(model, adapter_ref, use_auth_token=hf_token)
+            else:
+                raise
 
     _MODEL_CACHE[key] = (model, processor)
     return model, processor
@@ -138,17 +183,352 @@ def _prepare_inputs(processor: Any, image_path: Path, prompt: str) -> dict[str, 
     return inputs
 
 
-def stream_content_from_image(
+def _endpoint_api_key(cfg: FinetuneConfig) -> Optional[str]:
+    if isinstance(cfg.inference.endpoint_api_key, str) and cfg.inference.endpoint_api_key.strip():
+        return cfg.inference.endpoint_api_key.strip()
+    return resolve_hf_token_from_env(preferred_env=cfg.inference.endpoint_api_key_env)
+
+
+def _encode_image_data_uri(image_path: Path) -> str:
+    mime_type, _ = mimetypes.guess_type(str(image_path))
+    if not mime_type:
+        mime_type = "image/png"
+    payload = base64.b64encode(image_path.read_bytes()).decode("ascii")
+    return f"data:{mime_type};base64,{payload}"
+
+
+def _resolve_endpoint_model(cfg: FinetuneConfig, model_override: Optional[str]) -> str:
+    model_name = str(model_override or cfg.inference.endpoint_model or cfg.inference.model_path or cfg.model.base_model).strip()
+    if not model_name:
+        raise RuntimeError("No endpoint model configured. Set inference.endpoint_model or inference.model_path.")
+    return model_name
+
+
+def _stream_content_from_runpod_endpoint(
+    cfg: FinetuneConfig,
     image_path: Path,
     prompt: str,
-    model: Optional[str] = None,
-    config_path: Optional[str] = None,
+    model_override: Optional[str] = None,
 ) -> Iterator[str]:
-    if not image_path.is_file():
-        raise FileNotFoundError(f"Image not found: {image_path}")
+    base_url = str(cfg.inference.endpoint_base_url or os.getenv("FINETREE_QWEN_ENDPOINT_BASE_URL") or "").strip()
+    if not base_url:
+        raise RuntimeError(
+            "Qwen endpoint backend is enabled but no endpoint base URL is configured. "
+            "Set inference.endpoint_base_url or FINETREE_QWEN_ENDPOINT_BASE_URL."
+        )
+    api_key = _endpoint_api_key(cfg)
+    if not api_key:
+        raise RuntimeError(
+            "Qwen endpoint backend is enabled but API key is missing. "
+            f"Set inference.endpoint_api_key or env var {cfg.inference.endpoint_api_key_env}."
+        )
 
-    cfg = load_finetune_config(_resolve_config_path(config_path))
-    model_obj, processor = _load_model_bundle(cfg, model_override=model)
+    model_name = _resolve_endpoint_model(cfg, model_override)
+    endpoint = base_url.rstrip("/") + "/chat/completions"
+    image_data_uri = _encode_image_data_uri(image_path)
+
+    payload = {
+        "model": model_name,
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": image_data_uri}},
+                ],
+            }
+        ],
+        "temperature": float(cfg.inference.temperature),
+        "top_p": float(cfg.inference.top_p),
+        "max_tokens": int(cfg.inference.max_new_tokens),
+        "stream": True,
+    }
+
+    try:
+        import httpx
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError("httpx is required for endpoint-based Qwen inference.") from exc
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    with httpx.Client(timeout=float(cfg.inference.endpoint_timeout_sec)) as client:
+        with client.stream("POST", endpoint, headers=headers, json=payload) as response:
+            if response.status_code >= 400:
+                body = response.read().decode("utf-8", errors="replace")
+                raise RuntimeError(f"Endpoint request failed ({response.status_code}): {body[:500]}")
+
+            for raw_line in response.iter_lines():
+                if not raw_line:
+                    continue
+                line = raw_line.strip()
+                if not line.startswith("data:"):
+                    continue
+                data = line[len("data:") :].strip()
+                if data == "[DONE]":
+                    break
+                try:
+                    event = json.loads(data)
+                except json.JSONDecodeError:
+                    continue
+
+                choices = event.get("choices") if isinstance(event, dict) else None
+                if not isinstance(choices, list) or not choices:
+                    continue
+                delta = choices[0].get("delta")
+                if not isinstance(delta, dict):
+                    continue
+                text = delta.get("content")
+                if isinstance(text, str) and text:
+                    yield text
+
+
+def _resolve_runpod_queue_urls(cfg: FinetuneConfig) -> tuple[str, str]:
+    base_url = str(cfg.inference.endpoint_base_url or os.getenv("FINETREE_QWEN_ENDPOINT_BASE_URL") or "").strip()
+    if not base_url:
+        raise RuntimeError(
+            "Qwen endpoint backend is enabled but no endpoint base URL is configured. "
+            "Set inference.endpoint_base_url or FINETREE_QWEN_ENDPOINT_BASE_URL."
+        )
+
+    normalized = base_url.rstrip("/")
+    if normalized.endswith("/openai/v1") or normalized.endswith("/chat/completions"):
+        raise RuntimeError(
+            "runpod_queue backend expects a queue endpoint URL (for /run and /status), "
+            "not an OpenAI-compatible URL. Example: https://api.runpod.ai/v2/<ENDPOINT_ID>"
+        )
+
+    if normalized.endswith("/run"):
+        run_url = normalized
+    elif normalized.endswith("/status"):
+        run_url = normalized[: -len("/status")] + "/run"
+    else:
+        run_url = normalized + "/run"
+
+    status_base_url = str(cfg.inference.endpoint_status_base_url or "").strip().rstrip("/")
+    if not status_base_url:
+        status_base_url = run_url[: -len("/run")] + "/status"
+
+    return run_url, status_base_url
+
+
+def _runpod_stream_base_url(run_url: str) -> str:
+    base = run_url
+    if base.endswith("/run"):
+        base = base[: -len("/run")]
+    return base.rstrip("/") + "/stream"
+
+
+def _decode_runpod_error(error_value: Any) -> Optional[str]:
+    if error_value is None:
+        return None
+    if isinstance(error_value, dict):
+        for key in ("error_message", "message", "detail", "error"):
+            value = error_value.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        return json.dumps(error_value, ensure_ascii=False)
+    if isinstance(error_value, str):
+        stripped = error_value.strip()
+        if not stripped:
+            return None
+        try:
+            parsed = json.loads(stripped)
+        except json.JSONDecodeError:
+            return stripped
+        return _decode_runpod_error(parsed)
+    return str(error_value)
+
+
+def _extract_runpod_text_output(job_payload: Any) -> Optional[str]:
+    if not isinstance(job_payload, dict):
+        return None
+
+    output = job_payload.get("output")
+    if isinstance(output, str):
+        return output
+    if isinstance(output, dict):
+        text = output.get("text")
+        if isinstance(text, str):
+            return text
+        if isinstance(text, list):
+            parts = [str(item) for item in text if isinstance(item, (str, int, float))]
+            if parts:
+                return "".join(parts)
+        result = output.get("result")
+        if result is not None:
+            return json.dumps(result, ensure_ascii=False)
+        return json.dumps(output, ensure_ascii=False)
+    if output is not None:
+        return json.dumps(output, ensure_ascii=False)
+
+    text = job_payload.get("text")
+    if isinstance(text, str):
+        return text
+    return None
+
+
+def _runpod_status(status_value: Any) -> str:
+    return str(status_value or "").strip().upper()
+
+
+def _iter_text_from_runpod_stream_payload(payload: Any) -> Iterator[str]:
+    if payload is None:
+        return
+
+    if isinstance(payload, str):
+        if payload:
+            yield payload
+        return
+
+    if isinstance(payload, list):
+        for item in payload:
+            yield from _iter_text_from_runpod_stream_payload(item)
+        return
+
+    if isinstance(payload, dict):
+        for key in ("chunk", "text", "output"):
+            if key in payload:
+                yield from _iter_text_from_runpod_stream_payload(payload.get(key))
+        return
+
+
+def _stream_content_from_runpod_queue(
+    cfg: FinetuneConfig,
+    image_path: Path,
+    prompt: str,
+    model_override: Optional[str] = None,
+) -> Iterator[str]:
+    run_url, status_base_url = _resolve_runpod_queue_urls(cfg)
+    api_key = _endpoint_api_key(cfg)
+    if not api_key:
+        raise RuntimeError(
+            "Qwen endpoint backend is enabled but API key is missing. "
+            f"Set inference.endpoint_api_key or env var {cfg.inference.endpoint_api_key_env}."
+        )
+
+    payload_input: dict[str, Any] = {
+        "image_base64": base64.b64encode(image_path.read_bytes()).decode("ascii"),
+        "image_mime_type": mimetypes.guess_type(str(image_path))[0] or "image/png",
+        "response_mode": "text",
+        "prompt": prompt,
+    }
+
+    model_name = _resolve_endpoint_model(cfg, model_override)
+    if model_name:
+        payload_input["model"] = model_name
+
+    payload = {"input": payload_input}
+
+    try:
+        import httpx
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError("httpx is required for endpoint-based Qwen inference.") from exc
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    timeout_sec = float(cfg.inference.endpoint_timeout_sec)
+    deadline = time.monotonic() + timeout_sec
+
+    stream_base_url = _runpod_stream_base_url(run_url)
+
+    with httpx.Client(timeout=timeout_sec) as client:
+        run_response = client.post(run_url, headers=headers, json=payload)
+        if run_response.status_code >= 400:
+            body = run_response.text if hasattr(run_response, "text") else str(run_response.read())
+            raise RuntimeError(f"Queue endpoint request failed ({run_response.status_code}): {body[:500]}")
+
+        try:
+            job_payload = run_response.json()
+        except Exception as exc:
+            body = run_response.text if hasattr(run_response, "text") else str(run_response.read())
+            raise RuntimeError(f"Queue endpoint returned non-JSON response: {body[:500]}") from exc
+
+        job_id = str(job_payload.get("id") or "").strip()
+        if not job_id:
+            raise RuntimeError("RunPod queue job did not return an id for status polling.")
+
+        # First try real stream endpoint for incremental tokens.
+        if hasattr(client, "stream"):
+            stream_url = f"{stream_base_url}/{job_id}"
+            try:
+                streamed_any = False
+                # Some RunPod deployments keep /stream open without emitting events.
+                # Use a short read timeout so we can quickly fall back to /status polling.
+                stream_timeout = httpx.Timeout(
+                    connect=min(10.0, timeout_sec),
+                    read=min(8.0, timeout_sec),
+                    write=min(10.0, timeout_sec),
+                    pool=min(10.0, timeout_sec),
+                )
+                with client.stream("GET", stream_url, headers=headers, timeout=stream_timeout) as stream_response:
+                    if stream_response.status_code < 400:
+                        for raw_line in stream_response.iter_lines():
+                            if not raw_line:
+                                continue
+                            line = raw_line.strip()
+                            if line.startswith("data:"):
+                                line = line[len("data:") :].strip()
+                            if not line:
+                                continue
+                            if line == "[DONE]":
+                                break
+                            try:
+                                event = json.loads(line)
+                            except json.JSONDecodeError:
+                                continue
+                            for piece in _iter_text_from_runpod_stream_payload(event):
+                                if piece:
+                                    streamed_any = True
+                                    yield piece
+                if streamed_any:
+                    return
+            except Exception:
+                # Fall back to status polling below when stream is unavailable.
+                pass
+
+        while True:
+            status = _runpod_status(job_payload.get("status"))
+            output_text = _extract_runpod_text_output(job_payload)
+
+            if status in {"COMPLETED", "SUCCESS", "SUCCEEDED"} or (not status and output_text is not None):
+                if output_text is None:
+                    raise RuntimeError("RunPod queue job completed but returned no output.")
+                yield output_text
+                return
+
+            if status in {"FAILED", "CANCELLED", "TIMED_OUT", "TIMEOUT"}:
+                error_text = _decode_runpod_error(job_payload.get("error")) or f"RunPod queue job failed ({status})."
+                raise RuntimeError(error_text)
+
+            if time.monotonic() >= deadline:
+                raise TimeoutError(
+                    f"RunPod queue job timed out after {int(timeout_sec)}s while waiting for completion (job id: {job_id})."
+                )
+
+            time.sleep(1.0)
+            status_response = client.get(f"{status_base_url}/{job_id}", headers=headers)
+            if status_response.status_code >= 400:
+                body = status_response.text if hasattr(status_response, "text") else str(status_response.read())
+                raise RuntimeError(f"Queue status request failed ({status_response.status_code}): {body[:500]}")
+            try:
+                job_payload = status_response.json()
+            except Exception as exc:
+                body = status_response.text if hasattr(status_response, "text") else str(status_response.read())
+                raise RuntimeError(f"Queue status returned non-JSON response: {body[:500]}") from exc
+
+
+def _stream_content_local(
+    cfg: FinetuneConfig,
+    image_path: Path,
+    prompt: str,
+    model_override: Optional[str] = None,
+) -> Iterator[str]:
+    model_obj, processor = _load_model_bundle(cfg, model_override=model_override)
 
     try:
         from transformers import TextIteratorStreamer
@@ -186,6 +566,41 @@ def stream_content_from_image(
     worker.join(timeout=1.0)
 
 
+def stream_content_from_image(
+    image_path: Path,
+    prompt: str,
+    model: Optional[str] = None,
+    config_path: Optional[str] = None,
+) -> Iterator[str]:
+    if not image_path.is_file():
+        raise FileNotFoundError(f"Image not found: {image_path}")
+
+    cfg = load_finetune_config(_resolve_config_path(config_path))
+    if cfg.inference.backend == "runpod_openai":
+        yield from _stream_content_from_runpod_endpoint(
+            cfg=cfg,
+            image_path=image_path,
+            prompt=prompt,
+            model_override=model,
+        )
+        return
+    if cfg.inference.backend == "runpod_queue":
+        yield from _stream_content_from_runpod_queue(
+            cfg=cfg,
+            image_path=image_path,
+            prompt=prompt,
+            model_override=model,
+        )
+        return
+
+    yield from _stream_content_local(
+        cfg=cfg,
+        image_path=image_path,
+        prompt=prompt,
+        model_override=model,
+    )
+
+
 def generate_content_from_image(
     image_path: Path,
     prompt: str,
@@ -201,6 +616,8 @@ def generate_page_extraction_from_image(
     model: Optional[str] = None,
     config_path: Optional[str] = None,
 ):
+    from .gemini_vlm import parse_page_extraction_text
+
     text = generate_content_from_image(
         image_path=image_path,
         prompt=prompt,
