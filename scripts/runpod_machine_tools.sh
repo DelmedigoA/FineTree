@@ -27,6 +27,7 @@ Commands:
   status                Show process/port/health summary.
   check                 Run extended diagnostics (GPU, disk, health, auth).
   flow-check [config]   Validate pod deployment flow/config logic.
+  model-test [args...]  Load model and run local smoke inference without API.
   warmup [args...]      Run local warmup against 127.0.0.1:6666.
   logs [n]              Tail service log (default 120 lines).
   logs-find <id> [n]    Show recent log lines around an error id (e.g. poderr-abc123).
@@ -315,6 +316,15 @@ warmup_local() {
     "$@"
 }
 
+model_test_local() {
+  local test_script="${ROOT_DIR}/scripts/runpod_model_test.sh"
+  if [[ ! -x "${test_script}" ]]; then
+    log "model test script is missing or not executable: ${test_script}"
+    return 1
+  fi
+  "${test_script}" "$@"
+}
+
 tail_logs() {
   local n="${1:-120}"
   ensure_state_dir
@@ -358,6 +368,7 @@ main() {
     status) status_service ;;
     check) check_service ;;
     flow-check) flow_check "$@" ;;
+    model-test) model_test_local "$@" ;;
     warmup) warmup_local "$@" ;;
     logs) tail_logs "$@" ;;
     logs-find) find_log_error "$@" ;;
