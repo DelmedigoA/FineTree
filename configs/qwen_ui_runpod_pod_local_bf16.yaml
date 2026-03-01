@@ -1,0 +1,22 @@
+inference:
+  backend: local
+  model_path: unsloth/Qwen3.5-35B-A3B
+  adapter_path: null
+  endpoint_base_url: null
+  endpoint_status_base_url: null
+  endpoint_api_key: null
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: qwen-gt
+  endpoint_timeout_sec: 180
+  parser_mode: streaming_page_extraction
+  max_new_tokens: 120
+  temperature: 0.0
+  top_p: 0.95
+  do_sample: false
+  quantization_mode: none
+  torch_dtype: bfloat16
+  attn_implementation: sdpa
+  require_flash_attention: false
+  device_map: auto
+  trust_remote_code: true
+  load_in_4bit: false

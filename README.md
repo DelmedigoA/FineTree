@@ -335,6 +335,22 @@ Pod Qwen config templates:
 
 - `configs/qwen_ui_runpod_pod_openai.yaml` (proxy mode to external OpenAI-compatible endpoint)
 - `configs/qwen_ui_runpod_pod_local_8bit.yaml` (local model loading, 8-bit quantized)
+- `configs/qwen_ui_runpod_pod_local_4bit.yaml` (local model loading, 4-bit quantized)
+- `configs/qwen_ui_runpod_pod_local_bf16.yaml` (local model loading, full bf16)
+
+Manual model load smoke-test without exposing API:
+
+```bash
+cd /workspace/FineTree
+scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_bf16.yaml
+```
+
+You can also use:
+
+```bash
+scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_8bit.yaml
+scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_4bit.yaml
+```
 
 Start both Pod services in one process group:
 
