@@ -68,7 +68,10 @@ def _cache_key(model_name: str, adapter_path: Optional[str], cfg: FinetuneConfig
         [
             model_name,
             str(adapter_path or ""),
+            str(cfg.inference.quantization_mode),
             str(cfg.inference.torch_dtype),
+            str(cfg.inference.attn_implementation),
+            str(cfg.inference.require_flash_attention),
             str(cfg.inference.device_map),
             str(cfg.inference.load_in_4bit),
         ]
@@ -104,6 +107,34 @@ def _load_with_optional_token(load_fn: Any, ref: str, token: Optional[str], **kw
         raise
 
 
+def _effective_quantization_mode(cfg: FinetuneConfig) -> str:
+    if cfg.inference.load_in_4bit:
+        return "bnb_4bit"
+    return str(cfg.inference.quantization_mode)
+
+
+def _uses_flash_attention(model_obj: Any) -> bool:
+    for candidate in (model_obj, getattr(model_obj, "config", None)):
+        if candidate is None:
+            continue
+        for attr in ("attn_implementation", "_attn_implementation"):
+            value = getattr(candidate, attr, None)
+            if isinstance(value, str) and "flash" in value.lower():
+                return True
+    return False
+
+
+def _ensure_flash_attention(cfg: FinetuneConfig, model_obj: Any) -> None:
+    if not bool(cfg.inference.require_flash_attention):
+        return
+    if _uses_flash_attention(model_obj):
+        return
+    raise RuntimeError(
+        "Flash attention is required for inference but is not active. "
+        "Set inference.attn_implementation=flash_attention_2 and ensure flash-attn is installed."
+    )
+
+
 def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
     _ensure_cuda()
 
@@ -124,9 +155,13 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
         "trust_remote_code": bool(cfg.inference.trust_remote_code),
         "device_map": str(cfg.inference.device_map),
         "torch_dtype": _dtype_from_name(cfg.inference.torch_dtype),
+        "attn_implementation": str(cfg.inference.attn_implementation),
     }
-    if cfg.inference.load_in_4bit:
+    quant_mode = _effective_quantization_mode(cfg)
+    if quant_mode == "bnb_4bit":
         model_kwargs["load_in_4bit"] = True
+    elif quant_mode == "bnb_8bit":
+        model_kwargs["load_in_8bit"] = True
 
     model = _load_with_optional_token(AutoModelForImageTextToText.from_pretrained, model_name, hf_token, **model_kwargs)
     processor = _load_with_optional_token(
@@ -151,6 +186,8 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
                 model = PeftModel.from_pretrained(model, adapter_ref, use_auth_token=hf_token)
             else:
                 raise
+
+    _ensure_flash_attention(cfg, model)
 
     _MODEL_CACHE[key] = (model, processor)
     return model, processor

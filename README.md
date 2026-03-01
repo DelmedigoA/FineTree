@@ -327,6 +327,47 @@ export IMAGE_TAG=latest
 docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.serverless -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
 ```
 
+### RunPod Pod Services (Additive to Serverless)
+
+Serverless queue flow remains supported and unchanged. Pod services are an additional path.
+
+Pod Qwen config template:
+
+- `configs/qwen_ui_runpod_pod_openai.yaml`
+
+Start both Pod services in one process group:
+
+```bash
+finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_openai.yaml
+```
+
+This starts:
+
+- API on `6666` (`/v1/chat/completions`, supports streaming)
+- Gradio test app on `5555`
+
+Required Pod auth env vars:
+
+```bash
+export FINETREE_POD_API_KEY=<token-for-6666>
+export FINETREE_GRADIO_USER=<gradio-user>
+export FINETREE_GRADIO_PASS=<gradio-pass>
+```
+
+Build and push a Pod image:
+
+```bash
+export IMAGE_NAME=<registry>/<namespace>/finetree-pod
+export IMAGE_TAG=latest
+docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.pod -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
+```
+
+Export quantized artifacts (default 8-bit):
+
+```bash
+finetree-ft-export-quantized --config configs/finetune_qwen35a3_vl.yaml
+```
+
 Supported request `input` keys:
 
 - `image_path` (local path inside container) OR `image_data_uri` OR `image_base64`

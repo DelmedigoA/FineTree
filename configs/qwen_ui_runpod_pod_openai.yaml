@@ -1,0 +1,13 @@
+inference:
+  backend: runpod_openai
+  endpoint_base_url: https://<POD_ID>-6666.proxy.runpod.net/v1
+  endpoint_api_key_env: FINETREE_POD_API_KEY
+  endpoint_model: qwen-gt
+  endpoint_timeout_sec: 90
+  max_new_tokens: 120
+  temperature: 0.0
+  top_p: 0.95
+  do_sample: false
+  quantization_mode: bnb_8bit
+  attn_implementation: flash_attention_2
+  require_flash_attention: true
