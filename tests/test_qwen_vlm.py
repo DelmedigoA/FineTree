@@ -163,6 +163,52 @@ def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
     assert "load_in_8bit" not in calls["model_kwargs"]
 
 
+def test_load_model_bundle_falls_back_to_sdpa_when_flash_attn_missing(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    calls: list[dict[str, object]] = []
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="sdpa")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls.append({"model_name": model_name, "kwargs": kwargs})
+            if kwargs.get("attn_implementation") == "flash_attention_2":
+                raise ImportError("flash_attn seems to be not installed")
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "attn_implementation": "flash_attention_2",
+                "require_flash_attention": False,
+            },
+        }
+    )
+    qwen_vlm._load_model_bundle(cfg)
+
+    assert len(calls) == 2
+    assert calls[0]["kwargs"]["attn_implementation"] == "flash_attention_2"  # type: ignore[index]
+    assert calls[1]["kwargs"]["attn_implementation"] == "sdpa"  # type: ignore[index]
+
+
 def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> None:
     qwen_vlm._MODEL_CACHE.clear()
     monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
