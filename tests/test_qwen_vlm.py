@@ -275,6 +275,7 @@ def test_stream_content_from_image_uses_runpod_endpoint_backend(tmp_path: Path, 
                 "endpoint_base_url": "https://api.runpod.ai/v2/abc/openai/v1",
                 "endpoint_api_key": "rp_test",
                 "endpoint_model": "qwenasaf",
+                "max_new_tokens": 120,
             },
         }
     )
