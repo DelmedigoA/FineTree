@@ -81,9 +81,37 @@ else
   python -m pip install -e . --no-deps
 fi
 
-target_base_model=""
+target_is_qwen35_a3="0"
 if [[ -f "${CONFIG_PATH}" ]]; then
-  target_base_model="$(awk '/^[[:space:]]*base_model:[[:space:]]*/ {print $2; exit}' "${CONFIG_PATH}")"
+  target_is_qwen35_a3="$(
+    python - "${CONFIG_PATH}" <<'PY'
+import re
+import sys
+from pathlib import Path
+
+import yaml
+
+
+def _fallback_is_qwen35_a3(model_id: str) -> bool:
+    canonical = re.sub(r"[^a-z0-9]+", "", str(model_id).strip().lower())
+    return bool(canonical) and "qwen35" in canonical and "a3" in canonical
+
+
+cfg_path = Path(sys.argv[1])
+raw = yaml.safe_load(cfg_path.read_text(encoding="utf-8")) or {}
+model_id = str((raw.get("model") or {}).get("base_model", "")).strip()
+
+is_qwen35_a3 = _fallback_is_qwen35_a3(model_id)
+try:
+    from finetree_annotator.inference.model_family import is_qwen35_a3_model
+
+    is_qwen35_a3 = is_qwen35_a3_model(model_id)
+except Exception:
+    pass
+
+print("1" if is_qwen35_a3 else "0")
+PY
+  )"
 fi
 
 stack_needs_repair="$(python - <<'PY'
@@ -102,16 +130,16 @@ print(",".join(issues))
 PY
 )"
 
-if [[ -n "${stack_needs_repair}" && "${target_base_model}" != "unsloth/Qwen3.5-35B-A3B" ]]; then
+if [[ -n "${stack_needs_repair}" && "${target_is_qwen35_a3}" != "1" ]]; then
   echo "Repairing Unsloth/Transformers stack (${stack_needs_repair})..."
   python -m pip install --upgrade --force-reinstall --no-cache-dir \
     "unsloth" \
     "unsloth_zoo"
 elif [[ -n "${stack_needs_repair}" ]]; then
-  echo "Skipping generic stack repair for Qwen3.5 target (${stack_needs_repair}); using Qwen3.5 patch path."
+  echo "Skipping generic stack repair for Qwen3.5-A3 target (${stack_needs_repair}); using Qwen3.5 patch path."
 fi
 
-if [[ "${target_base_model}" == "unsloth/Qwen3.5-35B-A3B" ]]; then
+if [[ "${target_is_qwen35_a3}" == "1" ]]; then
   qwen35_stack_status="$(python - <<'PY'
 import contextlib
 import io
@@ -137,7 +165,7 @@ PY
 )"
 
   if [[ -n "${qwen35_stack_status}" ]]; then
-    echo "Applying Qwen3.5 MoE stack patch (${qwen35_stack_status})..."
+    echo "Applying Qwen3.5-A3 stack patch (${qwen35_stack_status})..."
     python -m pip uninstall -y unsloth unsloth_zoo
     python -m pip install --no-deps git+https://github.com/unslothai/unsloth-zoo.git
     python -m pip install --no-deps git+https://github.com/unslothai/unsloth.git
@@ -145,7 +173,7 @@ PY
     python -m pip install --upgrade "transformers==5.2.0"
     python -m pip install --upgrade "torchvision==0.25.0" "bitsandbytes==0.49.2" "xformers==0.0.35"
   else
-    echo "Qwen3.5 MoE stack already ready; skipping patch."
+    echo "Qwen3.5-A3 stack already ready; skipping patch."
   fi
 fi
 

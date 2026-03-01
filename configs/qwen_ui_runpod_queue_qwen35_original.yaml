@@ -1,0 +1,10 @@
+inference:
+  backend: runpod_queue
+  endpoint_base_url: https://api.runpod.ai/v2/ql5ge7p2ndm4rt
+  endpoint_api_key_env: RUNPOD_API_KEY
+  endpoint_model: Qwen/Qwen3.5-35B-A3B
+  endpoint_timeout_sec: 600
+  max_new_tokens: 120
+  temperature: 0.0
+  top_p: 0.95
+  do_sample: false

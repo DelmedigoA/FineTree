@@ -7,9 +7,9 @@ import json
 import mimetypes
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Iterator, Optional
 
-from ..qwen_vlm import generate_content_from_image, generate_page_extraction_from_image
+from ..qwen_vlm import generate_content_from_image, generate_page_extraction_from_image, stream_content_from_image
 
 DEFAULT_PROMPT = "Extract page JSON using the FineTree schema."
 _SUPPORTED_RESPONSE_MODES = {"page_extraction", "text"}
@@ -133,6 +133,45 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
     return run_inference(payload)
 
 
+def stream_inference(job_input: Dict[str, Any]) -> Iterator[Dict[str, Any]]:
+    if not isinstance(job_input, dict):
+        raise TypeError("RunPod input must be a JSON object.")
+
+    prompt = str(job_input.get("prompt") or DEFAULT_PROMPT)
+    config_path = str(job_input.get("config_path") or "").strip() or None
+    model = str(job_input.get("model") or "").strip() or None
+    response_mode = _normalize_response_mode(job_input)
+
+    if response_mode != "text":
+        yield run_inference(job_input)
+        return
+
+    with tempfile.TemporaryDirectory(prefix="finetree-runpod-") as temp_dir_str:
+        temp_dir = Path(temp_dir_str)
+        image_path = _resolve_image_path(job_input=job_input, temp_dir=temp_dir)
+        for chunk in stream_content_from_image(
+            image_path=image_path,
+            prompt=prompt,
+            model=model,
+            config_path=config_path,
+        ):
+            if not chunk:
+                continue
+            yield {"ok": True, "mode": "text", "chunk": chunk}
+
+
+def stream_handler(event: Dict[str, Any]) -> Iterator[Dict[str, Any]]:
+    if not isinstance(event, dict):
+        raise TypeError("RunPod event must be a JSON object.")
+    if "input" in event:
+        payload = event.get("input")
+    else:
+        payload = event
+    if not isinstance(payload, dict):
+        raise TypeError("RunPod event.input must be a JSON object.")
+    yield from stream_inference(payload)
+
+
 def _load_test_payload(path: Path) -> Dict[str, Any]:
     if not path.is_file():
         raise FileNotFoundError(f"Test input file not found: {path}")
@@ -153,7 +192,12 @@ def serve_forever() -> int:
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("runpod package is required. Install with `pip install runpod`.") from exc
 
-    runpod.serverless.start({"handler": handler})
+    runpod.serverless.start(
+        {
+            "handler": stream_handler,
+            "return_aggregate_stream": True,
+        }
+    )
     return 0
 
 

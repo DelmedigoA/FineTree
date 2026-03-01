@@ -1,28 +1,24 @@
-#!/usr/bin/env python3
-# Save as push_finetree_dataset_to_hf.py and run:
-#   python push_finetree_dataset_to_hf.py --token hf_xxx
-# or:
-#   FINETREE_HF_TOKEN=hf_xxx python push_finetree_dataset_to_hf.py
-
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import time
 from pathlib import Path
+from typing import Tuple
 
 from huggingface_hub import HfApi
 from huggingface_hub.errors import BadRequestError, HfHubHTTPError
 
 
 def build_dataset(config_path: Path) -> None:
-    from finetree_annotator.finetune.dataset_builder import main as build_main
+    from .dataset_builder import main as build_main
 
     build_main(["--config", str(config_path)])
 
 
-def export_for_hf(root: Path, export_dir: Path) -> tuple[int, int]:
+def export_for_hf(root: Path, export_dir: Path) -> Tuple[int, int]:
     train_in = root / "data/finetune/train.jsonl"
     val_in = root / "data/finetune/val.jsonl"
 
@@ -82,15 +78,19 @@ def export_for_hf(root: Path, export_dir: Path) -> tuple[int, int]:
     return train_rows, val_rows
 
 
+def _default_repo_id(api: HfApi) -> str:
+    username = api.whoami().get("name") or "user"
+    return f"{username}/FineTree-annotated-pages"
+
+
 def push_to_hf(export_dir: Path, token: str, repo_id: str | None) -> str:
     api = HfApi(token=token)
     if repo_id is None:
-        username = api.whoami().get("name") or "user"
-        repo_id = f"{username}/FineTree-annotated-pages"
+        repo_id = _default_repo_id(api)
 
     api.create_repo(repo_id=repo_id, repo_type="dataset", private=True, exist_ok=True)
     try:
-        # Remove remote LFS rules if they exist to avoid png->LFS pointer failures.
+        # Avoid old repo .gitattributes rules forcing missing LFS pointers.
         api.delete_file(
             path_in_repo=".gitattributes",
             repo_id=repo_id,
@@ -109,16 +109,10 @@ def push_to_hf(export_dir: Path, token: str, repo_id: str | None) -> str:
         )
         return repo_id
     except BadRequestError as exc:
-        msg = str(exc)
-        if "LFS pointer pointed to a file that does not exist" not in msg:
+        if "LFS pointer pointed to a file that does not exist" not in str(exc):
             raise
 
-        # Fallback to a fresh repo id with no historical LFS attributes.
         fallback_repo_id = f"{repo_id}-nolfs-{int(time.time())}"
-        print(
-            "Detected HF LFS pointer rejection on target repo. "
-            f"Retrying with fresh repo: {fallback_repo_id}"
-        )
         api.create_repo(repo_id=fallback_repo_id, repo_type="dataset", private=True, exist_ok=True)
         api.upload_folder(
             repo_id=fallback_repo_id,
@@ -129,18 +123,21 @@ def push_to_hf(export_dir: Path, token: str, repo_id: str | None) -> str:
         return fallback_repo_id
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser()
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Build and push FineTree dataset JSONL+images to Hugging Face Hub.")
     parser.add_argument("--config", default="configs/finetune_qwen35a3_vl.yaml")
     parser.add_argument("--repo-id", default=None, help="HF dataset repo id, e.g. username/FineTree-annotated-pages")
     parser.add_argument("--token", default=None, help="HF token (or use FINETREE_HF_TOKEN env var)")
     parser.add_argument("--export-dir", default="artifacts/hf_dataset_export")
-    args = parser.parse_args()
+    return parser.parse_args(argv)
 
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
     root = Path(".").resolve()
-    token = args.token or __import__("os").environ.get("FINETREE_HF_TOKEN")
+    token = args.token or os.environ.get("FINETREE_HF_TOKEN") or os.environ.get("HF_TOKEN")
     if not token:
-        raise RuntimeError("Missing HF token. Pass --token or set FINETREE_HF_TOKEN.")
+        raise RuntimeError("Missing HF token. Pass --token or set FINETREE_HF_TOKEN/HF_TOKEN.")
 
     config_path = (root / args.config).resolve()
     export_dir = (root / args.export_dir).resolve()
@@ -154,6 +151,9 @@ def main() -> int:
     print(f"VAL_ROWS: {val_rows}")
     print(f"EXPORT_DIR: {export_dir}")
     return 0
+
+
+__all__ = ["build_dataset", "export_for_hf", "push_to_hf", "main"]
 
 
 if __name__ == "__main__":

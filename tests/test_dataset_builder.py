@@ -106,3 +106,13 @@ def test_dataset_builder_can_drop_bbox(tmp_path: Path, monkeypatch) -> None:
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
     assert "bbox" not in out_obj["facts"][0]
+
+
+def test_dataset_builder_doc_split_map_ensures_non_empty_val_for_multi_doc(monkeypatch) -> None:
+    from finetree_annotator.finetune import dataset_builder as mod
+
+    docs = [Path("a.json"), Path("b.json"), Path("c.json")]
+    monkeypatch.setattr(mod, "_doc_in_val_split", lambda _doc, _ratio: False)
+    split = mod._doc_split_map(docs, val_ratio=0.1)
+    assert any(split.values())
+    assert not all(split.values())

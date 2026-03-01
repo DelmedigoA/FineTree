@@ -9,8 +9,16 @@ def test_finetune_config_defaults_validate() -> None:
     cfg = FinetuneConfig.model_validate({})
     assert cfg.model.base_model
     assert cfg.data.bbox_policy == "include_if_present"
+    assert cfg.data.include_empty_pages is True
     assert cfg.prompt.use_custom_prompt is True
     assert cfg.training.ddp_find_unused_parameters is False
+    assert cfg.training.require_val_set is True
+    assert cfg.training.compute_token_accuracy is True
+
+
+def test_inference_backend_accepts_runpod_queue() -> None:
+    cfg = FinetuneConfig.model_validate({"inference": {"backend": "runpod_queue"}})
+    assert cfg.inference.backend == "runpod_queue"
 
 
 def test_push_to_hub_requires_repo_and_token_when_enabled(monkeypatch) -> None:
