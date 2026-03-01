@@ -287,6 +287,7 @@ def _stream_content_from_runpod_endpoint(
     image_path: Path,
     prompt: str,
     model_override: Optional[str] = None,
+    max_new_tokens: Optional[int] = None,
 ) -> Iterator[str]:
     base_url = str(cfg.inference.endpoint_base_url or os.getenv("FINETREE_QWEN_ENDPOINT_BASE_URL") or "").strip()
     if not base_url:
@@ -305,7 +306,9 @@ def _stream_content_from_runpod_endpoint(
     endpoint = base_url.rstrip("/") + "/chat/completions"
     image_data_uri = _encode_image_data_uri(image_path)
 
-    payload = {
+    resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else int(cfg.inference.max_new_tokens)
+
+    payload: dict[str, Any] = {
         "model": model_name,
         "messages": [
             {
@@ -316,11 +319,12 @@ def _stream_content_from_runpod_endpoint(
                 ],
             }
         ],
-        "temperature": float(cfg.inference.temperature),
-        "top_p": float(cfg.inference.top_p),
-        "max_tokens": int(cfg.inference.max_new_tokens),
+        "max_tokens": resolved_max_new_tokens,
         "stream": True,
     }
+    if bool(cfg.inference.do_sample):
+        payload["temperature"] = float(cfg.inference.temperature)
+        payload["top_p"] = float(cfg.inference.top_p)
 
     try:
         import httpx
@@ -478,6 +482,7 @@ def _stream_content_from_runpod_queue(
     image_path: Path,
     prompt: str,
     model_override: Optional[str] = None,
+    max_new_tokens: Optional[int] = None,
 ) -> Iterator[str]:
     run_url, status_base_url = _resolve_runpod_queue_urls(cfg)
     api_key = _endpoint_api_key(cfg)
@@ -493,6 +498,8 @@ def _stream_content_from_runpod_queue(
         "response_mode": "text",
         "prompt": prompt,
     }
+    if max_new_tokens is not None:
+        payload_input["max_tokens"] = int(max_new_tokens)
 
     model_name = _resolve_endpoint_model(cfg, model_override)
     if model_name:
@@ -605,6 +612,7 @@ def _stream_content_local(
     image_path: Path,
     prompt: str,
     model_override: Optional[str] = None,
+    max_new_tokens: Optional[int] = None,
 ) -> Iterator[str]:
     model_obj, processor = _load_model_bundle(cfg, model_override=model_override)
 
@@ -627,14 +635,18 @@ def _stream_content_local(
         skip_special_tokens=True,
     )
 
+    resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else int(cfg.inference.max_new_tokens)
+    do_sample = bool(cfg.inference.do_sample)
+
     generate_kwargs = dict(
         **inputs,
         streamer=streamer,
-        max_new_tokens=int(cfg.inference.max_new_tokens),
-        do_sample=bool(cfg.inference.do_sample),
-        temperature=float(cfg.inference.temperature),
-        top_p=float(cfg.inference.top_p),
+        max_new_tokens=resolved_max_new_tokens,
+        do_sample=do_sample,
     )
+    if do_sample:
+        generate_kwargs["temperature"] = float(cfg.inference.temperature)
+        generate_kwargs["top_p"] = float(cfg.inference.top_p)
 
     worker = Thread(target=model_obj.generate, kwargs=generate_kwargs, daemon=True)
     worker.start()
@@ -649,6 +661,7 @@ def stream_content_from_image(
     prompt: str,
     model: Optional[str] = None,
     config_path: Optional[str] = None,
+    max_new_tokens: Optional[int] = None,
 ) -> Iterator[str]:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
@@ -660,6 +673,7 @@ def stream_content_from_image(
             image_path=image_path,
             prompt=prompt,
             model_override=model,
+            max_new_tokens=max_new_tokens,
         )
         return
     if cfg.inference.backend == "runpod_queue":
@@ -668,6 +682,7 @@ def stream_content_from_image(
             image_path=image_path,
             prompt=prompt,
             model_override=model,
+            max_new_tokens=max_new_tokens,
         )
         return
 
@@ -676,6 +691,7 @@ def stream_content_from_image(
         image_path=image_path,
         prompt=prompt,
         model_override=model,
+        max_new_tokens=max_new_tokens,
     )
 
 
@@ -684,8 +700,17 @@ def generate_content_from_image(
     prompt: str,
     model: Optional[str] = None,
     config_path: Optional[str] = None,
+    max_new_tokens: Optional[int] = None,
 ) -> str:
-    return "".join(stream_content_from_image(image_path=image_path, prompt=prompt, model=model, config_path=config_path))
+    return "".join(
+        stream_content_from_image(
+            image_path=image_path,
+            prompt=prompt,
+            model=model,
+            config_path=config_path,
+            max_new_tokens=max_new_tokens,
+        )
+    )
 
 
 def generate_page_extraction_from_image(

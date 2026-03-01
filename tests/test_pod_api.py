@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import asyncio
+import base64
 from pathlib import Path
 
 import pytest
@@ -82,3 +84,38 @@ def test_openapi_generation_includes_chat_completions() -> None:
     app = pod_api.create_app(api_key="test-key")
     spec = app.openapi()
     assert "/v1/chat/completions" in spec["paths"]
+
+
+def test_chat_completions_passes_max_tokens_to_inference(monkeypatch) -> None:
+    seen: dict[str, object] = {}
+
+    def _fake_generate_content_from_image(**kwargs) -> str:
+        seen.update(kwargs)
+        return "ok"
+
+    monkeypatch.setattr(pod_api, "generate_content_from_image", _fake_generate_content_from_image)
+    app = pod_api.create_app(api_key="test-key")
+    route = next(r for r in app.routes if getattr(r, "path", "") == "/v1/chat/completions")
+    image_data_uri = "data:image/png;base64," + base64.b64encode(b"\x89PNG\r\n\x1a\n").decode("ascii")
+
+    response = asyncio.run(
+        route.endpoint(
+            payload={
+                "model": "qwen-gt",
+                "max_tokens": 13,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": "hello"},
+                            {"type": "image_url", "image_url": {"url": image_data_uri}},
+                        ],
+                    }
+                ],
+            },
+            authorization="Bearer test-key",
+        )
+    )
+
+    assert response.status_code == 200
+    assert seen["max_new_tokens"] == 13
