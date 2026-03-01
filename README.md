@@ -361,6 +361,16 @@ export FINETREE_POD_DEBUG_ERRORS=0
 `FINETREE_ADAPTER_REF` overrides `inference.adapter_path` for local pod inference and is the recommended
 way to point the pod to a fine-tuned LoRA adapter repo.
 
+Minimal deployment flow (go/no-go):
+
+```bash
+export FINETREE_POD_API_KEY=<token-for-6666>
+export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>   # optional but recommended
+scripts/runpod_machine_tools.sh flow-check                            # must PASS
+scripts/runpod_machine_tools.sh start configs/qwen_ui_runpod_pod_local_8bit.yaml
+scripts/runpod_machine_tools.sh warmup
+```
+
 Set `FINETREE_POD_DEBUG_ERRORS=1` during deployment/debug sessions to include exception details in `500` responses.
 Each internal failure returns an `error_id` and logs a matching traceback, which you can locate with:
 
