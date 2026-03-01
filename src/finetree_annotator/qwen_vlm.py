@@ -339,6 +339,9 @@ def _stream_content_from_runpod_endpoint(
     prompt: str,
     model_override: Optional[str] = None,
     max_new_tokens: Optional[int] = None,
+    do_sample: Optional[bool] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
 ) -> Iterator[str]:
     base_url = str(cfg.inference.endpoint_base_url or os.getenv("FINETREE_QWEN_ENDPOINT_BASE_URL") or "").strip()
     if not base_url:
@@ -358,6 +361,9 @@ def _stream_content_from_runpod_endpoint(
     image_data_uri = _encode_image_data_uri(image_path)
 
     resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else int(cfg.inference.max_new_tokens)
+    effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
+    effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
+    effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
 
     payload: dict[str, Any] = {
         "model": model_name,
@@ -373,9 +379,9 @@ def _stream_content_from_runpod_endpoint(
         "max_tokens": resolved_max_new_tokens,
         "stream": True,
     }
-    if bool(cfg.inference.do_sample):
-        payload["temperature"] = float(cfg.inference.temperature)
-        payload["top_p"] = float(cfg.inference.top_p)
+    if effective_do_sample:
+        payload["temperature"] = effective_temperature
+        payload["top_p"] = effective_top_p
 
     try:
         import httpx
@@ -534,6 +540,9 @@ def _stream_content_from_runpod_queue(
     prompt: str,
     model_override: Optional[str] = None,
     max_new_tokens: Optional[int] = None,
+    do_sample: Optional[bool] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
 ) -> Iterator[str]:
     run_url, status_base_url = _resolve_runpod_queue_urls(cfg)
     api_key = _endpoint_api_key(cfg)
@@ -555,6 +564,13 @@ def _stream_content_from_runpod_queue(
     model_name = _resolve_endpoint_model(cfg, model_override)
     if model_name:
         payload_input["model"] = model_name
+
+    effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
+    effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
+    effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
+    if effective_do_sample:
+        payload_input["temperature"] = effective_temperature
+        payload_input["top_p"] = effective_top_p
 
     payload = {"input": payload_input}
 
@@ -664,6 +680,9 @@ def _stream_content_local(
     prompt: str,
     model_override: Optional[str] = None,
     max_new_tokens: Optional[int] = None,
+    do_sample: Optional[bool] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
 ) -> Iterator[str]:
     model_obj, processor = _load_model_bundle(cfg, model_override=model_override)
 
@@ -687,17 +706,19 @@ def _stream_content_local(
     )
 
     resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else int(cfg.inference.max_new_tokens)
-    do_sample = bool(cfg.inference.do_sample)
+    effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
+    effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
+    effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
 
     generate_kwargs = dict(
         **inputs,
         streamer=streamer,
         max_new_tokens=resolved_max_new_tokens,
-        do_sample=do_sample,
+        do_sample=effective_do_sample,
     )
-    if do_sample:
-        generate_kwargs["temperature"] = float(cfg.inference.temperature)
-        generate_kwargs["top_p"] = float(cfg.inference.top_p)
+    if effective_do_sample:
+        generate_kwargs["temperature"] = effective_temperature
+        generate_kwargs["top_p"] = effective_top_p
 
     worker = Thread(target=model_obj.generate, kwargs=generate_kwargs, daemon=True)
     worker.start()
@@ -713,6 +734,9 @@ def stream_content_from_image(
     model: Optional[str] = None,
     config_path: Optional[str] = None,
     max_new_tokens: Optional[int] = None,
+    do_sample: Optional[bool] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
 ) -> Iterator[str]:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
@@ -725,6 +749,9 @@ def stream_content_from_image(
             prompt=prompt,
             model_override=model,
             max_new_tokens=max_new_tokens,
+            do_sample=do_sample,
+            temperature=temperature,
+            top_p=top_p,
         )
         return
     if cfg.inference.backend == "runpod_queue":
@@ -734,6 +761,9 @@ def stream_content_from_image(
             prompt=prompt,
             model_override=model,
             max_new_tokens=max_new_tokens,
+            do_sample=do_sample,
+            temperature=temperature,
+            top_p=top_p,
         )
         return
 
@@ -743,6 +773,9 @@ def stream_content_from_image(
         prompt=prompt,
         model_override=model,
         max_new_tokens=max_new_tokens,
+        do_sample=do_sample,
+        temperature=temperature,
+        top_p=top_p,
     )
 
 
@@ -752,6 +785,9 @@ def generate_content_from_image(
     model: Optional[str] = None,
     config_path: Optional[str] = None,
     max_new_tokens: Optional[int] = None,
+    do_sample: Optional[bool] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
 ) -> str:
     return "".join(
         stream_content_from_image(
@@ -760,6 +796,9 @@ def generate_content_from_image(
             model=model,
             config_path=config_path,
             max_new_tokens=max_new_tokens,
+            do_sample=do_sample,
+            temperature=temperature,
+            top_p=top_p,
         )
     )
 
