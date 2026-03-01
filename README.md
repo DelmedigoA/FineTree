@@ -355,10 +355,18 @@ export FINETREE_GRADIO_USER=<gradio-user>
 export FINETREE_GRADIO_PASS=<gradio-pass>
 export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>
 export FINETREE_QWEN_QUANTIZATION=bnb_8bit
+export FINETREE_POD_DEBUG_ERRORS=0
 ```
 
 `FINETREE_ADAPTER_REF` overrides `inference.adapter_path` for local pod inference and is the recommended
 way to point the pod to a fine-tuned LoRA adapter repo.
+
+Set `FINETREE_POD_DEBUG_ERRORS=1` during deployment/debug sessions to include exception details in `500` responses.
+Each internal failure returns an `error_id` and logs a matching traceback, which you can locate with:
+
+```bash
+scripts/runpod_machine_tools.sh logs-find <error_id>
+```
 
 Build and push a Pod image:
 
