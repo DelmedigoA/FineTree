@@ -50,12 +50,16 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
 
     calls: dict[str, object] = {}
 
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="flash_attention_2")
+
     class _FakeAutoModel:
         @staticmethod
         def from_pretrained(model_name: str, **kwargs):
             calls["model_name"] = model_name
             calls["model_kwargs"] = kwargs
-            return object()
+            return _FakeModel()
 
     class _FakeAutoProcessor:
         @staticmethod
@@ -82,7 +86,12 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
     cfg = FinetuneConfig.model_validate(
         {
             "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
-            "inference": {"adapter_path": "asafd60/qwen35-test"},
+            "inference": {
+                "adapter_path": "asafd60/qwen35-test",
+                "quantization_mode": "bnb_8bit",
+                "attn_implementation": "flash_attention_2",
+                "require_flash_attention": True,
+            },
         }
     )
     qwen_vlm._load_model_bundle(cfg)
@@ -90,6 +99,89 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
     assert calls["model_name"] == "unsloth/Qwen3.5-35B-A3B"
     assert calls["processor_name"] == "unsloth/Qwen3.5-35B-A3B"
     assert calls["adapter_ref"] == "asafd60/qwen35-test"
+    assert calls["model_kwargs"]["load_in_8bit"] is True
+    assert calls["model_kwargs"]["attn_implementation"] == "flash_attention_2"
+
+
+def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    calls: dict[str, object] = {}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="flash_attention_2")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["model_name"] = model_name
+            calls["model_kwargs"] = kwargs
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {"load_in_4bit": True, "quantization_mode": "bnb_8bit"},
+        }
+    )
+    qwen_vlm._load_model_bundle(cfg)
+
+    assert calls["model_name"] == "unsloth/Qwen3.5-35B-A3B"
+    assert calls["model_kwargs"]["load_in_4bit"] is True
+    assert "load_in_8bit" not in calls["model_kwargs"]
+
+
+def test_load_model_bundle_requires_flash_attention(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="sdpa")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {"require_flash_attention": True, "attn_implementation": "flash_attention_2"},
+        }
+    )
+    try:
+        qwen_vlm._load_model_bundle(cfg)
+    except RuntimeError as exc:
+        assert "Flash attention is required" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("Expected flash attention requirement failure")
 
 
 def test_stream_content_from_image_uses_runpod_endpoint_backend(tmp_path: Path, monkeypatch) -> None:

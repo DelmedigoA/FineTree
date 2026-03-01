@@ -1,1 +1,1 @@
-"""Deployment utilities for RunPod endpoints."""
+"""Deployment utilities for RunPod endpoints and pods."""

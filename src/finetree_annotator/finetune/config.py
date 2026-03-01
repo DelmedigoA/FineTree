@@ -131,7 +131,10 @@ class InferenceConfig(BaseModel):
     temperature: float = 0.0
     top_p: float = 0.95
     do_sample: bool = False
+    quantization_mode: Literal["none", "bnb_8bit", "bnb_4bit"] = "none"
     torch_dtype: Literal["auto", "bfloat16", "float16", "float32"] = "auto"
+    attn_implementation: Literal["flash_attention_2", "sdpa", "eager"] = "sdpa"
+    require_flash_attention: bool = False
     device_map: str = "auto"
     trust_remote_code: bool = True
     load_in_4bit: bool = False

@@ -28,13 +28,18 @@ finetree-annotator = "finetree_annotator.app:main"
 finetree-pdf-to-images = "finetree_annotator.pdf_to_images:main"
 finetree-gemini-vlm = "finetree_annotator.gemini_vlm:main"
 finetree-qwen-gt = "finetree_annotator.qwen_vlm:main"
+list_commands = "finetree_annotator.list_commands:main"
 finetree-ft-build-dataset = "finetree_annotator.finetune.dataset_builder:main"
 finetree-ft-preflight = "finetree_annotator.finetune.preflight:main"
 finetree-ft-train = "finetree_annotator.finetune.trainer_unsloth:main"
 finetree-ft-merge-push = "finetree_annotator.finetune.merge_push:main"
+finetree-ft-export-quantized = "finetree_annotator.finetune.export_quantized:main"
 finetree-ft-push-dataset = "finetree_annotator.finetune.push_dataset_hub:main"
 finetree-runpod-endpoint-env = "finetree_annotator.deploy.runpod_endpoint:main"
 finetree-runpod-worker = "finetree_annotator.deploy.runpod_serverless_worker:main"
+finetree-pod-api = "finetree_annotator.deploy.pod_api:main"
+finetree-pod-gradio = "finetree_annotator.deploy.pod_gradio:main"
+finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

@@ -14,6 +14,9 @@ def test_finetune_config_defaults_validate() -> None:
     assert cfg.training.ddp_find_unused_parameters is False
     assert cfg.training.require_val_set is True
     assert cfg.training.compute_token_accuracy is True
+    assert cfg.inference.quantization_mode == "none"
+    assert cfg.inference.attn_implementation == "sdpa"
+    assert cfg.inference.require_flash_attention is False
 
 
 def test_inference_backend_accepts_runpod_queue() -> None:
