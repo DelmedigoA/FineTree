@@ -33,7 +33,7 @@ Options:
 Required secrets in Doppler (minimum):
   FINETREE_POD_API_KEY
   POD_ID (or RUNPOD_POD_ID) unless --pod-id is provided
-  FINETREE_POD_IMAGE_NAME (or IMAGE_NAME) unless --image-name is provided
+  (image defaults to delmedigo/finetree-pod:latest if not provided)
 
 Optional secrets:
   FINETREE_POD_IMAGE_TAG or IMAGE_TAG
@@ -157,7 +157,7 @@ first_non_empty() {
 }
 
 POD_ID="$(first_non_empty "${POD_ID_OVERRIDE}" "$(secret_value POD_ID)" "$(secret_value RUNPOD_POD_ID)")"
-IMAGE_NAME="$(first_non_empty "${IMAGE_NAME_OVERRIDE}" "$(secret_value FINETREE_POD_IMAGE_NAME)" "$(secret_value IMAGE_NAME)")"
+IMAGE_NAME="$(first_non_empty "${IMAGE_NAME_OVERRIDE}" "$(secret_value FINETREE_POD_IMAGE_NAME)" "$(secret_value IMAGE_NAME)" "delmedigo/finetree-pod")"
 IMAGE_TAG="$(first_non_empty "${IMAGE_TAG_OVERRIDE}" "$(secret_value FINETREE_POD_IMAGE_TAG)" "$(secret_value IMAGE_TAG)" "latest")"
 FINETREE_POD_API_KEY="$(secret_value FINETREE_POD_API_KEY)"
 FINETREE_GRADIO_USER="$(secret_value FINETREE_GRADIO_USER)"
@@ -172,10 +172,6 @@ HF_TOKEN="$(secret_value HF_TOKEN)"
 
 if [[ -z "${POD_ID}" ]]; then
   log "missing pod id. set --pod-id or Doppler secret POD_ID/RUNPOD_POD_ID"
-  exit 1
-fi
-if [[ -z "${IMAGE_NAME}" ]]; then
-  log "missing image name. set --image-name or Doppler secret FINETREE_POD_IMAGE_NAME/IMAGE_NAME"
   exit 1
 fi
 if [[ -z "${FINETREE_POD_API_KEY}" ]]; then
