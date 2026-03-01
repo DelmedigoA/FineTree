@@ -86,6 +86,10 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
             calls["processor_kwargs"] = kwargs
             return object()
 
+    class _FakeBitsAndBytesConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
     class _FakePeftModel:
         @staticmethod
         def from_pretrained(model_obj, adapter_ref: str, **kwargs):
@@ -96,6 +100,7 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
     fake_transformers = types.ModuleType("transformers")
     fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
     fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_transformers.BitsAndBytesConfig = _FakeBitsAndBytesConfig
     fake_peft = types.ModuleType("peft")
     fake_peft.PeftModel = _FakePeftModel
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
@@ -117,14 +122,18 @@ def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
     assert calls["model_name"] == "unsloth/Qwen3.5-35B-A3B"
     assert calls["processor_name"] == "unsloth/Qwen3.5-35B-A3B"
     assert calls["adapter_ref"] == "asafd60/qwen35-test"
-    assert calls["model_kwargs"]["load_in_8bit"] is True
+    quant_cfg = calls["model_kwargs"]["quantization_config"]  # type: ignore[index]
+    assert isinstance(quant_cfg, _FakeBitsAndBytesConfig)
+    assert quant_cfg.kwargs["load_in_8bit"] is True
+    assert "load_in_8bit" not in calls["model_kwargs"]
     assert calls["model_kwargs"]["attn_implementation"] == "flash_attention_2"
 
 
 def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
     qwen_vlm._MODEL_CACHE.clear()
     monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
-    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    sentinel_dtype = object()
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: sentinel_dtype)
     monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
 
     calls: dict[str, object] = {}
@@ -145,9 +154,14 @@ def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
         def from_pretrained(model_name: str, **kwargs):
             return object()
 
+    class _FakeBitsAndBytesConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
     fake_transformers = types.ModuleType("transformers")
     fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
     fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_transformers.BitsAndBytesConfig = _FakeBitsAndBytesConfig
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
 
     cfg = FinetuneConfig.model_validate(
@@ -159,7 +173,11 @@ def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
     qwen_vlm._load_model_bundle(cfg)
 
     assert calls["model_name"] == "unsloth/Qwen3.5-35B-A3B"
-    assert calls["model_kwargs"]["load_in_4bit"] is True
+    quant_cfg = calls["model_kwargs"]["quantization_config"]  # type: ignore[index]
+    assert isinstance(quant_cfg, _FakeBitsAndBytesConfig)
+    assert quant_cfg.kwargs["load_in_4bit"] is True
+    assert quant_cfg.kwargs["bnb_4bit_compute_dtype"] is sentinel_dtype
+    assert "load_in_4bit" not in calls["model_kwargs"]
     assert "load_in_8bit" not in calls["model_kwargs"]
 
 
@@ -237,6 +255,10 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
             calls["processor_name"] = model_name
             return object()
 
+    class _FakeBitsAndBytesConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
     class _FakePeftModel:
         @staticmethod
         def from_pretrained(model_obj, adapter_ref: str, **kwargs):
@@ -246,6 +268,7 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
     fake_transformers = types.ModuleType("transformers")
     fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
     fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_transformers.BitsAndBytesConfig = _FakeBitsAndBytesConfig
     fake_peft = types.ModuleType("peft")
     fake_peft.PeftModel = _FakePeftModel
     monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
@@ -267,7 +290,82 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
     assert calls["model_name"] == "org/custom-model"
     assert calls["processor_name"] == "org/custom-model"
     assert calls["adapter_ref"] == "org/custom-adapter"
+    quant_cfg = calls["model_kwargs"]["quantization_config"]  # type: ignore[index]
+    assert isinstance(quant_cfg, _FakeBitsAndBytesConfig)
+    assert quant_cfg.kwargs["load_in_8bit"] is True
+    assert "load_in_8bit" not in calls["model_kwargs"]
+
+
+def test_load_model_bundle_falls_back_to_legacy_quant_kwargs_without_bitsandbytes(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    calls: dict[str, object] = {}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="flash_attention_2")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["model_kwargs"] = kwargs
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {"quantization_mode": "bnb_8bit"},
+        }
+    )
+    qwen_vlm._load_model_bundle(cfg)
     assert calls["model_kwargs"]["load_in_8bit"] is True
+
+
+def test_load_with_optional_token_does_not_retry_on_unrelated_typeerror() -> None:
+    seen: list[tuple[str, dict[str, object]]] = []
+
+    def _load_fn(ref: str, **kwargs):
+        seen.append((ref, kwargs))
+        raise TypeError("unexpected keyword argument 'load_in_8bit'")
+
+    try:
+        qwen_vlm._load_with_optional_token(_load_fn, "org/model", "hf_123")
+    except TypeError as exc:
+        assert "load_in_8bit" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("Expected TypeError")
+
+    assert len(seen) == 1
+    assert seen[0][1]["token"] == "hf_123"
+
+
+def test_load_with_optional_token_retries_with_use_auth_token_on_token_typeerror() -> None:
+    seen: list[tuple[str, dict[str, object]]] = []
+
+    def _load_fn(ref: str, **kwargs):
+        seen.append((ref, kwargs))
+        if "token" in kwargs:
+            raise TypeError("unexpected keyword argument 'token'")
+        return "ok"
+
+    result = qwen_vlm._load_with_optional_token(_load_fn, "org/model", "hf_123")
+    assert result == "ok"
+    assert len(seen) == 2
+    assert seen[0][1]["token"] == "hf_123"
+    assert seen[1][1]["use_auth_token"] == "hf_123"
 
 
 def test_load_model_bundle_requires_flash_attention(monkeypatch) -> None:
