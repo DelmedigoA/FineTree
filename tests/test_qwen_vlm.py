@@ -145,6 +145,67 @@ def test_load_model_bundle_uses_4bit_alias(monkeypatch) -> None:
     assert "load_in_8bit" not in calls["model_kwargs"]
 
 
+def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+    monkeypatch.setenv("FINETREE_QWEN_MODEL", "org/custom-model")
+    monkeypatch.setenv("FINETREE_ADAPTER_REF", "org/custom-adapter")
+    monkeypatch.setenv("FINETREE_QWEN_QUANTIZATION", "bnb_8bit")
+
+    calls: dict[str, object] = {}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="flash_attention_2")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["model_name"] = model_name
+            calls["model_kwargs"] = kwargs
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["processor_name"] = model_name
+            return object()
+
+    class _FakePeftModel:
+        @staticmethod
+        def from_pretrained(model_obj, adapter_ref: str, **kwargs):
+            calls["adapter_ref"] = adapter_ref
+            return model_obj
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_peft = types.ModuleType("peft")
+    fake_peft.PeftModel = _FakePeftModel
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setitem(sys.modules, "peft", fake_peft)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "adapter_path": None,
+                "quantization_mode": "none",
+                "attn_implementation": "flash_attention_2",
+                "require_flash_attention": True,
+            },
+        }
+    )
+    qwen_vlm._load_model_bundle(cfg)
+
+    assert calls["model_name"] == "org/custom-model"
+    assert calls["processor_name"] == "org/custom-model"
+    assert calls["adapter_ref"] == "org/custom-adapter"
+    assert calls["model_kwargs"]["load_in_8bit"] is True
+
+
 def test_load_model_bundle_requires_flash_attention(monkeypatch) -> None:
     qwen_vlm._MODEL_CACHE.clear()
     monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)

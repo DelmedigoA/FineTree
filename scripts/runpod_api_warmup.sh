@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ts_utc() {
+  date -u +"%Y-%m-%dT%H:%M:%SZ"
+}
+
+log_info() {
+  echo "[$(ts_utc)] [warmup] $*"
+}
+
 usage() {
   cat <<'EOF'
 Warm up a FineTree pod API with a tiny multimodal request.
@@ -113,20 +121,25 @@ IMAGE_DATA_URI="data:image/png;base64,${TINY_PNG_B64}"
 HEALTH_URL="${BASE_URL}/healthz"
 CHAT_URL="${BASE_URL}/v1/chat/completions"
 
-echo "Warmup target: ${CHAT_URL}"
-echo "Config: model=${MODEL} max_tokens=${MAX_TOKENS} attempts=${ATTEMPTS} timeout=${TIMEOUT_SECONDS}s"
+started_epoch="$(date +%s)"
+log_info "started target=${CHAT_URL}"
+log_info "config model=${MODEL} max_tokens=${MAX_TOKENS} attempts=${ATTEMPTS} sleep=${SLEEP_SECONDS}s timeout=${TIMEOUT_SECONDS}s"
 
 for attempt in $(seq 1 "${ATTEMPTS}"); do
+  attempt_epoch="$(date +%s)"
+  log_info "attempt=${attempt}/${ATTEMPTS} phase=healthz begin url=${HEALTH_URL}"
   health_tmp="$(mktemp)"
   health_code="$(curl -sS -m 20 -o "${health_tmp}" -w "%{http_code}" "${HEALTH_URL}" || true)"
   if [[ "${health_code}" != "200" ]] || ! jq -e '.ok == true' "${health_tmp}" >/dev/null 2>&1; then
     health_preview="$(tr '\n' ' ' < "${health_tmp}" | cut -c1-200 || true)"
     rm -f "${health_tmp}"
-    echo "[${attempt}/${ATTEMPTS}] healthz not ready (HTTP ${health_code}) ${health_preview}"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=healthz not_ready http=${health_code} body='${health_preview}'"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=sleep seconds=${SLEEP_SECONDS}"
     sleep "${SLEEP_SECONDS}"
     continue
   fi
   rm -f "${health_tmp}"
+  log_info "attempt=${attempt}/${ATTEMPTS} phase=healthz ready"
 
   payload="$(
     jq -n \
@@ -150,6 +163,7 @@ for attempt in $(seq 1 "${ATTEMPTS}"); do
       }'
   )"
 
+  log_info "attempt=${attempt}/${ATTEMPTS} phase=request begin url=${CHAT_URL}"
   set +e
   response="$(curl -sS -m "${TIMEOUT_SECONDS}" \
     -H "Authorization: Bearer ${API_KEY}" \
@@ -160,28 +174,36 @@ for attempt in $(seq 1 "${ATTEMPTS}"); do
   set -e
 
   if [[ "${curl_code}" -ne 0 ]]; then
-    echo "[${attempt}/${ATTEMPTS}] warmup request failed (curl ${curl_code}): ${response}"
+    elapsed="$(( $(date +%s) - attempt_epoch ))"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=request failed curl_code=${curl_code} elapsed=${elapsed}s msg='${response}'"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=sleep seconds=${SLEEP_SECONDS}"
     sleep "${SLEEP_SECONDS}"
     continue
   fi
 
+  elapsed="$(( $(date +%s) - attempt_epoch ))"
+  log_info "attempt=${attempt}/${ATTEMPTS} phase=request completed elapsed=${elapsed}s"
+
   content="$(jq -r '.choices[0].message.content // empty' <<< "${response}" 2>/dev/null || true)"
   if [[ -n "${content}" ]]; then
-    echo "[${attempt}/${ATTEMPTS}] warmup succeeded."
-    echo "${content}"
+    total_elapsed="$(( $(date +%s) - started_epoch ))"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=done status=success total_elapsed=${total_elapsed}s"
+    log_info "response='${content}'"
     exit 0
   fi
 
   error_text="$(jq -r '.error.message // .detail // empty' <<< "${response}" 2>/dev/null || true)"
   if [[ -n "${error_text}" ]]; then
-    echo "[${attempt}/${ATTEMPTS}] warmup still loading: ${error_text}"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=request loading detail='${error_text}'"
   else
     response_preview="$(tr '\n' ' ' <<< "${response}" | cut -c1-250)"
-    echo "[${attempt}/${ATTEMPTS}] warmup got non-ready response: ${response_preview}"
+    log_info "attempt=${attempt}/${ATTEMPTS} phase=request non_ready body='${response_preview}'"
   fi
 
+  log_info "attempt=${attempt}/${ATTEMPTS} phase=sleep seconds=${SLEEP_SECONDS}"
   sleep "${SLEEP_SECONDS}"
 done
 
-echo "Warmup failed after ${ATTEMPTS} attempts." >&2
+total_elapsed="$(( $(date +%s) - started_epoch ))"
+log_info "status=failed attempts=${ATTEMPTS} total_elapsed=${total_elapsed}s"
 exit 1

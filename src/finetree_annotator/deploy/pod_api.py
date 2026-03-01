@@ -137,6 +137,18 @@ def _bearer_token(auth_header: str) -> str:
     return ""
 
 
+def _resolve_model_selection(payload_model: Any, served_model_name: str) -> tuple[str, Optional[str]]:
+    requested = str(payload_model or "").strip()
+    served = str(served_model_name or "").strip() or "qwen-gt"
+    if not requested:
+        return served, None
+    if requested == served:
+        # Clients typically send the served alias ("qwen-gt"). For local backend,
+        # passing this as a model override would fail HF model resolution.
+        return served, None
+    return requested, requested
+
+
 def create_app(
     *,
     config_path: Optional[str] = None,
@@ -146,7 +158,7 @@ def create_app(
 ) -> Any:
     try:
         import asyncio
-        from fastapi import FastAPI, Header, HTTPException, Request
+        from fastapi import Body, FastAPI, Header, HTTPException
         from fastapi.responses import JSONResponse, StreamingResponse
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Pod API requires fastapi and uvicorn. Install with `pip install fastapi uvicorn`.") from exc
@@ -192,13 +204,12 @@ def create_app(
         }
 
     @app.post("/v1/chat/completions")
-    async def chat_completions(request: Request, authorization: Optional[str] = Header(default=None)) -> Any:
+    async def chat_completions(
+        payload: Dict[str, Any] = Body(...),
+        authorization: Optional[str] = Header(default=None),
+    ) -> Any:
         await _check_auth(authorization)
 
-        try:
-            payload = await request.json()
-        except Exception:
-            raise HTTPException(status_code=400, detail="Request body must be valid JSON.")
         if not isinstance(payload, dict):
             raise HTTPException(status_code=400, detail="Request body must be a JSON object.")
 
@@ -215,7 +226,7 @@ def create_app(
 
         req_id = f"chatcmpl-{secrets.token_hex(8)}"
         stream = bool(payload.get("stream"))
-        model_name = str(payload.get("model") or model_id).strip() or model_id
+        model_name, inference_model_override = _resolve_model_selection(payload.get("model"), model_id)
         max_tokens = payload.get("max_tokens")
         if max_tokens is not None:
             try:
@@ -241,7 +252,7 @@ def create_app(
                     for token in stream_content_from_image(
                         image_path=image_path,
                         prompt=prompt,
-                        model=model_name,
+                        model=inference_model_override,
                         config_path=cfg_path,
                     ):
                         if not token:
@@ -261,16 +272,20 @@ def create_app(
         if stream:
             return StreamingResponse(_stream_sse(), media_type="text/event-stream")
 
-        try:
+        def _run_non_stream_inference() -> str:
+            # Run blocking model load/inference off the event loop so health checks stay responsive.
             with tempfile.TemporaryDirectory(prefix="finetree-pod-api-") as temp_dir_str:
                 temp_dir = Path(temp_dir_str)
                 image_path = _image_path_from_data_uri(image_url, temp_dir=temp_dir)
-                text = generate_content_from_image(
+                return generate_content_from_image(
                     image_path=image_path,
                     prompt=prompt,
-                    model=model_name,
+                    model=inference_model_override,
                     config_path=cfg_path,
                 )
+
+        try:
+            text = await asyncio.to_thread(_run_non_stream_inference)
         except ValueError as exc:
             _release_lease()
             raise HTTPException(status_code=400, detail=str(exc))

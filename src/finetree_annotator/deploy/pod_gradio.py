@@ -126,8 +126,9 @@ def build_app(config_path: Optional[str] = None):
 
         def _run(image_obj, prompt_text, model_name, stream_enabled):
             if bool(stream_enabled):
-                return _infer_stream(image_obj, prompt_text, model_name, config_path)
-            return _infer_once(image_obj, prompt_text, model_name, config_path)
+                yield from _infer_stream(image_obj, prompt_text, model_name, config_path)
+                return
+            yield _infer_once(image_obj, prompt_text, model_name, config_path)
 
         run.click(_run, inputs=[image, prompt, model, stream], outputs=output)
 
