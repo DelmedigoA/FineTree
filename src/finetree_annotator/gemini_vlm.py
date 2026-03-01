@@ -11,8 +11,12 @@ import tomllib
 from pathlib import Path
 from typing import Any, Iterator, Optional
 
-from google import genai
-from google.genai import types
+try:  # pragma: no cover - import presence depends on runtime environment
+    from google import genai
+    from google.genai import types
+except Exception:  # pragma: no cover
+    genai = None
+    types = None
 
 from .schemas import PageExtraction, PageType
 
@@ -45,6 +49,14 @@ _VALID_PAGE_TYPES = {t.value for t in PageType}
 _VALID_CURRENCIES = {"ILS", "USD", "EUR", "GBP"}
 _VALID_SCALES = {1, 1000, 1000000}
 _VALID_VALUE_TYPES = {"amount", "%"}
+
+
+def _require_google_genai() -> None:
+    if genai is None or types is None:
+        raise RuntimeError(
+            "google-genai is required for Gemini calls. "
+            "Install it with: python -m pip install google-genai"
+        )
 
 
 def _infer_mime_type(image_path: Path, explicit_mime_type: Optional[str]) -> str:
@@ -474,6 +486,7 @@ def generate_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> str:
+    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
@@ -502,6 +515,7 @@ def stream_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> Iterator[str]:
+    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
@@ -547,6 +561,7 @@ def generate_structured_json_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
 ) -> str:
+    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 

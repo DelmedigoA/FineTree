@@ -46,6 +46,17 @@ image_path.write_bytes(
     base64.b64decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO6p6nQAAAAASUVORK5CYII=")
 )
 
+try:
+    import torch
+except Exception:
+    torch = None
+
+if torch is not None:
+    print(f"cuda_available={torch.cuda.is_available()}")
+    if torch.cuda.is_available():
+        print(f"gpu_name={torch.cuda.get_device_name(0)}")
+        print(f"cuda_mem_before_mb={torch.cuda.memory_allocated(0) // (1024 * 1024)}")
+
 output = generate_content_from_image(
     image_path=image_path,
     prompt=prompt,
@@ -53,4 +64,8 @@ output = generate_content_from_image(
     max_new_tokens=max_tokens,
 )
 print(output)
+
+if torch is not None and torch.cuda.is_available():
+    print(f"cuda_mem_after_mb={torch.cuda.memory_allocated(0) // (1024 * 1024)}")
+    print(f"cuda_reserved_after_mb={torch.cuda.memory_reserved(0) // (1024 * 1024)}")
 PY
