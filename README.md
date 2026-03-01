@@ -371,6 +371,20 @@ scripts/runpod_machine_tools.sh start configs/qwen_ui_runpod_pod_local_8bit.yaml
 scripts/runpod_machine_tools.sh warmup
 ```
 
+Doppler-first deployment flow (build + pod update + warmup in one command):
+
+```bash
+scripts/runpod_deploy_doppler.sh --project <doppler-project> --config <doppler-config>
+```
+
+Expected Doppler secrets:
+
+- `FINETREE_POD_API_KEY`
+- `POD_ID` (or `RUNPOD_POD_ID`)
+- `FINETREE_POD_IMAGE_NAME` (or `IMAGE_NAME`)
+- `FINETREE_POD_IMAGE_TAG` (or `IMAGE_TAG`, default `latest`)
+- Optional runtime secrets: `FINETREE_ADAPTER_REF`, `HUGGING_FACE_HUB_TOKEN`, `HF_TOKEN`, `FINETREE_POD_DEBUG_ERRORS`
+
 Set `FINETREE_POD_DEBUG_ERRORS=1` during deployment/debug sessions to include exception details in `500` responses.
 Each internal failure returns an `error_id` and logs a matching traceback, which you can locate with:
 
