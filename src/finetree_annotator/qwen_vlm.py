@@ -63,12 +63,12 @@ def _ensure_cuda() -> None:
         )
 
 
-def _cache_key(model_name: str, adapter_path: Optional[str], cfg: FinetuneConfig) -> str:
+def _cache_key(model_name: str, adapter_path: Optional[str], quantization_mode: str, cfg: FinetuneConfig) -> str:
     return "|".join(
         [
             model_name,
             str(adapter_path or ""),
-            str(cfg.inference.quantization_mode),
+            str(quantization_mode),
             str(cfg.inference.torch_dtype),
             str(cfg.inference.attn_implementation),
             str(cfg.inference.require_flash_attention),
@@ -107,7 +107,48 @@ def _load_with_optional_token(load_fn: Any, ref: str, token: Optional[str], **kw
         raise
 
 
+def _env_flag(name: str) -> Optional[bool]:
+    raw = str(os.getenv(name) or "").strip().lower()
+    if not raw:
+        return None
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    return None
+
+
+def _effective_model_name(cfg: FinetuneConfig, model_override: Optional[str]) -> str:
+    override = str(model_override or "").strip()
+    if override:
+        return override
+    env_model = str(os.getenv("FINETREE_QWEN_MODEL") or "").strip()
+    if env_model:
+        return env_model
+    configured = str(cfg.inference.model_path or cfg.model.base_model or "").strip()
+    if configured:
+        return configured
+    raise RuntimeError("No model configured for local Qwen inference.")
+
+
+def _effective_adapter_path(cfg: FinetuneConfig) -> Optional[str]:
+    for name in ("FINETREE_ADAPTER_REF", "FINETREE_QWEN_ADAPTER_PATH"):
+        value = str(os.getenv(name) or "").strip()
+        if value:
+            return value
+    configured = str(cfg.inference.adapter_path or "").strip()
+    if configured:
+        return configured
+    return None
+
+
 def _effective_quantization_mode(cfg: FinetuneConfig) -> str:
+    env_mode = str(os.getenv("FINETREE_QWEN_QUANTIZATION") or "").strip().lower()
+    if env_mode in {"none", "bnb_8bit", "bnb_4bit"}:
+        return env_mode
+    env_load_in_4bit = _env_flag("FINETREE_QWEN_LOAD_IN_4BIT")
+    if env_load_in_4bit is True:
+        return "bnb_4bit"
     if cfg.inference.load_in_4bit:
         return "bnb_4bit"
     return str(cfg.inference.quantization_mode)
@@ -138,9 +179,10 @@ def _ensure_flash_attention(cfg: FinetuneConfig, model_obj: Any) -> None:
 def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
     _ensure_cuda()
 
-    model_name = str(model_override or cfg.inference.model_path or cfg.model.base_model)
-    adapter_ref, _ = _resolve_adapter_reference(cfg.inference.adapter_path)
-    key = _cache_key(model_name, adapter_ref, cfg)
+    model_name = _effective_model_name(cfg, model_override)
+    adapter_ref, _ = _resolve_adapter_reference(_effective_adapter_path(cfg))
+    quant_mode = _effective_quantization_mode(cfg)
+    key = _cache_key(model_name, adapter_ref, quant_mode, cfg)
     cached = _MODEL_CACHE.get(key)
     if cached is not None:
         return cached
@@ -157,7 +199,6 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
         "torch_dtype": _dtype_from_name(cfg.inference.torch_dtype),
         "attn_implementation": str(cfg.inference.attn_implementation),
     }
-    quant_mode = _effective_quantization_mode(cfg)
     if quant_mode == "bnb_4bit":
         model_kwargs["load_in_4bit"] = True
     elif quant_mode == "bnb_8bit":

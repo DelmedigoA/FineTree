@@ -49,3 +49,36 @@ def test_bearer_token_parsing() -> None:
     assert pod_api._bearer_token("Bearer abc") == "abc"
     assert pod_api._bearer_token("bearer xyz") == "xyz"
     assert pod_api._bearer_token("Token xyz") == ""
+
+
+def test_resolve_model_selection_uses_served_alias_by_default() -> None:
+    response_model, inference_model = pod_api._resolve_model_selection(None, "qwen-gt")
+    assert response_model == "qwen-gt"
+    assert inference_model is None
+
+
+def test_resolve_model_selection_ignores_served_alias_override() -> None:
+    response_model, inference_model = pod_api._resolve_model_selection("qwen-gt", "qwen-gt")
+    assert response_model == "qwen-gt"
+    assert inference_model is None
+
+
+def test_resolve_model_selection_accepts_explicit_underlying_model() -> None:
+    response_model, inference_model = pod_api._resolve_model_selection("unsloth/Qwen3.5-35B-A3B", "qwen-gt")
+    assert response_model == "unsloth/Qwen3.5-35B-A3B"
+    assert inference_model == "unsloth/Qwen3.5-35B-A3B"
+
+
+def test_chat_completions_route_uses_body_payload_not_query_request() -> None:
+    app = pod_api.create_app(api_key="test-key")
+    route = next(r for r in app.routes if getattr(r, "path", "") == "/v1/chat/completions")
+    query_param_names = [p.name for p in route.dependant.query_params]
+    body_param_names = [p.name for p in route.dependant.body_params]
+    assert "request" not in query_param_names
+    assert "payload" in body_param_names
+
+
+def test_openapi_generation_includes_chat_completions() -> None:
+    app = pod_api.create_app(api_key="test-key")
+    spec = app.openapi()
+    assert "/v1/chat/completions" in spec["paths"]
