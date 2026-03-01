@@ -381,7 +381,7 @@ Expected Doppler secrets:
 
 - `FINETREE_POD_API_KEY`
 - `POD_ID` (or `RUNPOD_POD_ID`)
-- `FINETREE_POD_IMAGE_NAME` (or `IMAGE_NAME`)
+- `FINETREE_POD_IMAGE_NAME` (or `IMAGE_NAME`, default `delmedigo/finetree-pod`)
 - `FINETREE_POD_IMAGE_TAG` (or `IMAGE_TAG`, default `latest`)
 - Optional runtime secrets: `FINETREE_ADAPTER_REF`, `HUGGING_FACE_HUB_TOKEN`, `HF_TOKEN`, `FINETREE_POD_DEBUG_ERRORS`
 
@@ -395,7 +395,7 @@ scripts/runpod_machine_tools.sh logs-find <error_id>
 Build and push a Pod image:
 
 ```bash
-export IMAGE_NAME=<registry>/<namespace>/finetree-pod
+export IMAGE_NAME=delmedigo/finetree-pod
 export IMAGE_TAG=latest
 docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.pod -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
 ```
@@ -482,7 +482,7 @@ pytest -q
 RunPod GPU image (Qwen3.5 MoE stack, `linux/amd64`):
 
 ```bash
-export IMAGE_NAME=<registry>/<namespace>/finetree-runpod
+export IMAGE_NAME=delmedigo/finetree-runpod
 export IMAGE_TAG=qwen35-moe
 docker buildx build --platform linux/amd64 -f Dockerfile -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
 ```
@@ -490,7 +490,7 @@ docker buildx build --platform linux/amd64 -f Dockerfile -t "${IMAGE_NAME}:${IMA
 Local CPU image (macOS/PC data tooling, no Unsloth GPU training):
 
 ```bash
-export LOCAL_IMAGE_NAME=<registry>/<namespace>/finetree-local
+export LOCAL_IMAGE_NAME=delmedigo/finetree-local
 export LOCAL_IMAGE_TAG=cpu
 docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.mac -t "${LOCAL_IMAGE_NAME}:${LOCAL_IMAGE_TAG}" --push .
 ```
