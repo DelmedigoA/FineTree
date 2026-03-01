@@ -28,6 +28,7 @@ Commands:
   check                 Run extended diagnostics (GPU, disk, health, auth).
   warmup [args...]      Run local warmup against 127.0.0.1:6666.
   logs [n]              Tail service log (default 120 lines).
+  logs-find <id> [n]    Show recent log lines around an error id (e.g. poderr-abc123).
   help                  Show this help.
 
 Warmup defaults:
@@ -207,6 +208,29 @@ tail_logs() {
   tail -n "${n}" -f "${LOG_FILE}"
 }
 
+find_log_error() {
+  local err_id="${1:-}"
+  local n="${2:-200}"
+  ensure_state_dir
+  if [[ -z "${err_id}" ]]; then
+    log "usage: logs-find <error_id> [n]"
+    return 1
+  fi
+  if [[ ! -f "${LOG_FILE}" ]]; then
+    log "log file does not exist yet: ${LOG_FILE}"
+    return 1
+  fi
+
+  log "searching log for error_id=${err_id}"
+  if have_cmd rg; then
+    rg -n -C 25 "${err_id}" "${LOG_FILE}" || true
+  else
+    grep -n "${err_id}" "${LOG_FILE}" || true
+  fi
+  log "last ${n} log lines"
+  tail -n "${n}" "${LOG_FILE}" || true
+}
+
 main() {
   local cmd="${1:-help}"
   shift || true
@@ -218,6 +242,7 @@ main() {
     check) check_service ;;
     warmup) warmup_local "$@" ;;
     logs) tail_logs "$@" ;;
+    logs-find) find_log_error "$@" ;;
     help|-h|--help) usage ;;
     *)
       log "unknown command: ${cmd}"

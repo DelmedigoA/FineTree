@@ -4,6 +4,7 @@ import argparse
 import base64
 import binascii
 import json
+import logging
 import mimetypes
 import os
 import secrets
@@ -175,6 +176,8 @@ def create_app(
     semaphore = asyncio.Semaphore(max_concurrency)
 
     app = FastAPI(title="FineTree Pod API", version="1.0.0")
+    logger = logging.getLogger("finetree.pod_api")
+    debug_errors = str(os.getenv("FINETREE_POD_DEBUG_ERRORS") or "").strip().lower() in {"1", "true", "yes", "on"}
 
     async def _check_auth(authorization: Optional[str]) -> None:
         provided = _bearer_token(str(authorization or ""))
@@ -268,6 +271,21 @@ def create_app(
                 err = {"error": {"message": str(exc), "type": "invalid_request_error"}}
                 yield f"data: {json.dumps(err, ensure_ascii=False)}\n\n".encode("utf-8")
                 yield b"data: [DONE]\n\n"
+            except Exception as exc:
+                err_id = f"poderr-{secrets.token_hex(6)}"
+                logger.exception(
+                    "chat_completions stream failure id=%s model=%s override=%s stream=%s",
+                    err_id,
+                    model_name,
+                    inference_model_override,
+                    stream,
+                )
+                message = f"Internal server error. error_id={err_id}"
+                if debug_errors:
+                    message = f"{message} detail={repr(exc)}"
+                err = {"error": {"message": message, "type": "server_error"}}
+                yield f"data: {json.dumps(err, ensure_ascii=False)}\n\n".encode("utf-8")
+                yield b"data: [DONE]\n\n"
             finally:
                 _release_lease()
 
@@ -294,7 +312,18 @@ def create_app(
             raise HTTPException(status_code=400, detail=str(exc))
         except Exception as exc:
             _release_lease()
-            raise HTTPException(status_code=500, detail=str(exc))
+            err_id = f"poderr-{secrets.token_hex(6)}"
+            logger.exception(
+                "chat_completions failure id=%s model=%s override=%s stream=%s",
+                err_id,
+                model_name,
+                inference_model_override,
+                stream,
+            )
+            detail = f"Internal server error. error_id={err_id}"
+            if debug_errors:
+                detail = f"{detail} detail={repr(exc)}"
+            raise HTTPException(status_code=500, detail=detail)
         finally:
             _release_lease()
 
