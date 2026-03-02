@@ -75,6 +75,50 @@ def test_resolve_adapter_reference_supports_hub_repo() -> None:
     assert is_local is False
 
 
+def test_apply_chat_template_with_thinking_control_prefers_enable_thinking_arg() -> None:
+    seen: dict[str, object] = {}
+
+    class _Processor:
+        @staticmethod
+        def apply_chat_template(messages, **kwargs):
+            seen["messages"] = messages
+            seen["kwargs"] = kwargs
+            return "chat"
+
+    result = qwen_vlm._apply_chat_template_with_thinking_control(
+        processor=_Processor(),
+        messages=[{"role": "user", "content": "hi"}],
+        enable_thinking=False,
+    )
+    assert result == "chat"
+    kwargs = seen["kwargs"]  # type: ignore[assignment]
+    assert kwargs["enable_thinking"] is False
+    assert kwargs["tokenize"] is False
+    assert kwargs["add_generation_prompt"] is True
+
+
+def test_apply_chat_template_with_thinking_control_falls_back_to_chat_template_kwargs() -> None:
+    seen: dict[str, object] = {}
+
+    class _Processor:
+        @staticmethod
+        def apply_chat_template(messages, **kwargs):
+            if "enable_thinking" in kwargs:
+                raise TypeError("unexpected keyword argument 'enable_thinking'")
+            seen["messages"] = messages
+            seen["kwargs"] = kwargs
+            return "chat"
+
+    result = qwen_vlm._apply_chat_template_with_thinking_control(
+        processor=_Processor(),
+        messages=[{"role": "user", "content": "hi"}],
+        enable_thinking=False,
+    )
+    assert result == "chat"
+    kwargs = seen["kwargs"]  # type: ignore[assignment]
+    assert kwargs["chat_template_kwargs"] == {"enable_thinking": False}
+
+
 def test_load_model_bundle_accepts_remote_adapter(monkeypatch) -> None:
     qwen_vlm._MODEL_CACHE.clear()
     monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
@@ -498,8 +542,9 @@ def test_stream_content_from_image_uses_runpod_endpoint_backend(tmp_path: Path, 
     assert seen["endpoint"] == "https://api.runpod.ai/v2/abc/openai/v1/chat/completions"
     payload = seen["json"]  # type: ignore[assignment]
     assert payload["max_tokens"] == 120
-    assert "temperature" not in payload
-    assert "top_p" not in payload
+    assert payload["temperature"] == 0.7
+    assert payload["top_p"] == 0.8
+    assert payload["chat_template_kwargs"] == {"enable_thinking": False}
 
 
 def test_stream_content_from_image_runpod_endpoint_adds_sampling_fields_when_enabled(tmp_path: Path, monkeypatch) -> None:
@@ -571,6 +616,7 @@ def test_stream_content_from_image_runpod_endpoint_adds_sampling_fields_when_ena
     payload = seen["json"]  # type: ignore[assignment]
     assert payload["temperature"] == 0.2
     assert payload["top_p"] == 0.8
+    assert payload["chat_template_kwargs"] == {"enable_thinking": False}
 
 
 def test_stream_content_from_image_uses_runpod_queue_backend(tmp_path: Path, monkeypatch) -> None:
@@ -661,6 +707,7 @@ def test_stream_content_from_image_uses_runpod_queue_backend(tmp_path: Path, mon
     assert payload_input["response_mode"] == "text"
     assert payload_input["model"] == "qwenasaf"
     assert payload_input["max_tokens"] == 17
+    assert payload_input["chat_template_kwargs"] == {"enable_thinking": False}
     assert isinstance(payload_input["image_base64"], str)
 
 

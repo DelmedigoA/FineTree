@@ -10,9 +10,9 @@ inference:
   endpoint_timeout_sec: 180
   parser_mode: streaming_page_extraction
   max_new_tokens: 120
-  temperature: 0.0
-  top_p: 0.95
-  do_sample: false
+  temperature: 0.7
+  top_p: 0.8
+  do_sample: true
   quantization_mode: none
   torch_dtype: bfloat16
   attn_implementation: sdpa
