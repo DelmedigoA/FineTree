@@ -508,6 +508,8 @@ Minimal API request body example:
 ### Fact field lists
 
 - `note`: optional open text attached to a specific fact (for example, `*without debt insurance ...`)
+- `is_beur`: optional boolean flag for whether the fact is tied to a beur/footnote
+- `beur_num`: optional beur/footnote identifier for the fact (for example, `5`, `2ה׳`)
 - `currency` options: `ILS`, `USD`, `EUR`, `GBP`
 - `scale` options: `1`, `1000`, `1000000`
 

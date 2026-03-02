@@ -13,7 +13,18 @@ from pydantic import ValidationError
 
 from .schemas import Currency, Fact, PageMeta, PageType, Scale
 
-FACT_KEYS = ("value", "note", "refference", "date", "path", "currency", "scale", "value_type")
+FACT_KEYS = (
+    "value",
+    "note",
+    "is_beur",
+    "beur_num",
+    "refference",
+    "date",
+    "path",
+    "currency",
+    "scale",
+    "value_type",
+)
 CURRENCY_OPTIONS = [c.value for c in Currency]
 SCALE_OPTIONS = [s.value for s in Scale]
 
@@ -34,6 +45,8 @@ def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
         "note": None,
+        "is_beur": None,
+        "beur_num": None,
         "refference": "",
         "date": None,
         "path": [],
@@ -72,6 +85,23 @@ def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
 
     note_text = str(merged.get("note") or "").strip()
     merged["note"] = note_text or None
+    raw_is_beur = merged.get("is_beur")
+    if raw_is_beur in ("", None):
+        merged["is_beur"] = None
+    elif isinstance(raw_is_beur, bool):
+        merged["is_beur"] = raw_is_beur
+    elif isinstance(raw_is_beur, (int, float)):
+        merged["is_beur"] = bool(raw_is_beur)
+    else:
+        raw_bool = str(raw_is_beur).strip().lower()
+        if raw_bool in {"true", "1", "yes", "y"}:
+            merged["is_beur"] = True
+        elif raw_bool in {"false", "0", "no", "n"}:
+            merged["is_beur"] = False
+        else:
+            merged["is_beur"] = None
+    beur_num_text = str(merged.get("beur_num") or "").strip()
+    merged["beur_num"] = beur_num_text or None
     merged["refference"] = str(merged.get("refference") or "").strip()
 
     return merged

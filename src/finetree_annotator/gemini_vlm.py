@@ -302,6 +302,21 @@ def _to_optional_str(value: Any) -> Optional[str]:
     return text or None
 
 
+def _to_optional_bool(value: Any) -> Optional[bool]:
+    if value is None or value == "":
+        return None
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text = str(value).strip().lower()
+    if text in {"true", "1", "yes", "y"}:
+        return True
+    if text in {"false", "0", "no", "n"}:
+        return False
+    return None
+
+
 def _to_float(value: Any) -> Optional[float]:
     try:
         return float(value)
@@ -408,6 +423,8 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
                 "bbox": bbox,
                 "value": str(value),
                 "note": _to_optional_str(raw_fact.get("note", raw_fact.get("footnote"))),
+                "is_beur": _to_optional_bool(raw_fact.get("is_beur", raw_fact.get("beur"))),
+                "beur_num": _to_optional_str(raw_fact.get("beur_num", raw_fact.get("beur_number"))),
                 "refference": _to_optional_str(
                     raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref")))
                 )
