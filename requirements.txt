@@ -6,8 +6,11 @@ PyYAML
 Pillow
 transformers
 datasets
+httpx
 trl
 peft
+fastapi
+uvicorn
 huggingface_hub
 runpod
 unsloth

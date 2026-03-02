@@ -336,7 +336,13 @@ Pod Qwen config templates:
 - `configs/qwen_ui_runpod_pod_openai.yaml` (proxy mode to external OpenAI-compatible endpoint)
 - `configs/qwen_ui_runpod_pod_local_8bit.yaml` (local model loading, 8-bit quantized)
 - `configs/qwen_ui_runpod_pod_local_4bit.yaml` (local model loading, 4-bit quantized)
-- `configs/qwen_ui_runpod_pod_local_bf16.yaml` (local model loading, full bf16)
+- `configs/qwen_ui_runpod_pod_local_bf16.yaml` (local model loading, full bf16, multi-GPU aware)
+
+Local pod configs now include fallback to original Qwen when primary load fails:
+
+- Primary: `unsloth/Qwen3.5-35B-A3B`
+- Fallback: `Qwen/Qwen3.5-27B-Instruct` (adapter disabled on fallback)
+- Non-thinking defaults: `enable_thinking=false`, `do_sample=true`, `temperature=0.7`, `top_p=0.8`
 
 Manual model load smoke-test without exposing API:
 
@@ -355,7 +361,7 @@ scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_4bit.yaml
 Start both Pod services in one process group:
 
 ```bash
-finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_local_8bit.yaml
+finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_local_bf16.yaml
 ```
 
 This starts:
@@ -366,14 +372,22 @@ This starts:
 Qwen3.5 default sampling preset in this repo is non-thinking by default and aligned to model-card guidance:
 `enable_thinking=false`, `do_sample=true`, `temperature=0.7`, `top_p=0.8`.
 
+Optional multi-GPU memory controls (helpful for `3x RTX A6000` / `1x A100` fleets):
+
+```bash
+export FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB=46
+export FINETREE_QWEN_GPU_MEMORY_UTILIZATION=0.92
+```
+
+`FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB` caps each GPU memory budget explicitly. If unset, memory budget is auto-computed from total VRAM and `FINETREE_QWEN_GPU_MEMORY_UTILIZATION`.
+
 Required Pod auth env vars:
 
 ```bash
 export FINETREE_POD_API_KEY=<token-for-6666>
 export FINETREE_GRADIO_USER=<gradio-user>
 export FINETREE_GRADIO_PASS=<gradio-pass>
-export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>
-export FINETREE_QWEN_QUANTIZATION=bnb_8bit
+export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>   # optional
 export FINETREE_POD_DEBUG_ERRORS=0
 ```
 
@@ -386,8 +400,14 @@ Minimal deployment flow (go/no-go):
 export FINETREE_POD_API_KEY=<token-for-6666>
 export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>   # optional but recommended
 scripts/runpod_machine_tools.sh flow-check                            # must PASS
-scripts/runpod_machine_tools.sh start configs/qwen_ui_runpod_pod_local_8bit.yaml
+scripts/runpod_machine_tools.sh start configs/qwen_ui_runpod_pod_local_bf16.yaml
 scripts/runpod_machine_tools.sh warmup
+```
+
+Run full local tests inside pod env:
+
+```bash
+pytest -q
 ```
 
 Doppler-first deployment flow (build + pod update + warmup in one command):
@@ -402,7 +422,7 @@ Expected Doppler secrets:
 - `POD_ID` (or `RUNPOD_POD_ID`)
 - `FINETREE_POD_IMAGE_NAME` (or `IMAGE_NAME`, default `delmedigo/finetree-pod`)
 - `FINETREE_POD_IMAGE_TAG` (or `IMAGE_TAG`, default `latest`)
-- Optional runtime secrets: `FINETREE_ADAPTER_REF`, `HUGGING_FACE_HUB_TOKEN`, `HF_TOKEN`, `FINETREE_POD_DEBUG_ERRORS`
+- Optional runtime secrets: `FINETREE_ADAPTER_REF`, `FINETREE_QWEN_FALLBACK_MODEL`, `FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB`, `FINETREE_QWEN_GPU_MEMORY_UTILIZATION`, `HUGGING_FACE_HUB_TOKEN`, `HF_TOKEN`, `FINETREE_POD_DEBUG_ERRORS`
 
 Set `FINETREE_POD_DEBUG_ERRORS=1` during deployment/debug sessions to include exception details in `500` responses.
 Each internal failure returns an `error_id` and logs a matching traceback, which you can locate with:

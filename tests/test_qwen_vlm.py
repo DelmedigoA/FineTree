@@ -19,6 +19,9 @@ def _clear_qwen_env(monkeypatch) -> None:
         "FINETREE_QWEN_ADAPTER_PATH",
         "FINETREE_QWEN_QUANTIZATION",
         "FINETREE_QWEN_LOAD_IN_4BIT",
+        "FINETREE_QWEN_FALLBACK_MODEL",
+        "FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB",
+        "FINETREE_QWEN_GPU_MEMORY_UTILIZATION",
         "FINETREE_QWEN_CONFIG",
     ):
         monkeypatch.delenv(name, raising=False)
@@ -353,6 +356,112 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
     assert isinstance(quant_cfg, _FakeBitsAndBytesConfig)
     assert quant_cfg.kwargs["load_in_8bit"] is True
     assert "load_in_8bit" not in calls["model_kwargs"]
+
+
+def test_build_max_memory_map_uses_gpu_memory_utilization(monkeypatch) -> None:
+    class _Props:
+        def __init__(self, total_memory: int):
+            self.total_memory = total_memory
+
+    fake_torch = types.ModuleType("torch")
+    fake_torch.cuda = types.SimpleNamespace(
+        is_available=lambda: True,
+        device_count=lambda: 3,
+        get_device_properties=lambda _idx: _Props(48 * 1024**3),
+    )
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {"gpu_memory_utilization": 0.9},
+        }
+    )
+    max_memory = qwen_vlm._build_max_memory_map(cfg)
+    assert max_memory == {0: "43GiB", 1: "43GiB", 2: "43GiB"}
+
+
+def test_build_max_memory_map_honors_env_override(monkeypatch) -> None:
+    class _Props:
+        def __init__(self, total_memory: int):
+            self.total_memory = total_memory
+
+    fake_torch = types.ModuleType("torch")
+    fake_torch.cuda = types.SimpleNamespace(
+        is_available=lambda: True,
+        device_count=lambda: 2,
+        get_device_properties=lambda _idx: _Props(80 * 1024**3),
+    )
+    monkeypatch.setitem(sys.modules, "torch", fake_torch)
+    monkeypatch.setenv("FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB", "40")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {"gpu_memory_utilization": 0.95},
+        }
+    )
+    max_memory = qwen_vlm._build_max_memory_map(cfg)
+    assert max_memory == {0: "40GiB", 1: "40GiB"}
+
+
+def test_load_model_bundle_falls_back_to_original_model_without_adapter(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+    monkeypatch.setenv("FINETREE_QWEN_FALLBACK_MODEL", "Qwen/Qwen3.5-27B-Instruct")
+
+    calls: dict[str, object] = {"model_names": []}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="sdpa")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["model_names"].append(model_name)  # type: ignore[union-attr]
+            if model_name == "unsloth/Qwen3.5-35B-A3B":
+                raise RuntimeError("primary failed")
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["processor_name"] = model_name
+            return object()
+
+    class _FakePeftModel:
+        @staticmethod
+        def from_pretrained(model_obj, adapter_ref: str, **kwargs):
+            calls["adapter_ref"] = adapter_ref
+            return model_obj
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_peft = types.ModuleType("peft")
+    fake_peft.PeftModel = _FakePeftModel
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setitem(sys.modules, "peft", fake_peft)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "adapter_path": "asafd60/qwen35-test",
+                "fallback_disable_adapter": True,
+            },
+        }
+    )
+
+    with pytest.warns(RuntimeWarning, match="Falling back to original model"):
+        qwen_vlm._load_model_bundle(cfg)
+
+    assert calls["model_names"] == ["unsloth/Qwen3.5-35B-A3B", "Qwen/Qwen3.5-27B-Instruct"]
+    assert calls["processor_name"] == "Qwen/Qwen3.5-27B-Instruct"
+    assert "adapter_ref" not in calls
 
 
 def test_load_model_bundle_falls_back_to_legacy_quant_kwargs_without_bitsandbytes(monkeypatch) -> None:

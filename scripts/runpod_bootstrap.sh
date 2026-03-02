@@ -58,10 +58,14 @@ required = (
     "torch",
     "transformers",
     "datasets",
+    "httpx",
     "trl",
     "peft",
+    "fastapi",
+    "uvicorn",
     "huggingface_hub",
     "unsloth",
+    "pytest",
     "yaml",
 )
 missing = []
