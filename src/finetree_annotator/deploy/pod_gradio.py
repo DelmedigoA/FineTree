@@ -1,14 +1,19 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import html
 import inspect
 import json
+import mimetypes
 import os
+import re
 import secrets
+import tempfile
 from pathlib import Path
 from typing import Any, Iterator, Optional
 from urllib import error as urllib_error
+from urllib import parse as urllib_parse
 from urllib import request as urllib_request
 
 from pydantic import BaseModel, Field
@@ -85,6 +90,136 @@ def _resolve_pod_api_key() -> str:
 def _resolve_api_base_url(explicit_api_base_url: Optional[str]) -> str:
     candidate = str(explicit_api_base_url or os.getenv("FINETREE_PLAYGROUND_API_BASE_URL") or "http://127.0.0.1:6666")
     return candidate.rstrip("/")
+
+
+def _normalize_model_selector(model_name: str) -> str:
+    raw = str(model_name or "").strip().lower()
+    if not raw:
+        return ""
+    return re.sub(r"-+", "-", re.sub(r"[\s_]+", "-", raw))
+
+
+def _is_gemini_model_requested(model_name: str) -> bool:
+    normalized = _normalize_model_selector(model_name)
+    if not normalized:
+        return False
+    if normalized in {"gemini", "gemini-gt"}:
+        return True
+    if normalized.startswith("gemini-"):
+        return True
+    if normalized.startswith("google/gemini") or normalized.startswith("models/gemini"):
+        return True
+    return False
+
+
+def _resolve_gemini_model_name(model_name: str) -> str:
+    normalized = _normalize_model_selector(model_name)
+    try:
+        from ..gemini_vlm import DEFAULT_GEMINI_MODEL
+    except Exception:
+        DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
+
+    alias_default = str(os.getenv("FINETREE_GEMINI_MODEL") or DEFAULT_GEMINI_MODEL).strip() or DEFAULT_GEMINI_MODEL
+    if normalized in {"", "gemini", "gemini-gt"}:
+        return alias_default
+
+    resolved = str(model_name or "").strip() or alias_default
+    lowered = resolved.lower()
+    if lowered.startswith("google/"):
+        resolved = resolved.split("/", 1)[1].strip() or alias_default
+    elif lowered.startswith("models/"):
+        resolved = resolved.split("/", 1)[1].strip() or alias_default
+    return resolved
+
+
+def _build_gemini_prompt(*, system_prompt: str, user_prompt: str, history: list[dict[str, str]]) -> str:
+    contextual_prompt = _build_contextual_user_prompt(user_prompt=user_prompt, history=history)
+    system_text = str(system_prompt or "").strip()
+    if not system_text:
+        return contextual_prompt
+    return f"System instruction:\n{system_text}\n\n{contextual_prompt}"
+
+
+def _data_url_to_temp_image_path(data_url: str) -> Path:
+    raw_data_url = str(data_url or "").strip()
+    if not raw_data_url.startswith("data:") or "," not in raw_data_url:
+        raise ValueError("Invalid image data URL.")
+
+    header, payload = raw_data_url.split(",", 1)
+    mime_part = header[5:].split(";", 1)[0].strip().lower() or "image/png"
+    is_base64 = ";base64" in header.lower()
+    if is_base64:
+        image_bytes = base64.b64decode(payload)
+    else:
+        image_bytes = urllib_parse.unquote_to_bytes(payload)
+
+    suffix = mimetypes.guess_extension(mime_part) or ".img"
+    with tempfile.NamedTemporaryFile(prefix="finetree-gemini-", suffix=suffix, delete=False) as tmp:
+        tmp.write(image_bytes)
+        tmp.flush()
+        return Path(tmp.name)
+
+
+def _prepare_gemini_image_path(*, image_path: Optional[str], image_data_url: Optional[str]) -> tuple[Path, bool]:
+    image_path_raw = str(image_path or "").strip()
+    if image_path_raw:
+        candidate = Path(image_path_raw).expanduser()
+        if not candidate.is_file():
+            raise FileNotFoundError(f"Image not found: {candidate}")
+        return candidate.resolve(), False
+
+    source_data_url = str(image_data_url or "").strip() or _DEFAULT_TINY_IMAGE_DATA_URL
+    return _data_url_to_temp_image_path(source_data_url), True
+
+
+def _generate_gemini_response(
+    *,
+    model_name: str,
+    prompt: str,
+    image_path: Optional[str],
+    image_data_url: Optional[str],
+) -> str:
+    from ..gemini_vlm import generate_content_from_image
+
+    resolved_model = _resolve_gemini_model_name(model_name)
+    image_file, should_cleanup = _prepare_gemini_image_path(
+        image_path=image_path,
+        image_data_url=image_data_url,
+    )
+    try:
+        return generate_content_from_image(
+            image_path=image_file,
+            prompt=prompt,
+            model=resolved_model,
+        )
+    finally:
+        if should_cleanup:
+            image_file.unlink(missing_ok=True)
+
+
+def _stream_gemini_response(
+    *,
+    model_name: str,
+    prompt: str,
+    image_path: Optional[str],
+    image_data_url: Optional[str],
+) -> Iterator[str]:
+    from ..gemini_vlm import stream_content_from_image
+
+    resolved_model = _resolve_gemini_model_name(model_name)
+    image_file, should_cleanup = _prepare_gemini_image_path(
+        image_path=image_path,
+        image_data_url=image_data_url,
+    )
+    try:
+        yield from stream_content_from_image(
+            image_path=image_file,
+            prompt=prompt,
+            model=resolved_model,
+        )
+    finally:
+        if should_cleanup:
+            image_file.unlink(missing_ok=True)
 
 
 def _extract_assistant_text(payload: dict[str, Any]) -> str:
@@ -361,6 +496,8 @@ def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[s
         if not user_prompt:
             return "Please enter a prompt."
 
+        history_turns = _history_messages_to_turns(history)
+        selected_model = str(model_name or "").strip() or resolved_default_model
         image_data_url = _DEFAULT_TINY_IMAGE_DATA_URL
         image_path_raw = str(image_path or "").strip()
         if image_path_raw:
@@ -369,12 +506,28 @@ def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[s
             except Exception as exc:
                 return f"Image load error: {exc}"
 
+        if _is_gemini_model_requested(selected_model):
+            gemini_prompt = _build_gemini_prompt(
+                system_prompt=str(system_prompt or ""),
+                user_prompt=user_prompt,
+                history=history_turns,
+            )
+            try:
+                return _generate_gemini_response(
+                    model_name=selected_model,
+                    prompt=gemini_prompt,
+                    image_path=image_path_raw or None,
+                    image_data_url=image_data_url,
+                )
+            except Exception as exc:
+                return f"Gemini error: {exc}"
+
         request_payload = _build_openai_chat_payload(
             {
                 "system_prompt": str(system_prompt or ""),
                 "user_prompt": user_prompt,
-                "history": _history_messages_to_turns(history),
-                "model": str(model_name or "").strip() or resolved_default_model,
+                "history": history_turns,
+                "model": selected_model,
                 "temperature": float(temperature),
                 "top_p": float(top_p),
                 "max_tokens": int(max_tokens),
@@ -710,6 +863,33 @@ def create_app(*, api_base_url: Optional[str] = None, default_model: Optional[st
 
     @app.post("/api/chat")
     async def chat(payload: PlaygroundChatRequest, _auth: None = Depends(_require_auth)) -> Any:
+        selected_model = str(payload.model or "").strip() or served_model
+        if _is_gemini_model_requested(selected_model):
+            gemini_prompt = _build_gemini_prompt(
+                system_prompt=str(payload.system_prompt or ""),
+                user_prompt=str(payload.user_prompt or ""),
+                history=_normalize_history(payload.history),
+            )
+            try:
+                assistant_text = _generate_gemini_response(
+                    model_name=selected_model,
+                    prompt=gemini_prompt,
+                    image_path=None,
+                    image_data_url=payload.image_data_url,
+                )
+            except Exception as exc:
+                return JSONResponse({"ok": False, "error": str(exc)}, status_code=502)
+            return JSONResponse(
+                {
+                    "ok": True,
+                    "assistant_text": assistant_text,
+                    "response": {
+                        "provider": "gemini",
+                        "model": _resolve_gemini_model_name(selected_model),
+                    },
+                }
+            )
+
         request_payload = _build_openai_chat_payload(payload.model_dump())
         url = f"{resolved_base_url}/v1/chat/completions"
         try:
@@ -726,6 +906,39 @@ def create_app(*, api_base_url: Optional[str] = None, default_model: Optional[st
 
     @app.post("/api/chat/stream")
     async def chat_stream(payload: PlaygroundChatRequest, _auth: None = Depends(_require_auth)) -> Any:
+        selected_model = str(payload.model or "").strip() or served_model
+        if _is_gemini_model_requested(selected_model):
+            gemini_prompt = _build_gemini_prompt(
+                system_prompt=str(payload.system_prompt or ""),
+                user_prompt=str(payload.user_prompt or ""),
+                history=_normalize_history(payload.history),
+            )
+            resolved_gemini_model = _resolve_gemini_model_name(selected_model)
+
+            def _gemini_stream() -> Iterator[bytes]:
+                done_sent = False
+                try:
+                    for token in _stream_gemini_response(
+                        model_name=selected_model,
+                        prompt=gemini_prompt,
+                        image_path=None,
+                        image_data_url=payload.image_data_url,
+                    ):
+                        if not token:
+                            continue
+                        chunk = {"choices": [{"delta": {"content": token}}], "model": resolved_gemini_model}
+                        yield f"data: {json.dumps(chunk, ensure_ascii=False)}\n\n".encode("utf-8")
+                    done_sent = True
+                    yield b"data: [DONE]\n\n"
+                except Exception as exc:
+                    err = {"error": {"message": str(exc), "type": "server_error"}}
+                    yield f"data: {json.dumps(err, ensure_ascii=False)}\n\n".encode("utf-8")
+                finally:
+                    if not done_sent:
+                        yield b"data: [DONE]\n\n"
+
+            return StreamingResponse(_gemini_stream(), media_type="text/event-stream")
+
         request_payload = _build_openai_chat_payload(payload.model_dump())
         request_payload["stream"] = True
         url = f"{resolved_base_url}/v1/chat/completions"

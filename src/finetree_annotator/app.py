@@ -791,11 +791,19 @@ class GeminiStreamWorker(QObject):
     failed = pyqtSignal(str)
     finished = pyqtSignal()
 
-    def __init__(self, image_path: Path, prompt: str, model: str, parent: Optional[QObject] = None) -> None:
+    def __init__(
+        self,
+        image_path: Path,
+        prompt: str,
+        model: str,
+        api_key: Optional[str] = None,
+        parent: Optional[QObject] = None,
+    ) -> None:
         super().__init__(parent)
         self.image_path = image_path
         self.prompt = prompt
         self.model = model
+        self.api_key = api_key
         self._cancel_requested = False
 
     def request_cancel(self) -> None:
@@ -810,6 +818,7 @@ class GeminiStreamWorker(QObject):
                 image_path=self.image_path,
                 prompt=self.prompt,
                 model=self.model,
+                api_key=self.api_key,
             ):
                 if self._cancel_requested:
                     break
@@ -2380,6 +2389,25 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.warning(self, "Gemini GT", "Prompt cannot be empty.")
             return
 
+        try:
+            from .gemini_vlm import resolve_api_key
+        except Exception as exc:
+            QMessageBox.warning(self, "Gemini GT", f"Gemini backend is unavailable:\n{exc}")
+            return
+
+        gemini_api_key = resolve_api_key()
+        if not gemini_api_key:
+            QMessageBox.warning(
+                self,
+                "Gemini GT",
+                (
+                    "Gemini API key not found.\n\n"
+                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
+                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
+                ),
+            )
+            return
+
         self._gemini_model_name = model_name
 
         page_idx = self.current_index
@@ -2410,6 +2438,7 @@ class AnnotationWindow(QMainWindow):
             image_path=page_path,
             prompt=prompt_text,
             model=model_name,
+            api_key=gemini_api_key,
         )
         thread = QThread(self)
         worker.moveToThread(thread)
