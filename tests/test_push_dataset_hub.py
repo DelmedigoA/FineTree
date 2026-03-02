@@ -38,6 +38,8 @@ def test_export_for_hf_rewrites_image_paths_and_copies_images(tmp_path: Path) ->
     assert val_rows == 0
     exported_train = (export_dir / "train.jsonl").read_text(encoding="utf-8").strip()
     out = json.loads(exported_train)
-    rel_img = out["messages"][0]["content"][0]["image"]
+    rel_img = out["image"]
     assert rel_img == "images/doc1/page_0001.png"
+    assert "Prompt for" in out["instruction"]
+    assert out["output"] == "{}"
     assert (export_dir / rel_img).is_file()
