@@ -6,14 +6,26 @@ import json
 import os
 import secrets
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Iterator, Optional
 from urllib import error as urllib_error
 from urllib import request as urllib_request
+
+from pydantic import BaseModel, Field
 
 _DEFAULT_TINY_IMAGE_DATA_URL = (
     "data:image/png;base64,"
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO6p6nQAAAAASUVORK5CYII="
 )
+
+
+class PlaygroundChatRequest(BaseModel):
+    system_prompt: str = ""
+    user_prompt: str = ""
+    model: str = "qwen-gt"
+    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
+    top_p: float = Field(default=0.95, gt=0.0, le=1.0)
+    max_tokens: int = Field(default=120, ge=1, le=4096)
+    image_data_url: Optional[str] = None
 
 
 def _project_root() -> Path:
@@ -150,6 +162,45 @@ def _post_json(url: str, body: dict[str, Any], api_key: str, timeout_sec: float)
         raise RuntimeError(f"Failed to reach upstream API: {exc}") from exc
 
 
+def _iter_sse_data_events(url: str, body: dict[str, Any], api_key: str, timeout_sec: float) -> Iterator[str]:
+    req = urllib_request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream",
+            "Cache-Control": "no-cache",
+        },
+        method="POST",
+    )
+    try:
+        with urllib_request.urlopen(req, timeout=timeout_sec) as response:
+            data_lines: list[str] = []
+            for raw_line in response:
+                line = raw_line.decode("utf-8", errors="replace").rstrip("\r\n")
+                if not line:
+                    if data_lines:
+                        yield "\n".join(data_lines)
+                        data_lines = []
+                    continue
+                if line.startswith(":"):
+                    continue
+                field, sep, value = line.partition(":")
+                if not sep or field != "data":
+                    continue
+                if value.startswith(" "):
+                    value = value[1:]
+                data_lines.append(value)
+            if data_lines:
+                yield "\n".join(data_lines)
+    except urllib_error.HTTPError as exc:
+        raw = exc.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Upstream API error {exc.code}: {raw[:1000]}") from exc
+    except urllib_error.URLError as exc:
+        raise RuntimeError(f"Failed to reach upstream API: {exc}") from exc
+
+
 def _playground_html(*, default_model: str, default_image_data_url: Optional[str]) -> str:
     default_image_js = json.dumps(default_image_data_url or _DEFAULT_TINY_IMAGE_DATA_URL)
     return f"""<!doctype html>
@@ -232,7 +283,7 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
     }});
     runBtn.addEventListener("click", async () => {{
       runBtn.disabled = true;
-      statusEl.textContent = "Running...";
+      statusEl.textContent = "Streaming...";
       outputEl.value = "";
       const payload = {{
         system_prompt: document.getElementById("systemPrompt").value,
@@ -244,17 +295,77 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
         image_data_url: imageDataUrl
       }};
       try {{
-        const resp = await fetch("/api/chat", {{
+        const resp = await fetch("/api/chat/stream", {{
           method: "POST",
           headers: {{ "Content-Type": "application/json" }},
           body: JSON.stringify(payload)
         }});
-        const data = await resp.json();
-        if (!resp.ok || !data.ok) {{
-          throw new Error(data.error || JSON.stringify(data));
+        if (!resp.ok) {{
+          const message = await resp.text();
+          throw new Error(message || `HTTP ${resp.status}`);
         }}
-        outputEl.value = data.assistant_text || "";
-        statusEl.textContent = "Done.";
+        if (!resp.body) {{
+          throw new Error("Response body is unavailable for streaming.");
+        }}
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let doneSeen = false;
+        let buffer = "";
+
+        const parseEvent = (eventText) => {{
+          const lines = eventText.split(/\\r?\\n/);
+          const dataLines = [];
+          for (const line of lines) {{
+            if (line.startsWith("data:")) {{
+              dataLines.push(line.slice(5).trimStart());
+            }}
+          }}
+          if (dataLines.length === 0) return;
+          const data = dataLines.join("\\n");
+          if (data === "[DONE]") {{
+            doneSeen = true;
+            return;
+          }}
+          let payload;
+          try {{
+            payload = JSON.parse(data);
+          }} catch (_err) {{
+            return;
+          }}
+          if (payload.error) {{
+            const message = payload.error.message || payload.error || "Unknown streaming error";
+            throw new Error(String(message));
+          }}
+          const choice = (payload.choices && payload.choices[0]) || null;
+          const token = choice && choice.delta && typeof choice.delta.content === "string"
+            ? choice.delta.content
+            : null;
+          if (token) {{
+            outputEl.value += token;
+            outputEl.scrollTop = outputEl.scrollHeight;
+          }}
+        }};
+
+        while (true) {{
+          const {{ value, done }} = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, {{ stream: true }});
+          let match = buffer.match(/\\r?\\n\\r?\\n/);
+          while (match) {{
+            const boundary = match.index ?? -1;
+            if (boundary < 0) break;
+            const eventText = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + match[0].length);
+            parseEvent(eventText);
+            match = buffer.match(/\\r?\\n\\r?\\n/);
+          }}
+        }}
+        buffer += decoder.decode();
+        if (buffer.trim()) {{
+          parseEvent(buffer.trim());
+        }}
+        statusEl.textContent = doneSeen ? "Done." : "Stream closed.";
       }} catch (err) {{
         statusEl.textContent = "Error.";
         outputEl.value = String(err);
@@ -271,9 +382,8 @@ def create_app(*, api_base_url: Optional[str] = None, default_model: Optional[st
     try:
         import secrets as py_secrets
         from fastapi import Depends, FastAPI, HTTPException
-        from fastapi.responses import HTMLResponse, JSONResponse
+        from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
         from fastapi.security import HTTPBasic, HTTPBasicCredentials
-        from pydantic import BaseModel, Field
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("Pod playground requires fastapi, pydantic and uvicorn.") from exc
 
@@ -288,15 +398,6 @@ def create_app(*, api_base_url: Optional[str] = None, default_model: Optional[st
 
     security = HTTPBasic(auto_error=False)
     app = FastAPI(title="FineTree Pod Playground", docs_url=None, redoc_url=None, openapi_url=None)
-
-    class PlaygroundChatRequest(BaseModel):
-        system_prompt: str = ""
-        user_prompt: str = ""
-        model: str = "qwen-gt"
-        temperature: float = Field(default=0.0, ge=0.0, le=2.0)
-        top_p: float = Field(default=0.95, gt=0.0, le=1.0)
-        max_tokens: int = Field(default=120, ge=1, le=4096)
-        image_data_url: Optional[str] = None
 
     def _require_auth(credentials: Optional[HTTPBasicCredentials] = Depends(security)) -> None:
         if credentials is None:
@@ -333,6 +434,37 @@ def create_app(*, api_base_url: Optional[str] = None, default_model: Optional[st
                 "response": upstream,
             }
         )
+
+    @app.post("/api/chat/stream")
+    async def chat_stream(payload: PlaygroundChatRequest, _auth: None = Depends(_require_auth)) -> Any:
+        request_payload = _build_openai_chat_payload(payload.model_dump())
+        request_payload["stream"] = True
+        url = f"{resolved_base_url}/v1/chat/completions"
+
+        def _proxy_stream() -> Iterator[bytes]:
+            done_sent = False
+            try:
+                for event_data in _iter_sse_data_events(
+                    url=url,
+                    body=request_payload,
+                    api_key=pod_api_key,
+                    timeout_sec=timeout_sec,
+                ):
+                    if not event_data:
+                        continue
+                    if event_data == "[DONE]":
+                        done_sent = True
+                        yield b"data: [DONE]\n\n"
+                        break
+                    yield f"data: {event_data}\n\n".encode("utf-8")
+            except Exception as exc:
+                err = {"error": {"message": str(exc), "type": "server_error"}}
+                yield f"data: {json.dumps(err, ensure_ascii=False)}\n\n".encode("utf-8")
+            finally:
+                if not done_sent:
+                    yield b"data: [DONE]\n\n"
+
+        return StreamingResponse(_proxy_stream(), media_type="text/event-stream")
 
     return app
 

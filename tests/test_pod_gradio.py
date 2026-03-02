@@ -1,6 +1,10 @@
 from __future__ import annotations
 
+import base64
+import json
 from pathlib import Path
+
+from fastapi.testclient import TestClient
 
 from finetree_annotator.deploy import pod_gradio
 
@@ -50,3 +54,100 @@ def test_build_openai_chat_payload_includes_system_and_sampling() -> None:
     assert payload["top_p"] == 0.8
     assert payload["messages"][0] == {"role": "system", "content": "be strict"}
     assert payload["messages"][1]["role"] == "user"
+
+
+def test_iter_sse_data_events_parses_event_payloads(monkeypatch) -> None:
+    stream_lines = [
+        b": keepalive\n",
+        b"event: message\n",
+        b'data: {"choices":[{"delta":{"content":"hi"}}]}\n',
+        b"\n",
+        b"data: [DONE]\n",
+        b"\n",
+    ]
+
+    class _FakeResponse:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def __iter__(self):
+            return iter(stream_lines)
+
+    def _fake_urlopen(_req, timeout=None):
+        assert timeout == 5.0
+        return _FakeResponse()
+
+    monkeypatch.setattr(pod_gradio.urllib_request, "urlopen", _fake_urlopen)
+    events = list(
+        pod_gradio._iter_sse_data_events(
+            url="http://localhost/v1/chat/completions",
+            body={"stream": True},
+            api_key="token",
+            timeout_sec=5.0,
+        )
+    )
+    assert events == ['{"choices":[{"delta":{"content":"hi"}}]}', "[DONE]"]
+
+
+def test_chat_stream_route_proxies_sse_and_sets_stream_flag(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_USER", "u1")
+    monkeypatch.setenv("FINETREE_PLAYGROUND_PASS", "p1")
+    monkeypatch.setenv("FINETREE_POD_API_KEY", "pod-key")
+
+    seen: dict[str, object] = {}
+
+    def _fake_iter_sse_data_events(url: str, body: dict[str, object], api_key: str, timeout_sec: float):
+        seen["url"] = url
+        seen["body"] = body
+        seen["api_key"] = api_key
+        seen["timeout_sec"] = timeout_sec
+        yield json.dumps({"choices": [{"delta": {"content": "hel"}}]})
+        yield json.dumps({"choices": [{"delta": {"content": "lo"}}]})
+        yield "[DONE]"
+
+    monkeypatch.setattr(pod_gradio, "_iter_sse_data_events", _fake_iter_sse_data_events)
+
+    app = pod_gradio.create_app(api_base_url="http://127.0.0.1:6666")
+    client = TestClient(app)
+    basic_token = base64.b64encode(b"u1:p1").decode("ascii")
+    response = client.post(
+        "/api/chat/stream",
+        headers={"Authorization": f"Basic {basic_token}"},
+        json={
+            "system_prompt": "sys",
+            "user_prompt": "hello",
+            "model": "qwen-gt",
+            "temperature": 0.0,
+            "top_p": 0.95,
+            "max_tokens": 16,
+            "image_data_url": "data:image/png;base64,AAAA",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+    body_text = response.text
+
+    assert "data: {\"choices\": [{\"delta\": {\"content\": \"hel\"}}]}" in body_text
+    assert "data: {\"choices\": [{\"delta\": {\"content\": \"lo\"}}]}" in body_text
+    assert "data: [DONE]" in body_text
+    assert seen["url"] == "http://127.0.0.1:6666/v1/chat/completions"
+    assert seen["api_key"] == "pod-key"
+    assert seen["body"]["stream"] is True
+
+
+def test_playground_chat_routes_bind_payload_from_body(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_USER", "u1")
+    monkeypatch.setenv("FINETREE_PLAYGROUND_PASS", "p1")
+    monkeypatch.setenv("FINETREE_POD_API_KEY", "pod-key")
+    app = pod_gradio.create_app(api_base_url="http://127.0.0.1:6666")
+
+    chat_route = next(r for r in app.routes if getattr(r, "path", "") == "/api/chat")
+    stream_route = next(r for r in app.routes if getattr(r, "path", "") == "/api/chat/stream")
+
+    assert "payload" in [p.name for p in chat_route.dependant.body_params]
+    assert "payload" not in [p.name for p in chat_route.dependant.query_params]
+    assert "payload" in [p.name for p in stream_route.dependant.body_params]
+    assert "payload" not in [p.name for p in stream_route.dependant.query_params]
