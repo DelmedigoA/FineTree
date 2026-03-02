@@ -392,7 +392,7 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
         }});
         if (!resp.ok) {{
           const message = await resp.text();
-          throw new Error(message || `HTTP ${resp.status}`);
+          throw new Error(message || `HTTP ${{resp.status}}`);
         }}
         if (!resp.body) {{
           throw new Error("Response body is unavailable for streaming.");
