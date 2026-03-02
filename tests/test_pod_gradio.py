@@ -173,3 +173,26 @@ def test_playground_chat_routes_bind_payload_from_body(monkeypatch) -> None:
     assert "payload" not in [p.name for p in chat_route.dependant.query_params]
     assert "payload" in [p.name for p in stream_route.dependant.body_params]
     assert "payload" not in [p.name for p in stream_route.dependant.query_params]
+
+
+def test_history_messages_to_turns_converts_messages_shape() -> None:
+    history = [
+        {"role": "user", "content": "first question"},
+        {"role": "assistant", "content": "first answer"},
+        {"role": "user", "content": "second question"},
+        {"role": "assistant", "content": {"text": "second answer"}},
+    ]
+
+    turns = pod_gradio._history_messages_to_turns(history)
+    assert turns == [
+        {"user": "first question", "assistant": "first answer"},
+        {"user": "second question", "assistant": "second answer"},
+    ]
+
+
+def test_resolve_default_model_input_prefers_explicit_value() -> None:
+    value = pod_gradio._resolve_default_model_input(
+        default_model="Qwen/Qwen3.5-27B",
+        config_path=None,
+    )
+    assert value == "Qwen/Qwen3.5-27B"
