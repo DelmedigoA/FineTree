@@ -14,4 +14,5 @@ uvicorn
 huggingface_hub
 runpod
 unsloth
+gradio
 pytest>=8,<9

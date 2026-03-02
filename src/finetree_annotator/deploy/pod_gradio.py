@@ -239,6 +239,160 @@ def _iter_sse_data_events(url: str, body: dict[str, Any], api_key: str, timeout_
         raise RuntimeError(f"Failed to reach upstream API: {exc}") from exc
 
 
+def _message_content_to_text(content: Any) -> str:
+    if isinstance(content, str):
+        return content.strip()
+    if isinstance(content, dict):
+        text = content.get("text")
+        if isinstance(text, str):
+            return text.strip()
+        path = content.get("path")
+        if isinstance(path, str):
+            return path.strip()
+        return ""
+    if isinstance(content, list):
+        chunks: list[str] = []
+        for item in content:
+            text = _message_content_to_text(item)
+            if text:
+                chunks.append(text)
+        return "\n".join(chunks).strip()
+    return ""
+
+
+def _history_messages_to_turns(history: Any) -> list[dict[str, str]]:
+    if not isinstance(history, list):
+        return []
+
+    turns: list[dict[str, str]] = []
+    pending_user = ""
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        role = str(item.get("role") or "").strip().lower()
+        text = _message_content_to_text(item.get("content"))
+        if role == "user":
+            if pending_user:
+                turns.append({"user": pending_user, "assistant": ""})
+            pending_user = text
+            continue
+        if role == "assistant":
+            if pending_user:
+                turns.append({"user": pending_user, "assistant": text})
+                pending_user = ""
+            elif text:
+                turns.append({"user": "", "assistant": text})
+
+    if pending_user:
+        turns.append({"user": pending_user, "assistant": ""})
+    return [turn for turn in turns if turn.get("user") or turn.get("assistant")]
+
+
+def _resolve_default_model_input(*, default_model: Optional[str], config_path: Optional[str]) -> str:
+    explicit = str(default_model or os.getenv("FINETREE_PLAYGROUND_MODEL") or "").strip()
+    if explicit:
+        return explicit
+
+    candidate_config_path = str(config_path or os.getenv("FINETREE_QWEN_CONFIG") or "").strip()
+    if candidate_config_path:
+        try:
+            from ..finetune.config import load_finetune_config
+
+            cfg = load_finetune_config(candidate_config_path)
+            configured = str(cfg.inference.model_path or cfg.model.base_model or "").strip()
+            if configured:
+                return configured
+        except Exception:
+            pass
+
+    return "Qwen/Qwen3.5-27B"
+
+
+def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[str] = None, config_path: Optional[str] = None) -> Any:
+    try:
+        import gradio as gr
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError("Pod playground requires gradio. Install with `pip install gradio`.") from exc
+
+    pod_api_key = _resolve_pod_api_key()
+    resolved_base_url = _resolve_api_base_url(api_base_url)
+    timeout_sec = float(str(os.getenv("FINETREE_PLAYGROUND_TIMEOUT_SEC") or "600"))
+    resolved_default_model = _resolve_default_model_input(default_model=default_model, config_path=config_path)
+
+    default_system_prompt = (
+        "You are a precise OCR/extraction assistant. "
+        "Keep replies concise and non-thinking."
+    )
+    example_path = _default_example_image_path()
+    default_image_value = str(example_path) if example_path else None
+
+    def _chat(
+        message: str,
+        history: list[dict[str, Any]],
+        image_path: Optional[str],
+        system_prompt: str,
+        model_name: str,
+        temperature: float,
+        top_p: float,
+        max_tokens: int,
+    ) -> str:
+        user_prompt = str(message or "").strip()
+        if not user_prompt:
+            return "Please enter a prompt."
+
+        image_data_url = _DEFAULT_TINY_IMAGE_DATA_URL
+        image_path_raw = str(image_path or "").strip()
+        if image_path_raw:
+            try:
+                image_data_url = _image_file_to_data_url(Path(image_path_raw))
+            except Exception as exc:
+                return f"Image load error: {exc}"
+
+        request_payload = _build_openai_chat_payload(
+            {
+                "system_prompt": str(system_prompt or ""),
+                "user_prompt": user_prompt,
+                "history": _history_messages_to_turns(history),
+                "model": str(model_name or "").strip() or resolved_default_model,
+                "temperature": float(temperature),
+                "top_p": float(top_p),
+                "max_tokens": int(max_tokens),
+                "image_data_url": image_data_url,
+            }
+        )
+        url = f"{resolved_base_url}/v1/chat/completions"
+        try:
+            upstream = _post_json(url=url, body=request_payload, api_key=pod_api_key, timeout_sec=timeout_sec)
+        except Exception as exc:
+            return f"Upstream error: {exc}"
+        return _extract_assistant_text(upstream)
+
+    image_input = gr.Image(type="filepath", label="Image (optional)", value=default_image_value)
+    system_prompt_input = gr.Textbox(label="System Prompt", lines=4, value=default_system_prompt)
+    model_input = gr.Textbox(label="Model", value=resolved_default_model)
+    temperature_input = gr.Slider(label="Temperature", minimum=0.0, maximum=2.0, step=0.01, value=0.7)
+    top_p_input = gr.Slider(label="Top P", minimum=0.01, maximum=1.0, step=0.01, value=0.8)
+    max_tokens_input = gr.Slider(label="Max Tokens", minimum=1, maximum=4096, step=1, value=120)
+    chatbot = gr.Chatbot(type="messages", height=620)
+
+    return gr.ChatInterface(
+        fn=_chat,
+        type="messages",
+        chatbot=chatbot,
+        title="FineTree Pod Chat Playground (5555)",
+        description="Simple Gradio chatbot for local Qwen inference via the pod API.",
+        additional_inputs=[
+            image_input,
+            system_prompt_input,
+            model_input,
+            temperature_input,
+            top_p_input,
+            max_tokens_input,
+        ],
+        additional_inputs_accordion=gr.Accordion("Inference Settings", open=True),
+    )
+
+
 def _playground_html(*, default_model: str, default_image_data_url: Optional[str]) -> str:
     default_image_js = json.dumps(default_image_data_url or _DEFAULT_TINY_IMAGE_DATA_URL)
     return f"""<!doctype html>
@@ -577,18 +731,25 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument("--host", default="0.0.0.0", help="Bind host (default: 0.0.0.0).")
     parser.add_argument("--port", type=int, default=5555, help="Bind port (default: 5555).")
     parser.add_argument("--api-base-url", default=None, help="Internal pod API base URL (default: http://127.0.0.1:6666).")
+    parser.add_argument("--model", default=None, help="Default model value shown in the chat playground.")
     return parser.parse_args(argv)
 
 
 def main(argv: Optional[list[str]] = None) -> int:
     args = parse_args(argv)
-    try:
-        import uvicorn
-    except Exception as exc:  # pragma: no cover
-        raise RuntimeError("Pod playground requires uvicorn. Install with `pip install uvicorn`.") from exc
-
-    app = create_app(api_base_url=args.api_base_url)
-    uvicorn.run(app, host=str(args.host), port=int(args.port), log_level="info")
+    username, password = _resolve_basic_auth_credentials()
+    demo = create_demo(
+        api_base_url=args.api_base_url,
+        default_model=args.model,
+        config_path=args.config,
+    )
+    demo.queue(default_concurrency_limit=1).launch(
+        server_name=str(args.host),
+        server_port=int(args.port),
+        auth=(username, password),
+        share=False,
+        show_error=True,
+    )
     return 0
 
 
