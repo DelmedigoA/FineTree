@@ -62,6 +62,11 @@ from .annotation_core import (
     serialize_annotations_json,
 )
 from .finetune.config import load_finetune_config
+from .gemini_few_shot import (
+    DEFAULT_TEST_FEW_SHOT_PAGES,
+    build_repo_roots,
+    load_test_pdf_few_shot_examples,
+)
 from .schemas import PageType
 
 
@@ -696,7 +701,16 @@ class JsonImportDialog(QDialog):
 
 
 class GeminiPromptDialog(QDialog):
-    def __init__(self, prompt_text: str, model_name: str, parent: Optional[QWidget] = None) -> None:
+    def __init__(
+        self,
+        prompt_text: str,
+        model_name: str,
+        parent: Optional[QWidget] = None,
+        *,
+        show_few_shot_controls: bool = False,
+        few_shot_enabled_default: bool = True,
+        few_shot_summary: str = "",
+    ) -> None:
         super().__init__(parent)
         self.setWindowTitle("Gemini Prompt")
         self.resize(980, 760)
@@ -712,6 +726,17 @@ class GeminiPromptDialog(QDialog):
         form = QFormLayout()
         self.model_edit = QLineEdit(model_name)
         form.addRow("model", self.model_edit)
+        self.few_shot_check = QCheckBox("Use few-shot examples")
+        self.few_shot_check.setChecked(bool(few_shot_enabled_default))
+        self.few_shot_summary_label = QLabel(few_shot_summary)
+        self.few_shot_summary_label.setWordWrap(True)
+        self.few_shot_summary_label.setObjectName("hintText")
+        if show_few_shot_controls:
+            form.addRow("few_shot", self.few_shot_check)
+            form.addRow("few_shot preset", self.few_shot_summary_label)
+        else:
+            self.few_shot_check.setVisible(False)
+            self.few_shot_summary_label.setVisible(False)
         root.addLayout(form)
 
         self.prompt_edit = QPlainTextEdit()
@@ -731,6 +756,9 @@ class GeminiPromptDialog(QDialog):
 
     def model(self) -> str:
         return self.model_edit.text().strip()
+
+    def use_few_shot(self) -> bool:
+        return self.few_shot_check.isVisible() and self.few_shot_check.isChecked()
 
 
 class GeminiStreamDialog(QDialog):
@@ -797,6 +825,7 @@ class GeminiStreamWorker(QObject):
         prompt: str,
         model: str,
         api_key: Optional[str] = None,
+        few_shot_examples: Optional[list[dict[str, Any]]] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -804,6 +833,7 @@ class GeminiStreamWorker(QObject):
         self.prompt = prompt
         self.model = model
         self.api_key = api_key
+        self.few_shot_examples = few_shot_examples
         self._cancel_requested = False
 
     def request_cancel(self) -> None:
@@ -819,6 +849,7 @@ class GeminiStreamWorker(QObject):
                 prompt=self.prompt,
                 model=self.model,
                 api_key=self.api_key,
+                few_shot_examples=self.few_shot_examples,
             ):
                 if self._cancel_requested:
                     break
@@ -842,7 +873,12 @@ class GeminiStreamWorker(QObject):
 
 class QwenPromptDialog(GeminiPromptDialog):
     def __init__(self, prompt_text: str, model_name: str, parent: Optional[QWidget] = None) -> None:
-        super().__init__(prompt_text=prompt_text, model_name=model_name, parent=parent)
+        super().__init__(
+            prompt_text=prompt_text,
+            model_name=model_name,
+            parent=parent,
+            show_few_shot_controls=False,
+        )
         self.setWindowTitle("Qwen Prompt")
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
@@ -2265,6 +2301,13 @@ class AnnotationWindow(QMainWindow):
                 return resolved
         return None
 
+    def _load_gemini_few_shot_examples(self) -> tuple[list[dict[str, Any]], list[str]]:
+        repo_roots = build_repo_roots(cwd=Path.cwd(), anchor_file=Path(__file__).resolve())
+        return load_test_pdf_few_shot_examples(
+            repo_roots=repo_roots,
+            page_names=DEFAULT_TEST_FEW_SHOT_PAGES,
+        )
+
     def _resolve_qwen_config_path(self) -> Optional[Path]:
         candidates: List[Path] = []
         env_path = os.getenv("FINETREE_QWEN_CONFIG")
@@ -2544,11 +2587,15 @@ class AnnotationWindow(QMainWindow):
             prompt_text=prompt_text,
             model_name=self._gemini_model_name,
             parent=self,
+            show_few_shot_controls=True,
+            few_shot_enabled_default=True,
+            few_shot_summary="test: 1,4,9,2",
         )
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
         prompt_text = prompt_dialog.prompt().strip()
         model_name = prompt_dialog.model().strip() or self._gemini_model_name
+        use_few_shot = prompt_dialog.use_few_shot()
         if not prompt_text:
             QMessageBox.warning(self, "Gemini GT", "Prompt cannot be empty.")
             return
@@ -2573,6 +2620,22 @@ class AnnotationWindow(QMainWindow):
             return
 
         self._gemini_model_name = model_name
+        few_shot_examples: Optional[list[dict[str, Any]]] = None
+        if use_few_shot:
+            loaded_examples, warnings = self._load_gemini_few_shot_examples()
+            if loaded_examples:
+                few_shot_examples = loaded_examples
+                if warnings:
+                    self.statusBar().showMessage(
+                        f"Gemini few-shot loaded with warnings: {'; '.join(warnings[:2])}",
+                        6500,
+                    )
+            else:
+                warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
+                self.statusBar().showMessage(
+                    f"Gemini few-shot fallback to standard mode: {warning_text}",
+                    7000,
+                )
 
         page_idx = self.current_index
         existing_meta = self.page_states.get(page_name, self._default_state(page_idx)).meta or {}
@@ -2594,7 +2657,12 @@ class AnnotationWindow(QMainWindow):
 
         # Keep this dialog modeless so users can continue annotating while streaming.
         self._gemini_stream_dialog = GeminiStreamDialog(page_name=page_name, parent=None)
-        self._gemini_stream_dialog.set_status(f"Streaming from {model_name} ...")
+        if few_shot_examples:
+            self._gemini_stream_dialog.set_status(
+                f"Streaming from {model_name} with few-shot ({len(few_shot_examples)} examples) ..."
+            )
+        else:
+            self._gemini_stream_dialog.set_status(f"Streaming from {model_name} ...")
         self._gemini_stream_dialog.stop_requested.connect(self._cancel_gemini_stream)
         self._gemini_stream_dialog.show()
 
@@ -2603,6 +2671,7 @@ class AnnotationWindow(QMainWindow):
             prompt=prompt_text,
             model=model_name,
             api_key=gemini_api_key,
+            few_shot_examples=few_shot_examples,
         )
         thread = QThread(self)
         worker.moveToThread(thread)

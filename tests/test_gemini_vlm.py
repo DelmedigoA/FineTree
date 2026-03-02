@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from finetree_annotator import gemini_vlm
 
 
@@ -40,3 +43,69 @@ def test_resolve_api_key_uses_doppler_when_env_missing(monkeypatch) -> None:
 
     monkeypatch.setattr(gemini_vlm.subprocess, "run", _fake_run)
     assert gemini_vlm.resolve_api_key() == "doppler-key"
+
+
+def test_build_generation_contents_legacy_shape_without_few_shot(tmp_path: Path, monkeypatch) -> None:
+    target_image = tmp_path / "target.png"
+    target_image.write_bytes(b"target")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeTypes:
+        Part = _FakePart
+
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+    contents = gemini_vlm._build_generation_contents(
+        image_path=target_image,
+        prompt="extract now",
+        mime_type=None,
+        few_shot_examples=None,
+    )
+
+    assert len(contents) == 2
+    assert contents[0]["kind"] == "bytes"
+    assert contents[1] == "extract now"
+
+
+def test_build_generation_contents_includes_few_shot_turns(tmp_path: Path, monkeypatch) -> None:
+    target_image = tmp_path / "target.png"
+    example_1 = tmp_path / "example_1.png"
+    example_2 = tmp_path / "example_2.png"
+    target_image.write_bytes(b"target")
+    example_1.write_bytes(b"ex1")
+    example_2.write_bytes(b"ex2")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+        @staticmethod
+        def from_text(*, text):
+            return {"kind": "text", "text": text}
+
+    class _FakeTypes:
+        Part = _FakePart
+
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+    contents = gemini_vlm._build_generation_contents(
+        image_path=target_image,
+        prompt="extract final",
+        mime_type=None,
+        few_shot_examples=[
+            {"image_path": example_1, "expected_json": json.dumps({"meta": {}, "facts": []})},
+            {"image_path": example_2, "expected_json": json.dumps({"meta": {"type": "other"}, "facts": []})},
+        ],
+    )
+
+    assert len(contents) == 5
+    assert contents[0]["role"] == "user"
+    assert contents[1]["role"] == "model"
+    assert contents[2]["role"] == "user"
+    assert contents[3]["role"] == "model"
+    assert contents[4]["role"] == "user"
+    assert contents[4]["parts"][1]["kind"] == "text"
+    assert contents[4]["parts"][1]["text"] == "extract final"

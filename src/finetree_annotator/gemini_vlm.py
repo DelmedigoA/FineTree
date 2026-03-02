@@ -3,13 +3,13 @@ from __future__ import annotations
 import argparse
 import ast
 from functools import lru_cache
+import json
 import mimetypes
 import os
+import re
 import shutil
 import subprocess
 import sys
-import json
-import re
 import tomllib
 from pathlib import Path
 from typing import Any, Iterator, Optional
@@ -67,6 +67,81 @@ def _infer_mime_type(image_path: Path, explicit_mime_type: Optional[str]) -> str
         return explicit_mime_type
     guessed, _ = mimetypes.guess_type(str(image_path))
     return guessed or "application/octet-stream"
+
+
+def _part_from_text(text: str) -> Any:
+    from_text = getattr(types.Part, "from_text", None) if types is not None else None
+    if callable(from_text):
+        return from_text(text=text)
+    return {"text": text}
+
+
+def _build_generation_contents(
+    *,
+    image_path: Path,
+    prompt: str,
+    mime_type: Optional[str],
+    few_shot_examples: Optional[list[dict[str, Any]]] = None,
+) -> list[Any]:
+    inferred_mime_type = _infer_mime_type(image_path, mime_type)
+    image_bytes = image_path.read_bytes()
+    target_part = types.Part.from_bytes(data=image_bytes, mime_type=inferred_mime_type)
+
+    # Preserve exact legacy format when few-shot is disabled.
+    if not few_shot_examples:
+        return [target_part, prompt]
+
+    contents: list[Any] = []
+    valid_examples = 0
+    for raw_example in few_shot_examples:
+        if not isinstance(raw_example, dict):
+            continue
+
+        raw_image_path = raw_example.get("image_path")
+        if isinstance(raw_image_path, Path):
+            example_image_path = raw_image_path
+        else:
+            example_image_path = Path(str(raw_image_path or "")).expanduser()
+        if not example_image_path.is_file():
+            continue
+
+        expected_json = str(raw_example.get("expected_json") or "").strip()
+        if not expected_json:
+            continue
+
+        example_mime = _infer_mime_type(example_image_path, None)
+        example_bytes = example_image_path.read_bytes()
+        contents.append(
+            {
+                "role": "user",
+                "parts": [
+                    types.Part.from_bytes(data=example_bytes, mime_type=example_mime),
+                    _part_from_text("Example input page."),
+                ],
+            }
+        )
+        contents.append(
+            {
+                "role": "model",
+                "parts": [_part_from_text(expected_json)],
+            }
+        )
+        valid_examples += 1
+
+    # If all examples were invalid/unavailable, keep the original single-image behavior.
+    if valid_examples == 0:
+        return [target_part, prompt]
+
+    contents.append(
+        {
+            "role": "user",
+            "parts": [
+                target_part,
+                _part_from_text(prompt),
+            ],
+        }
+    )
+    return contents
 
 
 def _resolve_config_path() -> Optional[Path]:
@@ -543,25 +618,23 @@ def generate_content_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    few_shot_examples: Optional[list[dict[str, Any]]] = None,
 ) -> str:
     _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
-    image_bytes = image_path.read_bytes()
-    inferred_mime_type = _infer_mime_type(image_path, mime_type)
-
     key = _resolve_api_key(api_key)
     client = genai.Client(api_key=key) if key else genai.Client()
+    contents = _build_generation_contents(
+        image_path=image_path,
+        prompt=prompt,
+        mime_type=mime_type,
+        few_shot_examples=few_shot_examples,
+    )
     response = client.models.generate_content(
         model=model,
-        contents=[
-            types.Part.from_bytes(
-                data=image_bytes,
-                mime_type=inferred_mime_type,
-            ),
-            prompt,
-        ],
+        contents=contents,
     )
     return response.text or ""
 
@@ -572,27 +645,25 @@ def stream_content_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    few_shot_examples: Optional[list[dict[str, Any]]] = None,
 ) -> Iterator[str]:
     _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
-
-    image_bytes = image_path.read_bytes()
-    inferred_mime_type = _infer_mime_type(image_path, mime_type)
     key = _resolve_api_key(api_key)
     client = genai.Client(api_key=key) if key else genai.Client()
+    contents = _build_generation_contents(
+        image_path=image_path,
+        prompt=prompt,
+        mime_type=mime_type,
+        few_shot_examples=few_shot_examples,
+    )
 
     stream_fn = getattr(client.models, "generate_content_stream", None)
     if callable(stream_fn):
         stream = stream_fn(
             model=model,
-            contents=[
-                types.Part.from_bytes(
-                    data=image_bytes,
-                    mime_type=inferred_mime_type,
-                ),
-                prompt,
-            ],
+            contents=contents,
         )
         for chunk in stream:
             text = getattr(chunk, "text", None)
@@ -606,6 +677,7 @@ def stream_content_from_image(
         model=model,
         mime_type=mime_type,
         api_key=api_key,
+        few_shot_examples=few_shot_examples,
     )
     if text:
         yield text
