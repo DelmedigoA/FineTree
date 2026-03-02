@@ -36,22 +36,26 @@ Extraction rules:
 3. Keep `value` as text exactly as shown (including commas, parentheses, percent sign).
 4. `note`: for open-text footnotes or inline textual qualifiers tied to the specific fact (e.g., asterisk note like `*without debt insurance`); otherwise null.
 5. `is_beur`: true when the fact is tied to a beur/footnote context, false when explicitly not, null if unknown.
-6. `beur_num`: beur/footnote number or id tied to this fact (e.g., "5", "2ה׳"); otherwise null.
-7. Use `refference` (exact misspelling) from note/reference column (e.g., 5, 6, "2ה׳"); if none, use "".
-8. Build `path` using axis order, not just row labels.
-9. `currency`: infer from page header (e.g., "שקלים חדשים" => "ILS"), else null.
-10. `scale`: 1 unless header indicates thousands/millions.
-11. `value_type`: "amount" unless the fact is a percentage ("%").
-12. `date`: map by year column (e.g., 2023 => "31.12.2023", 2022 => "31.12.2022") if page says year ended Dec 31; otherwise null if unknown.
-13. `meta.type`: use "profits" for "דוחות על הפעילויות"; otherwise choose best enum value.
-14. No duplicate facts. Sort `facts` top-to-bottom, then left-to-right.
-15. Output UTF-8 Hebrew directly (not escaped unicode sequences).
-16. Do not encode dimensions in `path` if they already have dedicated fields:
+6. `beur_num`: set this when the current fact is part of data presented inside that beur itself (the fact belongs to that beur section/table). Otherwise null.
+7. `refference` (exact misspelling): set this when the current fact points/references another beur. If no such pointer is shown, use "".
+8. `beur_num` and `refference` are not synonyms:
+   - `beur_num` = ownership of the currently presented beur data.
+   - `refference` = pointer from this fact to another beur.
+   If both are explicitly present, keep both with their own meaning.
+9. Build `path` using axis order, not just row labels.
+10. `currency`: infer from page header (e.g., "שקלים חדשים" => "ILS"), else null.
+11. `scale`: 1 unless header indicates thousands/millions.
+12. `value_type`: "amount" unless the fact is a percentage ("%").
+13. `date`: map by year column (e.g., 2023 => "31.12.2023", 2022 => "31.12.2022") if page says year ended Dec 31; otherwise null if unknown.
+14. `meta.type`: use "profits" for "דוחות על הפעילויות"; otherwise choose best enum value.
+15. No duplicate facts. Sort `facts` top-to-bottom, then left-to-right.
+16. Output UTF-8 Hebrew directly (not escaped unicode sequences).
+17. Do not encode dimensions in `path` if they already have dedicated fields:
     - Time/period (year/date) -> use `date`.
     - Metric format (amount/percent) -> use `value_type`.
     - Currency -> use `currency`.
     - Unit scale (thousands/millions) -> use `scale`.
-17. For dash placeholder facts, still populate all other fields (`bbox`, `path`, `date`, `refference`, etc.) from the same row/column context.
+18. For dash placeholder facts, still populate all other fields (`bbox`, `path`, `date`, `refference`, etc.) from the same row/column context.
 
 Path hierarchy rule (very important):
 - Build `path` in this exact order:

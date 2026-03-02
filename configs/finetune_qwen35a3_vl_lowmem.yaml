@@ -29,6 +29,9 @@ prompt:
   fallback_template: |
     You are extracting financial statement annotations from a single page image.
     Return strict JSON with keys: meta, facts.
+    Field semantics:
+    - beur_num: use when current fact is data presented inside that beur itself.
+    - refference: use when current fact points to another beur.
 
 adapter:
   mode: lora
