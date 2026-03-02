@@ -26,6 +26,7 @@ class PlaygroundChatRequest(BaseModel):
     top_p: float = Field(default=0.8, gt=0.0, le=1.0)
     max_tokens: int = Field(default=120, ge=1, le=4096)
     image_data_url: Optional[str] = None
+    history: list[dict[str, str]] = Field(default_factory=list)
 
 
 def _project_root() -> Path:
@@ -106,11 +107,48 @@ def _extract_assistant_text(payload: dict[str, Any]) -> str:
     return json.dumps(payload, ensure_ascii=False)
 
 
+def _normalize_history(raw_history: Any) -> list[dict[str, str]]:
+    if not isinstance(raw_history, list):
+        return []
+    normalized: list[dict[str, str]] = []
+    for item in raw_history:
+        if not isinstance(item, dict):
+            continue
+        user_text = str(item.get("user") or "").strip()
+        assistant_text = str(item.get("assistant") or "").strip()
+        if not user_text and not assistant_text:
+            continue
+        normalized.append({"user": user_text, "assistant": assistant_text})
+    return normalized
+
+
+def _build_contextual_user_prompt(user_prompt: str, history: list[dict[str, str]]) -> str:
+    prompt = str(user_prompt or "").strip() or "Describe this image."
+    if not history:
+        return prompt
+
+    # Keep recent turns only to avoid runaway prompt growth.
+    recent = history[-12:]
+    lines: list[str] = ["Conversation context:"]
+    for turn in recent:
+        turn_user = str(turn.get("user") or "").strip()
+        turn_assistant = str(turn.get("assistant") or "").strip()
+        if turn_user:
+            lines.append(f"User: {turn_user}")
+        if turn_assistant:
+            lines.append(f"Assistant: {turn_assistant}")
+    lines.append(f"User: {prompt}")
+    lines.append("Assistant:")
+    return "\n".join(lines)
+
+
 def _build_openai_chat_payload(request_payload: dict[str, Any]) -> dict[str, Any]:
     system_prompt = str(request_payload.get("system_prompt") or "").strip()
     user_prompt = str(request_payload.get("user_prompt") or "").strip() or "Describe this image."
     model = str(request_payload.get("model") or "").strip() or "qwen-gt"
     image_data_url = str(request_payload.get("image_data_url") or "").strip() or _DEFAULT_TINY_IMAGE_DATA_URL
+    history = _normalize_history(request_payload.get("history"))
+    contextual_prompt = _build_contextual_user_prompt(user_prompt=user_prompt, history=history)
 
     messages: list[dict[str, Any]] = []
     if system_prompt:
@@ -118,13 +156,13 @@ def _build_openai_chat_payload(request_payload: dict[str, Any]) -> dict[str, Any
 
     messages.append(
         {
-            "role": "user",
-            "content": [
-                {"type": "text", "text": user_prompt},
-                {"type": "image_url", "image_url": {"url": image_data_url}},
-            ],
-        }
-    )
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": contextual_prompt},
+                    {"type": "image_url", "image_url": {"url": image_data_url}},
+                ],
+            }
+        )
 
     payload: dict[str, Any] = {
         "model": model,
@@ -213,30 +251,38 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
     :root {{ --bg:#f6f4ef; --panel:#fffefb; --ink:#1f2430; --accent:#0b6e4f; --line:#d8d3c4; }}
     * {{ box-sizing: border-box; }}
     body {{ margin:0; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background:linear-gradient(145deg,#f6f4ef,#ece7d8); color:var(--ink); }}
-    .wrap {{ max-width: 1100px; margin: 24px auto; padding: 0 16px; }}
+    .wrap {{ max-width: 1200px; margin: 24px auto; padding: 0 16px; }}
     .card {{ background: var(--panel); border:1px solid var(--line); border-radius: 16px; padding: 16px; box-shadow: 0 8px 28px rgba(21,29,41,0.08); }}
-    .grid {{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }}
+    .grid {{ display:grid; grid-template-columns: 360px 1fr; gap:16px; }}
     label {{ font-weight: 600; font-size: 13px; display:block; margin-bottom: 6px; }}
     input, textarea, button {{ width:100%; border:1px solid var(--line); border-radius: 10px; padding:10px; font: inherit; background:white; }}
     textarea {{ min-height: 90px; resize: vertical; }}
     .row {{ display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }}
     .status {{ font-size: 12px; min-height: 20px; margin-top: 8px; color:#6b7280; }}
-    .out {{ min-height: 240px; white-space: pre-wrap; }}
     .run {{ background: var(--accent); color:white; border-color: var(--accent); font-weight:700; cursor:pointer; }}
     .run:disabled {{ opacity:0.7; cursor:not-allowed; }}
+    .secondary {{ background:#f5f5f4; color:#1f2937; border-color:#d4d4d4; font-weight:600; cursor:pointer; }}
+    .chat {{ border:1px solid var(--line); border-radius: 12px; background:white; min-height: 520px; display:grid; grid-template-rows: 1fr auto; overflow:hidden; }}
+    .log {{ padding:14px; overflow:auto; display:flex; flex-direction:column; gap:10px; background:linear-gradient(180deg,#fffefb,#f7f7f5); }}
+    .bubble {{ max-width: 86%; border:1px solid var(--line); border-radius:12px; padding:8px 10px; white-space:pre-wrap; }}
+    .bubble.user {{ align-self:flex-end; background:#e8f4ef; border-color:#cce8dd; }}
+    .bubble.assistant {{ align-self:flex-start; background:#fff; }}
+    .who {{ font-size:11px; font-weight:700; opacity:0.7; margin-bottom:4px; text-transform:uppercase; letter-spacing:0.03em; }}
+    .composer {{ border-top:1px solid var(--line); padding:12px; background:#fffefc; }}
+    .composer textarea {{ min-height: 88px; }}
+    .actions {{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:8px; }}
+    .muted {{ font-size:12px; color:#6b7280; margin-top:8px; }}
     @media (max-width: 900px) {{ .grid, .row {{ grid-template-columns: 1fr; }} }}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h2>FineTree Pod Playground (5555)</h2>
+      <h2>FineTree Pod Chat Playground (5555)</h2>
       <div class="grid">
         <div>
           <label>System Prompt</label>
-          <textarea id="systemPrompt">You are a precise OCR/extraction assistant.</textarea>
-          <label>User Prompt</label>
-          <textarea id="userPrompt">Describe the page briefly.</textarea>
+          <textarea id="systemPrompt">You are a precise OCR/extraction assistant. Keep replies concise and non-thinking.</textarea>
           <label>Image (optional)</label>
           <input id="imageInput" type="file" accept="image/*" />
           <div class="row" style="margin-top:10px;">
@@ -257,23 +303,49 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
             <label>Max Tokens</label>
             <input id="maxTokens" type="number" min="1" max="4096" value="120" />
           </div>
-          <div style="margin-top:14px;">
-            <button class="run" id="runBtn">Run</button>
-            <div id="status" class="status"></div>
-          </div>
+          <p class="muted">Chat history is included as conversation context for each turn. Streaming is enabled.</p>
+          <div id="status" class="status"></div>
         </div>
-        <div>
-          <label>Assistant Output</label>
-          <textarea id="output" class="out" readonly></textarea>
+        <div class="chat">
+          <div id="chatLog" class="log"></div>
+          <div class="composer">
+            <label>Prompt</label>
+            <textarea id="userPrompt" placeholder="Ask a question about the uploaded image or continue the chat..."></textarea>
+            <div class="actions">
+              <button class="run" id="sendBtn">Send (Streaming)</button>
+              <button class="secondary" id="resetBtn">Reset Chat</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
   <script>
     let imageDataUrl = {default_image_js};
+    const turns = [];
     const statusEl = document.getElementById("status");
-    const outputEl = document.getElementById("output");
-    const runBtn = document.getElementById("runBtn");
+    const chatLogEl = document.getElementById("chatLog");
+    const userPromptEl = document.getElementById("userPrompt");
+    const sendBtn = document.getElementById("sendBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    function appendBubble(role, text) {{
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${{role}}`;
+      const who = document.createElement("div");
+      who.className = "who";
+      who.textContent = role === "user" ? "You" : "Assistant";
+      const body = document.createElement("div");
+      body.textContent = text;
+      bubble.appendChild(who);
+      bubble.appendChild(body);
+      chatLogEl.appendChild(bubble);
+      chatLogEl.scrollTop = chatLogEl.scrollHeight;
+      return body;
+    }}
+
+    appendBubble("assistant", "Chat ready. Upload an image if needed, then send a prompt.");
+
     document.getElementById("imageInput").addEventListener("change", async (e) => {{
       const file = e.target.files && e.target.files[0];
       if (!file) return;
@@ -281,13 +353,31 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
       reader.onload = () => {{ imageDataUrl = String(reader.result || ""); statusEl.textContent = "Image loaded."; }};
       reader.readAsDataURL(file);
     }});
-    runBtn.addEventListener("click", async () => {{
-      runBtn.disabled = true;
+
+    resetBtn.addEventListener("click", () => {{
+      turns.length = 0;
+      chatLogEl.innerHTML = "";
+      appendBubble("assistant", "Chat reset.");
+      statusEl.textContent = "Conversation cleared.";
+    }});
+
+    async function streamTurn() {{
+      const userPrompt = String(userPromptEl.value || "").trim();
+      if (!userPrompt) {{
+        statusEl.textContent = "Enter a prompt first.";
+        return;
+      }}
+
+      sendBtn.disabled = true;
       statusEl.textContent = "Streaming...";
-      outputEl.value = "";
+      appendBubble("user", userPrompt);
+      const assistantBody = appendBubble("assistant", "");
+      let assistantText = "";
+
       const payload = {{
         system_prompt: document.getElementById("systemPrompt").value,
-        user_prompt: document.getElementById("userPrompt").value,
+        user_prompt: userPrompt,
+        history: turns,
         model: document.getElementById("model").value,
         temperature: Number(document.getElementById("temperature").value || 0.7),
         top_p: Number(document.getElementById("topP").value || 0.8),
@@ -342,8 +432,9 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
             ? choice.delta.content
             : null;
           if (token) {{
-            outputEl.value += token;
-            outputEl.scrollTop = outputEl.scrollHeight;
+            assistantText += token;
+            assistantBody.textContent = assistantText;
+            chatLogEl.scrollTop = chatLogEl.scrollHeight;
           }}
         }};
 
@@ -366,11 +457,22 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
           parseEvent(buffer.trim());
         }}
         statusEl.textContent = doneSeen ? "Done." : "Stream closed.";
+        turns.push({{ user: userPrompt, assistant: assistantText }});
+        userPromptEl.value = "";
       }} catch (err) {{
         statusEl.textContent = "Error.";
-        outputEl.value = String(err);
+        const errText = String(err);
+        assistantBody.textContent = errText;
       }} finally {{
-        runBtn.disabled = false;
+        sendBtn.disabled = false;
+      }}
+    }}
+
+    sendBtn.addEventListener("click", streamTurn);
+    userPromptEl.addEventListener("keydown", (event) => {{
+      if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {{
+        event.preventDefault();
+        streamTurn();
       }}
     }});
   </script>

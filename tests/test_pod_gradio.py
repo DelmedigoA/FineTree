@@ -56,6 +56,28 @@ def test_build_openai_chat_payload_includes_system_and_sampling() -> None:
     assert payload["messages"][1]["role"] == "user"
 
 
+def test_build_openai_chat_payload_includes_recent_history_context() -> None:
+    payload = pod_gradio._build_openai_chat_payload(
+        {
+            "system_prompt": "be strict",
+            "user_prompt": "next question",
+            "model": "qwen-gt",
+            "max_tokens": 40,
+            "history": [
+                {"user": "first", "assistant": "first answer"},
+                {"user": "second", "assistant": "second answer"},
+            ],
+            "image_data_url": "data:image/png;base64,AAAA",
+        }
+    )
+    message_text = payload["messages"][1]["content"][0]["text"]
+    assert "Conversation context:" in message_text
+    assert "User: first" in message_text
+    assert "Assistant: first answer" in message_text
+    assert "User: next question" in message_text
+    assert message_text.rstrip().endswith("Assistant:")
+
+
 def test_iter_sse_data_events_parses_event_payloads(monkeypatch) -> None:
     stream_lines = [
         b": keepalive\n",
