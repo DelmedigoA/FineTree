@@ -13,7 +13,7 @@ from pydantic import ValidationError
 
 from .schemas import Currency, Fact, PageMeta, PageType, Scale
 
-FACT_KEYS = ("value", "refference", "date", "path", "currency", "scale", "value_type")
+FACT_KEYS = ("value", "note", "refference", "date", "path", "currency", "scale", "value_type")
 CURRENCY_OPTIONS = [c.value for c in Currency]
 SCALE_OPTIONS = [s.value for s in Scale]
 
@@ -33,6 +33,7 @@ class PageState:
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
+        "note": None,
         "refference": "",
         "date": None,
         "path": [],
@@ -69,6 +70,8 @@ def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     if merged.get("value_type") == "":
         merged["value_type"] = None
 
+    note_text = str(merged.get("note") or "").strip()
+    merged["note"] = note_text or None
     merged["refference"] = str(merged.get("refference") or "").strip()
 
     return merged

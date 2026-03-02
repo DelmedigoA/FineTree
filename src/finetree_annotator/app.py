@@ -1101,6 +1101,7 @@ class AnnotationWindow(QMainWindow):
         self.facts_list.setSpacing(4)
         self.fact_bbox_label = QLabel("bbox: -")
         self.fact_value_edit = QLineEdit()
+        self.fact_note_edit = QLineEdit()
         self.fact_refference_edit = QLineEdit()
         self.fact_date_edit = QLineEdit()
         self.fact_currency_combo = QComboBox()
@@ -1157,6 +1158,7 @@ class AnnotationWindow(QMainWindow):
         fact_editor_form.setVerticalSpacing(10)
         fact_editor_form.addRow("bbox", self.fact_bbox_label)
         fact_editor_form.addRow("value*", self.fact_value_edit)
+        fact_editor_form.addRow("note", self.fact_note_edit)
         fact_editor_form.addRow("refference*", self.fact_refference_edit)
         fact_editor_form.addRow("date", self.fact_date_edit)
         fact_editor_form.addRow("currency", self.fact_currency_combo)
@@ -1165,6 +1167,7 @@ class AnnotationWindow(QMainWindow):
         fact_editor_form.addRow("path", path_panel)
         self.fact_bbox_label.setObjectName("factBboxLabel")
         self.fact_value_edit.setMinimumWidth(field_min_width)
+        self.fact_note_edit.setMinimumWidth(field_min_width)
         self.fact_refference_edit.setMinimumWidth(field_min_width)
         self.fact_date_edit.setMinimumWidth(field_min_width)
         self.fact_currency_combo.setMinimumWidth(field_min_width)
@@ -1291,6 +1294,7 @@ class AnnotationWindow(QMainWindow):
         self.title_edit.editingFinished.connect(self._on_meta_edited)
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.fact_value_edit.editingFinished.connect(self._on_fact_editor_edited)
+        self.fact_note_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_refference_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_date_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_edited())
@@ -1816,6 +1820,7 @@ class AnnotationWindow(QMainWindow):
 
     def _set_fact_editor_enabled(self, enabled: bool) -> None:
         self.fact_value_edit.setEnabled(enabled)
+        self.fact_note_edit.setEnabled(enabled)
         self.fact_refference_edit.setEnabled(enabled)
         self.fact_date_edit.setEnabled(enabled)
         self.fact_currency_combo.setEnabled(enabled)
@@ -1831,6 +1836,7 @@ class AnnotationWindow(QMainWindow):
         try:
             self.fact_bbox_label.setText("-")
             self.fact_value_edit.setText("")
+            self.fact_note_edit.setText("")
             self.fact_refference_edit.setText("")
             self.fact_date_edit.setText("")
             self.fact_currency_combo.setCurrentIndex(0)
@@ -1853,6 +1859,7 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
+            self.fact_note_edit.setText(str(fact.get("note") or ""))
             self.fact_refference_edit.setText(str(fact.get("refference") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
             self.fact_path_list.clear()
@@ -1889,6 +1896,7 @@ class AnnotationWindow(QMainWindow):
         return normalize_fact_data(
             {
                 "value": self.fact_value_edit.text().strip(),
+                "note": self.fact_note_edit.text().strip() or None,
                 "refference": self.fact_refference_edit.text().strip(),
                 "date": self.fact_date_edit.text().strip() or None,
                 "path": path_parts,
@@ -2164,6 +2172,7 @@ class AnnotationWindow(QMainWindow):
             round(float(bbox.get("w", 0.0)), 2),
             round(float(bbox.get("h", 0.0)), 2),
             str(fact_payload.get("value") or ""),
+            str(fact_payload.get("note") or ""),
             str(fact_payload.get("refference") or ""),
             str(fact_payload.get("date") or ""),
             path,
@@ -2215,6 +2224,7 @@ class AnnotationWindow(QMainWindow):
         fact_data = normalize_fact_data(
             {
                 "value": fact_payload.get("value"),
+                "note": fact_payload.get("note"),
                 "refference": fact_payload.get("refference"),
                 "date": fact_payload.get("date"),
                 "path": fact_payload.get("path") or [],
@@ -2875,9 +2885,13 @@ class AnnotationWindow(QMainWindow):
             rect = item_scene_rect(item)
             value = str(item.fact_data.get("value") or "")
             path = " > ".join(item.fact_data.get("path") or [])
+            note = str(item.fact_data.get("note") or "")
             summary = f"#{idx} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
                 summary = f"{summary} | {path}"
+            if note:
+                trimmed_note = (note[:32] + "...") if len(note) > 35 else note
+                summary = f"{summary} | note: {trimmed_note}"
             self.facts_list.addItem(QListWidgetItem(summary))
             if item is selected:
                 selected_row = idx - 1

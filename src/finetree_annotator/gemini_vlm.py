@@ -407,6 +407,7 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
             {
                 "bbox": bbox,
                 "value": str(value),
+                "note": _to_optional_str(raw_fact.get("note", raw_fact.get("footnote"))),
                 "refference": _to_optional_str(
                     raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref")))
                 )

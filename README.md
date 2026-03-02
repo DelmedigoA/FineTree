@@ -507,6 +507,7 @@ Minimal API request body example:
 
 ### Fact field lists
 
+- `note`: optional open text attached to a specific fact (for example, `*without debt insurance ...`)
 - `currency` options: `ILS`, `USD`, `EUR`, `GBP`
 - `scale` options: `1`, `1000`, `1000000`
 
