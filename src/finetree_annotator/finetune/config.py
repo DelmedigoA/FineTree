@@ -128,9 +128,10 @@ class InferenceConfig(BaseModel):
     endpoint_timeout_sec: int = 180
     parser_mode: Literal["streaming_page_extraction"] = "streaming_page_extraction"
     max_new_tokens: int = 4096
-    temperature: float = 0.0
-    top_p: float = 0.95
-    do_sample: bool = False
+    temperature: float = 0.7
+    top_p: float = 0.8
+    do_sample: bool = True
+    enable_thinking: bool = False
     quantization_mode: Literal["none", "bnb_8bit", "bnb_4bit"] = "none"
     torch_dtype: Literal["auto", "bfloat16", "float16", "float32"] = "auto"
     attn_implementation: Literal["flash_attention_2", "sdpa", "eager"] = "sdpa"

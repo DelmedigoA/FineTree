@@ -5,9 +5,9 @@ inference:
   endpoint_model: qwen-gt
   endpoint_timeout_sec: 90
   max_new_tokens: 120
-  temperature: 0.0
-  top_p: 0.95
-  do_sample: false
+  temperature: 0.7
+  top_p: 0.8
+  do_sample: true
   quantization_mode: bnb_8bit
   attn_implementation: flash_attention_2
   require_flash_attention: true

@@ -363,6 +363,9 @@ This starts:
 - API on `6666` (`/v1/chat/completions`, supports streaming)
 - Playground UI on `5555` (system prompt + generation params + image upload + live token streaming)
 
+Qwen3.5 default sampling preset in this repo is non-thinking by default and aligned to model-card guidance:
+`enable_thinking=false`, `do_sample=true`, `temperature=0.7`, `top_p=0.8`.
+
 Required Pod auth env vars:
 
 ```bash

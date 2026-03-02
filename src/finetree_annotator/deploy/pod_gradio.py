@@ -22,8 +22,8 @@ class PlaygroundChatRequest(BaseModel):
     system_prompt: str = ""
     user_prompt: str = ""
     model: str = "qwen-gt"
-    temperature: float = Field(default=0.0, ge=0.0, le=2.0)
-    top_p: float = Field(default=0.95, gt=0.0, le=1.0)
+    temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    top_p: float = Field(default=0.8, gt=0.0, le=1.0)
     max_tokens: int = Field(default=120, ge=1, le=4096)
     image_data_url: Optional[str] = None
 
@@ -132,8 +132,8 @@ def _build_openai_chat_payload(request_payload: dict[str, Any]) -> dict[str, Any
         "max_tokens": int(request_payload.get("max_tokens") or 120),
     }
 
-    temperature = float(request_payload.get("temperature") or 0.0)
-    top_p = float(request_payload.get("top_p") or 0.95)
+    temperature = float(request_payload.get("temperature") or 0.7)
+    top_p = float(request_payload.get("top_p") or 0.8)
     if temperature > 0.0:
         payload["temperature"] = temperature
         payload["top_p"] = top_p
@@ -246,11 +246,11 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
             </div>
             <div>
               <label>Temperature</label>
-              <input id="temperature" type="number" step="0.01" min="0" max="2" value="0.0" />
+              <input id="temperature" type="number" step="0.01" min="0" max="2" value="0.7" />
             </div>
             <div>
               <label>Top P</label>
-              <input id="topP" type="number" step="0.01" min="0" max="1" value="0.95" />
+              <input id="topP" type="number" step="0.01" min="0" max="1" value="0.8" />
             </div>
           </div>
           <div style="margin-top:10px;">
@@ -289,8 +289,8 @@ def _playground_html(*, default_model: str, default_image_data_url: Optional[str
         system_prompt: document.getElementById("systemPrompt").value,
         user_prompt: document.getElementById("userPrompt").value,
         model: document.getElementById("model").value,
-        temperature: Number(document.getElementById("temperature").value || 0),
-        top_p: Number(document.getElementById("topP").value || 0.95),
+        temperature: Number(document.getElementById("temperature").value || 0.7),
+        top_p: Number(document.getElementById("topP").value || 0.8),
         max_tokens: Number(document.getElementById("maxTokens").value || 120),
         image_data_url: imageDataUrl
       }};

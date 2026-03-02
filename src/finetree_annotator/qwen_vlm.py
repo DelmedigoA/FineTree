@@ -285,7 +285,37 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
     return model, processor
 
 
-def _prepare_inputs(processor: Any, image_path: Path, prompt: str) -> dict[str, Any]:
+def _apply_chat_template_with_thinking_control(processor: Any, messages: list[dict[str, Any]], enable_thinking: bool) -> str:
+    base_kwargs = {
+        "tokenize": False,
+        "add_generation_prompt": True,
+    }
+
+    try:
+        return processor.apply_chat_template(
+            messages,
+            enable_thinking=enable_thinking,
+            **base_kwargs,
+        )
+    except TypeError:
+        pass
+
+    try:
+        return processor.apply_chat_template(
+            messages,
+            chat_template_kwargs={"enable_thinking": enable_thinking},
+            **base_kwargs,
+        )
+    except TypeError:
+        if not enable_thinking:
+            raise RuntimeError(
+                "Configured inference.enable_thinking=false but this tokenizer/processor "
+                "does not support thinking control in apply_chat_template."
+            )
+        return processor.apply_chat_template(messages, **base_kwargs)
+
+
+def _prepare_inputs(processor: Any, image_path: Path, prompt: str, enable_thinking: bool) -> dict[str, Any]:
     from PIL import Image
 
     image = Image.open(image_path).convert("RGB")
@@ -299,10 +329,10 @@ def _prepare_inputs(processor: Any, image_path: Path, prompt: str) -> dict[str, 
         }
     ]
 
-    chat_text = processor.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
+    chat_text = _apply_chat_template_with_thinking_control(
+        processor=processor,
+        messages=messages,
+        enable_thinking=enable_thinking,
     )
     inputs = processor(
         text=[chat_text],
@@ -364,6 +394,7 @@ def _stream_content_from_runpod_endpoint(
     effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
     effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
     effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
+    effective_enable_thinking = bool(cfg.inference.enable_thinking)
 
     payload: dict[str, Any] = {
         "model": model_name,
@@ -378,6 +409,7 @@ def _stream_content_from_runpod_endpoint(
         ],
         "max_tokens": resolved_max_new_tokens,
         "stream": True,
+        "chat_template_kwargs": {"enable_thinking": effective_enable_thinking},
     }
     if effective_do_sample:
         payload["temperature"] = effective_temperature
@@ -568,9 +600,11 @@ def _stream_content_from_runpod_queue(
     effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
     effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
     effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
+    effective_enable_thinking = bool(cfg.inference.enable_thinking)
     if effective_do_sample:
         payload_input["temperature"] = effective_temperature
         payload_input["top_p"] = effective_top_p
+    payload_input["chat_template_kwargs"] = {"enable_thinking": effective_enable_thinking}
 
     payload = {"input": payload_input}
 
@@ -691,7 +725,12 @@ def _stream_content_local(
     except Exception as exc:  # pragma: no cover
         raise RuntimeError("transformers TextIteratorStreamer is required for streaming.") from exc
 
-    inputs = _prepare_inputs(processor, image_path=image_path, prompt=prompt)
+    inputs = _prepare_inputs(
+        processor,
+        image_path=image_path,
+        prompt=prompt,
+        enable_thinking=bool(cfg.inference.enable_thinking),
+    )
 
     device = getattr(model_obj, "device", None)
     if device is not None:
