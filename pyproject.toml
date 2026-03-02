@@ -16,11 +16,15 @@ dependencies = [
   "Pillow",
   "transformers",
   "datasets",
+  "httpx",
   "trl",
   "peft",
+  "fastapi",
+  "uvicorn",
   "huggingface_hub",
   "runpod",
   "unsloth",
+  "pytest>=8,<9",
 ]
 
 [project.scripts]

@@ -127,6 +127,8 @@ class InferenceConfig(BaseModel):
     endpoint_model: Optional[str] = None
     endpoint_timeout_sec: int = 180
     parser_mode: Literal["streaming_page_extraction"] = "streaming_page_extraction"
+    fallback_model_path: Optional[str] = None
+    fallback_disable_adapter: bool = True
     max_new_tokens: int = 4096
     temperature: float = 0.7
     top_p: float = 0.8
@@ -137,8 +139,19 @@ class InferenceConfig(BaseModel):
     attn_implementation: Literal["flash_attention_2", "sdpa", "eager"] = "sdpa"
     require_flash_attention: bool = False
     device_map: str = "auto"
+    max_memory_per_gpu_gb: Optional[int] = None
+    gpu_memory_utilization: float = 0.9
     trust_remote_code: bool = True
     load_in_4bit: bool = False
+
+    @model_validator(mode="after")
+    def _validate_inference_limits(self) -> "InferenceConfig":
+        if self.max_memory_per_gpu_gb is not None and int(self.max_memory_per_gpu_gb) <= 0:
+            raise ValueError("inference.max_memory_per_gpu_gb must be > 0 when provided.")
+        utilization = float(self.gpu_memory_utilization)
+        if utilization <= 0.0 or utilization > 1.0:
+            raise ValueError("inference.gpu_memory_utilization must be in the range (0, 1].")
+        return self
 
 
 class FinetuneConfig(BaseModel):

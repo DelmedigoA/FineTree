@@ -11,7 +11,7 @@ log() {
   echo "[$(ts_utc)] [model-test] $*"
 }
 
-CONFIG_PATH="${1:-${FINETREE_QWEN_CONFIG:-${ROOT_DIR}/configs/qwen_ui_runpod_pod_local_8bit.yaml}}"
+CONFIG_PATH="${1:-${FINETREE_QWEN_CONFIG:-${ROOT_DIR}/configs/qwen_ui_runpod_pod_local_bf16.yaml}}"
 PROMPT_TEXT="${2:-${FINETREE_MODEL_TEST_PROMPT:-Reply exactly: warmup-ok}}"
 MAX_TOKENS="${3:-${FINETREE_MODEL_TEST_MAX_TOKENS:-8}}"
 IMAGE_PATH="${FINETREE_MODEL_TEST_IMAGE_PATH:-/tmp/ft_smoke.png}"

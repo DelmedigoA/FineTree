@@ -6,6 +6,7 @@ import json
 import mimetypes
 import os
 import time
+import warnings
 from pathlib import Path
 from threading import Thread
 from typing import Any, Iterator, Optional, Tuple
@@ -74,6 +75,13 @@ def _cache_key(model_name: str, adapter_path: Optional[str], quantization_mode: 
             str(cfg.inference.require_flash_attention),
             str(cfg.inference.device_map),
             str(cfg.inference.load_in_4bit),
+            str(cfg.inference.fallback_model_path or ""),
+            str(cfg.inference.fallback_disable_adapter),
+            str(cfg.inference.max_memory_per_gpu_gb),
+            str(cfg.inference.gpu_memory_utilization),
+            str(os.getenv("FINETREE_QWEN_FALLBACK_MODEL") or ""),
+            str(os.getenv("FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB") or ""),
+            str(os.getenv("FINETREE_QWEN_GPU_MEMORY_UTILIZATION") or ""),
         ]
     )
 
@@ -146,6 +154,19 @@ def _effective_model_name(cfg: FinetuneConfig, model_override: Optional[str]) ->
     raise RuntimeError("No model configured for local Qwen inference.")
 
 
+def _effective_fallback_model_name(cfg: FinetuneConfig, primary_model_name: str) -> Optional[str]:
+    env_fallback = str(os.getenv("FINETREE_QWEN_FALLBACK_MODEL") or "").strip()
+    if env_fallback:
+        fallback = env_fallback
+    else:
+        fallback = str(cfg.inference.fallback_model_path or "").strip()
+    if not fallback:
+        return None
+    if fallback == primary_model_name:
+        return None
+    return fallback
+
+
 def _effective_adapter_path(cfg: FinetuneConfig) -> Optional[str]:
     for name in ("FINETREE_ADAPTER_REF", "FINETREE_QWEN_ADAPTER_PATH"):
         value = str(os.getenv(name) or "").strip()
@@ -167,6 +188,80 @@ def _effective_quantization_mode(cfg: FinetuneConfig) -> str:
     if cfg.inference.load_in_4bit:
         return "bnb_4bit"
     return str(cfg.inference.quantization_mode)
+
+
+def _effective_max_memory_per_gpu_gb(cfg: FinetuneConfig) -> Optional[int]:
+    env_value = str(os.getenv("FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB") or "").strip()
+    if env_value:
+        try:
+            parsed = int(env_value)
+        except ValueError:
+            warnings.warn(
+                f"Ignoring invalid FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB={env_value!r}; expected integer.",
+                RuntimeWarning,
+            )
+        else:
+            if parsed > 0:
+                return parsed
+            warnings.warn(
+                f"Ignoring non-positive FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB={env_value!r}.",
+                RuntimeWarning,
+            )
+
+    configured = cfg.inference.max_memory_per_gpu_gb
+    if configured is None:
+        return None
+    parsed = int(configured)
+    if parsed <= 0:
+        return None
+    return parsed
+
+
+def _effective_gpu_memory_utilization(cfg: FinetuneConfig) -> float:
+    env_value = str(os.getenv("FINETREE_QWEN_GPU_MEMORY_UTILIZATION") or "").strip()
+    if env_value:
+        try:
+            parsed = float(env_value)
+        except ValueError:
+            warnings.warn(
+                f"Ignoring invalid FINETREE_QWEN_GPU_MEMORY_UTILIZATION={env_value!r}; expected float.",
+                RuntimeWarning,
+            )
+        else:
+            if 0.0 < parsed <= 1.0:
+                return parsed
+            warnings.warn(
+                f"Ignoring out-of-range FINETREE_QWEN_GPU_MEMORY_UTILIZATION={env_value!r}; expected (0, 1].",
+                RuntimeWarning,
+            )
+    return float(cfg.inference.gpu_memory_utilization)
+
+
+def _build_max_memory_map(cfg: FinetuneConfig) -> Optional[dict[Any, str]]:
+    try:
+        import torch
+    except Exception:
+        return None
+
+    if not torch.cuda.is_available():
+        return None
+
+    gpu_count = int(torch.cuda.device_count())
+    if gpu_count <= 0:
+        return None
+
+    fixed_gb = _effective_max_memory_per_gpu_gb(cfg)
+    utilization = _effective_gpu_memory_utilization(cfg)
+    max_memory: dict[Any, str] = {}
+    for gpu_idx in range(gpu_count):
+        total_mem_bytes = int(torch.cuda.get_device_properties(gpu_idx).total_memory)
+        total_mem_gib = max(1, int(total_mem_bytes // (1024**3)))
+        if fixed_gb is not None:
+            target_gib = min(total_mem_gib, int(fixed_gb))
+        else:
+            target_gib = max(1, int(total_mem_gib * utilization))
+        max_memory[gpu_idx] = f"{target_gib}GiB"
+    return max_memory
 
 
 def _uses_flash_attention(model_obj: Any) -> bool:
@@ -212,25 +307,17 @@ def _build_quantization_kwargs(cfg: FinetuneConfig, quant_mode: str, transformer
     return {"quantization_config": bits_and_bytes_config_cls(**bnb_kwargs)}
 
 
-def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
-    _ensure_cuda()
-
-    model_name = _effective_model_name(cfg, model_override)
-    adapter_ref, _ = _resolve_adapter_reference(_effective_adapter_path(cfg))
-    quant_mode = _effective_quantization_mode(cfg)
-    key = _cache_key(model_name, adapter_ref, quant_mode, cfg)
-    cached = _MODEL_CACHE.get(key)
-    if cached is not None:
-        return cached
-    hf_token = resolve_hf_token_from_env()
-
-    try:
-        import transformers
-    except Exception as exc:  # pragma: no cover
-        raise RuntimeError("transformers is required for Qwen GT local inference.") from exc
-
-    auto_model_cls = getattr(transformers, "AutoModelForImageTextToText")
-    auto_processor_cls = getattr(transformers, "AutoProcessor")
+def _load_model_bundle_once(
+    cfg: FinetuneConfig,
+    *,
+    model_name: str,
+    adapter_ref: Optional[str],
+    hf_token: Optional[str],
+    quant_mode: str,
+    transformers_module: Any,
+) -> tuple[Any, Any]:
+    auto_model_cls = getattr(transformers_module, "AutoModelForImageTextToText")
+    auto_processor_cls = getattr(transformers_module, "AutoProcessor")
 
     model_kwargs: dict[str, Any] = {
         "trust_remote_code": bool(cfg.inference.trust_remote_code),
@@ -238,7 +325,10 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
         "torch_dtype": _dtype_from_name(cfg.inference.torch_dtype),
         "attn_implementation": str(cfg.inference.attn_implementation),
     }
-    model_kwargs.update(_build_quantization_kwargs(cfg, quant_mode, transformers))
+    max_memory = _build_max_memory_map(cfg)
+    if max_memory:
+        model_kwargs["max_memory"] = max_memory
+    model_kwargs.update(_build_quantization_kwargs(cfg, quant_mode, transformers_module))
 
     try:
         model = _load_with_optional_token(auto_model_cls.from_pretrained, model_name, hf_token, **model_kwargs)
@@ -256,6 +346,7 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
             hf_token,
             **fallback_model_kwargs,
         )
+
     processor = _load_with_optional_token(
         auto_processor_cls.from_pretrained,
         model_name,
@@ -280,6 +371,66 @@ def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None
                 raise
 
     _ensure_flash_attention(cfg, model)
+    return model, processor
+
+
+def _load_model_bundle(cfg: FinetuneConfig, model_override: Optional[str] = None) -> tuple[Any, Any]:
+    _ensure_cuda()
+
+    model_name = _effective_model_name(cfg, model_override)
+    adapter_ref, _ = _resolve_adapter_reference(_effective_adapter_path(cfg))
+    fallback_model_name = _effective_fallback_model_name(cfg, model_name)
+    quant_mode = _effective_quantization_mode(cfg)
+    key = _cache_key(model_name, adapter_ref, quant_mode, cfg)
+    cached = _MODEL_CACHE.get(key)
+    if cached is not None:
+        return cached
+    hf_token = resolve_hf_token_from_env()
+
+    try:
+        import transformers
+    except Exception as exc:  # pragma: no cover
+        raise RuntimeError("transformers is required for Qwen GT local inference.") from exc
+
+    try:
+        model, processor = _load_model_bundle_once(
+            cfg,
+            model_name=model_name,
+            adapter_ref=adapter_ref,
+            hf_token=hf_token,
+            quant_mode=quant_mode,
+            transformers_module=transformers,
+        )
+    except Exception as primary_exc:
+        if not fallback_model_name:
+            raise
+
+        fallback_adapter_ref = None if bool(cfg.inference.fallback_disable_adapter) else adapter_ref
+        warnings.warn(
+            "Primary model load failed. Falling back to original model "
+            f"{fallback_model_name!r} with adapter={fallback_adapter_ref or 'none'}: {primary_exc!r}",
+            RuntimeWarning,
+        )
+        fallback_key = _cache_key(fallback_model_name, fallback_adapter_ref, quant_mode, cfg)
+        fallback_cached = _MODEL_CACHE.get(fallback_key)
+        if fallback_cached is not None:
+            _MODEL_CACHE[key] = fallback_cached
+            return fallback_cached
+        try:
+            model, processor = _load_model_bundle_once(
+                cfg,
+                model_name=fallback_model_name,
+                adapter_ref=fallback_adapter_ref,
+                hf_token=hf_token,
+                quant_mode=quant_mode,
+                transformers_module=transformers,
+            )
+        except Exception as fallback_exc:
+            raise RuntimeError(
+                f"Primary model load failed for {model_name!r}, and fallback model load failed "
+                f"for {fallback_model_name!r}. primary={primary_exc!r}, fallback={fallback_exc!r}"
+            ) from fallback_exc
+        _MODEL_CACHE[fallback_key] = (model, processor)
 
     _MODEL_CACHE[key] = (model, processor)
     return model, processor
@@ -708,6 +859,19 @@ def _stream_content_from_runpod_queue(
                 raise RuntimeError(f"Queue status returned non-JSON response: {body[:500]}") from exc
 
 
+def _resolve_input_device(model_obj: Any) -> Optional[Any]:
+    hf_device_map = getattr(model_obj, "hf_device_map", None)
+    if isinstance(hf_device_map, dict):
+        for mapped_device in hf_device_map.values():
+            if isinstance(mapped_device, int):
+                return f"cuda:{mapped_device}"
+            if isinstance(mapped_device, str):
+                lowered = mapped_device.lower()
+                if lowered not in {"cpu", "disk"}:
+                    return mapped_device
+    return getattr(model_obj, "device", None)
+
+
 def _stream_content_local(
     cfg: FinetuneConfig,
     image_path: Path,
@@ -732,7 +896,7 @@ def _stream_content_local(
         enable_thinking=bool(cfg.inference.enable_thinking),
     )
 
-    device = getattr(model_obj, "device", None)
+    device = _resolve_input_device(model_obj)
     if device is not None:
         for key, value in list(inputs.items()):
             if hasattr(value, "to"):

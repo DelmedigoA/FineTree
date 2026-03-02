@@ -79,7 +79,7 @@ is_null_like() {
 }
 
 flow_check() {
-  local config="${1:-${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_8bit.yaml}}"
+  local config="${1:-${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_bf16.yaml}}"
   local errors=0
   local warnings=0
 
@@ -121,8 +121,7 @@ flow_check() {
         errors=$((errors + 1))
       fi
       if is_null_like "${adapter_path}" && [[ -z "${FINETREE_ADAPTER_REF:-}" ]]; then
-        log "FLOW-WARN no adapter configured (inference.adapter_path and FINETREE_ADAPTER_REF are empty)."
-        warnings=$((warnings + 1))
+        log "FLOW-INFO no adapter configured (inference.adapter_path and FINETREE_ADAPTER_REF are empty). Running original base/fallback model."
       fi
       ;;
     runpod_openai)
@@ -176,7 +175,7 @@ is_pid_running() {
 
 start_service() {
   ensure_state_dir
-  local config="${1:-${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_8bit.yaml}}"
+  local config="${1:-${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_bf16.yaml}}"
   local existing_pid
   existing_pid="$(pid_from_file || true)"
   if is_pid_running "${existing_pid}"; then
@@ -289,7 +288,7 @@ check_service() {
   df -h /runpod-volume 2>/dev/null || true
 
   show_models_auth
-  flow_check "${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_8bit.yaml}"
+  flow_check "${FINETREE_QWEN_CONFIG:-configs/qwen_ui_runpod_pod_local_bf16.yaml}"
 }
 
 warmup_local() {

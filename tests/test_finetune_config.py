@@ -21,6 +21,9 @@ def test_finetune_config_defaults_validate() -> None:
     assert cfg.inference.top_p == 0.8
     assert cfg.inference.do_sample is True
     assert cfg.inference.enable_thinking is False
+    assert cfg.inference.fallback_disable_adapter is True
+    assert cfg.inference.max_memory_per_gpu_gb is None
+    assert cfg.inference.gpu_memory_utilization == 0.9
 
 
 def test_inference_backend_accepts_runpod_queue() -> None:
