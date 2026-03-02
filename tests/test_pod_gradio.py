@@ -190,6 +190,19 @@ def test_history_messages_to_turns_converts_messages_shape() -> None:
     ]
 
 
+def test_history_messages_to_turns_accepts_tuple_history_shape() -> None:
+    history = [
+        ("first question", "first answer"),
+        ("second question", "second answer"),
+    ]
+
+    turns = pod_gradio._history_messages_to_turns(history)
+    assert turns == [
+        {"user": "first question", "assistant": "first answer"},
+        {"user": "second question", "assistant": "second answer"},
+    ]
+
+
 def test_resolve_default_model_input_prefers_explicit_value() -> None:
     value = pod_gradio._resolve_default_model_input(
         default_model="Qwen/Qwen3.5-27B",
