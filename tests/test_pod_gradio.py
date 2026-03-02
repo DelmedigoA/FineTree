@@ -209,3 +209,94 @@ def test_resolve_default_model_input_prefers_explicit_value() -> None:
         config_path=None,
     )
     assert value == "Qwen/Qwen3.5-27B"
+
+
+def test_is_gemini_model_requested_accepts_aliases() -> None:
+    assert pod_gradio._is_gemini_model_requested("gemini gt")
+    assert pod_gradio._is_gemini_model_requested("gemini-2.5-pro")
+    assert pod_gradio._is_gemini_model_requested("google/gemini-2.5-flash")
+    assert not pod_gradio._is_gemini_model_requested("qwen-gt")
+
+
+def test_resolve_gemini_model_name_uses_env_for_alias(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_GEMINI_MODEL", "gemini-2.5-flash")
+    assert pod_gradio._resolve_gemini_model_name("gemini gt") == "gemini-2.5-flash"
+    assert pod_gradio._resolve_gemini_model_name("google/gemini-2.5-pro") == "gemini-2.5-pro"
+
+
+def test_chat_route_uses_gemini_path_when_model_selected(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_USER", "u1")
+    monkeypatch.setenv("FINETREE_PLAYGROUND_PASS", "p1")
+    monkeypatch.setenv("FINETREE_POD_API_KEY", "pod-key")
+
+    def _fail_post_json(**_kwargs):
+        raise AssertionError("Qwen API path should not be called for Gemini model selection")
+
+    monkeypatch.setattr(pod_gradio, "_post_json", _fail_post_json)
+    monkeypatch.setattr(
+        pod_gradio,
+        "_generate_gemini_response",
+        lambda **_kwargs: "gemini answer",
+    )
+
+    app = pod_gradio.create_app(api_base_url="http://127.0.0.1:6666")
+    client = TestClient(app)
+    basic_token = base64.b64encode(b"u1:p1").decode("ascii")
+    response = client.post(
+        "/api/chat",
+        headers={"Authorization": f"Basic {basic_token}"},
+        json={
+            "system_prompt": "sys",
+            "user_prompt": "hello",
+            "model": "gemini gt",
+            "temperature": 0.0,
+            "top_p": 0.95,
+            "max_tokens": 16,
+            "image_data_url": "data:image/png;base64,AAAA",
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ok"] is True
+    assert payload["assistant_text"] == "gemini answer"
+    assert payload["response"]["provider"] == "gemini"
+
+
+def test_chat_stream_route_uses_gemini_path_when_model_selected(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_USER", "u1")
+    monkeypatch.setenv("FINETREE_PLAYGROUND_PASS", "p1")
+    monkeypatch.setenv("FINETREE_POD_API_KEY", "pod-key")
+
+    def _fail_iter_sse_data_events(**_kwargs):
+        raise AssertionError("Qwen streaming API path should not be called for Gemini model selection")
+
+    monkeypatch.setattr(pod_gradio, "_iter_sse_data_events", _fail_iter_sse_data_events)
+
+    def _fake_stream_gemini_response(**_kwargs):
+        yield "hel"
+        yield "lo"
+
+    monkeypatch.setattr(pod_gradio, "_stream_gemini_response", _fake_stream_gemini_response)
+
+    app = pod_gradio.create_app(api_base_url="http://127.0.0.1:6666")
+    client = TestClient(app)
+    basic_token = base64.b64encode(b"u1:p1").decode("ascii")
+    response = client.post(
+        "/api/chat/stream",
+        headers={"Authorization": f"Basic {basic_token}"},
+        json={
+            "system_prompt": "sys",
+            "user_prompt": "hello",
+            "model": "gemini gt",
+            "temperature": 0.0,
+            "top_p": 0.95,
+            "max_tokens": 16,
+            "image_data_url": "data:image/png;base64,AAAA",
+        },
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/event-stream")
+    body_text = response.text
+    assert "data: {\"choices\": [{\"delta\": {\"content\": \"hel\"}}]," in body_text
+    assert "data: {\"choices\": [{\"delta\": {\"content\": \"lo\"}}]," in body_text
+    assert "data: [DONE]" in body_text

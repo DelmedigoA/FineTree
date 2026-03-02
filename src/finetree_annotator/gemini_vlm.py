@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import argparse
 import ast
+from functools import lru_cache
 import mimetypes
 import os
+import shutil
+import subprocess
 import sys
 import json
 import re
@@ -108,13 +111,50 @@ def _api_key_from_config() -> Optional[str]:
     return None
 
 
+@lru_cache(maxsize=1)
+def _api_key_from_doppler() -> Optional[str]:
+    if shutil.which("doppler") is None:
+        return None
+
+    project = str(os.getenv("DOPPLER_PROJECT") or "").strip()
+    config = str(os.getenv("DOPPLER_CONFIG") or "").strip()
+    scope_args: list[str] = []
+    if project:
+        scope_args.extend(["--project", project])
+    if config:
+        scope_args.extend(["--config", config])
+
+    for secret_name in ("GOOGLE_API_KEY", "GEMINI_API_KEY", "FINETREE_GEMINI_API_KEY"):
+        cmd = ["doppler", "secrets", "get", secret_name, "--plain", *scope_args]
+        try:
+            proc = subprocess.run(
+                cmd,
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+        except Exception:
+            continue
+        value = proc.stdout.strip()
+        if value:
+            return value
+    return None
+
+
 def _resolve_api_key(explicit_api_key: Optional[str]) -> Optional[str]:
     return (
         explicit_api_key
         or os.getenv("GOOGLE_API_KEY")
         or os.getenv("GEMINI_API_KEY")
+        or os.getenv("FINETREE_GEMINI_API_KEY")
+        or _api_key_from_doppler()
         or _api_key_from_config()
     )
+
+
+def resolve_api_key(explicit_api_key: Optional[str] = None) -> Optional[str]:
+    return _resolve_api_key(explicit_api_key)
 
 
 def _sanitize_response_json_schema(node: Any, parent_key: Optional[str] = None) -> Any:
