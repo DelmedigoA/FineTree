@@ -44,6 +44,7 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
+    note: Optional[str] = None
     refference: str
     date: Optional[str] = None
     path: List[str]
@@ -64,6 +65,7 @@ class BBox(BaseModel):
 class ExtractedFact(BaseModel):
     bbox: BBox
     value: str
+    note: Optional[str] = None
     refference: str
     date: Optional[str] = None
     path: List[str]

@@ -23,6 +23,7 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     fact = normalize_fact_data(
         {
             "value": "123",
+            "note": "  *without debt insurance  ",
             "refference": "  ref-001  ",
             "path": ["assets", "", "cash", 2024],
             "currency": "ils",
@@ -32,6 +33,7 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     )
 
     assert fact["value"] == "123"
+    assert fact["note"] == "*without debt insurance"
     assert fact["refference"] == "ref-001"
     assert fact["path"] == ["assets", "cash", "2024"]
     assert fact["currency"] == "ILS"
@@ -59,6 +61,7 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
                     {
                         "bbox": {"x": 10, "y": 20, "w": 30, "h": 40},
                         "value": "1,193",
+                        "note": "*estimated",
                         "refference": "A1",
                         "currency": "ils",
                         "path": ["assets", "cash"],
@@ -85,6 +88,7 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
     assert state.meta["entity_name"] == "Demo Co"
     assert len(state.facts) == 2
     assert state.facts[0].fact["currency"] == "ILS"
+    assert state.facts[0].fact["note"] == "*estimated"
     assert state.facts[0].fact["refference"] == "A1"
     assert state.facts[0].fact["scale"] == 1000
     assert state.facts[1].bbox["w"] == 1.0
@@ -101,6 +105,7 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
                     bbox={"x": 10, "y": 20, "w": 30, "h": 40},
                     fact={
                         "value": "1,193",
+                        "note": "*estimated",
                         "refference": "row-12",
                         "date": "2024-12-31",
                         "path": ["assets", "cash"],
@@ -119,6 +124,7 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     page_2 = payload["pages"][1]
     assert page_1["meta"]["type"] == "notes"
     assert page_1["facts"][0]["currency"] == "USD"
+    assert page_1["facts"][0]["note"] == "*estimated"
     assert page_1["facts"][0]["refference"] == "row-12"
     assert page_2["meta"]["type"] == "other"
     assert page_2["meta"]["page_num"] is None
