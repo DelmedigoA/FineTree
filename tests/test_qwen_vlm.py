@@ -17,6 +17,7 @@ def _clear_qwen_env(monkeypatch) -> None:
         "FINETREE_QWEN_MODEL",
         "FINETREE_ADAPTER_REF",
         "FINETREE_QWEN_ADAPTER_PATH",
+        "FINETREE_QWEN_ALLOW_ENV_ADAPTER_OVERRIDE",
         "FINETREE_QWEN_QUANTIZATION",
         "FINETREE_QWEN_LOAD_IN_4BIT",
         "FINETREE_QWEN_FALLBACK_MODEL",
@@ -296,6 +297,7 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
     monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
     monkeypatch.setenv("FINETREE_QWEN_MODEL", "org/custom-model")
     monkeypatch.setenv("FINETREE_ADAPTER_REF", "org/custom-adapter")
+    monkeypatch.setenv("FINETREE_QWEN_ALLOW_ENV_ADAPTER_OVERRIDE", "1")
     monkeypatch.setenv("FINETREE_QWEN_QUANTIZATION", "bnb_8bit")
 
     calls: dict[str, object] = {}
@@ -356,6 +358,58 @@ def test_load_model_bundle_honors_env_model_adapter_and_8bit(monkeypatch) -> Non
     assert isinstance(quant_cfg, _FakeBitsAndBytesConfig)
     assert quant_cfg.kwargs["load_in_8bit"] is True
     assert "load_in_8bit" not in calls["model_kwargs"]
+
+
+def test_load_model_bundle_ignores_adapter_env_by_default(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+    monkeypatch.setenv("FINETREE_ADAPTER_REF", "org/custom-adapter")
+
+    calls: dict[str, object] = {}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="flash_attention_2")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            calls["model_name"] = model_name
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    class _FakePeftModel:
+        @staticmethod
+        def from_pretrained(model_obj, adapter_ref: str, **kwargs):
+            calls["adapter_ref"] = adapter_ref
+            return model_obj
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_peft = types.ModuleType("peft")
+    fake_peft.PeftModel = _FakePeftModel
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setitem(sys.modules, "peft", fake_peft)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "adapter_path": None,
+                "attn_implementation": "flash_attention_2",
+                "require_flash_attention": True,
+            },
+        }
+    )
+    qwen_vlm._load_model_bundle(cfg)
+    assert "adapter_ref" not in calls
 
 
 def test_build_max_memory_map_uses_gpu_memory_utilization(monkeypatch) -> None:
@@ -462,6 +516,105 @@ def test_load_model_bundle_falls_back_to_original_model_without_adapter(monkeypa
     assert calls["model_names"] == ["unsloth/Qwen3.5-35B-A3B", "Qwen/Qwen3.5-27B-Instruct"]
     assert calls["processor_name"] == "Qwen/Qwen3.5-27B-Instruct"
     assert "adapter_ref" not in calls
+
+
+def test_load_model_bundle_drops_adapter_on_cuda_oom_when_fallback_enabled(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    calls: dict[str, object] = {"adapter_calls": 0}
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="sdpa")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    class _FakePeftModel:
+        @staticmethod
+        def from_pretrained(model_obj, adapter_ref: str, **kwargs):
+            calls["adapter_calls"] = int(calls["adapter_calls"]) + 1
+            raise RuntimeError("CUDA out of memory. Tried to allocate 20.00 MiB")
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_peft = types.ModuleType("peft")
+    fake_peft.PeftModel = _FakePeftModel
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setitem(sys.modules, "peft", fake_peft)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "adapter_path": "asafd60/qwen35-test",
+                "fallback_disable_adapter": True,
+            },
+        }
+    )
+
+    with pytest.warns(RuntimeWarning, match="Continuing without adapter"):
+        qwen_vlm._load_model_bundle(cfg)
+
+    assert calls["adapter_calls"] == 1
+
+
+def test_load_model_bundle_raises_on_cuda_oom_when_fallback_disabled(monkeypatch) -> None:
+    qwen_vlm._MODEL_CACHE.clear()
+    monkeypatch.setattr(qwen_vlm, "_ensure_cuda", lambda: None)
+    monkeypatch.setattr(qwen_vlm, "_dtype_from_name", lambda _: None)
+    monkeypatch.setattr(qwen_vlm, "resolve_hf_token_from_env", lambda: None)
+
+    class _FakeModel:
+        def __init__(self):
+            self.config = types.SimpleNamespace(attn_implementation="sdpa")
+
+    class _FakeAutoModel:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return _FakeModel()
+
+    class _FakeAutoProcessor:
+        @staticmethod
+        def from_pretrained(model_name: str, **kwargs):
+            return object()
+
+    class _FakePeftModel:
+        @staticmethod
+        def from_pretrained(model_obj, adapter_ref: str, **kwargs):
+            raise RuntimeError("CUDA out of memory. Tried to allocate 20.00 MiB")
+
+    fake_transformers = types.ModuleType("transformers")
+    fake_transformers.AutoModelForImageTextToText = _FakeAutoModel
+    fake_transformers.AutoProcessor = _FakeAutoProcessor
+    fake_peft = types.ModuleType("peft")
+    fake_peft.PeftModel = _FakePeftModel
+    monkeypatch.setitem(sys.modules, "transformers", fake_transformers)
+    monkeypatch.setitem(sys.modules, "peft", fake_peft)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "model": {"base_model": "unsloth/Qwen3.5-35B-A3B"},
+            "inference": {
+                "adapter_path": "asafd60/qwen35-test",
+                "fallback_disable_adapter": False,
+            },
+        }
+    )
+
+    with pytest.raises(RuntimeError, match="Adapter load failed due CUDA OOM"):
+        qwen_vlm._load_model_bundle(cfg)
 
 
 def test_load_model_bundle_falls_back_to_legacy_quant_kwargs_without_bitsandbytes(monkeypatch) -> None:

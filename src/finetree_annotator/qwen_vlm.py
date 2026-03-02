@@ -168,13 +168,18 @@ def _effective_fallback_model_name(cfg: FinetuneConfig, primary_model_name: str)
 
 
 def _effective_adapter_path(cfg: FinetuneConfig) -> Optional[str]:
+    configured = str(cfg.inference.adapter_path or "").strip()
+    if configured:
+        return configured
+
+    allow_env_override = _env_flag("FINETREE_QWEN_ALLOW_ENV_ADAPTER_OVERRIDE")
+    if allow_env_override is not True:
+        return None
+
     for name in ("FINETREE_ADAPTER_REF", "FINETREE_QWEN_ADAPTER_PATH"):
         value = str(os.getenv(name) or "").strip()
         if value:
             return value
-    configured = str(cfg.inference.adapter_path or "").strip()
-    if configured:
-        return configured
     return None
 
 
@@ -307,6 +312,75 @@ def _build_quantization_kwargs(cfg: FinetuneConfig, quant_mode: str, transformer
     return {"quantization_config": bits_and_bytes_config_cls(**bnb_kwargs)}
 
 
+def _iter_exception_chain(exc: BaseException) -> Iterator[BaseException]:
+    seen: set[int] = set()
+    current: Optional[BaseException] = exc
+    while current is not None and id(current) not in seen:
+        seen.add(id(current))
+        yield current
+        next_exc = current.__cause__ or current.__context__
+        current = next_exc if isinstance(next_exc, BaseException) else None
+
+
+def _is_cuda_oom_error(exc: BaseException) -> bool:
+    for candidate in _iter_exception_chain(exc):
+        class_name = candidate.__class__.__name__.lower()
+        if "outofmemory" in class_name:
+            return True
+        message = str(candidate).lower()
+        if "out of memory" in message and ("cuda" in message or "gpu" in message):
+            return True
+    return False
+
+
+def _best_effort_cuda_gc() -> None:
+    try:
+        import gc
+
+        gc.collect()
+    except Exception:
+        pass
+
+    try:
+        import torch
+    except Exception:
+        return
+
+    try:
+        if not torch.cuda.is_available():
+            return
+    except Exception:
+        return
+
+    for fn_name in ("empty_cache", "ipc_collect"):
+        fn = getattr(torch.cuda, fn_name, None)
+        if callable(fn):
+            try:
+                fn()
+            except Exception:
+                pass
+
+
+def _load_adapter_with_optional_token(
+    peft_model_cls: Any,
+    model_obj: Any,
+    adapter_ref: str,
+    hf_token: Optional[str],
+) -> Any:
+    load_fn = lambda ref, **kwargs: peft_model_cls.from_pretrained(model_obj, ref, **kwargs)
+
+    try:
+        if hf_token:
+            return _load_with_optional_token(load_fn, adapter_ref, hf_token, low_cpu_mem_usage=True)
+        return peft_model_cls.from_pretrained(model_obj, adapter_ref, low_cpu_mem_usage=True)
+    except TypeError as exc:
+        if "low_cpu_mem_usage" not in str(exc):
+            raise
+        if hf_token:
+            return _load_with_optional_token(load_fn, adapter_ref, hf_token)
+        return peft_model_cls.from_pretrained(model_obj, adapter_ref)
+
+
 def _load_model_bundle_once(
     cfg: FinetuneConfig,
     *,
@@ -360,14 +434,22 @@ def _load_model_bundle_once(
         except Exception as exc:  # pragma: no cover
             raise RuntimeError("peft is required to load LoRA adapters for Qwen GT.") from exc
         try:
-            if hf_token:
-                model = PeftModel.from_pretrained(model, adapter_ref, token=hf_token)
+            model = _load_adapter_with_optional_token(PeftModel, model, adapter_ref, hf_token)
+        except Exception as exc:
+            if _is_cuda_oom_error(exc) and bool(cfg.inference.fallback_disable_adapter):
+                _best_effort_cuda_gc()
+                warnings.warn(
+                    "Adapter load failed due CUDA OOM. Continuing without adapter. "
+                    "To force adapter loading, set inference.fallback_disable_adapter=false.",
+                    RuntimeWarning,
+                )
             else:
-                model = PeftModel.from_pretrained(model, adapter_ref)
-        except TypeError:
-            if hf_token:
-                model = PeftModel.from_pretrained(model, adapter_ref, use_auth_token=hf_token)
-            else:
+                if _is_cuda_oom_error(exc):
+                    raise RuntimeError(
+                        "Adapter load failed due CUDA OOM. "
+                        "Set inference.fallback_disable_adapter=true to continue without adapter, "
+                        "or reduce memory usage (bnb_4bit / smaller model)."
+                    ) from exc
                 raise
 
     _ensure_flash_attention(cfg, model)

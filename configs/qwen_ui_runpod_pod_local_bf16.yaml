@@ -1,6 +1,6 @@
 inference:
   backend: local
-  model_path: unsloth/Qwen3.5-35B-A3B
+  model_path: Qwen/Qwen3.5-27B
   adapter_path: null
   endpoint_base_url: null
   endpoint_status_base_url: null
@@ -9,7 +9,7 @@ inference:
   endpoint_model: qwen-gt
   endpoint_timeout_sec: 180
   parser_mode: streaming_page_extraction
-  fallback_model_path: Qwen/Qwen3.5-27B-Instruct
+  fallback_model_path: Qwen/Qwen3.5-27B
   fallback_disable_adapter: true
   max_new_tokens: 120
   temperature: 0.7
