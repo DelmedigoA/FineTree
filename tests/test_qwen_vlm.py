@@ -44,7 +44,7 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     payload = (
         '{"meta":{"entity_name":null,"page_num":null,"type":"other","title":null},'
         '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10",'
-        '"note":"*without debt insurance","refference":"","date":null,'
+        '"note":"*without debt insurance","is_beur":true,"beur_num":"5","refference":"","date":null,'
         '"path":[],"currency":null,"scale":null,"value_type":"amount"}]}'
     )
 
@@ -55,6 +55,8 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
     assert extraction.facts[0].note == "*without debt insurance"
+    assert extraction.facts[0].is_beur is True
+    assert extraction.facts[0].beur_num == "5"
 
 
 def test_generate_content_from_image_passes_max_new_tokens(monkeypatch) -> None:

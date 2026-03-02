@@ -1102,6 +1102,9 @@ class AnnotationWindow(QMainWindow):
         self.fact_bbox_label = QLabel("bbox: -")
         self.fact_value_edit = QLineEdit()
         self.fact_note_edit = QLineEdit()
+        self.fact_is_beur_combo = QComboBox()
+        self.fact_is_beur_combo.addItems(["", "true", "false"])
+        self.fact_beur_num_edit = QLineEdit()
         self.fact_refference_edit = QLineEdit()
         self.fact_date_edit = QLineEdit()
         self.fact_currency_combo = QComboBox()
@@ -1159,6 +1162,8 @@ class AnnotationWindow(QMainWindow):
         fact_editor_form.addRow("bbox", self.fact_bbox_label)
         fact_editor_form.addRow("value*", self.fact_value_edit)
         fact_editor_form.addRow("note", self.fact_note_edit)
+        fact_editor_form.addRow("is_beur", self.fact_is_beur_combo)
+        fact_editor_form.addRow("beur_num", self.fact_beur_num_edit)
         fact_editor_form.addRow("refference*", self.fact_refference_edit)
         fact_editor_form.addRow("date", self.fact_date_edit)
         fact_editor_form.addRow("currency", self.fact_currency_combo)
@@ -1168,6 +1173,8 @@ class AnnotationWindow(QMainWindow):
         self.fact_bbox_label.setObjectName("factBboxLabel")
         self.fact_value_edit.setMinimumWidth(field_min_width)
         self.fact_note_edit.setMinimumWidth(field_min_width)
+        self.fact_is_beur_combo.setMinimumWidth(field_min_width)
+        self.fact_beur_num_edit.setMinimumWidth(field_min_width)
         self.fact_refference_edit.setMinimumWidth(field_min_width)
         self.fact_date_edit.setMinimumWidth(field_min_width)
         self.fact_currency_combo.setMinimumWidth(field_min_width)
@@ -1197,6 +1204,18 @@ class AnnotationWindow(QMainWindow):
         self.batch_remove_first_btn = QPushButton("Remove First Level")
         self.batch_remove_last_btn = QPushButton("Remove Last Level")
         self.batch_clear_refference_btn = QPushButton("Clear Refference")
+        self.batch_note_edit = QLineEdit()
+        self.batch_note_edit.setPlaceholderText("Note text for selected bboxes")
+        self.batch_set_note_btn = QPushButton("Set Note")
+        self.batch_clear_note_btn = QPushButton("Clear Note")
+        self.batch_is_beur_combo = QComboBox()
+        self.batch_is_beur_combo.addItems(["", "true", "false"])
+        self.batch_set_is_beur_btn = QPushButton("Apply is_beur")
+        self.batch_clear_is_beur_btn = QPushButton("Clear is_beur")
+        self.batch_beur_num_edit = QLineEdit()
+        self.batch_beur_num_edit.setPlaceholderText("beur_num for selected bboxes")
+        self.batch_set_beur_num_btn = QPushButton("Set beur_num")
+        self.batch_clear_beur_num_btn = QPushButton("Clear beur_num")
         self.batch_resize_step_spin = QSpinBox()
         self.batch_resize_step_spin.setRange(1, 500)
         self.batch_resize_step_spin.setSingleStep(1)
@@ -1220,6 +1239,23 @@ class AnnotationWindow(QMainWindow):
         batch_row_2.addWidget(self.batch_remove_first_btn)
         batch_row_2.addWidget(self.batch_remove_last_btn)
         batch_row_2.addWidget(self.batch_clear_refference_btn)
+        batch_note_row = QHBoxLayout()
+        batch_note_row.setSpacing(8)
+        batch_note_row.addWidget(self.batch_note_edit)
+        batch_note_row.addWidget(self.batch_set_note_btn)
+        batch_note_row.addWidget(self.batch_clear_note_btn)
+        batch_is_beur_row = QHBoxLayout()
+        batch_is_beur_row.setSpacing(8)
+        batch_is_beur_row.addWidget(QLabel("is_beur:"))
+        batch_is_beur_row.addWidget(self.batch_is_beur_combo)
+        batch_is_beur_row.addWidget(self.batch_set_is_beur_btn)
+        batch_is_beur_row.addWidget(self.batch_clear_is_beur_btn)
+        batch_is_beur_row.addStretch(1)
+        batch_beur_num_row = QHBoxLayout()
+        batch_beur_num_row.setSpacing(8)
+        batch_beur_num_row.addWidget(self.batch_beur_num_edit)
+        batch_beur_num_row.addWidget(self.batch_set_beur_num_btn)
+        batch_beur_num_row.addWidget(self.batch_clear_beur_num_btn)
         batch_resize_head = QHBoxLayout()
         batch_resize_head.setSpacing(8)
         batch_resize_head.addWidget(QLabel("Grow step (px):"))
@@ -1236,6 +1272,9 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_row_1)
         batch_layout.addLayout(batch_row_insert)
         batch_layout.addLayout(batch_row_2)
+        batch_layout.addLayout(batch_note_row)
+        batch_layout.addLayout(batch_is_beur_row)
+        batch_layout.addLayout(batch_beur_num_row)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
         fact_layout.addWidget(self.batch_box)
@@ -1244,7 +1283,7 @@ class AnnotationWindow(QMainWindow):
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+drag on the page to select multiple boxes. "
-            "Use Batch Edit to add/remove path levels (including insert by position) and clear references across selected boxes. "
+            "Use Batch Edit to add/remove path levels, set/clear note, apply is_beur, set/clear beur_num, and clear references across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -1295,6 +1334,8 @@ class AnnotationWindow(QMainWindow):
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.fact_value_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_note_edit.editingFinished.connect(self._on_fact_editor_edited)
+        self.fact_is_beur_combo.activated.connect(lambda _: self._on_fact_editor_edited())
+        self.fact_beur_num_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_refference_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_date_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_edited())
@@ -1308,12 +1349,21 @@ class AnnotationWindow(QMainWindow):
         self.path_up_btn.clicked.connect(self.move_selected_path_up)
         self.path_down_btn.clicked.connect(self.move_selected_path_down)
         self.batch_path_level_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_note_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_is_beur_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_beur_num_edit.textChanged.connect(self._update_batch_controls)
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
         self.batch_insert_path_btn.clicked.connect(self.batch_insert_path_level)
         self.batch_remove_first_btn.clicked.connect(self.batch_remove_first_level)
         self.batch_remove_last_btn.clicked.connect(self.batch_remove_last_level)
         self.batch_clear_refference_btn.clicked.connect(self.batch_clear_refference)
+        self.batch_set_note_btn.clicked.connect(self.batch_set_note)
+        self.batch_clear_note_btn.clicked.connect(self.batch_clear_note)
+        self.batch_set_is_beur_btn.clicked.connect(self.batch_set_is_beur)
+        self.batch_clear_is_beur_btn.clicked.connect(self.batch_clear_is_beur)
+        self.batch_set_beur_num_btn.clicked.connect(self.batch_set_beur_num)
+        self.batch_clear_beur_num_btn.clicked.connect(self.batch_clear_beur_num)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
         self.batch_expand_right_btn.clicked.connect(lambda: self.batch_expand_selected("right"))
         self.batch_expand_up_btn.clicked.connect(lambda: self.batch_expand_selected("up"))
@@ -1573,6 +1623,9 @@ class AnnotationWindow(QMainWindow):
         selected_count = len(self._selected_fact_items()) if hasattr(self, "scene") else 0
         has_selection = selected_count > 0
         has_text = bool(self.batch_path_level_edit.text().strip()) if hasattr(self, "batch_path_level_edit") else False
+        has_note_text = bool(self.batch_note_edit.text().strip()) if hasattr(self, "batch_note_edit") else False
+        has_is_beur_choice = bool(self.batch_is_beur_combo.currentText().strip()) if hasattr(self, "batch_is_beur_combo") else False
+        has_beur_num_text = bool(self.batch_beur_num_edit.text().strip()) if hasattr(self, "batch_beur_num_edit") else False
         if hasattr(self, "batch_selected_label"):
             self.batch_selected_label.setText(f"Selected: {selected_count}")
         if hasattr(self, "batch_prepend_path_btn"):
@@ -1589,6 +1642,24 @@ class AnnotationWindow(QMainWindow):
             self.batch_remove_last_btn.setEnabled(has_selection)
         if hasattr(self, "batch_clear_refference_btn"):
             self.batch_clear_refference_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_note_edit"):
+            self.batch_note_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_note_btn"):
+            self.batch_set_note_btn.setEnabled(has_selection and has_note_text)
+        if hasattr(self, "batch_clear_note_btn"):
+            self.batch_clear_note_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_is_beur_combo"):
+            self.batch_is_beur_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_is_beur_btn"):
+            self.batch_set_is_beur_btn.setEnabled(has_selection and has_is_beur_choice)
+        if hasattr(self, "batch_clear_is_beur_btn"):
+            self.batch_clear_is_beur_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_beur_num_edit"):
+            self.batch_beur_num_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_beur_num_btn"):
+            self.batch_set_beur_num_btn.setEnabled(has_selection and has_beur_num_text)
+        if hasattr(self, "batch_clear_beur_num_btn"):
+            self.batch_clear_beur_num_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_left_btn"):
             self.batch_expand_left_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_right_btn"):
@@ -1734,6 +1805,67 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, "Cleared refference")
 
+    def batch_set_note(self) -> None:
+        note = self.batch_note_edit.text().strip()
+        if not note:
+            self.statusBar().showMessage("Enter note text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["note"] = note
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated note")
+
+    def batch_clear_note(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["note"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared note")
+
+    def batch_set_is_beur(self) -> None:
+        selected = self.batch_is_beur_combo.currentText().strip().lower()
+        if selected == "true":
+            value: Optional[bool] = True
+        elif selected == "false":
+            value = False
+        else:
+            self.statusBar().showMessage("Choose is_beur value first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["is_beur"] = value
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated is_beur to {selected}")
+
+    def batch_clear_is_beur(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["is_beur"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared is_beur")
+
+    def batch_set_beur_num(self) -> None:
+        beur_num = self.batch_beur_num_edit.text().strip()
+        if not beur_num:
+            self.statusBar().showMessage("Enter beur_num first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["beur_num"] = beur_num
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated beur_num")
+
+    def batch_clear_beur_num(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["beur_num"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared beur_num")
+
     def _batch_resize_step(self, multiplier: int = 1) -> float:
         base = float(self.batch_resize_step_spin.value()) if hasattr(self, "batch_resize_step_spin") else 1.0
         mult = float(max(1, multiplier))
@@ -1821,6 +1953,8 @@ class AnnotationWindow(QMainWindow):
     def _set_fact_editor_enabled(self, enabled: bool) -> None:
         self.fact_value_edit.setEnabled(enabled)
         self.fact_note_edit.setEnabled(enabled)
+        self.fact_is_beur_combo.setEnabled(enabled)
+        self.fact_beur_num_edit.setEnabled(enabled)
         self.fact_refference_edit.setEnabled(enabled)
         self.fact_date_edit.setEnabled(enabled)
         self.fact_currency_combo.setEnabled(enabled)
@@ -1837,6 +1971,8 @@ class AnnotationWindow(QMainWindow):
             self.fact_bbox_label.setText("-")
             self.fact_value_edit.setText("")
             self.fact_note_edit.setText("")
+            self.fact_is_beur_combo.setCurrentIndex(0)
+            self.fact_beur_num_edit.setText("")
             self.fact_refference_edit.setText("")
             self.fact_date_edit.setText("")
             self.fact_currency_combo.setCurrentIndex(0)
@@ -1860,6 +1996,11 @@ class AnnotationWindow(QMainWindow):
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
             self.fact_note_edit.setText(str(fact.get("note") or ""))
+            is_beur = fact.get("is_beur")
+            is_beur_text = "true" if is_beur is True else ("false" if is_beur is False else "")
+            idx_is_beur = self.fact_is_beur_combo.findText(is_beur_text)
+            self.fact_is_beur_combo.setCurrentIndex(max(0, idx_is_beur))
+            self.fact_beur_num_edit.setText(str(fact.get("beur_num") or ""))
             self.fact_refference_edit.setText(str(fact.get("refference") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
             self.fact_path_list.clear()
@@ -1893,10 +2034,19 @@ class AnnotationWindow(QMainWindow):
             if text:
                 path_parts.append(text)
         scale_text = self.fact_scale_combo.currentText().strip()
+        is_beur_text = self.fact_is_beur_combo.currentText().strip().lower()
+        if is_beur_text == "true":
+            is_beur_value: Optional[bool] = True
+        elif is_beur_text == "false":
+            is_beur_value = False
+        else:
+            is_beur_value = None
         return normalize_fact_data(
             {
                 "value": self.fact_value_edit.text().strip(),
                 "note": self.fact_note_edit.text().strip() or None,
+                "is_beur": is_beur_value,
+                "beur_num": self.fact_beur_num_edit.text().strip() or None,
                 "refference": self.fact_refference_edit.text().strip(),
                 "date": self.fact_date_edit.text().strip() or None,
                 "path": path_parts,
@@ -2173,6 +2323,8 @@ class AnnotationWindow(QMainWindow):
             round(float(bbox.get("h", 0.0)), 2),
             str(fact_payload.get("value") or ""),
             str(fact_payload.get("note") or ""),
+            str(fact_payload.get("is_beur") if fact_payload.get("is_beur") is not None else ""),
+            str(fact_payload.get("beur_num") or ""),
             str(fact_payload.get("refference") or ""),
             str(fact_payload.get("date") or ""),
             path,
@@ -2225,6 +2377,8 @@ class AnnotationWindow(QMainWindow):
             {
                 "value": fact_payload.get("value"),
                 "note": fact_payload.get("note"),
+                "is_beur": fact_payload.get("is_beur"),
+                "beur_num": fact_payload.get("beur_num"),
                 "refference": fact_payload.get("refference"),
                 "date": fact_payload.get("date"),
                 "path": fact_payload.get("path") or [],
@@ -2892,6 +3046,10 @@ class AnnotationWindow(QMainWindow):
             if note:
                 trimmed_note = (note[:32] + "...") if len(note) > 35 else note
                 summary = f"{summary} | note: {trimmed_note}"
+            if item.fact_data.get("is_beur") is not None:
+                summary = f"{summary} | is_beur: {item.fact_data.get('is_beur')}"
+            if item.fact_data.get("beur_num"):
+                summary = f"{summary} | beur_num: {item.fact_data.get('beur_num')}"
             self.facts_list.addItem(QListWidgetItem(summary))
             if item is selected:
                 selected_row = idx - 1
