@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import inspect
 import json
 import os
 import secrets
@@ -264,6 +265,18 @@ def _history_messages_to_turns(history: Any) -> list[dict[str, str]]:
     if not isinstance(history, list):
         return []
 
+    # Older Gradio ChatInterface provides history as list[(user, assistant)] tuples.
+    if history and isinstance(history[0], (list, tuple)):
+        tuple_turns: list[dict[str, str]] = []
+        for item in history:
+            if not isinstance(item, (list, tuple)) or len(item) != 2:
+                continue
+            user_text = _message_content_to_text(item[0])
+            assistant_text = _message_content_to_text(item[1])
+            if user_text or assistant_text:
+                tuple_turns.append({"user": user_text, "assistant": assistant_text})
+        return tuple_turns
+
     turns: list[dict[str, str]] = []
     pending_user = ""
     for item in history:
@@ -286,6 +299,14 @@ def _history_messages_to_turns(history: Any) -> list[dict[str, str]]:
     if pending_user:
         turns.append({"user": pending_user, "assistant": ""})
     return [turn for turn in turns if turn.get("user") or turn.get("assistant")]
+
+
+def _supports_gradio_param(callable_obj: Any, param_name: str) -> bool:
+    try:
+        signature = inspect.signature(callable_obj)
+    except Exception:
+        return False
+    return param_name in signature.parameters
 
 
 def _resolve_default_model_input(*, default_model: Optional[str], config_path: Optional[str]) -> str:
@@ -328,7 +349,7 @@ def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[s
 
     def _chat(
         message: str,
-        history: list[dict[str, Any]],
+        history: list[Any],
         image_path: Optional[str],
         system_prompt: str,
         model_name: str,
@@ -373,15 +394,18 @@ def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[s
     temperature_input = gr.Slider(label="Temperature", minimum=0.0, maximum=2.0, step=0.01, value=0.7)
     top_p_input = gr.Slider(label="Top P", minimum=0.01, maximum=1.0, step=0.01, value=0.8)
     max_tokens_input = gr.Slider(label="Max Tokens", minimum=1, maximum=4096, step=1, value=120)
-    chatbot = gr.Chatbot(type="messages", height=620)
+    chatbot_kwargs: dict[str, Any] = {"height": 620}
+    supports_message_type = _supports_gradio_param(gr.Chatbot, "type")
+    if supports_message_type:
+        chatbot_kwargs["type"] = "messages"
+    chatbot = gr.Chatbot(**chatbot_kwargs)
 
-    return gr.ChatInterface(
-        fn=_chat,
-        type="messages",
-        chatbot=chatbot,
-        title="FineTree Pod Chat Playground (5555)",
-        description="Simple Gradio chatbot for local Qwen inference via the pod API.",
-        additional_inputs=[
+    chat_interface_kwargs: dict[str, Any] = {
+        "fn": _chat,
+        "chatbot": chatbot,
+        "title": "FineTree Pod Chat Playground (5555)",
+        "description": "Simple Gradio chatbot for local Qwen inference via the pod API.",
+        "additional_inputs": [
             image_input,
             system_prompt_input,
             model_input,
@@ -389,8 +413,17 @@ def create_demo(*, api_base_url: Optional[str] = None, default_model: Optional[s
             top_p_input,
             max_tokens_input,
         ],
-        additional_inputs_accordion=gr.Accordion("Inference Settings", open=True),
-    )
+    }
+
+    if supports_message_type and _supports_gradio_param(gr.ChatInterface, "type"):
+        chat_interface_kwargs["type"] = "messages"
+
+    if _supports_gradio_param(gr.ChatInterface, "additional_inputs_accordion"):
+        chat_interface_kwargs["additional_inputs_accordion"] = gr.Accordion("Inference Settings", open=True)
+    elif _supports_gradio_param(gr.ChatInterface, "additional_inputs_accordion_name"):
+        chat_interface_kwargs["additional_inputs_accordion_name"] = "Inference Settings"
+
+    return gr.ChatInterface(**chat_interface_kwargs)
 
 
 def _playground_html(*, default_model: str, default_image_data_url: Optional[str]) -> str:
