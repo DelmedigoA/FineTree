@@ -133,6 +133,12 @@ Build + export + push dataset JSONL/images to Hugging Face Dataset Hub:
 finetree-ft-push-dataset --config configs/finetune_qwen35a3_vl.yaml --repo-id <user>/<dataset-repo>
 ```
 
+Build + export + push dataset variant without bbox in assistant JSON (`facts[*].bbox` removed):
+
+```bash
+finetree-ft-push-dataset-no-bbox --config configs/finetune_qwen35a3_vl.yaml --repo-id <user>/<dataset-repo-no-bbox>
+```
+
 ### RunPod GPU Validation + Full Fine-Tune
 
 Recommended workflow on a fresh RunPod pod:

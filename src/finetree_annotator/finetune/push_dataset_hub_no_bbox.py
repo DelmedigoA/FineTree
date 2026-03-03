@@ -2,23 +2,32 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import shutil
-import subprocess
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Tuple
 
 from datasets import Dataset, DatasetDict, Features, Image, Value
 from huggingface_hub import HfApi
 
-
-def build_dataset(config_path: Path) -> None:
-    from .dataset_builder import main as build_main
-
-    build_main(["--config", str(config_path)])
+from .push_dataset_hub import build_dataset, resolve_hf_token
 
 
-def _rows_from_chat_jsonl(split_path: Path) -> list[dict[str, str]]:
+def _strip_bbox_from_text_payload(text: str) -> str:
+    try:
+        payload = json.loads(text)
+    except Exception:
+        return text
+
+    if isinstance(payload, dict):
+        facts = payload.get("facts")
+        if isinstance(facts, list):
+            for fact in facts:
+                if isinstance(fact, dict):
+                    fact.pop("bbox", None)
+    return json.dumps(payload, ensure_ascii=False)
+
+
+def _rows_from_chat_jsonl_no_bbox(split_path: Path) -> list[dict[str, str]]:
     if not split_path.is_file():
         return []
 
@@ -51,7 +60,7 @@ def _rows_from_chat_jsonl(split_path: Path) -> list[dict[str, str]]:
         if assistant_content and isinstance(assistant_content[0], dict):
             text_val = assistant_content[0].get("text")
             if isinstance(text_val, str):
-                text = text_val
+                text = _strip_bbox_from_text_payload(text_val)
 
         if image_path and instruction and text:
             rows.append(
@@ -64,11 +73,11 @@ def _rows_from_chat_jsonl(split_path: Path) -> list[dict[str, str]]:
     return rows
 
 
-def build_hf_dataset(root: Path) -> tuple[DatasetDict, int, int]:
+def build_hf_dataset_no_bbox(root: Path) -> tuple[DatasetDict, int, int]:
     train_in = root / "data/finetune/train.jsonl"
     val_in = root / "data/finetune/val.jsonl"
-    train_rows = _rows_from_chat_jsonl(train_in)
-    val_rows = _rows_from_chat_jsonl(val_in)
+    train_rows = _rows_from_chat_jsonl_no_bbox(train_in)
+    val_rows = _rows_from_chat_jsonl_no_bbox(val_in)
 
     features = Features(
         {
@@ -86,7 +95,7 @@ def build_hf_dataset(root: Path) -> tuple[DatasetDict, int, int]:
     return dataset, len(train_rows), len(val_rows)
 
 
-def export_for_hf(root: Path, export_dir: Path) -> Tuple[int, int]:
+def export_for_hf_no_bbox(root: Path, export_dir: Path) -> Tuple[int, int]:
     train_in = root / "data/finetune/train.jsonl"
     val_in = root / "data/finetune/val.jsonl"
 
@@ -101,7 +110,7 @@ def export_for_hf(root: Path, export_dir: Path) -> Tuple[int, int]:
             return 0
 
         out_lines: list[str] = []
-        for row in _rows_from_chat_jsonl(src_path):
+        for row in _rows_from_chat_jsonl_no_bbox(src_path):
             src_img = Path(row["image"])
             if not src_img.is_absolute():
                 src_img = (root / src_img).resolve()
@@ -133,8 +142,9 @@ def export_for_hf(root: Path, export_dir: Path) -> Tuple[int, int]:
     val_rows = export_split(val_in, "val.jsonl")
 
     (export_dir / "README.md").write_text(
-        "# FineTree Annotated Dataset\n\n"
+        "# FineTree Annotated Dataset (No BBox)\n\n"
         "Generated from current repository annotations.\n\n"
+        "- Assistant JSON payload has bbox removed from all facts.\n\n"
         f"- Train rows: {train_rows}\n"
         f"- Val rows: {val_rows}\n",
         encoding="utf-8",
@@ -142,65 +152,31 @@ def export_for_hf(root: Path, export_dir: Path) -> Tuple[int, int]:
     return train_rows, val_rows
 
 
-def _default_repo_id(api: HfApi) -> str:
+def _default_repo_id_no_bbox(api: HfApi) -> str:
     username = api.whoami().get("name") or "user"
-    return f"{username}/FineTree-annotated-pages"
+    return f"{username}/FineTree-annotated-pages-no-bbox"
 
 
-def _resolve_doppler_scope_args() -> list[str]:
-    args: list[str] = []
-    project = (os.getenv("DOPPLER_PROJECT") or "").strip()
-    config = (os.getenv("DOPPLER_CONFIG") or "").strip()
-    if project:
-        args.extend(["--project", project])
-    if config:
-        args.extend(["--config", config])
-    return args
-
-
-def _token_from_doppler() -> Optional[str]:
-    if shutil.which("doppler") is None:
-        return None
-    scope_args = _resolve_doppler_scope_args()
-    for secret in ("HF_TOKEN", "FINETREE_HF_TOKEN", "HUGGINGFACE_HUB_TOKEN"):
-        cmd = ["doppler", "secrets", "get", secret, "--plain", *scope_args]
-        try:
-            proc = subprocess.run(cmd, check=True, capture_output=True, text=True, timeout=5)
-        except Exception:
-            continue
-        token = proc.stdout.strip()
-        if token:
-            return token
-    return None
-
-
-def resolve_hf_token(explicit_token: Optional[str]) -> Optional[str]:
-    return (
-        (explicit_token or "").strip()
-        or (os.getenv("FINETREE_HF_TOKEN") or "").strip()
-        or (os.getenv("HF_TOKEN") or "").strip()
-        or (os.getenv("HUGGINGFACE_HUB_TOKEN") or "").strip()
-        or (os.getenv("HUGGINGFACEHUB_API_TOKEN") or "").strip()
-        or _token_from_doppler()
-    )
-
-
-def push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True) -> str:
+def push_to_hf_no_bbox(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True) -> str:
     api = HfApi(token=token)
-    if repo_id is None:
-        repo_id = _default_repo_id(api)
-
-    api.create_repo(repo_id=repo_id, repo_type="dataset", private=private, exist_ok=True)
-    dataset.push_to_hub(repo_id=repo_id, token=token, private=private)
-    return repo_id
+    resolved_repo_id = repo_id or _default_repo_id_no_bbox(api)
+    api.create_repo(repo_id=resolved_repo_id, repo_type="dataset", private=private, exist_ok=True)
+    dataset.push_to_hub(repo_id=resolved_repo_id, token=token, private=private)
+    return resolved_repo_id
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Build and push FineTree dataset with columns: image, instruction, text.")
+    parser = argparse.ArgumentParser(
+        description="Build and push FineTree dataset with columns: image, instruction, text (bbox removed from text JSON)."
+    )
     parser.add_argument("--config", default="configs/finetune_qwen35a3_vl.yaml")
-    parser.add_argument("--repo-id", default=None, help="HF dataset repo id, e.g. username/FineTree-annotated-pages")
+    parser.add_argument(
+        "--repo-id",
+        default=None,
+        help="HF dataset repo id, e.g. username/FineTree-annotated-pages-no-bbox",
+    )
     parser.add_argument("--token", default=None, help="HF token (or use FINETREE_HF_TOKEN/HF_TOKEN/Doppler)")
-    parser.add_argument("--export-dir", default="artifacts/hf_dataset_export")
+    parser.add_argument("--export-dir", default="artifacts/hf_dataset_export_no_bbox")
     parser.add_argument("--public", action="store_true", help="Create/push dataset as public.")
     return parser.parse_args(argv)
 
@@ -218,10 +194,9 @@ def main(argv: list[str] | None = None) -> int:
     export_dir = (root / args.export_dir).resolve()
 
     build_dataset(config_path)
-    dataset, train_rows, val_rows = build_hf_dataset(root)
-    repo = push_to_hf(dataset, token=token, repo_id=args.repo_id, private=not args.public)
-
-    train_rows, val_rows = export_for_hf(root, export_dir)
+    dataset, train_rows, val_rows = build_hf_dataset_no_bbox(root)
+    repo = push_to_hf_no_bbox(dataset, token=token, repo_id=args.repo_id, private=not args.public)
+    train_rows, val_rows = export_for_hf_no_bbox(root, export_dir)
 
     print(f"PUSHED: {repo}")
     print(f"TRAIN_ROWS: {train_rows}")
@@ -230,7 +205,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
 
-__all__ = ["build_dataset", "build_hf_dataset", "export_for_hf", "push_to_hf", "resolve_hf_token", "main"]
+__all__ = [
+    "build_hf_dataset_no_bbox",
+    "export_for_hf_no_bbox",
+    "push_to_hf_no_bbox",
+    "main",
+]
 
 
 if __name__ == "__main__":
