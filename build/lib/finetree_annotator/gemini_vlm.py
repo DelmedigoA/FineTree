@@ -324,11 +324,6 @@ def _extract_balanced_block_from_index(text: str, start_idx: int, open_char: str
 
 def _clean_json_candidate(candidate: str) -> str:
     fixed = candidate.strip()
-    # Some models prefix fenced payloads with a language hint on the first line.
-    if "\n" in fixed:
-        first_line, rest = fixed.split("\n", 1)
-        if first_line.strip().lower() in {"json", "javascript", "js"}:
-            fixed = rest.strip()
     fixed = fixed.replace("“", "\"").replace("”", "\"").replace("’", "'")
     fixed = re.sub(r",\s*([}\]])", r"\1", fixed)
     return fixed
@@ -340,13 +335,8 @@ def _parse_llm_json(text: str) -> Any:
     if raw:
         candidates.append(raw)
 
-    # Accept 3+ backticks because some providers emit ````json fences.
-    fence_matches = re.findall(r"`{3,}\s*(?:json)?\s*([\s\S]*?)`{3,}", text, flags=re.IGNORECASE)
+    fence_matches = re.findall(r"```(?:json)?\s*([\s\S]*?)```", text, flags=re.IGNORECASE)
     candidates.extend([m.strip() for m in fence_matches if m.strip()])
-    # Also handle an opening fence without a closing fence.
-    open_fence_match = re.match(r"^\s*`{3,}\s*(?:json)?\s*([\s\S]*)$", raw, flags=re.IGNORECASE)
-    if open_fence_match:
-        candidates.append(open_fence_match.group(1).strip())
 
     balanced = _extract_balanced_json_block(text)
     if balanced:
@@ -532,8 +522,6 @@ class StreamingPageExtractionParser:
         self._facts_array_start: Optional[int] = None
         self._facts_scan_pos: Optional[int] = None
         self._facts_done = False
-        self._latest_meta: Optional[dict[str, Any]] = None
-        self._all_facts: list[dict[str, Any]] = []
 
     def feed(self, text_chunk: str) -> tuple[Optional[dict[str, Any]], list[dict[str, Any]]]:
         if text_chunk:
@@ -561,7 +549,6 @@ class StreamingPageExtractionParser:
             try:
                 parsed_meta = _parse_llm_json(obj)
                 normalized = _normalize_page_extraction_payload({"meta": parsed_meta, "facts": []})
-                self._latest_meta = normalized["meta"]
                 self._meta_emitted = True
                 return normalized["meta"]
             except Exception:
@@ -612,7 +599,6 @@ class StreamingPageExtractionParser:
                 normalized = _normalize_page_extraction_payload({"meta": {}, "facts": [parsed_fact]})
                 if normalized["facts"]:
                     out.append(normalized["facts"][0])
-                    self._all_facts.append(normalized["facts"][0])
             except Exception:
                 pass
             pos += len(obj)
@@ -621,20 +607,9 @@ class StreamingPageExtractionParser:
         return out
 
     def finalize(self) -> PageExtraction:
-        try:
-            parsed = _parse_llm_json(self.buffer)
-            normalized = _normalize_page_extraction_payload(parsed)
-            return PageExtraction.model_validate(normalized)
-        except Exception:
-            if not self._latest_meta and not self._all_facts:
-                raise
-            fallback_payload = {
-                "meta": self._latest_meta
-                or {"entity_name": None, "page_num": None, "type": "other", "title": None},
-                "facts": self._all_facts,
-            }
-            normalized = _normalize_page_extraction_payload(fallback_payload)
-            return PageExtraction.model_validate(normalized)
+        parsed = _parse_llm_json(self.buffer)
+        normalized = _normalize_page_extraction_payload(parsed)
+        return PageExtraction.model_validate(normalized)
 
 
 def generate_content_from_image(

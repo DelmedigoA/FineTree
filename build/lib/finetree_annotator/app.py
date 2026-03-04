@@ -63,30 +63,11 @@ from .annotation_core import (
 )
 from .finetune.config import load_finetune_config
 from .gemini_few_shot import (
-    DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
     DEFAULT_TEST_FEW_SHOT_PAGES,
     build_repo_roots,
-    load_complex_few_shot_examples,
     load_test_pdf_few_shot_examples,
 )
 from .schemas import PageType
-
-FEW_SHOT_PRESET_CLASSIC = "classic_4"
-FEW_SHOT_PRESET_EXTENDED = "extended_7"
-
-FEW_SHOT_PRESET_CHOICES: tuple[tuple[str, str], ...] = (
-    (FEW_SHOT_PRESET_CLASSIC, "Classic 4-shot"),
-    (FEW_SHOT_PRESET_EXTENDED, "Extended 7-shot"),
-)
-
-FEW_SHOT_PRESET_SUMMARY: dict[str, str] = {
-    FEW_SHOT_PRESET_CLASSIC: "classic(4): test 1,4,9,2",
-    FEW_SHOT_PRESET_EXTENDED: "extended(7): test 9,4,5,10 | pdf_3 18,23 | pdf_2 8",
-}
-FEW_SHOT_PRESET_HELP_TEXT = " | ".join(
-    FEW_SHOT_PRESET_SUMMARY.get(preset_id, preset_id)
-    for preset_id, _ in FEW_SHOT_PRESET_CHOICES
-)
 
 
 def bbox_to_dict(rect: QRectF) -> Dict[str, float]:
@@ -334,8 +315,7 @@ class AnnotRectItem(QGraphicsRectItem):
         super().__init__(rect)
         self.fact_data: Dict[str, Any] = normalize_fact_data(fact_data)
         pen = QPen(Qt.red)
-        pen.setWidth(1)
-        pen.setCosmetic(True)
+        pen.setWidth(2)
         self.setPen(pen)
         self.setBrush(Qt.transparent)
         self.setFlag(QGraphicsRectItem.ItemIsSelectable, True)
@@ -729,8 +709,6 @@ class GeminiPromptDialog(QDialog):
         *,
         show_few_shot_controls: bool = False,
         few_shot_enabled_default: bool = True,
-        few_shot_presets: tuple[tuple[str, str], ...] = FEW_SHOT_PRESET_CHOICES,
-        few_shot_preset_default: str = FEW_SHOT_PRESET_CLASSIC,
         few_shot_summary: str = "",
     ) -> None:
         super().__init__(parent)
@@ -750,22 +728,14 @@ class GeminiPromptDialog(QDialog):
         form.addRow("model", self.model_edit)
         self.few_shot_check = QCheckBox("Use few-shot examples")
         self.few_shot_check.setChecked(bool(few_shot_enabled_default))
-        self.few_shot_preset_combo = QComboBox()
-        for preset_id, preset_label in few_shot_presets:
-            self.few_shot_preset_combo.addItem(preset_label, preset_id)
-        default_idx = self.few_shot_preset_combo.findData(few_shot_preset_default)
-        if default_idx >= 0:
-            self.few_shot_preset_combo.setCurrentIndex(default_idx)
         self.few_shot_summary_label = QLabel(few_shot_summary)
         self.few_shot_summary_label.setWordWrap(True)
         self.few_shot_summary_label.setObjectName("hintText")
         if show_few_shot_controls:
             form.addRow("few_shot", self.few_shot_check)
-            form.addRow("few_shot mode", self.few_shot_preset_combo)
             form.addRow("few_shot preset", self.few_shot_summary_label)
         else:
             self.few_shot_check.setVisible(False)
-            self.few_shot_preset_combo.setVisible(False)
             self.few_shot_summary_label.setVisible(False)
         root.addLayout(form)
 
@@ -789,14 +759,6 @@ class GeminiPromptDialog(QDialog):
 
     def use_few_shot(self) -> bool:
         return self.few_shot_check.isVisible() and self.few_shot_check.isChecked()
-
-    def few_shot_preset(self) -> str:
-        if not self.few_shot_preset_combo.isVisible():
-            return FEW_SHOT_PRESET_CLASSIC
-        value = self.few_shot_preset_combo.currentData()
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-        return FEW_SHOT_PRESET_CLASSIC
 
 
 class GeminiStreamDialog(QDialog):
@@ -918,8 +880,6 @@ class QwenPromptDialog(GeminiPromptDialog):
         *,
         show_few_shot_controls: bool = True,
         few_shot_enabled_default: bool = True,
-        few_shot_presets: tuple[tuple[str, str], ...] = FEW_SHOT_PRESET_CHOICES,
-        few_shot_preset_default: str = FEW_SHOT_PRESET_CLASSIC,
         few_shot_summary: str = "",
     ) -> None:
         super().__init__(
@@ -928,8 +888,6 @@ class QwenPromptDialog(GeminiPromptDialog):
             parent=parent,
             show_few_shot_controls=show_few_shot_controls,
             few_shot_enabled_default=few_shot_enabled_default,
-            few_shot_presets=few_shot_presets,
-            few_shot_preset_default=few_shot_preset_default,
             few_shot_summary=few_shot_summary,
         )
         self.setWindowTitle("Qwen Prompt")
@@ -1046,28 +1004,11 @@ class AnnotationWindow(QMainWindow):
             raise RuntimeError(f"No page images found under: {self.images_dir}")
 
         self.setWindowTitle("FineTree PDF Annotator")
-        self._resize_to_available_screen()
+        self.resize(1320, 860)
         self._build_ui()
         self._load_existing_annotations()
         self.show_page(0)
         self._init_history()
-
-    def _resize_to_available_screen(self) -> None:
-        preferred_w, preferred_h = 1320, 860
-        app = QApplication.instance()
-        screen = app.primaryScreen() if app is not None else None
-        if screen is None:
-            self.resize(preferred_w, preferred_h)
-            return
-
-        available = screen.availableGeometry()
-        width = min(preferred_w, max(1000, available.width() - 40))
-        height = min(preferred_h, max(700, available.height() - 80))
-        width = max(920, min(width, available.width()))
-        height = max(620, min(height, available.height()))
-        x = available.x() + max(0, (available.width() - width) // 2)
-        y = available.y() + max(0, (available.height() - height) // 2)
-        self.setGeometry(x, y, width, height)
 
     def _build_ui(self) -> None:
         central = QWidget(self)
@@ -1077,10 +1018,8 @@ class AnnotationWindow(QMainWindow):
         root.setSpacing(12)
         root.setContentsMargins(10, 10, 10, 10)
 
-        nav_widget = QWidget()
-        nav = QHBoxLayout(nav_widget)
+        nav = QHBoxLayout()
         nav.setSpacing(10)
-        nav.setContentsMargins(0, 4, 0, 4)
         self.prev_btn = QPushButton("Prev")
         self.next_btn = QPushButton("Next")
         self.page_label = QLabel("-")
@@ -1105,26 +1044,6 @@ class AnnotationWindow(QMainWindow):
         self.page_json_btn = QPushButton("Page JSON")
         self.help_btn = QPushButton("Help")
         self.save_btn = QPushButton("Save (Ctrl+S)")
-        for btn in (
-            self.prev_btn,
-            self.next_btn,
-            self.page_jump_btn,
-            self.undo_btn,
-            self.redo_btn,
-            self.import_btn,
-            self.gemini_gt_btn,
-            self.qwen_gt_btn,
-            self.delete_nav_btn,
-            self.zoom_out_btn,
-            self.zoom_in_btn,
-            self.lens_btn,
-            self.copy_image_btn,
-            self.fit_btn,
-            self.page_json_btn,
-            self.help_btn,
-            self.save_btn,
-        ):
-            btn.setObjectName("topNavBtn")
         nav.addWidget(self.prev_btn)
         nav.addWidget(self.next_btn)
         nav.addWidget(self.page_label)
@@ -1147,20 +1066,9 @@ class AnnotationWindow(QMainWindow):
         nav.addStretch(1)
         self.output_path_label = QLabel(str(self.annotations_path))
         self.output_path_label.setObjectName("outputPathLabel")
-        self.output_path_label.setToolTip(str(self.annotations_path))
-        self.output_path_label.setMaximumWidth(320)
         nav.addWidget(self.output_path_label)
         nav.addWidget(self.save_btn)
-
-        nav_widget.setMinimumWidth(nav_widget.sizeHint().width())
-        nav_widget.setMinimumHeight(max(52, nav_widget.sizeHint().height() + 4))
-        nav_scroll = QScrollArea()
-        nav_scroll.setWidgetResizable(True)
-        nav_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-        nav_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        nav_scroll.setWidget(nav_widget)
-        nav_scroll.setMinimumHeight(nav_widget.minimumHeight() + 6)
-        root.addWidget(nav_scroll)
+        root.addLayout(nav)
 
         splitter = QSplitter(Qt.Horizontal)
         root.addWidget(splitter, 1)
@@ -1195,8 +1103,8 @@ class AnnotationWindow(QMainWindow):
         self.page_thumb_list.setSpacing(8)
 
         thumb_panel = QWidget()
-        thumb_panel.setMinimumWidth(112)
-        thumb_panel.setMaximumWidth(180)
+        thumb_panel.setMinimumWidth(130)
+        thumb_panel.setMaximumWidth(220)
         thumb_layout = QVBoxLayout(thumb_panel)
         thumb_layout.setContentsMargins(0, 0, 0, 0)
         thumb_layout.setSpacing(6)
@@ -1209,7 +1117,7 @@ class AnnotationWindow(QMainWindow):
         splitter.addWidget(self.view)
 
         right = QWidget()
-        right.setMinimumWidth(420)
+        right.setMinimumWidth(560)
         right_layout = QVBoxLayout(right)
         right_layout.setSpacing(12)
 
@@ -1225,7 +1133,7 @@ class AnnotationWindow(QMainWindow):
         self.type_combo = QComboBox()
         self.type_combo.addItems([p.value for p in PageType])
         self.title_edit = QLineEdit()
-        field_min_width = 320
+        field_min_width = 500
         self.entity_name_edit.setMinimumWidth(field_min_width)
         self.page_num_edit.setMinimumWidth(field_min_width)
         self.type_combo.setMinimumWidth(field_min_width)
@@ -1446,11 +1354,7 @@ class AnnotationWindow(QMainWindow):
         splitter.setStretchFactor(0, 0)
         splitter.setStretchFactor(1, 3)
         splitter.setStretchFactor(2, 2)
-        total_w = max(self.width(), 1000)
-        left_w = 140
-        center_w = max(420, int(total_w * 0.46))
-        right_w = max(360, total_w - left_w - center_w - 40)
-        splitter.setSizes([left_w, center_w, right_w])
+        splitter.setSizes([170, 860, 560])
 
         self.prev_btn.clicked.connect(lambda: self.show_page(self.current_index - 1))
         self.next_btn.clicked.connect(lambda: self.show_page(self.current_index + 1))
@@ -1635,11 +1539,6 @@ class AnnotationWindow(QMainWindow):
                 border: 1px solid #dde5f2;
             }
             QPushButton#smallActionBtn {
-                min-height: 32px;
-                font-size: 11pt;
-                padding: 2px 10px;
-            }
-            QPushButton#topNavBtn {
                 min-height: 32px;
                 font-size: 11pt;
                 padding: 2px 10px;
@@ -2416,17 +2315,8 @@ class AnnotationWindow(QMainWindow):
                 return resolved
         return None
 
-    def _load_gemini_few_shot_examples(
-        self,
-        *,
-        preset: str = FEW_SHOT_PRESET_CLASSIC,
-    ) -> tuple[list[dict[str, Any]], list[str]]:
+    def _load_gemini_few_shot_examples(self) -> tuple[list[dict[str, Any]], list[str]]:
         repo_roots = build_repo_roots(cwd=Path.cwd(), anchor_file=Path(__file__).resolve())
-        if preset == FEW_SHOT_PRESET_EXTENDED:
-            return load_complex_few_shot_examples(
-                repo_roots=repo_roots,
-                selections=DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
-            )
         return load_test_pdf_few_shot_examples(
             repo_roots=repo_roots,
             page_names=DEFAULT_TEST_FEW_SHOT_PAGES,
@@ -2713,15 +2603,13 @@ class AnnotationWindow(QMainWindow):
             parent=self,
             show_few_shot_controls=True,
             few_shot_enabled_default=True,
-            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
-            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            few_shot_summary="test: 1,4,9,2",
         )
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
         prompt_text = prompt_dialog.prompt().strip()
         model_name = prompt_dialog.model().strip() or self._gemini_model_name
         use_few_shot = prompt_dialog.use_few_shot()
-        few_shot_preset = prompt_dialog.few_shot_preset()
         if not prompt_text:
             QMessageBox.warning(self, "Gemini GT", "Prompt cannot be empty.")
             return
@@ -2748,19 +2636,18 @@ class AnnotationWindow(QMainWindow):
         self._gemini_model_name = model_name
         few_shot_examples: Optional[list[dict[str, Any]]] = None
         if use_few_shot:
-            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
-            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
+            loaded_examples, warnings = self._load_gemini_few_shot_examples()
             if loaded_examples:
                 few_shot_examples = loaded_examples
                 if warnings:
                     self.statusBar().showMessage(
-                        f"Gemini few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
+                        f"Gemini few-shot loaded with warnings: {'; '.join(warnings[:2])}",
                         6500,
                     )
             else:
                 warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
                 self.statusBar().showMessage(
-                    f"Gemini few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
+                    f"Gemini few-shot fallback to standard mode: {warning_text}",
                     7000,
                 )
 
@@ -2949,15 +2836,13 @@ class AnnotationWindow(QMainWindow):
             parent=self,
             show_few_shot_controls=True,
             few_shot_enabled_default=True,
-            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
-            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            few_shot_summary="test: 1,4,9,2",
         )
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
         prompt_text = prompt_dialog.prompt().strip()
         model_name = prompt_dialog.model().strip() or self._qwen_model_name
         use_few_shot = prompt_dialog.use_few_shot()
-        few_shot_preset = prompt_dialog.few_shot_preset()
         if not prompt_text:
             QMessageBox.warning(self, "Qwen GT", "Prompt cannot be empty.")
             return
@@ -2999,19 +2884,18 @@ class AnnotationWindow(QMainWindow):
         self._qwen_model_name = model_name
         few_shot_examples: Optional[list[dict[str, Any]]] = None
         if use_few_shot and is_qwen_flash:
-            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
-            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
+            loaded_examples, warnings = self._load_gemini_few_shot_examples()
             if loaded_examples:
                 few_shot_examples = loaded_examples
                 if warnings:
                     self.statusBar().showMessage(
-                        f"Qwen few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
+                        f"Qwen few-shot loaded with warnings: {'; '.join(warnings[:2])}",
                         6500,
                     )
             else:
                 warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
                 self.statusBar().showMessage(
-                    f"Qwen few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
+                    f"Qwen few-shot fallback to standard mode: {warning_text}",
                     7000,
                 )
         elif use_few_shot:

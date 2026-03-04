@@ -6,11 +6,8 @@ import json
 import mimetypes
 import os
 import re
-import shutil
-import subprocess
 import time
 import warnings
-from functools import lru_cache
 from pathlib import Path
 from threading import Thread
 from typing import Any, Iterator, Optional, Tuple
@@ -192,14 +189,12 @@ def _resolve_qwen_flash_model_name(model_name: Optional[str]) -> str:
 
 
 def _resolve_qwen_flash_api_key(explicit_api_key: Optional[str] = None) -> Optional[str]:
-    doppler_value = _qwen_flash_api_key_from_doppler()
     candidates = (
         explicit_api_key,
         os.getenv("FINETREE_QWEN_FLASH_API_KEY"),
         os.getenv("FINETREE_QWEN_API_KEY"),
         os.getenv("QWEN_API_KEY"),
         os.getenv("DASHSCOPE_API_KEY"),
-        doppler_value,
     )
     for candidate in candidates:
         if isinstance(candidate, str) and candidate.strip():
@@ -209,37 +204,6 @@ def _resolve_qwen_flash_api_key(explicit_api_key: Optional[str] = None) -> Optio
 
 def resolve_qwen_flash_api_key(explicit_api_key: Optional[str] = None) -> Optional[str]:
     return _resolve_qwen_flash_api_key(explicit_api_key)
-
-
-@lru_cache(maxsize=1)
-def _qwen_flash_api_key_from_doppler() -> Optional[str]:
-    if shutil.which("doppler") is None:
-        return None
-
-    project = str(os.getenv("DOPPLER_PROJECT") or "").strip()
-    config = str(os.getenv("DOPPLER_CONFIG") or "").strip()
-    scope_args: list[str] = []
-    if project:
-        scope_args.extend(["--project", project])
-    if config:
-        scope_args.extend(["--config", config])
-
-    for secret_name in ("DASHSCOPE_API_KEY", "FINETREE_QWEN_FLASH_API_KEY", "FINETREE_QWEN_API_KEY", "QWEN_API_KEY"):
-        cmd = ["doppler", "secrets", "get", secret_name, "--plain", *scope_args]
-        try:
-            proc = subprocess.run(
-                cmd,
-                check=True,
-                capture_output=True,
-                text=True,
-                timeout=5,
-            )
-        except Exception:
-            continue
-        value = proc.stdout.strip()
-        if value:
-            return value
-    return None
 
 
 def _resolve_qwen_flash_base_url(explicit_base_url: Optional[str] = None) -> str:
@@ -869,9 +833,7 @@ def _stream_content_from_qwen_flash_endpoint(
 
     resolved_model_name = _resolve_qwen_flash_model_name(model_override)
     resolved_base_url = _resolve_qwen_flash_base_url(base_url)
-    endpoint = resolved_base_url
-    if not endpoint.endswith("/chat/completions"):
-        endpoint = endpoint + "/chat/completions"
+    endpoint = resolved_base_url + "/chat/completions"
 
     resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else 4096
     effective_do_sample = True if do_sample is None else bool(do_sample)

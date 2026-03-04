@@ -1,24 +1,25 @@
-You are extracting financial-statement annotations from a single page image into a strict JSON schema.
+You are extracting financial-statement annotations from a single page image into the exact Pydantic schema `PageExtraction`.
 
-Return ONLY valid JSON (no markdown, no comments, no explanations).
+Return ONLY valid JSON.
+Do NOT return markdown, code fences, comments, prose, or extra keys.
 
-Schema (must match exactly, including key spelling):
+Top-level schema (exact keys only):
 {
   "meta": {
-    "entity_name": "<string|null>",
-    "page_num": "<string|null>",
+    "entity_name": "<string or null>",
+    "page_num": "<string or null>",
     "type": "balance_sheet|income_statement|cash_flow|notes|contents_page|title|declaration|profits|other",
-    "title": "<string|null>"
+    "title": "<string or null>"
   },
   "facts": [
     {
       "bbox": { "x": <number>, "y": <number>, "w": <number>, "h": <number> },
       "value": "<string>",
-      "note": "<string|null>",
-      "is_beur": "<boolean|null>",
-      "beur_num": "<string|null>",
+      "note": "<string or null>",
+      "is_beur": <true|false|null>,
+      "beur_num": "<string or null>",
       "refference": "<string>",
-      "date": "<string|null>",
+      "date": "<string or null>",
       "path": ["<string>", "..."],
       "currency": "ILS|USD|EUR|GBP|null",
       "scale": 1|1000|1000000|null,
@@ -27,40 +28,32 @@ Schema (must match exactly, including key spelling):
   ]
 }
 
-Extraction rules:
-1. Extract ALL numeric facts visible in the table (including negatives in parentheses and totals).
-1.1 Also extract placeholder values such as "-", "—", "–", or similar dash symbols when they appear as cell values.
-1.2 Treat dash placeholders as valid facts, not as missing rows. Keep them in `value` exactly as shown.
-1.3 Do not skip a fact only because its value is a dash. If a cell exists in the statement structure, include it.
-2. `bbox` must tightly cover the numeric value text only (not full row label), in pixel coordinates of the original image.
-3. Keep `value` as text exactly as shown (including commas, parentheses, percent sign).
-4. `note`: for open-text footnotes or inline textual qualifiers tied to the specific fact (e.g., asterisk note like `*without debt insurance`); otherwise null.
-5. `is_beur`: true when the fact is tied to a beur/footnote context, false when explicitly not, null if unknown.
-6. `beur_num`: set this when the current fact is part of data presented inside that beur itself (the fact belongs to that beur section/table). Otherwise null.
-7. `refference` (exact misspelling): set this when the current fact points/references another beur. If no such pointer is shown, use "".
-8. `beur_num` and `refference` are not synonyms:
-   - `beur_num` = ownership of the currently presented beur data.
-   - `refference` = pointer from this fact to another beur.
-   If both are explicitly present, keep both with their own meaning.
-9. Build `path` using axis order, not just row labels.
-10. `currency`: infer from page header (e.g., "שקלים חדשים" => "ILS"), else null.
-11. `scale`: 1 unless header indicates thousands/millions.
-12. `value_type`: "amount" unless the fact is a percentage ("%").
-13. `date`: map by year column (e.g., 2023 => "31.12.2023", 2022 => "31.12.2022") if page says year ended Dec 31; otherwise null if unknown.
-14. `meta.type`: use "profits" for "דוחות על הפעילויות"; otherwise choose best enum value.
-15. No duplicate facts. Sort `facts` top-to-bottom, then left-to-right.
-16. Output UTF-8 Hebrew directly (not escaped unicode sequences).
-17. Do not encode dimensions in `path` if they already have dedicated fields:
-    - Time/period (year/date) -> use `date`.
-    - Metric format (amount/percent) -> use `value_type`.
-    - Currency -> use `currency`.
-    - Unit scale (thousands/millions) -> use `scale`.
-18. For dash placeholder facts, still populate all other fields (`bbox`, `path`, `date`, `refference`, etc.) from the same row/column context.
+Type/validation rules (must match schema):
+1. `meta` and `facts` are required.
+2. `refference` is required string (keep exact misspelling). Use "" when missing.
+3. `path` is required list of strings (use [] when unknown, never null).
+4. `is_beur` must be boolean or null (never "true"/"false" strings).
+5. Use JSON null literal for missing optional values (never "null" string).
+6. Do not include any keys not listed above.
 
-Path hierarchy rule (very important):
-- Build `path` in this exact order:
-  1) Horizontal-axis hierarchy first (row-side structure, top-to-bottom), including row group -> subgroup -> line item.
-  2) Vertical-axis hierarchy second (column-side structure), but include only business semantics not already represented by dedicated fields.
-- In other words: `path = [horizontal elements..., vertical elements...]`.
-- Keep labels exactly as written in the source language.
-- Do not invent hierarchy levels; include only levels that are explicitly visible or unambiguously implied by table structure.
+Extraction rules:
+1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
+2. Also extract placeholder values ("-", "—", "–", similar dashes) when they appear as actual cell values.
+3. Keep `value` exactly as printed (commas, parentheses, percent sign, dash placeholders).
+4. `bbox` must tightly cover the value text only, in pixel coordinates of the original image.
+5. `note`: textual qualifier tied to the specific fact (for example `*without debt insurance`), else null.
+6. `beur_num`: use when this fact belongs to data presented inside that beur section; else null.
+7. `refference`: use when this fact points/references another beur; else "".
+8. `currency`: infer from page/header context (for example "שקלים חדשים" -> "ILS"), else null.
+9. `scale`: 1 unless page/header indicates thousands or millions.
+10. `value_type`: "amount" unless the fact is a percentage ("%").
+11. `date`: map by column/year context when explicit and unambiguous; else null.
+12. `meta.type`: use "profits" for "דוחות על הפעילויות"; otherwise choose the best enum value.
+13. No duplicate facts. Order `facts` top-to-bottom, then left-to-right.
+14. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+
+Path hierarchy rule:
+1. Build `path` with horizontal-axis hierarchy first (row-side structure: group -> subgroup -> line item).
+2. Then append vertical-axis hierarchy only when it adds business semantics not already represented by dedicated fields.
+3. Do not encode period/currency/scale/value-format in `path` when already represented by `date`/`currency`/`scale`/`value_type`.
+4. Keep labels exactly as shown. Do not invent levels.

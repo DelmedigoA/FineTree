@@ -24,6 +24,12 @@ def _clear_qwen_env(monkeypatch) -> None:
         "FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB",
         "FINETREE_QWEN_GPU_MEMORY_UTILIZATION",
         "FINETREE_QWEN_CONFIG",
+        "FINETREE_QWEN_FLASH_API_KEY",
+        "FINETREE_QWEN_API_KEY",
+        "QWEN_API_KEY",
+        "DASHSCOPE_API_KEY",
+        "FINETREE_QWEN_FLASH_BASE_URL",
+        "FINETREE_QWEN_FLASH_MODEL",
     ):
         monkeypatch.delenv(name, raising=False)
 
@@ -35,6 +41,107 @@ def test_resolve_config_path_uses_env(tmp_path: Path, monkeypatch) -> None:
 
     resolved = qwen_vlm._resolve_config_path(None)
     assert resolved == cfg.resolve()
+
+
+def test_is_qwen_flash_model_requested_accepts_aliases() -> None:
+    assert qwen_vlm.is_qwen_flash_model_requested("qwen-flash-gt")
+    assert qwen_vlm.is_qwen_flash_model_requested("qwen flash gt")
+    assert qwen_vlm.is_qwen_flash_model_requested("qwen3.5-flash")
+    assert not qwen_vlm.is_qwen_flash_model_requested("qwen-gt")
+
+
+def test_resolve_qwen_flash_api_key_uses_doppler_fallback(monkeypatch) -> None:
+    monkeypatch.setattr(qwen_vlm, "_qwen_flash_api_key_from_doppler", lambda: "doppler-secret")
+    assert qwen_vlm.resolve_qwen_flash_api_key() == "doppler-secret"
+
+
+def test_stream_content_from_image_uses_qwen_flash_alias_with_few_shot(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img-target")
+    example_path = tmp_path / "example.png"
+    example_path.write_bytes(b"img-example")
+
+    monkeypatch.setenv("FINETREE_QWEN_FLASH_API_KEY", "qwen-key")
+    monkeypatch.setenv("FINETREE_QWEN_FLASH_MODEL", "qwen3.5-flash")
+
+    def _fail_resolve_config_path(_cfg):
+        raise AssertionError("Config resolution should not run for qwen-flash-gt alias")
+
+    monkeypatch.setattr(qwen_vlm, "_resolve_config_path", _fail_resolve_config_path)
+
+    seen: dict[str, object] = {}
+
+    class _Response:
+        status_code = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def iter_lines(self):
+            return iter(
+                [
+                    'data: {"choices":[{"delta":{"content":"flash "}}]}',
+                    'data: {"choices":[{"delta":{"content":"ok"}}]}',
+                    "data: [DONE]",
+                ]
+            )
+
+        def read(self):
+            return b""
+
+    class _Client:
+        def __init__(self, timeout):
+            seen["timeout"] = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def stream(self, method, endpoint, headers=None, json=None):
+            seen["method"] = method
+            seen["endpoint"] = endpoint
+            seen["headers"] = headers
+            seen["json"] = json
+            return _Response()
+
+    fake_httpx = types.ModuleType("httpx")
+    fake_httpx.Client = _Client
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
+
+    output = "".join(
+        qwen_vlm.stream_content_from_image(
+            image_path=image_path,
+            prompt="extract",
+            model="qwen-flash-gt",
+            few_shot_examples=[
+                {"image_path": example_path, "expected_json": '{"meta":{},"facts":[]}'},
+                {"image_path": tmp_path / "missing.png", "expected_json": '{"meta":{},"facts":[]}'},
+            ],
+        )
+    )
+
+    assert output == "flash ok"
+    assert seen["endpoint"] == "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions"
+    assert seen["headers"] == {
+        "Authorization": "Bearer qwen-key",
+        "Content-Type": "application/json",
+    }
+    payload = seen["json"]  # type: ignore[assignment]
+    assert payload["model"] == "qwen3.5-flash"
+    assert payload["stream"] is True
+    assert payload["temperature"] == 0.7
+    assert payload["top_p"] == 0.8
+    assert len(payload["messages"]) == 3
+    assert payload["messages"][0]["role"] == "user"
+    assert payload["messages"][1]["role"] == "assistant"
+    assert payload["messages"][2]["role"] == "user"
+    assert payload["messages"][0]["content"][0]["type"] == "image_url"
+    assert payload["messages"][2]["content"][1]["text"] == "extract"
 
 
 def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> None:
