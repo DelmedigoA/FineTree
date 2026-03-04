@@ -109,3 +109,33 @@ def test_build_generation_contents_includes_few_shot_turns(tmp_path: Path, monke
     assert contents[4]["role"] == "user"
     assert contents[4]["parts"][1]["kind"] == "text"
     assert contents[4]["parts"][1]["text"] == "extract final"
+
+
+def test_parse_llm_json_accepts_quad_backtick_fence() -> None:
+    payload = (
+        "````json\n"
+        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
+        '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10","refference":"","path":[]}]}\n'
+        "````"
+    )
+    parsed = gemini_vlm._parse_llm_json(payload)
+    assert isinstance(parsed, dict)
+    assert isinstance(parsed.get("facts"), list)
+    assert parsed["facts"][0]["bbox"]["x"] == 1
+
+
+def test_streaming_parser_finalize_falls_back_to_streamed_meta_and_facts() -> None:
+    parser = gemini_vlm.StreamingPageExtractionParser()
+    chunk = (
+        "```json\n"
+        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
+        '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10","refference":"","path":[]}]}'
+    )
+    meta, facts = parser.feed(chunk)
+    assert meta is not None
+    assert len(facts) == 1
+
+    extraction = parser.finalize()
+    assert extraction.meta.page_num == "3"
+    assert len(extraction.facts) == 1
+    assert extraction.facts[0].bbox.x == 1

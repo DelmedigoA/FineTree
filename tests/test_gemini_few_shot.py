@@ -4,7 +4,9 @@ import json
 from pathlib import Path
 
 from finetree_annotator.gemini_few_shot import (
+    DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
     DEFAULT_TEST_FEW_SHOT_PAGES,
+    load_complex_few_shot_examples,
     load_test_pdf_few_shot_examples,
     resolve_repo_relative_path,
 )
@@ -69,3 +71,50 @@ def test_load_test_pdf_few_shot_examples_skips_missing_with_warning(tmp_path: Pa
     assert len(examples) == 1
     assert Path(examples[0]["image_path"]).name == only_page
     assert len(warnings) >= 1
+
+
+def test_load_complex_few_shot_examples_reads_multi_dataset_selection(tmp_path: Path) -> None:
+    test_image_dir = tmp_path / "data/pdf_images/test"
+    pdf3_image_dir = tmp_path / "data/pdf_images/pdf_3"
+    test_image_dir.mkdir(parents=True)
+    pdf3_image_dir.mkdir(parents=True)
+    (test_image_dir / "page_0009.png").write_bytes(b"img-test")
+    (pdf3_image_dir / "page_0018.png").write_bytes(b"img-pdf3")
+
+    test_payload = {
+        "images_dir": "data/pdf_images/test",
+        "pages": [
+            {
+                "image": "page_0009.png",
+                "meta": {"type": "notes"},
+                "facts": [{"value": "10", "refference": "", "path": []}],
+            }
+        ],
+    }
+    pdf3_payload = {
+        "images_dir": "data/pdf_images/pdf_3",
+        "pages": [
+            {
+                "image": "page_0018.png",
+                "meta": {"type": "notes"},
+                "facts": [{"value": "20", "refference": "", "path": []}],
+            }
+        ],
+    }
+
+    (tmp_path / "data/annotations").mkdir(parents=True)
+    (tmp_path / "data/annotations/test.json").write_text(json.dumps(test_payload, ensure_ascii=False), encoding="utf-8")
+    (tmp_path / "data/annotations/pdf_3.json").write_text(json.dumps(pdf3_payload, ensure_ascii=False), encoding="utf-8")
+
+    examples, warnings = load_complex_few_shot_examples(
+        repo_roots=[tmp_path],
+        selections=(("test", "page_0009.png"), ("pdf_3", "page_0018.png")),
+    )
+
+    assert warnings == []
+    assert len(examples) == 2
+    assert [Path(ex["image_path"]).name for ex in examples] == ["page_0009.png", "page_0018.png"]
+
+
+def test_default_complex_few_shot_selection_has_seven_items() -> None:
+    assert len(DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS) == 7

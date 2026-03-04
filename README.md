@@ -79,7 +79,8 @@ Optional flags:
 
 ### Qwen VLM (Local, Multimodal)
 
-`Qwen GT` uses local model inference and requires CUDA.
+`Qwen GT` supports local/RunPod backends, plus a hosted `qwen-flash-gt` alias.
+Local backend requires CUDA.
 The loader supports any Qwen 3.5 A3-family model id (not only a single repo name),
 and `inference.adapter_path` can be either a local folder or a Hugging Face repo id.
 
@@ -92,6 +93,12 @@ Optional:
 - `--prompt` inline prompt text
 - `--prompt-path` prompt file path (defaults to `prompt.txt`)
 - `--model` override model id/path for inference
+
+To use hosted Qwen Flash (OpenAI-compatible DashScope) from UI/CLI model selection:
+
+- set `--model qwen-flash-gt` (or use `qwen3.5-flash`)
+- set one API key env var: `FINETREE_QWEN_FLASH_API_KEY` / `FINETREE_QWEN_API_KEY` / `QWEN_API_KEY` / `DASHSCOPE_API_KEY`
+- optional base URL override: `FINETREE_QWEN_FLASH_BASE_URL` (default: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`)
 
 ### Fine-Tuning Pipeline (Unsloth)
 
@@ -498,7 +505,7 @@ Minimal API request body example:
 - Edit fact: double-click inside bbox (or select bbox and click **Edit Selected Fact**)
 - Duplicate bbox: **Ctrl+D**
 - Gemini ground-truth draft for current page: **Gemini GT** button (**Ctrl+G**) with live streaming popup
-- Qwen ground-truth draft for current page: **Qwen GT** button (**Ctrl+Shift+G**) with live streaming popup
+- Qwen ground-truth draft for current page: **Qwen GT** button (**Ctrl+Shift+G**) with live streaming popup (`qwen-flash-gt` supports Gemini-style few-shot examples)
 - Delete bbox: **Delete**
 - Save annotations: **Ctrl+S**
 - Undo / Redo: **Ctrl+Z** / **Ctrl+Y** (also **Ctrl+Shift+Z**)
