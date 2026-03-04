@@ -2481,13 +2481,13 @@ class AnnotationWindow(QMainWindow):
         return prompt
 
     def _fact_uniqueness_key(self, fact_payload: Dict[str, Any]) -> tuple[Any, ...]:
-        bbox = fact_payload.get("bbox") or {}
+        bbox = normalize_bbox_data(fact_payload.get("bbox"))
         path = tuple(str(p) for p in (fact_payload.get("path") or []))
         return (
-            round(float(bbox.get("x", 0.0)), 2),
-            round(float(bbox.get("y", 0.0)), 2),
-            round(float(bbox.get("w", 0.0)), 2),
-            round(float(bbox.get("h", 0.0)), 2),
+            round(float(bbox["x"]), 2),
+            round(float(bbox["y"]), 2),
+            round(float(bbox["w"]), 2),
+            round(float(bbox["h"]), 2),
             str(fact_payload.get("value") or ""),
             str(fact_payload.get("note") or ""),
             str(fact_payload.get("is_beur") if fact_payload.get("is_beur") is not None else ""),
@@ -2534,7 +2534,7 @@ class AnnotationWindow(QMainWindow):
             return False
 
         raw_bbox = fact_payload.get("bbox")
-        if not isinstance(raw_bbox, dict):
+        if not isinstance(raw_bbox, dict) and not (isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4):
             return False
         bbox = normalize_bbox_data(raw_bbox)
         image_dims = self._image_dimensions_for_page(page_name)

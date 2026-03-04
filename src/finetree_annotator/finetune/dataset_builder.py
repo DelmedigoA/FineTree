@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
+from ..annotation_core import bbox_to_list
 from .config import FinetuneConfig, load_finetune_config
 
 
@@ -92,6 +93,8 @@ def _transform_page_for_target(cfg: FinetuneConfig, page: Dict[str, Any]) -> Dic
         item = dict(fact)
         if cfg.data.bbox_policy == "drop_all":
             item.pop("bbox", None)
+        elif "bbox" in item:
+            item["bbox"] = bbox_to_list(item.get("bbox"))
         out_facts.append(item)
 
     return {

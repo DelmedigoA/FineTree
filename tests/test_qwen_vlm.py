@@ -166,6 +166,25 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     assert extraction.facts[0].beur_num == "5"
 
 
+def test_generate_page_extraction_parses_bbox_array_shape(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"x")
+
+    payload = (
+        '{"meta":{"entity_name":null,"page_num":null,"type":"other","title":null},'
+        '"facts":[{"bbox":[1,2,3,4],"value":"10","refference":"","date":null,'
+        '"path":[],"currency":null,"scale":null,"value_type":"amount"}]}'
+    )
+
+    monkeypatch.setattr(qwen_vlm, "generate_content_from_image", lambda **_: payload)
+    extraction = qwen_vlm.generate_page_extraction_from_image(image_path=image_path, prompt="p")
+
+    assert extraction.meta.type.value == "other"
+    assert len(extraction.facts) == 1
+    assert extraction.facts[0].bbox.x == 1
+    assert extraction.facts[0].bbox.w == 3
+
+
 def test_generate_content_from_image_passes_max_new_tokens(monkeypatch) -> None:
     seen: dict[str, object] = {}
 

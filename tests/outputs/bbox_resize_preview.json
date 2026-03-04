@@ -1,0 +1,71 @@
+{
+  "original_size": [
+    1200,
+    1800
+  ],
+  "downscaled_size": [
+    456,
+    684
+  ],
+  "scale_factor": 0.38,
+  "original_bboxes": [
+    {
+      "name": "Entity Header",
+      "x": 120,
+      "y": 140,
+      "w": 520,
+      "h": 120
+    },
+    {
+      "name": "Revenue FY",
+      "x": 160,
+      "y": 520,
+      "w": 360,
+      "h": 90
+    },
+    {
+      "name": "Net Income FY",
+      "x": 160,
+      "y": 700,
+      "w": 420,
+      "h": 90
+    },
+    {
+      "name": "Footnote Ref",
+      "x": 760,
+      "y": 1480,
+      "w": 300,
+      "h": 120
+    }
+  ],
+  "downscaled_bboxes": [
+    {
+      "name": "Entity Header",
+      "x": 45.6,
+      "y": 53.2,
+      "w": 197.6,
+      "h": 45.6
+    },
+    {
+      "name": "Revenue FY",
+      "x": 60.8,
+      "y": 197.6,
+      "w": 136.8,
+      "h": 34.2
+    },
+    {
+      "name": "Net Income FY",
+      "x": 60.8,
+      "y": 266.0,
+      "w": 159.6,
+      "h": 34.2
+    },
+    {
+      "name": "Footnote Ref",
+      "x": 288.8,
+      "y": 562.4,
+      "w": 114.0,
+      "h": 45.6
+    }
+  ]
+}

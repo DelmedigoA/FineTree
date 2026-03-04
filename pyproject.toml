@@ -24,6 +24,7 @@ dependencies = [
   "huggingface_hub",
   "runpod",
   "unsloth",
+  "qwen-vl-utils",
   "gradio",
   "pytest>=8,<9",
 ]
@@ -44,6 +45,7 @@ finetree-ft-push-dataset-no-bbox = "finetree_annotator.finetune.push_dataset_hub
 finetree-runpod-endpoint-env = "finetree_annotator.deploy.runpod_endpoint:main"
 finetree-runpod-worker = "finetree_annotator.deploy.runpod_serverless_worker:main"
 finetree-pod-api = "finetree_annotator.deploy.pod_api:main"
+finetree-simple-infer-api = "finetree_annotator.deploy.simple_infer_api:main"
 finetree-pod-gradio = "finetree_annotator.deploy.pod_gradio:main"
 finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
 
