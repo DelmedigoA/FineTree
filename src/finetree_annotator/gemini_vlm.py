@@ -410,6 +410,15 @@ def _to_float(value: Any) -> Optional[float]:
 
 
 def _normalize_bbox(raw_bbox: Any) -> Optional[dict[str, float]]:
+    if isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
+        x = _to_float(raw_bbox[0])
+        y = _to_float(raw_bbox[1])
+        w = _to_float(raw_bbox[2])
+        h = _to_float(raw_bbox[3])
+        if None not in (x, y, w, h):
+            return {"x": x, "y": y, "w": w, "h": h}
+        return None
+
     if not isinstance(raw_bbox, dict):
         return None
 

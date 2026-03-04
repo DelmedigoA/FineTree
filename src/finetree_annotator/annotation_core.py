@@ -107,13 +107,27 @@ def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     return merged
 
 
-def normalize_bbox_data(data: Optional[Dict[str, Any]]) -> Dict[str, float]:
-    raw = data or {}
-    x = float(raw.get("x", 0.0))
-    y = float(raw.get("y", 0.0))
-    w = max(float(raw.get("w", 1.0)), 1.0)
-    h = max(float(raw.get("h", 1.0)), 1.0)
+def normalize_bbox_data(data: Optional[Any]) -> Dict[str, float]:
+    if isinstance(data, dict):
+        x_raw = data.get("x", 0.0)
+        y_raw = data.get("y", 0.0)
+        w_raw = data.get("w", 1.0)
+        h_raw = data.get("h", 1.0)
+    elif isinstance(data, (list, tuple)) and len(data) >= 4:
+        x_raw, y_raw, w_raw, h_raw = data[0], data[1], data[2], data[3]
+    else:
+        x_raw, y_raw, w_raw, h_raw = 0.0, 0.0, 1.0, 1.0
+
+    x = float(x_raw)
+    y = float(y_raw)
+    w = max(float(w_raw), 1.0)
+    h = max(float(h_raw), 1.0)
     return {"x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "h": round(h, 2)}
+
+
+def bbox_to_list(data: Optional[Any]) -> List[float]:
+    bbox = normalize_bbox_data(data)
+    return [bbox["x"], bbox["y"], bbox["w"], bbox["h"]]
 
 
 def denormalize_bbox_from_1000(data: Optional[Dict[str, Any]], image_width: float, image_height: float) -> Dict[str, float]:
@@ -167,7 +181,7 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
             for raw_fact in raw_facts:
                 if not isinstance(raw_fact, dict):
                     continue
-                bbox = normalize_bbox_data(raw_fact.get("bbox") if isinstance(raw_fact.get("bbox"), dict) else None)
+                bbox = normalize_bbox_data(raw_fact.get("bbox"))
                 facts.append(BoxRecord(bbox=bbox, fact=_coerce_raw_fact(raw_fact)))
         states[str(page_name)] = PageState(meta=meta, facts=facts)
     return states
@@ -219,7 +233,7 @@ def build_annotations_payload(
             fact_model = Fact(**normalize_fact_data(box.fact))
             facts_out.append(
                 {
-                    "bbox": normalize_bbox_data(box.bbox),
+                    "bbox": bbox_to_list(box.bbox),
                     **fact_model.model_dump(mode="json"),
                 }
             )
@@ -257,6 +271,7 @@ __all__ = [
     "PageState",
     "SCALE_OPTIONS",
     "build_annotations_payload",
+    "bbox_to_list",
     "denormalize_bbox_from_1000",
     "default_fact_data",
     "default_page_meta",

@@ -1,0 +1,32 @@
+FROM docker.io/runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONUNBUFFERED=1 \
+    HF_HOME=/workspace/.cache/huggingface \
+    TRANSFORMERS_CACHE=/workspace/.cache/huggingface \
+    FINETREE_SIMPLE_API_CONFIG=/workspace/FineTree/configs/qwen_simple_infer_api.yaml \
+    PORT=8000
+
+RUN apt-get update && apt-get install -y --no-install-recommends git && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace/FineTree
+COPY . /workspace/FineTree
+
+RUN python -m pip install --upgrade pip setuptools wheel && \
+    python -m pip install . --no-deps --no-build-isolation && \
+    python -m pip install \
+      "PyYAML==6.0.3" \
+      "Pillow==12.1.1" \
+      "transformers==5.2.0" \
+      "accelerate" \
+      "huggingface_hub==1.5.0" \
+      "fastapi" \
+      "uvicorn" \
+      "bitsandbytes" \
+      "qwen-vl-utils"
+
+EXPOSE 8000
+
+CMD ["sh", "-lc", "finetree-simple-infer-api --host 0.0.0.0 --port ${PORT} --config ${FINETREE_SIMPLE_API_CONFIG}"]
+

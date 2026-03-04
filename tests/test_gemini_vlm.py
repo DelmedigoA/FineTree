@@ -124,6 +124,17 @@ def test_parse_llm_json_accepts_quad_backtick_fence() -> None:
     assert parsed["facts"][0]["bbox"]["x"] == 1
 
 
+def test_parse_llm_json_accepts_bbox_array_shape() -> None:
+    payload = (
+        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
+        '"facts":[{"bbox":[1,2,3,4],"value":"10","refference":"","path":[]}]}'
+    )
+    parsed = gemini_vlm._parse_llm_json(payload)
+    assert isinstance(parsed, dict)
+    assert isinstance(parsed.get("facts"), list)
+    assert parsed["facts"][0]["bbox"] == [1, 2, 3, 4]
+
+
 def test_streaming_parser_finalize_falls_back_to_streamed_meta_and_facts() -> None:
     parser = gemini_vlm.StreamingPageExtractionParser()
     chunk = (

@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class PageType(str, Enum):
@@ -62,6 +62,13 @@ class BBox(BaseModel):
     w: float
     h: float
     model_config = ConfigDict(extra="forbid")
+
+    @model_validator(mode="before")
+    @classmethod
+    def _coerce_list_bbox(cls, value):
+        if isinstance(value, (list, tuple)) and len(value) >= 4:
+            return {"x": value[0], "y": value[1], "w": value[2], "h": value[3]}
+        return value
 
 
 class ExtractedFact(BaseModel):

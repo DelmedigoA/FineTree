@@ -70,7 +70,7 @@ def test_dataset_builder_writes_unsloth_chat_jsonl(tmp_path: Path, monkeypatch) 
     assert sample["messages"][0]["content"][0]["type"] == "image"
     assert sample["messages"][1]["content"][0]["type"] == "text"
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
-    assert out_obj["facts"][0]["bbox"]["x"] == 1
+    assert out_obj["facts"][0]["bbox"] == [1.0, 2.0, 3.0, 4.0]
 
 
 def test_dataset_builder_can_drop_bbox(tmp_path: Path, monkeypatch) -> None:

@@ -100,6 +100,30 @@ To use hosted Qwen Flash (OpenAI-compatible DashScope) from UI/CLI model selecti
 - set one API key env var: `FINETREE_QWEN_FLASH_API_KEY` / `FINETREE_QWEN_API_KEY` / `QWEN_API_KEY` / `DASHSCOPE_API_KEY`
 - optional base URL override: `FINETREE_QWEN_FLASH_BASE_URL` (default: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`)
 
+### Simple Inference API (Image + Prompt)
+
+Minimal FastAPI service for fine-tuned Qwen image inference:
+
+```bash
+finetree-simple-infer-api --config configs/qwen_simple_infer_api.yaml --host 0.0.0.0 --port 8000
+```
+
+Endpoints:
+
+- `GET /health`
+- `POST /infer` with payload:
+  - `image_b64` (base64 PNG/JPEG bytes)
+  - `prompt` (string)
+  - optional: `max_new_tokens`, `temperature`, `top_p`, `do_sample`, `max_pixels`
+
+RunPod image (simple API only):
+
+```bash
+docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.simple-infer-api -t <docker-user>/finetree-simple-infer:<tag> --push .
+```
+
+Use `deploy/runpod/simple_infer_api.env.example` as the env template in RunPod.
+
 ### Fine-Tuning Pipeline (Unsloth)
 
 Default config: `configs/finetune_qwen35a3_vl.yaml`
