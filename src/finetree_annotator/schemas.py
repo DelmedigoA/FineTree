@@ -34,6 +34,16 @@ class Scale(int, Enum):
     million = 1000000
 
 
+class DocLanguage(str, Enum):
+    hebrew = "he"
+    english = "en"
+
+
+class ReadingDirection(str, Enum):
+    rtl = "rtl"
+    ltr = "ltr"
+
+
 class PageMeta(BaseModel):
     entity_name: Optional[str] = None
     page_num: Optional[str] = None
@@ -44,10 +54,10 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
+    comment: Optional[str] = None
+    is_note: bool = False
     note: Optional[str] = None
-    is_beur: Optional[bool] = None
-    beur_num: Optional[str] = None
-    refference: str
+    note_reference: str = ""
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
@@ -74,10 +84,10 @@ class BBox(BaseModel):
 class ExtractedFact(BaseModel):
     bbox: BBox
     value: str
+    comment: Optional[str] = None
+    is_note: bool = False
     note: Optional[str] = None
-    is_beur: Optional[bool] = None
-    beur_num: Optional[str] = None
-    refference: str
+    note_reference: str = ""
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
@@ -98,6 +108,13 @@ class Page(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+class DocumentMeta(BaseModel):
+    language: Optional[DocLanguage] = None
+    reading_direction: Optional[ReadingDirection] = None
+    model_config = ConfigDict(extra="forbid")
+
+
 class Document(BaseModel):
+    document_meta: Optional[DocumentMeta] = None
     pages: List[Page] = Field(default_factory=list)
     model_config = ConfigDict(extra="forbid")

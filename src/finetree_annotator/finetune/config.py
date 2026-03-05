@@ -28,16 +28,32 @@ class DataConfig(BaseModel):
     output_val_jsonl: Path = Path("data/finetune/val.jsonl")
     split_strategy: Literal["by_document"] = "by_document"
     val_ratio: float = 0.1
+    val_doc_ids: list[str] = Field(default_factory=list)
     include_empty_pages: bool = True
     bbox_policy: Literal["include_if_present", "drop_all"] = "include_if_present"
     bbox_space: Literal["pixel", "normalized_1000"] = "pixel"
     target_schema: Literal["finetree_exact_json"] = "finetree_exact_json"
     sample_granularity: Literal["page"] = "page"
+    fact_order_enforce: bool = True
+    fact_order_default_on_uncertain: Literal["rtl", "ltr"] = "rtl"
+    fact_order_row_tolerance_ratio: float = 0.35
+    fact_order_row_tolerance_min_px: float = 6.0
+    fact_format_enforce: bool = True
 
     @model_validator(mode="after")
     def _validate_ratio(self) -> "DataConfig":
         if not (0.0 <= self.val_ratio < 1.0):
             raise ValueError("data.val_ratio must be in [0, 1).")
+        if float(self.fact_order_row_tolerance_ratio) <= 0.0:
+            raise ValueError("data.fact_order_row_tolerance_ratio must be > 0.")
+        if float(self.fact_order_row_tolerance_min_px) <= 0.0:
+            raise ValueError("data.fact_order_row_tolerance_min_px must be > 0.")
+        cleaned_doc_ids: list[str] = []
+        for raw_doc_id in self.val_doc_ids:
+            doc_id = str(raw_doc_id).strip()
+            if doc_id:
+                cleaned_doc_ids.append(doc_id)
+        self.val_doc_ids = list(dict.fromkeys(cleaned_doc_ids))
         return self
 
 
@@ -129,7 +145,7 @@ class InferenceConfig(BaseModel):
     parser_mode: Literal["streaming_page_extraction"] = "streaming_page_extraction"
     fallback_model_path: Optional[str] = None
     fallback_disable_adapter: bool = True
-    max_new_tokens: int = 4096
+    max_new_tokens: int = 10000
     temperature: float = 0.7
     top_p: float = 0.8
     do_sample: bool = True

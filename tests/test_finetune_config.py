@@ -10,6 +10,12 @@ def test_finetune_config_defaults_validate() -> None:
     assert cfg.model.base_model
     assert cfg.data.bbox_policy == "include_if_present"
     assert cfg.data.include_empty_pages is True
+    assert cfg.data.fact_order_enforce is True
+    assert cfg.data.fact_order_default_on_uncertain == "rtl"
+    assert cfg.data.fact_order_row_tolerance_ratio == 0.35
+    assert cfg.data.fact_order_row_tolerance_min_px == 6.0
+    assert cfg.data.fact_format_enforce is True
+    assert cfg.data.val_doc_ids == []
     assert cfg.prompt.use_custom_prompt is True
     assert cfg.training.ddp_find_unused_parameters is False
     assert cfg.training.require_val_set is True
@@ -64,3 +70,14 @@ def test_push_to_hub_accepts_token_from_env(monkeypatch) -> None:
     )
     assert cfg.push_to_hub.enabled is True
     assert resolve_hf_token(cfg.push_to_hub) == "hf_from_env"
+
+
+def test_data_config_normalizes_val_doc_ids() -> None:
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "val_doc_ids": [" pdf_4 ", "", "pdf_4", "pdf_3"],
+            }
+        }
+    )
+    assert cfg.data.val_doc_ids == ["pdf_4", "pdf_3"]

@@ -69,6 +69,9 @@ def test_dataset_builder_writes_unsloth_chat_jsonl(tmp_path: Path, monkeypatch) 
     sample = json.loads(lines[0])
     assert sample["messages"][0]["content"][0]["type"] == "image"
     assert sample["messages"][1]["content"][0]["type"] == "text"
+    assert sample["metadata"]["reading_direction"] in {"rtl", "ltr"}
+    assert "reading_direction_source" in sample["metadata"]
+    assert "reading_direction_uncertain" in sample["metadata"]
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
     assert out_obj["facts"][0]["bbox"] == [1.0, 2.0, 3.0, 4.0]
 
@@ -116,3 +119,72 @@ def test_dataset_builder_doc_split_map_ensures_non_empty_val_for_multi_doc(monke
     split = mod._doc_split_map(docs, val_ratio=0.1)
     assert any(split.values())
     assert not all(split.values())
+
+
+def test_dataset_builder_doc_split_map_can_force_explicit_val_docs() -> None:
+    from finetree_annotator.finetune import dataset_builder as mod
+
+    docs = [Path("pdf_2.json"), Path("pdf_3.json"), Path("pdf_4.json"), Path("test.json")]
+    split = mod._doc_split_map(docs, val_ratio=0.1, forced_val_doc_ids={"pdf_4"})
+    assert split == {
+        "pdf_2": False,
+        "pdf_3": False,
+        "pdf_4": True,
+        "test": False,
+    }
+
+
+def test_dataset_builder_reorders_hebrew_row_right_to_left(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_he"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    image_name = "page_0001.png"
+    (img_dir / image_name).write_bytes(b"fake")
+    payload = {
+        "images_dir": str(img_dir),
+        "document_meta": {"language": "he"},
+        "pages": [
+            {
+                "image": image_name,
+                "meta": {"entity_name": "חברה", "page_num": "1", "type": "other", "title": None},
+                "facts": [
+                    {
+                        "bbox": {"x": 10, "y": 10, "w": 10, "h": 10},
+                        "value": "left",
+                        "refference": "",
+                        "path": [],
+                    },
+                    {
+                        "bbox": {"x": 100, "y": 10, "w": 10, "h": 10},
+                        "value": "right",
+                        "refference": "",
+                        "path": [],
+                    },
+                ],
+            }
+        ],
+    }
+    (ann_dir / "doc_he.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+    build_unsloth_chat_datasets(cfg)
+
+    line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
+    sample = json.loads(line)
+    out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
+    assert [fact["value"] for fact in out_obj["facts"]] == ["right", "left"]

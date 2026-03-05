@@ -17,6 +17,7 @@ data:
   output_val_jsonl: data/finetune/val.jsonl
   split_strategy: by_document
   val_ratio: 0.1
+  val_doc_ids: [pdf_4]
   include_empty_pages: true
   bbox_policy: include_if_present
   bbox_space: pixel
@@ -30,8 +31,15 @@ prompt:
     You are extracting financial statement annotations from a single page image.
     Return strict JSON with keys: meta, facts.
     Field semantics:
-    - beur_num: use when current fact is data presented inside that beur itself.
-    - refference: use when current fact points to another beur.
+    - comment: free-text qualifier for the fact; else null.
+    - is_note: boolean true/false only (never null).
+    - note: populated when the fact itself belongs to note content; else null.
+    - note_reference: reference to another note; use "" when missing.
+    Normalization:
+    - date: use only YYYY or YYYY-MM-DD.
+    - value: if value contains %, keep percentage text; otherwise output only Num/Num.Num/(Num)/(Num.Num), with no currency symbols/codes/commas, and convert dash placeholders to "".
+    Ordering:
+    - facts must be top-to-bottom; within row use RTL for Hebrew and LTR for English (RTL fallback if uncertain).
 
 adapter:
   mode: lora

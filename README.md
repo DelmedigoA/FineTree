@@ -24,6 +24,21 @@ pip install -e . --no-build-isolation
 
 ### Run
 
+Primary (PDF-first) flow:
+
+```bash
+finetreeannotator path/to/doc.pdf
+```
+
+This creates/uses sibling artifacts:
+
+- `path/to/doc_images/page_0001.png`, ...
+- `path/to/doc.json`
+
+If images already exist, they are reused. If some pages are missing, only missing pages are extracted.
+
+Legacy image-directory flow:
+
 ```bash
 finetree-annotator --images-dir data/pdf_images/test
 ```

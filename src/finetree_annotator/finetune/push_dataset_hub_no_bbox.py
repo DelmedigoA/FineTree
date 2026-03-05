@@ -10,12 +10,20 @@ from typing import Literal, Tuple
 from datasets import Dataset, DatasetDict, Features, Image, Value
 from huggingface_hub import HfApi
 
+from ..fact_normalization import assert_fact_format
+from ..fact_ordering import assert_fact_order
+from .config import load_finetune_config
+from .duplicate_facts import assert_no_duplicate_facts
 from .push_dataset_hub import (
+    _DEFAULT_SYSTEM_PROMPT,
     _compact_token_text_payload,
     _copy_or_resize_image,
     _dataset_for_push,
     _parse_excluded_doc_ids,
+    _resolve_system_prompt,
     _resolve_resize_bounds,
+    assert_source_instruction_schema,
+    assert_no_train_val_contamination,
     build_dataset,
     resolve_hf_token,
 )
@@ -62,7 +70,12 @@ def _instruction_for_mode(source_instruction: str, instruction_mode: Instruction
     return _sanitize_instruction_no_bbox(source_instruction)
 
 
-def _rows_from_chat_jsonl_no_bbox(split_path: Path, *, instruction_mode: InstructionMode = "source") -> list[dict[str, str]]:
+def _rows_from_chat_jsonl_no_bbox(
+    split_path: Path,
+    *,
+    instruction_mode: InstructionMode = "source",
+    system_prompt: str = _DEFAULT_SYSTEM_PROMPT,
+) -> list[dict[str, str]]:
     if not split_path.is_file():
         return []
 
@@ -103,6 +116,7 @@ def _rows_from_chat_jsonl_no_bbox(split_path: Path, *, instruction_mode: Instruc
         rows.append(
             {
                 "image": image_path,
+                "system": system_prompt,
                 "instruction": _instruction_for_mode(instruction, instruction_mode),
                 "text": text,
             }
@@ -110,7 +124,12 @@ def _rows_from_chat_jsonl_no_bbox(split_path: Path, *, instruction_mode: Instruc
     return rows
 
 
-def _rows_from_export_jsonl_no_bbox(split_path: Path, export_dir: Path) -> list[dict[str, str]]:
+def _rows_from_export_jsonl_no_bbox(
+    split_path: Path,
+    export_dir: Path,
+    *,
+    default_system_prompt: str = _DEFAULT_SYSTEM_PROMPT,
+) -> list[dict[str, str]]:
     if not split_path.is_file():
         return []
     rows: list[dict[str, str]] = []
@@ -121,12 +140,20 @@ def _rows_from_export_jsonl_no_bbox(split_path: Path, export_dir: Path) -> list[
         if not isinstance(sample, dict):
             continue
         image_path = sample.get("image")
+        system_prompt = sample.get("system")
+        if not isinstance(system_prompt, str) or not system_prompt.strip():
+            system_prompt = sample.get("system_prompt")
         instruction = sample.get("instruction")
         text = sample.get("text")
         if not isinstance(image_path, str) or not isinstance(instruction, str) or not isinstance(text, str):
             continue
+        resolved_system_prompt = (
+            str(system_prompt).strip()
+            if isinstance(system_prompt, str) and str(system_prompt).strip()
+            else default_system_prompt
+        )
         abs_img = (export_dir / image_path).resolve()
-        rows.append({"image": str(abs_img), "instruction": instruction, "text": text})
+        rows.append({"image": str(abs_img), "system": resolved_system_prompt, "instruction": instruction, "text": text})
     return rows
 
 
@@ -134,11 +161,12 @@ def _build_hf_dataset_no_bbox_from_rows(train_rows: list[dict[str, str]], val_ro
     features = Features(
         {
             "image": Image(),
+            "system": Value("string"),
             "instruction": Value("string"),
             "text": Value("string"),
         }
     )
-    empty_payload = {"image": [], "instruction": [], "text": []}
+    empty_payload = {"image": [], "system": [], "instruction": [], "text": []}
     train_ds = Dataset.from_list(train_rows, features=features) if train_rows else Dataset.from_dict(empty_payload, features=features)
     val_ds = Dataset.from_list(val_rows, features=features) if val_rows else Dataset.from_dict(empty_payload, features=features)
     dataset = DatasetDict(
@@ -151,8 +179,17 @@ def _build_hf_dataset_no_bbox_from_rows(train_rows: list[dict[str, str]], val_ro
 
 
 def build_hf_dataset_no_bbox(root: Path, *, instruction_mode: InstructionMode = "source") -> tuple[DatasetDict, int, int]:
-    train_rows = _rows_from_chat_jsonl_no_bbox(root / "data/finetune/train.jsonl", instruction_mode=instruction_mode)
-    val_rows = _rows_from_chat_jsonl_no_bbox(root / "data/finetune/val.jsonl", instruction_mode=instruction_mode)
+    system_prompt = _resolve_system_prompt(root)
+    train_rows = _rows_from_chat_jsonl_no_bbox(
+        root / "data/finetune/train.jsonl",
+        instruction_mode=instruction_mode,
+        system_prompt=system_prompt,
+    )
+    val_rows = _rows_from_chat_jsonl_no_bbox(
+        root / "data/finetune/val.jsonl",
+        instruction_mode=instruction_mode,
+        system_prompt=system_prompt,
+    )
     return _build_hf_dataset_no_bbox_from_rows(train_rows, val_rows)
 
 
@@ -162,8 +199,17 @@ def build_hf_dataset_no_bbox_from_export(
     instruction_mode: InstructionMode = "source",
 ) -> tuple[DatasetDict, int, int]:
     _ = instruction_mode
-    train_rows = _rows_from_export_jsonl_no_bbox(export_dir / "train.jsonl", export_dir)
-    val_rows = _rows_from_export_jsonl_no_bbox(export_dir / "val.jsonl", export_dir)
+    default_system_prompt = _resolve_system_prompt(Path(".").resolve())
+    train_rows = _rows_from_export_jsonl_no_bbox(
+        export_dir / "train.jsonl",
+        export_dir,
+        default_system_prompt=default_system_prompt,
+    )
+    val_rows = _rows_from_export_jsonl_no_bbox(
+        export_dir / "val.jsonl",
+        export_dir,
+        default_system_prompt=default_system_prompt,
+    )
     return _build_hf_dataset_no_bbox_from_rows(train_rows, val_rows)
 
 
@@ -176,7 +222,9 @@ def export_for_hf_no_bbox(
     max_pixels: int | None = None,
     exclude_doc_ids: set[str] | None = None,
     compact_tokens: bool = False,
+    aggressive_compact_tokens: bool = False,
 ) -> Tuple[int, int]:
+    system_prompt = _resolve_system_prompt(root)
     resize_bounds = _resolve_resize_bounds(min_pixels, max_pixels)
     resolved_min = resize_bounds[0] if resize_bounds else None
     resolved_max = resize_bounds[1] if resize_bounds else None
@@ -202,7 +250,11 @@ def export_for_hf_no_bbox(
             return 0
 
         out_lines: list[str] = []
-        for row in _rows_from_chat_jsonl_no_bbox(src_path, instruction_mode=instruction_mode):
+        for row in _rows_from_chat_jsonl_no_bbox(
+            src_path,
+            instruction_mode=instruction_mode,
+            system_prompt=system_prompt,
+        ):
             src_img = Path(row["image"])
             if not src_img.is_absolute():
                 src_img = (root / src_img).resolve()
@@ -229,8 +281,13 @@ def export_for_hf_no_bbox(
 
             payload = {
                 "image": rel_img.as_posix(),
+                "system": row["system"],
                 "instruction": row["instruction"].replace(str(src_img), rel_img.as_posix()),
-                "text": _compact_token_text_payload(row["text"]) if compact_tokens else row["text"],
+                "text": (
+                    _compact_token_text_payload(row["text"], remap_keys=aggressive_compact_tokens)
+                    if (compact_tokens or aggressive_compact_tokens)
+                    else row["text"]
+                ),
             }
             out_lines.append(json.dumps(payload, ensure_ascii=False))
 
@@ -244,6 +301,7 @@ def export_for_hf_no_bbox(
         "# FineTree Annotated Dataset (No BBox)\n\n"
         "Generated from current repository annotations.\n\n"
         "- Assistant JSON payload has bbox removed from all facts.\n\n"
+        "- Includes `system` column from `system_prompt.txt`.\n"
         f"- Instruction mode: {instruction_mode}\n"
         f"- Resize enabled: {'yes' if resize_enabled else 'no'}\n"
         f"- Min pixels: {resolved_min if resolved_min is not None else 'unset'}\n"
@@ -253,6 +311,7 @@ def export_for_hf_no_bbox(
         f"- Skipped rows by excluded docs: {skipped_excluded_docs}\n"
         f"- Excluded doc ids: {sorted(excluded)}\n"
         f"- Compact tokens: {'yes' if compact_tokens else 'no'}\n"
+        f"- Aggressive compact tokens: {'yes' if aggressive_compact_tokens else 'no'}\n"
         f"- Train rows: {train_rows}\n"
         f"- Val rows: {val_rows}\n",
         encoding="utf-8",
@@ -270,6 +329,7 @@ def export_for_hf_no_bbox(
                 "skipped_excluded_docs": skipped_excluded_docs,
                 "excluded_doc_ids": sorted(excluded),
                 "compact_tokens": compact_tokens,
+                "aggressive_compact_tokens": aggressive_compact_tokens,
             },
             ensure_ascii=False,
         ),
@@ -332,10 +392,32 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--compact_tokens",
         action="store_true",
-        help="Compact assistant JSON payload keys and formatting for lower token usage.",
+        help="Compact assistant JSON payload formatting and numeric separators without renaming keys.",
+    )
+    parser.add_argument(
+        "--aggressive-compact-tokens",
+        "--aggressive_compact_tokens",
+        action="store_true",
+        dest="aggressive_compact_tokens",
+        help="Aggressive compaction: enables key shortening in addition to --compact_tokens behavior.",
     )
     parser.add_argument("--min-pixels", type=int, default=None, help="Optional minimum image pixel budget for export.")
     parser.add_argument("--max-pixels", type=int, default=None, help="Optional maximum image pixel budget for export.")
+    parser.add_argument(
+        "--allow-duplicate-facts",
+        action="store_true",
+        help="Allow HF export/push to continue even when exact duplicate facts are detected in annotations.",
+    )
+    parser.add_argument(
+        "--allow-ordering-issues",
+        action="store_true",
+        help="Allow HF export/push to continue when fact reading-order violations are detected in annotations.",
+    )
+    parser.add_argument(
+        "--allow-format-issues",
+        action="store_true",
+        help="Allow HF export/push to continue when fact schema/date/value format issues are detected.",
+    )
     return parser.parse_args(argv)
 
 
@@ -353,11 +435,55 @@ def main(argv: list[str] | None = None) -> int:
         print("WARNING: --omit-instruction is deprecated; using --instruction-mode minimal.")
         instruction_mode = "minimal"
     excluded_doc_ids = _parse_excluded_doc_ids(args.exclude_doc_ids)
+    compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
 
     config_path = (root / args.config).resolve()
+    cfg = load_finetune_config(config_path)
     export_dir = (root / args.export_dir).resolve()
 
     build_dataset(config_path)
+    if instruction_mode == "source":
+        assert_source_instruction_schema(root, fail_on_issues=True)
+    assert_no_train_val_contamination(root)
+    duplicate_report = assert_no_duplicate_facts(
+        root,
+        annotations_glob=cfg.data.annotations_glob,
+        fail_on_duplicates=not args.allow_duplicate_facts,
+    )
+    if args.allow_duplicate_facts and int(duplicate_report["duplicate_rows"]) > 0:
+        print(
+            "WARNING: continuing with duplicate facts because --allow-duplicate-facts was set. "
+            f"duplicate_rows={duplicate_report['duplicate_rows']}"
+        )
+    if cfg.data.fact_order_enforce:
+        ordering_report = assert_fact_order(
+            root,
+            annotations_glob=cfg.data.annotations_glob,
+            default_direction=cfg.data.fact_order_default_on_uncertain,
+            row_tolerance_ratio=cfg.data.fact_order_row_tolerance_ratio,
+            row_tolerance_min_px=cfg.data.fact_order_row_tolerance_min_px,
+            fail_on_issues=not args.allow_ordering_issues,
+        )
+        if args.allow_ordering_issues and int(ordering_report["pages_with_order_issues"]) > 0:
+            print(
+                "WARNING: continuing with ordering issues because --allow-ordering-issues was set. "
+                f"pages_with_order_issues={ordering_report['pages_with_order_issues']}"
+            )
+    else:
+        print("FACT_ORDER_AUDIT: skipped (data.fact_order_enforce=false)")
+    if cfg.data.fact_format_enforce:
+        format_report = assert_fact_format(
+            root,
+            annotations_glob=cfg.data.annotations_glob,
+            fail_on_issues=not args.allow_format_issues,
+        )
+        if args.allow_format_issues and int(format_report["facts_with_issues"]) > 0:
+            print(
+                "WARNING: continuing with format issues because --allow-format-issues was set. "
+                f"facts_with_issues={format_report['facts_with_issues']}"
+            )
+    else:
+        print("FACT_FORMAT_AUDIT: skipped (data.fact_format_enforce=false)")
     train_rows, val_rows = export_for_hf_no_bbox(
         root,
         export_dir,
@@ -365,7 +491,8 @@ def main(argv: list[str] | None = None) -> int:
         min_pixels=args.min_pixels,
         max_pixels=args.max_pixels,
         exclude_doc_ids=excluded_doc_ids,
-        compact_tokens=args.compact_tokens,
+        compact_tokens=compact_tokens,
+        aggressive_compact_tokens=args.aggressive_compact_tokens,
     )
     dataset, _, _ = build_hf_dataset_no_bbox_from_export(export_dir, instruction_mode=instruction_mode)
     repo = push_to_hf_no_bbox(
@@ -380,7 +507,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"TRAIN_ROWS: {train_rows}")
     print(f"VAL_ROWS: {val_rows}")
     print(f"INSTRUCTION_MODE: {instruction_mode}")
-    print(f"COMPACT_TOKENS: {args.compact_tokens}")
+    print(f"COMPACT_TOKENS: {compact_tokens}")
+    print(f"AGGRESSIVE_COMPACT_TOKENS: {args.aggressive_compact_tokens}")
     print(f"EXPORT_DIR: {export_dir}")
     return 0
 

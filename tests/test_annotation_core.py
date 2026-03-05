@@ -8,14 +8,15 @@ from pydantic import ValidationError
 from finetree_annotator.annotation_core import (
     BoxRecord,
     PageState,
+    apply_entity_name_to_missing_pages,
     bbox_to_list,
     build_annotations_payload,
     denormalize_bbox_from_1000,
+    extract_document_meta,
     load_page_states,
     parse_import_payload,
     normalize_bbox_data,
     normalize_fact_data,
-    propagate_entity_to_next_page,
     serialize_annotations_json,
 )
 
@@ -36,10 +37,10 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     )
 
     assert fact["value"] == "123"
-    assert fact["note"] == "*without debt insurance"
-    assert fact["is_beur"] is True
-    assert fact["beur_num"] == "2ה׳"
-    assert fact["refference"] == "ref-001"
+    assert fact["comment"] == "*without debt insurance"
+    assert fact["is_note"] is True
+    assert fact["note"] == "2ה׳"
+    assert fact["note_reference"] == "ref-001"
     assert fact["path"] == ["assets", "cash", "2024"]
     assert fact["currency"] == "ILS"
     assert fact["scale"] == 1000
@@ -101,10 +102,10 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
     assert state.meta["entity_name"] == "Demo Co"
     assert len(state.facts) == 2
     assert state.facts[0].fact["currency"] == "ILS"
-    assert state.facts[0].fact["note"] == "*estimated"
-    assert state.facts[0].fact["is_beur"] is True
-    assert state.facts[0].fact["beur_num"] == "5"
-    assert state.facts[0].fact["refference"] == "A1"
+    assert state.facts[0].fact["comment"] == "*estimated"
+    assert state.facts[0].fact["is_note"] is True
+    assert state.facts[0].fact["note"] == "5"
+    assert state.facts[0].fact["note_reference"] == "A1"
     assert state.facts[0].fact["scale"] == 1000
     assert state.facts[1].bbox["w"] == 1.0
     assert state.facts[1].fact["value_type"] == "%"
@@ -141,10 +142,10 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     page_2 = payload["pages"][1]
     assert page_1["meta"]["type"] == "notes"
     assert page_1["facts"][0]["currency"] == "USD"
-    assert page_1["facts"][0]["note"] == "*estimated"
-    assert page_1["facts"][0]["is_beur"] is True
-    assert page_1["facts"][0]["beur_num"] == "5"
-    assert page_1["facts"][0]["refference"] == "row-12"
+    assert page_1["facts"][0]["comment"] == "*estimated"
+    assert page_1["facts"][0]["is_note"] is True
+    assert page_1["facts"][0]["note"] == "5"
+    assert page_1["facts"][0]["note_reference"] == "row-12"
     assert page_1["facts"][0]["bbox"] == [10.0, 20.0, 30.0, 40.0]
     assert page_2["meta"]["type"] == "other"
     assert page_2["meta"]["page_num"] is None
@@ -169,7 +170,7 @@ def test_build_annotations_payload_raises_on_invalid_schema_values() -> None:
         build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
 
 
-def test_build_annotations_payload_rejects_currency_outside_allowed_list() -> None:
+def test_build_annotations_payload_normalizes_currency_outside_allowed_list_to_none() -> None:
     page_images = [Path("page_0001.png")]
     page_states = {
         "page_0001.png": PageState(
@@ -183,23 +184,26 @@ def test_build_annotations_payload_rejects_currency_outside_allowed_list() -> No
         )
     }
 
-    with pytest.raises(ValidationError):
-        build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    assert payload["pages"][0]["facts"][0]["currency"] is None
 
 
-def test_propagate_entity_to_next_page_sets_entity_name() -> None:
+def test_apply_entity_name_to_missing_pages_sets_only_absent_values() -> None:
     page_images = [Path("page_0001.png"), Path("page_0002.png"), Path("page_0003.png")]
     page_states = {
+        "page_0001.png": PageState(meta={"entity_name": "Current Page"}, facts=[]),
         "page_0002.png": PageState(meta={"type": "notes", "title": "n2"}, facts=[]),
         "page_0003.png": PageState(meta={"entity_name": "Should stay"}, facts=[]),
     }
 
-    propagate_entity_to_next_page(page_states, page_images, current_index=0, entity_name="ACME LTD")
+    updated = apply_entity_name_to_missing_pages(page_states, page_images, entity_name="ACME LTD")
+    assert updated == 1
     assert page_states["page_0002.png"].meta["entity_name"] == "ACME LTD"
     assert page_states["page_0002.png"].meta["title"] == "n2"
-
-    propagate_entity_to_next_page(page_states, page_images, current_index=2, entity_name="LAST")
     assert page_states["page_0003.png"].meta["entity_name"] == "Should stay"
+
+    no_change = apply_entity_name_to_missing_pages(page_states, page_images, entity_name="LAST")
+    assert no_change == 0
 
 
 def test_serialize_annotations_json_keeps_hebrew_unescaped() -> None:
@@ -225,7 +229,7 @@ def test_parse_import_payload_supports_single_page_shape_without_image() -> None
     states = parse_import_payload(payload, ["page_0001.png", "page_0002.png"], "page_0002.png")
     assert set(states.keys()) == {"page_0002.png"}
     assert states["page_0002.png"].meta["type"] == "profits"
-    assert states["page_0002.png"].facts[0].fact["refference"] == "5"
+    assert states["page_0002.png"].facts[0].fact["note_reference"] == "5"
 
 
 def test_parse_import_payload_supports_full_document_shape() -> None:
@@ -246,3 +250,26 @@ def test_parse_import_payload_supports_full_document_shape() -> None:
     states = parse_import_payload(payload, ["page_0001.png"], "page_0001.png")
     assert set(states.keys()) == {"page_0001.png"}
     assert states["page_0001.png"].meta["type"] == "notes"
+
+
+def test_extract_document_meta_normalizes_supported_values() -> None:
+    payload = {"document_meta": {"language": "HE", "reading_direction": "RTL"}}
+    doc_meta = extract_document_meta(payload)
+    assert doc_meta == {"language": "he", "reading_direction": "rtl"}
+
+
+def test_build_annotations_payload_includes_document_meta_when_present() -> None:
+    page_images = [Path("page_0001.png")]
+    page_states = {
+        "page_0001.png": PageState(
+            meta={"entity_name": "ACME", "page_num": "1", "type": "other", "title": "Cover"},
+            facts=[],
+        )
+    }
+    payload = build_annotations_payload(
+        Path("data/pdf_images/test"),
+        page_images,
+        page_states,
+        document_meta={"language": "en", "reading_direction": "ltr"},
+    )
+    assert payload["document_meta"] == {"language": "en", "reading_direction": "ltr"}

@@ -11,14 +11,16 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from pydantic import ValidationError
 
+from .fact_ordering import compact_document_meta, normalize_document_meta
+from .fact_normalization import normalize_fact_payload
 from .schemas import Currency, Fact, PageMeta, PageType, Scale
 
 FACT_KEYS = (
     "value",
+    "comment",
+    "is_note",
     "note",
-    "is_beur",
-    "beur_num",
-    "refference",
+    "note_reference",
     "date",
     "path",
     "currency",
@@ -44,10 +46,10 @@ class PageState:
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
+        "comment": None,
+        "is_note": False,
         "note": None,
-        "is_beur": None,
-        "beur_num": None,
-        "refference": "",
+        "note_reference": "",
         "date": None,
         "path": [],
         "currency": None,
@@ -57,53 +59,8 @@ def default_fact_data() -> Dict[str, Any]:
 
 
 def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    base = default_fact_data()
-    if not data:
-        return base
-
-    merged = {**base, **data}
-    if not isinstance(merged.get("path"), list):
-        merged["path"] = []
-    merged["path"] = [str(x).strip() for x in merged["path"] if str(x).strip()]
-
-    if merged.get("scale") in ("", None):
-        merged["scale"] = None
-    elif isinstance(merged["scale"], str):
-        try:
-            merged["scale"] = int(merged["scale"])
-        except ValueError:
-            merged["scale"] = None
-
-    if merged.get("currency") in ("", None):
-        merged["currency"] = None
-    elif isinstance(merged["currency"], str):
-        currency = merged["currency"].strip().upper()
-        merged["currency"] = currency or None
-
-    if merged.get("value_type") == "":
-        merged["value_type"] = None
-
-    note_text = str(merged.get("note") or "").strip()
-    merged["note"] = note_text or None
-    raw_is_beur = merged.get("is_beur")
-    if raw_is_beur in ("", None):
-        merged["is_beur"] = None
-    elif isinstance(raw_is_beur, bool):
-        merged["is_beur"] = raw_is_beur
-    elif isinstance(raw_is_beur, (int, float)):
-        merged["is_beur"] = bool(raw_is_beur)
-    else:
-        raw_bool = str(raw_is_beur).strip().lower()
-        if raw_bool in {"true", "1", "yes", "y"}:
-            merged["is_beur"] = True
-        elif raw_bool in {"false", "0", "no", "n"}:
-            merged["is_beur"] = False
-        else:
-            merged["is_beur"] = None
-    beur_num_text = str(merged.get("beur_num") or "").strip()
-    merged["beur_num"] = beur_num_text or None
-    merged["refference"] = str(merged.get("refference") or "").strip()
-
+    normalized, _warnings = normalize_fact_payload(data or {}, include_bbox=False)
+    merged = {**default_fact_data(), **normalized}
     return merged
 
 
@@ -156,7 +113,7 @@ def default_page_meta(index: int) -> Dict[str, Any]:
 def _coerce_raw_fact(raw_fact: Dict[str, Any]) -> Dict[str, Any]:
     if "fact" in raw_fact and isinstance(raw_fact["fact"], dict):
         return normalize_fact_data(raw_fact["fact"])
-    return normalize_fact_data({k: raw_fact.get(k) for k in FACT_KEYS})
+    return normalize_fact_data(raw_fact)
 
 
 def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -> Dict[str, PageState]:
@@ -216,10 +173,18 @@ def parse_import_payload(
     return load_page_states({"pages": [page_obj]}, page_image_names)
 
 
+def extract_document_meta(payload: Any) -> Dict[str, Optional[str]]:
+    if not isinstance(payload, dict):
+        return {"language": None, "reading_direction": None}
+    return normalize_document_meta(payload.get("document_meta"))
+
+
 def build_annotations_payload(
     images_dir: Path,
     page_images: Sequence[Path],
     page_states: Dict[str, PageState],
+    *,
+    document_meta: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     pages_out = []
     for idx, page_path in enumerate(page_images):
@@ -240,24 +205,34 @@ def build_annotations_payload(
 
         pages_out.append({"image": page_name, "meta": meta_model.model_dump(mode="json"), "facts": facts_out})
 
-    return {"images_dir": str(images_dir), "pages": pages_out}
+    payload: Dict[str, Any] = {"images_dir": str(images_dir), "pages": pages_out}
+    compact_meta = compact_document_meta(document_meta)
+    if compact_meta:
+        payload["document_meta"] = compact_meta
+    return payload
 
 
-def propagate_entity_to_next_page(
+def apply_entity_name_to_missing_pages(
     page_states: Dict[str, PageState],
     page_images: Sequence[Path],
-    current_index: int,
     entity_name: Optional[str],
-) -> None:
-    next_index = current_index + 1
-    if next_index >= len(page_images):
-        return
+) -> int:
+    normalized_entity = str(entity_name or "").strip()
+    if not normalized_entity:
+        return 0
 
-    next_name = page_images[next_index].name
-    next_state = page_states.get(next_name, PageState(meta=default_page_meta(next_index), facts=[]))
-    next_meta = {**default_page_meta(next_index), **(next_state.meta or {})}
-    next_meta["entity_name"] = entity_name
-    page_states[next_name] = PageState(meta=next_meta, facts=list(next_state.facts))
+    updated = 0
+    for idx, page_path in enumerate(page_images):
+        page_name = page_path.name
+        state = page_states.get(page_name, PageState(meta=default_page_meta(idx), facts=[]))
+        meta = {**default_page_meta(idx), **(state.meta or {})}
+        existing_entity = str(meta.get("entity_name") or "").strip()
+        if existing_entity:
+            continue
+        meta["entity_name"] = normalized_entity
+        page_states[page_name] = PageState(meta=meta, facts=list(state.facts))
+        updated += 1
+    return updated
 
 
 def serialize_annotations_json(payload: Dict[str, Any]) -> str:
@@ -275,11 +250,12 @@ __all__ = [
     "denormalize_bbox_from_1000",
     "default_fact_data",
     "default_page_meta",
+    "extract_document_meta",
     "load_page_states",
     "parse_import_payload",
     "normalize_bbox_data",
     "normalize_fact_data",
-    "propagate_entity_to_next_page",
+    "apply_entity_name_to_missing_pages",
     "serialize_annotations_json",
     "ValidationError",
 ]
