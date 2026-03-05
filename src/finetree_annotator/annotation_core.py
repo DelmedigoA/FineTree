@@ -49,7 +49,7 @@ def default_fact_data() -> Dict[str, Any]:
         "comment": None,
         "is_note": False,
         "note": None,
-        "note_reference": "",
+        "note_reference": None,
         "date": None,
         "path": [],
         "currency": None,

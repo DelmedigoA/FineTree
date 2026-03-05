@@ -2165,7 +2165,7 @@ class AnnotationWindow(QMainWindow):
                 return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note_reference"] = ""
+            fact["note_reference"] = None
             return fact
 
         self._batch_update_selected_facts(_transform, "Cleared note_reference")
@@ -2519,7 +2519,7 @@ class AnnotationWindow(QMainWindow):
                 "comment": self.fact_note_edit.text().strip() or None,
                 "is_note": is_beur_value,
                 "note": self.fact_beur_num_edit.text().strip() or None,
-                "note_reference": self.fact_refference_edit.text().strip(),
+                "note_reference": self.fact_refference_edit.text().strip() or None,
                 "date": self.fact_date_edit.text().strip() or None,
                 "path": path_parts,
                 "currency": self.fact_currency_combo.currentText().strip() or None,

@@ -31,33 +31,11 @@
       },
       "facts": [
         {
-          "value": "745384",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "רכוש",
-            "רכוש שוטף",
-            "מזומנים ושווה מזומנים"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 483.56,
-            "y": 542.18,
-            "w": 97.97,
-            "h": 34.35
-          }
-        },
-        {
           "value": "851625",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "רכוש",
@@ -75,23 +53,23 @@
           }
         },
         {
-          "value": "322816",
+          "value": "745384",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "רכוש",
             "רכוש שוטף",
-            "השקעות בניירות ערך"
+            "מזומנים ושווה מזומנים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 483.56,
-            "y": 574.24,
+            "y": 542.18,
             "w": 97.97,
             "h": 34.35
           }
@@ -101,7 +79,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "רכוש",
@@ -113,6 +91,28 @@
           "value_type": "amount",
           "bbox": {
             "x": 295.66,
+            "y": 574.24,
+            "w": 97.97,
+            "h": 34.35
+          }
+        },
+        {
+          "value": "322816",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "רכוש",
+            "רכוש שוטף",
+            "השקעות בניירות ערך"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 483.56,
             "y": 574.24,
             "w": 97.97,
             "h": 34.35
@@ -123,7 +123,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "רכוש",
@@ -145,7 +145,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "רכוש",
@@ -167,7 +167,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "רכוש",
@@ -188,7 +188,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "רכוש",
@@ -200,6 +200,28 @@
           "bbox": {
             "x": 271.6,
             "y": 637.36,
+            "w": 114.03,
+            "h": 34.35
+          }
+        },
+        {
+          "value": "7016757",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "3",
+          "date": "2023-12-31",
+          "path": [
+            "רכוש",
+            "השקעות",
+            "פקדונות בבנקים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 271.6,
+            "y": 731.25,
             "w": 114.03,
             "h": 34.35
           }
@@ -227,24 +249,23 @@
           }
         },
         {
-          "value": "7016757",
+          "value": "810066",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "3",
+          "note_reference": "4",
           "date": "2023-12-31",
           "path": [
             "רכוש",
-            "השקעות",
-            "פקדונות בבנקים"
+            "רכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 271.6,
-            "y": 731.25,
-            "w": 114.03,
+            "x": 292.66,
+            "y": 824.85,
+            "w": 99.97,
             "h": 34.35
           }
         },
@@ -270,52 +291,11 @@
           }
         },
         {
-          "value": "810066",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": "4",
-          "date": "2023-12-31",
-          "path": [
-            "רכוש",
-            "רכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.66,
-            "y": 824.85,
-            "w": 99.97,
-            "h": 34.35
-          }
-        },
-        {
-          "value": "42724005",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "רכוש"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 446.26,
-            "y": 887.1,
-            "w": 135.27,
-            "h": 34.35
-          }
-        },
-        {
           "value": "9216410",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "רכוש"
@@ -331,24 +311,22 @@
           }
         },
         {
-          "value": "43125",
+          "value": "42724005",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "התחייבויות ונכסים נטו",
-            "התחייבויות שוטפות:",
-            "המחאות לפרעון"
+            "רכוש"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 483.83,
-            "y": 1006.34,
-            "w": 100.69,
+            "x": 446.26,
+            "y": 887.1,
+            "w": 135.27,
             "h": 34.35
           }
         },
@@ -357,7 +335,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -375,24 +353,24 @@
           }
         },
         {
-          "value": "137754",
+          "value": "43125",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "5",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
             "התחייבויות שוטפות:",
-            "זכאים ויתרות זכות"
+            "המחאות לפרעון"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 474.19,
-            "y": 1036.11,
-            "w": 110.33,
+            "x": 483.83,
+            "y": 1006.34,
+            "w": 100.69,
             "h": 34.35
           }
         },
@@ -419,25 +397,25 @@
           }
         },
         {
-          "value": "",
+          "value": "137754",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "6",
+          "note_reference": "5",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
             "התחייבויות שוטפות:",
-            "מקדמות על-חשבון מכירת מקרקעין"
+            "זכאים ויתרות זכות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 510.2,
-            "y": 1075.62,
-            "w": 17.67,
-            "h": 14.49
+            "x": 474.19,
+            "y": 1036.11,
+            "w": 110.33,
+            "h": 34.35
           }
         },
         {
@@ -463,24 +441,25 @@
           }
         },
         {
-          "value": "180879",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "6",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
-            "התחייבויות שוטפות:"
+            "התחייבויות שוטפות:",
+            "מקדמות על-חשבון מכירת מקרקעין"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 484.59,
-            "y": 1100.36,
-            "w": 97.97,
-            "h": 34.35
+            "x": 510.2,
+            "y": 1075.62,
+            "w": 17.67,
+            "h": 14.49
           }
         },
         {
@@ -488,7 +467,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -505,23 +484,22 @@
           }
         },
         {
-          "value": "247368",
+          "value": "180879",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "7",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
-            "התחייבויות לזמן ארוך -",
-            "בגין סיום יחסי עובד-מעביד"
+            "התחייבויות שוטפות:"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 480.49,
-            "y": 1193.74,
+            "x": 484.59,
+            "y": 1100.36,
             "w": 97.97,
             "h": 34.35
           }
@@ -549,24 +527,24 @@
           }
         },
         {
-          "value": "(1537213)",
+          "value": "247368",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "7",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
-            "נכסים נטו:",
-            "שלא יועדו ע\"י מוסדות המלכ\"ר"
+            "התחייבויות לזמן ארוך -",
+            "בגין סיום יחסי עובד-מעביד"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 441.65,
-            "y": 1308.62,
-            "w": 142.87,
+            "x": 480.49,
+            "y": 1193.74,
+            "w": 97.97,
             "h": 34.35
           }
         },
@@ -575,7 +553,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -593,24 +571,24 @@
           }
         },
         {
-          "value": "42190723",
+          "value": "(1537213)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
             "נכסים נטו:",
-            "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+            "שלא יועדו ע\"י מוסדות המלכ\"ר"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 443.26,
-            "y": 1339.39,
-            "w": 137.27,
+            "x": 441.65,
+            "y": 1308.62,
+            "w": 142.87,
             "h": 34.35
           }
         },
@@ -619,7 +597,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -637,24 +615,24 @@
           }
         },
         {
-          "value": "1642248",
+          "value": "42190723",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
             "נכסים נטו:",
-            "ששימשו לרכוש קבוע"
+            "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 459.32,
-            "y": 1369.16,
-            "w": 121.21,
+            "x": 443.26,
+            "y": 1339.39,
+            "w": 137.27,
             "h": 34.35
           }
         },
@@ -663,7 +641,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -681,24 +659,25 @@
           }
         },
         {
-          "value": "42295758",
+          "value": "1642248",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
-            "נכסים נטו:"
+            "נכסים נטו:",
+            "ששימשו לרכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 440.26,
-            "y": 1402.22,
-            "w": 137.27,
-            "h": 38.35
+            "x": 459.32,
+            "y": 1369.16,
+            "w": 121.21,
+            "h": 34.35
           }
         },
         {
@@ -706,7 +685,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו",
@@ -723,21 +702,22 @@
           }
         },
         {
-          "value": "42724005",
+          "value": "42295758",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "התחייבויות ונכסים נטו"
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו:"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 440.26,
-            "y": 1457.18,
+            "y": 1402.22,
             "w": 137.27,
             "h": 38.35
           }
@@ -747,7 +727,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התחייבויות ונכסים נטו"
@@ -759,6 +739,26 @@
             "x": 263.6,
             "y": 1457.18,
             "w": 126.03,
+            "h": 38.35
+          }
+        },
+        {
+          "value": "42724005",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "התחייבויות ונכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 440.26,
+            "y": 1457.18,
+            "w": 137.27,
             "h": 38.35
           }
         }
@@ -773,27 +773,6 @@
         "title": "דוחות על הפעילויות"
       },
       "facts": [
-        {
-          "value": "1182689",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": "8",
-          "date": "2024-12-31",
-          "path": [
-            "מחזור הפעילויות:",
-            "הקצבות"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 404.38,
-            "y": 594.85,
-            "w": 144.03,
-            "h": 52.35
-          }
-        },
         {
           "value": "1200704",
           "comment": null,
@@ -816,24 +795,24 @@
           }
         },
         {
-          "value": "929884",
+          "value": "1182689",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "8",
           "date": "2024-12-31",
           "path": [
             "מחזור הפעילויות:",
-            "שכר לימוד והשתתפויות"
+            "הקצבות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 426.86,
-            "y": 642.94,
-            "w": 121.54,
-            "h": 50.06
+            "x": 404.38,
+            "y": 594.85,
+            "w": 144.03,
+            "h": 52.35
           }
         },
         {
@@ -841,7 +820,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "מחזור הפעילויות:",
@@ -858,23 +837,23 @@
           }
         },
         {
-          "value": "411371",
+          "value": "929884",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "מחזור הפעילויות:",
-            "תרומות"
+            "שכר לימוד והשתתפויות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 428.47,
-            "y": 691.03,
-            "w": 118.33,
+            "x": 426.86,
+            "y": 642.94,
+            "w": 121.54,
             "h": 50.06
           }
         },
@@ -883,7 +862,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "מחזור הפעילויות:",
@@ -900,22 +879,23 @@
           }
         },
         {
-          "value": "2523944",
+          "value": "411371",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "מחזור הפעילויות:"
+            "מחזור הפעילויות:",
+            "תרומות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 402.77,
-            "y": 739.12,
-            "w": 144.03,
+            "x": 428.47,
+            "y": 691.03,
+            "w": 118.33,
             "h": 50.06
           }
         },
@@ -924,7 +904,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "מחזור הפעילויות:"
@@ -940,24 +920,23 @@
           }
         },
         {
-          "value": "795690",
+          "value": "2523944",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "עלות הפעילויות:",
-            "משכורות ותוספות סוציאליות"
+            "מחזור הפעילויות:"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 429.65,
-            "y": 898.84,
-            "w": 105.15,
-            "h": 41.77
+            "x": 402.77,
+            "y": 739.12,
+            "w": 144.03,
+            "h": 50.06
           }
         },
         {
@@ -965,7 +944,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -982,24 +961,24 @@
           }
         },
         {
-          "value": "754895",
+          "value": "795690",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "מלגות לאברכים"
+            "משכורות ותוספות סוציאליות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 428.26,
-            "y": 949.22,
-            "w": 99.15,
-            "h": 32.06
+            "x": 429.65,
+            "y": 898.84,
+            "w": 105.15,
+            "h": 41.77
           }
         },
         {
@@ -1007,7 +986,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -1024,23 +1003,23 @@
           }
         },
         {
-          "value": "471840",
+          "value": "754895",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "9",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "כלכלת תלמידים"
+            "מלגות לאברכים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 429.86,
-            "y": 999.6,
-            "w": 97.54,
+            "x": 428.26,
+            "y": 949.22,
+            "w": 99.15,
             "h": 32.06
           }
         },
@@ -1066,23 +1045,23 @@
           }
         },
         {
-          "value": "186727",
+          "value": "471840",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "9",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "אחזקת מבנה"
+            "כלכלת תלמידים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 431.47,
-            "y": 1047.69,
-            "w": 94.33,
+            "x": 429.86,
+            "y": 999.6,
+            "w": 97.54,
             "h": 32.06
           }
         },
@@ -1091,7 +1070,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -1108,24 +1087,24 @@
           }
         },
         {
-          "value": "20755",
+          "value": "186727",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "אירועים וכנסים חברתיים"
+            "אחזקת מבנה"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 441.1,
-            "y": 1095.78,
-            "w": 84.69,
-            "h": 29.77
+            "x": 431.47,
+            "y": 1047.69,
+            "w": 94.33,
+            "h": 32.06
           }
         },
         {
@@ -1133,7 +1112,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -1150,23 +1129,23 @@
           }
         },
         {
-          "value": "48392",
+          "value": "20755",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "הסעות תלמידים"
+            "אירועים וכנסים חברתיים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 444.32,
-            "y": 1146.16,
-            "w": 83.09,
+            "x": 441.1,
+            "y": 1095.78,
+            "w": 84.69,
             "h": 29.77
           }
         },
@@ -1175,7 +1154,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -1192,23 +1171,23 @@
           }
         },
         {
-          "value": "16030",
+          "value": "48392",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "עלות הפעילויות:",
-            "פחת מרכוש קבוע"
+            "הסעות תלמידים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 443.08,
-            "y": 1190.54,
-            "w": 79.88,
+            "x": 444.32,
+            "y": 1146.16,
+            "w": 83.09,
             "h": 29.77
           }
         },
@@ -1217,7 +1196,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:",
@@ -1234,23 +1213,24 @@
           }
         },
         {
-          "value": "2294329",
+          "value": "16030",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "עלות הפעילויות:"
+            "עלות הפעילויות:",
+            "פחת מרכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 411.77,
-            "y": 1233.47,
-            "w": 120.03,
-            "h": 32.06
+            "x": 443.08,
+            "y": 1190.54,
+            "w": 79.88,
+            "h": 29.77
           }
         },
         {
@@ -1258,7 +1238,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "עלות הפעילויות:"
@@ -1274,23 +1254,23 @@
           }
         },
         {
-          "value": "229615",
+          "value": "2294329",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "הכנסות נטו מפעילויות"
+            "עלות הפעילויות:"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 417.83,
-            "y": 1296.43,
-            "w": 109.97,
-            "h": 38.06
+            "x": 411.77,
+            "y": 1233.47,
+            "w": 120.03,
+            "h": 32.06
           }
         },
         {
@@ -1298,7 +1278,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות נטו מפעילויות"
@@ -1314,23 +1294,23 @@
           }
         },
         {
-          "value": "489126",
+          "value": "229615",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "10",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "הוצאות הנהלה וכלליות"
+            "הכנסות נטו מפעילויות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 419.36,
-            "y": 1332.49,
-            "w": 118.75,
-            "h": 44.06
+            "x": 417.83,
+            "y": 1296.43,
+            "w": 109.97,
+            "h": 38.06
           }
         },
         {
@@ -1354,21 +1334,23 @@
           }
         },
         {
-          "value": "(259511)",
+          "value": "489126",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "10",
           "date": "2024-12-31",
-          "path": [],
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 394.53,
-            "y": 1385.7,
-            "w": 136.68,
-            "h": 37.84
+            "x": 419.36,
+            "y": 1332.49,
+            "w": 118.75,
+            "h": 44.06
           }
         },
         {
@@ -1376,7 +1358,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [],
           "currency": "ILS",
@@ -1390,23 +1372,21 @@
           }
         },
         {
-          "value": "18884",
+          "value": "(259511)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": "11",
+          "note_reference": "",
           "date": "2024-12-31",
-          "path": [
-            "הכנסות מימון, נטו"
-          ],
+          "path": [],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 438.64,
-            "y": 1439.47,
-            "w": 90.97,
-            "h": 27.58
+            "x": 394.53,
+            "y": 1385.7,
+            "w": 136.68,
+            "h": 37.84
           }
         },
         {
@@ -1430,21 +1410,23 @@
           }
         },
         {
-          "value": "(240627)",
+          "value": "18884",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "11",
           "date": "2024-12-31",
-          "path": [],
+          "path": [
+            "הכנסות מימון, נטו"
+          ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 397.66,
-            "y": 1481.88,
-            "w": 132.13,
-            "h": 37.84
+            "x": 438.64,
+            "y": 1439.47,
+            "w": 90.97,
+            "h": 27.58
           }
         },
         {
@@ -1452,7 +1434,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [],
           "currency": "ILS",
@@ -1466,23 +1448,21 @@
           }
         },
         {
-          "value": "",
+          "value": "(240627)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
-          "path": [
-            "הוצאות אחרות, נטו"
-          ],
+          "path": [],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 444.32,
-            "y": 1536.2,
-            "w": 32.53,
-            "h": 21.91
+            "x": 397.66,
+            "y": 1481.88,
+            "w": 132.13,
+            "h": 37.84
           }
         },
         {
@@ -1490,7 +1470,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הוצאות אחרות, נטו"
@@ -1506,11 +1486,31 @@
           }
         },
         {
+          "value": "",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "הוצאות אחרות, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 444.32,
+            "y": 1536.2,
+            "w": 32.53,
+            "h": 21.91
+          }
+        },
+        {
           "value": "(240627)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "הכנסות (הוצאות) נטו לשנה"
@@ -1530,7 +1530,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות (הוצאות) נטו לשנה"
@@ -1557,32 +1557,11 @@
       },
       "facts": [
         {
-          "value": "(240627)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "תזרימי מזומנים מפעילות שוטפת",
-            "הכנסות (הוצאות) נטו לשנה"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 449.68,
-            "y": 572.5,
-            "w": 130.09,
-            "h": 29.77
-          }
-        },
-        {
           "value": "43326",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות שוטפת",
@@ -1599,11 +1578,53 @@
           }
         },
         {
+          "value": "(240627)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "הכנסות (הוצאות) נטו לשנה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 449.68,
+            "y": 572.5,
+            "w": 130.09,
+            "h": 29.77
+          }
+        },
+        {
+          "value": "(74279)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-12-31",
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת (ראה להלן)"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 270.23,
+            "y": 662.68,
+            "w": 131.18,
+            "h": 35.77
+          }
+        },
+        {
           "value": "53905",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות שוטפת",
@@ -1620,22 +1641,21 @@
           }
         },
         {
-          "value": "(74279)",
+          "value": "(30953)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
-            "תזרימי מזומנים מפעילות שוטפת",
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת (ראה להלן)"
+            "תזרימי מזומנים מפעילות שוטפת"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 270.23,
-            "y": 662.68,
+            "y": 706.19,
             "w": 131.18,
             "h": 35.77
           }
@@ -1645,7 +1665,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות שוטפת"
@@ -1661,52 +1681,11 @@
           }
         },
         {
-          "value": "(30953)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
-          "path": [
-            "תזרימי מזומנים מפעילות שוטפת"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.23,
-            "y": 706.19,
-            "w": 131.18,
-            "h": 35.77
-          }
-        },
-        {
-          "value": "253097",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "תזרימי מזומנים מפעילות השקעה",
-            "תמורה ממכירת ניירות ערך, נטו"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 472.16,
-            "y": 812.95,
-            "w": 107.6,
-            "h": 29.77
-          }
-        },
-        {
           "value": "327",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
@@ -1723,23 +1702,23 @@
           }
         },
         {
-          "value": "32667923",
+          "value": "253097",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
-            "תמורה ממכירת מקרקעין"
+            "תמורה ממכירת ניירות ערך, נטו"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 456.1,
-            "y": 861.04,
-            "w": 123.66,
+            "x": 472.16,
+            "y": 812.95,
+            "w": 107.6,
             "h": 29.77
           }
         },
@@ -1748,7 +1727,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
@@ -1765,23 +1744,23 @@
           }
         },
         {
-          "value": "(31992327)",
+          "value": "32667923",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
-            "השקעה בפיקדונות"
+            "תמורה ממכירת מקרקעין"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 443.26,
-            "y": 906.84,
-            "w": 136.51,
+            "x": 456.1,
+            "y": 861.04,
+            "w": 123.66,
             "h": 29.77
           }
         },
@@ -1790,7 +1769,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
@@ -1807,11 +1786,32 @@
           }
         },
         {
+          "value": "(31992327)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "השקעה בפיקדונות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 443.26,
+            "y": 906.84,
+            "w": 136.51,
+            "h": 29.77
+          }
+        },
+        {
           "value": "(848212)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
@@ -1832,7 +1832,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה",
@@ -1853,7 +1853,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה"
@@ -1873,7 +1873,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "תזרימי מזומנים מפעילות השקעה"
@@ -1889,11 +1889,32 @@
           }
         },
         {
+          "value": "530568",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-12-31",
+          "path": [
+            "גידול (קיטון) במזומנים ושווה מזומנים",
+            "גידול (קיטון) במזומנים ושווה מזומנים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 292.29,
+            "y": 1060.27,
+            "w": 113.51,
+            "h": 29.77
+          }
+        },
+        {
           "value": "(106241)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "גידול (קיטון) במזומנים ושווה מזומנים",
@@ -1910,22 +1931,22 @@
           }
         },
         {
-          "value": "530568",
+          "value": "321057",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "גידול (קיטון) במזומנים ושווה מזומנים",
-            "גידול (קיטון) במזומנים ושווה מזומנים"
+            "יתרת מזומנים ושווה מזומנים לתחילת השנה"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 292.29,
-            "y": 1060.27,
+            "y": 1106.07,
             "w": 113.51,
             "h": 29.77
           }
@@ -1935,7 +1956,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "גידול (קיטון) במזומנים ושווה מזומנים",
@@ -1952,22 +1973,22 @@
           }
         },
         {
-          "value": "321057",
+          "value": "851625",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "גידול (קיטון) במזומנים ושווה מזומנים",
-            "יתרת מזומנים ושווה מזומנים לתחילת השנה"
+            "יתרת מזומנים ושווה מזומנים לסוף השנה"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 292.29,
-            "y": 1106.07,
+            "y": 1149.58,
             "w": 113.51,
             "h": 29.77
           }
@@ -1977,7 +1998,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "גידול (קיטון) במזומנים ושווה מזומנים",
@@ -1994,54 +2015,11 @@
           }
         },
         {
-          "value": "851625",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
-          "path": [
-            "גידול (קיטון) במזומנים ושווה מזומנים",
-            "יתרת מזומנים ושווה מזומנים לסוף השנה"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.29,
-            "y": 1149.58,
-            "w": 113.51,
-            "h": 29.77
-          }
-        },
-        {
-          "value": "16030",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
-            "פחת מרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 462.62,
-            "y": 1298.43,
-            "w": 107.09,
-            "h": 34.35
-          }
-        },
-        {
           "value": "17068",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2059,25 +2037,25 @@
           }
         },
         {
-          "value": "(37951)",
+          "value": "16030",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
             "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
-            "רווח ממימוש והתאמת ערך ניירות ערך"
+            "פחת מרכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 443.35,
-            "y": 1344.23,
-            "w": 142.42,
-            "h": 35.77
+            "x": 462.62,
+            "y": 1298.43,
+            "w": 107.09,
+            "h": 34.35
           }
         },
         {
@@ -2085,7 +2063,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2103,22 +2081,23 @@
           }
         },
         {
-          "value": "(21921)",
+          "value": "(37951)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים"
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
+            "רווח ממימוש והתאמת ערך ניירות ערך"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 443.35,
-            "y": 1390.03,
+            "y": 1344.23,
             "w": 142.42,
             "h": 35.77
           }
@@ -2128,7 +2107,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2145,25 +2124,24 @@
           }
         },
         {
-          "value": "(6644)",
+          "value": "(21921)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "שינויים בסעיפי רכוש והתחייבויות",
-            "גידול בחייבים ויתרות חובה"
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 445.31,
-            "y": 1499.08,
-            "w": 142.84,
-            "h": 29.77
+            "x": 443.35,
+            "y": 1390.03,
+            "w": 142.42,
+            "h": 35.77
           }
         },
         {
@@ -2171,7 +2149,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2189,11 +2167,55 @@
           }
         },
         {
+          "value": "(6644)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "גידול בחייבים ויתרות חובה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 445.31,
+            "y": 1499.08,
+            "w": 142.84,
+            "h": 29.77
+          }
+        },
+        {
+          "value": "(59978)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-12-31",
+          "path": [
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "גידול (קיטון) בזכאים ויתרות זכות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 252.23,
+            "y": 1537.46,
+            "w": 143.18,
+            "h": 41.77
+          }
+        },
+        {
           "value": "82470",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2215,19 +2237,18 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "שינויים בסעיפי רכוש והתחייבויות",
-            "גידול (קיטון) בזכאים ויתרות זכות"
+            "שינויים בסעיפי רכוש והתחייבויות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 252.23,
-            "y": 1537.46,
+            "y": 1580.97,
             "w": 143.18,
             "h": 41.77
           }
@@ -2237,7 +2258,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
@@ -2254,22 +2275,21 @@
           }
         },
         {
-          "value": "(59978)",
+          "value": "(74279)",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "שינויים בסעיפי רכוש והתחייבויות"
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
             "x": 252.23,
-            "y": 1580.97,
+            "y": 1672.57,
             "w": 143.18,
             "h": 41.77
           }
@@ -2279,7 +2299,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת"
@@ -2291,26 +2311,6 @@
             "x": 462.62,
             "y": 1672.57,
             "w": 135.15,
-            "h": 41.77
-          }
-        },
-        {
-          "value": "(74279)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
-          "path": [
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 252.23,
-            "y": 1672.57,
-            "w": 143.18,
             "h": 41.77
           }
         }
@@ -2326,74 +2326,11 @@
       },
       "facts": [
         {
-          "value": "(238349)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-01-01",
-          "path": [
-            "יתרה ליום 1 בינואר 2023",
-            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 774.02,
-            "w": 115.63,
-            "h": 32.06
-          }
-        },
-        {
-          "value": "660571",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-01-01",
-          "path": [
-            "יתרה ליום 1 בינואר 2023",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 618.31,
-            "y": 774.02,
-            "w": 86.72,
-            "h": 29.77
-          }
-        },
-        {
-          "value": "540685",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-01-01",
-          "path": [
-            "יתרה ליום 1 בינואר 2023",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 771.73,
-            "w": 88.33,
-            "h": 27.48
-          }
-        },
-        {
           "value": "962907",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-01-01",
           "path": [
             "יתרה ליום 1 בינואר 2023",
@@ -2410,11 +2347,96 @@
           }
         },
         {
+          "value": "540685",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2023",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 440.04,
+            "y": 771.73,
+            "w": 88.33,
+            "h": 27.48
+          }
+        },
+        {
+          "value": "660571",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2023",
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 618.31,
+            "y": 774.02,
+            "w": 86.72,
+            "h": 29.77
+          }
+        },
+        {
+          "value": "(238349)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2023",
+            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 774.09,
+            "y": 774.02,
+            "w": 115.63,
+            "h": 32.06
+          }
+        },
+        {
           "value": "43326",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
+          "date": "2023",
+          "path": [
+            "שינויים במהלך שנת 2023:",
+            "הכנסות נטו לשנה",
+            "סה''כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 276.23,
+            "y": 865.62,
+            "w": 73.88,
+            "h": 27.48
+          }
+        },
+        {
+          "value": "43326",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2436,29 +2458,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2023",
-          "path": [
-            "שינויים במהלך שנת 2023:",
-            "הכנסות נטו לשנה",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 870.2,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2476,24 +2476,46 @@
           }
         },
         {
-          "value": "43326",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
             "הכנסות נטו לשנה",
-            "סה''כ"
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 276.23,
-            "y": 865.62,
-            "w": 73.88,
+            "x": 656.85,
+            "y": 870.2,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "286449",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023",
+          "path": [
+            "שינויים במהלך שנת 2023:",
+            "העברת סכומים לרכישת רכוש קבוע",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 440.04,
+            "y": 916.0,
+            "w": 88.33,
             "h": 27.48
           }
         },
@@ -2502,7 +2524,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2524,51 +2546,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2023",
-          "path": [
-            "שינויים במהלך שנת 2023:",
-            "העברת סכומים לרכישת רכוש קבוע",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 920.58,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "286449",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023",
-          "path": [
-            "שינויים במהלך שנת 2023:",
-            "העברת סכומים לרכישת רכוש קבוע",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 916.0,
-            "w": 88.33,
-            "h": 27.48
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2586,11 +2564,55 @@
           }
         },
         {
+          "value": "",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023",
+          "path": [
+            "שינויים במהלך שנת 2023:",
+            "העברת סכומים לרכישת רכוש קבוע",
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 656.85,
+            "y": 920.58,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "(17068)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023",
+          "path": [
+            "שינויים במהלך שנת 2023:",
+            "סכומים שיועדו לכיסוי הוצאות פחת",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 412.74,
+            "y": 966.38,
+            "w": 115.63,
+            "h": 32.06
+          }
+        },
+        {
           "value": "17068",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2612,51 +2634,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2023",
-          "path": [
-            "שינויים במהלך שנת 2023:",
-            "סכומים שיועדו לכיסוי הוצאות פחת",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 970.96,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "(17068)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023",
-          "path": [
-            "שינויים במהלך שנת 2023:",
-            "סכומים שיועדו לכיסוי הוצאות פחת",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 412.74,
-            "y": 966.38,
-            "w": 115.63,
-            "h": 32.06
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023",
           "path": [
             "שינויים במהלך שנת 2023:",
@@ -2674,66 +2652,25 @@
           }
         },
         {
-          "value": "(464404)",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
+          "note_reference": "",
+          "date": "2023",
           "path": [
-            "יתרה ליום 31 בדצמבר 2023",
-            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 1019.05,
-            "w": 115.63,
-            "h": 29.77
-          }
-        },
-        {
-          "value": "660571",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
-          "path": [
-            "יתרה ליום 31 בדצמבר 2023",
+            "שינויים במהלך שנת 2023:",
+            "סכומים שיועדו לכיסוי הוצאות פחת",
             "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 618.31,
-            "y": 1016.76,
-            "w": 86.72,
-            "h": 29.77
-          }
-        },
-        {
-          "value": "810066",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2023-12-31",
-          "path": [
-            "יתרה ליום 31 בדצמבר 2023",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 1016.76,
-            "w": 88.33,
-            "h": 27.48
+            "x": 656.85,
+            "y": 970.96,
+            "w": 8.03,
+            "h": 4.58
           }
         },
         {
@@ -2741,7 +2678,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "יתרה ליום 31 בדצמבר 2023",
@@ -2758,15 +2695,56 @@
           }
         },
         {
-          "value": "(240627)",
+          "value": "810066",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2024",
+          "note_reference": "",
+          "date": "2023-12-31",
           "path": [
-            "שינויים במהלך שנת 2024:",
-            "הוצאות נטו לשנה",
+            "יתרה ליום 31 בדצמבר 2023",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 440.04,
+            "y": 1016.76,
+            "w": 88.33,
+            "h": 27.48
+          }
+        },
+        {
+          "value": "660571",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2023",
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 618.31,
+            "y": 1016.76,
+            "w": 86.72,
+            "h": 29.77
+          }
+        },
+        {
+          "value": "(464404)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2023-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2023",
             "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
           ],
           "currency": "ILS",
@@ -2774,53 +2752,9 @@
           "value_type": "amount",
           "bbox": {
             "x": 774.09,
-            "y": 1112.94,
+            "y": 1019.05,
             "w": 115.63,
-            "h": 32.06
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "הוצאות נטו לשנה",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1117.52,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "הוצאות נטו לשנה",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.29,
-            "y": 1117.52,
-            "w": 8.03,
-            "h": 4.58
+            "h": 29.77
           }
         },
         {
@@ -2828,7 +2762,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -2846,7 +2780,73 @@
           }
         },
         {
+          "value": "(240627)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "הוצאות נטו לשנה",
+            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 774.09,
+            "y": 1112.94,
+            "w": 115.63,
+            "h": 32.06
+          }
+        },
+        {
           "value": "",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "הוצאות נטו לשנה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 451.29,
+            "y": 1117.52,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "הוצאות נטו לשנה",
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 656.85,
+            "y": 1117.52,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "40532323",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2855,16 +2855,16 @@
           "path": [
             "שינויים במהלך שנת 2024:",
             "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב.)",
-            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+            "סה''כ"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 815.85,
-            "y": 1204.54,
-            "w": 8.03,
-            "h": 4.58
+            "x": 223.23,
+            "y": 1199.96,
+            "w": 128.48,
+            "h": 29.77
           }
         },
         {
@@ -2912,7 +2912,7 @@
           }
         },
         {
-          "value": "40532323",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2921,28 +2921,6 @@
           "path": [
             "שינויים במהלך שנת 2024:",
             "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב.)",
-            "סה''כ"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 223.23,
-            "y": 1199.96,
-            "w": 128.48,
-            "h": 29.77
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "הכנסות מימון שנצברו בפקדונות בבנק",
             "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
           ],
           "currency": "ILS",
@@ -2950,7 +2928,7 @@
           "value_type": "amount",
           "bbox": {
             "x": 815.85,
-            "y": 1248.05,
+            "y": 1204.54,
             "w": 8.03,
             "h": 4.58
           }
@@ -2960,7 +2938,29 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "הכנסות מימון שנצברו בפקדונות בבנק",
+            "סה''כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 263.38,
+            "y": 1243.47,
+            "w": 88.33,
+            "h": 29.77
+          }
+        },
+        {
+          "value": "997829",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -2982,7 +2982,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -3000,25 +3000,47 @@
           }
         },
         {
-          "value": "997829",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
             "הכנסות מימון שנצברו בפקדונות בבנק",
-            "סה''כ"
+            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 263.38,
-            "y": 1243.47,
+            "x": 815.85,
+            "y": 1248.05,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "848212",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "העברת סכומים לרכישת רכוש קבוע",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 440.04,
+            "y": 1289.27,
             "w": 88.33,
-            "h": 29.77
+            "h": 27.48
           }
         },
         {
@@ -3026,7 +3048,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -3048,51 +3070,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "העברת סכומים לרכישת רכוש קבוע",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1293.85,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "848212",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "העברת סכומים לרכישת רכוש קבוע",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 1289.27,
-            "w": 88.33,
-            "h": 27.48
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -3110,11 +3088,55 @@
           }
         },
         {
+          "value": "",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "העברת סכומים לרכישת רכוש קבוע",
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 656.85,
+            "y": 1293.85,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "(16030)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024",
+          "path": [
+            "שינויים במהלך שנת 2024:",
+            "סכומים שיועדו לכיסוי הוצאות פחת",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 412.74,
+            "y": 1337.36,
+            "w": 115.63,
+            "h": 32.06
+          }
+        },
+        {
           "value": "16030",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -3136,51 +3158,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "סכומים שיועדו לכיסוי הוצאות פחת",
-            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1341.94,
-            "w": 8.03,
-            "h": 4.58
-          }
-        },
-        {
-          "value": "(16030)",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024",
-          "path": [
-            "שינויים במהלך שנת 2024:",
-            "סכומים שיועדו לכיסוי הוצאות פחת",
-            "ששימשו לרכוש קבוע"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 412.74,
-            "y": 1337.36,
-            "w": 115.63,
-            "h": 32.06
-          }
-        },
-        {
-          "value": "",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024",
           "path": [
             "שינויים במהלך שנת 2024:",
@@ -3198,43 +3176,44 @@
           }
         },
         {
-          "value": "(1537213)",
+          "value": "",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
+          "note_reference": "",
+          "date": "2024",
           "path": [
-            "יתרה ליום 31 בדצמבר 2024",
-            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 759.64,
-            "y": 1383.16,
-            "w": 130.09,
-            "h": 32.06
-          }
-        },
-        {
-          "value": "42190723",
-          "comment": null,
-          "is_note": false,
-          "note": null,
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "יתרה ליום 31 בדצמבר 2024",
+            "שינויים במהלך שנת 2024:",
+            "סכומים שיועדו לכיסוי הוצאות פחת",
             "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 576.55,
-            "y": 1383.16,
+            "x": 656.85,
+            "y": 1341.94,
+            "w": 8.03,
+            "h": 4.58
+          }
+        },
+        {
+          "value": "42295758",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2024",
+            "סה''כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 223.23,
+            "y": 1380.87,
             "w": 128.48,
             "h": 29.77
           }
@@ -3244,7 +3223,7 @@
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "יתרה ליום 31 בדצמבר 2024",
@@ -3261,24 +3240,45 @@
           }
         },
         {
-          "value": "42295758",
+          "value": "42190723",
           "comment": null,
           "is_note": false,
           "note": null,
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "יתרה ליום 31 בדצמבר 2024",
-            "סה''כ"
+            "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 223.23,
-            "y": 1380.87,
+            "x": 576.55,
+            "y": 1383.16,
             "w": 128.48,
             "h": 29.77
+          }
+        },
+        {
+          "value": "(1537213)",
+          "comment": null,
+          "is_note": false,
+          "note": null,
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2024",
+            "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 759.64,
+            "y": 1383.16,
+            "w": 130.09,
+            "h": 32.06
           }
         }
       ]
@@ -3297,7 +3297,7 @@
           "comment": "2",
           "is_note": true,
           "note": "2",
-          "note_reference": null,
+          "note_reference": "",
           "date": null,
           "path": [
             "2. עיקרי המדיניות החשבונאית",
@@ -3316,11 +3316,11 @@
           }
         },
         {
-          "value": "",
+          "value": "7-10",
           "comment": "2",
           "is_note": true,
           "note": "2",
-          "note_reference": "7-10",
+          "note_reference": "",
           "date": null,
           "path": [
             "2. עיקרי המדיניות החשבונאית",
@@ -3350,34 +3350,11 @@
       },
       "facts": [
         {
-          "value": "1299782",
-          "comment": "4",
-          "is_note": true,
-          "note": "4",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "4. רכוש קבוע",
-            "א. הרכב",
-            "מבנה",
-            "עלות"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 808.27,
-            "y": 676.13,
-            "w": 120.0,
-            "h": 31.48
-          }
-        },
-        {
           "value": "1214744",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3396,11 +3373,34 @@
           }
         },
         {
+          "value": "1299782",
+          "comment": "4",
+          "is_note": true,
+          "note": "4",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "4. רכוש קבוע",
+            "א. הרכב",
+            "מבנה",
+            "עלות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 808.27,
+            "y": 676.13,
+            "w": 120.0,
+            "h": 31.48
+          }
+        },
+        {
           "value": "85038",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3423,7 +3423,7 @@
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3442,34 +3442,11 @@
           }
         },
         {
-          "value": "475416",
-          "comment": "4",
-          "is_note": true,
-          "note": "4",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "4. רכוש קבוע",
-            "א. הרכב",
-            "ריהוט וציוד",
-            "עלות"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 819.51,
-            "y": 721.93,
-            "w": 107.15,
-            "h": 31.48
-          }
-        },
-        {
           "value": "276813",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3488,11 +3465,34 @@
           }
         },
         {
+          "value": "475416",
+          "comment": "4",
+          "is_note": true,
+          "note": "4",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "4. רכוש קבוע",
+            "א. הרכב",
+            "ריהוט וציוד",
+            "עלות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 819.51,
+            "y": 721.93,
+            "w": 107.15,
+            "h": 31.48
+          }
+        },
+        {
           "value": "198603",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3515,7 +3515,7 @@
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3534,34 +3534,11 @@
           }
         },
         {
-          "value": "1775198",
-          "comment": "4",
-          "is_note": true,
-          "note": "4",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "4. רכוש קבוע",
-            "א. הרכב",
-            "סה\"כ",
-            "עלות"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 803.45,
-            "y": 767.73,
-            "w": 123.21,
-            "h": 31.48
-          }
-        },
-        {
           "value": "1491557",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3580,11 +3557,34 @@
           }
         },
         {
+          "value": "1775198",
+          "comment": "4",
+          "is_note": true,
+          "note": "4",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "4. רכוש קבוע",
+            "א. הרכב",
+            "סה\"כ",
+            "עלות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 803.45,
+            "y": 767.73,
+            "w": 123.21,
+            "h": 31.48
+          }
+        },
+        {
           "value": "283641",
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3607,7 +3607,7 @@
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3676,7 +3676,7 @@
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3699,7 +3699,7 @@
           "comment": "4",
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3718,33 +3718,11 @@
           }
         },
         {
-          "value": "61907",
-          "comment": "5",
-          "is_note": true,
-          "note": "5",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "5. זכאים ויתרות זכות",
-            "הרכב :",
-            "ספקים ונותני שירותים"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 479.41,
-            "y": 1383.74,
-            "w": 85.4,
-            "h": 33.48
-          }
-        },
-        {
           "value": "40447",
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
@@ -3762,11 +3740,33 @@
           }
         },
         {
+          "value": "61907",
+          "comment": "5",
+          "is_note": true,
+          "note": "5",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "5. זכאים ויתרות זכות",
+            "הרכב :",
+            "ספקים ונותני שירותים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 479.41,
+            "y": 1383.74,
+            "w": 85.4,
+            "h": 33.48
+          }
+        },
+        {
           "value": "25000",
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
@@ -3788,7 +3788,7 @@
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
@@ -3806,33 +3806,11 @@
           }
         },
         {
-          "value": "50847",
-          "comment": "5",
-          "is_note": true,
-          "note": "5",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "5. זכאים ויתרות זכות",
-            "הרכב :",
-            "שכר ונלוות לשלם"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 480.08,
-            "y": 1476.25,
-            "w": 84.94,
-            "h": 34.86
-          }
-        },
-        {
           "value": "43712",
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
@@ -3850,25 +3828,25 @@
           }
         },
         {
-          "value": "137754",
+          "value": "50847",
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
             "הרכב :",
-            "סה\"כ"
+            "שכר ונלוות לשלם"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 469.77,
-            "y": 1525.72,
-            "w": 91.12,
-            "h": 33.48
+            "x": 480.08,
+            "y": 1476.25,
+            "w": 84.94,
+            "h": 34.86
           }
         },
         {
@@ -3876,7 +3854,7 @@
           "comment": "5",
           "is_note": true,
           "note": "5",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "5. זכאים ויתרות זכות",
@@ -3891,6 +3869,28 @@
             "y": 1521.58,
             "w": 97.83,
             "h": 37.62
+          }
+        },
+        {
+          "value": "137754",
+          "comment": "5",
+          "is_note": true,
+          "note": "5",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "5. זכאים ויתרות זכות",
+            "הרכב :",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 469.77,
+            "y": 1525.72,
+            "w": 91.12,
+            "h": 33.48
           }
         }
       ]
@@ -3909,7 +3909,7 @@
           "comment": "8",
           "is_note": true,
           "note": "8",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "8. הקצבות ותמיכות",
@@ -3931,7 +3931,7 @@
           "comment": "8",
           "is_note": true,
           "note": "8",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "8. הקצבות ותמיכות",
@@ -3949,33 +3949,11 @@
           }
         },
         {
-          "value": "192662",
-          "comment": "8",
-          "is_note": true,
-          "note": "8",
-          "note_reference": null,
-          "date": "2024-12-31",
-          "path": [
-            "8. הקצבות ותמיכות",
-            "הרכב",
-            "ממשרד החינוך - מוסדות דת"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 515.53,
-            "y": 891.84,
-            "w": 101.18,
-            "h": 32.06
-          }
-        },
-        {
           "value": "227368",
           "comment": "8",
           "is_note": true,
           "note": "8",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "8. הקצבות ותמיכות",
@@ -3993,24 +3971,25 @@
           }
         },
         {
-          "value": "1182689",
+          "value": "192662",
           "comment": "8",
           "is_note": true,
           "note": "8",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "8. הקצבות ותמיכות",
-            "הרכב"
+            "הרכב",
+            "ממשרד החינוך - מוסדות דת"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 493.04,
-            "y": 937.64,
-            "w": 123.66,
-            "h": 41.22
+            "x": 515.53,
+            "y": 891.84,
+            "w": 101.18,
+            "h": 32.06
           }
         },
         {
@@ -4018,7 +3997,7 @@
           "comment": "8",
           "is_note": true,
           "note": "8",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "8. הקצבות ותמיכות",
@@ -4035,25 +4014,24 @@
           }
         },
         {
-          "value": "81990",
-          "comment": "9",
+          "value": "1182689",
+          "comment": "8",
           "is_note": true,
-          "note": "9",
-          "note_reference": null,
+          "note": "8",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "9. כלכלת תלמידים",
-            "הרכב",
-            "משכורות ונלוות לעובדי מטבח"
+            "8. הקצבות ותמיכות",
+            "הרכב"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 492.53,
-            "y": 1219.31,
-            "w": 88.33,
-            "h": 36.64
+            "x": 493.04,
+            "y": 937.64,
+            "w": 123.66,
+            "h": 41.22
           }
         },
         {
@@ -4061,7 +4039,7 @@
           "comment": "9",
           "is_note": true,
           "note": "9",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "9. כלכלת תלמידים",
@@ -4079,25 +4057,25 @@
           }
         },
         {
-          "value": "389850",
+          "value": "81990",
           "comment": "9",
           "is_note": true,
           "note": "9",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "9. כלכלת תלמידים",
             "הרכב",
-            "קניות מזון וכלי מטבח"
+            "משכורות ונלוות לעובדי מטבח"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 484.5,
-            "y": 1262.82,
-            "w": 96.36,
-            "h": 34.35
+            "x": 492.53,
+            "y": 1219.31,
+            "w": 88.33,
+            "h": 36.64
           }
         },
         {
@@ -4105,7 +4083,7 @@
           "comment": "9",
           "is_note": true,
           "note": "9",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "9. כלכלת תלמידים",
@@ -4123,24 +4101,25 @@
           }
         },
         {
-          "value": "471840",
+          "value": "389850",
           "comment": "9",
           "is_note": true,
           "note": "9",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "9. כלכלת תלמידים",
-            "הרכב"
+            "הרכב",
+            "קניות מזון וכלי מטבח"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 476.47,
-            "y": 1310.91,
-            "w": 102.78,
-            "h": 41.22
+            "x": 484.5,
+            "y": 1262.82,
+            "w": 96.36,
+            "h": 34.35
           }
         },
         {
@@ -4148,7 +4127,7 @@
           "comment": "9",
           "is_note": true,
           "note": "9",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "9. כלכלת תלמידים",
@@ -4165,25 +4144,24 @@
           }
         },
         {
-          "value": "382675",
-          "comment": "10",
+          "value": "471840",
+          "comment": "9",
           "is_note": true,
-          "note": "10",
-          "note_reference": null,
+          "note": "9",
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
-            "10. הוצאות הנהלה וכלליות",
-            "הרכב",
-            "משכורות ונלוות"
+            "9. כלכלת תלמידים",
+            "הרכב"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 454.25,
-            "y": 1635.64,
-            "w": 126.78,
-            "h": 40.93
+            "x": 476.47,
+            "y": 1310.91,
+            "w": 102.78,
+            "h": 41.22
           }
         },
         {
@@ -4191,7 +4169,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4209,25 +4187,25 @@
           }
         },
         {
-          "value": "80212",
+          "value": "382675",
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
             "הרכב",
-            "שכר מקצועי"
+            "משכורות ונלוות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 476.74,
-            "y": 1679.15,
-            "w": 109.12,
-            "h": 38.64
+            "x": 454.25,
+            "y": 1635.64,
+            "w": 126.78,
+            "h": 40.93
           }
         },
         {
@@ -4235,7 +4213,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4253,25 +4231,25 @@
           }
         },
         {
-          "value": "7093",
+          "value": "80212",
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
             "הרכב",
-            "טלפון ותקשורת"
+            "שכר מקצועי"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 496.01,
-            "y": 1720.37,
-            "w": 89.85,
-            "h": 36.35
+            "x": 476.74,
+            "y": 1679.15,
+            "w": 109.12,
+            "h": 38.64
           }
         },
         {
@@ -4279,7 +4257,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4297,25 +4275,25 @@
           }
         },
         {
-          "value": "16484",
+          "value": "7093",
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
             "הרכב",
-            "משרדיות ונסיעות"
+            "טלפון ותקשורת"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 478.34,
-            "y": 1766.17,
-            "w": 107.51,
-            "h": 38.64
+            "x": 496.01,
+            "y": 1720.37,
+            "w": 89.85,
+            "h": 36.35
           }
         },
         {
@@ -4323,7 +4301,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4341,24 +4319,24 @@
           }
         },
         {
-          "value": "2662",
+          "value": "16484",
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
             "הרכב",
-            "אגרות"
+            "משרדיות ונסיעות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 494.4,
-            "y": 1809.68,
-            "w": 91.45,
+            "x": 478.34,
+            "y": 1766.17,
+            "w": 107.51,
             "h": 38.64
           }
         },
@@ -4367,7 +4345,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4385,24 +4363,25 @@
           }
         },
         {
-          "value": "489126",
+          "value": "2662",
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2024-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
-            "הרכב"
+            "הרכב",
+            "אגרות"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 451.04,
-            "y": 1860.06,
-            "w": 133.21,
-            "h": 40.93
+            "x": 494.4,
+            "y": 1809.68,
+            "w": 91.45,
+            "h": 38.64
           }
         },
         {
@@ -4410,7 +4389,7 @@
           "comment": "10",
           "is_note": true,
           "note": "10",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "10. הוצאות הנהלה וכלליות",
@@ -4425,6 +4404,27 @@
             "w": 125.18,
             "h": 38.64
           }
+        },
+        {
+          "value": "489126",
+          "comment": "10",
+          "is_note": true,
+          "note": "10",
+          "note_reference": "",
+          "date": "2024-12-31",
+          "path": [
+            "10. הוצאות הנהלה וכלליות",
+            "הרכב"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 451.04,
+            "y": 1860.06,
+            "w": 133.21,
+            "h": 40.93
+          }
         }
       ]
     },
@@ -4438,32 +4438,11 @@
       },
       "facts": [
         {
-          "value": "",
-          "comment": "11",
-          "is_note": true,
-          "note": "11",
-          "note_reference": null,
-          "date": "2022-12-31",
-          "path": [
-            "הכנסות מימון, נטו",
-            "רבית מפקדונות בבנק"
-          ],
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 523.56,
-            "y": 682.42,
-            "w": 12.85,
-            "h": 29.77
-          }
-        },
-        {
           "value": "84155",
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות מימון, נטו",
@@ -4480,24 +4459,24 @@
           }
         },
         {
-          "value": "37951",
+          "value": "",
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2022-12-31",
           "path": [
             "הכנסות מימון, נטו",
-            "רווח ממימוש והתאמת ערך ניירות ערך"
+            "רבית מפקדונות בבנק"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 489.83,
-            "y": 730.51,
-            "w": 88.33,
-            "h": 34.35
+            "x": 523.56,
+            "y": 682.42,
+            "w": 12.85,
+            "h": 29.77
           }
         },
         {
@@ -4505,7 +4484,7 @@
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות מימון, נטו",
@@ -4522,23 +4501,23 @@
           }
         },
         {
-          "value": "(19067)",
+          "value": "37951",
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2022-12-31",
           "path": [
             "הכנסות מימון, נטו",
-            "ריבית ועמלות בנק"
+            "רווח ממימוש והתאמת ערך ניירות ערך"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 485.01,
-            "y": 778.6,
-            "w": 97.97,
+            "x": 489.83,
+            "y": 730.51,
+            "w": 88.33,
             "h": 34.35
           }
         },
@@ -4547,7 +4526,7 @@
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות מימון, נטו",
@@ -4564,23 +4543,24 @@
           }
         },
         {
-          "value": "18884",
+          "value": "(19067)",
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2022-12-31",
           "path": [
-            "הכנסות מימון, נטו"
+            "הכנסות מימון, נטו",
+            "ריבית ועמלות בנק"
           ],
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "bbox": {
-            "x": 489.83,
-            "y": 822.11,
-            "w": 88.33,
-            "h": 36.64
+            "x": 485.01,
+            "y": 778.6,
+            "w": 97.97,
+            "h": 34.35
           }
         },
         {
@@ -4588,7 +4568,7 @@
           "comment": "11",
           "is_note": true,
           "note": "11",
-          "note_reference": null,
+          "note_reference": "",
           "date": "2023-12-31",
           "path": [
             "הכנסות מימון, נטו"
@@ -4598,6 +4578,26 @@
           "value_type": "amount",
           "bbox": {
             "x": 342.08,
+            "y": 822.11,
+            "w": 88.33,
+            "h": 36.64
+          }
+        },
+        {
+          "value": "18884",
+          "comment": "11",
+          "is_note": true,
+          "note": "11",
+          "note_reference": "",
+          "date": "2022-12-31",
+          "path": [
+            "הכנסות מימון, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "bbox": {
+            "x": 489.83,
             "y": 822.11,
             "w": 88.33,
             "h": 36.64

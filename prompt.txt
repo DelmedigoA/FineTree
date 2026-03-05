@@ -18,7 +18,7 @@ Top-level schema (exact keys only):
       "comment": "<string or null>",
       "is_note": <true|false>,
       "note": "<string or null>",
-      "note_reference": "<string>",
+      "note_reference": "<string or null>",
       "date": "<string or null>",
       "path": ["<string>", "..."],
       "currency": "ILS|USD|EUR|GBP|null",
@@ -30,34 +30,35 @@ Top-level schema (exact keys only):
 
 Type/validation rules (must match schema):
 1. `meta` and `facts` are required.
-2. `note_reference` is required string. Use "" when missing.
-3. `path` is required list of strings (use [] when unknown, never null).
-4. `is_note` must be boolean (never null and never "true"/"false" strings).
-5. `date` must be `YYYY` or `YYYY-MM-DD` when provided.
-6. `value` rules:
+2. All listed `meta` keys are required: `entity_name`, `page_num`, `type`, `title`.
+3. All listed fact keys are required in every fact object, including `bbox`; nullable fields must still be present with JSON null.
+4. `note_reference` is required and nullable. Use JSON `null` when missing (never `""`).
+5. `path` is required list of strings (use [] when unknown, never null).
+6. `is_note` must be boolean (never null and never "true"/"false" strings).
+7. `date` must be `YYYY` or `YYYY-MM-DD` when provided.
+8. `value` rules:
    - If the value is a percentage, include `%` (for example `12%`, `12.5%`).
-   - If not a percentage, output only canonical numeric text: `Num`, `Num.Num`, `(Num)`, or `(Num.Num)`.
+   - If not a percentage, output only canonical numeric text: `Num`, `Num.Num`, `(Num)`, `(Num.Num)`, or exact `"-"` when source is only `-`.
    - For non-`%` values remove commas, spaces, currency signs/codes, and use parentheses for negatives (never leading `-`).
-7. Use JSON null literal for missing optional values (never "null" string).
-8. Do not include any keys not listed above.
+9. Use JSON null literal for missing optional values (never "null" string).
+10. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
-2. If source is a dash placeholder (`-`, `—`, `–`), still extract the fact but set `value` to empty string `""`.
-3. For non-`%` values, normalize `value` to canonical numeric shape only (`Num`, `Num.Num`, `(Num)`, `(Num.Num)`).
+2. If source value is exactly `-`, keep `value` as `"-"`. For `—` or `–`, still extract the fact and set `value` to empty string `""`.
+3. For non-`%` values, normalize `value` to canonical numeric shape (`Num`, `Num.Num`, `(Num)`, `(Num.Num)`) or exact `"-"` when source is only `-`.
 4. For `%` values, keep `%` in `value`.
 5. `bbox` must tightly cover the value text only, in pixel coordinates of the original image.
 6. `comment`: textual qualifier tied to the specific fact (for example `*without debt insurance`), else null.
 7. `is_note`: true when the fact is itself inside a note section, else false.
 8. `note`: use when this fact belongs to data presented inside a note section; else null.
-9. `note_reference`: use when this fact points/references another note; else "".
+9. `note_reference`: use when this fact points/references another note; else `null`.
 10. `currency`: infer from page/header context (for example "שקלים חדשים" -> "ILS"), else null.
 11. `scale`: 1 unless page/header indicates thousands or millions.
 12. `value_type`: "amount" unless the fact is a percentage ("%").
 13. `date`: output only `YYYY` or `YYYY-MM-DD`. Convert dotted dates (`D.M.YYYY` / `DD.MM.YYYY`) to `YYYY-MM-DD` using day-first parsing.
-14. `meta.type`: use "profits" for "דוחות על הפעילויות"; otherwise choose the best enum value.
-15. No duplicate facts. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-16. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+14. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+15. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
 
 Path hierarchy rule:
 1. Build `path` with horizontal-axis hierarchy first (row-side structure: group -> subgroup -> line item).

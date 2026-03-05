@@ -544,8 +544,7 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
                         "note_reference",
                         raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref"))),
                     )
-                )
-                or "",
+                ),
                 "date": _to_optional_str(raw_fact.get("date")),
                 "path": path,
                 "currency": currency,
