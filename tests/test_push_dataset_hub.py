@@ -7,6 +7,7 @@ from pathlib import Path
 
 from datasets import Dataset, DatasetDict, Features, Image, Value
 from PIL import Image as PILImage
+import pytest
 
 from finetree_annotator.finetune import push_dataset_hub as push_mod
 
@@ -44,11 +45,12 @@ def _empty_dataset() -> DatasetDict:
     features = Features(
         {
             "image": Image(),
+            "system": Value("string"),
             "instruction": Value("string"),
             "text": Value("string"),
         }
     )
-    empty = {"image": [], "instruction": [], "text": []}
+    empty = {"image": [], "system": [], "instruction": [], "text": []}
     return DatasetDict(
         {
             "train": Dataset.from_dict(empty, features=features),
@@ -61,6 +63,7 @@ def _train_only_dataset() -> DatasetDict:
     features = Features(
         {
             "image": Image(),
+            "system": Value("string"),
             "instruction": Value("string"),
             "text": Value("string"),
         }
@@ -68,13 +71,67 @@ def _train_only_dataset() -> DatasetDict:
     train = Dataset.from_dict(
         {
             "image": [str(Path("/tmp/train_img.png"))],
+            "system": [push_mod._DEFAULT_SYSTEM_PROMPT],
             "instruction": ["i"],
             "text": ["{}"],
         },
         features=features,
     )
-    val = Dataset.from_dict({"image": [], "instruction": [], "text": []}, features=features)
+    val = Dataset.from_dict({"image": [], "system": [], "instruction": [], "text": []}, features=features)
     return DatasetDict({"train": train, "validation": val})
+
+
+def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: Path) -> None:
+    root = tmp_path
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+    sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
+                    {
+                        "type": "text",
+                        "text": "Use keys comment, is_note, note, note_reference and return strict JSON.",
+                    },
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+        ]
+    }
+    (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text("", encoding="utf-8")
+
+    report = push_mod.assert_source_instruction_schema(root)
+    assert report["checked_rows"] == 1
+    assert report["rows_with_issues"] == 0
+
+
+def test_assert_source_instruction_schema_blocks_on_legacy_prompt_keys(tmp_path: Path) -> None:
+    root = tmp_path
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+    sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
+                    {
+                        "type": "text",
+                        "text": "Use is_beur and refference fields in output schema.",
+                    },
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+        ]
+    }
+    (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text("", encoding="utf-8")
+
+    with pytest.raises(RuntimeError, match="Source prompt schema validation failed"):
+        push_mod.assert_source_instruction_schema(root)
 
 
 def test_export_for_hf_rewrites_image_paths_resizes_and_scales_bbox(tmp_path: Path, monkeypatch) -> None:
@@ -122,6 +179,7 @@ def test_export_for_hf_rewrites_image_paths_resizes_and_scales_bbox(tmp_path: Pa
     assert val_rows == 0
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     assert out["image"] == "images/doc1/page_0001.png"
+    assert out["system"] == push_mod._DEFAULT_SYSTEM_PROMPT
     assert "Prompt for" in out["instruction"]
 
     with PILImage.open(export_dir / out["image"]) as img:
@@ -199,6 +257,7 @@ def test_export_for_hf_minimal_instruction_is_fixed_line(tmp_path: Path) -> None
     train_rows, _ = push_mod.export_for_hf(root, export_dir, instruction_mode="minimal")
     assert train_rows == 1
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
+    assert out["system"] == push_mod._DEFAULT_SYSTEM_PROMPT
     assert out["instruction"] == push_mod._MINIMAL_INSTRUCTION
 
 
@@ -251,24 +310,68 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
     assert ", " not in compact_text
 
     compact_payload = json.loads(compact_text)
+    assert "meta" in compact_payload
+    assert "facts" in compact_payload
+    assert compact_payload["meta"]["entity_name"] == "X"
+    assert compact_payload["meta"]["page_num"] == "8"
+    assert compact_payload["meta"]["title"] == "T"
+    fact = compact_payload["facts"][0]
+    assert fact["bbox"] == [10, 20, 30, 40]
+    assert fact["value"] == "1234"
+    assert fact["date"] == "30.09.2021"
+    assert fact["currency"] == "ILS"
+    assert fact["scale"] == 1000
+    assert fact["value_type"] == "amount"
+    assert "refference" in fact
+    assert fact["refference"] is None
+    assert "note" in fact
+    assert fact["note"] is None
+
+
+def test_export_for_hf_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -> None:
+    root = tmp_path
+    img_dir = root / "data" / "pdf_images" / "doc1"
+    img_dir.mkdir(parents=True)
+    image_path = img_dir / "page_0001.png"
+    PILImage.new("RGB", (200, 100), color=(255, 255, 255)).save(image_path)
+
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+    payload = {
+        "meta": {"entity_name": "X", "page_num": "8", "title": "T"},
+        "facts": [{"bbox": {"x": 10, "y": 20, "w": 30, "h": 40}, "value": "1,234", "refference": None}],
+    }
+    sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(image_path)},
+                    {"type": "text", "text": "Prompt"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(payload)}]},
+        ],
+    }
+    (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text("", encoding="utf-8")
+
+    export_dir = root / "artifacts" / "hf_dataset_export"
+    train_rows, _ = push_mod.export_for_hf(root, export_dir, compact_tokens=True, aggressive_compact_tokens=True)
+    assert train_rows == 1
+
+    out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
+    compact_payload = json.loads(out["text"])
     assert "m" in compact_payload
     assert "f" in compact_payload
-    assert "meta" not in compact_payload
-    assert "facts" not in compact_payload
     assert compact_payload["m"]["e"] == "X"
     assert compact_payload["m"]["p"] == "8"
     assert compact_payload["m"]["ttl"] == "T"
     fact = compact_payload["f"][0]
     assert fact["b"] == [10, 20, 30, 40]
     assert fact["v"] == "1234"
-    assert fact["d"] == "30.09.2021"
-    assert fact["cur"] == "ILS"
-    assert fact["sc"] == 1000
-    assert fact["vt"] == "amount"
     assert "ref" in fact
     assert fact["ref"] is None
-    assert "note" in fact
-    assert fact["note"] is None
 
 
 def test_smart_resize_dimensions_supports_required_factor_signature(monkeypatch) -> None:
@@ -338,6 +441,91 @@ def test_export_for_hf_excludes_doc_ids(tmp_path: Path, monkeypatch) -> None:
     assert out["image"].startswith("images/pdf_3/")
 
 
+def test_assert_no_train_val_contamination_passes_for_disjoint_docs(tmp_path: Path) -> None:
+    root = tmp_path
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+
+    train_img = root / "data" / "pdf_images" / "doc1" / "page_0001.png"
+    train_img.parent.mkdir(parents=True)
+    PILImage.new("RGB", (16, 16), color=(255, 255, 255)).save(train_img)
+
+    val_img = root / "data" / "pdf_images" / "doc2" / "page_0001.png"
+    val_img.parent.mkdir(parents=True)
+    PILImage.new("RGB", (16, 16), color=(255, 255, 255)).save(val_img)
+
+    train_sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(train_img)},
+                    {"type": "text", "text": "Prompt train"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+        ],
+        "metadata": {"document_id": "doc1"},
+    }
+    val_sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(val_img)},
+                    {"type": "text", "text": "Prompt val"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+        ],
+        "metadata": {"document_id": "doc2"},
+    }
+
+    (finetune_dir / "train.jsonl").write_text(json.dumps(train_sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text(json.dumps(val_sample) + "\n", encoding="utf-8")
+
+    report = push_mod.assert_no_train_val_contamination(root)
+    assert report["overlap_doc_ids"] == 0
+    assert report["overlap_images"] == 0
+    assert report["overlap_samples"] == 0
+
+
+def test_assert_no_train_val_contamination_detects_overlap(tmp_path: Path) -> None:
+    root = tmp_path
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+
+    img = root / "data" / "pdf_images" / "doc1" / "page_0001.png"
+    img.parent.mkdir(parents=True)
+    PILImage.new("RGB", (16, 16), color=(255, 255, 255)).save(img)
+
+    shared_sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(img)},
+                    {"type": "text", "text": "Prompt"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+        ],
+        "metadata": {"document_id": "doc1"},
+    }
+
+    (finetune_dir / "train.jsonl").write_text(json.dumps(shared_sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text(json.dumps(shared_sample) + "\n", encoding="utf-8")
+
+    try:
+        push_mod.assert_no_train_val_contamination(root)
+    except RuntimeError as exc:
+        msg = str(exc)
+        assert "contamination" in msg.lower()
+        assert "overlap_doc_ids=1" in msg
+    else:  # pragma: no cover
+        raise AssertionError("Expected RuntimeError for train/validation overlap")
+
+
 def test_push_to_hf_drops_empty_splits(monkeypatch) -> None:
     pushed: dict[str, object] = {}
 
@@ -383,6 +571,7 @@ def test_push_train_validation_separately_uses_train_split_for_both_repos(monkey
     ds["train"] = Dataset.from_dict(
         {
             "image": [str(Path("/tmp/train_img.png"))],
+            "system": [push_mod._DEFAULT_SYSTEM_PROMPT],
             "instruction": ["i"],
             "text": ["{}"],
         },
@@ -391,6 +580,7 @@ def test_push_train_validation_separately_uses_train_split_for_both_repos(monkey
     ds["validation"] = Dataset.from_dict(
         {
             "image": [str(Path("/tmp/val_img.png"))],
+            "system": [push_mod._DEFAULT_SYSTEM_PROMPT],
             "instruction": ["i"],
             "text": ["{}"],
         },
@@ -432,9 +622,11 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         max_pixels=None,
         exclude_doc_ids=None,
         compact_tokens: bool = False,
+        aggressive_compact_tokens: bool = False,
     ):
         _ = root, instruction_mode, min_pixels, max_pixels, exclude_doc_ids
         captured["compact_tokens"] = compact_tokens
+        captured["aggressive_compact_tokens"] = aggressive_compact_tokens
         export_dir.mkdir(parents=True, exist_ok=True)
         captured["export_dir"] = str(export_dir)
         return 1, 0
@@ -457,6 +649,7 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(push_mod, "build_hf_dataset", _fail_build_hf_dataset)
     monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", _fake_build_from_export)
     monkeypatch.setattr(push_mod, "push_to_hf", _fake_push)
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
 
     cwd = Path.cwd()
     try:
@@ -472,6 +665,7 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     assert captured.get("pushed") is True
     assert captured.get("build_from_export") == captured.get("export_dir")
     assert captured.get("compact_tokens") is False
+    assert captured.get("aggressive_compact_tokens") is False
 
 
 def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path: Path) -> None:
@@ -482,6 +676,7 @@ def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path
     monkeypatch.setattr(push_mod, "build_dataset", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
     monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
 
     def _fake_push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True):
         _ = dataset, token, private
@@ -499,8 +694,9 @@ def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path
         max_pixels=None,
         exclude_doc_ids=None,
         compact_tokens: bool = False,
+        aggressive_compact_tokens: bool = False,
     ):
-        _ = root, export_dir, min_pixels, max_pixels, exclude_doc_ids, compact_tokens
+        _ = root, export_dir, min_pixels, max_pixels, exclude_doc_ids, compact_tokens, aggressive_compact_tokens
         calls.append(("export", instruction_mode))
         return 1, 0
 
@@ -543,3 +739,57 @@ def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path
     assert ("push_main", "asafd60/FineTree-annotated-pages-minimal-instruction") in calls
     assert ("push", "source:asafd60/FineTree-annotated-pages-no-bbox") in calls
     assert ("push", "minimal:asafd60/FineTree-annotated-pages-no-bbox-minimal-instruction") in calls
+
+
+def test_main_blocks_on_format_issues_by_default(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(push_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(push_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(push_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(
+        push_mod,
+        "assert_fact_format",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("format violation")),
+    )
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        with pytest.raises(RuntimeError, match="format violation"):
+            push_mod.main(["--token", "tok", "--repo-id", "asafd60/FineTree-annotated-pages"])
+    finally:
+        monkeypatch.chdir(cwd)
+
+
+def test_main_allows_format_issues_when_flag_set(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(push_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(push_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(push_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 7})
+    monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(push_mod, "push_to_hf", lambda *_args, **_kwargs: "asafd60/FineTree-annotated-pages")
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = push_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages",
+                "--allow-format-issues",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0

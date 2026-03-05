@@ -512,15 +512,38 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
         if value_type not in _VALID_VALUE_TYPES:
             value_type = None
 
+        has_canonical_fact_keys = any(
+            key in raw_fact for key in ("comment", "is_note", "note_reference")
+        )
+        comment_source: Any = raw_fact.get("comment")
+        if comment_source is None:
+            if has_canonical_fact_keys:
+                comment_source = raw_fact.get("footnote")
+            else:
+                comment_source = raw_fact.get("note", raw_fact.get("footnote"))
+
+        note_source: Any
+        if has_canonical_fact_keys:
+            note_source = raw_fact.get("note", raw_fact.get("beur_num", raw_fact.get("beur_number")))
+        else:
+            note_source = raw_fact.get("beur_num", raw_fact.get("beur_number"))
+
+        is_note_value = _to_optional_bool(raw_fact.get("is_note"))
+        if is_note_value is None:
+            is_note_value = _to_optional_bool(raw_fact.get("is_beur", raw_fact.get("beur")))
+
         facts_out.append(
             {
                 "bbox": bbox,
                 "value": str(value),
-                "note": _to_optional_str(raw_fact.get("note", raw_fact.get("footnote"))),
-                "is_beur": _to_optional_bool(raw_fact.get("is_beur", raw_fact.get("beur"))),
-                "beur_num": _to_optional_str(raw_fact.get("beur_num", raw_fact.get("beur_number"))),
-                "refference": _to_optional_str(
-                    raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref")))
+                "comment": _to_optional_str(comment_source),
+                "is_note": bool(is_note_value) if is_note_value is not None else False,
+                "note": _to_optional_str(note_source),
+                "note_reference": _to_optional_str(
+                    raw_fact.get(
+                        "note_reference",
+                        raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref"))),
+                    )
                 )
                 or "",
                 "date": _to_optional_str(raw_fact.get("date")),

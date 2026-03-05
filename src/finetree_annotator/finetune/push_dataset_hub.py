@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import inspect
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -14,9 +16,20 @@ from datasets import Dataset, DatasetDict, Features, Image, Value
 from huggingface_hub import HfApi
 from PIL import Image as PILImage
 
+from ..fact_normalization import assert_fact_format
+from ..fact_ordering import assert_fact_order
+from .config import load_finetune_config
+from .duplicate_facts import assert_no_duplicate_facts
+
 _MIN_BBOX_SIZE = 1.0
 InstructionMode = Literal["source", "minimal"]
 _MINIMAL_INSTRUCTION = "Extract metadata and financial facts from the provided image."
+_DEFAULT_SYSTEM_PROMPT = (
+    "You are a precise financial statement extraction system. "
+    "Return only valid JSON that matches the required schema."
+)
+_REQUIRED_CANONICAL_PROMPT_KEYS: tuple[str, ...] = ("comment", "is_note", "note", "note_reference")
+_LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "refference")
 _COMPACT_KEY_MAP: dict[str, str] = {
     "meta": "m",
     "facts": "f",
@@ -25,10 +38,17 @@ _COMPACT_KEY_MAP: dict[str, str] = {
     "page_num": "p",
     "title": "ttl",
     "value": "v",
+    "comment": "cmt",
+    "is_note": "isn",
+    "note": "nt",
+    "note_reference": "nref",
     "date": "d",
     "currency": "cur",
     "scale": "sc",
     "value_type": "vt",
+    # legacy aliases kept for backwards compatibility in compaction paths
+    "is_beur": "isn",
+    "beur_num": "nt",
     "reference": "ref",
     "refference": "ref",
 }
@@ -40,7 +60,20 @@ def build_dataset(config_path: Path) -> None:
     build_main(["--config", str(config_path)])
 
 
-def _rows_from_chat_jsonl(split_path: Path) -> list[dict[str, str]]:
+def _resolve_system_prompt(root: Path) -> str:
+    prompt_path = (root / "system_prompt.txt").resolve()
+    if prompt_path.is_file():
+        text = prompt_path.read_text(encoding="utf-8").strip()
+        if text:
+            return text
+    return _DEFAULT_SYSTEM_PROMPT
+
+
+def _rows_from_chat_jsonl(
+    split_path: Path,
+    *,
+    system_prompt: str = _DEFAULT_SYSTEM_PROMPT,
+) -> list[dict[str, str]]:
     if not split_path.is_file():
         return []
 
@@ -79,11 +112,213 @@ def _rows_from_chat_jsonl(split_path: Path) -> list[dict[str, str]]:
             rows.append(
                 {
                     "image": image_path,
+                    "system": system_prompt,
                     "instruction": instruction,
                     "text": text,
                 }
             )
     return rows
+
+
+def _has_prompt_key(text: str, key: str) -> bool:
+    return re.search(rf"\b{re.escape(key)}\b", text, flags=re.IGNORECASE) is not None
+
+
+def assert_source_instruction_schema(
+    root: Path,
+    *,
+    fail_on_issues: bool = True,
+    train_path: Path | None = None,
+    val_path: Path | None = None,
+) -> dict[str, Any]:
+    resolved_train = train_path or (root / "data/finetune/train.jsonl")
+    resolved_val = val_path or (root / "data/finetune/val.jsonl")
+    checked_rows = 0
+    rows_with_issues = 0
+    issue_examples: list[dict[str, Any]] = []
+
+    for split_name, split_path in (("train", resolved_train), ("validation", resolved_val)):
+        if not split_path.is_file():
+            continue
+        for line_num, line in enumerate(split_path.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                sample = json.loads(line)
+            except Exception:
+                continue
+            if not isinstance(sample, dict):
+                continue
+            _doc_id, _image_path, instruction, _text = _sample_from_chat_messages(sample, root=root)
+            if not instruction:
+                continue
+            checked_rows += 1
+            issues: list[str] = []
+            for key in _REQUIRED_CANONICAL_PROMPT_KEYS:
+                if not _has_prompt_key(instruction, key):
+                    issues.append(f"missing_required_key:{key}")
+            for legacy in _LEGACY_PROMPT_KEYS:
+                if _has_prompt_key(instruction, legacy):
+                    issues.append(f"legacy_key_present:{legacy}")
+
+            if issues:
+                rows_with_issues += 1
+                if len(issue_examples) < 20:
+                    issue_examples.append(
+                        {
+                            "split": split_name,
+                            "line": line_num,
+                            "issues": issues,
+                        }
+                    )
+
+    report = {
+        "checked_rows": checked_rows,
+        "rows_with_issues": rows_with_issues,
+        "required_keys": list(_REQUIRED_CANONICAL_PROMPT_KEYS),
+        "legacy_keys": list(_LEGACY_PROMPT_KEYS),
+        "issue_examples": issue_examples,
+    }
+    print("PROMPT_SCHEMA_AUDIT:", json.dumps(report, ensure_ascii=False))
+    if fail_on_issues and rows_with_issues > 0:
+        raise RuntimeError(
+            "Source prompt schema validation failed for one or more finetune rows. "
+            "Ensure prompt instructions use canonical keys "
+            "comment/is_note/note/note_reference and remove legacy keys."
+        )
+    return report
+
+
+def _sample_from_chat_messages(sample: dict[str, Any], *, root: Path) -> tuple[str | None, str | None, str | None, str | None]:
+    metadata = sample.get("metadata") if isinstance(sample.get("metadata"), dict) else {}
+    doc_id = metadata.get("document_id") if isinstance(metadata.get("document_id"), str) else None
+
+    image_path: str | None = None
+    instruction: str | None = None
+    text: str | None = None
+
+    messages = sample.get("messages") if isinstance(sample.get("messages"), list) else []
+    if len(messages) >= 2 and isinstance(messages[0], dict) and isinstance(messages[1], dict):
+        user_content = messages[0].get("content") if isinstance(messages[0].get("content"), list) else []
+        assistant_content = messages[1].get("content") if isinstance(messages[1].get("content"), list) else []
+
+        for part in user_content:
+            if not isinstance(part, dict):
+                continue
+            if part.get("type") == "image" and isinstance(part.get("image"), str):
+                raw = str(part["image"]).strip()
+                if raw:
+                    candidate = Path(raw)
+                    if not candidate.is_absolute():
+                        candidate = (root / candidate).resolve()
+                    image_path = str(candidate)
+            elif part.get("type") == "text" and isinstance(part.get("text"), str):
+                val = str(part["text"]).strip()
+                if val:
+                    instruction = val
+
+        if assistant_content and isinstance(assistant_content[0], dict):
+            raw_text = assistant_content[0].get("text")
+            if isinstance(raw_text, str):
+                val = raw_text.strip()
+                if val:
+                    text = val
+
+    return doc_id, image_path, instruction, text
+
+
+def _split_signatures(split_path: Path, *, root: Path) -> dict[str, set[str] | int]:
+    doc_ids: set[str] = set()
+    image_paths: set[str] = set()
+    sample_hashes: set[str] = set()
+    rows = 0
+
+    if not split_path.is_file():
+        return {
+            "doc_ids": doc_ids,
+            "image_paths": image_paths,
+            "sample_hashes": sample_hashes,
+            "rows": rows,
+        }
+
+    for line in split_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        rows += 1
+        try:
+            sample = json.loads(line)
+        except Exception:
+            continue
+        if not isinstance(sample, dict):
+            continue
+        doc_id, image_path, instruction, text = _sample_from_chat_messages(sample, root=root)
+        if doc_id:
+            doc_ids.add(doc_id)
+        if image_path:
+            image_paths.add(image_path)
+        if any(v is not None for v in (image_path, instruction, text)):
+            payload = {
+                "image": image_path or "",
+                "instruction": instruction or "",
+                "text": text or "",
+            }
+            payload_str = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+            sample_hashes.add(hashlib.sha256(payload_str.encode("utf-8")).hexdigest())
+
+    return {
+        "doc_ids": doc_ids,
+        "image_paths": image_paths,
+        "sample_hashes": sample_hashes,
+        "rows": rows,
+    }
+
+
+def assert_no_train_val_contamination(
+    root: Path,
+    *,
+    train_path: Path | None = None,
+    val_path: Path | None = None,
+) -> dict[str, Any]:
+    resolved_train = train_path or (root / "data/finetune/train.jsonl")
+    resolved_val = val_path or (root / "data/finetune/val.jsonl")
+
+    train = _split_signatures(resolved_train, root=root)
+    val = _split_signatures(resolved_val, root=root)
+
+    train_doc_ids = train["doc_ids"] if isinstance(train["doc_ids"], set) else set()
+    val_doc_ids = val["doc_ids"] if isinstance(val["doc_ids"], set) else set()
+    train_images = train["image_paths"] if isinstance(train["image_paths"], set) else set()
+    val_images = val["image_paths"] if isinstance(val["image_paths"], set) else set()
+    train_hashes = train["sample_hashes"] if isinstance(train["sample_hashes"], set) else set()
+    val_hashes = val["sample_hashes"] if isinstance(val["sample_hashes"], set) else set()
+
+    overlap_doc_ids = sorted(train_doc_ids & val_doc_ids)
+    overlap_images = sorted(train_images & val_images)
+    overlap_samples = sorted(train_hashes & val_hashes)
+
+    report = {
+        "train_rows": int(train["rows"]) if isinstance(train["rows"], int) else 0,
+        "val_rows": int(val["rows"]) if isinstance(val["rows"], int) else 0,
+        "train_unique_doc_ids": len(train_doc_ids),
+        "val_unique_doc_ids": len(val_doc_ids),
+        "train_unique_images": len(train_images),
+        "val_unique_images": len(val_images),
+        "overlap_doc_ids": len(overlap_doc_ids),
+        "overlap_images": len(overlap_images),
+        "overlap_samples": len(overlap_samples),
+        "overlap_doc_ids_examples": overlap_doc_ids[:10],
+        "overlap_image_examples": overlap_images[:10],
+    }
+    print("SPLIT_AUDIT:", json.dumps(report, ensure_ascii=False))
+
+    if overlap_doc_ids or overlap_images or overlap_samples:
+        raise RuntimeError(
+            "Train/validation contamination detected. "
+            f"overlap_doc_ids={len(overlap_doc_ids)} "
+            f"overlap_images={len(overlap_images)} "
+            f"overlap_samples={len(overlap_samples)}"
+        )
+    return report
 
 
 def _resolve_resize_bounds(min_pixels: int | None, max_pixels: int | None) -> tuple[int | None, int | None] | None:
@@ -153,12 +388,12 @@ def _remove_numeric_thousands_separators(value: str) -> str:
     return f"({normalized})" if accounting_negative else normalized
 
 
-def _compact_payload_tokens(payload: Any) -> Any:
+def _compact_payload_tokens(payload: Any, *, remap_keys: bool = False) -> Any:
     if isinstance(payload, dict):
         compacted: dict[str, Any] = {}
         for key, value in payload.items():
-            mapped_key = _COMPACT_KEY_MAP.get(str(key), str(key))
-            compacted_value = _compact_payload_tokens(value)
+            mapped_key = _COMPACT_KEY_MAP.get(str(key), str(key)) if remap_keys else str(key)
+            compacted_value = _compact_payload_tokens(value, remap_keys=remap_keys)
             if mapped_key in compacted and mapped_key == "ref":
                 existing = compacted[mapped_key]
                 if (existing is None or existing == "") and compacted_value not in {None, ""}:
@@ -167,18 +402,18 @@ def _compact_payload_tokens(payload: Any) -> Any:
             compacted[mapped_key] = compacted_value
         return compacted
     if isinstance(payload, list):
-        return [_compact_payload_tokens(item) for item in payload]
+        return [_compact_payload_tokens(item, remap_keys=remap_keys) for item in payload]
     if isinstance(payload, str):
         return _remove_numeric_thousands_separators(payload)
     return payload
 
 
-def _compact_token_text_payload(text: str) -> str:
+def _compact_token_text_payload(text: str, *, remap_keys: bool = False) -> str:
     try:
         payload = json.loads(text)
     except Exception:
         return text
-    compacted_payload = _compact_payload_tokens(payload)
+    compacted_payload = _compact_payload_tokens(payload, remap_keys=remap_keys)
     return _compact_json_dumps(compacted_payload)
 
 
@@ -327,7 +562,12 @@ def _copy_or_resize_image(
     }
 
 
-def _rows_from_export_jsonl(split_path: Path, export_dir: Path) -> list[dict[str, str]]:
+def _rows_from_export_jsonl(
+    split_path: Path,
+    export_dir: Path,
+    *,
+    default_system_prompt: str = _DEFAULT_SYSTEM_PROMPT,
+) -> list[dict[str, str]]:
     if not split_path.is_file():
         return []
     rows: list[dict[str, str]] = []
@@ -338,14 +578,23 @@ def _rows_from_export_jsonl(split_path: Path, export_dir: Path) -> list[dict[str
         if not isinstance(sample, dict):
             continue
         image_path = sample.get("image")
+        system_prompt = sample.get("system")
+        if not isinstance(system_prompt, str) or not system_prompt.strip():
+            system_prompt = sample.get("system_prompt")
         instruction = sample.get("instruction")
         text = sample.get("text")
         if not isinstance(image_path, str) or not isinstance(instruction, str) or not isinstance(text, str):
             continue
+        resolved_system_prompt = (
+            str(system_prompt).strip()
+            if isinstance(system_prompt, str) and str(system_prompt).strip()
+            else default_system_prompt
+        )
         abs_img = (export_dir / image_path).resolve()
         rows.append(
             {
                 "image": str(abs_img),
+                "system": resolved_system_prompt,
                 "instruction": instruction,
                 "text": text,
             }
@@ -357,25 +606,36 @@ def _build_hf_dataset_from_rows(train_rows: list[dict[str, str]], val_rows: list
     features = Features(
         {
             "image": Image(),
+            "system": Value("string"),
             "instruction": Value("string"),
             "text": Value("string"),
         }
     )
-    empty_payload = {"image": [], "instruction": [], "text": []}
+    empty_payload = {"image": [], "system": [], "instruction": [], "text": []}
     train_ds = Dataset.from_list(train_rows, features=features) if train_rows else Dataset.from_dict(empty_payload, features=features)
     val_ds = Dataset.from_list(val_rows, features=features) if val_rows else Dataset.from_dict(empty_payload, features=features)
     return DatasetDict({"train": train_ds, "validation": val_ds}), len(train_rows), len(val_rows)
 
 
 def build_hf_dataset(root: Path) -> tuple[DatasetDict, int, int]:
-    train_rows = _rows_from_chat_jsonl(root / "data/finetune/train.jsonl")
-    val_rows = _rows_from_chat_jsonl(root / "data/finetune/val.jsonl")
+    system_prompt = _resolve_system_prompt(root)
+    train_rows = _rows_from_chat_jsonl(root / "data/finetune/train.jsonl", system_prompt=system_prompt)
+    val_rows = _rows_from_chat_jsonl(root / "data/finetune/val.jsonl", system_prompt=system_prompt)
     return _build_hf_dataset_from_rows(train_rows, val_rows)
 
 
 def build_hf_dataset_from_export(export_dir: Path) -> tuple[DatasetDict, int, int]:
-    train_rows = _rows_from_export_jsonl(export_dir / "train.jsonl", export_dir)
-    val_rows = _rows_from_export_jsonl(export_dir / "val.jsonl", export_dir)
+    default_system_prompt = _resolve_system_prompt(Path(".").resolve())
+    train_rows = _rows_from_export_jsonl(
+        export_dir / "train.jsonl",
+        export_dir,
+        default_system_prompt=default_system_prompt,
+    )
+    val_rows = _rows_from_export_jsonl(
+        export_dir / "val.jsonl",
+        export_dir,
+        default_system_prompt=default_system_prompt,
+    )
     return _build_hf_dataset_from_rows(train_rows, val_rows)
 
 
@@ -388,8 +648,10 @@ def export_for_hf(
     max_pixels: int | None = None,
     exclude_doc_ids: set[str] | None = None,
     compact_tokens: bool = False,
+    aggressive_compact_tokens: bool = False,
 ) -> Tuple[int, int]:
     instruction_mode = _normalize_instruction_mode(instruction_mode)
+    system_prompt = _resolve_system_prompt(root)
     resize_bounds = _resolve_resize_bounds(min_pixels, max_pixels)
     resolved_min = resize_bounds[0] if resize_bounds else None
     resolved_max = resize_bounds[1] if resize_bounds else None
@@ -418,7 +680,7 @@ def export_for_hf(
             return 0
 
         out_lines: list[str] = []
-        for row in _rows_from_chat_jsonl(src_path):
+        for row in _rows_from_chat_jsonl(src_path, system_prompt=system_prompt):
             src_img = Path(row["image"])
             if not src_img.is_absolute():
                 src_img = (root / src_img).resolve()
@@ -453,8 +715,11 @@ def export_for_hf(
                 new_w=int(resize_stats["new_w"]),
                 new_h=int(resize_stats["new_h"]),
             )
-            if compact_tokens:
-                text_out = _compact_token_text_payload(text_out)
+            if compact_tokens or aggressive_compact_tokens:
+                text_out = _compact_token_text_payload(
+                    text_out,
+                    remap_keys=aggressive_compact_tokens,
+                )
             bbox_updated += updated
             bbox_clamped += clamped
             json_parse_failures += parse_fail
@@ -463,6 +728,7 @@ def export_for_hf(
                 json.dumps(
                     {
                         "image": rel_img.as_posix(),
+                        "system": row["system"],
                         "instruction": (
                             _MINIMAL_INSTRUCTION
                             if instruction_mode == "minimal"
@@ -483,6 +749,7 @@ def export_for_hf(
     (export_dir / "README.md").write_text(
         "# FineTree Annotated Dataset\n\n"
         "Generated from current repository annotations.\n\n"
+        "- Includes `system` column from `system_prompt.txt`.\n"
         f"- Instruction mode: {instruction_mode}\n"
         f"- Resize enabled: {'yes' if resize_enabled else 'no'}\n"
         f"- Min pixels: {resolved_min if resolved_min is not None else 'unset'}\n"
@@ -495,6 +762,7 @@ def export_for_hf(
         f"- Skipped rows by excluded docs: {skipped_excluded_docs}\n"
         f"- Excluded doc ids: {sorted(excluded)}\n"
         f"- Compact tokens: {'yes' if compact_tokens else 'no'}\n"
+        f"- Aggressive compact tokens: {'yes' if aggressive_compact_tokens else 'no'}\n"
         f"- Train rows: {train_rows}\n"
         f"- Val rows: {val_rows}\n",
         encoding="utf-8",
@@ -515,6 +783,7 @@ def export_for_hf(
                 "skipped_excluded_docs": skipped_excluded_docs,
                 "excluded_doc_ids": sorted(excluded),
                 "compact_tokens": compact_tokens,
+                "aggressive_compact_tokens": aggressive_compact_tokens,
             },
             ensure_ascii=False,
         ),
@@ -699,7 +968,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--compact_tokens",
         action="store_true",
-        help="Compact assistant JSON payload keys and formatting for lower token usage.",
+        help="Compact assistant JSON payload formatting and numeric separators without renaming keys.",
+    )
+    parser.add_argument(
+        "--aggressive-compact-tokens",
+        "--aggressive_compact_tokens",
+        action="store_true",
+        dest="aggressive_compact_tokens",
+        help="Aggressive compaction: enables key shortening in addition to --compact_tokens behavior.",
     )
     parser.add_argument("--push-all-variants", action="store_true", help="Push all 4 dataset variants with one command.")
     parser.add_argument(
@@ -717,6 +993,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=None,
         help="Optional validation repo id override when --push-train-val-separately is enabled.",
     )
+    parser.add_argument(
+        "--allow-duplicate-facts",
+        action="store_true",
+        help="Allow HF export/push to continue even when exact duplicate facts are detected in annotations.",
+    )
+    parser.add_argument(
+        "--allow-ordering-issues",
+        action="store_true",
+        help="Allow HF export/push to continue when fact reading-order violations are detected in annotations.",
+    )
+    parser.add_argument(
+        "--allow-format-issues",
+        action="store_true",
+        help="Allow HF export/push to continue when fact schema/date/value format issues are detected.",
+    )
     return parser.parse_args(argv)
 
 
@@ -730,6 +1021,7 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     config_path = (root / args.config).resolve()
+    cfg = load_finetune_config(config_path)
     export_dir = (root / args.export_dir).resolve()
     resize_bounds = _resolve_resize_bounds(args.min_pixels, args.max_pixels)
     resolved_min = resize_bounds[0] if resize_bounds else None
@@ -737,8 +1029,51 @@ def main(argv: list[str] | None = None) -> int:
     instruction_mode = _normalize_instruction_mode(args.instruction_mode)
     excluded_doc_ids = _parse_excluded_doc_ids(args.exclude_doc_ids)
     main_repo_id = _resolve_repo_id(args.repo_id, token)
+    compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
 
     build_dataset(config_path)
+    if instruction_mode == "source" or args.push_all_variants:
+        assert_source_instruction_schema(root, fail_on_issues=True)
+    assert_no_train_val_contamination(root)
+    duplicate_report = assert_no_duplicate_facts(
+        root,
+        annotations_glob=cfg.data.annotations_glob,
+        fail_on_duplicates=not args.allow_duplicate_facts,
+    )
+    if args.allow_duplicate_facts and int(duplicate_report["duplicate_rows"]) > 0:
+        print(
+            "WARNING: continuing with duplicate facts because --allow-duplicate-facts was set. "
+            f"duplicate_rows={duplicate_report['duplicate_rows']}"
+        )
+    if cfg.data.fact_order_enforce:
+        ordering_report = assert_fact_order(
+            root,
+            annotations_glob=cfg.data.annotations_glob,
+            default_direction=cfg.data.fact_order_default_on_uncertain,
+            row_tolerance_ratio=cfg.data.fact_order_row_tolerance_ratio,
+            row_tolerance_min_px=cfg.data.fact_order_row_tolerance_min_px,
+            fail_on_issues=not args.allow_ordering_issues,
+        )
+        if args.allow_ordering_issues and int(ordering_report["pages_with_order_issues"]) > 0:
+            print(
+                "WARNING: continuing with ordering issues because --allow-ordering-issues was set. "
+                f"pages_with_order_issues={ordering_report['pages_with_order_issues']}"
+            )
+    else:
+        print("FACT_ORDER_AUDIT: skipped (data.fact_order_enforce=false)")
+    if cfg.data.fact_format_enforce:
+        format_report = assert_fact_format(
+            root,
+            annotations_glob=cfg.data.annotations_glob,
+            fail_on_issues=not args.allow_format_issues,
+        )
+        if args.allow_format_issues and int(format_report["facts_with_issues"]) > 0:
+            print(
+                "WARNING: continuing with format issues because --allow-format-issues was set. "
+                f"facts_with_issues={format_report['facts_with_issues']}"
+            )
+    else:
+        print("FACT_FORMAT_AUDIT: skipped (data.fact_format_enforce=false)")
 
     train_rows, val_rows = export_for_hf(
         root,
@@ -747,7 +1082,8 @@ def main(argv: list[str] | None = None) -> int:
         min_pixels=resolved_min,
         max_pixels=resolved_max,
         exclude_doc_ids=excluded_doc_ids,
-        compact_tokens=args.compact_tokens,
+        compact_tokens=compact_tokens,
+        aggressive_compact_tokens=args.aggressive_compact_tokens,
     )
     dataset, _, _ = build_hf_dataset_from_export(export_dir)
     if args.push_train_val_separately:
@@ -767,7 +1103,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"TRAIN_ROWS: {train_rows}")
     print(f"VAL_ROWS: {val_rows}")
     print(f"INSTRUCTION_MODE: {instruction_mode}")
-    print(f"COMPACT_TOKENS: {args.compact_tokens}")
+    print(f"COMPACT_TOKENS: {compact_tokens}")
+    print(f"AGGRESSIVE_COMPACT_TOKENS: {args.aggressive_compact_tokens}")
     print(f"EXPORT_DIR: {export_dir}")
 
     if args.push_all_variants:
@@ -792,7 +1129,8 @@ def main(argv: list[str] | None = None) -> int:
             min_pixels=resolved_min,
             max_pixels=resolved_max,
             exclude_doc_ids=excluded_doc_ids,
-            compact_tokens=args.compact_tokens,
+            compact_tokens=compact_tokens,
+            aggressive_compact_tokens=args.aggressive_compact_tokens,
         )
         min_ds, _, _ = build_hf_dataset_from_export(export_minimal)
         if args.push_train_val_separately:
@@ -823,7 +1161,8 @@ def main(argv: list[str] | None = None) -> int:
             min_pixels=resolved_min,
             max_pixels=resolved_max,
             exclude_doc_ids=excluded_doc_ids,
-            compact_tokens=args.compact_tokens,
+            compact_tokens=compact_tokens,
+            aggressive_compact_tokens=args.aggressive_compact_tokens,
         )
         nb_ds, _, _ = no_bbox_mod.build_hf_dataset_no_bbox_from_export(export_no_bbox, instruction_mode="source")
         if args.push_train_val_separately:
@@ -855,7 +1194,8 @@ def main(argv: list[str] | None = None) -> int:
             min_pixels=resolved_min,
             max_pixels=resolved_max,
             exclude_doc_ids=excluded_doc_ids,
-            compact_tokens=args.compact_tokens,
+            compact_tokens=compact_tokens,
+            aggressive_compact_tokens=args.aggressive_compact_tokens,
         )
         nbm_ds, _, _ = no_bbox_mod.build_hf_dataset_no_bbox_from_export(export_no_bbox_min, instruction_mode="minimal")
         if args.push_train_val_separately:
@@ -884,6 +1224,8 @@ def main(argv: list[str] | None = None) -> int:
 
 __all__ = [
     "build_dataset",
+    "assert_source_instruction_schema",
+    "assert_no_train_val_contamination",
     "build_hf_dataset",
     "build_hf_dataset_from_export",
     "export_for_hf",

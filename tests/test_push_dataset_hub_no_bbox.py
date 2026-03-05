@@ -7,6 +7,7 @@ from pathlib import Path
 
 from datasets import Dataset, DatasetDict, Features, Image, Value
 from PIL import Image as PILImage
+import pytest
 
 from finetree_annotator.finetune import push_dataset_hub_no_bbox as no_bbox_mod
 
@@ -29,11 +30,12 @@ def _empty_dataset() -> DatasetDict:
     features = Features(
         {
             "image": Image(),
+            "system": Value("string"),
             "instruction": Value("string"),
             "text": Value("string"),
         }
     )
-    empty = {"image": [], "instruction": [], "text": []}
+    empty = {"image": [], "system": [], "instruction": [], "text": []}
     return DatasetDict(
         {
             "train": Dataset.from_dict(empty, features=features),
@@ -93,6 +95,7 @@ def test_export_for_hf_no_bbox_strips_bbox_and_sanitizes_source_instruction(tmp_
     assert val_rows == 0
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     assert out["image"] == "images/doc1/page_0001.png"
+    assert out["system"] == no_bbox_mod._DEFAULT_SYSTEM_PROMPT
     assert "bbox" not in out["instruction"].lower()
     assert "Keep facts in order." in out["instruction"]
 
@@ -129,6 +132,7 @@ def test_export_for_hf_no_bbox_minimal_instruction_is_fixed_line(tmp_path: Path)
     assert train_rows == 1
 
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
+    assert out["system"] == no_bbox_mod._DEFAULT_SYSTEM_PROMPT
     assert out["instruction"] == no_bbox_mod._MINIMAL_INSTRUCTION
 
 
@@ -181,19 +185,63 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
     assert ", " not in compact_text
 
     compact_payload = json.loads(compact_text)
+    assert "meta" in compact_payload
+    assert "facts" in compact_payload
+    fact = compact_payload["facts"][0]
+    assert "bbox" not in fact
+    assert fact["value"] == "9876"
+    assert fact["date"] == "30.09.2021"
+    assert fact["currency"] == "ILS"
+    assert fact["scale"] == 1000
+    assert fact["value_type"] == "amount"
+    assert "refference" in fact
+    assert fact["refference"] is None
+    assert "note" in fact
+    assert fact["note"] is None
+
+
+def test_export_for_hf_no_bbox_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -> None:
+    root = tmp_path
+    img_dir = root / "data" / "pdf_images" / "doc1"
+    img_dir.mkdir(parents=True)
+    image_path = img_dir / "page_0001.png"
+    PILImage.new("RGB", (200, 100), color=(255, 255, 255)).save(image_path)
+
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+    payload = {"meta": {"entity_name": "X"}, "facts": [{"value": "9,876", "refference": None}]}
+    sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(image_path)},
+                    {"type": "text", "text": "Prompt"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(payload)}]},
+        ],
+    }
+    (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text("", encoding="utf-8")
+
+    export_dir = root / "artifacts" / "hf_dataset_export_no_bbox"
+    train_rows, _ = no_bbox_mod.export_for_hf_no_bbox(
+        root,
+        export_dir,
+        instruction_mode="source",
+        compact_tokens=True,
+        aggressive_compact_tokens=True,
+    )
+    assert train_rows == 1
+    out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
+    compact_payload = json.loads(out["text"])
     assert "m" in compact_payload
     assert "f" in compact_payload
     fact = compact_payload["f"][0]
-    assert "b" not in fact
     assert fact["v"] == "9876"
-    assert fact["d"] == "30.09.2021"
-    assert fact["cur"] == "ILS"
-    assert fact["sc"] == 1000
-    assert fact["vt"] == "amount"
     assert "ref" in fact
     assert fact["ref"] is None
-    assert "note" in fact
-    assert fact["note"] is None
 
 
 def test_export_for_hf_no_bbox_can_resize_images(tmp_path: Path, monkeypatch) -> None:
@@ -289,6 +337,7 @@ def test_build_hf_dataset_no_bbox_from_export_has_instruction_column(tmp_path: P
 
     row = {
         "image": "images/doc1/page_0001.png",
+        "system": no_bbox_mod._DEFAULT_SYSTEM_PROMPT,
         "instruction": no_bbox_mod._MINIMAL_INSTRUCTION,
         "text": '{"meta":{"type":"other"},"facts":[]}',
     }
@@ -298,13 +347,14 @@ def test_build_hf_dataset_no_bbox_from_export_has_instruction_column(tmp_path: P
     dataset, train_rows, val_rows = no_bbox_mod.build_hf_dataset_no_bbox_from_export(export_dir, instruction_mode="minimal")
     assert train_rows == 1
     assert val_rows == 0
-    assert dataset["train"].column_names == ["image", "instruction", "text"]
+    assert dataset["train"].column_names == ["image", "system", "instruction", "text"]
 
 
 def test_main_omit_instruction_alias_maps_to_minimal(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, str] = {}
 
     monkeypatch.setattr(no_bbox_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
 
     def _fake_export(
         root: Path,
@@ -315,8 +365,9 @@ def test_main_omit_instruction_alias_maps_to_minimal(monkeypatch, tmp_path: Path
         max_pixels=None,
         exclude_doc_ids=None,
         compact_tokens: bool = False,
+        aggressive_compact_tokens: bool = False,
     ):
-        _ = root, export_dir, min_pixels, max_pixels, exclude_doc_ids, compact_tokens
+        _ = root, export_dir, min_pixels, max_pixels, exclude_doc_ids, compact_tokens, aggressive_compact_tokens
         captured["mode"] = instruction_mode
         return 1, 0
 
@@ -336,3 +387,88 @@ def test_main_omit_instruction_alias_maps_to_minimal(monkeypatch, tmp_path: Path
 
     assert rc == 0
     assert captured["mode"] == "minimal"
+
+
+def test_main_source_mode_runs_prompt_schema_audit(monkeypatch, tmp_path: Path) -> None:
+    captured: dict[str, bool] = {"audited": False}
+
+    monkeypatch.setattr(no_bbox_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(no_bbox_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(no_bbox_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 0})
+    monkeypatch.setattr(
+        no_bbox_mod,
+        "assert_source_instruction_schema",
+        lambda *_args, **_kwargs: captured.__setitem__("audited", True) or {"rows_with_issues": 0},
+    )
+    monkeypatch.setattr(no_bbox_mod, "export_for_hf_no_bbox", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(no_bbox_mod, "build_hf_dataset_no_bbox_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(no_bbox_mod, "push_to_hf_no_bbox", lambda *_args, **_kwargs: "asafd60/FineTree-annotated-pages-no-bbox")
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = no_bbox_mod.main(["--token", "tok", "--repo-id", "asafd60/FineTree-annotated-pages-no-bbox"])
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert captured["audited"] is True
+
+
+def test_main_blocks_on_format_issues_by_default(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(no_bbox_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(no_bbox_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(no_bbox_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(
+        no_bbox_mod,
+        "assert_fact_format",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(RuntimeError("format violation")),
+    )
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        with pytest.raises(RuntimeError, match="format violation"):
+            no_bbox_mod.main(["--token", "tok", "--repo-id", "asafd60/FineTree-annotated-pages-no-bbox"])
+    finally:
+        monkeypatch.chdir(cwd)
+
+
+def test_main_allows_format_issues_when_flag_set(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setattr(no_bbox_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(no_bbox_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(no_bbox_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 9})
+    monkeypatch.setattr(no_bbox_mod, "export_for_hf_no_bbox", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(no_bbox_mod, "build_hf_dataset_no_bbox_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(no_bbox_mod, "push_to_hf_no_bbox", lambda *_args, **_kwargs: "asafd60/FineTree-annotated-pages-no-bbox")
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = no_bbox_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages-no-bbox",
+                "--allow-format-issues",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0

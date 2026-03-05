@@ -1,0 +1,2902 @@
+{
+  "images_dir": "data/pdf_images/pdf_5",
+  "pages": [
+    {
+      "image": "page_0001.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": null,
+        "type": "title",
+        "title": "דין וחשבון כספי ליום 31 בדצמבר 2022"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0002.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": null,
+        "type": "contents_page",
+        "title": "תוכן העניינים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0003.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "2",
+        "type": "declaration",
+        "title": "ד״וח רואה חשבון המבקר לוועד המנהל"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0004.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "3",
+        "type": "balance_sheet",
+        "title": "דוח על המצב הכספי"
+      },
+      "facts": [
+        {
+          "bbox": [
+            269.07,
+            557.36,
+            114.95,
+            41.42
+          ],
+          "value": "232,629",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            509.05,
+            557.36,
+            116.61,
+            41.42
+          ],
+          "value": "205,367",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            509.05,
+            601.8,
+            116.61,
+            41.42
+          ],
+          "value": "923,382",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף",
+            "הכנסות לקבל"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            356.79,
+            608.82,
+            27.24,
+            32.07
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף",
+            "הכנסות לקבל"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            269.07,
+            653.26,
+            114.95,
+            41.42
+          ],
+          "value": "179,711",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף",
+            "אשראי ושקים לגבייה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            522.29,
+            653.26,
+            103.37,
+            41.42
+          ],
+          "value": "77,876",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף",
+            "אשראי ושקים לגבייה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            269.07,
+            700.04,
+            114.95,
+            41.42
+          ],
+          "value": "145,000",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף",
+            "הלוואות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            598.42,
+            704.72,
+            27.24,
+            32.07
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף",
+            "הלוואות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            297.21,
+            749.16,
+            86.82,
+            41.42
+          ],
+          "value": "8,089",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף",
+            "חייבים אחרים ויתרות חובה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            537.18,
+            749.16,
+            88.47,
+            41.42
+          ],
+          "value": "6,000",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף",
+            "חייבים אחרים ויתרות חובה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            269.07,
+            798.28,
+            114.95,
+            41.42
+          ],
+          "value": "565,429",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש שוטף"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            485.88,
+            798.28,
+            139.78,
+            41.42
+          ],
+          "value": "1,212,625",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש שוטף"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            283.97,
+            845.06,
+            100.06,
+            41.42
+          ],
+          "value": "73,839",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "3",
+          "date": "31.12.2021",
+          "path": [
+            "רכוש קבוע, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            509.05,
+            845.06,
+            116.61,
+            41.42
+          ],
+          "value": "274,117",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "3",
+          "date": "31.12.2022",
+          "path": [
+            "רכוש קבוע, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            267.07,
+            894.18,
+            110.95,
+            37.42
+          ],
+          "value": "639,268",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            483.88,
+            894.18,
+            135.78,
+            37.42
+          ],
+          "value": "1,486,742",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            273.97,
+            1036.52,
+            106.06,
+            39.42
+          ],
+          "value": "78,883",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות שוטפות",
+            "ספקים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            542.08,
+            1036.52,
+            79.58,
+            39.42
+          ],
+          "value": "2,367",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "התחייבויות שוטפות",
+            "ספקים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            263.07,
+            1087.63,
+            118.95,
+            39.42
+          ],
+          "value": "120,897",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות שוטפות",
+            "עובדים ומוסדות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            503.05,
+            1087.63,
+            120.61,
+            39.42
+          ],
+          "value": "221,680",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "התחייבויות שוטפות",
+            "עובדים ומוסדות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            503.05,
+            1132.08,
+            120.61,
+            39.42
+          ],
+          "value": "316,670",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "4",
+          "date": "31.12.2022",
+          "path": [
+            "התחייבויות שוטפות",
+            "הלוואות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            350.79,
+            1136.75,
+            31.24,
+            30.07
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "4",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות שוטפות",
+            "הלוואות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            263.07,
+            1181.19,
+            118.95,
+            39.42
+          ],
+          "value": "199,780",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות שוטפות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            503.71,
+            1181.19,
+            118.95,
+            39.42
+          ],
+          "value": "540,717",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות שוטפות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            511.05,
+            1277.09,
+            106.61,
+            37.42
+          ],
+          "value": "121,530",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "5",
+          "date": "31.12.2022",
+          "path": [
+            "התחייבויות לזמן ארוך",
+            "עתודות לזכויות עובדים בעת פרישה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            360.79,
+            1279.43,
+            13.24,
+            28.07
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "5",
+          "date": "31.12.2021",
+          "path": [
+            "התחייבויות לזמן ארוך",
+            "עתודות לזכויות עובדים בעת פרישה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            269.07,
+            1323.87,
+            106.95,
+            37.42
+          ],
+          "value": "199,780",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "סה\"כ התחייבויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            509.33,
+            1323.87,
+            106.61,
+            37.42
+          ],
+          "value": "662,247",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "סה\"כ התחייבויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            255.07,
+            1511.33,
+            118.95,
+            41.42
+          ],
+          "value": "365,649",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "נכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות:",
+            "שלא יועדו על ידי מוסדות המלכ״ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            495.05,
+            1511.33,
+            128.61,
+            41.42
+          ],
+          "value": "550,378",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "נכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות:",
+            "שלא יועדו על ידי מוסדות המלכ״ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            269.97,
+            1560.45,
+            104.06,
+            41.42
+          ],
+          "value": "73,839",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "נכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות:",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            495.05,
+            1560.45,
+            128.61,
+            41.42
+          ],
+          "value": "274,117",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "נכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות:",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            255.07,
+            1609.57,
+            118.95,
+            41.42
+          ],
+          "value": "439,488",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "נכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            495.05,
+            1609.57,
+            128.61,
+            41.42
+          ],
+          "value": "824,495",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "נכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            255.07,
+            1658.69,
+            118.95,
+            41.42
+          ],
+          "value": "639,268",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            471.88,
+            1658.69,
+            151.78,
+            41.42
+          ],
+          "value": "1,486,742",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        }
+      ]
+    },
+    {
+      "image": "page_0005.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "4",
+        "type": "profits",
+        "title": "דוחות על הפעילויות"
+      },
+      "facts": [
+        {
+          "bbox": [
+            484.92,
+            652.58,
+            140.68,
+            32.75
+          ],
+          "value": "1,092,756",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "מחזור הפעילויות",
+            "קופות חולים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            362.1,
+            657.26,
+            19.24,
+            20.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "מחזור הפעילויות",
+            "קופות חולים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            236.66,
+            718.07,
+            140.68,
+            32.75
+          ],
+          "value": "1,836,651",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "מחזור הפעילויות",
+            "הכנסות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            486.57,
+            718.07,
+            139.02,
+            32.75
+          ],
+          "value": "1,683,166",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "מחזור הפעילויות",
+            "הכנסות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            236.66,
+            781.23,
+            140.68,
+            32.75
+          ],
+          "value": "1,836,651",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            486.57,
+            781.23,
+            139.02,
+            32.75
+          ],
+          "value": "2,775,922",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            240.87,
+            909.87,
+            136.47,
+            32.75
+          ],
+          "value": "384,014",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות",
+            "משכורות ונלוות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            472.57,
+            909.87,
+            153.02,
+            32.75
+          ],
+          "value": "1,613,739",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות",
+            "משכורות ונלוות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            240.87,
+            973.02,
+            136.47,
+            32.75
+          ],
+          "value": "947,139",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות",
+            "הפעלת שיעורי מוזיקה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            502.36,
+            973.02,
+            123.23,
+            32.75
+          ],
+          "value": "389,985",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות",
+            "הפעלת שיעורי מוזיקה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            500.71,
+            1036.18,
+            124.89,
+            32.75
+          ],
+          "value": "110,000",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות",
+            "תמיכות בתלמידים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            353.1,
+            1041.86,
+            27.24,
+            12.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות",
+            "תמיכות בתלמידים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            530.5,
+            1099.33,
+            95.09,
+            32.75
+          ],
+          "value": "4,029",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות",
+            "ביטוח"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            353.1,
+            1105.01,
+            27.24,
+            12.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות",
+            "ביטוח"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            310.38,
+            1160.14,
+            66.96,
+            32.75
+          ],
+          "value": "891",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות",
+            "פחת"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            530.5,
+            1160.14,
+            95.09,
+            32.75
+          ],
+          "value": "9,671",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות",
+            "פחת"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            222.66,
+            1220.96,
+            154.68,
+            32.75
+          ],
+          "value": "1,332,044",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            472.57,
+            1220.96,
+            153.02,
+            32.75
+          ],
+          "value": "2,127,424",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            254.11,
+            1281.77,
+            123.23,
+            32.75
+          ],
+          "value": "504,607",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            502.36,
+            1281.77,
+            123.23,
+            32.75
+          ],
+          "value": "648,498",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            280.59,
+            1408.08,
+            96.75,
+            32.75
+          ],
+          "value": "11,111",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משכורות ונלוות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            500.71,
+            1408.08,
+            124.89,
+            32.75
+          ],
+          "value": "201,584",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משכורות ונלוות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            280.59,
+            1471.23,
+            96.75,
+            32.75
+          ],
+          "value": "30,195",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משרדיות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            530.5,
+            1471.23,
+            95.09,
+            32.75
+          ],
+          "value": "8,474",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משרדיות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            515.6,
+            1532.05,
+            109.99,
+            32.75
+          ],
+          "value": "21,812",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "פרסום"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            351.1,
+            1536.16,
+            31.37,
+            23.24
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "פרסום"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            295.49,
+            1595.2,
+            81.86,
+            32.75
+          ],
+          "value": "1,153",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "אגרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            558.63,
+            1595.2,
+            66.96,
+            32.75
+          ],
+          "value": "153",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "אגרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            280.59,
+            1658.35,
+            96.75,
+            32.75
+          ],
+          "value": "42,459",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            500.71,
+            1658.35,
+            124.89,
+            32.75
+          ],
+          "value": "232,023",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            254.11,
+            1719.16,
+            123.23,
+            32.75
+          ],
+          "value": "462,148",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הכנסות נטו לפני מימון"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            500.71,
+            1719.16,
+            124.89,
+            32.75
+          ],
+          "value": "416,475",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הכנסות נטו לפני מימון"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            280.59,
+            1779.98,
+            96.75,
+            37.91
+          ],
+          "value": "26,480",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הוצאות מימון נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            515.6,
+            1783.42,
+            109.99,
+            32.75
+          ],
+          "value": "31,468",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הוצאות מימון נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            254.11,
+            1843.13,
+            123.23,
+            34.47
+          ],
+          "value": "435,668",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "הכנסות נטו (גרעון) לשנה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            502.36,
+            1843.13,
+            123.23,
+            41.0
+          ],
+          "value": "385,007",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "הכנסות נטו (גרעון) לשנה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        }
+      ]
+    },
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "5",
+        "type": "profits",
+        "title": "דוחות על השינויים בנכסים נטו"
+      },
+      "facts": [
+        {
+          "bbox": [
+            283.0,
+            655.6,
+            80.13,
+            41.42
+          ],
+          "value": "3,820",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "1.1.2021",
+          "path": [
+            "יתרות ליום 1 בינואר 2021",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            754.68,
+            659.6,
+            90.01,
+            37.42
+          ],
+          "value": "3,820",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "1.1.2021",
+          "path": [
+            "יתרות ליום 1 בינואר 2021",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            581.87,
+            664.62,
+            21.24,
+            16.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "1.1.2021",
+          "path": [
+            "יתרות ליום 1 בינואר 2021",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            249.91,
+            749.16,
+            114.89,
+            41.42
+          ],
+          "value": "435,668",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            716.62,
+            753.16,
+            119.16,
+            37.42
+          ],
+          "value": "435,668",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            583.52,
+            760.51,
+            19.59,
+            19.02
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            490.5,
+            933.94,
+            116.95,
+            41.42
+          ],
+          "value": "74,730",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            712.27,
+            933.94,
+            130.19,
+            46.1
+          ],
+          "value": "(74,730)",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            345.89,
+            941.63,
+            17.24,
+            19.02
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            530.22,
+            980.72,
+            78.89,
+            46.1
+          ],
+          "value": "(891)",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            770.54,
+            980.72,
+            76.88,
+            41.42
+          ],
+          "value": "891",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            347.55,
+            988.41,
+            15.59,
+            16.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            248.25,
+            1031.5,
+            117.5,
+            37.42
+          ],
+          "value": "439,488",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2021-12-31",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2021",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            494.85,
+            1031.5,
+            102.61,
+            37.42
+          ],
+          "value": "73,839",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2021",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            718.27,
+            1031.5,
+            112.54,
+            37.42
+          ],
+          "value": "365,649",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2021",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2021",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            249.91,
+            1127.4,
+            119.16,
+            37.42
+          ],
+          "value": "385,007",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            719.92,
+            1127.4,
+            117.5,
+            37.42
+          ],
+          "value": "385,007",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            580.84,
+            1135.09,
+            23.24,
+            15.02
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            483.26,
+            1305.16,
+            114.19,
+            37.42
+          ],
+          "value": "209,949",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            705.03,
+            1305.16,
+            132.4,
+            44.44
+          ],
+          "value": "(209,949)",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            338.58,
+            1312.86,
+            27.24,
+            19.02
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            514.71,
+            1351.94,
+            87.72,
+            44.44
+          ],
+          "value": "(9,671)",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            749.07,
+            1354.28,
+            90.01,
+            37.42
+          ],
+          "value": "9,671",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            340.24,
+            1359.64,
+            25.59,
+            19.02
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            244.94,
+            1399.63,
+            124.12,
+            39.76
+          ],
+          "value": "824,495",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            481.61,
+            1401.06,
+            120.81,
+            37.42
+          ],
+          "value": "274,117",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            716.62,
+            1401.06,
+            120.81,
+            37.42
+          ],
+          "value": "550,378",
+          "note": null,
+          "is_beur": false,
+          "beur_num": null,
+          "refference": "",
+          "date": "31.12.2022",
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        }
+      ]
+    },
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "6",
+        "type": "notes",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0008.png",
+      "meta": {
+        "entity_name": "״מיוזיק״ בית ספר למוזיקה (ע״ר)",
+        "page_num": "7",
+        "type": "notes",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0009.png",
+      "meta": {
+        "entity_name": "\"מיוזיק\" בית ספר למוזיקה (ע\"ר)",
+        "page_num": "8",
+        "type": "notes",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            207.5,
+            605.16,
+            103.03,
+            47.76
+          ],
+          "value": "74,730",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "עלות",
+            "יתרה ליום 1 בינואר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            373.0,
+            605.16,
+            104.68,
+            47.76
+          ],
+          "value": "12,100",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "עלות",
+            "יתרה ליום 1 בינואר 2022",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            536.84,
+            605.16,
+            103.03,
+            47.76
+          ],
+          "value": "17,550",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "עלות",
+            "יתרה ליום 1 בינואר 2022",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            700.68,
+            605.16,
+            104.68,
+            47.76
+          ],
+          "value": "45,080",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "עלות",
+            "יתרה ליום 1 בינואר 2022",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            194.25,
+            651.94,
+            117.92,
+            52.44
+          ],
+          "value": "209,949",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            373.0,
+            651.94,
+            103.25,
+            52.44
+          ],
+          "value": "76,800",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            535.18,
+            651.94,
+            106.33,
+            52.44
+          ],
+          "value": "30,000",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            690.75,
+            651.94,
+            114.61,
+            52.44
+          ],
+          "value": "103,149",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            194.25,
+            703.39,
+            117.92,
+            50.1
+          ],
+          "value": "284,679",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            373.0,
+            703.39,
+            104.68,
+            50.1
+          ],
+          "value": "88,900",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2022",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            535.18,
+            703.39,
+            106.33,
+            50.1
+          ],
+          "value": "47,550",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2022",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            690.75,
+            703.39,
+            114.61,
+            50.1
+          ],
+          "value": "148,229",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2022",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            247.22,
+            806.31,
+            63.3,
+            40.75
+          ],
+          "value": "891",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            740.4,
+            806.31,
+            64.96,
+            40.75
+          ],
+          "value": "794",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2022",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            578.22,
+            808.65,
+            63.3,
+            45.42
+          ],
+          "value": "97",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2022",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            447.47,
+            818.01,
+            25.46,
+            21.27
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-01-01",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2022",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            220.74,
+            857.77,
+            89.78,
+            47.76
+          ],
+          "value": "9,671",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            550.08,
+            857.77,
+            89.78,
+            47.76
+          ],
+          "value": "1,697",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            715.58,
+            857.77,
+            89.78,
+            47.76
+          ],
+          "value": "7,974",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            447.47,
+            876.48,
+            26.89,
+            12.68
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022",
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            204.19,
+            916.24,
+            107.99,
+            47.76
+          ],
+          "value": "10,562",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            550.08,
+            916.24,
+            89.78,
+            47.76
+          ],
+          "value": "1,794",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2022",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            715.58,
+            916.24,
+            89.78,
+            47.76
+          ],
+          "value": "8,768",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2022",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            447.47,
+            924.93,
+            26.89,
+            22.71
+          ],
+          "value": "-",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2022",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            192.6,
+            970.04,
+            119.58,
+            47.76
+          ],
+          "value": "274,117",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            373.0,
+            970.04,
+            104.68,
+            47.76
+          ],
+          "value": "88,900",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2022",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            535.18,
+            970.04,
+            104.68,
+            47.76
+          ],
+          "value": "45,756",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2022",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            689.1,
+            970.04,
+            116.27,
+            47.76
+          ],
+          "value": "139,461",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2022-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2022",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            207.5,
+            1068.28,
+            103.03,
+            47.76
+          ],
+          "value": "73,839",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2021-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2021",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            373.0,
+            1068.28,
+            104.68,
+            47.76
+          ],
+          "value": "12,100",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2021-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2021",
+            "שיפוצים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            538.5,
+            1068.28,
+            101.37,
+            47.76
+          ],
+          "value": "17,453",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2021-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2021",
+            "ציוד וריהוט"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        },
+        {
+          "bbox": [
+            704.0,
+            1068.28,
+            101.37,
+            47.76
+          ],
+          "value": "44,286",
+          "note": null,
+          "is_beur": true,
+          "beur_num": "3",
+          "refference": "",
+          "date": "2021-12-31",
+          "path": [
+            "עלות מופחתת ליום 31 בדצמבר 2021",
+            "כלי נגינה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount"
+        }
+      ]
+    }
+  ]
+}

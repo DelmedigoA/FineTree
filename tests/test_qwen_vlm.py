@@ -161,9 +161,9 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     assert extraction.meta.type.value == "other"
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
-    assert extraction.facts[0].note == "*without debt insurance"
-    assert extraction.facts[0].is_beur is True
-    assert extraction.facts[0].beur_num == "5"
+    assert extraction.facts[0].comment == "*without debt insurance"
+    assert extraction.facts[0].is_note is True
+    assert extraction.facts[0].note == "5"
 
 
 def test_generate_page_extraction_parses_bbox_array_shape(tmp_path: Path, monkeypatch) -> None:

@@ -6,9 +6,11 @@ import json
 import os
 import sys
 from copy import deepcopy
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
+from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
 from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, pyqtSignal
@@ -51,16 +53,19 @@ from .annotation_core import (
     CURRENCY_OPTIONS,
     PageState,
     SCALE_OPTIONS,
+    apply_entity_name_to_missing_pages,
     build_annotations_payload,
     denormalize_bbox_from_1000,
     default_page_meta,
+    extract_document_meta,
     load_page_states,
     parse_import_payload,
     normalize_bbox_data,
     normalize_fact_data,
-    propagate_entity_to_next_page,
     serialize_annotations_json,
 )
+from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
+from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
 from .gemini_few_shot import (
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
@@ -86,6 +91,14 @@ FEW_SHOT_PRESET_SUMMARY: dict[str, str] = {
 FEW_SHOT_PRESET_HELP_TEXT = " | ".join(
     FEW_SHOT_PRESET_SUMMARY.get(preset_id, preset_id)
     for preset_id, _ in FEW_SHOT_PRESET_CHOICES
+)
+QWEN_GT_MAX_NEW_TOKENS = 10_000
+
+QWEN_GT_MODEL_CHOICES: tuple[str, ...] = (
+    "qwen-flash-gt",
+    "qwen3.5-plus-2026-02-15",
+    "qwen3.5-27b",
+    "Qwen/Qwen3.5-27B",
 )
 
 
@@ -347,6 +360,49 @@ class AnnotRectItem(QGraphicsRectItem):
         self._resize_start_rect: Optional[QRectF] = None
         self._resize_start_scene_pos: Optional[QPointF] = None
         self._press_scene_rect: Optional[QRectF] = None
+        self._order_label: Optional[int] = None
+        self._show_order_label = True
+
+    def set_order_label(self, order: Optional[int], *, visible: bool = True) -> None:
+        next_order = int(order) if order is not None else None
+        next_visible = bool(visible)
+        if next_order == self._order_label and next_visible == self._show_order_label:
+            return
+        self._order_label = next_order
+        self._show_order_label = next_visible
+        self.update()
+
+    def paint(self, painter, option, widget=None) -> None:
+        super().paint(painter, option, widget)
+        if not self._show_order_label or self._order_label is None:
+            return
+
+        text = str(self._order_label)
+        painter.save()
+        font = QFont(painter.font())
+        font.setPointSize(max(7, font.pointSize() - 1))
+        font.setBold(True)
+        painter.setFont(font)
+
+        fm = painter.fontMetrics()
+        pad_x = 4
+        pad_y = 2
+        badge_w = fm.horizontalAdvance(text) + (pad_x * 2)
+        badge_h = fm.height() + (pad_y * 2)
+
+        rect = self.rect()
+        badge_rect = QRectF(
+            rect.left() + 1.0,
+            rect.top() + 1.0,
+            float(badge_w),
+            float(badge_h),
+        )
+        painter.setPen(QPen(QColor(34, 53, 88, 220), 1))
+        painter.setBrush(QColor(255, 255, 255, 220))
+        painter.drawRoundedRect(badge_rect, 3.0, 3.0)
+        painter.setPen(QPen(QColor(34, 53, 88), 1))
+        painter.drawText(badge_rect, Qt.AlignCenter, text)
+        painter.restore()
 
     def _geometry_changed_since_press(self) -> bool:
         if self._press_scene_rect is None:
@@ -746,6 +802,7 @@ class GeminiPromptDialog(QDialog):
         root.addWidget(hint)
 
         form = QFormLayout()
+        self.form_layout = form
         self.model_edit = QLineEdit(model_name)
         form.addRow("model", self.model_edit)
         self.few_shot_check = QCheckBox("Use few-shot examples")
@@ -933,9 +990,23 @@ class QwenPromptDialog(GeminiPromptDialog):
             few_shot_summary=few_shot_summary,
         )
         self.setWindowTitle("Qwen Prompt")
+        self.model_combo = QComboBox()
+        self.model_combo.setEditable(True)
+        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
+        for option in QWEN_GT_MODEL_CHOICES:
+            self.model_combo.addItem(option)
+        self.model_combo.setCurrentText(model_name)
+        self.model_edit.setVisible(False)
+        model_row, _ = self.form_layout.getWidgetPosition(self.model_edit)
+        if model_row >= 0:
+            self.form_layout.removeRow(model_row)
+        self.form_layout.insertRow(0, "model", self.model_combo)
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
             ok_btn.setText("Start Qwen GT")
+
+    def model(self) -> str:
+        return self.model_combo.currentText().strip()
 
 
 class QwenStreamDialog(GeminiStreamDialog):
@@ -959,6 +1030,7 @@ class QwenStreamWorker(QObject):
         prompt: str,
         model: str,
         config_path: Optional[str] = None,
+        max_new_tokens: int = QWEN_GT_MAX_NEW_TOKENS,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
         parent: Optional[QObject] = None,
     ) -> None:
@@ -967,6 +1039,7 @@ class QwenStreamWorker(QObject):
         self.prompt = prompt
         self.model = model
         self.config_path = config_path
+        self.max_new_tokens = int(max_new_tokens)
         self.few_shot_examples = few_shot_examples
         self._cancel_requested = False
 
@@ -984,6 +1057,7 @@ class QwenStreamWorker(QObject):
                 prompt=self.prompt,
                 model=self.model,
                 config_path=self.config_path,
+                max_new_tokens=self.max_new_tokens,
                 few_shot_examples=self.few_shot_examples,
             ):
                 if self._cancel_requested:
@@ -1015,6 +1089,7 @@ class AnnotationWindow(QMainWindow):
             [p for p in self.images_dir.iterdir() if p.suffix.lower() in (".png", ".jpg", ".jpeg", ".webp")]
         )
         self.page_states: Dict[str, PageState] = {}
+        self.document_meta: Dict[str, Optional[str]] = {"language": None, "reading_direction": None}
         self.current_index = -1
         self._fact_items: List[AnnotRectItem] = []
         self._syncing_selection = False
@@ -1103,6 +1178,7 @@ class AnnotationWindow(QMainWindow):
         self.copy_image_btn = QPushButton("Copy Image")
         self.fit_btn = QPushButton("Fit")
         self.page_json_btn = QPushButton("Page JSON")
+        self.apply_entity_all_btn = QPushButton("Apply Entity To Missing")
         self.help_btn = QPushButton("Help")
         self.save_btn = QPushButton("Save (Ctrl+S)")
         for btn in (
@@ -1121,6 +1197,7 @@ class AnnotationWindow(QMainWindow):
             self.copy_image_btn,
             self.fit_btn,
             self.page_json_btn,
+            self.apply_entity_all_btn,
             self.help_btn,
             self.save_btn,
         ):
@@ -1143,6 +1220,7 @@ class AnnotationWindow(QMainWindow):
         nav.addWidget(self.copy_image_btn)
         nav.addWidget(self.fit_btn)
         nav.addWidget(self.page_json_btn)
+        nav.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self.help_btn)
         nav.addStretch(1)
         self.output_path_label = QLabel(str(self.annotations_path))
@@ -1225,27 +1303,37 @@ class AnnotationWindow(QMainWindow):
         self.type_combo = QComboBox()
         self.type_combo.addItems([p.value for p in PageType])
         self.title_edit = QLineEdit()
+        self.doc_language_combo = QComboBox()
+        self.doc_language_combo.addItems(["Auto", "Hebrew (he)", "English (en)"])
+        self.doc_direction_combo = QComboBox()
+        self.doc_direction_combo.addItems(["Auto", "RTL", "LTR"])
         field_min_width = 320
         self.entity_name_edit.setMinimumWidth(field_min_width)
         self.page_num_edit.setMinimumWidth(field_min_width)
         self.type_combo.setMinimumWidth(field_min_width)
         self.title_edit.setMinimumWidth(field_min_width)
+        self.doc_language_combo.setMinimumWidth(field_min_width)
+        self.doc_direction_combo.setMinimumWidth(field_min_width)
         meta_form.addRow("entity_name", self.entity_name_edit)
         meta_form.addRow("page_num", self.page_num_edit)
         meta_form.addRow("type*", self.type_combo)
         meta_form.addRow("title", self.title_edit)
+        meta_form.addRow("doc_language", self.doc_language_combo)
+        meta_form.addRow("reading_direction", self.doc_direction_combo)
         right_layout.addWidget(meta_box)
 
         fact_box = QGroupBox("Facts (Bounding Boxes)")
         fact_layout = QVBoxLayout(fact_box)
         fact_layout.setSpacing(10)
+        self.show_order_labels_check = QCheckBox("Show order labels on bboxes")
+        self.show_order_labels_check.setChecked(True)
         self.facts_list = QListWidget()
         self.facts_list.setSpacing(4)
         self.fact_bbox_label = QLabel("bbox: -")
         self.fact_value_edit = QLineEdit()
         self.fact_note_edit = QLineEdit()
         self.fact_is_beur_combo = QComboBox()
-        self.fact_is_beur_combo.addItems(["", "true", "false"])
+        self.fact_is_beur_combo.addItems(["false", "true"])
         self.fact_beur_num_edit = QLineEdit()
         self.fact_refference_edit = QLineEdit()
         self.fact_date_edit = QLineEdit()
@@ -1303,10 +1391,10 @@ class AnnotationWindow(QMainWindow):
         fact_editor_form.setVerticalSpacing(10)
         fact_editor_form.addRow("bbox", self.fact_bbox_label)
         fact_editor_form.addRow("value*", self.fact_value_edit)
-        fact_editor_form.addRow("note", self.fact_note_edit)
-        fact_editor_form.addRow("is_beur", self.fact_is_beur_combo)
-        fact_editor_form.addRow("beur_num", self.fact_beur_num_edit)
-        fact_editor_form.addRow("refference*", self.fact_refference_edit)
+        fact_editor_form.addRow("comment", self.fact_note_edit)
+        fact_editor_form.addRow("is_note", self.fact_is_beur_combo)
+        fact_editor_form.addRow("note", self.fact_beur_num_edit)
+        fact_editor_form.addRow("note_reference*", self.fact_refference_edit)
         fact_editor_form.addRow("date", self.fact_date_edit)
         fact_editor_form.addRow("currency", self.fact_currency_combo)
         fact_editor_form.addRow("scale", self.fact_scale_combo)
@@ -1326,6 +1414,7 @@ class AnnotationWindow(QMainWindow):
 
         self.dup_fact_btn = QPushButton("Duplicate BBox (Cmd/Ctrl+D)")
         self.del_fact_btn = QPushButton("Delete Selected (Del)")
+        fact_layout.addWidget(self.show_order_labels_check)
         fact_layout.addWidget(self.facts_list, 1)
         fact_layout.addWidget(self.fact_editor_box)
         fact_layout.addWidget(self.dup_fact_btn)
@@ -1345,19 +1434,42 @@ class AnnotationWindow(QMainWindow):
         self.batch_insert_path_btn = QPushButton("Insert At Position")
         self.batch_remove_first_btn = QPushButton("Remove First Level")
         self.batch_remove_last_btn = QPushButton("Remove Last Level")
-        self.batch_clear_refference_btn = QPushButton("Clear Refference")
+        self.batch_value_edit = QLineEdit()
+        self.batch_value_edit.setPlaceholderText("Value for selected bboxes")
+        self.batch_set_value_btn = QPushButton("Set Value")
+        self.batch_clear_value_btn = QPushButton("Clear Value")
+        self.batch_refference_edit = QLineEdit()
+        self.batch_refference_edit.setPlaceholderText("Note reference for selected bboxes")
+        self.batch_set_refference_btn = QPushButton("Set Note Reference")
+        self.batch_clear_refference_btn = QPushButton("Clear Note Reference")
         self.batch_note_edit = QLineEdit()
-        self.batch_note_edit.setPlaceholderText("Note text for selected bboxes")
-        self.batch_set_note_btn = QPushButton("Set Note")
-        self.batch_clear_note_btn = QPushButton("Clear Note")
+        self.batch_note_edit.setPlaceholderText("Comment text for selected bboxes")
+        self.batch_set_note_btn = QPushButton("Set Comment")
+        self.batch_clear_note_btn = QPushButton("Clear Comment")
+        self.batch_date_edit = QLineEdit()
+        self.batch_date_edit.setPlaceholderText("Date for selected bboxes (e.g. 30.09.2021)")
+        self.batch_set_date_btn = QPushButton("Set Date")
+        self.batch_clear_date_btn = QPushButton("Clear Date")
         self.batch_is_beur_combo = QComboBox()
-        self.batch_is_beur_combo.addItems(["", "true", "false"])
-        self.batch_set_is_beur_btn = QPushButton("Apply is_beur")
-        self.batch_clear_is_beur_btn = QPushButton("Clear is_beur")
+        self.batch_is_beur_combo.addItems(["false", "true"])
+        self.batch_set_is_beur_btn = QPushButton("Apply is_note")
+        self.batch_clear_is_beur_btn = QPushButton("Set is_note false")
         self.batch_beur_num_edit = QLineEdit()
-        self.batch_beur_num_edit.setPlaceholderText("beur_num for selected bboxes")
-        self.batch_set_beur_num_btn = QPushButton("Set beur_num")
-        self.batch_clear_beur_num_btn = QPushButton("Clear beur_num")
+        self.batch_beur_num_edit.setPlaceholderText("Note text for selected bboxes")
+        self.batch_set_beur_num_btn = QPushButton("Set Note")
+        self.batch_clear_beur_num_btn = QPushButton("Clear Note")
+        self.batch_currency_combo = QComboBox()
+        self.batch_currency_combo.addItems(["", *CURRENCY_OPTIONS])
+        self.batch_set_currency_btn = QPushButton("Set currency")
+        self.batch_clear_currency_btn = QPushButton("Clear currency")
+        self.batch_scale_combo = QComboBox()
+        self.batch_scale_combo.addItems(["", *[str(s) for s in SCALE_OPTIONS]])
+        self.batch_set_scale_btn = QPushButton("Set scale")
+        self.batch_clear_scale_btn = QPushButton("Clear scale")
+        self.batch_value_type_combo = QComboBox()
+        self.batch_value_type_combo.addItems(["", "amount", "%"])
+        self.batch_set_value_type_btn = QPushButton("Set value_type")
+        self.batch_clear_value_type_btn = QPushButton("Clear value_type")
         self.batch_resize_step_spin = QSpinBox()
         self.batch_resize_step_spin.setRange(1, 500)
         self.batch_resize_step_spin.setSingleStep(1)
@@ -1380,15 +1492,29 @@ class AnnotationWindow(QMainWindow):
         batch_row_2.setSpacing(8)
         batch_row_2.addWidget(self.batch_remove_first_btn)
         batch_row_2.addWidget(self.batch_remove_last_btn)
-        batch_row_2.addWidget(self.batch_clear_refference_btn)
+        batch_value_row = QHBoxLayout()
+        batch_value_row.setSpacing(8)
+        batch_value_row.addWidget(self.batch_value_edit)
+        batch_value_row.addWidget(self.batch_set_value_btn)
+        batch_value_row.addWidget(self.batch_clear_value_btn)
+        batch_refference_row = QHBoxLayout()
+        batch_refference_row.setSpacing(8)
+        batch_refference_row.addWidget(self.batch_refference_edit)
+        batch_refference_row.addWidget(self.batch_set_refference_btn)
+        batch_refference_row.addWidget(self.batch_clear_refference_btn)
         batch_note_row = QHBoxLayout()
         batch_note_row.setSpacing(8)
         batch_note_row.addWidget(self.batch_note_edit)
         batch_note_row.addWidget(self.batch_set_note_btn)
         batch_note_row.addWidget(self.batch_clear_note_btn)
+        batch_date_row = QHBoxLayout()
+        batch_date_row.setSpacing(8)
+        batch_date_row.addWidget(self.batch_date_edit)
+        batch_date_row.addWidget(self.batch_set_date_btn)
+        batch_date_row.addWidget(self.batch_clear_date_btn)
         batch_is_beur_row = QHBoxLayout()
         batch_is_beur_row.setSpacing(8)
-        batch_is_beur_row.addWidget(QLabel("is_beur:"))
+        batch_is_beur_row.addWidget(QLabel("is_note:"))
         batch_is_beur_row.addWidget(self.batch_is_beur_combo)
         batch_is_beur_row.addWidget(self.batch_set_is_beur_btn)
         batch_is_beur_row.addWidget(self.batch_clear_is_beur_btn)
@@ -1398,6 +1524,27 @@ class AnnotationWindow(QMainWindow):
         batch_beur_num_row.addWidget(self.batch_beur_num_edit)
         batch_beur_num_row.addWidget(self.batch_set_beur_num_btn)
         batch_beur_num_row.addWidget(self.batch_clear_beur_num_btn)
+        batch_currency_row = QHBoxLayout()
+        batch_currency_row.setSpacing(8)
+        batch_currency_row.addWidget(QLabel("currency:"))
+        batch_currency_row.addWidget(self.batch_currency_combo)
+        batch_currency_row.addWidget(self.batch_set_currency_btn)
+        batch_currency_row.addWidget(self.batch_clear_currency_btn)
+        batch_currency_row.addStretch(1)
+        batch_scale_row = QHBoxLayout()
+        batch_scale_row.setSpacing(8)
+        batch_scale_row.addWidget(QLabel("scale:"))
+        batch_scale_row.addWidget(self.batch_scale_combo)
+        batch_scale_row.addWidget(self.batch_set_scale_btn)
+        batch_scale_row.addWidget(self.batch_clear_scale_btn)
+        batch_scale_row.addStretch(1)
+        batch_value_type_row = QHBoxLayout()
+        batch_value_type_row.setSpacing(8)
+        batch_value_type_row.addWidget(QLabel("value_type:"))
+        batch_value_type_row.addWidget(self.batch_value_type_combo)
+        batch_value_type_row.addWidget(self.batch_set_value_type_btn)
+        batch_value_type_row.addWidget(self.batch_clear_value_type_btn)
+        batch_value_type_row.addStretch(1)
         batch_resize_head = QHBoxLayout()
         batch_resize_head.setSpacing(8)
         batch_resize_head.addWidget(QLabel("Grow step (px):"))
@@ -1414,9 +1561,15 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_row_1)
         batch_layout.addLayout(batch_row_insert)
         batch_layout.addLayout(batch_row_2)
+        batch_layout.addLayout(batch_value_row)
+        batch_layout.addLayout(batch_refference_row)
         batch_layout.addLayout(batch_note_row)
+        batch_layout.addLayout(batch_date_row)
         batch_layout.addLayout(batch_is_beur_row)
         batch_layout.addLayout(batch_beur_num_row)
+        batch_layout.addLayout(batch_currency_row)
+        batch_layout.addLayout(batch_scale_row)
+        batch_layout.addLayout(batch_value_type_row)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
         fact_layout.addWidget(self.batch_box)
@@ -1425,7 +1578,7 @@ class AnnotationWindow(QMainWindow):
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+drag on the page to select multiple boxes. "
-            "Use Batch Edit to add/remove path levels, set/clear note, apply is_beur, set/clear beur_num, and clear references across selected boxes. "
+            "Use Batch Edit to change value/note_reference/comment/date/is_note/note/currency/scale/value_type and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -1465,6 +1618,7 @@ class AnnotationWindow(QMainWindow):
         self.copy_image_btn.clicked.connect(self.copy_displayed_image)
         self.fit_btn.clicked.connect(self._fit_view_height)
         self.page_json_btn.clicked.connect(self.show_current_page_json)
+        self.apply_entity_all_btn.clicked.connect(self.apply_entity_name_to_all_missing_pages)
         self.help_btn.clicked.connect(self.show_help_dialog)
         self.save_btn.clicked.connect(self.save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
@@ -1474,10 +1628,13 @@ class AnnotationWindow(QMainWindow):
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
         self.facts_list.currentRowChanged.connect(self._on_fact_row_changed)
+        self.show_order_labels_check.toggled.connect(self._on_show_order_labels_toggled)
         self.entity_name_edit.editingFinished.connect(self._on_meta_edited)
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
+        self.doc_language_combo.activated.connect(lambda _: self._on_meta_edited())
+        self.doc_direction_combo.activated.connect(lambda _: self._on_meta_edited())
         self.fact_value_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_note_edit.editingFinished.connect(self._on_fact_editor_edited)
         self.fact_is_beur_combo.activated.connect(lambda _: self._on_fact_editor_edited())
@@ -1495,21 +1652,38 @@ class AnnotationWindow(QMainWindow):
         self.path_up_btn.clicked.connect(self.move_selected_path_up)
         self.path_down_btn.clicked.connect(self.move_selected_path_down)
         self.batch_path_level_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_value_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_refference_edit.textChanged.connect(self._update_batch_controls)
         self.batch_note_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_date_edit.textChanged.connect(self._update_batch_controls)
         self.batch_is_beur_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_beur_num_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_currency_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_scale_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_value_type_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
         self.batch_insert_path_btn.clicked.connect(self.batch_insert_path_level)
         self.batch_remove_first_btn.clicked.connect(self.batch_remove_first_level)
         self.batch_remove_last_btn.clicked.connect(self.batch_remove_last_level)
+        self.batch_set_value_btn.clicked.connect(self.batch_set_value)
+        self.batch_clear_value_btn.clicked.connect(self.batch_clear_value)
+        self.batch_set_refference_btn.clicked.connect(self.batch_set_refference)
         self.batch_clear_refference_btn.clicked.connect(self.batch_clear_refference)
         self.batch_set_note_btn.clicked.connect(self.batch_set_note)
         self.batch_clear_note_btn.clicked.connect(self.batch_clear_note)
+        self.batch_set_date_btn.clicked.connect(self.batch_set_date)
+        self.batch_clear_date_btn.clicked.connect(self.batch_clear_date)
         self.batch_set_is_beur_btn.clicked.connect(self.batch_set_is_beur)
         self.batch_clear_is_beur_btn.clicked.connect(self.batch_clear_is_beur)
         self.batch_set_beur_num_btn.clicked.connect(self.batch_set_beur_num)
         self.batch_clear_beur_num_btn.clicked.connect(self.batch_clear_beur_num)
+        self.batch_set_currency_btn.clicked.connect(self.batch_set_currency)
+        self.batch_clear_currency_btn.clicked.connect(self.batch_clear_currency)
+        self.batch_set_scale_btn.clicked.connect(self.batch_set_scale)
+        self.batch_clear_scale_btn.clicked.connect(self.batch_clear_scale)
+        self.batch_set_value_type_btn.clicked.connect(self.batch_set_value_type)
+        self.batch_clear_value_type_btn.clicked.connect(self.batch_clear_value_type)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
         self.batch_expand_right_btn.clicked.connect(lambda: self.batch_expand_selected("right"))
         self.batch_expand_up_btn.clicked.connect(lambda: self.batch_expand_selected("up"))
@@ -1774,9 +1948,15 @@ class AnnotationWindow(QMainWindow):
         selected_count = len(self._selected_fact_items()) if hasattr(self, "scene") else 0
         has_selection = selected_count > 0
         has_text = bool(self.batch_path_level_edit.text().strip()) if hasattr(self, "batch_path_level_edit") else False
+        has_value_text = bool(self.batch_value_edit.text().strip()) if hasattr(self, "batch_value_edit") else False
+        has_refference_text = bool(self.batch_refference_edit.text().strip()) if hasattr(self, "batch_refference_edit") else False
         has_note_text = bool(self.batch_note_edit.text().strip()) if hasattr(self, "batch_note_edit") else False
+        has_date_text = bool(self.batch_date_edit.text().strip()) if hasattr(self, "batch_date_edit") else False
         has_is_beur_choice = bool(self.batch_is_beur_combo.currentText().strip()) if hasattr(self, "batch_is_beur_combo") else False
         has_beur_num_text = bool(self.batch_beur_num_edit.text().strip()) if hasattr(self, "batch_beur_num_edit") else False
+        has_currency_choice = bool(self.batch_currency_combo.currentText().strip()) if hasattr(self, "batch_currency_combo") else False
+        has_scale_choice = bool(self.batch_scale_combo.currentText().strip()) if hasattr(self, "batch_scale_combo") else False
+        has_value_type_choice = bool(self.batch_value_type_combo.currentText().strip()) if hasattr(self, "batch_value_type_combo") else False
         if hasattr(self, "batch_selected_label"):
             self.batch_selected_label.setText(f"Selected: {selected_count}")
         if hasattr(self, "batch_prepend_path_btn"):
@@ -1791,6 +1971,16 @@ class AnnotationWindow(QMainWindow):
             self.batch_remove_first_btn.setEnabled(has_selection)
         if hasattr(self, "batch_remove_last_btn"):
             self.batch_remove_last_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_value_edit"):
+            self.batch_value_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_value_btn"):
+            self.batch_set_value_btn.setEnabled(has_selection and has_value_text)
+        if hasattr(self, "batch_clear_value_btn"):
+            self.batch_clear_value_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_refference_edit"):
+            self.batch_refference_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_refference_btn"):
+            self.batch_set_refference_btn.setEnabled(has_selection and has_refference_text)
         if hasattr(self, "batch_clear_refference_btn"):
             self.batch_clear_refference_btn.setEnabled(has_selection)
         if hasattr(self, "batch_note_edit"):
@@ -1799,6 +1989,12 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_note_btn.setEnabled(has_selection and has_note_text)
         if hasattr(self, "batch_clear_note_btn"):
             self.batch_clear_note_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_date_edit"):
+            self.batch_date_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_date_btn"):
+            self.batch_set_date_btn.setEnabled(has_selection and has_date_text)
+        if hasattr(self, "batch_clear_date_btn"):
+            self.batch_clear_date_btn.setEnabled(has_selection)
         if hasattr(self, "batch_is_beur_combo"):
             self.batch_is_beur_combo.setEnabled(has_selection)
         if hasattr(self, "batch_set_is_beur_btn"):
@@ -1811,6 +2007,24 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_beur_num_btn.setEnabled(has_selection and has_beur_num_text)
         if hasattr(self, "batch_clear_beur_num_btn"):
             self.batch_clear_beur_num_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_currency_combo"):
+            self.batch_currency_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_currency_btn"):
+            self.batch_set_currency_btn.setEnabled(has_selection and has_currency_choice)
+        if hasattr(self, "batch_clear_currency_btn"):
+            self.batch_clear_currency_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_scale_combo"):
+            self.batch_scale_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_scale_btn"):
+            self.batch_set_scale_btn.setEnabled(has_selection and has_scale_choice)
+        if hasattr(self, "batch_clear_scale_btn"):
+            self.batch_clear_scale_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_value_type_combo"):
+            self.batch_value_type_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_value_type_btn"):
+            self.batch_set_value_type_btn.setEnabled(has_selection and has_value_type_choice)
+        if hasattr(self, "batch_clear_value_type_btn"):
+            self.batch_clear_value_type_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_left_btn"):
             self.batch_expand_left_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_right_btn"):
@@ -1942,7 +2156,7 @@ class AnnotationWindow(QMainWindow):
                 (
                     "Selected bboxes do not all share the same attribute path.\n"
                     f"Found paths: {detail}\n\n"
-                    "Clear refference for all selected bboxes anyway?"
+                    "Clear note_reference for all selected bboxes anyway?"
                 ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
@@ -1951,29 +2165,79 @@ class AnnotationWindow(QMainWindow):
                 return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["refference"] = ""
+            fact["note_reference"] = ""
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared refference")
+        self._batch_update_selected_facts(_transform, "Cleared note_reference")
+
+    def batch_set_value(self) -> None:
+        value = self.batch_value_edit.text().strip()
+        if not value:
+            self.statusBar().showMessage("Enter value text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value"] = value
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated value")
+
+    def batch_clear_value(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value"] = ""
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared value")
+
+    def batch_set_refference(self) -> None:
+        refference = self.batch_refference_edit.text().strip()
+        if not refference:
+            self.statusBar().showMessage("Enter note_reference text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["note_reference"] = refference
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated note_reference")
 
     def batch_set_note(self) -> None:
         note = self.batch_note_edit.text().strip()
         if not note:
-            self.statusBar().showMessage("Enter note text first.", 2500)
+            self.statusBar().showMessage("Enter comment text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note"] = note
+            fact["comment"] = note
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated note")
+        self._batch_update_selected_facts(_transform, "Updated comment")
 
     def batch_clear_note(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note"] = None
+            fact["comment"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared note")
+        self._batch_update_selected_facts(_transform, "Cleared comment")
+
+    def batch_set_date(self) -> None:
+        date = self.batch_date_edit.text().strip()
+        if not date:
+            self.statusBar().showMessage("Enter date text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["date"] = date
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated date")
+
+    def batch_clear_date(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["date"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared date")
 
     def batch_set_is_beur(self) -> None:
         selected = self.batch_is_beur_combo.currentText().strip().lower()
@@ -1982,40 +2246,102 @@ class AnnotationWindow(QMainWindow):
         elif selected == "false":
             value = False
         else:
-            self.statusBar().showMessage("Choose is_beur value first.", 2500)
+            self.statusBar().showMessage("Choose is_note value first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["is_beur"] = value
+            fact["is_note"] = bool(value)
             return fact
 
-        self._batch_update_selected_facts(_transform, f"Updated is_beur to {selected}")
+        self._batch_update_selected_facts(_transform, f"Updated is_note to {selected}")
 
     def batch_clear_is_beur(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["is_beur"] = None
+            fact["is_note"] = False
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared is_beur")
+        self._batch_update_selected_facts(_transform, "Set is_note to false")
 
     def batch_set_beur_num(self) -> None:
         beur_num = self.batch_beur_num_edit.text().strip()
         if not beur_num:
-            self.statusBar().showMessage("Enter beur_num first.", 2500)
+            self.statusBar().showMessage("Enter note text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["beur_num"] = beur_num
+            fact["note"] = beur_num
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated beur_num")
+        self._batch_update_selected_facts(_transform, "Updated note")
 
     def batch_clear_beur_num(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["beur_num"] = None
+            fact["note"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared beur_num")
+        self._batch_update_selected_facts(_transform, "Cleared note")
+
+    def batch_set_currency(self) -> None:
+        currency = self.batch_currency_combo.currentText().strip()
+        if not currency:
+            self.statusBar().showMessage("Choose currency first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["currency"] = currency
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated currency to {currency}")
+
+    def batch_clear_currency(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["currency"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared currency")
+
+    def batch_set_scale(self) -> None:
+        selected = self.batch_scale_combo.currentText().strip()
+        if not selected:
+            self.statusBar().showMessage("Choose scale first.", 2500)
+            return
+        try:
+            scale_value = int(selected)
+        except ValueError:
+            self.statusBar().showMessage("Invalid scale value.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["scale"] = scale_value
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated scale to {scale_value}")
+
+    def batch_clear_scale(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["scale"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared scale")
+
+    def batch_set_value_type(self) -> None:
+        value_type = self.batch_value_type_combo.currentText().strip()
+        if not value_type:
+            self.statusBar().showMessage("Choose value_type first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value_type"] = value_type
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated value_type to {value_type}")
+
+    def batch_clear_value_type(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value_type"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared value_type")
 
     def _batch_resize_step(self, multiplier: int = 1) -> float:
         base = float(self.batch_resize_step_spin.value()) if hasattr(self, "batch_resize_step_spin") else 1.0
@@ -2146,13 +2472,13 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
-            self.fact_note_edit.setText(str(fact.get("note") or ""))
-            is_beur = fact.get("is_beur")
-            is_beur_text = "true" if is_beur is True else ("false" if is_beur is False else "")
+            self.fact_note_edit.setText(str(fact.get("comment") or ""))
+            is_beur = bool(fact.get("is_note"))
+            is_beur_text = "true" if is_beur else "false"
             idx_is_beur = self.fact_is_beur_combo.findText(is_beur_text)
             self.fact_is_beur_combo.setCurrentIndex(max(0, idx_is_beur))
-            self.fact_beur_num_edit.setText(str(fact.get("beur_num") or ""))
-            self.fact_refference_edit.setText(str(fact.get("refference") or ""))
+            self.fact_beur_num_edit.setText(str(fact.get("note") or ""))
+            self.fact_refference_edit.setText(str(fact.get("note_reference") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
             self.fact_path_list.clear()
             for path_level in fact.get("path") or []:
@@ -2186,19 +2512,14 @@ class AnnotationWindow(QMainWindow):
                 path_parts.append(text)
         scale_text = self.fact_scale_combo.currentText().strip()
         is_beur_text = self.fact_is_beur_combo.currentText().strip().lower()
-        if is_beur_text == "true":
-            is_beur_value: Optional[bool] = True
-        elif is_beur_text == "false":
-            is_beur_value = False
-        else:
-            is_beur_value = None
+        is_beur_value = is_beur_text == "true"
         return normalize_fact_data(
             {
                 "value": self.fact_value_edit.text().strip(),
-                "note": self.fact_note_edit.text().strip() or None,
-                "is_beur": is_beur_value,
-                "beur_num": self.fact_beur_num_edit.text().strip() or None,
-                "refference": self.fact_refference_edit.text().strip(),
+                "comment": self.fact_note_edit.text().strip() or None,
+                "is_note": is_beur_value,
+                "note": self.fact_beur_num_edit.text().strip() or None,
+                "note_reference": self.fact_refference_edit.text().strip(),
                 "date": self.fact_date_edit.text().strip() or None,
                 "path": path_parts,
                 "currency": self.fact_currency_combo.currentText().strip() or None,
@@ -2300,6 +2621,7 @@ class AnnotationWindow(QMainWindow):
         return {
             "current_index": self.current_index,
             "page_states": deepcopy(self.page_states),
+            "document_meta": deepcopy(self.document_meta),
         }
 
     def _init_history(self) -> None:
@@ -2346,6 +2668,7 @@ class AnnotationWindow(QMainWindow):
         self._is_restoring_history = True
         try:
             self.page_states = snapshot.get("page_states", {})
+            self.document_meta = normalize_document_meta(snapshot.get("document_meta"))
             self._history_index = index
             self.show_page(target_index)
         finally:
@@ -2363,6 +2686,73 @@ class AnnotationWindow(QMainWindow):
 
     def _default_state(self, index: int) -> PageState:
         return PageState(meta=self._default_meta(index), facts=[])
+
+    def _document_meta_from_ui(self) -> Dict[str, Optional[str]]:
+        language_text = str(self.doc_language_combo.currentText() or "").strip().lower()
+        if language_text.startswith("hebrew"):
+            language = "he"
+        elif language_text.startswith("english"):
+            language = "en"
+        else:
+            language = None
+
+        direction_text = str(self.doc_direction_combo.currentText() or "").strip().lower()
+        if direction_text == "rtl":
+            reading_direction = "rtl"
+        elif direction_text == "ltr":
+            reading_direction = "ltr"
+        else:
+            reading_direction = None
+        return normalize_document_meta({"language": language, "reading_direction": reading_direction})
+
+    def _set_document_meta_ui(self, document_meta: Dict[str, Optional[str]]) -> None:
+        normalized = normalize_document_meta(document_meta)
+        language = normalized.get("language")
+        reading_direction = normalized.get("reading_direction")
+        if language == "he":
+            self.doc_language_combo.setCurrentIndex(1)
+        elif language == "en":
+            self.doc_language_combo.setCurrentIndex(2)
+        else:
+            self.doc_language_combo.setCurrentIndex(0)
+
+        if reading_direction == "rtl":
+            self.doc_direction_combo.setCurrentIndex(1)
+        elif reading_direction == "ltr":
+            self.doc_direction_combo.setCurrentIndex(2)
+        else:
+            self.doc_direction_combo.setCurrentIndex(0)
+
+    def _direction_payload_for_current_page(self) -> Dict[str, Any]:
+        page_payload: Dict[str, Any] = {}
+        if self.current_index >= 0 and self.current_index < len(self.page_images):
+            page_name = self.page_images[self.current_index].name
+            state = self.page_states.get(page_name)
+            if state is not None:
+                page_payload = {
+                    "pages": [
+                        {
+                            "image": page_name,
+                            "meta": dict(state.meta or {}),
+                            "facts": [
+                                {
+                                    "bbox": box.bbox,
+                                    **normalize_fact_data(box.fact),
+                                }
+                                for box in state.facts
+                            ],
+                        }
+                    ]
+                }
+        return page_payload
+
+    def _active_reading_direction(self) -> str:
+        info = resolve_reading_direction(
+            self.document_meta,
+            payload=self._direction_payload_for_current_page(),
+            default_direction="rtl",
+        )
+        return "rtl" if str(info.get("direction") or "rtl") == "rtl" else "ltr"
 
     def _page_index_by_name(self, page_name: str) -> int:
         for idx, image_path in enumerate(self.page_images):
@@ -2481,19 +2871,20 @@ class AnnotationWindow(QMainWindow):
         return prompt
 
     def _fact_uniqueness_key(self, fact_payload: Dict[str, Any]) -> tuple[Any, ...]:
+        normalized_fact = normalize_fact_data(fact_payload)
         bbox = normalize_bbox_data(fact_payload.get("bbox"))
-        path = tuple(str(p) for p in (fact_payload.get("path") or []))
+        path = tuple(str(p) for p in (normalized_fact.get("path") or []))
         return (
             round(float(bbox["x"]), 2),
             round(float(bbox["y"]), 2),
             round(float(bbox["w"]), 2),
             round(float(bbox["h"]), 2),
-            str(fact_payload.get("value") or ""),
-            str(fact_payload.get("note") or ""),
-            str(fact_payload.get("is_beur") if fact_payload.get("is_beur") is not None else ""),
-            str(fact_payload.get("beur_num") or ""),
-            str(fact_payload.get("refference") or ""),
-            str(fact_payload.get("date") or ""),
+            str(normalized_fact.get("value") or ""),
+            str(normalized_fact.get("comment") or ""),
+            str(normalized_fact.get("is_note") if normalized_fact.get("is_note") is not None else ""),
+            str(normalized_fact.get("note") or ""),
+            str(normalized_fact.get("note_reference") or ""),
+            str(normalized_fact.get("date") or ""),
             path,
         )
 
@@ -2540,20 +2931,7 @@ class AnnotationWindow(QMainWindow):
         image_dims = self._image_dimensions_for_page(page_name)
         if image_dims and self._bbox_looks_normalized_1000(bbox):
             bbox = denormalize_bbox_from_1000(bbox, image_dims[0], image_dims[1])
-        fact_data = normalize_fact_data(
-            {
-                "value": fact_payload.get("value"),
-                "note": fact_payload.get("note"),
-                "is_beur": fact_payload.get("is_beur"),
-                "beur_num": fact_payload.get("beur_num"),
-                "refference": fact_payload.get("refference"),
-                "date": fact_payload.get("date"),
-                "path": fact_payload.get("path") or [],
-                "currency": fact_payload.get("currency"),
-                "scale": fact_payload.get("scale"),
-                "value_type": fact_payload.get("value_type"),
-            }
-        )
+        fact_data = normalize_fact_data(fact_payload)
 
         state = self.page_states.get(page_name, self._default_state(page_idx))
         state_facts = list(state.facts)
@@ -2588,6 +2966,7 @@ class AnnotationWindow(QMainWindow):
         except Exception as exc:
             QMessageBox.warning(self, "Invalid JSON", str(exc))
             return
+        imported_document_meta = extract_document_meta(payload)
 
         import_normalized_1000 = dialog.import_normalized_1000_enabled()
         if isinstance(payload, dict):
@@ -2637,6 +3016,9 @@ class AnnotationWindow(QMainWindow):
         if imported_count == 0:
             QMessageBox.warning(self, "Import skipped", "Imported JSON did not match any existing page images.")
             return
+
+        if compact_document_meta(imported_document_meta):
+            self.document_meta = imported_document_meta
 
         target_index = self.current_index if self.current_index >= 0 else 0
         if imported_count == 1:
@@ -2976,7 +3358,7 @@ class AnnotationWindow(QMainWindow):
                     self,
                     "Qwen GT",
                     (
-                        "Qwen Flash API key not found.\n\n"
+                        "Qwen hosted API key not found.\n\n"
                         "Set FINETREE_QWEN_FLASH_API_KEY, FINETREE_QWEN_API_KEY, "
                         "QWEN_API_KEY, or DASHSCOPE_API_KEY."
                     ),
@@ -3156,6 +3538,7 @@ class AnnotationWindow(QMainWindow):
     def _capture_current_state(self) -> None:
         if self.current_index < 0 or self._is_restoring_history:
             return
+        self.document_meta = self._document_meta_from_ui()
         page_name = self.page_images[self.current_index].name
         meta = {
             "entity_name": self.entity_name_edit.text().strip() or None,
@@ -3167,7 +3550,39 @@ class AnnotationWindow(QMainWindow):
         for item in self._sorted_fact_items():
             facts.append(BoxRecord(bbox=bbox_to_dict(item_scene_rect(item)), fact=normalize_fact_data(item.fact_data)))
         self.page_states[page_name] = PageState(meta=meta, facts=facts)
-        propagate_entity_to_next_page(self.page_states, self.page_images, self.current_index, meta["entity_name"])
+
+    def apply_entity_name_to_all_missing_pages(self) -> None:
+        if not self.page_images:
+            return
+        entity_name = self.entity_name_edit.text().strip()
+        if not entity_name:
+            QMessageBox.information(
+                self,
+                "Entity name required",
+                "Enter an entity_name first, then click 'Apply Entity To Missing'.",
+            )
+            return
+
+        if (
+            QMessageBox.question(
+                self,
+                "Apply Entity Name",
+                (
+                    f"Apply entity_name '{entity_name}' to all pages where entity_name is empty?\n\n"
+                    "Existing non-empty entity_name values will stay unchanged."
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.Yes,
+            )
+            != QMessageBox.Yes
+        ):
+            return
+
+        self._capture_current_state()
+        updated = apply_entity_name_to_missing_pages(self.page_states, self.page_images, entity_name)
+        self.show_page(self.current_index)
+        self._record_history_snapshot()
+        self.statusBar().showMessage(f"Applied entity_name to {updated} page(s) with empty entity_name.", 5000)
 
     def _load_existing_annotations(self) -> None:
         if not self.annotations_path.exists():
@@ -3178,6 +3593,7 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.warning(self, "Failed to load annotations", str(exc))
             return
         self.page_states = load_page_states(payload, [p.name for p in self.page_images])
+        self.document_meta = extract_document_meta(payload)
 
     def _populate_page_thumbnails(self) -> None:
         if not hasattr(self, "page_thumb_list"):
@@ -3253,6 +3669,7 @@ class AnnotationWindow(QMainWindow):
             type_idx = self.type_combo.findText(type_value)
             self.type_combo.setCurrentIndex(type_idx if type_idx >= 0 else 0)
             self.title_edit.setText(meta.get("title") or "")
+            self._set_document_meta_ui(self.document_meta)
         finally:
             self._is_loading_page = False
 
@@ -3273,16 +3690,38 @@ class AnnotationWindow(QMainWindow):
 
     def _sorted_fact_items(self) -> List[AnnotRectItem]:
         items = [i for i in self.scene.items() if isinstance(i, AnnotRectItem) and self._is_alive_fact_item(i)]
-        def sort_key(item: AnnotRectItem):
-            rect = item_scene_rect(item)
-            return (rect.y(), rect.x(), rect.width(), rect.height())
+        if len(items) <= 1:
+            return items
+        facts_for_order: list[dict[str, Any]] = []
+        for item in items:
+            facts_for_order.append({"bbox": bbox_to_dict(item_scene_rect(item))})
+        direction = self._active_reading_direction()
+        ordered_indices = canonical_fact_order_indices(
+            facts_for_order,
+            direction="rtl" if direction == "rtl" else "ltr",
+            row_tolerance_ratio=0.35,
+            row_tolerance_min_px=6.0,
+        )
+        return [items[idx] for idx in ordered_indices if 0 <= idx < len(items)]
 
-        items.sort(key=sort_key)
-        return items
+    def _apply_fact_order_labels(self) -> None:
+        show_labels = self.show_order_labels_check.isChecked()
+        indexed_item_ids = {id(item) for item in self._fact_items}
+        for idx, item in enumerate(self._fact_items, start=1):
+            if self._is_alive_fact_item(item):
+                item.set_order_label(idx, visible=show_labels)
+        for scene_item in self.scene.items():
+            if (
+                isinstance(scene_item, AnnotRectItem)
+                and self._is_alive_fact_item(scene_item)
+                and id(scene_item) not in indexed_item_ids
+            ):
+                scene_item.set_order_label(None, visible=False)
 
     def refresh_facts_list(self) -> None:
         selected = self._selected_fact_item()
         self._fact_items = self._sorted_fact_items()
+        self._apply_fact_order_labels()
         self._syncing_selection = True
         self.facts_list.clear()
         selected_row = -1
@@ -3290,17 +3729,20 @@ class AnnotationWindow(QMainWindow):
             rect = item_scene_rect(item)
             value = str(item.fact_data.get("value") or "")
             path = " > ".join(item.fact_data.get("path") or [])
+            comment = str(item.fact_data.get("comment") or "")
             note = str(item.fact_data.get("note") or "")
             summary = f"#{idx} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
                 summary = f"{summary} | {path}"
+            if comment:
+                trimmed_comment = (comment[:32] + "...") if len(comment) > 35 else comment
+                summary = f"{summary} | comment: {trimmed_comment}"
             if note:
                 trimmed_note = (note[:32] + "...") if len(note) > 35 else note
                 summary = f"{summary} | note: {trimmed_note}"
-            if item.fact_data.get("is_beur") is not None:
-                summary = f"{summary} | is_beur: {item.fact_data.get('is_beur')}"
-            if item.fact_data.get("beur_num"):
-                summary = f"{summary} | beur_num: {item.fact_data.get('beur_num')}"
+            summary = f"{summary} | is_note: {bool(item.fact_data.get('is_note'))}"
+            if item.fact_data.get("note_reference"):
+                summary = f"{summary} | note_reference: {item.fact_data.get('note_reference')}"
             self.facts_list.addItem(QListWidgetItem(summary))
             if item is selected:
                 selected_row = idx - 1
@@ -3309,6 +3751,9 @@ class AnnotationWindow(QMainWindow):
         self._syncing_selection = False
         self._sync_fact_editor_from_selection()
         self._update_batch_controls()
+
+    def _on_show_order_labels_toggled(self, _checked: bool) -> None:
+        self._apply_fact_order_labels()
 
     def _selected_fact_item(self) -> Optional[AnnotRectItem]:
         for item in self.scene.selectedItems():
@@ -3350,6 +3795,10 @@ class AnnotationWindow(QMainWindow):
     def _on_meta_edited(self) -> None:
         if self._is_loading_page or self._is_restoring_history:
             return
+        previous = normalize_document_meta(self.document_meta)
+        self.document_meta = self._document_meta_from_ui()
+        if self.document_meta != previous:
+            self.refresh_facts_list()
         self._record_history_snapshot()
 
     def _on_scene_selection_changed(self) -> None:
@@ -3488,13 +3937,77 @@ class AnnotationWindow(QMainWindow):
     def save_annotations(self) -> None:
         self._capture_current_state()
         try:
-            payload = build_annotations_payload(self.images_dir, self.page_images, self.page_states)
+            payload = build_annotations_payload(
+                self.images_dir,
+                self.page_images,
+                self.page_states,
+                document_meta=self.document_meta,
+            )
         except ValidationError as exc:
             QMessageBox.warning(self, "Validation error", str(exc))
             return
+        _normalized_payload, format_findings = normalize_annotation_payload(payload)
+        warning_findings = [
+            finding
+            for finding in format_findings
+            if any(code in {"noncanonical_date", "placeholder_value", "noncanonical_value"} for code in finding.get("issue_codes", []))
+        ]
+        serialized = serialize_annotations_json(payload)
+        no_changes = False
+        if self.annotations_path.exists():
+            try:
+                no_changes = self.annotations_path.read_text(encoding="utf-8") == serialized
+            except OSError:
+                no_changes = False
         self.annotations_path.parent.mkdir(parents=True, exist_ok=True)
-        self.annotations_path.write_text(serialize_annotations_json(payload), encoding="utf-8")
-        self.statusBar().showMessage(f"Saved: {self.annotations_path}", 6000)
+        try:
+            self.annotations_path.write_text(serialized, encoding="utf-8")
+        except OSError as exc:
+            QMessageBox.warning(self, "Save failed", str(exc))
+            return
+        if no_changes:
+            warning_suffix = f" | format_warnings={len(warning_findings)}" if warning_findings else ""
+            self.statusBar().showMessage(
+                f"No changes detected. File is up to date: {self.annotations_path}{warning_suffix}",
+                6000,
+            )
+            QMessageBox.information(
+                self,
+                "Saved",
+                f"Annotations saved to:\n{self.annotations_path}\n\nNo changes detected.",
+            )
+            if warning_findings:
+                preview = "\n".join(
+                    f"- {f.get('page')} fact#{int(f.get('fact_index', 0)) + 1}: {', '.join(f.get('issue_codes', []))}"
+                    for f in warning_findings[:8]
+                )
+                QMessageBox.warning(
+                    self,
+                    "Format warnings",
+                    (
+                        "Saved successfully, but some facts have non-canonical date/value format.\n\n"
+                        f"{preview}\n\n"
+                        "Use scripts/check_fact_schema_format.py for full details."
+                    ),
+                )
+            return
+        warning_suffix = f" | format_warnings={len(warning_findings)}" if warning_findings else ""
+        self.statusBar().showMessage(f"Saved: {self.annotations_path}{warning_suffix}", 6000)
+        QMessageBox.information(self, "Saved", f"Annotations saved to:\n{self.annotations_path}")
+        if warning_findings:
+            preview = "\n".join(
+                f"- {f.get('page')} fact#{int(f.get('fact_index', 0)) + 1}: {', '.join(f.get('issue_codes', []))}"
+                for f in warning_findings[:8]
+            )
+            QMessageBox.warning(
+                self,
+                "Format warnings",
+                (
+                    "Saved successfully, but some facts have non-canonical date/value format.\n\n"
+                    f"{preview}\n\n"
+                    "Use scripts/check_fact_schema_format.py for full details."
+                ),
+            )
 
     def copy_displayed_image(self) -> None:
         if self.scene.image_rect.isNull():
@@ -3521,7 +4034,12 @@ class AnnotationWindow(QMainWindow):
 
         self._capture_current_state()
         try:
-            payload = build_annotations_payload(self.images_dir, self.page_images, self.page_states)
+            payload = build_annotations_payload(
+                self.images_dir,
+                self.page_images,
+                self.page_states,
+                document_meta=self.document_meta,
+            )
         except ValidationError as exc:
             QMessageBox.warning(self, "Validation error", str(exc))
             return
@@ -3617,11 +4135,17 @@ class AnnotationWindow(QMainWindow):
         dialog.exec_()
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Annotate PDF page images with schema-aligned facts and metadata.")
     parser.add_argument(
+        "input_path",
+        nargs="?",
+        default=None,
+        help="PDF file path (auto-extracts images) or images directory path.",
+    )
+    parser.add_argument(
         "--images-dir",
-        default="data/pdf_images/test",
+        default=None,
         help="Directory containing page images (png/jpg/webp).",
     )
     parser.add_argument(
@@ -3629,20 +4153,194 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Output annotations JSON path (default: data/annotations/<images-dir-name>.json).",
     )
-    return parser.parse_args()
+    parser.add_argument(
+        "--dpi",
+        type=int,
+        default=200,
+        help="PDF conversion DPI in PDF mode.",
+    )
+    return parser.parse_args(argv)
 
 
-def main() -> int:
-    args = parse_args()
-    images_dir = Path(args.images_dir)
+@dataclass(frozen=True)
+class StartupContext:
+    mode: str
+    images_dir: Path
+    annotations_path: Path
+    pdf_path: Optional[Path] = None
+
+
+def _default_annotations_path(images_dir: Path) -> Path:
+    return Path("data/annotations") / f"{images_dir.name}.json"
+
+
+def _resolve_startup_context(
+    input_path_arg: Optional[str],
+    images_dir_arg: Optional[str],
+    annotations_arg: Optional[str],
+) -> StartupContext:
+    if input_path_arg and images_dir_arg:
+        raise ValueError("Cannot provide both positional input_path and --images-dir.")
+
+    if input_path_arg:
+        input_path = Path(input_path_arg).expanduser().resolve()
+        if input_path.is_dir():
+            annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(input_path)
+            return StartupContext(mode="images-dir", images_dir=input_path, annotations_path=annotations_path)
+        if not input_path.exists():
+            raise ValueError(f"Input path not found: {input_path}")
+        if input_path.is_file() and input_path.suffix.lower() == ".pdf":
+            images_dir = (Path("data/pdf_images") / input_path.stem).resolve()
+            annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(images_dir)
+            return StartupContext(mode="pdf", images_dir=images_dir, annotations_path=annotations_path, pdf_path=input_path)
+        raise ValueError(f"Unsupported input path: {input_path}. Provide a PDF file or an image directory.")
+
+    images_dir = Path(images_dir_arg or "data/pdf_images/test")
+    annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(images_dir)
+    return StartupContext(mode="images-dir", images_dir=images_dir, annotations_path=annotations_path)
+
+
+def _missing_page_numbers(images_dir: Path, page_count: int) -> List[int]:
+    missing: List[int] = []
+    for idx in range(1, page_count + 1):
+        target = images_dir / f"page_{idx:04d}.png"
+        if not target.is_file():
+            missing.append(idx)
+    return missing
+
+
+def _build_page_ranges(page_numbers: List[int]) -> List[tuple[int, int]]:
+    if not page_numbers:
+        return []
+    ranges: List[tuple[int, int]] = []
+    start = page_numbers[0]
+    prev = page_numbers[0]
+    for page_num in page_numbers[1:]:
+        if page_num == prev + 1:
+            prev = page_num
+            continue
+        ranges.append((start, prev))
+        start = page_num
+        prev = page_num
+    ranges.append((start, prev))
+    return ranges
+
+
+def _ensure_pdf_images(pdf_path: Path, images_dir: Path, dpi: int = 200) -> Dict[str, Any]:
+    if not pdf_path.is_file():
+        raise RuntimeError(f"PDF not found: {pdf_path}")
+
+    images_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        pdf_info = pdfinfo_from_path(str(pdf_path))
+    except Exception as exc:
+        raise RuntimeError(f"Failed to read PDF metadata for {pdf_path}: {exc}") from exc
+
+    try:
+        page_count = int((pdf_info or {}).get("Pages"))
+    except Exception as exc:
+        raise RuntimeError(f"Failed to determine page count for {pdf_path}.") from exc
+    if page_count <= 0:
+        raise RuntimeError(f"PDF has no pages: {pdf_path}")
+
+    missing_pages = _missing_page_numbers(images_dir, page_count)
+    if not missing_pages:
+        return {
+            "action": "reused",
+            "page_count": page_count,
+            "created_pages": 0,
+            "reused_pages": page_count,
+            "missing_before": 0,
+        }
+
+    existing_before = page_count - len(missing_pages)
+    created_pages = 0
+    for first_page, last_page in _build_page_ranges(missing_pages):
+        try:
+            rendered_pages = convert_from_path(
+                str(pdf_path),
+                dpi=dpi,
+                use_pdftocairo=True,
+                first_page=first_page,
+                last_page=last_page,
+            )
+        except Exception as exc:
+            raise RuntimeError(
+                f"Failed converting pages {first_page}-{last_page} for {pdf_path}: {exc}"
+            ) from exc
+
+        expected = last_page - first_page + 1
+        if len(rendered_pages) != expected:
+            raise RuntimeError(
+                f"Unexpected rendered page count for range {first_page}-{last_page}: "
+                f"expected {expected}, got {len(rendered_pages)}"
+            )
+
+        for offset, page in enumerate(rendered_pages):
+            page_num = first_page + offset
+            target = images_dir / f"page_{page_num:04d}.png"
+            page.save(target, format="PNG")
+            created_pages += 1
+
+    action = "created" if existing_before == 0 else "healed"
+    return {
+        "action": action,
+        "page_count": page_count,
+        "created_pages": created_pages,
+        "reused_pages": page_count - created_pages,
+        "missing_before": len(missing_pages),
+    }
+
+
+def _ensure_annotations_path_writable(annotations_path: Path) -> None:
+    annotations_path.parent.mkdir(parents=True, exist_ok=True)
+    if annotations_path.exists():
+        if not os.access(annotations_path, os.W_OK):
+            raise PermissionError(f"Annotations file is not writable: {annotations_path}")
+    elif not os.access(annotations_path.parent, os.W_OK):
+        raise PermissionError(f"Annotations directory is not writable: {annotations_path.parent}")
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    args = parse_args(argv)
+    try:
+        context = _resolve_startup_context(args.input_path, args.images_dir, args.annotations)
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
+
+    images_dir = context.images_dir
+    annotations_path = context.annotations_path
+
+    print(f"Startup mode: {context.mode}")
+    print(f"Images dir: {images_dir}")
+    print(f"Annotations: {annotations_path}")
+
+    if context.mode == "pdf":
+        assert context.pdf_path is not None
+        print(f"PDF: {context.pdf_path}")
+        try:
+            summary = _ensure_pdf_images(context.pdf_path, images_dir, dpi=args.dpi)
+        except RuntimeError as exc:
+            print(str(exc), file=sys.stderr)
+            return 1
+        print(
+            "Image extraction: "
+            f"{summary['action']} "
+            f"(created={summary['created_pages']}, reused={summary['reused_pages']}, "
+            f"missing_before={summary['missing_before']}, total={summary['page_count']})"
+        )
+
     if not images_dir.is_dir():
         print(f"Images directory not found: {images_dir}", file=sys.stderr)
         return 1
 
-    if args.annotations:
-        annotations_path = Path(args.annotations)
-    else:
-        annotations_path = Path("data/annotations") / f"{images_dir.name}.json"
+    try:
+        _ensure_annotations_path_writable(annotations_path)
+    except Exception as exc:
+        print(f"Annotations path is not writable: {annotations_path} ({exc})", file=sys.stderr)
+        return 1
 
     if hasattr(Qt, "AA_EnableHighDpiScaling"):
         QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)

@@ -21,6 +21,7 @@ from .inference.auth import resolve_hf_token_from_env
 _DEFAULT_CONFIG_PATH = Path("configs/finetune_qwen35a3_vl.yaml")
 _DEFAULT_QWEN_FLASH_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 _DEFAULT_QWEN_FLASH_MODEL = "qwen3.5-flash"
+_DEFAULT_QWEN_MAX_NEW_TOKENS = 10_000
 
 _MODEL_CACHE: dict[str, Any] = {}
 
@@ -174,6 +175,8 @@ def is_qwen_flash_model_requested(model_name: Optional[str]) -> bool:
     if normalized in {"qwen-flash-gt", "qwen-flash"}:
         return True
     if normalized.startswith("qwen3.5-flash"):
+        return True
+    if normalized.startswith("qwen3.5-plus"):
         return True
     return False
 
@@ -873,7 +876,7 @@ def _stream_content_from_qwen_flash_endpoint(
     if not endpoint.endswith("/chat/completions"):
         endpoint = endpoint + "/chat/completions"
 
-    resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else 4096
+    resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else _DEFAULT_QWEN_MAX_NEW_TOKENS
     effective_do_sample = True if do_sample is None else bool(do_sample)
     effective_temperature = 0.7 if temperature is None else float(temperature)
     effective_top_p = 0.8 if top_p is None else float(top_p)
@@ -1375,6 +1378,12 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument("--prompt", default=None, help="Prompt text. If omitted, reads --prompt-path.")
     parser.add_argument("--prompt-path", default="prompt.txt", help="Prompt template/text file path.")
     parser.add_argument("--model", default=None, help="Override inference model path/id.")
+    parser.add_argument(
+        "--max-new-tokens",
+        type=int,
+        default=_DEFAULT_QWEN_MAX_NEW_TOKENS,
+        help=f"Maximum generation tokens (default: {_DEFAULT_QWEN_MAX_NEW_TOKENS}).",
+    )
     parser.add_argument("--stream", action="store_true", help="Stream output tokens to stdout.")
     return parser.parse_args(argv)
 
@@ -1404,6 +1413,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             prompt=prompt,
             model=args.model,
             config_path=args.config,
+            max_new_tokens=args.max_new_tokens,
         ):
             print(chunk, end="", flush=True)
         print()
@@ -1414,6 +1424,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         prompt=prompt,
         model=args.model,
         config_path=args.config,
+        max_new_tokens=args.max_new_tokens,
     )
     print(text)
     return 0

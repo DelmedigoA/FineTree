@@ -31,6 +31,7 @@ dependencies = [
 
 [project.scripts]
 finetree-annotator = "finetree_annotator.app:main"
+finetreeannotator = "finetree_annotator.app:main"
 finetree-pdf-to-images = "finetree_annotator.pdf_to_images:main"
 finetree-gemini-vlm = "finetree_annotator.gemini_vlm:main"
 finetree-qwen-gt = "finetree_annotator.qwen_vlm:main"

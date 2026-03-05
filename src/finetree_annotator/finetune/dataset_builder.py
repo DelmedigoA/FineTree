@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List
 
 from ..annotation_core import bbox_to_list
+from ..fact_normalization import assert_fact_format
+from ..fact_normalization import normalize_fact_payload
+from ..fact_ordering import reorder_facts, resolve_reading_direction
 from .config import FinetuneConfig, load_finetune_config
 
 
@@ -50,9 +53,21 @@ def _doc_in_val_split(doc_id: str, val_ratio: float) -> bool:
     return bucket < val_ratio
 
 
-def _doc_split_map(annotation_files: List[Path], val_ratio: float) -> Dict[str, bool]:
+def _doc_split_map(
+    annotation_files: List[Path],
+    val_ratio: float,
+    *,
+    forced_val_doc_ids: set[str] | None = None,
+) -> Dict[str, bool]:
     doc_ids = [p.stem for p in annotation_files]
-    if not doc_ids or val_ratio <= 0.0:
+    if not doc_ids:
+        return {}
+
+    forced = {doc_id.strip() for doc_id in (forced_val_doc_ids or set()) if str(doc_id).strip()}
+    if forced:
+        return {doc_id: (doc_id in forced) for doc_id in doc_ids}
+
+    if val_ratio <= 0.0:
         return {doc_id: False for doc_id in doc_ids}
 
     if len(doc_ids) == 1:
@@ -84,12 +99,29 @@ def _resolve_page_image_path(
     return (images_dir / page_image_name).resolve()
 
 
-def _transform_page_for_target(cfg: FinetuneConfig, page: Dict[str, Any]) -> Dict[str, Any]:
+def _transform_page_for_target(
+    cfg: FinetuneConfig,
+    page: Dict[str, Any],
+    *,
+    direction: str,
+) -> Dict[str, Any]:
     facts = page.get("facts") if isinstance(page.get("facts"), list) else []
-    out_facts: List[Dict[str, Any]] = []
+    typed_facts: list[dict[str, Any]] = []
     for fact in facts:
         if not isinstance(fact, dict):
             continue
+        normalized_fact, _warnings = normalize_fact_payload(fact, include_bbox=("bbox" in fact))
+        typed_facts.append(normalized_fact)
+    ordered_facts = typed_facts
+    if cfg.data.fact_order_enforce:
+        ordered_facts = reorder_facts(
+            typed_facts,
+            direction="rtl" if str(direction).lower() == "rtl" else "ltr",
+            row_tolerance_ratio=cfg.data.fact_order_row_tolerance_ratio,
+            row_tolerance_min_px=cfg.data.fact_order_row_tolerance_min_px,
+        )
+    out_facts: List[Dict[str, Any]] = []
+    for fact in ordered_facts:
         item = dict(fact)
         if cfg.data.bbox_policy == "drop_all":
             item.pop("bbox", None)
@@ -108,7 +140,11 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
 
     prompt_template = _resolve_prompt_template(cfg)
     annotation_files = list(_iter_annotation_files(cfg.data.annotations_glob))
-    split_map = _doc_split_map(annotation_files, cfg.data.val_ratio)
+    split_map = _doc_split_map(
+        annotation_files,
+        cfg.data.val_ratio,
+        forced_val_doc_ids=set(cfg.data.val_doc_ids),
+    )
     train_path = cfg.data.output_train_jsonl
     val_path = cfg.data.output_val_jsonl
     train_path.parent.mkdir(parents=True, exist_ok=True)
@@ -122,6 +158,12 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
             out_f = val_f if is_val_doc else train_f
 
             payload = json.loads(annotation_path.read_text(encoding="utf-8"))
+            direction_info = resolve_reading_direction(
+                payload.get("document_meta") if isinstance(payload, dict) else None,
+                payload=payload,
+                default_direction=cfg.data.fact_order_default_on_uncertain,
+            )
+            direction = str(direction_info["direction"])
             pages = payload.get("pages") if isinstance(payload.get("pages"), list) else []
             for page in pages:
                 if not isinstance(page, dict):
@@ -145,7 +187,11 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
                 prompt_text = prompt_template.replace("{{PAGE_IMAGE}}", str(image_path))
                 prompt_text = prompt_text.replace("{{IMAGE_NAME}}", image_path.name)
 
-                target_obj = _transform_page_for_target(cfg, page)
+                target_obj = _transform_page_for_target(
+                    cfg,
+                    page,
+                    direction=direction,
+                )
                 assistant_text = json.dumps(target_obj, ensure_ascii=False)
 
                 sample = {
@@ -168,6 +214,9 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
                         "document_id": doc_id,
                         "annotation_file": str(annotation_path),
                         "image": image_name,
+                        "reading_direction": direction,
+                        "reading_direction_source": str(direction_info.get("source") or ""),
+                        "reading_direction_uncertain": bool(direction_info.get("uncertain")),
                     },
                 }
 
@@ -183,12 +232,30 @@ def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build Unsloth chat datasets from FineTree annotations.")
     parser.add_argument("--config", required=True, help="Path to fine-tune YAML config.")
+    parser.add_argument(
+        "--allow-format-issues",
+        action="store_true",
+        help="Continue dataset build even when fact schema/date/value format issues are found.",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     cfg = load_finetune_config(args.config)
+    if cfg.data.fact_format_enforce:
+        format_report = assert_fact_format(
+            Path(".").resolve(),
+            annotations_glob=cfg.data.annotations_glob,
+            fail_on_issues=not args.allow_format_issues,
+        )
+        if args.allow_format_issues and int(format_report["facts_with_issues"]) > 0:
+            print(
+                "WARNING: continuing with format issues because --allow-format-issues was set. "
+                f"facts_with_issues={format_report['facts_with_issues']}"
+            )
+    else:
+        print("FACT_FORMAT_AUDIT: skipped (data.fact_format_enforce=false)")
     stats = build_unsloth_chat_datasets(cfg)
     print(f"Annotation files: {stats.annotation_files}")
     print(f"Pages seen: {stats.pages_seen}")
