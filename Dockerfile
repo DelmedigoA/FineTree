@@ -29,7 +29,8 @@ RUN python -m pip install --upgrade pip setuptools wheel && \
       "huggingface_hub==1.5.0" \
       "tokenizers==0.22.2" \
       "trl==0.22.2" \
-      "transformers==5.2.0"
+      "transformers==5.2.0" \
+      "pytest>=8,<9"
 
 # Notebook-aligned Qwen3.5 MoE stack:
 # - install unsloth / unsloth-zoo from GitHub
