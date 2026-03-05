@@ -1,7 +1,7 @@
 from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class PageType(str, Enum):
@@ -57,13 +57,21 @@ class Fact(BaseModel):
     comment: Optional[str] = None
     is_note: bool = False
     note: Optional[str] = None
-    note_reference: str = ""
+    note_reference: Optional[str] = None
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
     scale: Optional[Scale] = None
     value_type: Optional[ValueType] = None
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("note_reference", mode="before")
+    @classmethod
+    def _normalize_note_reference(cls, value):
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text or None
 
 
 class BBox(BaseModel):
@@ -87,13 +95,21 @@ class ExtractedFact(BaseModel):
     comment: Optional[str] = None
     is_note: bool = False
     note: Optional[str] = None
-    note_reference: str = ""
+    note_reference: Optional[str] = None
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
     scale: Optional[Scale] = None
     value_type: Optional[ValueType] = None
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("note_reference", mode="before")
+    @classmethod
+    def _normalize_note_reference(cls, value):
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text or None
 
 
 class PageExtraction(BaseModel):

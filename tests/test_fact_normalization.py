@@ -50,12 +50,49 @@ def test_normalize_value_allows_percent_and_normalizes_negative_non_percent() ->
 
 
 def test_normalize_value_dash_and_noncanonical_report_warnings() -> None:
+    hyphen_value, hyphen_warnings = normalize_value("-")
     dash_value, dash_warnings = normalize_value("—")
     bad_value, bad_warnings = normalize_value("abc")
+    assert hyphen_value == "-"
+    assert hyphen_warnings == []
     assert dash_value == ""
     assert "placeholder_value" in dash_warnings
     assert bad_value == "abc"
     assert "noncanonical_value" in bad_warnings
+
+
+def test_normalize_value_handles_marker_prefixed_numeric_and_currency_dash() -> None:
+    marker_value, marker_warnings = normalize_value("*62,565")
+    currency_dash_value, currency_dash_warnings = normalize_value("$           -")
+    assert marker_value == "62565"
+    assert marker_warnings == []
+    assert currency_dash_value == "-"
+    assert currency_dash_warnings == []
+
+
+def test_normalize_fact_payload_moves_range_value_to_note_reference() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "7-15",
+            "note_reference": "",
+            "path": [],
+        }
+    )
+    assert normalized["value"] == ""
+    assert normalized["note_reference"] == "7-15"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_coerces_empty_note_reference_to_null() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "note_reference": "",
+            "path": [],
+        }
+    )
+    assert normalized["note_reference"] is None
+    assert warnings == []
 
 
 def test_normalize_annotation_payload_reports_issues() -> None:
@@ -110,4 +147,3 @@ def test_assert_fact_format_raises_on_issues(tmp_path: Path) -> None:
         assert "schema/format violations" in str(exc)
     else:  # pragma: no cover
         raise AssertionError("Expected schema/format RuntimeError")
-

@@ -54,10 +54,13 @@ _COMPACT_KEY_MAP: dict[str, str] = {
 }
 
 
-def build_dataset(config_path: Path) -> None:
+def build_dataset(config_path: Path, *, allow_format_issues: bool = False) -> None:
     from .dataset_builder import main as build_main
 
-    build_main(["--config", str(config_path)])
+    args = ["--config", str(config_path)]
+    if allow_format_issues:
+        args.append("--allow-format-issues")
+    build_main(args)
 
 
 def _resolve_system_prompt(root: Path) -> str:
@@ -864,11 +867,29 @@ def push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: b
     return repo_id
 
 
-def _owner_from_repo_id(repo_id: str | None) -> str | None:
-    if not repo_id or "/" not in repo_id:
-        return None
-    owner = repo_id.split("/", 1)[0].strip()
-    return owner or None
+def _derive_variant_repo_ids(base_repo_id: str | None) -> tuple[str | None, str | None, str | None]:
+    if not base_repo_id:
+        return None, None, None
+    repo = str(base_repo_id).strip()
+    if not repo:
+        return None, None, None
+    if "/" in repo:
+        owner, name = repo.split("/", 1)
+        owner = owner.strip()
+        name = name.strip()
+        if not owner or not name:
+            return None, None, None
+        prefix = f"{owner}/{name}"
+    else:
+        name = repo
+        if not name:
+            return None, None, None
+        prefix = name
+    return (
+        f"{prefix}-minimal-instruction",
+        f"{prefix}-no-bbox",
+        f"{prefix}-no-bbox-minimal-instruction",
+    )
 
 
 def _resolve_repo_id(repo_id: str | None, token: str) -> str:
@@ -1031,7 +1052,7 @@ def main(argv: list[str] | None = None) -> int:
     main_repo_id = _resolve_repo_id(args.repo_id, token)
     compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
 
-    build_dataset(config_path)
+    build_dataset(config_path, allow_format_issues=args.allow_format_issues)
     if instruction_mode == "source" or args.push_all_variants:
         assert_source_instruction_schema(root, fail_on_issues=True)
     assert_no_train_val_contamination(root)
@@ -1110,10 +1131,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.push_all_variants:
         from . import push_dataset_hub_no_bbox as no_bbox_mod
 
-        owner = _owner_from_repo_id(main_repo_id)
-        derived_minimal = f"{owner}/FineTree-annotated-pages-minimal-instruction" if owner else None
-        derived_no_bbox = f"{owner}/FineTree-annotated-pages-no-bbox" if owner else None
-        derived_no_bbox_min = f"{owner}/FineTree-annotated-pages-no-bbox-minimal-instruction" if owner else None
+        derived_minimal, derived_no_bbox, derived_no_bbox_min = _derive_variant_repo_ids(main_repo_id)
         repo_minimal = _resolve_repo_id(args.repo_id_minimal_instruction or derived_minimal, token)
         repo_no_bbox = _resolve_repo_id(args.repo_id_no_bbox or derived_no_bbox, token)
         repo_no_bbox_min = _resolve_repo_id(args.repo_id_no_bbox_minimal_instruction or derived_no_bbox_min, token)

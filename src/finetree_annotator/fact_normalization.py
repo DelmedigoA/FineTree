@@ -20,7 +20,6 @@ CANONICAL_FACT_KEYS = {
     "value_type",
 }
 LEGACY_FACT_KEYS = {
-    "note",
     "is_beur",
     "beur_num",
     "refference",
@@ -39,7 +38,9 @@ _DATE_YMD_RE = re.compile(r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})$")
 _DATE_DMY_RE = re.compile(r"^(?P<day>\d{1,2})\.(?P<month>\d{1,2})\.(?P<year>\d{4})$")
 _NUMERIC_OR_PAREN_RE = re.compile(r"^\(?\d+(?:\.\d+)?\)?$")
 _NEGATIVE_RE = re.compile(r"^-(\d+(?:\.\d+)?)$")
-_DASH_PLACEHOLDERS = {"-", "—", "–"}
+_RANGE_VALUE_RE = re.compile(r"^\d+\s*-\s*\d+$")
+_SINGLE_ALLOWED_DASH = "-"
+_EMPTY_DASH_PLACEHOLDERS = {"—", "–"}
 _CURRENCY_SIGNS_RE = re.compile(r"[$₪€£]")
 _CURRENCY_CODES_RE = re.compile(r"\b(?:USD|ILS|EUR|GBP)\b", flags=re.IGNORECASE)
 DEFAULT_ANNOTATIONS_GLOB = "data/annotations/*.json"
@@ -155,13 +156,26 @@ def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
         # User explicitly requested permissive handling for values containing '%'.
         return raw_text, []
 
-    if raw_text in _DASH_PLACEHOLDERS:
+    if raw_text == _SINGLE_ALLOWED_DASH:
+        return _SINGLE_ALLOWED_DASH, []
+
+    if raw_text in _EMPTY_DASH_PLACEHOLDERS:
         return "", ["placeholder_value"]
+
+    # Some source pages prefix numeric values with '*' as a marker.
+    # Strip leading marker(s) before numeric normalization.
+    raw_text = re.sub(r"^\*+\s*", "", raw_text)
 
     cleaned = _CURRENCY_SIGNS_RE.sub("", raw_text)
     cleaned = _CURRENCY_CODES_RE.sub("", cleaned)
     cleaned = cleaned.replace(",", "")
     cleaned = "".join(cleaned.split())
+
+    # After stripping currency tokens, placeholders like "$ -" become "-".
+    if cleaned == _SINGLE_ALLOWED_DASH:
+        return _SINGLE_ALLOWED_DASH, []
+    if cleaned in _EMPTY_DASH_PLACEHOLDERS:
+        return "", []
 
     neg_match = _NEGATIVE_RE.match(cleaned)
     if neg_match:
@@ -204,14 +218,21 @@ def normalize_fact_payload(
     note_reference_raw = payload.get("note_reference")
     if note_reference_raw in ("", None):
         note_reference_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
-    note_reference = str(note_reference_raw or "").strip()
+    note_reference = _to_optional_text(note_reference_raw)
+
+    raw_value_text = str(payload.get("value") or "").strip()
+    value_input: Any = payload.get("value")
+    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text):
+        if not note_reference:
+            note_reference = raw_value_text.replace(" ", "")
+        value_input = ""
 
     is_note_raw = payload.get("is_note")
     if is_note_raw in ("", None):
         is_note_raw = payload.get("is_beur", payload.get("beur"))
     is_note, bool_warnings = _coerce_is_note(is_note_raw)
 
-    value, value_warnings = normalize_value(payload.get("value"))
+    value, value_warnings = normalize_value(value_input)
     date_value, date_warnings = normalize_date(payload.get("date"))
 
     normalized: dict[str, Any] = {
@@ -428,4 +449,3 @@ __all__ = [
     "normalize_fact_payload",
     "normalize_value",
 ]
-

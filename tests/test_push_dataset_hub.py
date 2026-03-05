@@ -610,8 +610,9 @@ def test_push_train_validation_separately_uses_train_split_for_both_repos(monkey
 def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
-    def _fake_build_dataset(config_path: Path) -> None:
+    def _fake_build_dataset(config_path: Path, *, allow_format_issues: bool = False) -> None:
         captured["config"] = str(config_path)
+        captured["allow_format_issues"] = allow_format_issues
 
     def _fake_export(
         root: Path,
@@ -666,6 +667,7 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     assert captured.get("build_from_export") == captured.get("export_dir")
     assert captured.get("compact_tokens") is False
     assert captured.get("aggressive_compact_tokens") is False
+    assert captured.get("allow_format_issues") is False
 
 
 def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path: Path) -> None:
@@ -739,6 +741,56 @@ def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path
     assert ("push_main", "asafd60/FineTree-annotated-pages-minimal-instruction") in calls
     assert ("push", "source:asafd60/FineTree-annotated-pages-no-bbox") in calls
     assert ("push", "minimal:asafd60/FineTree-annotated-pages-no-bbox-minimal-instruction") in calls
+
+
+def test_push_all_variants_uses_main_repo_base_for_derived_variant_ids(monkeypatch, tmp_path: Path) -> None:
+    from finetree_annotator.finetune import push_dataset_hub_no_bbox as no_bbox_mod
+
+    calls: list[tuple[str, str]] = []
+
+    monkeypatch.setattr(push_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+
+    def _fake_push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True):
+        _ = dataset, token, private
+        calls.append(("push_main", str(repo_id)))
+        return repo_id or "auto-main"
+
+    monkeypatch.setattr(push_mod, "push_to_hf", _fake_push_to_hf)
+    monkeypatch.setattr(no_bbox_mod, "export_for_hf_no_bbox", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(no_bbox_mod, "build_hf_dataset_no_bbox_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    def _fake_nb_push(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True, *, instruction_mode: str):
+        _ = dataset, token, private
+        calls.append(("push", f"{instruction_mode}:{repo_id}"))
+        return repo_id or "auto"
+
+    monkeypatch.setattr(no_bbox_mod, "push_to_hf_no_bbox", _fake_nb_push)
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = push_mod.main(
+            [
+                "--token",
+                "tok",
+                "--push-all-variants",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages-v2",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert ("push_main", "asafd60/FineTree-annotated-pages-v2") in calls
+    assert ("push_main", "asafd60/FineTree-annotated-pages-v2-minimal-instruction") in calls
+    assert ("push", "source:asafd60/FineTree-annotated-pages-v2-no-bbox") in calls
+    assert ("push", "minimal:asafd60/FineTree-annotated-pages-v2-no-bbox-minimal-instruction") in calls
 
 
 def test_main_blocks_on_format_issues_by_default(monkeypatch, tmp_path: Path) -> None:

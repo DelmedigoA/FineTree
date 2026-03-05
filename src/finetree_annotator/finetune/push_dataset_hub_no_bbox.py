@@ -441,7 +441,7 @@ def main(argv: list[str] | None = None) -> int:
     cfg = load_finetune_config(config_path)
     export_dir = (root / args.export_dir).resolve()
 
-    build_dataset(config_path)
+    build_dataset(config_path, allow_format_issues=args.allow_format_issues)
     if instruction_mode == "source":
         assert_source_instruction_schema(root, fail_on_issues=True)
     assert_no_train_val_contamination(root)
