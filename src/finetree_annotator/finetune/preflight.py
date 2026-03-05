@@ -51,7 +51,10 @@ def _check_training_stack() -> CheckResult:
         return CheckResult(
             name="python-stack",
             ok=False,
-            message=f"Missing modules: {', '.join(missing)}",
+            message=(
+                f"Missing modules: {', '.join(missing)}. "
+                "Install `python -m pip install -e .[train]` on a Linux CUDA host."
+            ),
         )
     return CheckResult(name="python-stack", ok=True, message="All required modules are importable.")
 

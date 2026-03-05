@@ -44,7 +44,9 @@ def _verify_training_dependencies() -> None:
             missing.append(module_name)
     if missing:
         raise RuntimeError(
-            "Training dependencies are missing. Install required modules: "
+            "Training dependencies are missing. Install them with "
+            "`python -m pip install -e .[train]` on a Linux CUDA host. "
+            "Missing modules: "
             + ", ".join(sorted(missing))
         )
 
@@ -358,7 +360,8 @@ def run_training(cfg: FinetuneConfig, dry_run: bool = False) -> Path:
         from transformers import TrainingArguments
     except Exception as exc:  # pragma: no cover
         raise RuntimeError(
-            "Training dependencies are missing. Install unsloth + trl + datasets + transformers."
+            "Training dependencies are missing. Install `python -m pip install -e .[train]` "
+            "on a Linux CUDA host."
         ) from exc
 
     cfg.run.output_dir.mkdir(parents=True, exist_ok=True)
