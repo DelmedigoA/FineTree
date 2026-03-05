@@ -12,14 +12,22 @@ This repo now includes a simple local annotation app:
 ### Install
 
 ```bash
-pip install -r requirements.txt
-pip install -e .
+python -m pip install -e .
 ```
 
-If your environment is offline:
+For GPU fine-tuning on a Linux CUDA host, install the training extra:
 
 ```bash
-pip install -e . --no-build-isolation
+python -m pip install -e .[train]
+```
+
+`unsloth` is not installed by default on macOS/local CPU setups because its `xformers`
+dependency is CUDA/Linux-oriented and commonly fails to build on Apple clang.
+
+If your environment is offline or you want the editable package without dependency resolution:
+
+```bash
+python -m pip install -e . --no-build-isolation
 ```
 
 ### Run
@@ -140,6 +148,12 @@ docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.simple-in
 Use `deploy/runpod/simple_infer_api.env.example` as the env template in RunPod.
 
 ### Fine-Tuning Pipeline (Unsloth)
+
+Use a Linux CUDA environment with the training extra installed:
+
+```bash
+python -m pip install -e .[train]
+```
 
 Default config: `configs/finetune_qwen35a3_vl.yaml`
 

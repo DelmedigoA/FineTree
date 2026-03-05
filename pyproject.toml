@@ -23,10 +23,14 @@ dependencies = [
   "uvicorn",
   "huggingface_hub",
   "runpod",
-  "unsloth",
   "qwen-vl-utils",
   "gradio",
   "pytest>=8,<9",
+]
+
+[project.optional-dependencies]
+train = [
+  "unsloth; platform_system == 'Linux'",
 ]
 
 [project.scripts]
