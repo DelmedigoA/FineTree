@@ -1855,7 +1855,7 @@ class AnnotationWindow(QMainWindow):
             right_stretch=1,
         )
         add_fact_editor_row(
-            self._inspector_field_block("Comment", self.fact_note_edit),
+            self._inspector_field_block("Ref Comment", self.fact_note_edit),
             note_flag_block,
             left_stretch=2,
             right_stretch=1,
@@ -1865,7 +1865,7 @@ class AnnotationWindow(QMainWindow):
             self._inspector_field_block("Note Num", self.fact_beur_num_edit),
         )
         add_fact_editor_row(
-            self._inspector_field_block("Note Ref", self.fact_refference_edit, required=True),
+            self._inspector_field_block("Ref Note", self.fact_refference_edit, required=True),
             self._inspector_field_block("Date", self.fact_date_edit),
         )
         add_fact_editor_row(currency_block, scale_block)
@@ -1917,13 +1917,13 @@ class AnnotationWindow(QMainWindow):
         self.batch_set_value_btn = QPushButton("Set Value")
         self.batch_clear_value_btn = QPushButton("Clear Value")
         self.batch_refference_edit = QLineEdit()
-        self.batch_refference_edit.setPlaceholderText("Note reference for selected bboxes")
-        self.batch_set_refference_btn = QPushButton("Set Note Reference")
-        self.batch_clear_refference_btn = QPushButton("Clear Note Reference")
+        self.batch_refference_edit.setPlaceholderText("Ref note for selected bboxes")
+        self.batch_set_refference_btn = QPushButton("Set Ref Note")
+        self.batch_clear_refference_btn = QPushButton("Clear Ref Note")
         self.batch_note_edit = QLineEdit()
-        self.batch_note_edit.setPlaceholderText("Comment text for selected bboxes")
-        self.batch_set_note_btn = QPushButton("Set Comment")
-        self.batch_clear_note_btn = QPushButton("Clear Comment")
+        self.batch_note_edit.setPlaceholderText("Ref comment text for selected bboxes")
+        self.batch_set_note_btn = QPushButton("Set Ref Comment")
+        self.batch_clear_note_btn = QPushButton("Clear Ref Comment")
         self.batch_note_name_edit = QLineEdit()
         self.batch_note_name_edit.setPlaceholderText("Note name for selected bboxes")
         self.batch_set_note_name_btn = QPushButton("Set Note Name")
@@ -2090,7 +2090,7 @@ class AnnotationWindow(QMainWindow):
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+click on boxes or Shift+drag on empty page area to select multiple boxes. "
-            "Use Batch Edit to change value/note_reference/comment/note_name/date/note_flag/note_num/currency/scale/value_type and path levels across selected boxes. "
+            "Use Batch Edit to change value/ref_note/ref_comment/note_name/date/note_flag/note_num/currency/scale/value_type and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -2158,11 +2158,11 @@ class AnnotationWindow(QMainWindow):
         self.company_id_edit.editingFinished.connect(self._on_meta_edited)
         self.report_year_edit.editingFinished.connect(self._on_meta_edited)
         self.fact_value_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("value"))
-        self.fact_note_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("comment"))
+        self.fact_note_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("ref_comment"))
         self.fact_note_name_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_name"))
         self.fact_is_beur_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("note_flag"))
         self.fact_beur_num_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_num"))
-        self.fact_refference_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_reference"))
+        self.fact_refference_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("ref_note"))
         self.fact_date_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("date"))
         self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("currency"))
         self.fact_scale_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("scale"))
@@ -2659,7 +2659,7 @@ class AnnotationWindow(QMainWindow):
                 (
                     "Selected bboxes do not all share the same attribute path.\n"
                     f"Found paths: {detail}\n\n"
-                    "Clear note_reference for all selected bboxes anyway?"
+                    "Clear ref_note for all selected bboxes anyway?"
                 ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
@@ -2668,10 +2668,10 @@ class AnnotationWindow(QMainWindow):
                 return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note_reference"] = None
+            fact["ref_note"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared note_reference")
+        self._batch_update_selected_facts(_transform, "Cleared ref_note")
 
     def batch_set_value(self) -> None:
         value = self.batch_value_edit.text().strip()
@@ -2695,33 +2695,33 @@ class AnnotationWindow(QMainWindow):
     def batch_set_refference(self) -> None:
         refference = self.batch_refference_edit.text().strip()
         if not refference:
-            self.statusBar().showMessage("Enter note_reference text first.", 2500)
+            self.statusBar().showMessage("Enter ref_note text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note_reference"] = refference
+            fact["ref_note"] = refference
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated note_reference")
+        self._batch_update_selected_facts(_transform, "Updated ref_note")
 
     def batch_set_note(self) -> None:
         note = self.batch_note_edit.text().strip()
         if not note:
-            self.statusBar().showMessage("Enter comment text first.", 2500)
+            self.statusBar().showMessage("Enter ref comment text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["comment"] = note
+            fact["ref_comment"] = note
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated comment")
+        self._batch_update_selected_facts(_transform, "Updated ref comment")
 
     def batch_clear_note(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["comment"] = None
+            fact["ref_comment"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared comment")
+        self._batch_update_selected_facts(_transform, "Cleared ref comment")
 
     def batch_set_note_name(self) -> None:
         note_name = self.batch_note_name_edit.text().strip()
@@ -3022,14 +3022,14 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
-            self.fact_note_edit.setText(str(fact.get("comment") or ""))
+            self.fact_note_edit.setText(str(fact.get("ref_comment") or ""))
             self.fact_note_name_edit.setText(str(fact.get("note_name") or ""))
             is_beur = bool(fact.get("note_flag"))
             is_beur_text = "true" if is_beur else "false"
             idx_is_beur = self.fact_is_beur_combo.findText(is_beur_text)
             self.fact_is_beur_combo.setCurrentIndex(max(0, idx_is_beur))
             self.fact_beur_num_edit.setText("" if fact.get("note_num") is None else str(fact.get("note_num")))
-            self.fact_refference_edit.setText(str(fact.get("note_reference") or ""))
+            self.fact_refference_edit.setText(str(fact.get("ref_note") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
             self.fact_path_list.clear()
             for path_index, path_level in enumerate(fact.get("path") or []):
@@ -3101,7 +3101,7 @@ class AnnotationWindow(QMainWindow):
             self._reset_fact_editor_placeholders()
             self.fact_bbox_label.setText(f"{selected_count} selected")
             self._set_multi_line_edit_value(self.fact_value_edit, "value", items)
-            self._set_multi_line_edit_value(self.fact_note_edit, "comment", items)
+            self._set_multi_line_edit_value(self.fact_note_edit, "ref_comment", items)
             self._set_multi_line_edit_value(self.fact_note_name_edit, "note_name", items)
             self._set_multi_combo_value(
                 self.fact_is_beur_combo,
@@ -3110,7 +3110,7 @@ class AnnotationWindow(QMainWindow):
                 formatter=lambda value: "true" if bool(value) else "false",
             )
             self._set_multi_line_edit_value(self.fact_beur_num_edit, "note_num", items)
-            self._set_multi_line_edit_value(self.fact_refference_edit, "note_reference", items)
+            self._set_multi_line_edit_value(self.fact_refference_edit, "ref_note", items)
             self._set_multi_line_edit_value(self.fact_date_edit, "date", items)
             self._set_multi_combo_value(self.fact_currency_combo, "currency", items)
             self._set_multi_combo_value(
@@ -3209,11 +3209,11 @@ class AnnotationWindow(QMainWindow):
         return normalize_fact_data(
             {
                 "value": self.fact_value_edit.text().strip(),
-                "comment": self.fact_note_edit.text().strip() or None,
+                "ref_comment": self.fact_note_edit.text().strip() or None,
                 "note_name": self.fact_note_name_edit.text().strip() or None,
                 "note_flag": is_beur_value,
                 "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
-                "note_reference": self.fact_refference_edit.text().strip() or None,
+                "ref_note": self.fact_refference_edit.text().strip() or None,
                 "date": self.fact_date_edit.text().strip() or None,
                 "path": path_parts,
                 "currency": self.fact_currency_combo.currentText().strip() or None,
@@ -3344,8 +3344,12 @@ class AnnotationWindow(QMainWindow):
         if field_name == "value":
             self._apply_fact_field_to_selected_items("value", self.fact_value_edit.text().strip(), widget=self.fact_value_edit)
             return
-        if field_name == "comment":
-            self._apply_fact_field_to_selected_items("comment", self.fact_note_edit.text().strip() or None, widget=self.fact_note_edit)
+        if field_name == "ref_comment":
+            self._apply_fact_field_to_selected_items(
+                "ref_comment",
+                self.fact_note_edit.text().strip() or None,
+                widget=self.fact_note_edit,
+            )
             return
         if field_name == "note_name":
             self._apply_fact_field_to_selected_items("note_name", self.fact_note_name_edit.text().strip() or None, widget=self.fact_note_name_edit)
@@ -3364,9 +3368,9 @@ class AnnotationWindow(QMainWindow):
                 widget=self.fact_beur_num_edit,
             )
             return
-        if field_name == "note_reference":
+        if field_name == "ref_note":
             self._apply_fact_field_to_selected_items(
-                "note_reference",
+                "ref_note",
                 self.fact_refference_edit.text().strip() or None,
                 widget=self.fact_refference_edit,
             )
@@ -3849,7 +3853,7 @@ class AnnotationWindow(QMainWindow):
                 "note_name": self.fact_note_name_edit,
                 "note_num": self.fact_beur_num_edit,
                 "note_flag": self.fact_is_beur_combo,
-                "note_reference": self.fact_refference_edit,
+                "ref_note": self.fact_refference_edit,
             }
         else:
             widget_map = {
@@ -4074,11 +4078,11 @@ class AnnotationWindow(QMainWindow):
             round(float(bbox["w"]), 2),
             round(float(bbox["h"]), 2),
             str(normalized_fact.get("value") or ""),
-            str(normalized_fact.get("comment") or ""),
+            str(normalized_fact.get("ref_comment") or ""),
             str(normalized_fact.get("note_flag") if normalized_fact.get("note_flag") is not None else ""),
             str(normalized_fact.get("note_name") or ""),
             str(normalized_fact.get("note_num") if normalized_fact.get("note_num") is not None else ""),
-            str(normalized_fact.get("note_reference") or ""),
+            str(normalized_fact.get("ref_note") or ""),
             str(normalized_fact.get("date") or ""),
             path,
         )
@@ -5041,15 +5045,15 @@ class AnnotationWindow(QMainWindow):
             rect = item_scene_rect(item)
             value = str(item.fact_data.get("value") or "")
             path = " > ".join(item.fact_data.get("path") or [])
-            comment = str(item.fact_data.get("comment") or "")
+            ref_comment = str(item.fact_data.get("ref_comment") or "")
             note_num = "" if item.fact_data.get("note_num") is None else str(item.fact_data.get("note_num"))
             note_name = str(item.fact_data.get("note_name") or "")
             summary = f"#{idx} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
                 summary = f"{summary} | {path}"
-            if comment:
-                trimmed_comment = (comment[:32] + "...") if len(comment) > 35 else comment
-                summary = f"{summary} | comment: {trimmed_comment}"
+            if ref_comment:
+                trimmed_ref_comment = (ref_comment[:32] + "...") if len(ref_comment) > 35 else ref_comment
+                summary = f"{summary} | ref_comment: {trimmed_ref_comment}"
             if note_num:
                 trimmed_note_num = (note_num[:32] + "...") if len(note_num) > 35 else note_num
                 summary = f"{summary} | note_num: {trimmed_note_num}"
@@ -5057,8 +5061,8 @@ class AnnotationWindow(QMainWindow):
                 trimmed_note_name = (note_name[:32] + "...") if len(note_name) > 35 else note_name
                 summary = f"{summary} | note_name: {trimmed_note_name}"
             summary = f"{summary} | note_flag: {bool(item.fact_data.get('note_flag'))}"
-            if item.fact_data.get("note_reference"):
-                summary = f"{summary} | note_reference: {item.fact_data.get('note_reference')}"
+            if item.fact_data.get("ref_note"):
+                summary = f"{summary} | ref_note: {item.fact_data.get('ref_note')}"
             self.facts_list.addItem(QListWidgetItem(summary))
             list_item = self.facts_list.item(idx - 1)
             if list_item is not None and item in selected_items:

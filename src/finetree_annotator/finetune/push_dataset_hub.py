@@ -30,7 +30,7 @@ _DEFAULT_SYSTEM_PROMPT = (
     "You are a precise financial statement extraction system. "
     "Return only valid JSON that matches the required schema."
 )
-_LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "refference")
+_LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "note_ref", "note_reference", "refference")
 _COMPACT_KEY_MAP: dict[str, str] = {
     "meta": "m",
     "facts": "f",
@@ -39,11 +39,14 @@ _COMPACT_KEY_MAP: dict[str, str] = {
     "page_num": "p",
     "title": "ttl",
     "value": "v",
+    "ref_comment": "cmt",
     "comment": "cmt",
     "note_flag": "nflg",
     "note_name": "nnm",
     "note_num": "nt",
     "note": "nt",
+    "ref_note": "nref",
+    "note_ref": "nref",
     "note_reference": "nref",
     "date": "d",
     "currency": "cur",

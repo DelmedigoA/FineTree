@@ -36,11 +36,11 @@ class PageState:
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
-        "comment": None,
+        "ref_comment": None,
         "note_flag": False,
         "note_name": None,
         "note_num": None,
-        "note_reference": None,
+        "ref_note": None,
         "date": None,
         "path": [],
         "currency": None,

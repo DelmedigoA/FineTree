@@ -11,10 +11,10 @@ from finetree_annotator.page_issues import (
 def _fact(**overrides):
     base = {
         "value": "10",
-        "comment": None,
+        "ref_comment": None,
         "note_flag": False,
         "note_num": None,
-        "note_reference": None,
+        "ref_note": None,
         "date": None,
         "path": [],
         "currency": None,
@@ -135,7 +135,7 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
                     value="12%",
                     note_flag=True,
                     note_num=7,
-                    note_reference="n7",
+                    ref_note="n7",
                     date="2024-13-40",
                     path=["assets", "", "cash"],
                     currency="USD",
@@ -146,7 +146,7 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
         ),
     )
     codes = {issue.code for issue in summary.issues}
-    assert "note_reference_on_notes_page" in codes
+    assert "ref_note_on_notes_page" in codes
     assert "invalid_date" in codes
     assert "path_contains_empty_level" in codes
     assert "amount_type_percent_value" in codes

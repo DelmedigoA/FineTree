@@ -9,7 +9,7 @@ PROMPT_TOP_LEVEL_KEYS: tuple[str, ...] = tuple(PageExtraction.model_fields.keys(
 PAGE_META_KEYS: tuple[str, ...] = tuple(PageMeta.model_fields.keys())
 EXTRACTED_FACT_KEYS: tuple[str, ...] = tuple(ExtractedFact.model_fields.keys())
 CANONICAL_FACT_KEYS: tuple[str, ...] = tuple(key for key in EXTRACTED_FACT_KEYS if key != "bbox")
-REQUIRED_PROMPT_CANONICAL_KEYS: tuple[str, ...] = ("comment", "note_flag", "note_name", "note_num", "note_reference")
+REQUIRED_PROMPT_CANONICAL_KEYS: tuple[str, ...] = ("ref_comment", "note_flag", "note_name", "note_num", "ref_note")
 LEGACY_FACT_KEYS: tuple[str, ...] = (
     "is_beur",
     "beur_num",
@@ -66,11 +66,11 @@ def default_extraction_prompt_template() -> str:
             {{
               "bbox": {{ "x": <number>, "y": <number>, "w": <number>, "h": <number> }},
               "value": "<string>",
-              "comment": "<string or null>",
+              "ref_comment": "<string or null>",
               "note_flag": <true|false>,
               "note_name": "<string or null>",
               "note_num": "<integer or null>",
-              "note_reference": "<string or null>",
+              "ref_note": "<string or null>",
               "date": "<string or null>",
               "path": ["<string>", "..."],
               "currency": "{currencies}|null",
@@ -84,7 +84,7 @@ def default_extraction_prompt_template() -> str:
         1. `meta` and `facts` are required.
         2. All listed `meta` keys are required: `entity_name`, `page_num`, `type`, `title`.
         3. All listed fact keys are required in every fact object, including `bbox`; nullable fields must still be present with JSON null.
-        4. `note_reference` is required and nullable. Use JSON `null` when missing (never `""`).
+        4. `ref_note` is required and nullable. Use JSON `null` when missing (never `""`).
         5. `path` is a required list of strings (use `[]` when unknown, never `null`).
         6. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
         7. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
@@ -106,11 +106,11 @@ def default_extraction_prompt_template() -> str:
         3. For non-`%` values, normalize `value` to canonical numeric shape (`Num`, `Num.Num`, `(Num)`, `(Num.Num)`) or exact `"-"` when source is only `-`.
         4. For `%` values, keep `%` in `value`.
         5. `bbox` must tightly cover the value text only, in pixel coordinates of the original image.
-        6. `comment`: textual qualifier tied to the specific fact (for example `*without debt insurance`), else `null`.
+        6. `ref_comment`: textual qualifier tied to the specific fact (for example `*without debt insurance`), else `null`.
         7. `note_flag`: `true` when the fact is itself inside a note section, else `false`.
         8. `note_name`: note title/name only (for example `רכוש אחר`). Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור` here.
         9. `note_num`: integer note number for facts that belong to note content; else `null`.
-        10. `note_reference`: use when this fact points/references another note; else `null`. If the visible note marker is not a plain integer (for example `2ה׳`, `A1`), use `note_reference`, not `note_num`.
+        10. `ref_note`: use when this fact points/references another note; else `null`. If the visible note marker is not a plain integer (for example `2ה׳`, `A1`), use `ref_note`, not `note_num`.
         11. `currency`: infer from page/header context (for example "שקלים חדשים" -> "ILS"), else `null`.
         12. `scale`: `1` unless page/header indicates thousands or millions. For percentage facts, prefer `scale=null` unless the page truly expresses scaled percentages.
         13. `value_type`: `"amount"` unless the fact is a percentage (`"%"`). If `value_type` is `"%"`, set `currency` to `null`.
@@ -125,7 +125,7 @@ def default_extraction_prompt_template() -> str:
         2. Then append vertical-axis hierarchy only when it adds business semantics not already represented by dedicated fields.
         3. Do not encode period/currency/scale/value-format in `path` when already represented by `date`/`currency`/`scale`/`value_type`.
         4. Keep labels exactly as shown. Do not invent levels.
-        5. Do not include generic note markers like `Note`, `note`, `באור`, or `ביאור` inside `path`. Put note semantics in `note_flag`, `note_num`, `note_name`, and `note_reference` instead.
+        5. Do not include generic note markers like `Note`, `note`, `באור`, or `ביאור` inside `path`. Put note semantics in `note_flag`, `note_num`, `note_name`, and `ref_note` instead.
         """
     ).strip()
 

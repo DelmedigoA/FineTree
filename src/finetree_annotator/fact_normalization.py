@@ -150,7 +150,10 @@ def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
 
 
 def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
-    return any(key in raw_fact for key in ("comment", "note_flag", "is_note", "note_name", "note_reference", "note_num"))
+    return any(
+        key in raw_fact
+        for key in ("ref_comment", "comment", "note_flag", "is_note", "note_name", "ref_note", "note_ref", "note_reference", "note_num")
+    )
 
 
 def _has_legacy_markers(raw_fact: Mapping[str, Any]) -> bool:
@@ -167,7 +170,9 @@ def normalize_fact_payload(
     has_legacy = _has_legacy_markers(payload)
 
     if has_canonical:
-        comment_raw = payload.get("comment")
+        comment_raw = payload.get("ref_comment")
+        if comment_raw in ("", None):
+            comment_raw = payload.get("comment")
         if comment_raw in ("", None) and has_legacy:
             comment_raw = payload.get("note")
         note_name_raw = payload.get("note_name", payload.get("beur_name"))
@@ -179,10 +184,12 @@ def normalize_fact_payload(
         note_name_raw = payload.get("beur_name")
         note_num_raw = payload.get("beur_num", payload.get("beur_number"))
 
-    note_reference_raw = payload.get("note_reference")
-    if note_reference_raw in ("", None):
-        note_reference_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
-    note_reference = _to_optional_text(note_reference_raw)
+    ref_note_raw = payload.get("ref_note")
+    if ref_note_raw in ("", None):
+        ref_note_raw = payload.get("note_ref", payload.get("note_reference"))
+    if ref_note_raw in ("", None):
+        ref_note_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
+    ref_note = _to_optional_text(ref_note_raw)
 
     normalized_value_type = _normalize_value_type(payload.get("value_type"))
     raw_value_text = str(payload.get("value") or "").strip()
@@ -191,8 +198,8 @@ def normalize_fact_payload(
         raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type == "%"
     )
     if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type != "%":
-        if not note_reference:
-            note_reference = raw_value_text.replace(" ", "")
+        if not ref_note:
+            ref_note = raw_value_text.replace(" ", "")
         value_input = ""
 
     note_flag_raw = payload.get("note_flag", payload.get("is_note"))
@@ -209,11 +216,11 @@ def normalize_fact_payload(
 
     normalized: dict[str, Any] = {
         "value": value,
-        "comment": _to_optional_text(comment_raw),
+        "ref_comment": _to_optional_text(comment_raw),
         "note_flag": note_flag,
         "note_name": _to_optional_text(note_name_raw),
         "note_num": note_num,
-        "note_reference": note_reference,
+        "ref_note": ref_note,
         "date": date_value,
         "path": _normalize_path(payload.get("path")),
         "currency": _normalize_currency(payload.get("currency")),

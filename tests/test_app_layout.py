@@ -98,8 +98,8 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "currency": "USD", "comment": "a"})
-    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "currency": "ILS", "comment": "b"})
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "currency": "USD", "ref_comment": "a"})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "currency": "ILS", "ref_comment": "b"})
     window.scene.addItem(item_a)
     window.scene.addItem(item_b)
     window.refresh_facts_list()
@@ -329,7 +329,7 @@ def test_percent_range_value_stays_in_value_field(tmp_path: Path) -> None:
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "5", "note_reference": None, "value_type": "amount"})
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "5", "ref_note": None, "value_type": "amount"})
     window.scene.addItem(item)
     window.refresh_facts_list()
     item.setSelected(True)
@@ -343,7 +343,7 @@ def test_percent_range_value_stays_in_value_field(tmp_path: Path) -> None:
     window._on_fact_editor_field_edited("value")
 
     assert item.fact_data["value"] == "7-10"
-    assert item.fact_data["note_reference"] is None
+    assert item.fact_data["ref_note"] is None
     assert item.fact_data["value_type"] == "%"
     window.close()
 
