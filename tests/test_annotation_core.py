@@ -38,8 +38,8 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
 
     assert fact["value"] == "123"
     assert fact["comment"] == "*without debt insurance"
-    assert fact["is_note"] is True
-    assert fact["note"] == "2ה׳"
+    assert fact["note_flag"] is True
+    assert fact["note_num"] is None
     assert fact["note_reference"] == "ref-001"
     assert fact["path"] == ["assets", "cash", "2024"]
     assert fact["currency"] == "ILS"
@@ -103,8 +103,8 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
     assert len(state.facts) == 2
     assert state.facts[0].fact["currency"] == "ILS"
     assert state.facts[0].fact["comment"] == "*estimated"
-    assert state.facts[0].fact["is_note"] is True
-    assert state.facts[0].fact["note"] == "5"
+    assert state.facts[0].fact["note_flag"] is True
+    assert state.facts[0].fact["note_num"] == 5
     assert state.facts[0].fact["note_reference"] == "A1"
     assert state.facts[0].fact["scale"] == 1000
     assert state.facts[1].bbox["w"] == 1.0
@@ -143,8 +143,8 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     assert page_1["meta"]["type"] == "notes"
     assert page_1["facts"][0]["currency"] == "USD"
     assert page_1["facts"][0]["comment"] == "*estimated"
-    assert page_1["facts"][0]["is_note"] is True
-    assert page_1["facts"][0]["note"] == "5"
+    assert page_1["facts"][0]["note_flag"] is True
+    assert page_1["facts"][0]["note_num"] == 5
     assert page_1["facts"][0]["note_reference"] == "row-12"
     assert page_1["facts"][0]["bbox"] == [10.0, 20.0, 30.0, 40.0]
     assert page_2["meta"]["type"] == "other"
@@ -266,9 +266,15 @@ def test_parse_import_payload_supports_full_document_shape() -> None:
 
 
 def test_extract_document_meta_normalizes_supported_values() -> None:
-    payload = {"document_meta": {"language": "HE", "reading_direction": "RTL"}}
+    payload = {"document_meta": {"language": "HE", "reading_direction": "RTL", "company_id": " 1234 ", "report_year": "2024"}}
     doc_meta = extract_document_meta(payload)
-    assert doc_meta == {"language": "he", "reading_direction": "rtl"}
+    assert doc_meta == {
+        "language": "he",
+        "reading_direction": "rtl",
+        "company_name": None,
+        "company_id": "1234",
+        "report_year": 2024,
+    }
 
 
 def test_build_annotations_payload_includes_document_meta_when_present() -> None:
@@ -283,6 +289,11 @@ def test_build_annotations_payload_includes_document_meta_when_present() -> None
         Path("data/pdf_images/test"),
         page_images,
         page_states,
-        document_meta={"language": "en", "reading_direction": "ltr"},
+        document_meta={"language": "en", "reading_direction": "ltr", "company_id": "cmp-7", "report_year": 2025},
     )
-    assert payload["document_meta"] == {"language": "en", "reading_direction": "ltr"}
+    assert payload["document_meta"] == {
+        "language": "en",
+        "reading_direction": "ltr",
+        "company_id": "cmp-7",
+        "report_year": 2025,
+    }

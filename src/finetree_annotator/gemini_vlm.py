@@ -21,7 +21,9 @@ except Exception:  # pragma: no cover
     genai = None
     types = None
 
-from .schemas import PageExtraction, PageType
+from .fact_normalization import normalize_note_num
+from .schema_contract import CURRENCY_VALUES, PAGE_TYPE_VALUES, SCALE_VALUES, VALUE_TYPE_VALUES
+from .schemas import PageExtraction
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -48,10 +50,10 @@ _ALLOWED_RESPONSE_JSON_SCHEMA_KEYS = {
     "required",
     "propertyOrdering",
 }
-_VALID_PAGE_TYPES = {t.value for t in PageType}
-_VALID_CURRENCIES = {"ILS", "USD", "EUR", "GBP"}
-_VALID_SCALES = {1, 1000, 1000000}
-_VALID_VALUE_TYPES = {"amount", "%"}
+_VALID_PAGE_TYPES = set(PAGE_TYPE_VALUES)
+_VALID_CURRENCIES = set(CURRENCY_VALUES)
+_VALID_SCALES = set(SCALE_VALUES)
+_VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
 
 
 def _is_gemini_3_model(model_name: Optional[str]) -> bool:
@@ -555,7 +557,7 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
             value_type = None
 
         has_canonical_fact_keys = any(
-            key in raw_fact for key in ("comment", "is_note", "note_reference")
+            key in raw_fact for key in ("comment", "note_flag", "is_note", "note_name", "note_reference", "note_num")
         )
         comment_source: Any = raw_fact.get("comment")
         if comment_source is None:
@@ -563,24 +565,28 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
                 comment_source = raw_fact.get("footnote")
             else:
                 comment_source = raw_fact.get("note", raw_fact.get("footnote"))
+        note_name_source = _to_optional_str(raw_fact.get("note_name", raw_fact.get("beur_name")))
 
-        note_source: Any
+        note_num_source: Any
         if has_canonical_fact_keys:
-            note_source = raw_fact.get("note", raw_fact.get("beur_num", raw_fact.get("beur_number")))
+            note_num_source = raw_fact.get("note_num", raw_fact.get("note", raw_fact.get("beur_num", raw_fact.get("beur_number"))))
         else:
-            note_source = raw_fact.get("beur_num", raw_fact.get("beur_number"))
+            note_num_source = raw_fact.get("beur_num", raw_fact.get("beur_number"))
 
-        is_note_value = _to_optional_bool(raw_fact.get("is_note"))
+        is_note_value = _to_optional_bool(raw_fact.get("note_flag", raw_fact.get("is_note")))
         if is_note_value is None:
             is_note_value = _to_optional_bool(raw_fact.get("is_beur", raw_fact.get("beur")))
+
+        normalized_note_num, _note_num_warnings = normalize_note_num(note_num_source)
 
         facts_out.append(
             {
                 "bbox": bbox,
                 "value": str(value),
                 "comment": _to_optional_str(comment_source),
-                "is_note": bool(is_note_value) if is_note_value is not None else False,
-                "note": _to_optional_str(note_source),
+                "note_name": note_name_source,
+                "note_flag": bool(is_note_value) if is_note_value is not None else False,
+                "note_num": normalized_note_num,
                 "note_reference": _to_optional_str(
                     raw_fact.get(
                         "note_reference",

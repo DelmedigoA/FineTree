@@ -6,6 +6,14 @@ from pathlib import Path
 from statistics import median
 from typing import Any, Iterable, Literal
 
+from .schemas import (
+    _normalize_company_id_value,
+    _normalize_company_name_value,
+    _normalize_doc_language_value,
+    _normalize_reading_direction_value,
+    _normalize_report_year_value,
+)
+
 Direction = Literal["rtl", "ltr"]
 Language = Literal["he", "en"]
 DirectionSource = Literal[
@@ -20,23 +28,58 @@ DEFAULT_ROW_TOLERANCE_RATIO = 0.35
 DEFAULT_ROW_TOLERANCE_MIN_PX = 6.0
 
 
-def normalize_document_meta(raw: Any) -> dict[str, str | None]:
+def normalize_document_meta(raw: Any) -> dict[str, Any]:
     if not isinstance(raw, dict):
-        return {"language": None, "reading_direction": None}
-    language_raw = str(raw.get("language") or "").strip().lower()
-    direction_raw = str(raw.get("reading_direction") or "").strip().lower()
-    language: str | None = language_raw if language_raw in {"he", "en"} else None
-    direction: str | None = direction_raw if direction_raw in {"rtl", "ltr"} else None
-    return {"language": language, "reading_direction": direction}
+        return {
+            "language": None,
+            "reading_direction": None,
+            "company_name": None,
+            "company_id": None,
+            "report_year": None,
+        }
+
+    try:
+        language = _normalize_doc_language_value(raw.get("language"))
+    except ValueError:
+        language = None
+    try:
+        direction = _normalize_reading_direction_value(raw.get("reading_direction"))
+    except ValueError:
+        direction = None
+    try:
+        company_name = _normalize_company_name_value(raw.get("company_name"))
+    except ValueError:
+        company_name = None
+    try:
+        company_id = _normalize_company_id_value(raw.get("company_id"))
+    except ValueError:
+        company_id = None
+    try:
+        report_year = _normalize_report_year_value(raw.get("report_year"))
+    except ValueError:
+        report_year = None
+    return {
+        "language": language,
+        "reading_direction": direction,
+        "company_name": company_name,
+        "company_id": company_id,
+        "report_year": report_year,
+    }
 
 
-def compact_document_meta(raw: Any) -> dict[str, str]:
+def compact_document_meta(raw: Any) -> dict[str, Any]:
     normalized = normalize_document_meta(raw)
-    out: dict[str, str] = {}
+    out: dict[str, Any] = {}
     if normalized["language"]:
         out["language"] = str(normalized["language"])
     if normalized["reading_direction"]:
         out["reading_direction"] = str(normalized["reading_direction"])
+    if normalized.get("company_name"):
+        out["company_name"] = str(normalized["company_name"])
+    if normalized.get("company_id"):
+        out["company_id"] = str(normalized["company_id"])
+    if normalized.get("report_year") is not None:
+        out["report_year"] = int(normalized["report_year"])
     return out
 
 
@@ -96,7 +139,7 @@ def _collect_text_parts(payload: Any) -> list[str]:
         for fact in facts:
             if not isinstance(fact, dict):
                 continue
-            for key in ("value", "comment", "note_reference", "date", "note", "refference", "beur_num"):
+            for key in ("value", "comment", "note_name", "note_reference", "date", "note_num", "note", "refference", "beur_num"):
                 value = fact.get(key)
                 if isinstance(value, str) and value.strip():
                     texts.append(value)

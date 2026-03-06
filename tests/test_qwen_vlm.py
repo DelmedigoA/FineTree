@@ -149,7 +149,7 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     image_path.write_bytes(b"x")
 
     payload = (
-        '{"meta":{"entity_name":null,"page_num":null,"type":"other","title":null},'
+        '{"meta":{"entity_name":null,"page_num":null,"type":"notes","title":null},'
         '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10",'
         '"note":"*without debt insurance","is_beur":true,"beur_num":"5","refference":"","date":null,'
         '"path":[],"currency":null,"scale":null,"value_type":"amount"}]}'
@@ -158,12 +158,12 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setattr(qwen_vlm, "generate_content_from_image", lambda **_: payload)
     extraction = qwen_vlm.generate_page_extraction_from_image(image_path=image_path, prompt="p")
 
-    assert extraction.meta.type.value == "other"
+    assert extraction.meta.type.value == "notes"
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
     assert extraction.facts[0].comment == "*without debt insurance"
-    assert extraction.facts[0].is_note is True
-    assert extraction.facts[0].note == "5"
+    assert extraction.facts[0].note_flag is True
+    assert extraction.facts[0].note_num == 5
 
 
 def test_generate_page_extraction_parses_bbox_array_shape(tmp_path: Path, monkeypatch) -> None:

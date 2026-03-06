@@ -13,22 +13,12 @@ from pydantic import ValidationError
 
 from .fact_ordering import compact_document_meta, normalize_document_meta
 from .fact_normalization import normalize_fact_payload
-from .schemas import Currency, Fact, PageMeta, PageType, Scale
+from .schema_contract import CANONICAL_FACT_KEYS, CURRENCY_VALUES, SCALE_VALUES
+from .schemas import Fact, PageMeta, PageType
 
-FACT_KEYS = (
-    "value",
-    "comment",
-    "is_note",
-    "note",
-    "note_reference",
-    "date",
-    "path",
-    "currency",
-    "scale",
-    "value_type",
-)
-CURRENCY_OPTIONS = [c.value for c in Currency]
-SCALE_OPTIONS = [s.value for s in Scale]
+FACT_KEYS = tuple(CANONICAL_FACT_KEYS)
+CURRENCY_OPTIONS = list(CURRENCY_VALUES)
+SCALE_OPTIONS = list(SCALE_VALUES)
 
 
 @dataclass
@@ -47,8 +37,9 @@ def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
         "comment": None,
-        "is_note": False,
-        "note": None,
+        "note_flag": False,
+        "note_name": None,
+        "note_num": None,
         "note_reference": None,
         "date": None,
         "path": [],
@@ -173,9 +164,15 @@ def parse_import_payload(
     return load_page_states({"pages": [page_obj]}, page_image_names)
 
 
-def extract_document_meta(payload: Any) -> Dict[str, Optional[str]]:
+def extract_document_meta(payload: Any) -> Dict[str, Any]:
     if not isinstance(payload, dict):
-        return {"language": None, "reading_direction": None}
+        return {
+            "language": None,
+            "reading_direction": None,
+            "company_name": None,
+            "company_id": None,
+            "report_year": None,
+        }
     return normalize_document_meta(payload.get("document_meta"))
 
 

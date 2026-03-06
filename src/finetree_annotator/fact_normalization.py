@@ -3,39 +3,19 @@ from __future__ import annotations
 import glob
 import json
 import re
-from datetime import date
 from pathlib import Path
 from typing import Any, Mapping
 
-CANONICAL_FACT_KEYS = {
-    "value",
-    "comment",
-    "is_note",
-    "note",
-    "note_reference",
-    "date",
-    "path",
-    "currency",
-    "scale",
-    "value_type",
-}
-LEGACY_FACT_KEYS = {
-    "is_beur",
-    "beur_num",
-    "refference",
-    "reference",
-    "ref",
-    "beur",
-    "beur_number",
-    "footnote",
-}
+from .date_normalization import normalize_date
+from .schema_contract import CANONICAL_FACT_KEYS as _CANONICAL_FACT_KEY_TUPLE
+from .schema_contract import CURRENCY_VALUES, LEGACY_FACT_KEYS as _LEGACY_FACT_KEY_TUPLE, SCALE_VALUES, VALUE_TYPE_VALUES
+
+CANONICAL_FACT_KEYS = set(_CANONICAL_FACT_KEY_TUPLE)
+LEGACY_FACT_KEYS = set(_LEGACY_FACT_KEY_TUPLE)
 CANONICAL_AND_META_KEYS = CANONICAL_FACT_KEYS | {"bbox"}
-_VALID_CURRENCIES = {"ILS", "USD", "EUR", "GBP"}
-_VALID_SCALES = {1, 1000, 1_000_000}
-_VALID_VALUE_TYPES = {"amount", "%"}
-_DATE_YEAR_RE = re.compile(r"^\d{4}$")
-_DATE_YMD_RE = re.compile(r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})$")
-_DATE_DMY_RE = re.compile(r"^(?P<day>\d{1,2})\.(?P<month>\d{1,2})\.(?P<year>\d{4})$")
+_VALID_CURRENCIES = set(CURRENCY_VALUES)
+_VALID_SCALES = set(SCALE_VALUES)
+_VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
 _NUMERIC_OR_PAREN_RE = re.compile(r"^\(?\d+(?:\.\d+)?\)?$")
 _NEGATIVE_RE = re.compile(r"^-(\d+(?:\.\d+)?)$")
 _RANGE_VALUE_RE = re.compile(r"^\d+\s*-\s*\d+$")
@@ -97,7 +77,25 @@ def _normalize_value_type(value: Any) -> str | None:
     return text if text in _VALID_VALUE_TYPES else None
 
 
-def _coerce_is_note(value: Any) -> tuple[bool, list[str]]:
+def normalize_note_num(raw_note_num: Any) -> tuple[int | None, list[str]]:
+    if raw_note_num in ("", None):
+        return None, []
+    if isinstance(raw_note_num, bool):
+        return None, ["noninteger_note_num"]
+    if isinstance(raw_note_num, int):
+        return raw_note_num, []
+    if isinstance(raw_note_num, float) and float(raw_note_num).is_integer():
+        return int(raw_note_num), []
+
+    text = str(raw_note_num).strip()
+    if not text:
+        return None, []
+    if text.isdigit():
+        return int(text), []
+    return None, ["noninteger_note_num"]
+
+
+def _coerce_note_flag(value: Any) -> tuple[bool, list[str]]:
     if value in ("", None):
         return False, []
     if isinstance(value, bool):
@@ -109,43 +107,7 @@ def _coerce_is_note(value: Any) -> tuple[bool, list[str]]:
         return True, []
     if lowered in {"false", "0", "no", "n"}:
         return False, []
-    return False, ["nonboolean_is_note"]
-
-
-def normalize_date(raw_date: Any) -> tuple[str | None, list[str]]:
-    text = _to_optional_text(raw_date)
-    if text is None:
-        return None, []
-
-    if _DATE_YEAR_RE.match(text):
-        return text, []
-
-    m_ymd = _DATE_YMD_RE.match(text)
-    if m_ymd:
-        try:
-            date(
-                int(m_ymd.group("year")),
-                int(m_ymd.group("month")),
-                int(m_ymd.group("day")),
-            )
-        except ValueError:
-            return text, ["noncanonical_date"]
-        return text, []
-
-    m_dmy = _DATE_DMY_RE.match(text)
-    if m_dmy:
-        try:
-            parsed = date(
-                int(m_dmy.group("year")),
-                int(m_dmy.group("month")),
-                int(m_dmy.group("day")),
-            )
-        except ValueError:
-            return text, ["noncanonical_date"]
-        return parsed.strftime("%Y-%m-%d"), []
-
-    return text, ["noncanonical_date"]
-
+    return False, ["nonboolean_note_flag"]
 
 def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
     raw_text = str(raw_value or "").strip()
@@ -188,7 +150,7 @@ def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
 
 
 def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
-    return any(key in raw_fact for key in ("comment", "is_note", "note_reference"))
+    return any(key in raw_fact for key in ("comment", "note_flag", "is_note", "note_name", "note_reference", "note_num"))
 
 
 def _has_legacy_markers(raw_fact: Mapping[str, Any]) -> bool:
@@ -208,12 +170,14 @@ def normalize_fact_payload(
         comment_raw = payload.get("comment")
         if comment_raw in ("", None) and has_legacy:
             comment_raw = payload.get("note")
-        note_raw = payload.get("note")
-        if note_raw in ("", None) and has_legacy:
-            note_raw = payload.get("beur_num")
+        note_name_raw = payload.get("note_name", payload.get("beur_name"))
+        note_num_raw = payload.get("note_num", payload.get("note"))
+        if note_num_raw in ("", None) and has_legacy:
+            note_num_raw = payload.get("beur_num", payload.get("beur_number"))
     else:
         comment_raw = payload.get("note")
-        note_raw = payload.get("beur_num")
+        note_name_raw = payload.get("beur_name")
+        note_num_raw = payload.get("beur_num", payload.get("beur_number"))
 
     note_reference_raw = payload.get("note_reference")
     if note_reference_raw in ("", None):
@@ -231,10 +195,11 @@ def normalize_fact_payload(
             note_reference = raw_value_text.replace(" ", "")
         value_input = ""
 
-    is_note_raw = payload.get("is_note")
-    if is_note_raw in ("", None):
-        is_note_raw = payload.get("is_beur", payload.get("beur"))
-    is_note, bool_warnings = _coerce_is_note(is_note_raw)
+    note_flag_raw = payload.get("note_flag", payload.get("is_note"))
+    if note_flag_raw in ("", None):
+        note_flag_raw = payload.get("is_beur", payload.get("beur"))
+    note_flag, bool_warnings = _coerce_note_flag(note_flag_raw)
+    note_num, _note_num_warnings = normalize_note_num(note_num_raw)
 
     if keep_percent_range_value:
         value, value_warnings = raw_value_text, []
@@ -245,8 +210,9 @@ def normalize_fact_payload(
     normalized: dict[str, Any] = {
         "value": value,
         "comment": _to_optional_text(comment_raw),
-        "is_note": is_note,
-        "note": _to_optional_text(note_raw),
+        "note_flag": note_flag,
+        "note_name": _to_optional_text(note_name_raw),
+        "note_num": note_num,
         "note_reference": note_reference,
         "date": date_value,
         "path": _normalize_path(payload.get("path")),
@@ -257,6 +223,7 @@ def normalize_fact_payload(
     if include_bbox and "bbox" in payload:
         normalized["bbox"] = payload.get("bbox")
 
+    # Non-integer note_num is treated as a live/page warning, not a format-audit failure.
     warnings = bool_warnings + date_warnings + value_warnings
     return normalized, warnings
 
@@ -474,5 +441,6 @@ __all__ = [
     "normalize_annotation_payload",
     "normalize_date",
     "normalize_fact_payload",
+    "normalize_note_num",
     "normalize_value",
 ]

@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from PyQt5.QtCore import QPointF, QRectF, Qt
 from PyQt5.QtGui import QColor, QImage, QKeyEvent
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
 from finetree_annotator.annotation_core import PageState, default_page_meta
+import finetree_annotator.app as app_mod
 from finetree_annotator.app import AnnotRectItem, AnnotationWindow, item_scene_rect
 
 _APP: QApplication | None = None
@@ -28,7 +30,32 @@ def _write_test_png(path: Path, *, width: int = 32, height: int = 32) -> None:
     assert image.save(str(path), "PNG")
 
 
-def test_annotation_window_defaults_to_visible_batch_panel_and_text_toolbar(tmp_path: Path) -> None:
+class _SceneMouseEvent:
+    def __init__(self, pos: QPointF, *, button=Qt.LeftButton, modifiers=Qt.NoModifier) -> None:
+        self._pos = QPointF(pos)
+        self._button = button
+        self._modifiers = modifiers
+        self.accepted = False
+
+    def button(self):
+        return self._button
+
+    def scenePos(self):
+        return QPointF(self._pos)
+
+    def modifiers(self):
+        return self._modifiers
+
+    def accept(self) -> None:
+        self.accepted = True
+
+
+@pytest.fixture(autouse=True)
+def _auto_discard_unsaved_close(monkeypatch):
+    monkeypatch.setattr(app_mod, "_prompt_unsaved_close_action", lambda _parent: "discard")
+
+
+def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -39,13 +66,14 @@ def test_annotation_window_defaults_to_visible_batch_panel_and_text_toolbar(tmp_
     window.show()
     _qt_app().processEvents()
 
-    assert window.batch_box.isVisible()
-    assert window.batch_toggle_btn.text() == "Hide Batch Edit"
+    assert not window.batch_box.isVisible()
+    assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.save_btn.text() == "Save"
     assert window.gemini_gt_btn.text() == "Gemini"
     assert window.copy_image_btn.text() == "Copy Image"
     assert window.page_json_btn.text() == "JSON"
-    assert window.page_jump_spin.minimumWidth() == 70
+    assert window.exit_btn.text() == "Exit"
+    assert window.page_jump_spin.minimumWidth() == 58
     assert not window.gemini_gt_btn.icon().isNull()
     assert not window.qwen_gt_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
@@ -53,7 +81,7 @@ def test_annotation_window_defaults_to_visible_batch_panel_and_text_toolbar(tmp_
     assert window.facts_list.objectName() == "factsList"
     assert window.facts_list.maximumHeight() == 190
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
-    assert window.fact_editor_box.layout().count() == 6
+    assert window.fact_editor_box.layout().count() == 7
     assert window.fact_is_beur_combo.maximumWidth() == 220
     assert window.facts_count_label.text() == "No facts"
     assert window.statusBar().isHidden()
@@ -75,14 +103,18 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     window.scene.addItem(item_a)
     window.scene.addItem(item_b)
     window.refresh_facts_list()
+    window.show()
     item_a.setSelected(True)
     item_b.setSelected(True)
     _qt_app().processEvents()
 
+    assert window.batch_box.isVisible()
+    assert window.batch_toggle_btn.text() == "Hide Batch Edit"
     assert window.fact_editor_box.title() == "Selected Facts (2)"
     assert window.fact_bbox_label.text() == "2 selected"
     assert window.fact_value_edit.placeholderText() == "Multiple values"
-    assert not window.fact_path_list.isEnabled()
+    assert window.fact_path_list.isEnabled()
+    assert window.path_add_btn.isEnabled() is False
 
     window.fact_value_edit.setText("shared")
     window.fact_value_edit.setModified(True)
@@ -97,6 +129,41 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
 
     assert item_a.fact_data["currency"] == "USD"
     assert item_b.fact_data["currency"] == "USD"
+
+    window.close()
+
+
+def test_multi_selection_path_preview_highlights_shared_prefix_and_variant_leaf(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "100", "path": ["עלות", "יתרה ליום 1 בינואר 2024", "ביאור 8 - רכוש אחר"]},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "200", "path": ["עלות", "יתרה ליום 1 בינואר 2024", "ביאור 9 - ציוד"]},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_path_list.count() == 3
+    assert window.fact_path_list.item(0).text() == "עלות"
+    assert window.fact_path_list.item(1).text() == "יתרה ליום 1 בינואר 2024"
+    assert "ביאור 8 - רכוש אחר" in window.fact_path_list.item(2).toolTip()
+    assert "ביאור 9 - ציוד" in window.fact_path_list.item(2).toolTip()
+    assert window.fact_path_list.item(0).background().color() == window.fact_path_list.item(1).background().color()
+    assert window.fact_path_list.item(0).background().color() != window.fact_path_list.item(2).background().color()
+    assert "highlighted in green" in window.fact_path_list.toolTip().lower()
 
     window.close()
 
@@ -132,7 +199,7 @@ def test_shift_click_adds_separate_bboxes_to_selection(tmp_path: Path) -> None:
     window.close()
 
 
-def test_group_resize_applies_to_all_selected_bboxes(tmp_path: Path) -> None:
+def test_batch_expand_selected_applies_to_all_selected_bboxes(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -149,10 +216,8 @@ def test_group_resize_applies_to_all_selected_bboxes(tmp_path: Path) -> None:
     item_b.setSelected(True)
     _qt_app().processEvents()
 
-    start = item_a.mapRectToScene(item_a.rect()).center()
-    assert window.scene.begin_group_resize(item_a, AnnotRectItem._H_RIGHT, start) is True
-    assert window.scene.apply_group_resize(item_a, QPointF(start.x() + 10.0, start.y())) is True
-    assert window.scene.end_group_resize(item_a) is True
+    window.batch_resize_step_spin.setValue(10)
+    window.batch_expand_selected("right")
 
     width_a = item_a.rect().width()
     width_b = item_b.rect().width()
@@ -221,7 +286,7 @@ def test_page_issue_panel_updates_for_invalid_notes_page(tmp_path: Path) -> None
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "10", "is_note": False})
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "10", "note_flag": False})
     window.scene.addItem(item)
     window.type_combo.setCurrentText("notes")
     window._on_meta_edited()
@@ -286,6 +351,119 @@ def test_annotation_view_uses_a_and_d_for_page_navigation(tmp_path: Path) -> Non
     zoom_after_minus = window.view.transform().m11()
     assert zoom_after_minus < zoom_after_plus
 
+    window.close()
+
+
+def test_annotation_window_auto_fits_when_shown(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    fit_calls: list[str] = []
+    monkeypatch.setattr(window, "_fit_view_height", lambda: fit_calls.append("fit"))
+
+    window.show()
+    _qt_app().processEvents()
+
+    assert fit_calls == ["fit"]
+    window.close()
+
+
+def test_command_a_selects_all_bboxes_on_current_page(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "10"})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "11"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_A, Qt.ControlModifier))
+
+    assert set(window._selected_fact_items()) == {item_a, item_b}
+    assert len(window.facts_list.selectedItems()) == 2
+    window.close()
+
+
+def test_empty_space_drag_does_not_create_bbox_without_command_modifier(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    start = window.view.mapFromScene(QPointF(20, 20))
+    end = window.view.mapFromScene(QPointF(80, 80))
+    QTest.mousePress(window.view.viewport(), Qt.LeftButton, Qt.NoModifier, start)
+    QTest.mouseMove(window.view.viewport(), end)
+    QTest.mouseRelease(window.view.viewport(), Qt.LeftButton, Qt.NoModifier, end)
+    _qt_app().processEvents()
+
+    assert window._selected_fact_items() == []
+    assert [item for item in window.scene.items() if isinstance(item, AnnotRectItem)] == []
+    window.close()
+
+
+def test_command_drag_creates_one_bbox(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    start = QPointF(24, 24)
+    end = QPointF(88, 92)
+    window.scene.mousePressEvent(_SceneMouseEvent(start, modifiers=Qt.MetaModifier))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(end, modifiers=Qt.MetaModifier))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(end, modifiers=Qt.MetaModifier))
+    _qt_app().processEvents()
+
+    items = [item for item in window.scene.items() if isinstance(item, AnnotRectItem)]
+    assert len(items) == 1
+    window.close()
+
+
+def test_close_with_unsaved_changes_cancel_keeps_window_open(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    window.entity_name_edit.setText("Acme")
+    window._on_meta_edited()
+    assert window._has_unsaved_changes() is True
+
+    monkeypatch.setattr(app_mod, "_prompt_unsaved_close_action", lambda _parent: "cancel")
+
+    window.close()
+    _qt_app().processEvents()
+
+    assert window.isVisible() is True
+    window.hide()
+    monkeypatch.setattr(app_mod, "_prompt_unsaved_close_action", lambda _parent: "discard")
     window.close()
 
 

@@ -6,6 +6,8 @@ from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, ValidationError, model_validator
 
+from ..schema_contract import default_extraction_prompt_template
+
 
 class RunConfig(BaseModel):
     name: str = "qwen35a3-vl-ft"
@@ -60,7 +62,7 @@ class DataConfig(BaseModel):
 class PromptConfig(BaseModel):
     use_custom_prompt: bool = True
     prompt_path: Path = Path("prompts/extraction_prompt.txt")
-    fallback_template: str = "Extract page JSON using the FineTree schema."
+    fallback_template: str = Field(default_factory=default_extraction_prompt_template)
 
 
 class AdapterConfig(BaseModel):

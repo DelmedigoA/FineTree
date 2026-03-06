@@ -74,8 +74,8 @@ def test_fix_fact_schema_format_script_rewrites_with_backup(tmp_path: Path) -> N
     fact = fixed["pages"][0]["facts"][0]
     assert fact["value"] == "(123)"
     assert fact["comment"] == "free text"
-    assert fact["is_note"] is False
-    assert fact["note"] == "9"
+    assert fact["note_flag"] is False
+    assert fact["note_num"] == 9
     assert fact["note_reference"] == "2ה׳"
     assert fact["date"] == "2024-12-31"
 
@@ -84,4 +84,3 @@ def test_fix_fact_schema_format_script_rewrites_with_backup(tmp_path: Path) -> N
     line = manifest.read_text(encoding="utf-8").splitlines()[0]
     row = json.loads(line)
     assert row["reason"] == "fact_schema_format_fix"
-

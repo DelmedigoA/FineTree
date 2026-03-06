@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from PyQt5.QtCore import QObject, QSize, Qt, QThread, QTimer, pyqtSignal
-from PyQt5.QtGui import QColor, QFont, QIcon, QPainter, QPixmap, QTextCursor
+from PyQt5.QtGui import QCloseEvent, QColor, QFont, QIcon, QPainter, QPixmap, QTextCursor
 from PyQt5.QtWidgets import (
     QAction,
     QApplication,
@@ -672,6 +672,22 @@ class AnnotatorHost(QWidget):
                     continue
         return summaries
 
+    def confirm_close_all_documents(self) -> bool:
+        confirmed_windows: list[app_mod.AnnotationWindow] = []
+        for window in self._windows.values():
+            confirm_method = getattr(window, "confirm_close", None)
+            if not callable(confirm_method):
+                continue
+            if confirm_method(prepare_for_close=True):
+                confirmed_windows.append(window)
+                continue
+            for confirmed_window in confirmed_windows:
+                cancel_method = getattr(confirmed_window, "cancel_pending_close", None)
+                if callable(cancel_method):
+                    cancel_method()
+            return False
+        return True
+
 
 class PushView(QWidget):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
@@ -1274,20 +1290,23 @@ class DashboardWindow(QMainWindow):
         content_shell = QWidget()
         content_layout = QVBoxLayout(content_shell)
         content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(8)
-        content_top_row = QHBoxLayout()
-        content_top_row.setContentsMargins(0, 0, 0, 0)
-        content_top_row.setSpacing(8)
+        content_layout.setSpacing(0)
+        self.show_nav_row = QWidget()
+        self.show_nav_row.setObjectName("shellTopRow")
+        self.show_nav_row.setMaximumHeight(20)
+        content_top_row = QHBoxLayout(self.show_nav_row)
+        content_top_row.setContentsMargins(0, 0, 0, 1)
+        content_top_row.setSpacing(2)
         self.show_nav_btn = QPushButton("Show menu")
         self.show_nav_btn.setObjectName("shellChromeBtn")
         self.show_nav_btn.setIcon(self.style().standardIcon(QStyle.SP_ArrowRight))
         self.show_nav_btn.setToolTip("Show navigation")
         self.show_nav_btn.setStatusTip("Show navigation")
         self.show_nav_btn.setAccessibleName("Show navigation")
-        self.show_nav_btn.setFixedHeight(32)
+        self.show_nav_btn.setFixedHeight(18)
         content_top_row.addWidget(self.show_nav_btn, 0, Qt.AlignLeft)
         content_top_row.addStretch(1)
-        content_layout.addLayout(content_top_row)
+        content_layout.addWidget(self.show_nav_row, 0)
 
         self.stack = QStackedWidget()
         content_layout.addWidget(self.stack, 1)
@@ -1396,6 +1415,8 @@ class DashboardWindow(QMainWindow):
     def _apply_nav_visibility(self) -> None:
         if hasattr(self, "nav_rail"):
             self.nav_rail.setVisible(self._nav_visible)
+        if hasattr(self, "show_nav_row"):
+            self.show_nav_row.setVisible(not self._nav_visible)
         if hasattr(self, "show_nav_btn"):
             self.show_nav_btn.setVisible(not self._nav_visible)
         if hasattr(self, "show_nav_action"):
@@ -1407,6 +1428,12 @@ class DashboardWindow(QMainWindow):
         self._apply_nav_visibility()
         state_text = "shown" if self._nav_visible else "hidden"
         self.statusBar().showMessage(f"Navigation {state_text}. Use the button or F9 to toggle.", 2500)
+
+    def closeEvent(self, event: QCloseEvent) -> None:
+        if self.annotator_host.confirm_close_all_documents():
+            event.accept()
+            return
+        event.ignore()
 
     def toggle_nav_visible(self) -> None:
         self.set_nav_visible(not self._nav_visible)
@@ -1447,6 +1474,11 @@ class DashboardWindow(QMainWindow):
         if self.annotator_host.current_window() is None:
             self.annotator_host.show_placeholder()
         self.stack.setCurrentWidget(self.annotator_host)
+        current_window = self.annotator_host.current_window()
+        if current_window is not None:
+            schedule_fit = getattr(current_window, "schedule_auto_fit_current_page", None)
+            if callable(schedule_fit):
+                schedule_fit()
         self.home_btn.setChecked(False)
         self.annotate_btn.setChecked(True)
         self.push_btn.setChecked(False)

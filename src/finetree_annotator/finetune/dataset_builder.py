@@ -12,6 +12,7 @@ from ..annotation_core import bbox_to_list
 from ..fact_normalization import assert_fact_format
 from ..fact_normalization import normalize_fact_payload
 from ..fact_ordering import reorder_facts, resolve_reading_direction
+from ..schema_contract import default_extraction_prompt_template
 from .config import FinetuneConfig, load_finetune_config
 
 
@@ -33,7 +34,8 @@ def _resolve_prompt_template(cfg: FinetuneConfig) -> str:
                 f"Prompt file not found: {prompt_path}. Set prompt.prompt_path or disable prompt.use_custom_prompt."
             )
         return prompt_path.read_text(encoding="utf-8")
-    return cfg.prompt.fallback_template
+    fallback = str(cfg.prompt.fallback_template or "").strip()
+    return fallback or default_extraction_prompt_template()
 
 
 def _iter_annotation_files(pattern: str) -> Iterable[Path]:

@@ -12,8 +12,8 @@ def _fact(**overrides):
     base = {
         "value": "10",
         "comment": None,
-        "is_note": False,
-        "note": None,
+        "note_flag": False,
+        "note_num": None,
         "note_reference": None,
         "date": None,
         "path": [],
@@ -31,13 +31,13 @@ def test_validate_page_issues_detects_notes_page_without_note_facts() -> None:
         PageState(
             meta={"type": "notes"},
             facts=[
-                _fact(value="12", is_note=False),
-                _fact(value="13", is_note=False, note=None),
+                _fact(value="12", note_flag=False),
+                _fact(value="13", note_flag=False, note_num=None),
             ],
         ),
     )
     codes = [issue.code for issue in summary.issues]
-    assert "notes_page_missing_is_note" in codes
+    assert "notes_page_missing_note_flag" in codes
     assert summary.reg_flag_count == 0
     assert summary.warning_count == 1
 
@@ -48,16 +48,16 @@ def test_validate_page_issues_detects_fact_level_reg_flags() -> None:
         PageState(
             meta={"type": "notes"},
             facts=[
-                _fact(value="", is_note=False),
-                _fact(value="12", is_note=True, note=None),
-                _fact(value="13", is_note=False, note="7"),
+                _fact(value="", note_flag=False),
+                _fact(value="12", note_flag=True, note_num=None),
+                _fact(value="13", note_flag=False, note_num=7),
             ],
         ),
     )
     codes = [issue.code for issue in summary.issues]
     assert "fact_missing_value" in codes
-    assert "is_note_missing_note" in codes
-    assert "note_without_is_note" in codes
+    assert "note_flag_missing_note_num" in codes
+    assert "note_num_without_note_flag" in codes
     assert summary.reg_flag_count == 2
     assert summary.warning_count == 1
 
@@ -68,13 +68,13 @@ def test_validate_page_issues_detects_non_notes_is_note_and_mixed_fields() -> No
         PageState(
             meta={"type": "other"},
             facts=[
-                _fact(value="10", is_note=True, note="5", currency="USD", scale=1, value_type="amount"),
-                _fact(value="11", is_note=False, currency="ILS", scale=1000, value_type="%"),
+                _fact(value="10", note_flag=True, note_num=5, currency="USD", scale=1, value_type="amount"),
+                _fact(value="11", note_flag=False, currency="ILS", scale=1000, value_type="%"),
             ],
         ),
     )
     codes = [issue.code for issue in summary.issues]
-    assert "is_note_fact_on_non_notes_page" in codes
+    assert "note_flag_on_non_notes_page" in codes
     assert "mixed_currency" in codes
     assert "mixed_scale" in codes
     assert "mixed_value_type" in codes
@@ -133,8 +133,8 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
             facts=[
                 _fact(
                     value="12%",
-                    is_note=True,
-                    note="7",
+                    note_flag=True,
+                    note_num=7,
                     note_reference="n7",
                     date="2024-13-40",
                     path=["assets", "", "cash"],
@@ -150,6 +150,38 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
     assert "invalid_date" in codes
     assert "path_contains_empty_level" in codes
     assert "amount_type_percent_value" in codes
+
+
+def test_validate_page_issues_warns_on_noninteger_note_num() -> None:
+    summary = validate_page_issues(
+        "page_0011c.png",
+        PageState(
+            meta={"type": "notes"},
+            facts=[
+                _fact(value="12", note_flag=True, note_num="2ה׳"),
+            ],
+        ),
+    )
+    codes = {issue.code for issue in summary.issues}
+    assert "noninteger_note_num" in codes
+    assert "note_flag_missing_note_num" not in codes
+
+
+def test_validate_page_issues_accepts_year_month_date() -> None:
+    summary = validate_page_issues(
+        "page_0011b.png",
+        PageState(
+            meta={"type": "other"},
+            facts=[
+                _fact(
+                    value="12",
+                    date="2024-09",
+                )
+            ],
+        ),
+    )
+    codes = {issue.code for issue in summary.issues}
+    assert "invalid_date" not in codes
 
 
 def test_validate_page_issues_detects_percent_specific_warnings() -> None:

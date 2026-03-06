@@ -98,8 +98,18 @@ def test_canonical_fact_order_is_stable_on_equal_positions() -> None:
 
 
 def test_compact_document_meta_drops_invalid_values() -> None:
-    out = compact_document_meta({"language": "fr", "reading_direction": "up"})
+    out = compact_document_meta({"language": "fr", "reading_direction": "up", "company_id": "  ", "report_year": "x"})
     assert out == {}
+
+
+def test_compact_document_meta_preserves_company_id_and_report_year() -> None:
+    out = compact_document_meta({"language": "he", "reading_direction": "rtl", "company_id": " cmp-1 ", "report_year": "2024"})
+    assert out == {
+        "language": "he",
+        "reading_direction": "rtl",
+        "company_id": "cmp-1",
+        "report_year": 2024,
+    }
 
 
 def test_assert_fact_order_detects_issue(tmp_path: Path) -> None:
