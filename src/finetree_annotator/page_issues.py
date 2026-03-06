@@ -193,6 +193,7 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
             note_reference = _non_empty_text(fact.get("note_reference"))
             date_text = _non_empty_text(fact.get("date"))
             note_flag = bool(fact.get("note_flag"))
+            note_name = _non_empty_text(fact.get("note_name"))
             value_type = _non_empty_text(fact.get("value_type"))
             currency = _non_empty_text(fact.get("currency"))
             scale = fact.get("scale")
@@ -329,6 +330,28 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                     )
                 )
                 break
+            normalized_note_name = note_name.casefold()
+            if normalized_note_name:
+                for path_level in fact.get("path") or []:
+                    path_text = _non_empty_text(path_level)
+                    if not path_text:
+                        continue
+                    if normalized_note_name not in path_text.casefold():
+                        continue
+                    issues_by_page.append(
+                        PageIssue(
+                            severity="warning",
+                            code="path_overlaps_note_name",
+                            message=(
+                                f"Fact #{fact_index + 1} path level '{path_text}' contains note_name '{note_name}'. "
+                                "Prefer keeping note semantics in note_name and using a cleaner business path."
+                            ),
+                            page_image=page_image,
+                            fact_index=fact_index,
+                            field_name="path",
+                        )
+                    )
+                    break
         warning_specs = (
             ("currency", "mixed_currency", "currency"),
             ("scale", "mixed_scale", "scale"),

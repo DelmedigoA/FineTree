@@ -9,7 +9,7 @@ from typing import Any, Optional
 
 from pdf2image import convert_from_path, pdfinfo_from_path
 
-from .annotation_core import PageState, default_page_meta, load_page_states
+from .annotation_core import PageState, bbox_to_list, default_page_meta, load_page_states, normalize_fact_data
 from .page_issues import validate_document_issues
 
 IMAGE_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp")
@@ -28,6 +28,7 @@ class WorkspaceDocumentSummary:
     progress_pct: int
     status: str
     updated_at: Optional[float]
+    annotated_token_count: int = 0
     reg_flag_count: int = 0
     warning_count: int = 0
     pages_with_reg_flags: int = 0
@@ -303,16 +304,44 @@ def _state_map_for_document(images_dir: Path, annotations_path: Path) -> tuple[l
     return pages, states
 
 
-def compute_document_progress(images_dir: Path, annotations_path: Path) -> tuple[int, int]:
+_TOKEN_PATTERN = re.compile(r"\w+|[^\w\s]", flags=re.UNICODE)
+
+
+def _page_annotation_payload(state: PageState, index: int) -> dict[str, Any]:
+    meta = {**default_page_meta(index), **(state.meta or {})}
+    facts = [
+        {
+            "bbox": bbox_to_list(box.bbox),
+            **normalize_fact_data(box.fact),
+        }
+        for box in state.facts
+    ]
+    return {"meta": meta, "facts": facts}
+
+
+def _estimate_annotation_tokens(payload: dict[str, Any]) -> int:
+    text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+    return len(_TOKEN_PATTERN.findall(text))
+
+
+def compute_document_annotation_stats(images_dir: Path, annotations_path: Path) -> tuple[int, int, int]:
     pages, states = _state_map_for_document(images_dir, annotations_path)
     if not pages:
-        return 0, 0
+        return 0, 0, 0
     annotated_pages = 0
+    annotated_tokens = 0
     for idx, page in enumerate(pages):
         state = states.get(page.name, PageState(meta=default_page_meta(idx), facts=[]))
-        if page_has_annotation(state, idx):
-            annotated_pages += 1
-    return annotated_pages, len(pages)
+        if not page_has_annotation(state, idx):
+            continue
+        annotated_pages += 1
+        annotated_tokens += _estimate_annotation_tokens(_page_annotation_payload(state, idx))
+    return annotated_pages, len(pages), annotated_tokens
+
+
+def compute_document_progress(images_dir: Path, annotations_path: Path) -> tuple[int, int]:
+    annotated_pages, page_count, _annotated_tokens = compute_document_annotation_stats(images_dir, annotations_path)
+    return annotated_pages, page_count
 
 
 def compute_document_issue_summary(images_dir: Path, annotations_path: Path):
@@ -355,7 +384,7 @@ def build_document_summary(
         checked_ids = checked_doc_ids
         reviewed_ids = reviewed_doc_ids
     page_paths = page_image_paths(images_dir)
-    annotated_pages, page_count = compute_document_progress(images_dir, annotations_path)
+    annotated_pages, page_count, annotated_tokens = compute_document_annotation_stats(images_dir, annotations_path)
     issue_summary = compute_document_issue_summary(images_dir, annotations_path)
     can_be_checked = page_count > 0 and annotated_pages >= page_count
     thumbnail_path = page_paths[0] if page_paths else None
@@ -379,6 +408,7 @@ def build_document_summary(
         thumbnail_path=thumbnail_path,
         page_count=page_count,
         annotated_page_count=annotated_pages,
+        annotated_token_count=annotated_tokens,
         progress_pct=progress_pct,
         status=status,
         updated_at=updated_at,

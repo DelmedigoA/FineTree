@@ -114,7 +114,7 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     assert window.fact_bbox_label.text() == "2 selected"
     assert window.fact_value_edit.placeholderText() == "Multiple values"
     assert window.fact_path_list.isEnabled()
-    assert window.path_add_btn.isEnabled() is False
+    assert window.path_add_btn.isEnabled() is True
 
     window.fact_value_edit.setText("shared")
     window.fact_value_edit.setModified(True)
@@ -164,6 +164,76 @@ def test_multi_selection_path_preview_highlights_shared_prefix_and_variant_leaf(
     assert window.fact_path_list.item(0).background().color() == window.fact_path_list.item(1).background().color()
     assert window.fact_path_list.item(0).background().color() != window.fact_path_list.item(2).background().color()
     assert "highlighted in green" in window.fact_path_list.toolTip().lower()
+    assert window.path_add_btn.isEnabled() is False
+
+    window.fact_path_list.item(1).setText("יתרה ליום 31 בדצמבר 2024")
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["עלות", "יתרה ליום 31 בדצמבר 2024", "ביאור 8 - רכוש אחר"]
+    assert item_b.fact_data["path"] == ["עלות", "יתרה ליום 31 בדצמבר 2024", "ביאור 9 - ציוד"]
+
+    window.close()
+
+
+def test_multi_selection_identical_path_allows_direct_path_editing(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "path": ["הון", "פתיחה"]})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "path": ["הון", "פתיחה"]})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.path_add_btn.isEnabled() is True
+
+    window.fact_path_list.item(0).setText("הון מניות")
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["הון מניות", "פתיחה"]
+    assert item_b.fact_data["path"] == ["הון מניות", "פתיחה"]
+
+    window.close()
+
+
+def test_multi_selection_shared_prefix_allows_direct_path_removal(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "100", "path": ["מאזן", "רכוש שוטף", "מזומנים"]},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "200", "path": ["מאזן", "רכוש שוטף", "לקוחות"]},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_path_list.setCurrentRow(1)
+    assert window.path_remove_btn.isEnabled() is True
+
+    window.remove_selected_path_level()
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["מאזן", "מזומנים"]
+    assert item_b.fact_data["path"] == ["מאזן", "לקוחות"]
 
     window.close()
 
