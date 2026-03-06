@@ -77,6 +77,7 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
     summary = workspace.build_document_summary("doc_a", data_root=data_root)
     assert summary.page_count == 2
     assert summary.annotated_page_count == 1
+    assert summary.annotated_token_count > 0
     assert summary.progress_pct == 50
     assert summary.status == "In progress"
     assert summary.reg_flag_count == 0

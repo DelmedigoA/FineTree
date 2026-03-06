@@ -449,6 +449,65 @@ def test_home_view_sorts_documents_by_checked_then_reg_flags_then_warnings(tmp_p
     view.close()
 
 
+def test_home_view_stats_include_annotated_image_and_token_totals(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+
+    view = dashboard.HomeView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_a",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=2,
+                annotated_page_count=2,
+                progress_pct=100,
+                status="Complete",
+                updated_at=None,
+                annotated_token_count=450_000,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="doc_b",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=3,
+                annotated_page_count=1,
+                progress_pct=33,
+                status="In progress",
+                updated_at=None,
+                annotated_token_count=300_000,
+            ),
+        ]
+    )
+    _qt_app().processEvents()
+
+    stats: dict[str, tuple[str, str]] = {}
+    for index in range(view.stats_grid.count()):
+        card = view.stats_grid.itemAt(index).widget()
+        if card is None:
+            continue
+        layout = card.layout()
+        if layout is None:
+            continue
+        title = layout.itemAt(0).widget().text()
+        value = layout.itemAt(1).widget().text()
+        caption = layout.itemAt(2).widget().text()
+        stats[title] = (value, caption)
+
+    assert stats["Annotated Images"] == ("3", "Across workspace")
+    assert stats["Annotated Tokens"] == ("750,000", "75% of 1,000,000 target")
+    view.close()
+
+
 def test_home_document_card_uses_state_based_open_label(tmp_path: Path) -> None:
     _qt_app()
     source_pdf = tmp_path / "doc.pdf"
