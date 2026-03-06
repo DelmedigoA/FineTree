@@ -157,7 +157,7 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
-    comment: Optional[str] = None
+    ref_comment: Optional[str] = Field(default=None, validation_alias=AliasChoices("ref_comment", "comment"))
     note_flag: bool = Field(
         default=False,
         validation_alias=AliasChoices("note_flag", "is_note", "is_beur", "beur"),
@@ -167,7 +167,7 @@ class Fact(BaseModel):
         default=None,
         validation_alias=AliasChoices("note_num", "note", "beur_num", "beur_number"),
     )
-    note_reference: Optional[str] = None
+    ref_note: Optional[str] = Field(default=None, validation_alias=AliasChoices("ref_note", "note_ref", "note_reference"))
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
@@ -175,9 +175,9 @@ class Fact(BaseModel):
     value_type: Optional[ValueType] = None
     model_config = ConfigDict(extra="forbid")
 
-    @field_validator("note_reference", mode="before")
+    @field_validator("ref_note", mode="before")
     @classmethod
-    def _normalize_note_reference(cls, value):
+    def _normalize_ref_note(cls, value):
         return _normalize_note_reference_value(value)
 
     @field_validator("note_name", mode="before")
@@ -219,7 +219,7 @@ class BBox(BaseModel):
 class ExtractedFact(BaseModel):
     bbox: BBox
     value: str
-    comment: Optional[str] = None
+    ref_comment: Optional[str] = Field(default=None, validation_alias=AliasChoices("ref_comment", "comment"))
     note_flag: bool = Field(
         default=False,
         validation_alias=AliasChoices("note_flag", "is_note", "is_beur", "beur"),
@@ -229,7 +229,7 @@ class ExtractedFact(BaseModel):
         default=None,
         validation_alias=AliasChoices("note_num", "note", "beur_num", "beur_number"),
     )
-    note_reference: Optional[str] = None
+    ref_note: Optional[str] = Field(default=None, validation_alias=AliasChoices("ref_note", "note_ref", "note_reference"))
     date: Optional[str] = None
     path: List[str]
     currency: Optional[Currency] = None
@@ -237,9 +237,9 @@ class ExtractedFact(BaseModel):
     value_type: Optional[ValueType] = None
     model_config = ConfigDict(extra="forbid")
 
-    @field_validator("note_reference", mode="before")
+    @field_validator("ref_note", mode="before")
     @classmethod
-    def _normalize_note_reference(cls, value):
+    def _normalize_ref_note(cls, value):
         return _normalize_note_reference_value(value)
 
     @field_validator("note_name", mode="before")

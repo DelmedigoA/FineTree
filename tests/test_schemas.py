@@ -10,10 +10,10 @@ def _fact_payload(**overrides):
     payload = {
         "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
         "value": "10",
-        "comment": None,
+        "ref_comment": None,
         "note_flag": False,
         "note_num": None,
-        "note_reference": None,
+        "ref_note": None,
         "date": None,
         "path": [],
         "currency": None,
@@ -27,6 +27,22 @@ def _fact_payload(**overrides):
 def test_extracted_fact_accepts_integer_note_num() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(note_flag=True, note_num=7))
     assert fact.note_num == 7
+
+
+def test_extracted_fact_accepts_legacy_comment_alias() -> None:
+    payload = _fact_payload()
+    payload.pop("ref_comment")
+    payload["comment"] = "legacy qualifier"
+    fact = ExtractedFact.model_validate(payload)
+    assert fact.ref_comment == "legacy qualifier"
+
+
+def test_extracted_fact_accepts_legacy_note_reference_alias() -> None:
+    payload = _fact_payload()
+    payload.pop("ref_note")
+    payload["note_reference"] = "legacy-ref"
+    fact = ExtractedFact.model_validate(payload)
+    assert fact.ref_note == "legacy-ref"
 
 
 def test_extracted_fact_rejects_noninteger_note_num() -> None:

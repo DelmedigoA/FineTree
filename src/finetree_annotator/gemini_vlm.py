@@ -557,14 +557,17 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
             value_type = None
 
         has_canonical_fact_keys = any(
-            key in raw_fact for key in ("comment", "note_flag", "is_note", "note_name", "note_reference", "note_num")
+            key in raw_fact
+            for key in ("ref_comment", "comment", "note_flag", "is_note", "note_name", "ref_note", "note_ref", "note_reference", "note_num")
         )
-        comment_source: Any = raw_fact.get("comment")
-        if comment_source is None:
+        ref_comment_source: Any = raw_fact.get("ref_comment")
+        if ref_comment_source in ("", None):
+            ref_comment_source = raw_fact.get("comment")
+        if ref_comment_source is None:
             if has_canonical_fact_keys:
-                comment_source = raw_fact.get("footnote")
+                ref_comment_source = raw_fact.get("footnote")
             else:
-                comment_source = raw_fact.get("note", raw_fact.get("footnote"))
+                ref_comment_source = raw_fact.get("note", raw_fact.get("footnote"))
         note_name_source = _to_optional_str(raw_fact.get("note_name", raw_fact.get("beur_name")))
 
         note_num_source: Any
@@ -583,14 +586,20 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
             {
                 "bbox": bbox,
                 "value": str(value),
-                "comment": _to_optional_str(comment_source),
+                "ref_comment": _to_optional_str(ref_comment_source),
                 "note_name": note_name_source,
                 "note_flag": bool(is_note_value) if is_note_value is not None else False,
                 "note_num": normalized_note_num,
-                "note_reference": _to_optional_str(
+                "ref_note": _to_optional_str(
                     raw_fact.get(
-                        "note_reference",
-                        raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref"))),
+                        "ref_note",
+                        raw_fact.get(
+                            "note_ref",
+                            raw_fact.get(
+                                "note_reference",
+                                raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref"))),
+                            ),
+                        ),
                     )
                 ),
                 "date": _to_optional_str(raw_fact.get("date")),

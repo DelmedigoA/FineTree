@@ -190,7 +190,7 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
             if isinstance(record.fact, dict):
                 raw_note_num = record.fact.get("note_num", record.fact.get("note", record.fact.get("beur_num")))
             note_num = fact.get("note_num")
-            note_reference = _non_empty_text(fact.get("note_reference"))
+            ref_note = _non_empty_text(fact.get("ref_note"))
             date_text = _non_empty_text(fact.get("date"))
             note_flag = bool(fact.get("note_flag"))
             note_name = _non_empty_text(fact.get("note_name"))
@@ -256,15 +256,15 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                             field_name="date",
                         )
                     )
-            if page_type == PageType.notes.value and note_reference:
+            if page_type == PageType.notes.value and ref_note:
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
-                        code="note_reference_on_notes_page",
-                        message=f"Fact #{fact_index + 1} has note_reference on a notes page.",
+                        code="ref_note_on_notes_page",
+                        message=f"Fact #{fact_index + 1} has ref_note on a notes page.",
                         page_image=page_image,
                         fact_index=fact_index,
-                        field_name="note_reference",
+                        field_name="ref_note",
                     )
                 )
             if value_type == "%" and scale is not None:

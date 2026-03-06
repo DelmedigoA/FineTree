@@ -139,7 +139,19 @@ def _collect_text_parts(payload: Any) -> list[str]:
         for fact in facts:
             if not isinstance(fact, dict):
                 continue
-            for key in ("value", "comment", "note_name", "note_reference", "date", "note_num", "note", "refference", "beur_num"):
+            for key in (
+                "value",
+                "ref_comment",
+                "comment",
+                "note_name",
+                "ref_note",
+                "note_reference",
+                "date",
+                "note_num",
+                "note",
+                "refference",
+                "beur_num",
+            ):
                 value = fact.get(key)
                 if isinstance(value, str) and value.strip():
                     texts.append(value)

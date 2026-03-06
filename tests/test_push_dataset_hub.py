@@ -93,7 +93,7 @@ def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: 
                         {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
                         {
                             "type": "text",
-                            "text": "Use keys comment, note_flag, note_name, note_num, note_reference and return strict JSON.",
+                            "text": "Use keys ref_comment, note_flag, note_name, note_num, ref_note and return strict JSON.",
                         },
                     ],
                 },
