@@ -116,6 +116,7 @@ LEGACY_EXTRACTION_PROMPT_PATH = REPO_ROOT / "prompt.txt"
 GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
 QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
 MULTI_VALUE_PLACEHOLDER = "Multiple values"
+PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
 
 
 def _prompt_entity_apply_mode(parent: QWidget, entity_name: str) -> Optional[str]:
@@ -1242,6 +1243,7 @@ class AnnotationWindow(QMainWindow):
             "report_year": None,
         }
         self._path_list_editable = True
+        self._path_list_structure_editable = True
         self.current_index = -1
         self._fact_items: List[AnnotRectItem] = []
         self._syncing_selection = False
@@ -2285,6 +2287,7 @@ class AnnotationWindow(QMainWindow):
         tone: Optional[str] = None,
         editable: bool = True,
         tooltip: Optional[str] = None,
+        path_index: Optional[int] = None,
     ) -> QListWidgetItem:
         item = QListWidgetItem(text)
         flags = item.flags() | Qt.ItemIsSelectable | Qt.ItemIsEnabled
@@ -2293,6 +2296,8 @@ class AnnotationWindow(QMainWindow):
         item.setFlags(flags)
         if tooltip:
             item.setToolTip(tooltip)
+        if path_index is not None:
+            item.setData(PATH_LEVEL_INDEX_ROLE, int(path_index))
         brushes = self._path_tone_brushes(tone)
         if brushes is not None:
             bg, fg = brushes
@@ -2300,19 +2305,26 @@ class AnnotationWindow(QMainWindow):
             item.setForeground(fg)
         return item
 
-    def _set_path_list_editable(self, editable: bool) -> None:
+    def _set_path_list_editable(self, editable: bool, *, structural: bool = True) -> None:
         self._path_list_editable = editable
+        self._path_list_structure_editable = bool(editable and structural)
         if editable:
             self.fact_path_list.setEditTriggers(
                 QAbstractItemView.DoubleClicked
                 | QAbstractItemView.EditKeyPressed
                 | QAbstractItemView.SelectedClicked
             )
-            self.fact_path_list.setDragDropMode(QAbstractItemView.InternalMove)
-            self.fact_path_list.setDefaultDropAction(Qt.MoveAction)
-            self.fact_path_list.setDragEnabled(True)
-            self.fact_path_list.viewport().setAcceptDrops(True)
-            self.fact_path_list.setDropIndicatorShown(True)
+            if self._path_list_structure_editable:
+                self.fact_path_list.setDragDropMode(QAbstractItemView.InternalMove)
+                self.fact_path_list.setDefaultDropAction(Qt.MoveAction)
+                self.fact_path_list.setDragEnabled(True)
+                self.fact_path_list.viewport().setAcceptDrops(True)
+                self.fact_path_list.setDropIndicatorShown(True)
+            else:
+                self.fact_path_list.setDragDropMode(QAbstractItemView.NoDragDrop)
+                self.fact_path_list.setDragEnabled(False)
+                self.fact_path_list.viewport().setAcceptDrops(False)
+                self.fact_path_list.setDropIndicatorShown(False)
             return
         self.fact_path_list.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.fact_path_list.setDragDropMode(QAbstractItemView.NoDragDrop)
@@ -2321,16 +2333,21 @@ class AnnotationWindow(QMainWindow):
         self.fact_path_list.setDropIndicatorShown(False)
 
     def _update_path_controls(self) -> None:
-        enabled = self.fact_path_list.isEnabled() and self._path_list_editable
+        list_enabled = self.fact_path_list.isEnabled()
         row = self.fact_path_list.currentRow()
         count = self.fact_path_list.count()
-        self.path_add_btn.setEnabled(enabled)
-        self.path_remove_btn.setEnabled(enabled and row >= 0)
-        self.path_up_btn.setEnabled(enabled and row > 0)
-        self.path_down_btn.setEnabled(enabled and 0 <= row < count - 1)
+        current_item = self.fact_path_list.item(row) if row >= 0 else None
+        removable_shared_level = False
+        if list_enabled and row >= 0 and not self._path_list_structure_editable and current_item is not None:
+            removable_shared_level = current_item.data(PATH_LEVEL_INDEX_ROLE) not in (None, "")
+        structural_enabled = list_enabled and self._path_list_structure_editable
+        self.path_add_btn.setEnabled(structural_enabled)
+        self.path_remove_btn.setEnabled((structural_enabled and row >= 0) or removable_shared_level)
+        self.path_up_btn.setEnabled(structural_enabled and row > 0)
+        self.path_down_btn.setEnabled(structural_enabled and 0 <= row < count - 1)
 
     def add_path_level(self) -> None:
-        if not self.fact_path_list.isEnabled() or not self._path_list_editable:
+        if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
             return
         target_row = self.fact_path_list.count()
         next_idx = target_row + 1
@@ -2355,6 +2372,38 @@ class AnnotationWindow(QMainWindow):
         row = self.fact_path_list.currentRow()
         if row < 0:
             return
+        if not self._path_list_structure_editable:
+            selected_items = self._selected_fact_items()
+            if not selected_items:
+                return
+            item = self.fact_path_list.item(row)
+            if item is None:
+                return
+            path_index_raw = item.data(PATH_LEVEL_INDEX_ROLE)
+            if path_index_raw in (None, ""):
+                return
+            path_index = int(path_index_raw)
+            removed_level = item.text().strip()
+            changed = False
+            for selected_item in selected_items:
+                current = normalize_fact_data(selected_item.fact_data)
+                path_value = [str(part).strip() for part in (current.get("path") or []) if str(part).strip()]
+                if not (0 <= path_index < len(path_value)):
+                    continue
+                del path_value[path_index]
+                updated = normalize_fact_data({**current, "path": path_value})
+                if updated == current:
+                    continue
+                selected_item.fact_data = updated
+                changed = True
+            if not changed:
+                return
+            self.refresh_facts_list()
+            self._record_history_snapshot()
+            self._sync_fact_editor_from_selection()
+            if removed_level:
+                self.statusBar().showMessage(f"Removed shared path level '{removed_level}'.", 3000)
+            return
         self.fact_path_list.takeItem(row)
         if self.fact_path_list.count() > 0:
             self.fact_path_list.setCurrentRow(min(row, self.fact_path_list.count() - 1))
@@ -2362,7 +2411,7 @@ class AnnotationWindow(QMainWindow):
         self._on_fact_editor_field_edited("path")
 
     def move_selected_path_up(self) -> None:
-        if not self.fact_path_list.isEnabled() or not self._path_list_editable:
+        if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
             return
         row = self.fact_path_list.currentRow()
         if row <= 0:
@@ -2374,7 +2423,7 @@ class AnnotationWindow(QMainWindow):
         self._on_fact_editor_field_edited("path")
 
     def move_selected_path_down(self) -> None:
-        if not self.fact_path_list.isEnabled() or not self._path_list_editable:
+        if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
             return
         row = self.fact_path_list.currentRow()
         if row < 0 or row >= (self.fact_path_list.count() - 1):
@@ -2386,7 +2435,7 @@ class AnnotationWindow(QMainWindow):
         self._on_fact_editor_field_edited("path")
 
     def _on_path_reordered(self) -> None:
-        if not self._path_list_editable:
+        if not self._path_list_structure_editable:
             return
         self._update_path_controls()
         self._on_fact_editor_field_edited("path")
@@ -2983,8 +3032,8 @@ class AnnotationWindow(QMainWindow):
             self.fact_refference_edit.setText(str(fact.get("note_reference") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
             self.fact_path_list.clear()
-            for path_level in fact.get("path") or []:
-                self.fact_path_list.addItem(self._make_path_item(str(path_level)))
+            for path_index, path_level in enumerate(fact.get("path") or []):
+                self.fact_path_list.addItem(self._make_path_item(str(path_level), path_index=path_index))
             if self.fact_path_list.count() > 0:
                 self.fact_path_list.setCurrentRow(0)
 
@@ -3075,8 +3124,9 @@ class AnnotationWindow(QMainWindow):
             path_value, path_mixed = self._shared_fact_value(items, "path")
             self.fact_path_list.clear()
             if not path_mixed:
-                for path_level in path_value or []:
-                    self.fact_path_list.addItem(self._make_path_item(str(path_level)))
+                for path_index, path_level in enumerate(path_value or []):
+                    self.fact_path_list.addItem(self._make_path_item(str(path_level), path_index=path_index))
+                self._set_path_list_editable(True, structural=True)
                 if self.fact_path_list.count() > 0:
                     self.fact_path_list.setCurrentRow(0)
             else:
@@ -3089,13 +3139,14 @@ class AnnotationWindow(QMainWindow):
                     prefix = prefix[:common]
 
                 if prefix:
-                    for level in prefix:
+                    for level_index, level in enumerate(prefix):
                         self.fact_path_list.addItem(
                             self._make_path_item(
                                 str(level),
                                 tone="shared",
-                                editable=False,
-                                tooltip=f"Shared path node across {selected_count} selected bboxes.",
+                                editable=True,
+                                tooltip=f"Shared path node across {selected_count} selected bboxes. Edit to rename everywhere.",
+                                path_index=level_index,
                             )
                         )
 
@@ -3124,12 +3175,20 @@ class AnnotationWindow(QMainWindow):
                                 tooltip="Selected bboxes have different path tails:\n" + "\n".join(rendered_paths),
                             )
                         )
+                self._set_path_list_editable(bool(prefix), structural=False)
                 if self.fact_path_list.count() > 0:
                     self.fact_path_list.setCurrentRow(0)
             self.fact_path_list.setToolTip(
-                "Shared path nodes are highlighted in green. Diverging path nodes are highlighted in orange."
-                if path_mixed
-                else "Path editing stays in Batch Edit when multiple bboxes are selected."
+                (
+                    "Shared path nodes are highlighted in green and can be renamed across selected bboxes. "
+                    "Diverging path nodes are highlighted in orange."
+                )
+                if path_mixed and self._path_list_editable
+                else (
+                    "Selected bboxes do not share an editable path prefix. Use Batch Edit to change path structure."
+                    if path_mixed
+                    else "Selected bboxes share the same path. Edits here apply to every selected bbox."
+                )
             )
         finally:
             self._is_loading_fact_editor = False
@@ -3223,6 +3282,44 @@ class AnnotationWindow(QMainWindow):
             return
         selected_items = self._selected_fact_items()
         if not selected_items:
+            return
+        if not self._path_list_structure_editable:
+            shared_updates: list[tuple[int, str]] = []
+            for idx in range(self.fact_path_list.count()):
+                item = self.fact_path_list.item(idx)
+                if item is None:
+                    continue
+                path_index_raw = item.data(PATH_LEVEL_INDEX_ROLE)
+                if path_index_raw in (None, ""):
+                    continue
+                text = item.text().strip()
+                if not text:
+                    self.statusBar().showMessage(
+                        "Shared path levels cannot be empty. Use Batch Edit to remove levels.",
+                        3500,
+                    )
+                    self._sync_fact_editor_from_selection()
+                    return
+                shared_updates.append((int(path_index_raw), text))
+            if not shared_updates:
+                return
+            changed = False
+            for item in selected_items:
+                current = normalize_fact_data(item.fact_data)
+                path_value = [str(part).strip() for part in (current.get("path") or []) if str(part).strip()]
+                updated_path = list(path_value)
+                for path_index, level_text in shared_updates:
+                    if 0 <= path_index < len(updated_path):
+                        updated_path[path_index] = level_text
+                updated = normalize_fact_data({**current, "path": updated_path})
+                if updated == current:
+                    continue
+                item.fact_data = updated
+                changed = True
+            if not changed:
+                return
+            self.refresh_facts_list()
+            self._record_history_snapshot()
             return
         updated_fact = self._fact_data_from_editor()
         path_value = updated_fact.get("path") or []

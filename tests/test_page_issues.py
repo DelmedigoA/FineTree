@@ -152,6 +152,28 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
     assert "amount_type_percent_value" in codes
 
 
+def test_validate_page_issues_warns_when_path_contains_note_name() -> None:
+    summary = validate_page_issues(
+        "page_0011d.png",
+        PageState(
+            meta={"type": "notes"},
+            facts=[
+                _fact(
+                    value="12",
+                    note_flag=True,
+                    note_num=8,
+                    note_name="ביאור 8 - רכוש קבוע",
+                    path=["מאזן", "פירוט ביאור 8 - רכוש קבוע"],
+                )
+            ],
+        ),
+    )
+    overlap_issues = [issue for issue in summary.issues if issue.code == "path_overlaps_note_name"]
+    assert len(overlap_issues) == 1
+    assert overlap_issues[0].field_name == "path"
+    assert "contains note_name" in overlap_issues[0].message
+
+
 def test_validate_page_issues_warns_on_noninteger_note_num() -> None:
     summary = validate_page_issues(
         "page_0011c.png",

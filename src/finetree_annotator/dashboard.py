@@ -64,6 +64,7 @@ def _set_button_variant(button: QPushButton, variant: str) -> QPushButton:
 
 
 NAV_VISIBLE_SETTING_KEY = "ui/nav_visible"
+TOKEN_TARGET = 1_000_000
 
 
 def _status_tone(status: str) -> str:
@@ -82,6 +83,10 @@ def _format_timestamp(timestamp: Optional[float]) -> str:
         return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M")
     except Exception:
         return "Unknown"
+
+
+def _format_metric_int(value: int) -> str:
+    return f"{int(value):,}"
 
 
 def _make_badge_icon(label: str, bg_hex: str, fg_hex: str = "#ffffff", *, size: int = 22) -> QIcon:
@@ -522,14 +527,35 @@ class HomeView(QWidget):
         visible_pages = sum(doc.page_count for doc in visible_docs)
         annotated_pages = sum(doc.annotated_page_count for doc in visible_docs)
         complete_docs = sum(1 for doc in visible_docs if doc.progress_pct >= 100 and doc.page_count > 0)
+        total_annotated_images = sum(doc.annotated_page_count for doc in self._documents)
+        visible_annotated_images = sum(doc.annotated_page_count for doc in visible_docs)
+        total_annotated_tokens = sum(int(doc.annotated_token_count or 0) for doc in self._documents)
+        token_progress_pct = int(round((total_annotated_tokens / TOKEN_TARGET) * 100)) if total_annotated_tokens else 0
         avg_progress = int(round((annotated_pages / visible_pages) * 100)) if visible_pages else 0
         cards = (
             self._stat_card("Documents", str(total_docs), f"{len(visible_docs)} visible"),
-            self._stat_card("Coverage", f"{avg_progress}%", f"{annotated_pages}/{visible_pages or 0} pages annotated"),
+            self._stat_card("Coverage", f"{avg_progress}%", f"{annotated_pages}/{visible_pages or 0} visible pages annotated"),
             self._stat_card("Completed", str(complete_docs), "Fully annotated document sets"),
+            self._stat_card(
+                "Annotated Images",
+                _format_metric_int(total_annotated_images),
+                (
+                    f"{visible_annotated_images} visible in current filter"
+                    if len(visible_docs) != total_docs
+                    else "Across workspace"
+                ),
+            ),
+            self._stat_card(
+                "Annotated Tokens",
+                _format_metric_int(total_annotated_tokens),
+                f"{token_progress_pct}% of {_format_metric_int(TOKEN_TARGET)} target",
+            ),
         )
-        for col, card in enumerate(cards):
-            self.stats_grid.addWidget(card, 0, col)
+        for index, card in enumerate(cards):
+            row, col = divmod(index, 3)
+            self.stats_grid.addWidget(card, row, col)
+        for col in range(3):
+            self.stats_grid.setColumnStretch(col, 1)
 
     def _sorted_visible_documents(
         self,
