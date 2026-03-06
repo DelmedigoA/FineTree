@@ -22,6 +22,7 @@ _DEFAULT_CONFIG_PATH = Path("configs/finetune_qwen35a3_vl.yaml")
 _DEFAULT_QWEN_FLASH_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 _DEFAULT_QWEN_FLASH_MODEL = "qwen3.5-flash"
 _DEFAULT_QWEN_MAX_NEW_TOKENS = 10_000
+_DEFAULT_EXTRACTION_PROMPT_PATH = Path("prompts/extraction_prompt.txt")
 
 _MODEL_CACHE: dict[str, Any] = {}
 
@@ -769,6 +770,7 @@ def _stream_content_from_runpod_endpoint(
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
     base_url = str(cfg.inference.endpoint_base_url or os.getenv("FINETREE_QWEN_ENDPOINT_BASE_URL") or "").strip()
     if not base_url:
@@ -790,7 +792,7 @@ def _stream_content_from_runpod_endpoint(
     effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
     effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
     effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
-    effective_enable_thinking = bool(cfg.inference.enable_thinking)
+    effective_enable_thinking = bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking)
 
     payload: dict[str, Any] = {
         "model": model_name,
@@ -862,7 +864,9 @@ def _stream_content_from_qwen_flash_endpoint(
     top_p: Optional[float] = None,
     timeout_sec: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
+    _ = enable_thinking
     resolved_api_key = _resolve_qwen_flash_api_key(api_key)
     if not resolved_api_key:
         raise RuntimeError(
@@ -1057,6 +1061,7 @@ def _stream_content_from_runpod_queue(
     do_sample: Optional[bool] = None,
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
     run_url, status_base_url = _resolve_runpod_queue_urls(cfg)
     api_key = _endpoint_api_key(cfg)
@@ -1082,7 +1087,7 @@ def _stream_content_from_runpod_queue(
     effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
     effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
     effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
-    effective_enable_thinking = bool(cfg.inference.enable_thinking)
+    effective_enable_thinking = bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking)
     if effective_do_sample:
         payload_input["temperature"] = effective_temperature
         payload_input["top_p"] = effective_top_p
@@ -1212,6 +1217,7 @@ def _stream_content_local(
     do_sample: Optional[bool] = None,
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
     model_obj, processor = _load_model_bundle(cfg, model_override=model_override)
 
@@ -1224,7 +1230,7 @@ def _stream_content_local(
         processor,
         image_path=image_path,
         prompt=prompt,
-        enable_thinking=bool(cfg.inference.enable_thinking),
+        enable_thinking=bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking),
     )
 
     device = _resolve_input_device(model_obj)
@@ -1272,6 +1278,7 @@ def stream_content_from_image(
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
@@ -1286,6 +1293,7 @@ def stream_content_from_image(
             temperature=temperature,
             top_p=top_p,
             few_shot_examples=few_shot_examples,
+            enable_thinking=enable_thinking,
         )
         return
 
@@ -1301,6 +1309,7 @@ def stream_content_from_image(
             temperature=temperature,
             top_p=top_p,
             few_shot_examples=few_shot_examples,
+            enable_thinking=enable_thinking,
         )
         return
     if cfg.inference.backend == "runpod_queue":
@@ -1313,6 +1322,7 @@ def stream_content_from_image(
             do_sample=do_sample,
             temperature=temperature,
             top_p=top_p,
+            enable_thinking=enable_thinking,
         )
         return
 
@@ -1325,6 +1335,7 @@ def stream_content_from_image(
         do_sample=do_sample,
         temperature=temperature,
         top_p=top_p,
+        enable_thinking=enable_thinking,
     )
 
 
@@ -1338,6 +1349,7 @@ def generate_content_from_image(
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> str:
     return "".join(
         stream_content_from_image(
@@ -1350,6 +1362,7 @@ def generate_content_from_image(
             temperature=temperature,
             top_p=top_p,
             few_shot_examples=few_shot_examples,
+            enable_thinking=enable_thinking,
         )
     )
 
@@ -1359,6 +1372,7 @@ def generate_page_extraction_from_image(
     prompt: str,
     model: Optional[str] = None,
     config_path: Optional[str] = None,
+    enable_thinking: Optional[bool] = None,
 ):
     from .gemini_vlm import parse_page_extraction_text
 
@@ -1367,6 +1381,7 @@ def generate_page_extraction_from_image(
         prompt=prompt,
         model=model,
         config_path=config_path,
+        enable_thinking=enable_thinking,
     )
     return parse_page_extraction_text(text)
 
@@ -1376,7 +1391,11 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument("--config", default=None, help="Fine-tune config YAML path.")
     parser.add_argument("--image", required=True, help="Path to image file.")
     parser.add_argument("--prompt", default=None, help="Prompt text. If omitted, reads --prompt-path.")
-    parser.add_argument("--prompt-path", default="prompt.txt", help="Prompt template/text file path.")
+    parser.add_argument(
+        "--prompt-path",
+        default=str(_DEFAULT_EXTRACTION_PROMPT_PATH),
+        help="Prompt template/text file path.",
+    )
     parser.add_argument("--model", default=None, help="Override inference model path/id.")
     parser.add_argument(
         "--max-new-tokens",
@@ -1392,6 +1411,10 @@ def _load_prompt(args: argparse.Namespace, image_path: Path) -> str:
     if isinstance(args.prompt, str) and args.prompt.strip():
         return args.prompt
     prompt_path = Path(args.prompt_path).expanduser()
+    if not prompt_path.is_file() and prompt_path == _DEFAULT_EXTRACTION_PROMPT_PATH:
+        legacy_path = Path("prompt.txt")
+        if legacy_path.is_file():
+            prompt_path = legacy_path
     if not prompt_path.is_file():
         raise FileNotFoundError(
             f"Prompt not provided and prompt file not found: {prompt_path}. Provide --prompt or --prompt-path."

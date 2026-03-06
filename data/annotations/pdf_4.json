@@ -6,7 +6,7 @@
       "meta": {
         "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "1",
-        "type": "contents_page",
+        "type": "income_statement",
         "title": "התוכן"
       },
       "facts": []
@@ -31,6 +31,12 @@
       },
       "facts": [
         {
+          "bbox": [
+            483.56,
+            542.18,
+            97.97,
+            34.35
+          ],
           "value": "745384",
           "comment": null,
           "is_note": false,
@@ -44,15 +50,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 483.56,
-            "y": 542.18,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            295.66,
+            542.18,
+            97.97,
+            34.35
+          ],
           "value": "851625",
           "comment": null,
           "is_note": false,
@@ -66,15 +72,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 295.66,
-            "y": 542.18,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            483.56,
+            574.24,
+            97.97,
+            34.35
+          ],
           "value": "322816",
           "comment": null,
           "is_note": false,
@@ -88,15 +94,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 483.56,
-            "y": 574.24,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            295.66,
+            574.24,
+            97.97,
+            34.35
+          ],
           "value": "537962",
           "comment": null,
           "is_note": false,
@@ -110,15 +116,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 295.66,
-            "y": 574.24,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            514.68,
+            602.3,
+            65.85,
+            34.35
+          ],
           "value": "6644",
           "comment": null,
           "is_note": false,
@@ -132,16 +138,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 514.68,
-            "y": 602.3,
-            "w": 65.85,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            315.75,
+            613.07,
+            20.51,
+            21.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -154,15 +160,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 315.75,
-            "y": 613.07,
-            "w": 20.51,
-            "h": 21.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            466.5,
+            634.36,
+            114.03,
+            34.35
+          ],
           "value": "1074844",
           "comment": null,
           "is_note": false,
@@ -175,15 +181,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 466.5,
-            "y": 634.36,
-            "w": 114.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.33,
+            638.63,
+            114.03,
+            34.35
+          ],
           "value": "1389587",
           "comment": null,
           "is_note": false,
@@ -196,15 +202,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 271.6,
-            "y": 637.36,
-            "w": 114.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            448.94,
+            731.48,
+            133.27,
+            34.35
+          ],
           "value": "40006913",
           "comment": null,
           "is_note": false,
@@ -218,15 +224,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 448.94,
-            "y": 731.48,
-            "w": 133.27,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            271.6,
+            731.25,
+            114.03,
+            34.35
+          ],
           "value": "7016757",
           "comment": null,
           "is_note": false,
@@ -240,15 +246,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 271.6,
-            "y": 731.25,
-            "w": 114.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            469.32,
+            824.85,
+            111.21,
+            34.35
+          ],
           "value": "1642248",
           "comment": null,
           "is_note": false,
@@ -261,15 +267,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 469.32,
-            "y": 824.85,
-            "w": 111.21,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            292.66,
+            824.85,
+            99.97,
+            34.35
+          ],
           "value": "810066",
           "comment": null,
           "is_note": false,
@@ -282,15 +288,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.66,
-            "y": 824.85,
-            "w": 99.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            446.26,
+            887.1,
+            135.27,
+            34.35
+          ],
           "value": "42724005",
           "comment": null,
           "is_note": false,
@@ -302,15 +308,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 446.26,
-            "y": 887.1,
-            "w": 135.27,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            269.6,
+            887.1,
+            124.03,
+            34.35
+          ],
           "value": "9216410",
           "comment": null,
           "is_note": false,
@@ -322,15 +328,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 269.6,
-            "y": 887.1,
-            "w": 124.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            483.83,
+            1006.34,
+            100.69,
+            34.35
+          ],
           "value": "43125",
           "comment": null,
           "is_note": false,
@@ -344,15 +350,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 483.83,
-            "y": 1006.34,
-            "w": 100.69,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            307.17,
+            1006.34,
+            89.45,
+            34.35
+          ],
           "value": "14250",
           "comment": null,
           "is_note": false,
@@ -366,15 +372,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 307.17,
-            "y": 1006.34,
-            "w": 89.45,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            474.19,
+            1036.11,
+            110.33,
+            34.35
+          ],
           "value": "137754",
           "comment": null,
           "is_note": false,
@@ -388,15 +394,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 474.19,
-            "y": 1036.11,
-            "w": 110.33,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            295.93,
+            1036.11,
+            100.69,
+            34.35
+          ],
           "value": "84159",
           "comment": null,
           "is_note": false,
@@ -410,16 +416,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 295.93,
-            "y": 1036.11,
-            "w": 100.69,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            510.2,
+            1075.62,
+            17.67,
+            11.86
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -432,15 +438,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 510.2,
-            "y": 1075.62,
-            "w": 17.67,
-            "h": 14.49
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.6,
+            1067.17,
+            114.03,
+            34.35
+          ],
           "value": "7864400",
           "comment": null,
           "is_note": false,
@@ -454,15 +460,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.6,
-            "y": 1067.17,
-            "w": 114.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            484.59,
+            1100.36,
+            97.97,
+            34.35
+          ],
           "value": "180879",
           "comment": null,
           "is_note": false,
@@ -475,15 +481,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 484.59,
-            "y": 1100.36,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.6,
+            1096.94,
+            114.03,
+            34.35
+          ],
           "value": "7962809",
           "comment": null,
           "is_note": false,
@@ -496,15 +502,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.6,
-            "y": 1096.94,
-            "w": 114.03,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            480.49,
+            1193.74,
+            97.97,
+            34.35
+          ],
           "value": "247368",
           "comment": null,
           "is_note": false,
@@ -518,15 +524,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 480.49,
-            "y": 1193.74,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            289.75,
+            1190.9,
+            97.97,
+            34.35
+          ],
           "value": "247368",
           "comment": null,
           "is_note": false,
@@ -540,15 +546,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 289.75,
-            "y": 1190.9,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            441.65,
+            1308.62,
+            142.87,
+            34.35
+          ],
           "value": "(1537213)",
           "comment": null,
           "is_note": false,
@@ -562,15 +568,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 441.65,
-            "y": 1308.62,
-            "w": 142.87,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            258.57,
+            1308.62,
+            138.06,
+            34.35
+          ],
           "value": "(464404)",
           "comment": null,
           "is_note": false,
@@ -584,15 +590,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 258.57,
-            "y": 1308.62,
-            "w": 138.06,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.26,
+            1339.39,
+            137.27,
+            34.35
+          ],
           "value": "42190723",
           "comment": null,
           "is_note": false,
@@ -606,15 +612,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.26,
-            "y": 1339.39,
-            "w": 137.27,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            290.69,
+            1339.39,
+            101.94,
+            34.35
+          ],
           "value": "660571",
           "comment": null,
           "is_note": false,
@@ -628,15 +634,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 290.69,
-            "y": 1339.39,
-            "w": 101.94,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            459.32,
+            1369.16,
+            121.21,
+            34.35
+          ],
           "value": "1642248",
           "comment": null,
           "is_note": false,
@@ -650,15 +656,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 459.32,
-            "y": 1369.16,
-            "w": 121.21,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            282.66,
+            1369.16,
+            109.97,
+            34.35
+          ],
           "value": "810066",
           "comment": null,
           "is_note": false,
@@ -672,15 +678,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 282.66,
-            "y": 1369.16,
-            "w": 109.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            440.26,
+            1402.22,
+            137.27,
+            38.35
+          ],
           "value": "42295758",
           "comment": null,
           "is_note": false,
@@ -693,15 +699,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.26,
-            "y": 1402.22,
-            "w": 137.27,
-            "h": 38.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            263.6,
+            1402.22,
+            126.03,
+            38.35
+          ],
           "value": "1006233",
           "comment": null,
           "is_note": false,
@@ -714,15 +720,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 263.6,
-            "y": 1402.22,
-            "w": 126.03,
-            "h": 38.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            440.26,
+            1457.18,
+            137.27,
+            38.35
+          ],
           "value": "42724005",
           "comment": null,
           "is_note": false,
@@ -734,15 +740,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.26,
-            "y": 1457.18,
-            "w": 137.27,
-            "h": 38.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            263.6,
+            1457.18,
+            126.03,
+            38.35
+          ],
           "value": "9216410",
           "comment": null,
           "is_note": false,
@@ -754,13 +760,7 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 263.6,
-            "y": 1457.18,
-            "w": 126.03,
-            "h": 38.35
-          }
+          "value_type": "amount"
         }
       ]
     },
@@ -769,11 +769,17 @@
       "meta": {
         "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "4",
-        "type": "other",
+        "type": "activities",
         "title": "דוחות על הפעילויות"
       },
       "facts": [
         {
+          "bbox": [
+            404.38,
+            594.85,
+            144.03,
+            52.35
+          ],
           "value": "1182689",
           "comment": null,
           "is_note": false,
@@ -786,15 +792,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 404.38,
-            "y": 594.85,
-            "w": 144.03,
-            "h": 52.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            226.11,
+            594.85,
+            139.21,
+            52.35
+          ],
           "value": "1200704",
           "comment": null,
           "is_note": false,
@@ -807,15 +813,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 226.11,
-            "y": 594.85,
-            "w": 139.21,
-            "h": 52.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            426.86,
+            642.94,
+            121.54,
+            50.06
+          ],
           "value": "929884",
           "comment": null,
           "is_note": false,
@@ -828,15 +834,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 426.86,
-            "y": 642.94,
-            "w": 121.54,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            248.6,
+            642.94,
+            119.94,
+            50.06
+          ],
           "value": "864227",
           "comment": null,
           "is_note": false,
@@ -849,15 +855,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 248.6,
-            "y": 642.94,
-            "w": 119.94,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            428.47,
+            691.03,
+            118.33,
+            50.06
+          ],
           "value": "411371",
           "comment": null,
           "is_note": false,
@@ -870,15 +876,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 428.47,
-            "y": 691.03,
-            "w": 118.33,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            248.6,
+            691.03,
+            118.33,
+            50.06
+          ],
           "value": "614831",
           "comment": null,
           "is_note": false,
@@ -891,15 +897,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 248.6,
-            "y": 691.03,
-            "w": 118.33,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            402.77,
+            739.12,
+            144.03,
+            50.06
+          ],
           "value": "2523944",
           "comment": null,
           "is_note": false,
@@ -911,15 +917,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 402.77,
-            "y": 739.12,
-            "w": 144.03,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            222.9,
+            739.12,
+            142.42,
+            50.06
+          ],
           "value": "2679762",
           "comment": null,
           "is_note": false,
@@ -931,15 +937,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 222.9,
-            "y": 739.12,
-            "w": 142.42,
-            "h": 50.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            429.65,
+            898.84,
+            105.15,
+            41.77
+          ],
           "value": "795690",
           "comment": null,
           "is_note": false,
@@ -952,15 +958,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 429.65,
-            "y": 898.84,
-            "w": 105.15,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            247.38,
+            892.84,
+            121.54,
+            47.77
+          ],
           "value": "919976",
           "comment": null,
           "is_note": false,
@@ -973,15 +979,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 247.38,
-            "y": 892.84,
-            "w": 121.54,
-            "h": 47.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            428.26,
+            949.22,
+            99.15,
+            32.06
+          ],
           "value": "754895",
           "comment": null,
           "is_note": false,
@@ -994,15 +1000,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 428.26,
-            "y": 949.22,
-            "w": 99.15,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            250.38,
+            943.22,
+            109.54,
+            38.06
+          ],
           "value": "849868",
           "comment": null,
           "is_note": false,
@@ -1015,15 +1021,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 250.38,
-            "y": 943.22,
-            "w": 109.54,
-            "h": 38.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            429.86,
+            999.6,
+            97.54,
+            32.06
+          ],
           "value": "471840",
           "comment": null,
           "is_note": false,
@@ -1036,15 +1042,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 429.86,
-            "y": 999.6,
-            "w": 97.54,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            251.99,
+            993.6,
+            107.94,
+            38.06
+          ],
           "value": "448860",
           "comment": null,
           "is_note": false,
@@ -1057,15 +1063,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 251.99,
-            "y": 993.6,
-            "w": 107.94,
-            "h": 38.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            431.47,
+            1047.69,
+            94.33,
+            32.06
+          ],
           "value": "186727",
           "comment": null,
           "is_note": false,
@@ -1078,15 +1084,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 431.47,
-            "y": 1047.69,
-            "w": 94.33,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            255.2,
+            1041.69,
+            106.33,
+            38.06
+          ],
           "value": "243092",
           "comment": null,
           "is_note": false,
@@ -1099,15 +1105,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 255.2,
-            "y": 1041.69,
-            "w": 106.33,
-            "h": 38.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            441.1,
+            1095.78,
+            84.69,
+            29.77
+          ],
           "value": "20755",
           "comment": null,
           "is_note": false,
@@ -1120,15 +1126,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 441.1,
-            "y": 1095.78,
-            "w": 84.69,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            264.84,
+            1089.78,
+            96.69,
+            35.77
+          ],
           "value": "22586",
           "comment": null,
           "is_note": false,
@@ -1141,15 +1147,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 264.84,
-            "y": 1089.78,
-            "w": 96.69,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            444.32,
+            1146.16,
+            83.09,
+            29.77
+          ],
           "value": "48392",
           "comment": null,
           "is_note": false,
@@ -1162,15 +1168,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 444.32,
-            "y": 1146.16,
-            "w": 83.09,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            266.44,
+            1140.16,
+            95.09,
+            35.77
+          ],
           "value": "28663",
           "comment": null,
           "is_note": false,
@@ -1183,15 +1189,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 266.44,
-            "y": 1140.16,
-            "w": 95.09,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.08,
+            1190.54,
+            79.88,
+            29.77
+          ],
           "value": "16030",
           "comment": null,
           "is_note": false,
@@ -1204,15 +1210,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.08,
-            "y": 1190.54,
-            "w": 79.88,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            273.73,
+            1183.12,
+            93.48,
+            35.77
+          ],
           "value": "17069",
           "comment": null,
           "is_note": false,
@@ -1225,15 +1231,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 273.73,
-            "y": 1183.12,
-            "w": 93.48,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            411.77,
+            1233.47,
+            120.03,
+            32.06
+          ],
           "value": "2294329",
           "comment": null,
           "is_note": false,
@@ -1245,15 +1251,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 411.77,
-            "y": 1233.47,
-            "w": 120.03,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            237.9,
+            1233.47,
+            114.03,
+            32.06
+          ],
           "value": "2530114",
           "comment": null,
           "is_note": false,
@@ -1265,15 +1271,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 237.9,
-            "y": 1233.47,
-            "w": 114.03,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            417.83,
+            1296.43,
+            109.97,
+            38.06
+          ],
           "value": "229615",
           "comment": null,
           "is_note": false,
@@ -1285,15 +1291,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 417.83,
-            "y": 1296.43,
-            "w": 109.97,
-            "h": 38.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            251.57,
+            1296.43,
+            96.36,
+            32.06
+          ],
           "value": "149648",
           "comment": null,
           "is_note": false,
@@ -1305,15 +1311,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 251.57,
-            "y": 1296.43,
-            "w": 96.36,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            419.36,
+            1332.49,
+            118.75,
+            44.06
+          ],
           "value": "489126",
           "comment": null,
           "is_note": false,
@@ -1325,15 +1331,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 419.36,
-            "y": 1332.49,
-            "w": 118.75,
-            "h": 44.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            245.17,
+            1326.81,
+            121.97,
+            44.06
+          ],
           "value": "290228",
           "comment": null,
           "is_note": false,
@@ -1345,15 +1351,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 245.17,
-            "y": 1326.81,
-            "w": 121.97,
-            "h": 44.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            394.53,
+            1385.7,
+            136.68,
+            37.84
+          ],
           "value": "(259511)",
           "comment": null,
           "is_note": false,
@@ -1363,15 +1369,15 @@
           "path": [],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 394.53,
-            "y": 1385.7,
-            "w": 136.68,
-            "h": 37.84
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            221.94,
+            1381.45,
+            145.19,
+            42.09
+          ],
           "value": "(140580)",
           "comment": null,
           "is_note": false,
@@ -1381,15 +1387,15 @@
           "path": [],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 221.94,
-            "y": 1381.45,
-            "w": 145.19,
-            "h": 42.09
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            438.64,
+            1439.47,
+            90.97,
+            27.58
+          ],
           "value": "18884",
           "comment": null,
           "is_note": false,
@@ -1401,15 +1407,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 438.64,
-            "y": 1439.47,
-            "w": 90.97,
-            "h": 27.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            251.7,
+            1429.54,
+            102.69,
+            41.77
+          ],
           "value": "98807",
           "comment": null,
           "is_note": false,
@@ -1421,15 +1427,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 254.33,
-            "y": 1429.54,
-            "w": 102.69,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            397.66,
+            1481.88,
+            132.13,
+            37.84
+          ],
           "value": "(240627)",
           "comment": null,
           "is_note": false,
@@ -1439,15 +1445,15 @@
           "path": [],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 397.66,
-            "y": 1481.88,
-            "w": 132.13,
-            "h": 37.84
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            220.42,
+            1473.37,
+            138.03,
+            46.35
+          ],
           "value": "(41773)",
           "comment": null,
           "is_note": false,
@@ -1457,16 +1463,16 @@
           "path": [],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 220.42,
-            "y": 1473.37,
-            "w": 138.03,
-            "h": 46.35
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            444.32,
+            1536.2,
+            32.53,
+            21.91
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -1477,15 +1483,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 444.32,
-            "y": 1536.2,
-            "w": 32.53,
-            "h": 21.91
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            257.16,
+            1519.17,
+            101.09,
+            41.77
+          ],
           "value": "85099",
           "comment": null,
           "is_note": false,
@@ -1497,15 +1503,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 257.16,
-            "y": 1519.17,
-            "w": 101.09,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            386.5,
+            1564.97,
+            158.9,
+            44.06
+          ],
           "value": "(240627)",
           "comment": null,
           "is_note": false,
@@ -1517,15 +1523,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 386.5,
-            "y": 1564.97,
-            "w": 158.9,
-            "h": 44.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            251.67,
+            1567.81,
+            101.09,
+            44.06
+          ],
           "value": "43326",
           "comment": null,
           "is_note": false,
@@ -1537,13 +1543,7 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 251.67,
-            "y": 1567.81,
-            "w": 101.09,
-            "h": 44.06
-          }
+          "value_type": "amount"
         }
       ]
     },
@@ -1557,6 +1557,12 @@
       },
       "facts": [
         {
+          "bbox": [
+            449.68,
+            572.5,
+            130.09,
+            29.77
+          ],
           "value": "(240627)",
           "comment": null,
           "is_note": false,
@@ -1569,15 +1575,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 449.68,
-            "y": 572.5,
-            "w": 130.09,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            311.56,
+            572.5,
+            83.51,
+            29.77
+          ],
           "value": "43326",
           "comment": null,
           "is_note": false,
@@ -1590,15 +1596,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 311.56,
-            "y": 572.5,
-            "w": 83.51,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            480.62,
+            662.68,
+            123.15,
+            35.77
+          ],
           "value": "53905",
           "comment": null,
           "is_note": false,
@@ -1611,15 +1617,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 480.62,
-            "y": 662.68,
-            "w": 123.15,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.23,
+            662.68,
+            131.18,
+            35.77
+          ],
           "value": "(74279)",
           "comment": null,
           "is_note": false,
@@ -1632,15 +1638,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.23,
-            "y": 662.68,
-            "w": 131.18,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.68,
+            706.19,
+            160.09,
+            35.77
+          ],
           "value": "(186722)",
           "comment": null,
           "is_note": false,
@@ -1652,15 +1658,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.68,
-            "y": 706.19,
-            "w": 160.09,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.23,
+            706.19,
+            131.18,
+            35.77
+          ],
           "value": "(30953)",
           "comment": null,
           "is_note": false,
@@ -1672,15 +1678,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.23,
-            "y": 706.19,
-            "w": 131.18,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            472.16,
+            812.95,
+            107.6,
+            29.77
+          ],
           "value": "253097",
           "comment": null,
           "is_note": false,
@@ -1693,15 +1699,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 472.16,
-            "y": 812.95,
-            "w": 107.6,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            338.87,
+            812.95,
+            56.8,
+            29.77
+          ],
           "value": "327",
           "comment": null,
           "is_note": false,
@@ -1714,15 +1720,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 338.87,
-            "y": 812.95,
-            "w": 56.8,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            456.1,
+            861.04,
+            123.66,
+            29.77
+          ],
           "value": "32667923",
           "comment": null,
           "is_note": false,
@@ -1735,15 +1741,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 456.1,
-            "y": 861.04,
-            "w": 123.66,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            285.87,
+            861.04,
+            109.8,
+            29.77
+          ],
           "value": "7864400",
           "comment": null,
           "is_note": false,
@@ -1756,15 +1762,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 285.87,
-            "y": 861.04,
-            "w": 109.8,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.26,
+            906.84,
+            136.51,
+            29.77
+          ],
           "value": "(31992327)",
           "comment": null,
           "is_note": false,
@@ -1777,15 +1783,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.26,
-            "y": 906.84,
-            "w": 136.51,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            276.23,
+            906.84,
+            122.46,
+            29.77
+          ],
           "value": "(7016757)",
           "comment": null,
           "is_note": false,
@@ -1798,15 +1804,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 276.23,
-            "y": 906.84,
-            "w": 122.46,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.23,
+            945.55,
+            142.54,
+            36.86
+          ],
           "value": "(848212)",
           "comment": null,
           "is_note": false,
@@ -1819,15 +1825,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.23,
-            "y": 945.55,
-            "w": 142.54,
-            "h": 36.86
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            276.23,
+            952.64,
+            125.3,
+            29.77
+          ],
           "value": "(286449)",
           "comment": null,
           "is_note": false,
@@ -1840,15 +1846,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 276.23,
-            "y": 952.64,
-            "w": 125.3,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            474.62,
+            998.44,
+            111.15,
+            29.77
+          ],
           "value": "80481",
           "comment": null,
           "is_note": false,
@@ -1860,15 +1866,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 474.62,
-            "y": 998.44,
-            "w": 111.15,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            292.29,
+            999.86,
+            113.51,
+            28.35
+          ],
           "value": "561521",
           "comment": null,
           "is_note": false,
@@ -1880,15 +1886,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.29,
-            "y": 999.86,
-            "w": 113.51,
-            "h": 28.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            448.92,
+            1060.27,
+            136.84,
+            29.77
+          ],
           "value": "(106241)",
           "comment": null,
           "is_note": false,
@@ -1901,15 +1907,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 448.92,
-            "y": 1060.27,
-            "w": 136.84,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            292.29,
+            1060.27,
+            113.51,
+            29.77
+          ],
           "value": "530568",
           "comment": null,
           "is_note": false,
@@ -1922,15 +1928,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.29,
-            "y": 1060.27,
-            "w": 113.51,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            460.16,
+            1106.07,
+            125.6,
+            29.77
+          ],
           "value": "851625",
           "comment": null,
           "is_note": false,
@@ -1943,15 +1949,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 460.16,
-            "y": 1106.07,
-            "w": 125.6,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            292.29,
+            1106.07,
+            113.51,
+            29.77
+          ],
           "value": "321057",
           "comment": null,
           "is_note": false,
@@ -1964,15 +1970,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.29,
-            "y": 1106.07,
-            "w": 113.51,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            460.16,
+            1149.58,
+            125.6,
+            29.77
+          ],
           "value": "745384",
           "comment": null,
           "is_note": false,
@@ -1985,15 +1991,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 460.16,
-            "y": 1149.58,
-            "w": 125.6,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            292.29,
+            1149.58,
+            113.51,
+            29.77
+          ],
           "value": "851625",
           "comment": null,
           "is_note": false,
@@ -2006,15 +2012,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 292.29,
-            "y": 1149.58,
-            "w": 113.51,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            462.62,
+            1298.43,
+            107.09,
+            34.35
+          ],
           "value": "16030",
           "comment": null,
           "is_note": false,
@@ -2028,15 +2034,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 462.62,
-            "y": 1298.43,
-            "w": 107.09,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            300.75,
+            1292.43,
+            99.06,
+            41.77
+          ],
           "value": "17068",
           "comment": null,
           "is_note": false,
@@ -2050,15 +2056,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 300.75,
-            "y": 1292.43,
-            "w": 99.06,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.35,
+            1344.23,
+            142.42,
+            35.77
+          ],
           "value": "(37951)",
           "comment": null,
           "is_note": false,
@@ -2072,15 +2078,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.35,
-            "y": 1344.23,
-            "w": 142.42,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.23,
+            1338.23,
+            131.18,
+            41.77
+          ],
           "value": "(31369)",
           "comment": null,
           "is_note": false,
@@ -2094,15 +2100,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.23,
-            "y": 1338.23,
-            "w": 131.18,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            443.35,
+            1390.03,
+            142.42,
+            35.77
+          ],
           "value": "(21921)",
           "comment": null,
           "is_note": false,
@@ -2115,15 +2121,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 443.35,
-            "y": 1390.03,
-            "w": 142.42,
-            "h": 35.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            270.23,
+            1384.03,
+            131.18,
+            41.77
+          ],
           "value": "(14301)",
           "comment": null,
           "is_note": false,
@@ -2136,15 +2142,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 270.23,
-            "y": 1384.03,
-            "w": 131.18,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            445.31,
+            1499.08,
+            142.84,
+            29.77
+          ],
           "value": "(6644)",
           "comment": null,
           "is_note": false,
@@ -2158,16 +2164,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 445.31,
-            "y": 1499.08,
-            "w": 142.84,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            314.75,
+            1496.24,
+            36.94,
+            29.77
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2180,15 +2186,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 314.75,
-            "y": 1496.24,
-            "w": 36.94,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            456.94,
+            1540.3,
+            135.15,
+            41.77
+          ],
           "value": "82470",
           "comment": null,
           "is_note": false,
@@ -2202,15 +2208,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 456.94,
-            "y": 1540.3,
-            "w": 135.15,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            252.23,
+            1537.46,
+            143.18,
+            41.77
+          ],
           "value": "(59978)",
           "comment": null,
           "is_note": false,
@@ -2224,15 +2230,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 252.23,
-            "y": 1537.46,
-            "w": 143.18,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            462.62,
+            1580.97,
+            113.87,
+            41.77
+          ],
           "value": "75826",
           "comment": null,
           "is_note": false,
@@ -2245,15 +2251,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 462.62,
-            "y": 1580.97,
-            "w": 113.87,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            252.23,
+            1580.97,
+            143.18,
+            41.77
+          ],
           "value": "(59978)",
           "comment": null,
           "is_note": false,
@@ -2266,15 +2272,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 252.23,
-            "y": 1580.97,
-            "w": 143.18,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            462.62,
+            1672.57,
+            135.15,
+            41.77
+          ],
           "value": "53905",
           "comment": null,
           "is_note": false,
@@ -2286,15 +2292,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 462.62,
-            "y": 1672.57,
-            "w": 135.15,
-            "h": 41.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            252.23,
+            1672.57,
+            143.18,
+            41.77
+          ],
           "value": "(74279)",
           "comment": null,
           "is_note": false,
@@ -2306,13 +2312,7 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 252.23,
-            "y": 1672.57,
-            "w": 143.18,
-            "h": 41.77
-          }
+          "value_type": "amount"
         }
       ]
     },
@@ -2326,6 +2326,12 @@
       },
       "facts": [
         {
+          "bbox": [
+            770.09,
+            768.02,
+            127.63,
+            38.06
+          ],
           "value": "(238349)",
           "comment": null,
           "is_note": false,
@@ -2338,15 +2344,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 774.02,
-            "w": 115.63,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            614.31,
+            760.12,
+            111.88,
+            43.67
+          ],
           "value": "660571",
           "comment": null,
           "is_note": false,
@@ -2359,15 +2365,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 618.31,
-            "y": 774.02,
-            "w": 86.72,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            436.04,
+            765.73,
+            100.33,
+            33.48
+          ],
           "value": "540685",
           "comment": null,
           "is_note": false,
@@ -2380,15 +2386,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 771.73,
-            "w": 88.33,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            258.32,
+            763.61,
+            100.33,
+            35.6
+          ],
           "value": "962907",
           "comment": null,
           "is_note": false,
@@ -2401,15 +2407,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 263.38,
-            "y": 771.73,
-            "w": 88.33,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            809.85,
+            863.62,
+            83.88,
+            31.48
+          ],
           "value": "43326",
           "comment": null,
           "is_note": false,
@@ -2423,16 +2429,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 815.85,
-            "y": 865.62,
-            "w": 73.88,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            648.85,
+            870.2,
+            16.03,
+            20.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2445,16 +2451,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 870.2,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            455.52,
+            868.08,
+            23.9,
+            20.45
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2467,15 +2473,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.29,
-            "y": 870.2,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            276.23,
+            865.62,
+            80.23,
+            27.48
+          ],
           "value": "43326",
           "comment": null,
           "is_note": false,
@@ -2489,15 +2495,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 276.23,
-            "y": 865.62,
-            "w": 73.88,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            768.09,
+            916.29,
+            125.63,
+            33.77
+          ],
           "value": "(286449)",
           "comment": null,
           "is_note": false,
@@ -2511,16 +2517,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 918.29,
-            "w": 115.63,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            648.85,
+            920.58,
+            16.03,
+            20.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2533,15 +2539,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 920.58,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            432.04,
+            916.0,
+            96.33,
+            29.48
+          ],
           "value": "286449",
           "comment": null,
           "is_note": false,
@@ -2555,16 +2561,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 916.0,
-            "w": 88.33,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            286.69,
+            916.58,
+            16.03,
+            16.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2577,15 +2583,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 290.69,
-            "y": 920.58,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            809.85,
+            964.38,
+            83.88,
+            31.48
+          ],
           "value": "17068",
           "comment": null,
           "is_note": false,
@@ -2599,16 +2605,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 815.85,
-            "y": 966.38,
-            "w": 73.88,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            648.85,
+            970.96,
+            16.03,
+            20.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2621,15 +2627,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 970.96,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            412.74,
+            962.15,
+            124.09,
+            36.29
+          ],
           "value": "(17068)",
           "comment": null,
           "is_note": false,
@@ -2643,16 +2649,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 412.74,
-            "y": 966.38,
-            "w": 115.63,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            286.69,
+            966.96,
+            16.03,
+            16.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2665,15 +2671,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 290.69,
-            "y": 970.96,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            766.09,
+            1012.05,
+            131.63,
+            37.77
+          ],
           "value": "(464404)",
           "comment": null,
           "is_note": false,
@@ -2686,15 +2692,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 1019.05,
-            "w": 115.63,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            610.31,
+            1009.76,
+            102.72,
+            37.77
+          ],
           "value": "660571",
           "comment": null,
           "is_note": false,
@@ -2707,15 +2713,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 618.31,
-            "y": 1016.76,
-            "w": 86.72,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            432.04,
+            1009.76,
+            104.33,
+            35.48
+          ],
           "value": "810066",
           "comment": null,
           "is_note": false,
@@ -2728,15 +2734,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 1016.76,
-            "w": 88.33,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            237.72,
+            1009.76,
+            122.0,
+            37.77
+          ],
           "value": "1006233",
           "comment": null,
           "is_note": false,
@@ -2749,15 +2755,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 245.72,
-            "y": 1016.76,
-            "w": 106.0,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            767.74,
+            1112.94,
+            121.98,
+            36.29
+          ],
           "value": "(240627)",
           "comment": null,
           "is_note": false,
@@ -2771,16 +2777,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 1112.94,
-            "w": 115.63,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            656.85,
+            1115.52,
+            22.03,
+            20.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2793,16 +2799,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1117.52,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            451.29,
+            1115.52,
+            22.03,
+            20.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2815,15 +2821,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.29,
-            "y": 1117.52,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            223.23,
+            1107.65,
+            128.48,
+            32.06
+          ],
           "value": "(240627)",
           "comment": null,
           "is_note": false,
@@ -2837,16 +2843,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 223.23,
-            "y": 1112.94,
-            "w": 128.48,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            818.85,
+            1216.54,
+            16.03,
+            14.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2859,15 +2865,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 815.85,
-            "y": 1204.54,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            576.55,
+            1202.25,
+            138.48,
+            31.77
+          ],
           "value": "40532323",
           "comment": null,
           "is_note": false,
@@ -2881,16 +2887,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 576.55,
-            "y": 1202.25,
-            "w": 128.48,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            447.29,
+            1209.54,
+            16.03,
+            10.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2903,15 +2909,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.29,
-            "y": 1204.54,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            223.23,
+            1199.96,
+            128.48,
+            29.77
+          ],
           "value": "40532323",
           "comment": null,
           "is_note": false,
@@ -2925,16 +2931,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 223.23,
-            "y": 1199.96,
-            "w": 128.48,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            818.85,
+            1260.05,
+            16.03,
+            14.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2947,15 +2953,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 815.85,
-            "y": 1248.05,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            618.31,
+            1245.76,
+            96.72,
+            31.77
+          ],
           "value": "997829",
           "comment": null,
           "is_note": false,
@@ -2969,16 +2975,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 618.31,
-            "y": 1245.76,
-            "w": 86.72,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            447.29,
+            1253.05,
+            16.03,
+            10.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -2991,16 +2997,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.29,
-            "y": 1248.05,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
-          "value": "997829",
+          "bbox": [
+            255.98,
+            1243.47,
+            95.73,
+            29.77
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -3013,15 +3019,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 263.38,
-            "y": 1243.47,
-            "w": 88.33,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            762.45,
+            1291.56,
+            127.27,
+            39.29
+          ],
           "value": "(848212)",
           "comment": null,
           "is_note": false,
@@ -3035,16 +3041,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 774.09,
-            "y": 1291.56,
-            "w": 115.63,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            635.85,
+            1299.85,
+            12.03,
+            12.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -3057,15 +3063,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1293.85,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            417.83,
+            1289.27,
+            110.54,
+            33.83
+          ],
           "value": "848212",
           "comment": null,
           "is_note": false,
@@ -3079,16 +3085,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 440.04,
-            "y": 1289.27,
-            "w": 88.33,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            275.23,
+            1294.85,
+            12.03,
+            12.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -3101,15 +3107,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 276.23,
-            "y": 1293.85,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            803.16,
+            1343.71,
+            73.88,
+            27.48
+          ],
           "value": "16030",
           "comment": null,
           "is_note": false,
@@ -3123,16 +3129,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 815.85,
-            "y": 1337.36,
-            "w": 73.88,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            635.85,
+            1347.94,
+            12.03,
+            12.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -3145,15 +3151,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 656.85,
-            "y": 1341.94,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            400.05,
+            1337.36,
+            128.32,
+            32.06
+          ],
           "value": "(16030)",
           "comment": null,
           "is_note": false,
@@ -3167,16 +3173,16 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 412.74,
-            "y": 1337.36,
-            "w": 115.63,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
+          "bbox": [
+            275.23,
+            1342.94,
+            12.03,
+            12.58
+          ],
+          "value": "-",
           "comment": null,
           "is_note": false,
           "note": null,
@@ -3189,15 +3195,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 276.23,
-            "y": 1341.94,
-            "w": 8.03,
-            "h": 4.58
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            755.64,
+            1379.16,
+            134.09,
+            42.06
+          ],
           "value": "(1537213)",
           "comment": null,
           "is_note": false,
@@ -3210,15 +3216,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 759.64,
-            "y": 1383.16,
-            "w": 130.09,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            572.55,
+            1379.16,
+            132.48,
+            39.77
+          ],
           "value": "42190723",
           "comment": null,
           "is_note": false,
@@ -3231,15 +3237,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 576.55,
-            "y": 1383.16,
-            "w": 128.48,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            400.71,
+            1376.87,
+            127.66,
+            37.48
+          ],
           "value": "1642248",
           "comment": null,
           "is_note": false,
@@ -3252,15 +3258,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 404.71,
-            "y": 1380.87,
-            "w": 123.66,
-            "h": 27.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            219.23,
+            1376.87,
+            132.48,
+            39.77
+          ],
           "value": "42295758",
           "comment": null,
           "is_note": false,
@@ -3273,13 +3279,7 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 223.23,
-            "y": 1380.87,
-            "w": 128.48,
-            "h": 29.77
-          }
+          "value_type": "amount"
         }
       ]
     },
@@ -3293,8 +3293,14 @@
       },
       "facts": [
         {
+          "bbox": [
+            593.38,
+            1401.48,
+            22.48,
+            34.35
+          ],
           "value": "4",
-          "comment": "2",
+          "comment": null,
           "is_note": true,
           "note": "2",
           "note_reference": null,
@@ -3307,20 +3313,20 @@
           ],
           "currency": null,
           "scale": null,
-          "value_type": "%",
-          "bbox": {
-            "x": 593.38,
-            "y": 1401.48,
-            "w": 22.48,
-            "h": 34.35
-          }
+          "value_type": "%"
         },
         {
-          "value": "",
-          "comment": "2",
+          "bbox": [
+            564.5,
+            1446.12,
+            64.24,
+            36.8
+          ],
+          "value": "7-10",
+          "comment": null,
           "is_note": true,
           "note": "2",
-          "note_reference": "7-10",
+          "note_reference": null,
           "date": null,
           "path": [
             "2. עיקרי המדיניות החשבונאית",
@@ -3330,28 +3336,28 @@
           ],
           "currency": null,
           "scale": null,
-          "value_type": "%",
-          "bbox": {
-            "x": 567.13,
-            "y": 1446.12,
-            "w": 64.24,
-            "h": 36.8
-          }
+          "value_type": "%"
         }
       ]
     },
     {
       "image": "page_0008.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע''ר)",
+        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "8",
         "type": "notes",
         "title": "ביאורים לדוחות הכספיים"
       },
       "facts": [
         {
+          "bbox": [
+            808.27,
+            676.13,
+            120.0,
+            31.48
+          ],
           "value": "1299782",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3364,17 +3370,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 808.27,
-            "y": 676.13,
-            "w": 120.0,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            640.82,
+            676.13,
+            122.03,
+            31.48
+          ],
           "value": "1214744",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3387,17 +3393,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 640.82,
-            "y": 676.13,
-            "w": 122.03,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            482.98,
+            677.13,
+            85.91,
+            29.48
+          ],
           "value": "85038",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3410,17 +3416,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 482.98,
-            "y": 677.13,
-            "w": 85.91,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            298.32,
+            678.13,
+            82.69,
+            29.48
+          ],
           "value": "86974",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3433,17 +3439,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 298.32,
-            "y": 678.13,
-            "w": 82.69,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            819.51,
+            721.93,
+            107.15,
+            31.48
+          ],
           "value": "475416",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3456,17 +3462,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 819.51,
-            "y": 721.93,
-            "w": 107.15,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            660.57,
+            721.93,
+            99.07,
+            31.48
+          ],
           "value": "276813",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3479,17 +3485,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 660.57,
-            "y": 721.93,
-            "w": 99.07,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            473.35,
+            722.93,
+            97.15,
+            29.48
+          ],
           "value": "198603",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3502,17 +3508,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 473.35,
-            "y": 722.93,
-            "w": 97.15,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            285.47,
+            723.93,
+            97.15,
+            29.48
+          ],
           "value": "140060",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3525,17 +3531,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 285.47,
-            "y": 723.93,
-            "w": 97.15,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            803.45,
+            767.73,
+            123.21,
+            31.48
+          ],
           "value": "1775198",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3548,17 +3554,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 803.45,
-            "y": 767.73,
-            "w": 123.21,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            640.82,
+            767.73,
+            118.81,
+            31.48
+          ],
           "value": "1491557",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3571,17 +3577,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 640.82,
-            "y": 767.73,
-            "w": 118.81,
-            "h": 31.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            474.95,
+            768.73,
+            95.54,
+            29.48
+          ],
           "value": "283641",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3594,17 +3600,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 474.95,
-            "y": 768.73,
-            "w": 95.54,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            288.69,
+            769.73,
+            95.54,
+            29.48
+          ],
           "value": "227034",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
           "note_reference": null,
@@ -3617,20 +3623,20 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 288.69,
-            "y": 769.73,
-            "w": 95.54,
-            "h": 29.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            450.72,
+            823.42,
+            116.67,
+            37.62
+          ],
           "value": "1358607",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
-          "note_reference": "ב. להלן",
+          "note_reference": "4.ב",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3640,20 +3646,20 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 450.72,
-            "y": 823.42,
-            "w": 116.67,
-            "h": 37.62
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            283.9,
+            827.56,
+            98.33,
+            33.48
+          ],
           "value": "583032",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
-          "note_reference": "ב. להלן",
+          "note_reference": "4.ב",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3663,20 +3669,20 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 283.9,
-            "y": 827.56,
-            "w": 98.33,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            452.1,
+            870.6,
+            116.44,
+            36.24
+          ],
           "value": "1642248",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "4.ב",
           "date": "2024-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3686,20 +3692,20 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 452.1,
-            "y": 870.6,
-            "w": 116.44,
-            "h": 36.24
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            281.14,
+            873.36,
+            101.09,
+            33.48
+          ],
           "value": "810066",
-          "comment": "4",
+          "comment": null,
           "is_note": true,
           "note": "4",
-          "note_reference": null,
+          "note_reference": "4.ב",
           "date": "2023-12-31",
           "path": [
             "4. רכוש קבוע",
@@ -3709,17 +3715,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 281.14,
-            "y": 873.36,
-            "w": 101.09,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            479.41,
+            1383.74,
+            85.4,
+            33.48
+          ],
           "value": "61907",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3731,17 +3737,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 479.41,
-            "y": 1383.74,
-            "w": 85.4,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            293.09,
+            1383.74,
+            91.14,
+            33.48
+          ],
           "value": "40447",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3753,17 +3759,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 293.09,
-            "y": 1383.74,
-            "w": 91.14,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            481.01,
+            1431.83,
+            84.02,
+            33.48
+          ],
           "value": "25000",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3775,17 +3781,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 481.01,
-            "y": 1431.83,
-            "w": 84.02,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
-          "value": "",
-          "comment": "5",
+          "bbox": [
+            313.99,
+            1433.21,
+            30.23,
+            32.1
+          ],
+          "value": "-",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3797,17 +3803,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 313.99,
-            "y": 1433.21,
-            "w": 30.23,
-            "h": 32.1
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            480.08,
+            1476.25,
+            84.94,
+            34.86
+          ],
           "value": "50847",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3819,17 +3825,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 480.08,
-            "y": 1476.25,
-            "w": 84.94,
-            "h": 34.86
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            289.17,
+            1474.87,
+            95.06,
+            36.24
+          ],
           "value": "43712",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3841,17 +3847,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 289.17,
-            "y": 1474.87,
-            "w": 95.06,
-            "h": 36.24
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            469.77,
+            1525.72,
+            91.12,
+            33.48
+          ],
           "value": "137754",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3863,17 +3869,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 469.77,
-            "y": 1525.72,
-            "w": 91.12,
-            "h": 33.48
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            286.4,
+            1521.58,
+            97.83,
+            37.62
+          ],
           "value": "84159",
-          "comment": "5",
+          "comment": null,
           "is_note": true,
           "note": "5",
           "note_reference": null,
@@ -3885,26 +3891,26 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 286.4,
-            "y": 1521.58,
-            "w": 97.83,
-            "h": 37.62
-          }
+          "value_type": "amount"
         }
       ]
     },
     {
       "image": "page_0009.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע''ר)",
+        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "9",
         "type": "notes",
         "title": "באורים לדוחות הכספיים"
       },
       "facts": [
         {
+          "bbox": [
+            509.31,
+            841.18,
+            106.0,
+            38.93
+          ],
           "value": "990027",
           "comment": "8",
           "is_note": true,
@@ -3918,15 +3924,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 509.31,
-            "y": 841.18,
-            "w": 106.0,
-            "h": 38.93
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            332.65,
+            845.9,
+            102.78,
+            34.35
+          ],
           "value": "973336",
           "comment": "8",
           "is_note": true,
@@ -3940,15 +3946,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 332.65,
-            "y": 845.9,
-            "w": 102.78,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            515.53,
+            891.84,
+            101.18,
+            32.06
+          ],
           "value": "192662",
           "comment": "8",
           "is_note": true,
@@ -3962,15 +3968,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 515.53,
-            "y": 891.84,
-            "w": 101.18,
-            "h": 32.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            337.26,
+            887.26,
+            97.97,
+            34.35
+          ],
           "value": "227368",
           "comment": "8",
           "is_note": true,
@@ -3984,15 +3990,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 337.26,
-            "y": 887.26,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            493.04,
+            937.64,
+            123.66,
+            41.22
+          ],
           "value": "1182689",
           "comment": "8",
           "is_note": true,
@@ -4005,15 +4011,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 493.04,
-            "y": 937.64,
-            "w": 123.66,
-            "h": 41.22
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            314.78,
+            935.35,
+            120.45,
+            41.22
+          ],
           "value": "1200704",
           "comment": "8",
           "is_note": true,
@@ -4026,15 +4032,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 314.78,
-            "y": 935.35,
-            "w": 120.45,
-            "h": 41.22
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            492.53,
+            1219.31,
+            88.33,
+            36.64
+          ],
           "value": "81990",
           "comment": "9",
           "is_note": true,
@@ -4048,15 +4054,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 492.53,
-            "y": 1219.31,
-            "w": 88.33,
-            "h": 36.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            332.47,
+            1215.73,
+            85.12,
+            36.64
+          ],
           "value": "81529",
           "comment": "9",
           "is_note": true,
@@ -4070,15 +4076,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 332.47,
-            "y": 1215.73,
-            "w": 85.12,
-            "h": 36.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            484.5,
+            1262.82,
+            96.36,
+            34.35
+          ],
           "value": "389850",
           "comment": "9",
           "is_note": true,
@@ -4092,15 +4098,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 484.5,
-            "y": 1262.82,
-            "w": 96.36,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            321.23,
+            1261.53,
+            94.75,
+            34.35
+          ],
           "value": "367331",
           "comment": "9",
           "is_note": true,
@@ -4114,15 +4120,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 321.23,
-            "y": 1261.53,
-            "w": 94.75,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            476.47,
+            1310.91,
+            102.78,
+            41.22
+          ],
           "value": "471840",
           "comment": "9",
           "is_note": true,
@@ -4135,15 +4141,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 476.47,
-            "y": 1310.91,
-            "w": 102.78,
-            "h": 41.22
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            318.02,
+            1307.33,
+            99.57,
+            38.93
+          ],
           "value": "448860",
           "comment": "9",
           "is_note": true,
@@ -4156,15 +4162,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 318.02,
-            "y": 1307.33,
-            "w": 99.57,
-            "h": 38.93
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            454.25,
+            1635.64,
+            126.78,
+            40.93
+          ],
           "value": "382675",
           "comment": "10",
           "is_note": true,
@@ -4178,15 +4184,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 454.25,
-            "y": 1635.64,
-            "w": 126.78,
-            "h": 40.93
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            282.41,
+            1628.77,
+            121.97,
+            38.64
+          ],
           "value": "217349",
           "comment": "10",
           "is_note": true,
@@ -4200,15 +4206,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 282.41,
-            "y": 1628.77,
-            "w": 121.97,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            476.74,
+            1679.15,
+            109.12,
+            38.64
+          ],
           "value": "80212",
           "comment": "10",
           "is_note": true,
@@ -4222,15 +4228,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 476.74,
-            "y": 1679.15,
-            "w": 109.12,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            303.29,
+            1674.57,
+            105.91,
+            36.35
+          ],
           "value": "51728",
           "comment": "10",
           "is_note": true,
@@ -4244,15 +4250,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 303.29,
-            "y": 1674.57,
-            "w": 105.91,
-            "h": 36.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            496.01,
+            1720.37,
+            89.85,
+            36.35
+          ],
           "value": "7093",
           "comment": "10",
           "is_note": true,
@@ -4266,15 +4272,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 496.01,
-            "y": 1720.37,
-            "w": 89.85,
-            "h": 36.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            320.96,
+            1718.08,
+            85.03,
+            34.06
+          ],
           "value": "6533",
           "comment": "10",
           "is_note": true,
@@ -4288,15 +4294,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 320.96,
-            "y": 1718.08,
-            "w": 85.03,
-            "h": 34.06
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            478.34,
+            1766.17,
+            107.51,
+            38.64
+          ],
           "value": "16484",
           "comment": "10",
           "is_note": true,
@@ -4310,15 +4316,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 478.34,
-            "y": 1766.17,
-            "w": 107.51,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            301.68,
+            1763.88,
+            102.69,
+            38.64
+          ],
           "value": "12203",
           "comment": "10",
           "is_note": true,
@@ -4332,15 +4338,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 301.68,
-            "y": 1763.88,
-            "w": 102.69,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            494.4,
+            1809.68,
+            91.45,
+            38.64
+          ],
           "value": "2662",
           "comment": "10",
           "is_note": true,
@@ -4354,15 +4360,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 494.4,
-            "y": 1809.68,
-            "w": 91.45,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            317.74,
+            1809.68,
+            89.85,
+            38.64
+          ],
           "value": "2415",
           "comment": "10",
           "is_note": true,
@@ -4376,15 +4382,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 317.74,
-            "y": 1809.68,
-            "w": 89.85,
-            "h": 38.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            451.04,
+            1860.06,
+            133.21,
+            40.93
+          ],
           "value": "489126",
           "comment": "10",
           "is_note": true,
@@ -4397,15 +4403,15 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 451.04,
-            "y": 1860.06,
-            "w": 133.21,
-            "h": 40.93
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            280.81,
+            1855.48,
+            125.18,
+            38.64
+          ],
           "value": "290228",
           "comment": "10",
           "is_note": true,
@@ -4418,28 +4424,28 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 280.81,
-            "y": 1855.48,
-            "w": 125.18,
-            "h": 38.64
-          }
+          "value_type": "amount"
         }
       ]
     },
     {
       "image": "page_0010.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע''ר)",
+        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "10",
         "type": "notes",
         "title": "באורים לדוחות הכספיים"
       },
       "facts": [
         {
-          "value": "",
-          "comment": "11",
+          "bbox": [
+            523.56,
+            682.42,
+            11.79,
+            17.08
+          ],
+          "value": "-",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4450,17 +4456,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 523.56,
-            "y": 682.42,
-            "w": 12.85,
-            "h": 29.77
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            342.08,
+            680.13,
+            88.33,
+            34.35
+          ],
           "value": "84155",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4471,17 +4477,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 342.08,
-            "y": 680.13,
-            "w": 88.33,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            490.89,
+            722.05,
+            88.33,
+            34.35
+          ],
           "value": "37951",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4492,17 +4498,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 489.83,
-            "y": 730.51,
-            "w": 88.33,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            343.14,
+            720.99,
+            88.33,
+            34.35
+          ],
           "value": "31369",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4513,17 +4519,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 342.08,
-            "y": 730.51,
-            "w": 88.33,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            485.01,
+            768.02,
+            97.97,
+            44.93
+          ],
           "value": "(19067)",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4534,17 +4540,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 485.01,
-            "y": 778.6,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            334.05,
+            771.2,
+            97.97,
+            34.35
+          ],
           "value": "(16717)",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4555,17 +4561,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 334.05,
-            "y": 778.6,
-            "w": 97.97,
-            "h": 34.35
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            491.95,
+            814.71,
+            88.33,
+            36.64
+          ],
           "value": "18884",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4575,17 +4581,17 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 489.83,
-            "y": 822.11,
-            "w": 88.33,
-            "h": 36.64
-          }
+          "value_type": "amount"
         },
         {
+          "bbox": [
+            339.96,
+            813.65,
+            88.33,
+            36.64
+          ],
           "value": "98807",
-          "comment": "11",
+          "comment": null,
           "is_note": true,
           "note": "11",
           "note_reference": null,
@@ -4595,15 +4601,13 @@
           ],
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount",
-          "bbox": {
-            "x": 342.08,
-            "y": 822.11,
-            "w": 88.33,
-            "h": 36.64
-          }
+          "value_type": "amount"
         }
       ]
     }
-  ]
+  ],
+  "document_meta": {
+    "language": "he",
+    "reading_direction": "rtl"
+  }
 }

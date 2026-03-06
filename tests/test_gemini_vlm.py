@@ -111,6 +111,87 @@ def test_build_generation_contents_includes_few_shot_turns(tmp_path: Path, monke
     assert contents[4]["parts"][1]["text"] == "extract final"
 
 
+def test_generation_config_uses_high_thinking_for_gemini_3(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-3-flash-preview", enable_thinking=True)
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "HIGH"}
+
+
+def test_generation_config_uses_minimal_for_gemini_3_nonthinking(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-3-flash-preview", enable_thinking=False)
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "MINIMAL"}
+
+
+def test_generation_config_uses_zero_budget_for_nonthinking_legacy_models(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-2.5-flash", enable_thinking=False)
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_budget": 0}
+
+
 def test_parse_llm_json_accepts_quad_backtick_fence() -> None:
     payload = (
         "````json\n"

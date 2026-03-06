@@ -220,9 +220,13 @@ def normalize_fact_payload(
         note_reference_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
     note_reference = _to_optional_text(note_reference_raw)
 
+    normalized_value_type = _normalize_value_type(payload.get("value_type"))
     raw_value_text = str(payload.get("value") or "").strip()
     value_input: Any = payload.get("value")
-    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text):
+    keep_percent_range_value = bool(
+        raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type == "%"
+    )
+    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type != "%":
         if not note_reference:
             note_reference = raw_value_text.replace(" ", "")
         value_input = ""
@@ -232,7 +236,10 @@ def normalize_fact_payload(
         is_note_raw = payload.get("is_beur", payload.get("beur"))
     is_note, bool_warnings = _coerce_is_note(is_note_raw)
 
-    value, value_warnings = normalize_value(value_input)
+    if keep_percent_range_value:
+        value, value_warnings = raw_value_text, []
+    else:
+        value, value_warnings = normalize_value(value_input)
     date_value, date_warnings = normalize_date(payload.get("date"))
 
     normalized: dict[str, Any] = {
@@ -245,7 +252,7 @@ def normalize_fact_payload(
         "path": _normalize_path(payload.get("path")),
         "currency": _normalize_currency(payload.get("currency")),
         "scale": _normalize_scale(payload.get("scale")),
-        "value_type": _normalize_value_type(payload.get("value_type")),
+        "value_type": normalized_value_type,
     }
     if include_bbox and "bbox" in payload:
         normalized["bbox"] = payload.get("bbox")
@@ -363,21 +370,38 @@ def normalize_annotation_payload(payload: Any) -> tuple[dict[str, Any], list[dic
     return out, findings
 
 
-def _resolve_annotation_files(root: Path, annotations_glob: str) -> list[Path]:
+def _normalize_included_doc_ids(include_doc_ids: set[str] | None) -> set[str] | None:
+    if include_doc_ids is None:
+        return None
+    return {doc_id.strip() for doc_id in include_doc_ids if str(doc_id).strip()}
+
+
+def _resolve_annotation_files(
+    root: Path,
+    annotations_glob: str,
+    *,
+    include_doc_ids: set[str] | None = None,
+) -> list[Path]:
     root = root.resolve()
     pattern = Path(annotations_glob).expanduser()
     search_pattern = str(pattern) if pattern.is_absolute() else str(root / annotations_glob)
     resolved = sorted(Path(path).resolve() for path in glob.glob(search_pattern, recursive=True))
-    return [path for path in resolved if path.is_file()]
+    included = _normalize_included_doc_ids(include_doc_ids)
+    return [
+        path
+        for path in resolved
+        if path.is_file() and (included is None or path.stem in included)
+    ]
 
 
 def fact_format_report(
     root: Path,
     *,
     annotations_glob: str = DEFAULT_ANNOTATIONS_GLOB,
+    include_doc_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     root = root.resolve()
-    files = _resolve_annotation_files(root, annotations_glob)
+    files = _resolve_annotation_files(root, annotations_glob, include_doc_ids=include_doc_ids)
     findings: list[dict[str, Any]] = []
     pages_scanned = 0
     facts_scanned = 0
@@ -405,6 +429,7 @@ def fact_format_report(
 
     return {
         "annotations_glob": annotations_glob,
+        "include_doc_ids": sorted(_normalize_included_doc_ids(include_doc_ids) or set()),
         "files_scanned": len(files),
         "pages_scanned": pages_scanned,
         "facts_scanned": facts_scanned,
@@ -418,10 +443,12 @@ def assert_fact_format(
     *,
     annotations_glob: str = DEFAULT_ANNOTATIONS_GLOB,
     fail_on_issues: bool = True,
+    include_doc_ids: set[str] | None = None,
 ) -> dict[str, Any]:
-    report = fact_format_report(root, annotations_glob=annotations_glob)
+    report = fact_format_report(root, annotations_glob=annotations_glob, include_doc_ids=include_doc_ids)
     summary = {
         "annotations_glob": report["annotations_glob"],
+        "include_doc_ids": report["include_doc_ids"],
         "files_scanned": report["files_scanned"],
         "pages_scanned": report["pages_scanned"],
         "facts_scanned": report["facts_scanned"],

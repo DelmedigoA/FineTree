@@ -610,9 +610,17 @@ def test_push_train_validation_separately_uses_train_split_for_both_repos(monkey
 def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
-    def _fake_build_dataset(config_path: Path, *, allow_format_issues: bool = False) -> None:
+    def _fake_build_dataset(
+        config_path: Path,
+        *,
+        allow_format_issues: bool = False,
+        include_doc_ids: set[str] | None = None,
+        validation_doc_ids: set[str] | None = None,
+    ) -> None:
         captured["config"] = str(config_path)
         captured["allow_format_issues"] = allow_format_issues
+        captured["include_doc_ids"] = include_doc_ids
+        captured["validation_doc_ids"] = validation_doc_ids
 
     def _fake_export(
         root: Path,
@@ -668,6 +676,55 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     assert captured.get("compact_tokens") is False
     assert captured.get("aggressive_compact_tokens") is False
     assert captured.get("allow_format_issues") is False
+
+
+def test_main_forwards_reviewed_and_validation_doc_ids(monkeypatch, tmp_path: Path) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_build_dataset(
+        config_path: Path,
+        *,
+        allow_format_issues: bool = False,
+        include_doc_ids: set[str] | None = None,
+        validation_doc_ids: set[str] | None = None,
+    ) -> None:
+        _ = config_path, allow_format_issues
+        captured["include_doc_ids"] = include_doc_ids
+        captured["validation_doc_ids"] = validation_doc_ids
+
+    monkeypatch.setattr(push_mod, "build_dataset", _fake_build_dataset)
+    monkeypatch.setattr(push_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(push_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 0})
+    monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(push_mod, "push_to_hf", lambda *_args, **_kwargs: "asafd60/FineTree-annotated-pages")
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = push_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages",
+                "--include-doc-ids",
+                "pdf_7,pdf_9",
+                "--validation-doc-ids",
+                "pdf_9",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert captured["include_doc_ids"] == {"pdf_7", "pdf_9"}
+    assert captured["validation_doc_ids"] == {"pdf_9"}
 
 
 def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path: Path) -> None:

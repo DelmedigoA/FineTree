@@ -212,10 +212,12 @@ def build_annotations_payload(
     return payload
 
 
-def apply_entity_name_to_missing_pages(
+def apply_entity_name_to_pages(
     page_states: Dict[str, PageState],
     page_images: Sequence[Path],
     entity_name: Optional[str],
+    *,
+    overwrite_existing: bool = False,
 ) -> int:
     normalized_entity = str(entity_name or "").strip()
     if not normalized_entity:
@@ -227,12 +229,27 @@ def apply_entity_name_to_missing_pages(
         state = page_states.get(page_name, PageState(meta=default_page_meta(idx), facts=[]))
         meta = {**default_page_meta(idx), **(state.meta or {})}
         existing_entity = str(meta.get("entity_name") or "").strip()
-        if existing_entity:
+        if existing_entity and not overwrite_existing:
+            continue
+        if existing_entity == normalized_entity:
             continue
         meta["entity_name"] = normalized_entity
         page_states[page_name] = PageState(meta=meta, facts=list(state.facts))
         updated += 1
     return updated
+
+
+def apply_entity_name_to_missing_pages(
+    page_states: Dict[str, PageState],
+    page_images: Sequence[Path],
+    entity_name: Optional[str],
+) -> int:
+    return apply_entity_name_to_pages(
+        page_states,
+        page_images,
+        entity_name,
+        overwrite_existing=False,
+    )
 
 
 def serialize_annotations_json(payload: Dict[str, Any]) -> str:
@@ -255,6 +272,7 @@ __all__ = [
     "parse_import_payload",
     "normalize_bbox_data",
     "normalize_fact_data",
+    "apply_entity_name_to_pages",
     "apply_entity_name_to_missing_pages",
     "serialize_annotations_json",
     "ValidationError",

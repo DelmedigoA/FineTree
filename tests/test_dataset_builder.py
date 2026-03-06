@@ -134,6 +134,22 @@ def test_dataset_builder_doc_split_map_can_force_explicit_val_docs() -> None:
     }
 
 
+def test_dataset_builder_doc_split_map_can_force_empty_explicit_validation() -> None:
+    from finetree_annotator.finetune import dataset_builder as mod
+
+    docs = [Path("pdf_2.json"), Path("pdf_3.json")]
+    split = mod._doc_split_map(
+        docs,
+        val_ratio=0.4,
+        forced_val_doc_ids=set(),
+        force_explicit_val_doc_ids=True,
+    )
+    assert split == {
+        "pdf_2": False,
+        "pdf_3": False,
+    }
+
+
 def test_dataset_builder_reorders_hebrew_row_right_to_left(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     data_dir = tmp_path / "data"
@@ -188,3 +204,48 @@ def test_dataset_builder_reorders_hebrew_row_right_to_left(tmp_path: Path, monke
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
     assert [fact["value"] for fact in out_obj["facts"]] == ["right", "left"]
+
+
+def test_dataset_builder_can_limit_to_reviewed_docs_and_explicit_validation(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_root = data_dir / "pdf_images"
+    ann_dir.mkdir(parents=True)
+    img_root.mkdir(parents=True)
+
+    for doc_id in ("doc_a", "doc_b"):
+        img_dir = img_root / doc_id
+        img_dir.mkdir(parents=True)
+        image_name = "page_0001.png"
+        (img_dir / image_name).write_bytes(b"fake")
+        _write_annotation(ann_dir / f"{doc_id}.json", image_dir=img_dir, image_name=image_name)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.5,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    stats = build_unsloth_chat_datasets(
+        cfg,
+        include_doc_ids={"doc_a"},
+        forced_val_doc_ids=set(),
+        force_explicit_val_doc_ids=True,
+    )
+
+    assert stats.annotation_files == 1
+    assert stats.samples_written_train == 1
+    assert stats.samples_written_val == 0
+    train_lines = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    assert len(train_lines) == 1
+    sample = json.loads(train_lines[0])
+    assert sample["metadata"]["document_id"] == "doc_a"
+    assert (tmp_path / "data/finetune/val.jsonl").read_text(encoding="utf-8") == ""

@@ -59,7 +59,7 @@ class DataConfig(BaseModel):
 
 class PromptConfig(BaseModel):
     use_custom_prompt: bool = True
-    prompt_path: Path = Path("prompt.txt")
+    prompt_path: Path = Path("prompts/extraction_prompt.txt")
     fallback_template: str = "Extract page JSON using the FineTree schema."
 
 

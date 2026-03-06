@@ -75,11 +75,27 @@ def test_normalize_fact_payload_moves_range_value_to_note_reference() -> None:
         {
             "value": "7-15",
             "note_reference": "",
+            "value_type": "amount",
             "path": [],
         }
     )
     assert normalized["value"] == ""
     assert normalized["note_reference"] == "7-15"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_keeps_range_value_for_percent_type() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "7-15",
+            "note_reference": "",
+            "value_type": "%",
+            "path": [],
+        }
+    )
+    assert normalized["value"] == "7-15"
+    assert normalized["note_reference"] is None
+    assert normalized["value_type"] == "%"
     assert warnings == []
 
 

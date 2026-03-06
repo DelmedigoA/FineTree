@@ -9,12 +9,28 @@ from ..annotation_core import normalize_bbox_data
 from ..fact_normalization import normalize_fact_payload
 
 
-def _resolve_annotation_files(root: Path, annotations_glob: str) -> list[Path]:
+def _normalize_included_doc_ids(include_doc_ids: set[str] | None) -> set[str] | None:
+    if include_doc_ids is None:
+        return None
+    return {doc_id.strip() for doc_id in include_doc_ids if str(doc_id).strip()}
+
+
+def _resolve_annotation_files(
+    root: Path,
+    annotations_glob: str,
+    *,
+    include_doc_ids: set[str] | None = None,
+) -> list[Path]:
     root = root.resolve()
     pattern = Path(annotations_glob).expanduser()
     search_pattern = str(pattern) if pattern.is_absolute() else str(root / annotations_glob)
     resolved = sorted(Path(path).resolve() for path in glob.glob(search_pattern, recursive=True))
-    return [path for path in resolved if path.is_file()]
+    included = _normalize_included_doc_ids(include_doc_ids)
+    return [
+        path
+        for path in resolved
+        if path.is_file() and (included is None or path.stem in included)
+    ]
 
 
 def _iter_pages(payload: Any, *, default_page_name: str) -> list[dict[str, Any]]:
@@ -51,7 +67,12 @@ def fact_uniqueness_key(fact_payload: dict[str, Any]) -> tuple[Any, ...]:
     )
 
 
-def duplicate_facts_report(root: Path, *, annotations_glob: str = "data/annotations/*.json") -> dict[str, Any]:
+def duplicate_facts_report(
+    root: Path,
+    *,
+    annotations_glob: str = "data/annotations/*.json",
+    include_doc_ids: set[str] | None = None,
+) -> dict[str, Any]:
     root = root.resolve()
     findings: list[dict[str, Any]] = []
     pages_scanned = 0
@@ -59,7 +80,7 @@ def duplicate_facts_report(root: Path, *, annotations_glob: str = "data/annotati
     duplicate_groups = 0
     duplicate_rows = 0
 
-    files = _resolve_annotation_files(root, annotations_glob)
+    files = _resolve_annotation_files(root, annotations_glob, include_doc_ids=include_doc_ids)
     for file_path in files:
         try:
             payload = json.loads(file_path.read_text(encoding="utf-8"))
@@ -106,6 +127,7 @@ def duplicate_facts_report(root: Path, *, annotations_glob: str = "data/annotati
 
     return {
         "annotations_glob": annotations_glob,
+        "include_doc_ids": sorted(_normalize_included_doc_ids(include_doc_ids) or set()),
         "files_scanned": len(files),
         "pages_scanned": pages_scanned,
         "facts_scanned": facts_scanned,
@@ -120,10 +142,12 @@ def assert_no_duplicate_facts(
     *,
     annotations_glob: str = "data/annotations/*.json",
     fail_on_duplicates: bool = True,
+    include_doc_ids: set[str] | None = None,
 ) -> dict[str, Any]:
-    report = duplicate_facts_report(root, annotations_glob=annotations_glob)
+    report = duplicate_facts_report(root, annotations_glob=annotations_glob, include_doc_ids=include_doc_ids)
     summary = {
         "annotations_glob": report["annotations_glob"],
+        "include_doc_ids": report["include_doc_ids"],
         "files_scanned": report["files_scanned"],
         "pages_scanned": report["pages_scanned"],
         "facts_scanned": report["facts_scanned"],

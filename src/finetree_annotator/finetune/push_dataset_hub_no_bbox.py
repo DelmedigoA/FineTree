@@ -301,7 +301,7 @@ def export_for_hf_no_bbox(
         "# FineTree Annotated Dataset (No BBox)\n\n"
         "Generated from current repository annotations.\n\n"
         "- Assistant JSON payload has bbox removed from all facts.\n\n"
-        "- Includes `system` column from `system_prompt.txt`.\n"
+        "- Includes `system` column from `prompts/system_prompt.txt`.\n"
         f"- Instruction mode: {instruction_mode}\n"
         f"- Resize enabled: {'yes' if resize_enabled else 'no'}\n"
         f"- Min pixels: {resolved_min if resolved_min is not None else 'unset'}\n"

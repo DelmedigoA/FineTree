@@ -8,6 +8,7 @@ class PageType(str, Enum):
     balance_sheet = "balance_sheet"
     income_statement = "income_statement"
     cash_flow = "cash_flow"
+    activities = "activities"
     notes = "notes"
     contents_page = "contents_page"
     title = "title"

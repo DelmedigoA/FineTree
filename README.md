@@ -114,7 +114,7 @@ finetree-qwen-gt --config configs/finetune_qwen35a3_vl.yaml --image data/pdf_ima
 Optional:
 
 - `--prompt` inline prompt text
-- `--prompt-path` prompt file path (defaults to `prompt.txt`)
+- `--prompt-path` prompt file path (defaults to `prompts/extraction_prompt.txt`)
 - `--model` override model id/path for inference
 
 To use hosted Qwen Flash (OpenAI-compatible DashScope) from UI/CLI model selection:
