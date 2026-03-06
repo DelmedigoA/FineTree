@@ -334,12 +334,28 @@ def validate_fact_order(
     }
 
 
-def _resolve_annotation_files(root: Path, annotations_glob: str) -> list[Path]:
+def _normalize_included_doc_ids(include_doc_ids: set[str] | None) -> set[str] | None:
+    if include_doc_ids is None:
+        return None
+    return {doc_id.strip() for doc_id in include_doc_ids if str(doc_id).strip()}
+
+
+def _resolve_annotation_files(
+    root: Path,
+    annotations_glob: str,
+    *,
+    include_doc_ids: set[str] | None = None,
+) -> list[Path]:
     root = root.resolve()
     pattern = Path(annotations_glob).expanduser()
     search_pattern = str(pattern) if pattern.is_absolute() else str(root / annotations_glob)
     resolved = sorted(Path(path).resolve() for path in glob.glob(search_pattern, recursive=True))
-    return [path for path in resolved if path.is_file()]
+    included = _normalize_included_doc_ids(include_doc_ids)
+    return [
+        path
+        for path in resolved
+        if path.is_file() and (included is None or path.stem in included)
+    ]
 
 
 def fact_order_report(
@@ -349,6 +365,7 @@ def fact_order_report(
     default_direction: Direction = DEFAULT_DIRECTION,
     row_tolerance_ratio: float = DEFAULT_ROW_TOLERANCE_RATIO,
     row_tolerance_min_px: float = DEFAULT_ROW_TOLERANCE_MIN_PX,
+    include_doc_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     findings: list[dict[str, Any]] = []
     uncertain_documents: list[dict[str, Any]] = []
@@ -356,7 +373,7 @@ def fact_order_report(
     pages_scanned = 0
     pages_with_order_issues = 0
 
-    for file_path in _resolve_annotation_files(root, annotations_glob):
+    for file_path in _resolve_annotation_files(root, annotations_glob, include_doc_ids=include_doc_ids):
         files_scanned += 1
         payload = json.loads(file_path.read_text(encoding="utf-8"))
         doc_meta = payload.get("document_meta") if isinstance(payload, dict) else None
@@ -402,6 +419,7 @@ def fact_order_report(
 
     return {
         "annotations_glob": annotations_glob,
+        "include_doc_ids": sorted(_normalize_included_doc_ids(include_doc_ids) or set()),
         "files_scanned": files_scanned,
         "pages_scanned": pages_scanned,
         "pages_with_order_issues": pages_with_order_issues,
@@ -418,6 +436,7 @@ def assert_fact_order(
     row_tolerance_ratio: float = DEFAULT_ROW_TOLERANCE_RATIO,
     row_tolerance_min_px: float = DEFAULT_ROW_TOLERANCE_MIN_PX,
     fail_on_issues: bool = True,
+    include_doc_ids: set[str] | None = None,
 ) -> dict[str, Any]:
     report = fact_order_report(
         root,
@@ -425,6 +444,7 @@ def assert_fact_order(
         default_direction=default_direction,
         row_tolerance_ratio=row_tolerance_ratio,
         row_tolerance_min_px=row_tolerance_min_px,
+        include_doc_ids=include_doc_ids,
     )
     findings_preview = [
         {
@@ -442,6 +462,7 @@ def assert_fact_order(
         json.dumps(
             {
                 "annotations_glob": report["annotations_glob"],
+                "include_doc_ids": report["include_doc_ids"],
                 "files_scanned": report["files_scanned"],
                 "pages_scanned": report["pages_scanned"],
                 "pages_with_order_issues": report["pages_with_order_issues"],

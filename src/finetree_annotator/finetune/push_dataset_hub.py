@@ -19,6 +19,7 @@ from PIL import Image as PILImage
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
 from .config import load_finetune_config
+from .dataset_builder import build_unsloth_chat_datasets
 from .duplicate_facts import assert_no_duplicate_facts
 
 _MIN_BBOX_SIZE = 1.0
@@ -54,21 +55,44 @@ _COMPACT_KEY_MAP: dict[str, str] = {
 }
 
 
-def build_dataset(config_path: Path, *, allow_format_issues: bool = False) -> None:
-    from .dataset_builder import main as build_main
+def build_dataset(
+    config_path: Path,
+    *,
+    allow_format_issues: bool = False,
+    include_doc_ids: set[str] | None = None,
+    validation_doc_ids: set[str] | None = None,
+) -> None:
+    root = Path(".").resolve()
+    cfg = load_finetune_config(config_path)
+    if cfg.data.fact_format_enforce:
+        format_report = assert_fact_format(
+            root,
+            annotations_glob=cfg.data.annotations_glob,
+            fail_on_issues=not allow_format_issues,
+            include_doc_ids=include_doc_ids,
+        )
+        if allow_format_issues and int(format_report["facts_with_issues"]) > 0:
+            print(
+                "WARNING: continuing with format issues because --allow-format-issues was set. "
+                f"facts_with_issues={format_report['facts_with_issues']}"
+            )
+    else:
+        print("FACT_FORMAT_AUDIT: skipped (data.fact_format_enforce=false)")
 
-    args = ["--config", str(config_path)]
-    if allow_format_issues:
-        args.append("--allow-format-issues")
-    build_main(args)
+    build_unsloth_chat_datasets(
+        cfg,
+        include_doc_ids=include_doc_ids,
+        forced_val_doc_ids=validation_doc_ids,
+        force_explicit_val_doc_ids=(validation_doc_ids is not None),
+    )
 
 
 def _resolve_system_prompt(root: Path) -> str:
-    prompt_path = (root / "system_prompt.txt").resolve()
-    if prompt_path.is_file():
-        text = prompt_path.read_text(encoding="utf-8").strip()
-        if text:
-            return text
+    for prompt_path in ((root / "prompts" / "system_prompt.txt").resolve(), (root / "system_prompt.txt").resolve()):
+        if prompt_path.is_file():
+            text = prompt_path.read_text(encoding="utf-8").strip()
+            if text:
+                return text
     return _DEFAULT_SYSTEM_PROMPT
 
 
@@ -343,10 +367,14 @@ def _normalize_instruction_mode(value: str) -> InstructionMode:
     return mode  # type: ignore[return-value]
 
 
-def _parse_excluded_doc_ids(raw: str | None) -> set[str]:
+def _parse_doc_ids_csv(raw: str | None) -> set[str]:
     if not raw:
         return set()
     return {part.strip() for part in raw.split(",") if part.strip()}
+
+
+def _parse_excluded_doc_ids(raw: str | None) -> set[str]:
+    return _parse_doc_ids_csv(raw)
 
 
 def _compact_json_dumps(payload: Any) -> str:
@@ -752,7 +780,7 @@ def export_for_hf(
     (export_dir / "README.md").write_text(
         "# FineTree Annotated Dataset\n\n"
         "Generated from current repository annotations.\n\n"
-        "- Includes `system` column from `system_prompt.txt`.\n"
+        "- Includes `system` column from `prompts/system_prompt.txt`.\n"
         f"- Instruction mode: {instruction_mode}\n"
         f"- Resize enabled: {'yes' if resize_enabled else 'no'}\n"
         f"- Min pixels: {resolved_min if resolved_min is not None else 'unset'}\n"
@@ -987,6 +1015,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Comma-separated document/image folder ids to exclude, e.g. pdf_4,test",
     )
     parser.add_argument(
+        "--include-doc-ids",
+        default=None,
+        help="Comma-separated document ids to include in dataset build, e.g. pdf_7,pdf_9",
+    )
+    parser.add_argument(
+        "--validation-doc-ids",
+        default=None,
+        help="Comma-separated reviewed document ids to force into the validation split.",
+    )
+    parser.add_argument(
         "--compact_tokens",
         action="store_true",
         help="Compact assistant JSON payload formatting and numeric separators without renaming keys.",
@@ -1048,11 +1086,32 @@ def main(argv: list[str] | None = None) -> int:
     resolved_min = resize_bounds[0] if resize_bounds else None
     resolved_max = resize_bounds[1] if resize_bounds else None
     instruction_mode = _normalize_instruction_mode(args.instruction_mode)
-    excluded_doc_ids = _parse_excluded_doc_ids(args.exclude_doc_ids)
+    excluded_doc_ids = _parse_doc_ids_csv(args.exclude_doc_ids)
+    included_doc_ids = _parse_doc_ids_csv(args.include_doc_ids)
+    validation_doc_ids = _parse_doc_ids_csv(args.validation_doc_ids)
+    effective_included_doc_ids: set[str] | None = None
+    if included_doc_ids:
+        effective_included_doc_ids = included_doc_ids - excluded_doc_ids
+    invalid_validation_doc_ids = (
+        validation_doc_ids - effective_included_doc_ids
+        if effective_included_doc_ids is not None
+        else set()
+    )
+    if invalid_validation_doc_ids:
+        invalid_list = ", ".join(sorted(invalid_validation_doc_ids))
+        raise RuntimeError(
+            "Validation document ids must also be included in the reviewed push set. "
+            f"invalid={invalid_list}"
+        )
     main_repo_id = _resolve_repo_id(args.repo_id, token)
     compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
 
-    build_dataset(config_path, allow_format_issues=args.allow_format_issues)
+    build_dataset(
+        config_path,
+        allow_format_issues=args.allow_format_issues,
+        include_doc_ids=effective_included_doc_ids,
+        validation_doc_ids=validation_doc_ids if args.validation_doc_ids is not None else None,
+    )
     if instruction_mode == "source" or args.push_all_variants:
         assert_source_instruction_schema(root, fail_on_issues=True)
     assert_no_train_val_contamination(root)
@@ -1060,6 +1119,7 @@ def main(argv: list[str] | None = None) -> int:
         root,
         annotations_glob=cfg.data.annotations_glob,
         fail_on_duplicates=not args.allow_duplicate_facts,
+        include_doc_ids=effective_included_doc_ids,
     )
     if args.allow_duplicate_facts and int(duplicate_report["duplicate_rows"]) > 0:
         print(
@@ -1074,6 +1134,7 @@ def main(argv: list[str] | None = None) -> int:
             row_tolerance_ratio=cfg.data.fact_order_row_tolerance_ratio,
             row_tolerance_min_px=cfg.data.fact_order_row_tolerance_min_px,
             fail_on_issues=not args.allow_ordering_issues,
+            include_doc_ids=effective_included_doc_ids,
         )
         if args.allow_ordering_issues and int(ordering_report["pages_with_order_issues"]) > 0:
             print(
@@ -1087,6 +1148,7 @@ def main(argv: list[str] | None = None) -> int:
             root,
             annotations_glob=cfg.data.annotations_glob,
             fail_on_issues=not args.allow_format_issues,
+            include_doc_ids=effective_included_doc_ids,
         )
         if args.allow_format_issues and int(format_report["facts_with_issues"]) > 0:
             print(

@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-import sys
-from pathlib import Path
+import os
 
-
-ROOT = Path(__file__).resolve().parents[1]
-SRC = ROOT / "src"
-SRC_STR = str(SRC)
-if SRC_STR not in sys.path:
-    sys.path.insert(0, SRC_STR)
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")

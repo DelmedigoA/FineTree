@@ -26,7 +26,7 @@ data:
 
 prompt:
   use_custom_prompt: true
-  prompt_path: prompt.txt
+  prompt_path: prompts/extraction_prompt.txt
   fallback_template: |
     You are extracting financial statement annotations from a single page image.
     Return strict JSON with keys: meta, facts.

@@ -170,6 +170,19 @@ def test_build_annotations_payload_raises_on_invalid_schema_values() -> None:
         build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
 
 
+def test_build_annotations_payload_accepts_activities_page_type() -> None:
+    page_images = [Path("page_0001.png")]
+    page_states = {
+        "page_0001.png": PageState(
+            meta={"type": "activities", "page_num": "7"},
+            facts=[],
+        )
+    }
+
+    payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    assert payload["pages"][0]["meta"]["type"] == "activities"
+
+
 def test_build_annotations_payload_normalizes_currency_outside_allowed_list_to_none() -> None:
     page_images = [Path("page_0001.png")]
     page_states = {

@@ -54,6 +54,48 @@ _VALID_SCALES = {1, 1000, 1000000}
 _VALID_VALUE_TYPES = {"amount", "%"}
 
 
+def _is_gemini_3_model(model_name: Optional[str]) -> bool:
+    normalized = str(model_name or "").strip().lower()
+    return normalized.startswith("gemini-3")
+
+
+def _thinking_config_for_model(model_name: Optional[str], enable_thinking: Optional[bool]) -> Any:
+    if enable_thinking is None:
+        return None
+    if types is None:
+        return None
+
+    if _is_gemini_3_model(model_name):
+        level = types.ThinkingLevel.HIGH if enable_thinking else types.ThinkingLevel.MINIMAL
+        return types.ThinkingConfig(thinking_level=level)
+
+    if enable_thinking:
+        return None
+    return types.ThinkingConfig(thinking_budget=0)
+
+
+def _generation_config(
+    model_name: Optional[str],
+    *,
+    enable_thinking: Optional[bool] = None,
+    response_mime_type: Optional[str] = None,
+    response_json_schema: Any = None,
+) -> Any:
+    _require_google_genai()
+
+    config_kwargs: dict[str, Any] = {}
+    thinking_config = _thinking_config_for_model(model_name, enable_thinking)
+    if thinking_config is not None:
+        config_kwargs["thinking_config"] = thinking_config
+    if response_mime_type is not None:
+        config_kwargs["response_mime_type"] = response_mime_type
+    if response_json_schema is not None:
+        config_kwargs["response_json_schema"] = response_json_schema
+    if not config_kwargs:
+        return None
+    return types.GenerateContentConfig(**config_kwargs)
+
+
 def _require_google_genai() -> None:
     if genai is None or types is None:
         raise RuntimeError(
@@ -675,6 +717,7 @@ def generate_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> str:
     _require_google_genai()
     if not image_path.is_file():
@@ -688,10 +731,14 @@ def generate_content_from_image(
         mime_type=mime_type,
         few_shot_examples=few_shot_examples,
     )
-    response = client.models.generate_content(
-        model=model,
-        contents=contents,
-    )
+    request_kwargs: dict[str, Any] = {
+        "model": model,
+        "contents": contents,
+    }
+    config = _generation_config(model, enable_thinking=enable_thinking)
+    if config is not None:
+        request_kwargs["config"] = config
+    response = client.models.generate_content(**request_kwargs)
     return response.text or ""
 
 
@@ -702,6 +749,7 @@ def stream_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> Iterator[str]:
     _require_google_genai()
     if not image_path.is_file():
@@ -717,10 +765,14 @@ def stream_content_from_image(
 
     stream_fn = getattr(client.models, "generate_content_stream", None)
     if callable(stream_fn):
-        stream = stream_fn(
-            model=model,
-            contents=contents,
-        )
+        request_kwargs: dict[str, Any] = {
+            "model": model,
+            "contents": contents,
+        }
+        config = _generation_config(model, enable_thinking=enable_thinking)
+        if config is not None:
+            request_kwargs["config"] = config
+        stream = stream_fn(**request_kwargs)
         for chunk in stream:
             text = getattr(chunk, "text", None)
             if text:
@@ -734,6 +786,7 @@ def stream_content_from_image(
         mime_type=mime_type,
         api_key=api_key,
         few_shot_examples=few_shot_examples,
+        enable_thinking=enable_thinking,
     )
     if text:
         yield text
@@ -746,6 +799,7 @@ def generate_structured_json_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> str:
     _require_google_genai()
     if not image_path.is_file():
@@ -765,7 +819,9 @@ def generate_structured_json_from_image(
             ),
             prompt,
         ],
-        config=types.GenerateContentConfig(
+        config=_generation_config(
+            model,
+            enable_thinking=enable_thinking,
             response_mime_type="application/json",
             response_json_schema=schema,
         ),
@@ -782,6 +838,7 @@ def generate_page_extraction_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    enable_thinking: Optional[bool] = None,
 ) -> PageExtraction:
     # Temporarily avoid Gemini-side schema enforcement to prevent INVALID_ARGUMENT
     # errors from response_json_schema. We still enforce strict local validation.
@@ -791,6 +848,7 @@ def generate_page_extraction_from_image(
         model=model,
         mime_type=mime_type,
         api_key=api_key,
+        enable_thinking=enable_thinking,
     )
     return parse_page_extraction_text(raw_text)
 

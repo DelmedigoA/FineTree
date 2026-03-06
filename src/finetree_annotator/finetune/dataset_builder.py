@@ -58,12 +58,15 @@ def _doc_split_map(
     val_ratio: float,
     *,
     forced_val_doc_ids: set[str] | None = None,
+    force_explicit_val_doc_ids: bool = False,
 ) -> Dict[str, bool]:
     doc_ids = [p.stem for p in annotation_files]
     if not doc_ids:
         return {}
 
     forced = {doc_id.strip() for doc_id in (forced_val_doc_ids or set()) if str(doc_id).strip()}
+    if force_explicit_val_doc_ids:
+        return {doc_id: (doc_id in forced) for doc_id in doc_ids}
     if forced:
         return {doc_id: (doc_id in forced) for doc_id in doc_ids}
 
@@ -135,15 +138,30 @@ def _transform_page_for_target(
     }
 
 
-def build_unsloth_chat_datasets(cfg: FinetuneConfig) -> DatasetBuildStats:
+def build_unsloth_chat_datasets(
+    cfg: FinetuneConfig,
+    *,
+    include_doc_ids: set[str] | None = None,
+    forced_val_doc_ids: set[str] | None = None,
+    force_explicit_val_doc_ids: bool = False,
+) -> DatasetBuildStats:
     stats = DatasetBuildStats()
 
     prompt_template = _resolve_prompt_template(cfg)
     annotation_files = list(_iter_annotation_files(cfg.data.annotations_glob))
+    included = {doc_id.strip() for doc_id in (include_doc_ids or set()) if str(doc_id).strip()}
+    if include_doc_ids is not None:
+        annotation_files = [path for path in annotation_files if path.stem in included]
+    resolved_forced_val_doc_ids = (
+        {doc_id.strip() for doc_id in forced_val_doc_ids if str(doc_id).strip()}
+        if forced_val_doc_ids is not None
+        else set(cfg.data.val_doc_ids)
+    )
     split_map = _doc_split_map(
         annotation_files,
         cfg.data.val_ratio,
-        forced_val_doc_ids=set(cfg.data.val_doc_ids),
+        forced_val_doc_ids=resolved_forced_val_doc_ids,
+        force_explicit_val_doc_ids=force_explicit_val_doc_ids,
     )
     train_path = cfg.data.output_train_jsonl
     val_path = cfg.data.output_val_jsonl

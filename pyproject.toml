@@ -57,5 +57,8 @@ finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
 [tool.setuptools]
 package-dir = {"" = "src"}
 
+[tool.setuptools.package-data]
+finetree_annotator = ["assets/icons/*.png"]
+
 [tool.setuptools.packages.find]
 where = ["src"]
