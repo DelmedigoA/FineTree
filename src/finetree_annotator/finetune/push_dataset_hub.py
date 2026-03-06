@@ -18,6 +18,7 @@ from PIL import Image as PILImage
 
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
+from ..schema_contract import REQUIRED_PROMPT_CANONICAL_KEYS
 from .config import load_finetune_config
 from .dataset_builder import build_unsloth_chat_datasets
 from .duplicate_facts import assert_no_duplicate_facts
@@ -29,7 +30,6 @@ _DEFAULT_SYSTEM_PROMPT = (
     "You are a precise financial statement extraction system. "
     "Return only valid JSON that matches the required schema."
 )
-_REQUIRED_CANONICAL_PROMPT_KEYS: tuple[str, ...] = ("comment", "is_note", "note", "note_reference")
 _LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "refference")
 _COMPACT_KEY_MAP: dict[str, str] = {
     "meta": "m",
@@ -40,7 +40,9 @@ _COMPACT_KEY_MAP: dict[str, str] = {
     "title": "ttl",
     "value": "v",
     "comment": "cmt",
-    "is_note": "isn",
+    "note_flag": "nflg",
+    "note_name": "nnm",
+    "note_num": "nt",
     "note": "nt",
     "note_reference": "nref",
     "date": "d",
@@ -181,7 +183,7 @@ def assert_source_instruction_schema(
                 continue
             checked_rows += 1
             issues: list[str] = []
-            for key in _REQUIRED_CANONICAL_PROMPT_KEYS:
+            for key in REQUIRED_PROMPT_CANONICAL_KEYS:
                 if not _has_prompt_key(instruction, key):
                     issues.append(f"missing_required_key:{key}")
             for legacy in _LEGACY_PROMPT_KEYS:
@@ -202,7 +204,7 @@ def assert_source_instruction_schema(
     report = {
         "checked_rows": checked_rows,
         "rows_with_issues": rows_with_issues,
-        "required_keys": list(_REQUIRED_CANONICAL_PROMPT_KEYS),
+        "required_keys": list(REQUIRED_PROMPT_CANONICAL_KEYS),
         "legacy_keys": list(_LEGACY_PROMPT_KEYS),
         "issue_examples": issue_examples,
     }
@@ -211,7 +213,7 @@ def assert_source_instruction_schema(
         raise RuntimeError(
             "Source prompt schema validation failed for one or more finetune rows. "
             "Ensure prompt instructions use canonical keys "
-            "comment/is_note/note/note_reference and remove legacy keys."
+            f"{'/'.join(REQUIRED_PROMPT_CANONICAL_KEYS)} and remove legacy keys."
         )
     return report
 

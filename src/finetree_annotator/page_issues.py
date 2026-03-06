@@ -8,12 +8,14 @@ from difflib import SequenceMatcher
 from typing import Any, Iterable, Mapping, Optional, Sequence
 
 from .annotation_core import PageState, normalize_fact_data
-from .fact_normalization import normalize_date
+from .date_normalization import normalize_date
+from .fact_normalization import normalize_note_num
 from .schemas import PageType
 
 PageIssueSeverity = str
 
 _PERCENT_VALUE_RE = re.compile(r"^-?\d+(?:\.\d+)?\s*%$")
+_PATH_NOTE_WORD_RE = re.compile(r"\bnotes?\b", flags=re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -136,6 +138,14 @@ def _entity_similarity(left: str, right: str) -> float:
     return SequenceMatcher(None, _entity_key(left), _entity_key(right)).ratio()
 
 
+def _path_level_has_note_marker(text: str) -> bool:
+    stripped = text.strip()
+    if not stripped:
+        return False
+    lowered = stripped.lower()
+    return bool(_PATH_NOTE_WORD_RE.search(lowered)) or "באור" in stripped or "ביאור" in stripped
+
+
 def validate_page_issues(page_image: str, state: PageState) -> PageIssueSummary:
     issues_by_page = _validate_page_issue_lists([(page_image, state)])
     return issues_by_page.get(page_image, PageIssueSummary(page_image=page_image))
@@ -149,11 +159,11 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
         facts = [normalize_fact_data(record.fact) for record in records]
         page_type = _non_empty_text((state.meta or {}).get("type")) or PageType.other.value
 
-        if facts and page_type == PageType.notes.value and not any(bool(fact.get("is_note")) for fact in facts):
+        if facts and page_type == PageType.notes.value and not any(bool(fact.get("note_flag")) for fact in facts):
             issues_by_page.append(
                 PageIssue(
                     severity="warning",
-                    code="notes_page_missing_is_note",
+                    code="notes_page_missing_note_flag",
                     message="Page type is notes, but none of the facts are marked as note facts.",
                     page_image=page_image,
                     field_name="type",
@@ -162,27 +172,31 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
 
         if page_type != PageType.notes.value:
             for fact_index, fact in enumerate(facts):
-                if bool(fact.get("is_note")):
+                if bool(fact.get("note_flag")):
                     issues_by_page.append(
                         PageIssue(
                             severity="reg_flag",
-                            code="is_note_fact_on_non_notes_page",
+                            code="note_flag_on_non_notes_page",
                             message=f"Fact #{fact_index + 1} is marked as note, but page type is {page_type}.",
                             page_image=page_image,
                             fact_index=fact_index,
-                            field_name="is_note",
+                            field_name="note_flag",
                         )
                     )
 
         for fact_index, (record, fact) in enumerate(zip(records, facts)):
             value = _non_empty_text(fact.get("value"))
-            note = _non_empty_text(fact.get("note"))
+            raw_note_num = None
+            if isinstance(record.fact, dict):
+                raw_note_num = record.fact.get("note_num", record.fact.get("note", record.fact.get("beur_num")))
+            note_num = fact.get("note_num")
             note_reference = _non_empty_text(fact.get("note_reference"))
             date_text = _non_empty_text(fact.get("date"))
-            is_note = bool(fact.get("is_note"))
+            note_flag = bool(fact.get("note_flag"))
             value_type = _non_empty_text(fact.get("value_type"))
             currency = _non_empty_text(fact.get("currency"))
             scale = fact.get("scale")
+            _normalized_note_num, note_num_warnings = normalize_note_num(raw_note_num)
 
             if not value:
                 issues_by_page.append(
@@ -195,26 +209,37 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                         field_name="value",
                     )
                 )
-            if is_note and not note:
+            if note_num_warnings:
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
-                        code="is_note_missing_note",
-                        message=f"Fact #{fact_index + 1} is marked as note, but note is empty.",
+                        code="noninteger_note_num",
+                        message=f"Fact #{fact_index + 1} has a non-integer note_num.",
                         page_image=page_image,
                         fact_index=fact_index,
-                        field_name="note",
+                        field_name="note_num",
                     )
                 )
-            if note and not is_note:
+            if note_flag and note_num is None and not note_num_warnings:
+                issues_by_page.append(
+                    PageIssue(
+                        severity="warning",
+                        code="note_flag_missing_note_num",
+                        message=f"Fact #{fact_index + 1} is marked as note, but note_num is empty.",
+                        page_image=page_image,
+                        fact_index=fact_index,
+                        field_name="note_num",
+                    )
+                )
+            if raw_note_num not in ("", None) and not note_flag:
                 issues_by_page.append(
                     PageIssue(
                         severity="reg_flag",
-                        code="note_without_is_note",
-                        message=f"Fact #{fact_index + 1} has note text, but note flag is false.",
+                        code="note_num_without_note_flag",
+                        message=f"Fact #{fact_index + 1} has note_num, but note flag is false.",
                         page_image=page_image,
                         fact_index=fact_index,
-                        field_name="is_note",
+                        field_name="note_flag",
                     )
                 )
             if date_text:
@@ -286,6 +311,24 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                         field_name="path",
                     )
                 )
+            for path_level in fact.get("path") or []:
+                path_text = _non_empty_text(path_level)
+                if not _path_level_has_note_marker(path_text):
+                    continue
+                issues_by_page.append(
+                    PageIssue(
+                        severity="warning",
+                        code="path_contains_note_marker",
+                        message=(
+                            f"Fact #{fact_index + 1} path contains note marker '{path_text}'. "
+                            "Prefer keeping note semantics in note_flag/note_name/note_num and using a cleaner business path."
+                        ),
+                        page_image=page_image,
+                        fact_index=fact_index,
+                        field_name="path",
+                    )
+                )
+                break
         warning_specs = (
             ("currency", "mixed_currency", "currency"),
             ("scale", "mixed_scale", "scale"),

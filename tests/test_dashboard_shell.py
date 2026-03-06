@@ -32,11 +32,20 @@ class _FakeAnnotationWindow(QWidget):
         super().__init__()
         self.images_dir = Path(images_dir)
         self.annotations_path = Path(annotations_path)
+        self.confirm_close_result = True
+        self.confirm_close_calls: list[bool] = []
 
     def save_annotations(self) -> None:
         self.annotations_saved.emit(self.annotations_path)
 
     def show_help_dialog(self) -> None:
+        return None
+
+    def confirm_close(self, *, prepare_for_close: bool = False) -> bool:
+        self.confirm_close_calls.append(bool(prepare_for_close))
+        return self.confirm_close_result
+
+    def cancel_pending_close(self) -> None:
         return None
 
 
@@ -78,6 +87,58 @@ def test_dashboard_consumes_images_dir_startup(monkeypatch, tmp_path: Path) -> N
     assert current.annotations_path == annotations_path
     assert window.stack.currentWidget() is window.annotator_host
     window.close()
+
+
+def test_dashboard_close_is_blocked_when_embedded_annotator_refuses(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    monkeypatch.setattr(dashboard.app_mod, "AnnotationWindow", _FakeAnnotationWindow)
+
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    annotations_path = tmp_path / "pages.json"
+    ctx = app_mod.StartupContext(mode="images-dir", images_dir=images_dir, annotations_path=annotations_path)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    window.show()
+    window._consume_startup_context()
+    _qt_app().processEvents()
+
+    current = window.annotator_host.current_window()
+    assert current is not None
+    current.confirm_close_result = False
+
+    window.close()
+    _qt_app().processEvents()
+
+    assert window.isVisible() is True
+    assert current.confirm_close_calls == [True]
+
+    current.confirm_close_result = True
+    window.close()
+
+
+def test_embedded_annotator_exit_button_closes_dashboard(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    monkeypatch.setattr(app_mod, "_prompt_unsaved_close_action", lambda _parent: "discard")
+
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    image = dashboard.QPixmap(32, 32)
+    image.fill(dashboard.QColor("#ffffff"))
+    assert image.save(str(images_dir / "page_0001.png"), "PNG")
+    annotations_path = tmp_path / "pages.json"
+    ctx = app_mod.StartupContext(mode="images-dir", images_dir=images_dir, annotations_path=annotations_path)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    window.show()
+    window._consume_startup_context()
+    _qt_app().processEvents()
+
+    current = window.annotator_host.current_window()
+    assert current is not None
+
+    current.exit_btn.click()
+    _qt_app().processEvents()
+
+    assert window.isVisible() is False
 
 
 def test_push_view_builds_cli_args() -> None:

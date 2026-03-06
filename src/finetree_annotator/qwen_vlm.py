@@ -17,6 +17,7 @@ from typing import Any, Iterator, Optional, Tuple
 
 from .finetune.config import FinetuneConfig, load_finetune_config
 from .inference.auth import resolve_hf_token_from_env
+from .schema_contract import default_extraction_prompt_template
 
 _DEFAULT_CONFIG_PATH = Path("configs/finetune_qwen35a3_vl.yaml")
 _DEFAULT_QWEN_FLASH_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
@@ -1416,10 +1417,9 @@ def _load_prompt(args: argparse.Namespace, image_path: Path) -> str:
         if legacy_path.is_file():
             prompt_path = legacy_path
     if not prompt_path.is_file():
-        raise FileNotFoundError(
-            f"Prompt not provided and prompt file not found: {prompt_path}. Provide --prompt or --prompt-path."
-        )
-    template = prompt_path.read_text(encoding="utf-8")
+        template = default_extraction_prompt_template()
+    else:
+        template = prompt_path.read_text(encoding="utf-8")
     text = template.replace("{{PAGE_IMAGE}}", str(image_path))
     text = text.replace("{{IMAGE_NAME}}", image_path.name)
     return text

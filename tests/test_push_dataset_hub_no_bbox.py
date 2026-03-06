@@ -156,7 +156,7 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
                 "scale": 1000,
                 "value_type": "amount",
                 "refference": None,
-                "note": None,
+                "note_num": None,
             }
         ],
     }
@@ -196,8 +196,8 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
     assert fact["value_type"] == "amount"
     assert "refference" in fact
     assert fact["refference"] is None
-    assert "note" in fact
-    assert fact["note"] is None
+    assert "note_num" in fact
+    assert fact["note_num"] is None
 
 
 def test_export_for_hf_no_bbox_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -> None:

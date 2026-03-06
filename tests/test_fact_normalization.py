@@ -26,16 +26,19 @@ def test_normalize_fact_payload_maps_legacy_keys_to_canonical() -> None:
     assert warnings == []
     assert normalized["value"] == "1234"
     assert normalized["comment"] == "*free text"
-    assert normalized["is_note"] is False
-    assert normalized["note"] == "19"
+    assert normalized["note_flag"] is False
+    assert normalized["note_num"] == 19
     assert normalized["note_reference"] == "2ה׳"
 
 
-def test_normalize_date_accepts_year_and_converts_dmy() -> None:
+def test_normalize_date_accepts_year_year_month_and_converts_dmy() -> None:
     year_value, year_warnings = normalize_date("2022")
+    year_month_value, year_month_warnings = normalize_date("2024-09")
     dmy_value, dmy_warnings = normalize_date("11.2.2021")
     assert year_value == "2022"
     assert year_warnings == []
+    assert year_month_value == "2024-09"
+    assert year_month_warnings == []
     assert dmy_value == "2021-02-11"
     assert dmy_warnings == []
 
@@ -134,8 +137,8 @@ def test_normalize_annotation_payload_reports_issues() -> None:
     }
     normalized, findings = normalize_annotation_payload(payload)
     assert normalized["pages"][0]["facts"][0]["comment"] == "legacy free text"
-    assert normalized["pages"][0]["facts"][0]["note"] == "7"
-    assert normalized["pages"][0]["facts"][0]["is_note"] is False
+    assert normalized["pages"][0]["facts"][0]["note_num"] == 7
+    assert normalized["pages"][0]["facts"][0]["note_flag"] is False
     assert normalized["pages"][0]["facts"][0]["date"] == "2024-12-31"
     assert normalized["pages"][0]["facts"][0]["value"] == "(123)"
     assert findings

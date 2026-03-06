@@ -90,13 +90,13 @@ def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: 
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
-                    {
-                        "type": "text",
-                        "text": "Use keys comment, is_note, note, note_reference and return strict JSON.",
-                    },
-                ],
-            },
+                        {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
+                        {
+                            "type": "text",
+                            "text": "Use keys comment, note_flag, note_name, note_num, note_reference and return strict JSON.",
+                        },
+                    ],
+                },
             {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
         ]
     }
@@ -281,7 +281,7 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
                 "scale": 1000,
                 "value_type": "amount",
                 "refference": None,
-                "note": None,
+                "note_num": None,
             }
         ],
     }
@@ -324,8 +324,8 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
     assert fact["value_type"] == "amount"
     assert "refference" in fact
     assert fact["refference"] is None
-    assert "note" in fact
-    assert fact["note"] is None
+    assert "note_num" in fact
+    assert fact["note_num"] is None
 
 
 def test_export_for_hf_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -> None:

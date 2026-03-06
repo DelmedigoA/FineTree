@@ -171,7 +171,7 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
     QLabel#annotatorTitle {{
         color: {tokens['text']};
         font-family: {tokens['font_heading']};
-        font-size: 17pt;
+        font-size: 13pt;
         font-weight: 700;
         background: transparent;
     }}
@@ -188,9 +188,9 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
         color: {tokens['text_soft']};
         background: transparent;
         font-family: {tokens['font_heading']};
-        font-size: 7.6pt;
+        font-size: 7pt;
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.05em;
     }}
     QLabel#inspectorFieldLabel,
     QLabel#inspectorFieldLabelRequired,
@@ -264,12 +264,12 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
         background: {tokens['surface_raised']};
         color: {tokens['text']};
         border: 1px solid {tokens['surface_border']};
-        border-radius: 10px;
-        min-height: 30px;
-        max-height: 32px;
-        padding: 4px 10px;
+        border-radius: 8px;
+        min-height: 18px;
+        max-height: 20px;
+        padding: 0 7px;
         font-family: {tokens['font_heading']};
-        font-size: 9.5pt;
+        font-size: 8.5pt;
         font-weight: 600;
     }}
     QPushButton#shellChromeBtn:hover {{
@@ -321,13 +321,13 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
     QFrame#toolbarStrip {{
         background: {tokens['surface_raised']};
         border: 1px solid {tokens['surface_border']};
-        border-radius: 16px;
+        border-radius: 12px;
     }}
     QFrame#toolbarDivider {{
         background: {tokens['surface_border']};
         min-width: 1px;
         max-width: 1px;
-        margin: 6px 2px;
+        margin: 2px 2px;
     }}
     QGroupBox#inspectorSection {{
         background: {tokens['surface_raised']};
@@ -485,10 +485,10 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
         border-color: {tokens['danger']};
     }}
     QPushButton#toolbarActionBtn {{
-        min-height: 32px;
-        padding: 0 9px;
-        border-radius: 10px;
-        font-size: 9pt;
+        min-height: 24px;
+        padding: 0 7px;
+        border-radius: 8px;
+        font-size: 8pt;
     }}
     QPushButton#smallActionBtn {{
         min-height: 32px;

@@ -207,7 +207,7 @@ def test_build_document_summary_keeps_review_for_warning_only_issue(tmp_path: Pa
                     {
                         "image": "page_0001.png",
                         "meta": {"type": "notes"},
-                        "facts": [{"bbox": [1, 2, 3, 4], "value": "10", "is_note": False, "path": []}],
+                        "facts": [{"bbox": [1, 2, 3, 4], "value": "10", "note_flag": False, "path": []}],
                     }
                 ]
             }
@@ -239,7 +239,7 @@ def test_build_document_summary_blocks_review_for_real_reg_flags(tmp_path: Path)
                     {
                         "image": "page_0001.png",
                         "meta": {"type": "other"},
-                        "facts": [{"bbox": [1, 2, 3, 4], "value": "", "is_note": False, "path": []}],
+                        "facts": [{"bbox": [1, 2, 3, 4], "value": "", "note_flag": False, "path": []}],
                     }
                 ]
             }
