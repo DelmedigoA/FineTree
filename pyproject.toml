@@ -34,8 +34,11 @@ train = [
 ]
 
 [project.scripts]
-finetree-annotator = "finetree_annotator.app:main"
-finetreeannotator = "finetree_annotator.app:main"
+finetree-annotator = "finetree_annotator.web.main:main"
+finetreeannotator = "finetree_annotator.web.main:main"
+finetree-annotator-qt = "finetree_annotator.app:main"
+finetreeannotator-qt = "finetree_annotator.app:main"
+finetree-annotator-web = "finetree_annotator.web.main:main"
 finetree-pdf-to-images = "finetree_annotator.pdf_to_images:main"
 finetree-gemini-vlm = "finetree_annotator.gemini_vlm:main"
 finetree-qwen-gt = "finetree_annotator.qwen_vlm:main"

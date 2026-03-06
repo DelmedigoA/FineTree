@@ -1,13 +1,12 @@
 # FineTree
 
-## PDF Annotator (PyQt5)
+## PDF Annotator (Web)
 
-This repo now includes a simple local annotation app:
+The primary annotation UI is now a web application:
 
-- Draw bounding boxes over page images.
-- Double-click inside a box to edit full `Fact` fields.
-- Duplicate selected boxes to avoid retyping repeated facts.
-- Fill per-page metadata (`PageMeta`) on the right panel.
+- React frontend for the annotation workspace.
+- FastAPI backend that reuses the existing Python annotation, validation, import, workspace, and extraction logic.
+- The legacy PyQt5 annotator is still available under the `finetree-annotator-qt` entrypoint.
 
 ### Install
 
@@ -32,35 +31,55 @@ python -m pip install -e . --no-build-isolation
 
 ### Run
 
-Primary (PDF-first) flow:
+Primary web flow:
 
 ```bash
+python -m pip install -e .
+cd frontend && npm install && npm run build
+cd ..
 finetreeannotator path/to/doc.pdf
 ```
 
-This creates/uses sibling artifacts:
+This starts the Python API on `http://127.0.0.1:8000`, imports the PDF into the managed workspace, and sets it as the startup document for the web annotator.
+Open `http://127.0.0.1:8000` in your browser to continue annotating.
 
-- `path/to/doc_images/page_0001.png`, ...
-- `path/to/doc.json`
+If you already built the frontend with `npm run build`, FastAPI serves it directly from `frontend/dist`.
 
-If images already exist, they are reused. If some pages are missing, only missing pages are extracted.
-
-Legacy image-directory flow:
+For local frontend development:
 
 ```bash
-finetree-annotator --images-dir data/pdf_images/test
+# terminal 1
+finetreeannotator --reload --data-root data
+
+# terminal 2
+cd frontend
+npm run dev
 ```
 
-Alternative module form:
+The Vite app runs on `http://127.0.0.1:5173` and proxies `/api` to the backend.
+
+Legacy desktop flow:
+
+```bash
+finetree-annotator-qt path/to/doc.pdf
+```
+
+Legacy PyQt5 image-directory flow:
+
+```bash
+finetree-annotator-qt --images-dir data/pdf_images/test
+```
+
+Alternative module form (web server):
 
 ```bash
 python -m finetree_annotator --images-dir data/pdf_images/test
 ```
 
-Optional output path:
+Legacy optional output path:
 
 ```bash
-finetree-annotator --images-dir data/pdf_images/test --annotations data/annotations/test.json
+finetree-annotator-qt --images-dir data/pdf_images/test --annotations data/annotations/test.json
 ```
 
 ### Source layout
