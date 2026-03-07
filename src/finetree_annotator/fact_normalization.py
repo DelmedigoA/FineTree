@@ -9,6 +9,7 @@ from typing import Any, Mapping
 from .date_normalization import normalize_date
 from .schema_contract import CANONICAL_FACT_KEYS as _CANONICAL_FACT_KEY_TUPLE
 from .schema_contract import CURRENCY_VALUES, LEGACY_FACT_KEYS as _LEGACY_FACT_KEY_TUPLE, SCALE_VALUES, VALUE_TYPE_VALUES
+from .schemas import is_legacy_page_type_value, split_legacy_page_type
 
 CANONICAL_FACT_KEYS = set(_CANONICAL_FACT_KEY_TUPLE)
 LEGACY_FACT_KEYS = set(_LEGACY_FACT_KEY_TUPLE)
@@ -19,6 +20,8 @@ _VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
 _NUMERIC_OR_PAREN_RE = re.compile(r"^\(?\d+(?:\.\d+)?\)?$")
 _NEGATIVE_RE = re.compile(r"^-(\d+(?:\.\d+)?)$")
 _RANGE_VALUE_RE = re.compile(r"^\d+\s*-\s*\d+$")
+_DATE_YMD_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_DATE_YEAR_RE = re.compile(r"^\d{4}$")
 _SINGLE_ALLOWED_DASH = "-"
 _EMPTY_DASH_PLACEHOLDERS = {"—", "–"}
 _CURRENCY_SIGNS_RE = re.compile(r"[$₪€£]")
@@ -71,10 +74,61 @@ def _normalize_value_type(value: Any) -> str | None:
         return None
     lowered = text.lower()
     if lowered in {"%", "percent", "percentage"}:
-        return "%"
+        return "percent"
     if lowered in {"amount", "regular"}:
         return "amount"
+    if lowered in {"ratio", "count"}:
+        return lowered
     return text if text in _VALID_VALUE_TYPES else None
+
+
+def _normalize_period_type(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered in {"instant", "duration"} else None
+
+
+def _normalize_day_date(value: Any) -> str | None:
+    normalized, warnings = normalize_date(value)
+    if warnings or normalized is None or len(normalized) != 10:
+        return None
+    return normalized
+
+
+def _infer_period_from_date(
+    date_value: str | None,
+    *,
+    period_type: str | None,
+) -> tuple[str | None, str | None, str | None]:
+    if not date_value:
+        return None, None, None
+
+    if period_type == "duration":
+        if _DATE_YEAR_RE.fullmatch(date_value) or _DATE_YMD_RE.fullmatch(date_value):
+            year = date_value[:4]
+            return "duration", f"{year}-01-01", f"{year}-12-31"
+        return None, None, None
+
+    if period_type == "instant":
+        if _DATE_YMD_RE.fullmatch(date_value):
+            return "instant", None, date_value
+        return None, None, None
+
+    if _DATE_YMD_RE.fullmatch(date_value):
+        return "instant", None, date_value
+    if _DATE_YEAR_RE.fullmatch(date_value):
+        return "duration", f"{date_value}-01-01", f"{date_value}-12-31"
+    return None, None, None
+
+
+def _normalize_path_source(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered in {"observed", "inferred"} else None
 
 
 def normalize_note_num(raw_note_num: Any) -> tuple[int | None, list[str]]:
@@ -152,7 +206,22 @@ def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
 def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
     return any(
         key in raw_fact
-        for key in ("ref_comment", "comment", "note_flag", "is_note", "note_name", "ref_note", "note_ref", "note_reference", "note_num")
+        for key in (
+            "comment_ref",
+            "ref_comment",
+            "comment",
+            "note_flag",
+            "is_note",
+            "note_name",
+            "note_ref",
+            "ref_note",
+            "note_reference",
+            "note_num",
+            "period_type",
+            "period_start",
+            "period_end",
+            "path_source",
+        )
     )
 
 
@@ -170,7 +239,9 @@ def normalize_fact_payload(
     has_legacy = _has_legacy_markers(payload)
 
     if has_canonical:
-        comment_raw = payload.get("ref_comment")
+        comment_raw = payload.get("comment_ref")
+        if comment_raw in ("", None):
+            comment_raw = payload.get("ref_comment")
         if comment_raw in ("", None):
             comment_raw = payload.get("comment")
         if comment_raw in ("", None) and has_legacy:
@@ -184,22 +255,24 @@ def normalize_fact_payload(
         note_name_raw = payload.get("beur_name")
         note_num_raw = payload.get("beur_num", payload.get("beur_number"))
 
-    ref_note_raw = payload.get("ref_note")
+    ref_note_raw = payload.get("note_ref")
     if ref_note_raw in ("", None):
-        ref_note_raw = payload.get("note_ref", payload.get("note_reference"))
+        ref_note_raw = payload.get("ref_note")
+    if ref_note_raw in ("", None):
+        ref_note_raw = payload.get("note_reference")
     if ref_note_raw in ("", None):
         ref_note_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
-    ref_note = _to_optional_text(ref_note_raw)
+    note_ref = _to_optional_text(ref_note_raw)
 
     normalized_value_type = _normalize_value_type(payload.get("value_type"))
     raw_value_text = str(payload.get("value") or "").strip()
     value_input: Any = payload.get("value")
     keep_percent_range_value = bool(
-        raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type == "%"
+        raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type == "percent"
     )
-    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type != "%":
-        if not ref_note:
-            ref_note = raw_value_text.replace(" ", "")
+    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type != "percent":
+        if not note_ref:
+            note_ref = raw_value_text.replace(" ", "")
         value_input = ""
 
     note_flag_raw = payload.get("note_flag", payload.get("is_note"))
@@ -214,15 +287,30 @@ def normalize_fact_payload(
         value, value_warnings = normalize_value(value_input)
     date_value, date_warnings = normalize_date(payload.get("date"))
 
+    period_type = _normalize_period_type(payload.get("period_type"))
+    period_start = _normalize_day_date(payload.get("period_start"))
+    period_end = _normalize_day_date(payload.get("period_end"))
+    inferred_type, inferred_start, inferred_end = _infer_period_from_date(date_value, period_type=period_type)
+    if period_type is None and inferred_type is not None:
+        period_type = inferred_type
+    if period_start is None and inferred_start is not None:
+        period_start = inferred_start
+    if period_end is None and inferred_end is not None:
+        period_end = inferred_end
+
     normalized: dict[str, Any] = {
         "value": value,
-        "ref_comment": _to_optional_text(comment_raw),
+        "comment_ref": _to_optional_text(comment_raw),
         "note_flag": note_flag,
         "note_name": _to_optional_text(note_name_raw),
         "note_num": note_num,
-        "ref_note": ref_note,
+        "note_ref": note_ref,
         "date": date_value,
+        "period_type": period_type,
+        "period_start": period_start,
+        "period_end": period_end,
         "path": _normalize_path(payload.get("path")),
+        "path_source": _normalize_path_source(payload.get("path_source")),
         "currency": _normalize_currency(payload.get("currency")),
         "scale": _normalize_scale(payload.get("scale")),
         "value_type": normalized_value_type,
@@ -254,6 +342,10 @@ def normalize_annotation_payload(payload: Any) -> tuple[dict[str, Any], list[dic
         return {}, []
 
     out = dict(payload)
+    raw_metadata = out.get("metadata", out.get("document_meta"))
+    if isinstance(raw_metadata, dict):
+        out["metadata"] = dict(raw_metadata)
+    out.pop("document_meta", None)
     findings: list[dict[str, Any]] = []
     pages = out.get("pages")
     if isinstance(pages, list):
@@ -262,6 +354,23 @@ def normalize_annotation_payload(payload: Any) -> tuple[dict[str, Any], list[dic
             if not isinstance(page, dict):
                 continue
             page_out = dict(page)
+            meta = page_out.get("meta")
+            if isinstance(meta, dict):
+                normalized_meta = dict(meta)
+                legacy_type = meta.get("type")
+                if is_legacy_page_type_value(legacy_type):
+                    page_type, statement_type = split_legacy_page_type(legacy_type)
+                    if "page_type" not in normalized_meta or not str(normalized_meta.get("page_type") or "").strip():
+                        normalized_meta["page_type"] = page_type
+                    if "statement_type" not in normalized_meta and statement_type is not None:
+                        normalized_meta["statement_type"] = statement_type
+                elif (
+                    "page_type" not in normalized_meta or not str(normalized_meta.get("page_type") or "").strip()
+                ) and legacy_type not in ("", None):
+                    normalized_meta["page_type"] = legacy_type
+                normalized_meta.pop("type", None)
+                page_out["meta"] = normalized_meta
+
             facts = page.get("facts")
             if not isinstance(facts, list):
                 new_pages.append(page_out)

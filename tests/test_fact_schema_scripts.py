@@ -73,10 +73,10 @@ def test_fix_fact_schema_format_script_rewrites_with_backup(tmp_path: Path) -> N
     fixed = json.loads(src_path.read_text(encoding="utf-8"))
     fact = fixed["pages"][0]["facts"][0]
     assert fact["value"] == "(123)"
-    assert fact["ref_comment"] == "free text"
+    assert fact["comment_ref"] == "free text"
     assert fact["note_flag"] is False
     assert fact["note_num"] == 9
-    assert fact["ref_note"] == "2ה׳"
+    assert fact["note_ref"] == "2ה׳"
     assert fact["date"] == "2024-12-31"
 
     manifest = tmp_path / "data" / "annotations" / "_backup" / "manifest.jsonl"

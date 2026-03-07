@@ -11,8 +11,9 @@ from typing import Any, Dict, Iterable, List
 from ..annotation_core import bbox_to_list
 from ..fact_normalization import assert_fact_format
 from ..fact_normalization import normalize_fact_payload
-from ..fact_ordering import reorder_facts, resolve_reading_direction
+from ..fact_ordering import normalize_document_meta, reorder_facts, resolve_reading_direction
 from ..schema_contract import default_extraction_prompt_template
+from ..schemas import PageMeta
 from .config import FinetuneConfig, load_finetune_config
 
 
@@ -106,8 +107,10 @@ def _resolve_page_image_path(
 
 def _transform_page_for_target(
     cfg: FinetuneConfig,
-    page: Dict[str, Any],
     *,
+    images_dir: str,
+    metadata: dict[str, Any],
+    page: Dict[str, Any],
     direction: str,
 ) -> Dict[str, Any]:
     facts = page.get("facts") if isinstance(page.get("facts"), list) else []
@@ -134,9 +137,19 @@ def _transform_page_for_target(
             item["bbox"] = bbox_to_list(item.get("bbox"))
         out_facts.append(item)
 
+    page_meta = PageMeta.model_validate(page.get("meta") if isinstance(page.get("meta"), dict) else {}).model_dump(
+        mode="json"
+    )
     return {
-        "meta": page.get("meta") if isinstance(page.get("meta"), dict) else {},
-        "facts": out_facts,
+        "images_dir": images_dir or None,
+        "metadata": dict(metadata),
+        "pages": [
+            {
+                "image": str(page.get("image") or "").strip() or None,
+                "meta": page_meta,
+                "facts": out_facts,
+            }
+        ],
     }
 
 
@@ -178,12 +191,14 @@ def build_unsloth_chat_datasets(
             out_f = val_f if is_val_doc else train_f
 
             payload = json.loads(annotation_path.read_text(encoding="utf-8"))
+            metadata = normalize_document_meta(payload.get("metadata", payload.get("document_meta")))
             direction_info = resolve_reading_direction(
-                payload.get("document_meta") if isinstance(payload, dict) else None,
+                metadata if isinstance(payload, dict) else None,
                 payload=payload,
                 default_direction=cfg.data.fact_order_default_on_uncertain,
             )
             direction = str(direction_info["direction"])
+            images_dir = str(payload.get("images_dir") or "").strip()
             pages = payload.get("pages") if isinstance(payload.get("pages"), list) else []
             for page in pages:
                 if not isinstance(page, dict):
@@ -209,7 +224,9 @@ def build_unsloth_chat_datasets(
 
                 target_obj = _transform_page_for_target(
                     cfg,
-                    page,
+                    images_dir=images_dir,
+                    metadata=metadata,
+                    page=page,
                     direction=direction,
                 )
                 assistant_text = json.dumps(target_obj, ensure_ascii=False)

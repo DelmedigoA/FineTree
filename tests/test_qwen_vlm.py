@@ -158,7 +158,8 @@ def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> 
     monkeypatch.setattr(qwen_vlm, "generate_content_from_image", lambda **_: payload)
     extraction = qwen_vlm.generate_page_extraction_from_image(image_path=image_path, prompt="p")
 
-    assert extraction.meta.type.value == "notes"
+    assert extraction.meta.page_type.value == "statements"
+    assert extraction.meta.statement_type.value == "notes_to_financial_statements"
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
     assert extraction.facts[0].ref_comment == "*without debt insurance"

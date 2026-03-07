@@ -25,10 +25,10 @@ def test_normalize_fact_payload_maps_legacy_keys_to_canonical() -> None:
     )
     assert warnings == []
     assert normalized["value"] == "1234"
-    assert normalized["ref_comment"] == "*free text"
+    assert normalized["comment_ref"] == "*free text"
     assert normalized["note_flag"] is False
     assert normalized["note_num"] == 19
-    assert normalized["ref_note"] == "2ה׳"
+    assert normalized["note_ref"] == "2ה׳"
 
 
 def test_normalize_date_accepts_year_year_month_and_converts_dmy() -> None:
@@ -83,7 +83,7 @@ def test_normalize_fact_payload_moves_range_value_to_note_reference() -> None:
         }
     )
     assert normalized["value"] == ""
-    assert normalized["ref_note"] == "7-15"
+    assert normalized["note_ref"] == "7-15"
     assert warnings == []
 
 
@@ -97,8 +97,8 @@ def test_normalize_fact_payload_keeps_range_value_for_percent_type() -> None:
         }
     )
     assert normalized["value"] == "7-15"
-    assert normalized["ref_note"] is None
-    assert normalized["value_type"] == "%"
+    assert normalized["note_ref"] is None
+    assert normalized["value_type"] == "percent"
     assert warnings == []
 
 
@@ -110,7 +110,7 @@ def test_normalize_fact_payload_coerces_empty_note_reference_to_null() -> None:
             "path": [],
         }
     )
-    assert normalized["ref_note"] is None
+    assert normalized["note_ref"] is None
     assert warnings == []
 
 
@@ -136,7 +136,7 @@ def test_normalize_annotation_payload_reports_issues() -> None:
         ]
     }
     normalized, findings = normalize_annotation_payload(payload)
-    assert normalized["pages"][0]["facts"][0]["ref_comment"] == "legacy free text"
+    assert normalized["pages"][0]["facts"][0]["comment_ref"] == "legacy free text"
     assert normalized["pages"][0]["facts"][0]["note_num"] == 7
     assert normalized["pages"][0]["facts"][0]["note_flag"] is False
     assert normalized["pages"][0]["facts"][0]["date"] == "2024-12-31"

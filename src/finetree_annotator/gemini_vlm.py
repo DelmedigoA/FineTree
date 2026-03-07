@@ -21,9 +21,10 @@ except Exception:  # pragma: no cover
     genai = None
     types = None
 
-from .fact_normalization import normalize_note_num
-from .schema_contract import CURRENCY_VALUES, PAGE_TYPE_VALUES, SCALE_VALUES, VALUE_TYPE_VALUES
-from .schemas import PageExtraction
+from .fact_normalization import normalize_fact_payload, normalize_note_num
+from .fact_ordering import normalize_document_meta
+from .schema_contract import CURRENCY_VALUES, PAGE_TYPE_VALUES, SCALE_VALUES, STATEMENT_TYPE_VALUES, VALUE_TYPE_VALUES
+from .schemas import PageExtraction, split_legacy_page_type
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -51,6 +52,7 @@ _ALLOWED_RESPONSE_JSON_SCHEMA_KEYS = {
     "propertyOrdering",
 }
 _VALID_PAGE_TYPES = set(PAGE_TYPE_VALUES)
+_VALID_STATEMENT_TYPES = set(STATEMENT_TYPE_VALUES)
 _VALID_CURRENCIES = set(CURRENCY_VALUES)
 _VALID_SCALES = set(SCALE_VALUES)
 _VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
@@ -488,25 +490,47 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError("Expected JSON object for extraction payload.")
 
+    images_dir = _to_optional_str(payload.get("images_dir"))
+    metadata = normalize_document_meta(payload.get("metadata", payload.get("document_meta")))
+
+    page_in = payload
     if isinstance(payload.get("pages"), list) and payload["pages"]:
         first_page = next((p for p in payload["pages"] if isinstance(p, dict)), None)
         if first_page is not None:
-            payload = first_page
+            page_in = first_page
 
-    meta_in = payload.get("meta")
+    meta_in = page_in.get("meta")
     if not isinstance(meta_in, dict):
         meta_in = {}
-    page_type = str(meta_in.get("type") or meta_in.get("page_type") or "other").strip() or "other"
+
+    raw_page_type = meta_in.get("page_type")
+    raw_statement_type = meta_in.get("statement_type")
+    legacy_type = meta_in.get("type")
+    if raw_page_type in ("", None) and raw_statement_type in ("", None):
+        page_type, statement_type = split_legacy_page_type(legacy_type)
+    else:
+        page_type = _to_optional_str(raw_page_type) or "statements"
+        statement_type = _to_optional_str(raw_statement_type)
+        if page_type not in _VALID_PAGE_TYPES:
+            page_type, inferred_statement_type = split_legacy_page_type(page_type)
+            if statement_type is None:
+                statement_type = inferred_statement_type
+        if statement_type is not None:
+            statement_type = statement_type.strip()
+        if statement_type not in _VALID_STATEMENT_TYPES:
+            statement_type = None
+
     if page_type not in _VALID_PAGE_TYPES:
         page_type = "other"
     meta_out = {
         "entity_name": _to_optional_str(meta_in.get("entity_name") or meta_in.get("entity")),
         "page_num": _to_optional_str(meta_in.get("page_num")),
-        "type": page_type,
+        "page_type": page_type,
+        "statement_type": statement_type,
         "title": _to_optional_str(meta_in.get("title")),
     }
 
-    facts_in = payload.get("facts")
+    facts_in = page_in.get("facts")
     if not isinstance(facts_in, list):
         facts_in = []
     facts_out: list[dict[str, Any]] = []
@@ -520,97 +544,22 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
         if bbox is None or value is None:
             continue
 
-        raw_path = raw_fact.get("path")
-        if isinstance(raw_path, str):
-            path = [raw_path.strip()] if raw_path.strip() else []
-        elif isinstance(raw_path, list):
-            path = [str(p).strip() for p in raw_path if str(p).strip()]
-        else:
-            path = []
+        normalized_fact, _warnings = normalize_fact_payload({**raw_fact, "bbox": bbox, "value": str(value)}, include_bbox=True)
+        if normalized_fact.get("bbox") is None:
+            continue
+        facts_out.append(normalized_fact)
 
-        currency = _to_optional_str(raw_fact.get("currency"))
-        if currency is not None:
-            currency = currency.upper()
-            if currency not in _VALID_CURRENCIES:
-                currency = None
-
-        scale_value = raw_fact.get("scale")
-        try:
-            scale = int(scale_value) if scale_value is not None and str(scale_value).strip() else None
-        except Exception:
-            scale = None
-        if scale not in _VALID_SCALES:
-            scale = None
-
-        value_type_raw = _to_optional_str(raw_fact.get("value_type"))
-        if value_type_raw:
-            low = value_type_raw.lower()
-            if low in {"percent", "percentage", "%"}:
-                value_type = "%"
-            elif low in {"amount", "regular"}:
-                value_type = "amount"
-            else:
-                value_type = value_type_raw
-        else:
-            value_type = None
-        if value_type not in _VALID_VALUE_TYPES:
-            value_type = None
-
-        has_canonical_fact_keys = any(
-            key in raw_fact
-            for key in ("ref_comment", "comment", "note_flag", "is_note", "note_name", "ref_note", "note_ref", "note_reference", "note_num")
-        )
-        ref_comment_source: Any = raw_fact.get("ref_comment")
-        if ref_comment_source in ("", None):
-            ref_comment_source = raw_fact.get("comment")
-        if ref_comment_source is None:
-            if has_canonical_fact_keys:
-                ref_comment_source = raw_fact.get("footnote")
-            else:
-                ref_comment_source = raw_fact.get("note", raw_fact.get("footnote"))
-        note_name_source = _to_optional_str(raw_fact.get("note_name", raw_fact.get("beur_name")))
-
-        note_num_source: Any
-        if has_canonical_fact_keys:
-            note_num_source = raw_fact.get("note_num", raw_fact.get("note", raw_fact.get("beur_num", raw_fact.get("beur_number"))))
-        else:
-            note_num_source = raw_fact.get("beur_num", raw_fact.get("beur_number"))
-
-        is_note_value = _to_optional_bool(raw_fact.get("note_flag", raw_fact.get("is_note")))
-        if is_note_value is None:
-            is_note_value = _to_optional_bool(raw_fact.get("is_beur", raw_fact.get("beur")))
-
-        normalized_note_num, _note_num_warnings = normalize_note_num(note_num_source)
-
-        facts_out.append(
+    return {
+        "images_dir": images_dir,
+        "metadata": metadata,
+        "pages": [
             {
-                "bbox": bbox,
-                "value": str(value),
-                "ref_comment": _to_optional_str(ref_comment_source),
-                "note_name": note_name_source,
-                "note_flag": bool(is_note_value) if is_note_value is not None else False,
-                "note_num": normalized_note_num,
-                "ref_note": _to_optional_str(
-                    raw_fact.get(
-                        "ref_note",
-                        raw_fact.get(
-                            "note_ref",
-                            raw_fact.get(
-                                "note_reference",
-                                raw_fact.get("refference", raw_fact.get("reference", raw_fact.get("ref"))),
-                            ),
-                        ),
-                    )
-                ),
-                "date": _to_optional_str(raw_fact.get("date")),
-                "path": path,
-                "currency": currency,
-                "scale": scale,
-                "value_type": value_type,
+                "image": _to_optional_str(page_in.get("image", payload.get("image"))),
+                "meta": meta_out,
+                "facts": facts_out,
             }
-        )
-
-    return {"meta": meta_out, "facts": facts_out}
+        ],
+    }
 
 
 class StreamingPageExtractionParser:
@@ -649,9 +598,10 @@ class StreamingPageExtractionParser:
             try:
                 parsed_meta = _parse_llm_json(obj)
                 normalized = _normalize_page_extraction_payload({"meta": parsed_meta, "facts": []})
-                self._latest_meta = normalized["meta"]
+                first_page = normalized["pages"][0]
+                self._latest_meta = first_page["meta"]
                 self._meta_emitted = True
-                return normalized["meta"]
+                return first_page["meta"]
             except Exception:
                 continue
         return None
@@ -698,9 +648,10 @@ class StreamingPageExtractionParser:
             try:
                 parsed_fact = _parse_llm_json(obj)
                 normalized = _normalize_page_extraction_payload({"meta": {}, "facts": [parsed_fact]})
-                if normalized["facts"]:
-                    out.append(normalized["facts"][0])
-                    self._all_facts.append(normalized["facts"][0])
+                page_facts = normalized["pages"][0]["facts"]
+                if page_facts:
+                    out.append(page_facts[0])
+                    self._all_facts.append(page_facts[0])
             except Exception:
                 pass
             pos += len(obj)
@@ -718,7 +669,13 @@ class StreamingPageExtractionParser:
                 raise
             fallback_payload = {
                 "meta": self._latest_meta
-                or {"entity_name": None, "page_num": None, "type": "other", "title": None},
+                or {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
                 "facts": self._all_facts,
             }
             normalized = _normalize_page_extraction_payload(fallback_payload)

@@ -19,6 +19,7 @@ from .push_dataset_hub import (
     _compact_token_text_payload,
     _copy_or_resize_image,
     _dataset_for_push,
+    _iter_fact_dicts,
     _parse_excluded_doc_ids,
     _resolve_system_prompt,
     _resolve_resize_bounds,
@@ -30,8 +31,8 @@ from .push_dataset_hub import (
 
 InstructionMode = Literal["source", "minimal"]
 
-_NO_BBOX_FALLBACK_INSTRUCTION = "Extract page JSON using the FineTree schema. Do not include bbox fields."
-_MINIMAL_INSTRUCTION = "Extract metadata and financial facts from the provided image."
+_NO_BBOX_FALLBACK_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts. Do not include bbox fields."
+_MINIMAL_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts from the provided image."
 _BBOX_WORD_RE = re.compile(r"\bbbox\b", flags=re.IGNORECASE)
 
 
@@ -49,11 +50,8 @@ def _strip_bbox_from_text_payload(text: str) -> str:
         return text
 
     if isinstance(payload, dict):
-        facts = payload.get("facts")
-        if isinstance(facts, list):
-            for fact in facts:
-                if isinstance(fact, dict):
-                    fact.pop("bbox", None)
+        for fact in _iter_fact_dicts(payload):
+            fact.pop("bbox", None)
     return json.dumps(payload, ensure_ascii=False)
 
 

@@ -44,6 +44,34 @@ def _empty_dataset() -> DatasetDict:
     )
 
 
+def _wrapper_payload(
+    *,
+    image: str = "page_0001.png",
+    images_dir: str = "data/pdf_images/doc1",
+    metadata: dict[str, object] | None = None,
+    meta: dict[str, object] | None = None,
+    facts: list[dict[str, object]] | None = None,
+) -> dict[str, object]:
+    return {
+        "images_dir": images_dir,
+        "metadata": metadata or {},
+        "pages": [
+            {
+                "image": image,
+                "meta": meta
+                or {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                "facts": facts or [],
+            }
+        ],
+    }
+
+
 def test_export_for_hf_no_bbox_strips_bbox_and_sanitizes_source_instruction(tmp_path: Path) -> None:
     root = tmp_path
     img_dir = root / "data" / "pdf_images" / "doc1"
@@ -53,17 +81,16 @@ def test_export_for_hf_no_bbox_strips_bbox_and_sanitizes_source_instruction(tmp_
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    target_payload = {
-        "meta": {"type": "other"},
-        "facts": [
+    target_payload = _wrapper_payload(
+        facts=[
             {
                 "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
                 "value": "10",
-                "refference": "",
+                "note_ref": None,
                 "path": ["a"],
             }
-        ],
-    }
+        ]
+    )
     sample = {
         "messages": [
             {
@@ -100,7 +127,7 @@ def test_export_for_hf_no_bbox_strips_bbox_and_sanitizes_source_instruction(tmp_
     assert "Keep facts in order." in out["instruction"]
 
     output_payload = json.loads(out["text"])
-    assert "bbox" not in output_payload["facts"][0]
+    assert "bbox" not in output_payload["pages"][0]["facts"][0]
 
 
 def test_export_for_hf_no_bbox_minimal_instruction_is_fixed_line(tmp_path: Path) -> None:
@@ -121,7 +148,7 @@ def test_export_for_hf_no_bbox_minimal_instruction_is_fixed_line(tmp_path: Path)
                     {"type": "text", "text": "Any long instruction with bbox mentions and formatting."},
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ],
     }
     (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
@@ -145,9 +172,15 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {
-        "meta": {"entity_name": "X", "page_num": "8", "title": "T"},
-        "facts": [
+    payload = _wrapper_payload(
+        meta={
+            "entity_name": "X",
+            "page_num": "8",
+            "title": "T",
+            "page_type": "other",
+            "statement_type": None,
+        },
+        facts=[
             {
                 "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
                 "value": "9,876",
@@ -155,11 +188,11 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
                 "currency": "ILS",
                 "scale": 1000,
                 "value_type": "amount",
-                "refference": None,
+                "note_ref": None,
                 "note_num": None,
             }
         ],
-    }
+    )
     sample = {
         "messages": [
             {
@@ -185,17 +218,17 @@ def test_export_for_hf_no_bbox_compact_tokens_shortens_keys_and_keeps_nulls(tmp_
     assert ", " not in compact_text
 
     compact_payload = json.loads(compact_text)
-    assert "meta" in compact_payload
-    assert "facts" in compact_payload
-    fact = compact_payload["facts"][0]
+    assert "metadata" in compact_payload
+    assert "pages" in compact_payload
+    fact = compact_payload["pages"][0]["facts"][0]
     assert "bbox" not in fact
     assert fact["value"] == "9876"
     assert fact["date"] == "30.09.2021"
     assert fact["currency"] == "ILS"
     assert fact["scale"] == 1000
     assert fact["value_type"] == "amount"
-    assert "refference" in fact
-    assert fact["refference"] is None
+    assert "note_ref" in fact
+    assert fact["note_ref"] is None
     assert "note_num" in fact
     assert fact["note_num"] is None
 
@@ -209,7 +242,10 @@ def test_export_for_hf_no_bbox_aggressive_compact_tokens_shortens_keys(tmp_path:
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {"meta": {"entity_name": "X"}, "facts": [{"value": "9,876", "refference": None}]}
+    payload = _wrapper_payload(
+        meta={"entity_name": "X", "page_type": "other", "statement_type": None},
+        facts=[{"value": "9,876", "note_ref": None}],
+    )
     sample = {
         "messages": [
             {
@@ -236,12 +272,11 @@ def test_export_for_hf_no_bbox_aggressive_compact_tokens_shortens_keys(tmp_path:
     assert train_rows == 1
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     compact_payload = json.loads(out["text"])
-    assert "m" in compact_payload
-    assert "f" in compact_payload
-    fact = compact_payload["f"][0]
+    assert "pg" in compact_payload
+    fact = compact_payload["pg"][0]["f"][0]
     assert fact["v"] == "9876"
-    assert "ref" in fact
-    assert fact["ref"] is None
+    assert "nref" in fact
+    assert fact["nref"] is None
 
 
 def test_export_for_hf_no_bbox_can_resize_images(tmp_path: Path, monkeypatch) -> None:
@@ -264,7 +299,7 @@ def test_export_for_hf_no_bbox_can_resize_images(tmp_path: Path, monkeypatch) ->
                     {"type": "text", "text": "Prompt"},
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ],
     }
     (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
@@ -307,7 +342,10 @@ def test_export_for_hf_no_bbox_excludes_doc_ids(tmp_path: Path, monkeypatch) -> 
                             {"type": "text", "text": "Prompt"},
                         ],
                     },
-                    {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+                    {
+                        "role": "assistant",
+                        "content": [{"type": "text", "text": json.dumps(_wrapper_payload(images_dir=f"data/pdf_images/{doc_id}"))}],
+                    },
                 ]
             }
         )
@@ -339,7 +377,7 @@ def test_build_hf_dataset_no_bbox_from_export_has_instruction_column(tmp_path: P
         "image": "images/doc1/page_0001.png",
         "system": no_bbox_mod._DEFAULT_SYSTEM_PROMPT,
         "instruction": no_bbox_mod._MINIMAL_INSTRUCTION,
-        "text": '{"meta":{"type":"other"},"facts":[]}',
+        "text": json.dumps(_wrapper_payload()),
     }
     (export_dir / "train.jsonl").write_text(json.dumps(row) + "\n", encoding="utf-8")
     (export_dir / "val.jsonl").write_text("", encoding="utf-8")

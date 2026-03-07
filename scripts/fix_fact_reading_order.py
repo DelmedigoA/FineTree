@@ -53,7 +53,7 @@ def main(argv: list[str] | None = None) -> int:
             continue
 
         direction_info = resolve_reading_direction(
-            payload.get("document_meta"),
+            payload.get("metadata", payload.get("document_meta")),
             payload=payload,
             default_direction=args.default_direction,
         )

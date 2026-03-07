@@ -81,7 +81,8 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.facts_list.objectName() == "factsList"
     assert window.facts_list.maximumHeight() == 190
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
-    assert window.fact_editor_box.layout().count() == 7
+    assert window.fact_editor_box.layout().count() == 9
+    assert window.show_order_labels_check.isChecked() is False
     assert window.fact_is_beur_combo.maximumWidth() == 220
     assert window.facts_count_label.text() == "No facts"
     assert window.statusBar().isHidden()
@@ -329,13 +330,13 @@ def test_percent_range_value_stays_in_value_field(tmp_path: Path) -> None:
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "5", "ref_note": None, "value_type": "amount"})
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "5", "note_ref": None, "value_type": "amount"})
     window.scene.addItem(item)
     window.refresh_facts_list()
     item.setSelected(True)
     _qt_app().processEvents()
 
-    value_type_idx = window.fact_value_type_combo.findText("%")
+    value_type_idx = window.fact_value_type_combo.findText("percent")
     window.fact_value_type_combo.setCurrentIndex(value_type_idx)
     window._on_fact_editor_field_edited("value_type")
     window.fact_value_edit.setText("7-10")
@@ -343,8 +344,8 @@ def test_percent_range_value_stays_in_value_field(tmp_path: Path) -> None:
     window._on_fact_editor_field_edited("value")
 
     assert item.fact_data["value"] == "7-10"
-    assert item.fact_data["ref_note"] is None
-    assert item.fact_data["value_type"] == "%"
+    assert item.fact_data["note_ref"] is None
+    assert item.fact_data["value_type"] == "percent"
     window.close()
 
 
@@ -358,7 +359,8 @@ def test_page_issue_panel_updates_for_invalid_notes_page(tmp_path: Path) -> None
     window = AnnotationWindow(images_dir, annotations_path)
     item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "10", "note_flag": False})
     window.scene.addItem(item)
-    window.type_combo.setCurrentText("notes")
+    window.type_combo.setCurrentText("statements")
+    window.statement_type_combo.setCurrentText("notes_to_financial_statements")
     window._on_meta_edited()
     window.refresh_facts_list()
 

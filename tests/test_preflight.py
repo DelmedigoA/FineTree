@@ -13,7 +13,7 @@ def _write_annotation(path: Path, images_dir: Path, image_name: str, with_facts:
             {
                 "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
                 "value": "10",
-                "refference": "",
+                "note_ref": None,
                 "date": None,
                 "path": ["assets"],
                 "currency": "ILS",
@@ -26,10 +26,17 @@ def _write_annotation(path: Path, images_dir: Path, image_name: str, with_facts:
     )
     payload = {
         "images_dir": str(images_dir),
+        "metadata": {},
         "pages": [
             {
                 "image": image_name,
-                "meta": {"entity_name": "ACME", "page_num": "1", "type": "other", "title": None},
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
                 "facts": facts,
             }
         ],

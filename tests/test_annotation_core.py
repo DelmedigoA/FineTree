@@ -37,10 +37,10 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     )
 
     assert fact["value"] == "123"
-    assert fact["ref_comment"] == "*without debt insurance"
+    assert fact["comment_ref"] == "*without debt insurance"
     assert fact["note_flag"] is True
     assert fact["note_num"] is None
-    assert fact["ref_note"] == "ref-001"
+    assert fact["note_ref"] == "ref-001"
     assert fact["path"] == ["assets", "cash", "2024"]
     assert fact["currency"] == "ILS"
     assert fact["scale"] == 1000
@@ -100,15 +100,17 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
     assert set(states.keys()) == {"page_0001.png"}
     state = states["page_0001.png"]
     assert state.meta["entity_name"] == "Demo Co"
+    assert state.meta["page_type"] == "statements"
+    assert state.meta["statement_type"] == "notes_to_financial_statements"
     assert len(state.facts) == 2
     assert state.facts[0].fact["currency"] == "ILS"
-    assert state.facts[0].fact["ref_comment"] == "*estimated"
+    assert state.facts[0].fact["comment_ref"] == "*estimated"
     assert state.facts[0].fact["note_flag"] is True
     assert state.facts[0].fact["note_num"] == 5
-    assert state.facts[0].fact["ref_note"] == "A1"
+    assert state.facts[0].fact["note_ref"] == "A1"
     assert state.facts[0].fact["scale"] == 1000
     assert state.facts[1].bbox["w"] == 1.0
-    assert state.facts[1].fact["value_type"] == "%"
+    assert state.facts[1].fact["value_type"] == "percent"
 
 
 def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
@@ -140,14 +142,16 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     assert len(payload["pages"]) == 2
     page_1 = payload["pages"][0]
     page_2 = payload["pages"][1]
-    assert page_1["meta"]["type"] == "notes"
+    assert page_1["meta"]["page_type"] == "statements"
+    assert page_1["meta"]["statement_type"] == "notes_to_financial_statements"
     assert page_1["facts"][0]["currency"] == "USD"
-    assert page_1["facts"][0]["ref_comment"] == "*estimated"
+    assert page_1["facts"][0]["comment_ref"] == "*estimated"
     assert page_1["facts"][0]["note_flag"] is True
     assert page_1["facts"][0]["note_num"] == 5
-    assert page_1["facts"][0]["ref_note"] == "row-12"
+    assert page_1["facts"][0]["note_ref"] == "row-12"
     assert page_1["facts"][0]["bbox"] == [10.0, 20.0, 30.0, 40.0]
-    assert page_2["meta"]["type"] == "other"
+    assert page_2["meta"]["page_type"] == "other"
+    assert page_2["meta"]["statement_type"] is None
     assert page_2["meta"]["page_num"] is None
     assert page_2["facts"] == []
 
@@ -156,7 +160,7 @@ def test_build_annotations_payload_raises_on_invalid_schema_values() -> None:
     page_images = [Path("page_0001.png")]
     page_states = {
         "page_0001.png": PageState(
-            meta={"type": "not-a-real-page-type"},
+            meta={"page_type": "not-a-real-page-type"},
             facts=[
                 BoxRecord(
                     bbox={"x": 0, "y": 0, "w": 10, "h": 10},
@@ -180,7 +184,8 @@ def test_build_annotations_payload_accepts_activities_page_type() -> None:
     }
 
     payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
-    assert payload["pages"][0]["meta"]["type"] == "activities"
+    assert payload["pages"][0]["meta"]["page_type"] == "statements"
+    assert payload["pages"][0]["meta"]["statement_type"] == "statement_of_activities"
 
 
 def test_build_annotations_payload_normalizes_currency_outside_allowed_list_to_none() -> None:
@@ -241,8 +246,9 @@ def test_parse_import_payload_supports_single_page_shape_without_image() -> None
     }
     states = parse_import_payload(payload, ["page_0001.png", "page_0002.png"], "page_0002.png")
     assert set(states.keys()) == {"page_0002.png"}
-    assert states["page_0002.png"].meta["type"] == "profits"
-    assert states["page_0002.png"].facts[0].fact["ref_note"] == "5"
+    assert states["page_0002.png"].meta["page_type"] == "statements"
+    assert states["page_0002.png"].meta["statement_type"] == "income_statement"
+    assert states["page_0002.png"].facts[0].fact["note_ref"] == "5"
 
 
 def test_parse_import_payload_supports_full_document_shape() -> None:
@@ -262,7 +268,8 @@ def test_parse_import_payload_supports_full_document_shape() -> None:
     }
     states = parse_import_payload(payload, ["page_0001.png"], "page_0001.png")
     assert set(states.keys()) == {"page_0001.png"}
-    assert states["page_0001.png"].meta["type"] == "notes"
+    assert states["page_0001.png"].meta["page_type"] == "statements"
+    assert states["page_0001.png"].meta["statement_type"] == "notes_to_financial_statements"
 
 
 def test_extract_document_meta_normalizes_supported_values() -> None:
@@ -274,6 +281,7 @@ def test_extract_document_meta_normalizes_supported_values() -> None:
         "company_name": None,
         "company_id": "1234",
         "report_year": 2024,
+        "entity_type": None,
     }
 
 
@@ -291,7 +299,7 @@ def test_build_annotations_payload_includes_document_meta_when_present() -> None
         page_states,
         document_meta={"language": "en", "reading_direction": "ltr", "company_id": "cmp-7", "report_year": 2025},
     )
-    assert payload["document_meta"] == {
+    assert payload["metadata"] == {
         "language": "en",
         "reading_direction": "ltr",
         "company_id": "cmp-7",

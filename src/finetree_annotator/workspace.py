@@ -11,6 +11,7 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 
 from .annotation_core import PageState, bbox_to_list, default_page_meta, load_page_states, normalize_fact_data
 from .page_issues import validate_document_issues
+from .schemas import split_legacy_page_type
 
 IMAGE_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp")
 DEFAULT_DATA_ROOT = Path("data")
@@ -289,10 +290,13 @@ def page_has_annotation(state: PageState, index: int) -> bool:
     elif page_num not in (None, "", [], {}):
         return True
 
-    page_type = str(meta.get("type") or "").strip()
-    default_type = str(defaults.get("type") or "").strip()
-    if page_type and page_type != default_type:
-        return True
+    page_type = str(meta.get("page_type") or "").strip()
+    default_type = str(defaults.get("page_type", defaults.get("type")) or "").strip()
+    legacy_type = str(meta.get("type") or "").strip()
+    if legacy_type:
+        legacy_page_type, legacy_statement_type = split_legacy_page_type(legacy_type)
+        if legacy_page_type != default_type or legacy_statement_type is not None:
+            return True
 
     return False
 

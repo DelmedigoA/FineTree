@@ -14,14 +14,14 @@ def test_check_fact_reading_order_script_fails_on_violation(tmp_path: Path) -> N
     ann_dir = tmp_path / "data" / "annotations"
     ann_dir.mkdir(parents=True)
     payload = {
-        "document_meta": {"language": "he"},
+        "metadata": {"language": "he"},
         "pages": [
             {
                 "image": "page_0001.png",
-                "meta": {"type": "other"},
+                "meta": {"page_type": "other", "statement_type": None},
                 "facts": [
-                    {"bbox": {"x": 10, "y": 10, "w": 10, "h": 10}, "value": "left", "refference": "", "path": []},
-                    {"bbox": {"x": 100, "y": 10, "w": 10, "h": 10}, "value": "right", "refference": "", "path": []},
+                    {"bbox": {"x": 10, "y": 10, "w": 10, "h": 10}, "value": "left", "note_ref": None, "path": []},
+                    {"bbox": {"x": 100, "y": 10, "w": 10, "h": 10}, "value": "right", "note_ref": None, "path": []},
                 ],
             }
         ],
@@ -43,14 +43,14 @@ def test_fix_and_restore_scripts_roundtrip_with_backup(tmp_path: Path) -> None:
     ann_dir.mkdir(parents=True)
     src_path = ann_dir / "doc.json"
     payload = {
-        "document_meta": {"language": "he"},
+        "metadata": {"language": "he"},
         "pages": [
             {
                 "image": "page_0001.png",
-                "meta": {"type": "other"},
+                "meta": {"page_type": "other", "statement_type": None},
                 "facts": [
-                    {"bbox": {"x": 10, "y": 10, "w": 10, "h": 10}, "value": "left", "refference": "", "path": []},
-                    {"bbox": {"x": 100, "y": 10, "w": 10, "h": 10}, "value": "right", "refference": "", "path": []},
+                    {"bbox": {"x": 10, "y": 10, "w": 10, "h": 10}, "value": "left", "note_ref": None, "path": []},
+                    {"bbox": {"x": 100, "y": 10, "w": 10, "h": 10}, "value": "right", "note_ref": None, "path": []},
                 ],
             }
         ],
