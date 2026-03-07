@@ -19,14 +19,14 @@ def test_resolve_reading_direction_prefers_explicit_direction() -> None:
         default_direction="ltr",
     )
     assert info["direction"] == "rtl"
-    assert info["source"] == "document_meta.reading_direction"
+    assert info["source"] == "metadata.reading_direction"
     assert info["uncertain"] is False
 
 
 def test_resolve_reading_direction_uses_language_when_direction_missing() -> None:
     info = resolve_reading_direction({"language": "en"}, payload={"pages": []}, default_direction="rtl")
     assert info["direction"] == "ltr"
-    assert info["source"] == "document_meta.language"
+    assert info["source"] == "metadata.language"
 
 
 def test_resolve_reading_direction_falls_back_with_uncertain_signal() -> None:

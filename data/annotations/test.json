@@ -6,7 +6,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": null,
-        "type": "title",
+        "page_type": "title",
+        "statement_type": null,
         "title": "דוח שנתי 2024"
       },
       "facts": []
@@ -16,7 +17,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": null,
-        "type": "contents_page",
+        "page_type": "contents",
+        "statement_type": null,
         "title": "תוכן העניינים"
       },
       "facts": []
@@ -26,7 +28,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": null,
-        "type": "declaration",
+        "page_type": "declaration",
+        "statement_type": null,
         "title": "דוח רואה החשבון המבקר לחברי העמותה"
       },
       "facts": []
@@ -36,7 +39,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "3",
-        "type": "balance_sheet",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
         "title": "מאזנים"
       },
       "facts": [
@@ -48,17 +52,21 @@
             39.26
           ],
           "value": "518298",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "2ה׳",
+          "note_ref": "2ה׳",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "מזומנים ושווי מזומנים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -71,17 +79,21 @@
             39.26
           ],
           "value": "959986",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "2ה׳",
+          "note_ref": "2ה׳",
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "מזומנים ושווי מזומנים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -94,17 +106,21 @@
             39.26
           ],
           "value": "18071",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "הוצאות מראש"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -117,17 +133,21 @@
             39.26
           ],
           "value": "6915",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "הוצאות מראש"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -140,17 +160,21 @@
             39.26
           ],
           "value": "2577",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "חייבים שונים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -163,17 +187,21 @@
             39.26
           ],
           "value": "4870",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "חייבים שונים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -186,17 +214,21 @@
             39.26
           ],
           "value": "538946",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "סך רכוש שוטף"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -209,17 +241,21 @@
             39.26
           ],
           "value": "971771",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש שוטף",
             "סך רכוש שוטף"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -232,17 +268,21 @@
             39.26
           ],
           "value": "269968",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "4",
+          "note_ref": "4",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "עלות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -255,17 +295,21 @@
             39.26
           ],
           "value": "268170",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "4",
+          "note_ref": "4",
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "עלות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -278,17 +322,21 @@
             39.26
           ],
           "value": "209255",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "בניכוי - פחת שנצבר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -301,17 +349,21 @@
             39.26
           ],
           "value": "180216",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "בניכוי - פחת שנצבר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -324,17 +376,21 @@
             39.26
           ],
           "value": "60713",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -347,17 +403,21 @@
             39.26
           ],
           "value": "87854",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "רכוש קבוע",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -370,16 +430,20 @@
             39.26
           ],
           "value": "599659",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -392,16 +456,20 @@
             39.26
           ],
           "value": "10059725",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "נכסים",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -414,17 +482,21 @@
             33.42
           ],
           "value": "22994",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "ספקים והמחאות לפירעון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -437,17 +509,21 @@
             39.26
           ],
           "value": "54114",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "ספקים והמחאות לפירעון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -460,17 +536,21 @@
             39.26
           ],
           "value": "163959",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "עובדים ומוסדות בגין שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -483,17 +563,21 @@
             39.26
           ],
           "value": "153418",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "עובדים ומוסדות בגין שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -506,17 +590,21 @@
             39.26
           ],
           "value": "47658",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "זכאים אחרים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -529,17 +617,21 @@
             39.26
           ],
           "value": "16380",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "זכאים אחרים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -552,17 +644,21 @@
             39.26
           ],
           "value": "234611",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "סך התחייבויות שוטפות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -575,17 +671,21 @@
             39.26
           ],
           "value": "223912",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות שוטפות",
             "סך התחייבויות שוטפות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -598,17 +698,21 @@
             39.26
           ],
           "value": "-",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "3",
+          "note_ref": "3",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות לזמן ארוך",
             "התחייבויות בשל סיום יחסי עובד - מעביד, נטו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -621,17 +725,21 @@
             39.26
           ],
           "value": "8384",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "3",
+          "note_ref": "3",
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "התחייבויות לזמן ארוך",
             "התחייבויות בשל סיום יחסי עובד - מעביד, נטו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -644,16 +752,20 @@
             39.26
           ],
           "value": "234611",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "סך התחייבויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -666,16 +778,20 @@
             39.26
           ],
           "value": "232296",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות בניכוי נכסים נטו",
             "סך התחייבויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -688,17 +804,21 @@
             39.26
           ],
           "value": "328968",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות",
             "נכסים נטו:",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון מצטבר מפעילות)"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -711,17 +831,21 @@
             39.26
           ],
           "value": "(16939)",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות",
             "נכסים נטו:",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון מצטבר מפעילות)"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -734,17 +858,21 @@
             39.26
           ],
           "value": "36080",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות",
             "נכסים נטו:",
             "נכסים נטו שקיימת לגביהם הגבלה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -757,17 +885,21 @@
             39.26
           ],
           "value": "844368",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות",
             "נכסים נטו:",
             "נכסים נטו שקיימת לגביהם הגבלה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -780,17 +912,21 @@
             39.26
           ],
           "value": "365048",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות",
             "נכסים נטו:",
             "סך נכסים נטו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -803,16 +939,20 @@
             47.44
           ],
           "value": "599659",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "התחייבויות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -825,16 +965,20 @@
             47.44
           ],
           "value": "1059725",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "התחייבויות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -846,7 +990,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "4",
-        "type": "activities",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
         "title": "דוחות על הפעילויות והשינויים בנכסים נטו"
       },
       "facts": [
@@ -858,16 +1003,20 @@
             42.08
           ],
           "value": "4085744",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "5",
+          "note_ref": "5",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "מחזור הפעילויות",
             "תרומות שנתקבלו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -880,16 +1029,20 @@
             42.08
           ],
           "value": "4110646",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "5",
+          "note_ref": "5",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "מחזור הפעילויות",
             "תרומות שנתקבלו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -902,16 +1055,20 @@
             42.08
           ],
           "value": "1058643",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "6,8",
+          "note_ref": "6,8",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות",
             "פרסום, ייעוץ הסברה, יחסי ציבור, שירותים מקצועיים ופחת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -924,16 +1081,20 @@
             42.08
           ],
           "value": "1344452",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "6,8",
+          "note_ref": "6,8",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות",
             "פרסום, ייעוץ הסברה, יחסי ציבור, שירותים מקצועיים ופחת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -946,16 +1107,20 @@
             42.08
           ],
           "value": "166773",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "9",
+          "note_ref": "9",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות",
             "פרויקט השפעה מקומית, כולל שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -968,16 +1133,20 @@
             42.08
           ],
           "value": "856880",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "9",
+          "note_ref": "9",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות",
             "פרויקט השפעה מקומית, כולל שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -990,16 +1159,20 @@
             42.08
           ],
           "value": "997243",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "10",
+          "note_ref": "10",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות",
             "פרויקט צלול ברשויות, כולל שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1012,16 +1185,20 @@
             28.36
           ],
           "value": "-",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "10",
+          "note_ref": "10",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות",
             "פרויקט צלול ברשויות, כולל שכר"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1034,16 +1211,20 @@
             42.08
           ],
           "value": "1012309",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות",
             "שכר עבודה והוצאות נלוות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1056,16 +1237,20 @@
             42.08
           ],
           "value": "1252365",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות",
             "שכר עבודה והוצאות נלוות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1078,16 +1263,20 @@
             42.08
           ],
           "value": "3234968",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1100,16 +1289,20 @@
             42.08
           ],
           "value": "3453697",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1122,16 +1315,20 @@
             42.08
           ],
           "value": "296409",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "6,8",
+          "note_ref": "6,8",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "שכר עבודה והוצאות נלוות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1144,16 +1341,20 @@
             42.08
           ],
           "value": "314459",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "6,8",
+          "note_ref": "6,8",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "שכר עבודה והוצאות נלוות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1166,16 +1367,20 @@
             42.08
           ],
           "value": "62491",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "עלויות גיוס משאבים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1188,38 +1393,46 @@
             42.08
           ],
           "value": "56607",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "עלויות גיוס משאבים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
         },
         {
           "bbox": [
-            443.27,
+            440.68,
             923.51,
             124.05,
             42.08
           ],
           "value": "145021",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "7",
+          "note_ref": "7",
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "אחרות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1232,16 +1445,20 @@
             42.08
           ],
           "value": "158638",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": "7",
+          "note_ref": "7",
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "אחרות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1254,16 +1471,20 @@
             42.08
           ],
           "value": "503921",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1276,16 +1497,20 @@
             42.08
           ],
           "value": "529704",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1298,15 +1523,19 @@
             48.38
           ],
           "value": "(1514)",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הפסד הון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1319,15 +1548,19 @@
             29.18
           ],
           "value": "-",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הפסד הון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1340,15 +1573,19 @@
             44.4
           ],
           "value": "566",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הכנסות מימון - נטו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1361,15 +1598,19 @@
             44.4
           ],
           "value": "5649",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הכנסות מימון - נטו"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1382,15 +1623,19 @@
             56.56
           ],
           "value": "345907",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "הכנסות נטו לשנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1403,57 +1648,69 @@
             49.98
           ],
           "value": "132894",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "הכנסות נטו לשנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
         },
         {
           "bbox": [
-            447.58,
-            1211.77,
+            444.99,
+            1209.18,
             133.27,
             49.98
           ],
           "value": "(16939)",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
-          "date": "2024-12-31",
+          "note_ref": null,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
           "path": [
             "גרעון נטו לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
         },
         {
           "bbox": [
-            273.49,
+            276.08,
             1209.43,
             133.27,
             49.98
           ],
           "value": "(149833)",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-01-01",
           "path": [
             "גרעון נטו לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1466,15 +1723,19 @@
             42.08
           ],
           "value": "328968",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "נכסים (גרעון) נטו לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1487,15 +1748,19 @@
             42.08
           ],
           "value": "(16939)",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
           "path": [
             "נכסים (גרעון) נטו לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1507,7 +1772,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "5",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים"
       },
       "facts": []
@@ -1517,7 +1783,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "6",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)"
       },
       "facts": [
@@ -1529,19 +1796,23 @@
             35.07
           ],
           "value": "33",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": true,
           "note_name": null,
           "note_num": 2,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "שיעורי הפחת השנתיים",
             "מחשבים"
           ],
+          "path_source": null,
           "currency": null,
           "scale": null,
-          "value_type": "%"
+          "value_type": "percent"
         },
         {
           "bbox": [
@@ -1551,19 +1822,23 @@
             35.07
           ],
           "value": "10",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": true,
           "note_name": null,
           "note_num": 2,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "שיעורי הפחת השנתיים",
             "שיפורים במושכר"
           ],
+          "path_source": null,
           "currency": null,
           "scale": null,
-          "value_type": "%"
+          "value_type": "percent"
         },
         {
           "bbox": [
@@ -1573,19 +1848,23 @@
             39.11
           ],
           "value": "6-15",
-          "comment": null,
+          "comment_ref": null,
           "note_flag": true,
           "note_name": null,
           "note_num": 2,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
           "path": [
             "שיעורי הפחת השנתיים",
             "רהוט וציוד"
           ],
+          "path_source": null,
           "currency": null,
           "scale": null,
-          "value_type": "%"
+          "value_type": "percent"
         }
       ]
     },
@@ -1594,7 +1873,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "7",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)"
       },
       "facts": []
@@ -1604,7 +1884,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "8",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)"
       },
       "facts": [
@@ -1616,17 +1897,21 @@
             35.07
           ],
           "value": "90904",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "עלות",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1639,17 +1924,21 @@
             40.34
           ],
           "value": "128153",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "עלות",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1662,17 +1951,21 @@
             44.29
           ],
           "value": "49113",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "עלות",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1685,17 +1978,21 @@
             35.07
           ],
           "value": "268170",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1708,17 +2005,21 @@
             37.7
           ],
           "value": "251466",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1731,17 +2032,21 @@
             35.07
           ],
           "value": "6230",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "רהוט וציוד",
             "עלות",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1754,17 +2059,21 @@
             28.49
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "עלות",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1777,17 +2086,21 @@
             28.49
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפור במושכר",
             "עלות",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1800,17 +2113,21 @@
             26.71
           ],
           "value": "6230",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1823,17 +2140,21 @@
             35.07
           ],
           "value": "43803",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1846,17 +2167,21 @@
             35.07
           ],
           "value": "(4432)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "עלות",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1869,17 +2194,21 @@
             35.07
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "עלות",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1892,17 +2221,21 @@
             35.07
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "עלות",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1915,17 +2248,21 @@
             41.41
           ],
           "value": "269968",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1938,17 +2275,21 @@
             45.59
           ],
           "value": "(27099)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "גריעות במשך השנה",
             "עלות",
             "סה״כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1961,17 +2302,21 @@
             35.07
           ],
           "value": "92702",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "עלות",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -1984,17 +2329,21 @@
             42.97
           ],
           "value": "128153",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "עלות",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2007,17 +2356,21 @@
             36.39
           ],
           "value": "49113",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "עלות",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2030,17 +2383,21 @@
             35.07
           ],
           "value": "(4432)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2053,17 +2410,21 @@
             44.42
           ],
           "value": "268170",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "עלות",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2076,17 +2437,21 @@
             35.07
           ],
           "value": "78534",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "פחת שנצבר",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2099,17 +2464,21 @@
             35.07
           ],
           "value": "83018",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "פחת שנצבר",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2122,17 +2491,21 @@
             35.07
           ],
           "value": "18664",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "פחת שנצבר",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2145,17 +2518,21 @@
             35.07
           ],
           "value": "180216",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2168,17 +2545,21 @@
             35.07
           ],
           "value": "176075",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "יתרה לתחילת השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2191,17 +2572,21 @@
             36.24
           ],
           "value": "3373",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "פחת שנצבר",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2214,17 +2599,21 @@
             35.07
           ],
           "value": "23672",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "פחת שנצבר",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2237,17 +2626,21 @@
             35.07
           ],
           "value": "4912",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "פחת שנצבר",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2260,17 +2653,21 @@
             35.07
           ],
           "value": "31957",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2283,17 +2680,21 @@
             35.07
           ],
           "value": "31240",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "תוספות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2306,17 +2707,21 @@
             39.74
           ],
           "value": "(2918)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "פחת שנצבר",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2329,17 +2734,21 @@
             21.05
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "פחת שנצבר",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2352,17 +2761,21 @@
             21.05
           ],
           "value": "-",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "פחת שנצבר",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2375,17 +2788,21 @@
             35.07
           ],
           "value": "(2918)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2398,17 +2815,21 @@
             36.44
           ],
           "value": "(27099)",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "גריעות במשך השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2421,17 +2842,21 @@
             35.07
           ],
           "value": "78989",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "פחת שנצבר",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2444,17 +2869,21 @@
             37.41
           ],
           "value": "106690",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "פחת שנצבר",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2467,17 +2896,21 @@
             35.07
           ],
           "value": "23576",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "פחת שנצבר",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2490,17 +2923,21 @@
             31.56
           ],
           "value": "209255",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2513,17 +2950,21 @@
             35.07
           ],
           "value": "180216",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "פחת שנצבר",
             "יתרה לגמר השנה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2536,16 +2977,20 @@
             32.73
           ],
           "value": "13713",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "ריהוט וציוד",
             "יתרה מופחתת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2558,16 +3003,20 @@
             38.58
           ],
           "value": "21463",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מחשבים",
             "יתרה מופחתת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2580,16 +3029,20 @@
             35.07
           ],
           "value": "25537",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שיפורים במושכר",
             "יתרה מופחתת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2602,16 +3055,20 @@
             35.07
           ],
           "value": "60713",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה״כ",
             "יתרה מופחתת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2624,16 +3081,20 @@
             35.07
           ],
           "value": "87954",
-          "comment": "4",
+          "comment_ref": "4",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה״כ",
             "יתרה מופחתת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2646,15 +3107,19 @@
             38.58
           ],
           "value": "1930880",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מצדדים קשורים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2667,15 +3132,19 @@
             36.24
           ],
           "value": "2200295",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "מצדדים קשורים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2688,15 +3157,19 @@
             35.07
           ],
           "value": "197784",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": "9",
+          "note_ref": "9",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "פרוייקט השפעה מקומית"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2709,15 +3182,19 @@
             35.07
           ],
           "value": "808711",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": "9",
+          "note_ref": "9",
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "פרוייקט השפעה מקומית"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2730,15 +3207,19 @@
             35.07
           ],
           "value": "844368",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": "10",
+          "note_ref": "10",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "פרוייקט צלול ברשויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2751,15 +3232,19 @@
             26.89
           ],
           "value": "-",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": "10",
+          "note_ref": "10",
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "פרוייקט צלול ברשויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2772,15 +3257,19 @@
             30.4
           ],
           "value": "1112712",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "מאחרים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2793,15 +3282,19 @@
             38.58
           ],
           "value": "1101640",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "מאחרים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2814,15 +3307,19 @@
             40.91
           ],
           "value": "4085744",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה\"כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2835,15 +3332,19 @@
             39.74
           ],
           "value": "4110646",
-          "comment": "5",
+          "comment_ref": "5",
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה\"כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2855,7 +3356,8 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "9",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)"
       },
       "facts": [
@@ -2867,15 +3369,19 @@
             35.07
           ],
           "value": "16654",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שכר דירה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2888,15 +3394,19 @@
             35.07
           ],
           "value": "16947",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "שכר דירה"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2909,15 +3419,19 @@
             35.07
           ],
           "value": "2656",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "דואר וטלפון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2930,15 +3444,19 @@
             35.07
           ],
           "value": "3986",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "דואר וטלפון"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2951,15 +3469,19 @@
             35.07
           ],
           "value": "37824",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "משרדיות וביטוח"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2972,15 +3494,19 @@
             35.07
           ],
           "value": "42209",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "משרדיות וביטוח"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -2993,15 +3519,19 @@
             35.07
           ],
           "value": "12643",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "אחזקה ומיסים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3014,15 +3544,19 @@
             35.07
           ],
           "value": "12396",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "אחזקה ומסים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3035,15 +3569,19 @@
             35.07
           ],
           "value": "4394",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "פחת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3056,15 +3594,19 @@
             35.07
           ],
           "value": "4544",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "פחת"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3077,15 +3619,19 @@
             35.07
           ],
           "value": "21307",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "שירותים מקצועים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3098,15 +3644,19 @@
             35.07
           ],
           "value": "29952",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "שירותים מקצועים"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3119,15 +3669,19 @@
             35.07
           ],
           "value": "21792",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "טיסות ונסיעות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3140,15 +3694,19 @@
             35.07
           ],
           "value": "21597",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "טיסות ונסיעות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3161,15 +3719,19 @@
             35.07
           ],
           "value": "27751",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "אחרות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3182,15 +3744,19 @@
             29.46
           ],
           "value": "27007",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "אחרות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3203,15 +3769,19 @@
             35.07
           ],
           "value": "145021",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "סה\"כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3224,15 +3794,19 @@
             35.07
           ],
           "value": "158638",
-          "comment": "7",
+          "comment_ref": "7",
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "סה\"כ"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3245,15 +3819,19 @@
             35.07
           ],
           "value": "85404",
-          "comment": "8",
+          "comment_ref": "8",
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "עלות הפעילויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3266,15 +3844,19 @@
             35.07
           ],
           "value": "80943",
-          "comment": "8",
+          "comment_ref": "8",
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3287,15 +3869,19 @@
             35.07
           ],
           "value": "27655",
-          "comment": "8",
+          "comment_ref": "8",
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3308,15 +3894,19 @@
             35.07
           ],
           "value": "20617",
-          "comment": "8",
+          "comment_ref": "8",
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
-          "note_reference": null,
+          "note_ref": null,
           "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
+          "path_source": null,
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount"
@@ -3328,13 +3918,14 @@
       "meta": {
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": "10",
-        "type": "notes",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)"
       },
       "facts": []
     }
   ],
-  "document_meta": {
+  "metadata": {
     "language": "he",
     "reading_direction": "rtl"
   }

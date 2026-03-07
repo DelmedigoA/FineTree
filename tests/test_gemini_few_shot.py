@@ -18,11 +18,17 @@ def _write_test_annotation(path: Path, page_names: list[str]) -> None:
         pages.append(
             {
                 "image": page_name,
-                "meta": {"type": "other", "page_num": None, "entity_name": None, "title": None},
-                "facts": [{"value": "10", "refference": "", "path": []}],
+                "meta": {
+                    "page_type": "other",
+                    "statement_type": None,
+                    "page_num": None,
+                    "entity_name": None,
+                    "title": None,
+                },
+                "facts": [{"value": "10", "note_ref": None, "path": []}],
             }
         )
-    payload = {"images_dir": "data/pdf_images/test", "pages": pages}
+    payload = {"images_dir": "data/pdf_images/test", "metadata": {}, "pages": pages}
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
 
 
@@ -51,8 +57,10 @@ def test_load_test_pdf_few_shot_examples_reads_all_fixed_pages(tmp_path: Path) -
     assert [Path(ex["image_path"]).name for ex in examples] == list(DEFAULT_TEST_FEW_SHOT_PAGES)
     for ex in examples:
         parsed = json.loads(ex["expected_json"])
-        assert "meta" in parsed
-        assert isinstance(parsed.get("facts"), list)
+        assert "metadata" in parsed
+        assert isinstance(parsed.get("pages"), list)
+        assert len(parsed["pages"]) == 1
+        assert isinstance(parsed["pages"][0].get("facts"), list)
 
 
 def test_load_test_pdf_few_shot_examples_skips_missing_with_warning(tmp_path: Path) -> None:
@@ -83,21 +91,23 @@ def test_load_complex_few_shot_examples_reads_multi_dataset_selection(tmp_path: 
 
     test_payload = {
         "images_dir": "data/pdf_images/test",
+        "metadata": {},
         "pages": [
             {
                 "image": "page_0009.png",
-                "meta": {"type": "notes"},
-                "facts": [{"value": "10", "refference": "", "path": []}],
+                "meta": {"page_type": "statements", "statement_type": "notes_to_financial_statements"},
+                "facts": [{"value": "10", "note_ref": None, "path": []}],
             }
         ],
     }
     pdf3_payload = {
         "images_dir": "data/pdf_images/pdf_3",
+        "metadata": {},
         "pages": [
             {
                 "image": "page_0018.png",
-                "meta": {"type": "notes"},
-                "facts": [{"value": "20", "refference": "", "path": []}],
+                "meta": {"page_type": "statements", "statement_type": "notes_to_financial_statements"},
+                "facts": [{"value": "20", "note_ref": None, "path": []}],
             }
         ],
     }

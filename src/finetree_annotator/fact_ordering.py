@@ -10,6 +10,7 @@ from .schemas import (
     _normalize_company_id_value,
     _normalize_company_name_value,
     _normalize_doc_language_value,
+    _normalize_entity_type_value,
     _normalize_reading_direction_value,
     _normalize_report_year_value,
 )
@@ -17,8 +18,8 @@ from .schemas import (
 Direction = Literal["rtl", "ltr"]
 Language = Literal["he", "en"]
 DirectionSource = Literal[
-    "document_meta.reading_direction",
-    "document_meta.language",
+    "metadata.reading_direction",
+    "metadata.language",
     "auto",
     "default",
 ]
@@ -36,6 +37,7 @@ def normalize_document_meta(raw: Any) -> dict[str, Any]:
             "company_name": None,
             "company_id": None,
             "report_year": None,
+            "entity_type": None,
         }
 
     try:
@@ -58,12 +60,17 @@ def normalize_document_meta(raw: Any) -> dict[str, Any]:
         report_year = _normalize_report_year_value(raw.get("report_year"))
     except ValueError:
         report_year = None
+    try:
+        entity_type = _normalize_entity_type_value(raw.get("entity_type", raw.get("company_type")))
+    except ValueError:
+        entity_type = None
     return {
         "language": language,
         "reading_direction": direction,
         "company_name": company_name,
         "company_id": company_id,
         "report_year": report_year,
+        "entity_type": entity_type,
     }
 
 
@@ -80,6 +87,8 @@ def compact_document_meta(raw: Any) -> dict[str, Any]:
         out["company_id"] = str(normalized["company_id"])
     if normalized.get("report_year") is not None:
         out["report_year"] = int(normalized["report_year"])
+    if normalized.get("entity_type"):
+        out["entity_type"] = str(normalized["entity_type"])
     return out
 
 
@@ -129,7 +138,7 @@ def _collect_text_parts(payload: Any) -> list[str]:
     texts: list[str] = []
     for page in _iter_pages_from_payload(payload):
         meta = page.get("meta") if isinstance(page.get("meta"), dict) else {}
-        for key in ("entity_name", "page_num", "title", "type"):
+        for key in ("entity_name", "page_num", "title", "page_type", "statement_type", "type"):
             value = meta.get(key)
             if isinstance(value, str) and value.strip():
                 texts.append(value)
@@ -141,9 +150,11 @@ def _collect_text_parts(payload: Any) -> list[str]:
                 continue
             for key in (
                 "value",
+                "comment_ref",
                 "ref_comment",
                 "comment",
                 "note_name",
+                "note_ref",
                 "ref_note",
                 "note_reference",
                 "date",
@@ -188,7 +199,7 @@ def resolve_reading_direction(
     if explicit_direction in {"rtl", "ltr"}:
         return {
             "direction": explicit_direction,
-            "source": "document_meta.reading_direction",
+            "source": "metadata.reading_direction",
             "uncertain": False,
             "hebrew_chars": None,
             "latin_chars": None,
@@ -199,7 +210,7 @@ def resolve_reading_direction(
     if language_direction is not None:
         return {
             "direction": language_direction,
-            "source": "document_meta.language",
+            "source": "metadata.language",
             "uncertain": False,
             "hebrew_chars": None,
             "latin_chars": None,
@@ -431,7 +442,7 @@ def fact_order_report(
     for file_path in _resolve_annotation_files(root, annotations_glob, include_doc_ids=include_doc_ids):
         files_scanned += 1
         payload = json.loads(file_path.read_text(encoding="utf-8"))
-        doc_meta = payload.get("document_meta") if isinstance(payload, dict) else None
+        doc_meta = payload.get("metadata", payload.get("document_meta")) if isinstance(payload, dict) else None
         direction_info = resolve_reading_direction(doc_meta, payload=payload, default_direction=default_direction)
         direction = str(direction_info["direction"])
         pages = _iter_pages_from_payload(payload)

@@ -81,6 +81,34 @@ def _train_only_dataset() -> DatasetDict:
     return DatasetDict({"train": train, "validation": val})
 
 
+def _wrapper_payload(
+    *,
+    image: str = "page_0001.png",
+    images_dir: str = "data/pdf_images/doc1",
+    metadata: dict[str, object] | None = None,
+    meta: dict[str, object] | None = None,
+    facts: list[dict[str, object]] | None = None,
+) -> dict[str, object]:
+    return {
+        "images_dir": images_dir,
+        "metadata": metadata or {},
+        "pages": [
+            {
+                "image": image,
+                "meta": meta
+                or {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                "facts": facts or [],
+            }
+        ],
+    }
+
+
 def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: Path) -> None:
     root = tmp_path
     finetune_dir = root / "data" / "finetune"
@@ -93,11 +121,14 @@ def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: 
                         {"type": "image", "image": str(root / "data" / "pdf_images" / "doc1" / "page_0001.png")},
                         {
                             "type": "text",
-                            "text": "Use keys ref_comment, note_flag, note_name, note_num, ref_note and return strict JSON.",
+                            "text": (
+                                "Use keys comment_ref, note_flag, note_name, note_num, note_ref, "
+                                "period_type, period_start, period_end, path_source and return strict JSON."
+                            ),
                         },
                     ],
                 },
-            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ]
     }
     (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
@@ -124,7 +155,7 @@ def test_assert_source_instruction_schema_blocks_on_legacy_prompt_keys(tmp_path:
                     },
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": '{"meta":{"type":"other"},"facts":[]}'}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ]
     }
     (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
@@ -145,17 +176,16 @@ def test_export_for_hf_rewrites_image_paths_resizes_and_scales_bbox(tmp_path: Pa
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {
-        "meta": {"type": "other"},
-        "facts": [
+    payload = _wrapper_payload(
+        facts=[
             {
                 "bbox": {"x": 10, "y": 20, "w": 30, "h": 40},
                 "value": "10",
-                "refference": "",
+                "note_ref": None,
                 "path": ["a"],
             }
-        ],
-    }
+        ]
+    )
     sample = {
         "messages": [
             {
@@ -186,7 +216,7 @@ def test_export_for_hf_rewrites_image_paths_resizes_and_scales_bbox(tmp_path: Pa
         assert img.size == (100, 50)
 
     out_payload = json.loads(out["text"])
-    bbox = out_payload["facts"][0]["bbox"]
+    bbox = out_payload["pages"][0]["facts"][0]["bbox"]
     assert bbox == [5, 10, 15, 20]
 
 
@@ -201,7 +231,7 @@ def test_export_for_hf_bbox_quantization_uses_floor_for_xy_and_ceil_for_wh(tmp_p
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {"meta": {"type": "other"}, "facts": [{"bbox": {"x": 10, "y": 11, "w": 30, "h": 31}}]}
+    payload = _wrapper_payload(facts=[{"bbox": {"x": 10, "y": 11, "w": 30, "h": 31}}])
     sample = {
         "messages": [
             {
@@ -223,7 +253,7 @@ def test_export_for_hf_bbox_quantization_uses_floor_for_xy_and_ceil_for_wh(tmp_p
 
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     out_payload = json.loads(out["text"])
-    bbox = out_payload["facts"][0]["bbox"]
+    bbox = out_payload["pages"][0]["facts"][0]["bbox"]
     assert bbox == [3, 3, 10, 11]
     assert all(isinstance(v, int) for v in bbox)
 
@@ -237,7 +267,7 @@ def test_export_for_hf_minimal_instruction_is_fixed_line(tmp_path: Path) -> None
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {"meta": {"type": "other"}, "facts": [{"bbox": {"x": 10, "y": 20, "w": 30, "h": 40}}]}
+    payload = _wrapper_payload(facts=[{"bbox": {"x": 10, "y": 20, "w": 30, "h": 40}}])
     sample = {
         "messages": [
             {
@@ -270,9 +300,15 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {
-        "meta": {"entity_name": "X", "page_num": "8", "title": "T", "type": "cash_flow"},
-        "facts": [
+    payload = _wrapper_payload(
+        meta={
+            "entity_name": "X",
+            "page_num": "8",
+            "title": "T",
+            "page_type": "statements",
+            "statement_type": "cash_flow_statement",
+        },
+        facts=[
             {
                 "bbox": {"x": 10, "y": 20, "w": 30, "h": 40},
                 "value": "1,234",
@@ -280,11 +316,11 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
                 "currency": "ILS",
                 "scale": 1000,
                 "value_type": "amount",
-                "refference": None,
+                "note_ref": None,
                 "note_num": None,
             }
         ],
-    }
+    )
     sample = {
         "messages": [
             {
@@ -310,20 +346,20 @@ def test_export_for_hf_compact_tokens_preserves_schema_and_compacts_payload(tmp_
     assert ", " not in compact_text
 
     compact_payload = json.loads(compact_text)
-    assert "meta" in compact_payload
-    assert "facts" in compact_payload
-    assert compact_payload["meta"]["entity_name"] == "X"
-    assert compact_payload["meta"]["page_num"] == "8"
-    assert compact_payload["meta"]["title"] == "T"
-    fact = compact_payload["facts"][0]
+    assert "metadata" in compact_payload
+    assert "pages" in compact_payload
+    assert compact_payload["pages"][0]["meta"]["entity_name"] == "X"
+    assert compact_payload["pages"][0]["meta"]["page_num"] == "8"
+    assert compact_payload["pages"][0]["meta"]["title"] == "T"
+    fact = compact_payload["pages"][0]["facts"][0]
     assert fact["bbox"] == [10, 20, 30, 40]
     assert fact["value"] == "1234"
     assert fact["date"] == "30.09.2021"
     assert fact["currency"] == "ILS"
     assert fact["scale"] == 1000
     assert fact["value_type"] == "amount"
-    assert "refference" in fact
-    assert fact["refference"] is None
+    assert "note_ref" in fact
+    assert fact["note_ref"] is None
     assert "note_num" in fact
     assert fact["note_num"] is None
 
@@ -337,10 +373,16 @@ def test_export_for_hf_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -
 
     finetune_dir = root / "data" / "finetune"
     finetune_dir.mkdir(parents=True)
-    payload = {
-        "meta": {"entity_name": "X", "page_num": "8", "title": "T"},
-        "facts": [{"bbox": {"x": 10, "y": 20, "w": 30, "h": 40}, "value": "1,234", "refference": None}],
-    }
+    payload = _wrapper_payload(
+        meta={
+            "entity_name": "X",
+            "page_num": "8",
+            "title": "T",
+            "page_type": "other",
+            "statement_type": None,
+        },
+        facts=[{"bbox": {"x": 10, "y": 20, "w": 30, "h": 40}, "value": "1,234", "note_ref": None}],
+    )
     sample = {
         "messages": [
             {
@@ -362,16 +404,15 @@ def test_export_for_hf_aggressive_compact_tokens_shortens_keys(tmp_path: Path) -
 
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     compact_payload = json.loads(out["text"])
-    assert "m" in compact_payload
-    assert "f" in compact_payload
-    assert compact_payload["m"]["e"] == "X"
-    assert compact_payload["m"]["p"] == "8"
-    assert compact_payload["m"]["ttl"] == "T"
-    fact = compact_payload["f"][0]
+    assert "pg" in compact_payload
+    assert compact_payload["pg"][0]["m"]["e"] == "X"
+    assert compact_payload["pg"][0]["m"]["p"] == "8"
+    assert compact_payload["pg"][0]["m"]["ttl"] == "T"
+    fact = compact_payload["pg"][0]["f"][0]
     assert fact["b"] == [10, 20, 30, 40]
     assert fact["v"] == "1234"
-    assert "ref" in fact
-    assert fact["ref"] is None
+    assert "nref" in fact
+    assert fact["nref"] is None
 
 
 def test_smart_resize_dimensions_supports_required_factor_signature(monkeypatch) -> None:
@@ -406,10 +447,11 @@ def test_export_for_hf_excludes_doc_ids(tmp_path: Path, monkeypatch) -> None:
         img_dir.mkdir(parents=True, exist_ok=True)
         image_path = img_dir / "page_0001.png"
         PILImage.new("RGB", (200, 100), color=(255, 255, 255)).save(image_path)
-        payload = {
-            "meta": {"type": "other"},
-            "facts": [{"bbox": {"x": 10, "y": 10, "w": 30, "h": 20}, "value": "1", "refference": "", "path": []}],
-        }
+        payload = _wrapper_payload(
+            image="page_0001.png",
+            images_dir=f"data/pdf_images/{doc_id}",
+            facts=[{"bbox": {"x": 10, "y": 10, "w": 30, "h": 20}, "value": "1", "note_ref": None, "path": []}],
+        )
         rows.append(
             {
                 "messages": [
@@ -463,7 +505,7 @@ def test_assert_no_train_val_contamination_passes_for_disjoint_docs(tmp_path: Pa
                     {"type": "text", "text": "Prompt train"},
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ],
         "metadata": {"document_id": "doc1"},
     }
@@ -476,7 +518,10 @@ def test_assert_no_train_val_contamination_passes_for_disjoint_docs(tmp_path: Pa
                     {"type": "text", "text": "Prompt val"},
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+            {
+                "role": "assistant",
+                "content": [{"type": "text", "text": json.dumps(_wrapper_payload(images_dir="data/pdf_images/doc2"))}],
+            },
         ],
         "metadata": {"document_id": "doc2"},
     }
@@ -508,7 +553,7 @@ def test_assert_no_train_val_contamination_detects_overlap(tmp_path: Path) -> No
                     {"type": "text", "text": "Prompt"},
                 ],
             },
-            {"role": "assistant", "content": [{"type": "text", "text": "{\"meta\":{},\"facts\":[]}"}]},
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(_wrapper_payload())}]},
         ],
         "metadata": {"document_id": "doc1"},
     }

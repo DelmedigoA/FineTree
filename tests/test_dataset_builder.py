@@ -10,17 +10,39 @@ from finetree_annotator.finetune.dataset_builder import build_unsloth_chat_datas
 def _write_annotation(annotation_path: Path, image_dir: Path, image_name: str) -> None:
     payload = {
         "images_dir": str(image_dir),
+        "metadata": {
+            "language": None,
+            "reading_direction": None,
+            "company_name": None,
+            "company_id": None,
+            "report_year": None,
+            "entity_type": None,
+        },
         "pages": [
             {
                 "image": image_name,
-                "meta": {"entity_name": "ACME", "page_num": "1", "type": "other", "title": None},
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
                 "facts": [
                     {
                         "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
                         "value": "10",
-                        "refference": "",
+                        "note_ref": None,
+                        "comment_ref": None,
                         "date": None,
+                        "period_type": None,
+                        "period_start": None,
+                        "period_end": None,
                         "path": ["assets"],
+                        "path_source": None,
+                        "note_flag": False,
+                        "note_name": None,
+                        "note_num": None,
                         "currency": "ILS",
                         "scale": 1,
                         "value_type": "amount",
@@ -73,7 +95,8 @@ def test_dataset_builder_writes_unsloth_chat_jsonl(tmp_path: Path, monkeypatch) 
     assert "reading_direction_source" in sample["metadata"]
     assert "reading_direction_uncertain" in sample["metadata"]
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
-    assert out_obj["facts"][0]["bbox"] == [1.0, 2.0, 3.0, 4.0]
+    assert out_obj["metadata"]["entity_type"] is None
+    assert out_obj["pages"][0]["facts"][0]["bbox"] == [1.0, 2.0, 3.0, 4.0]
 
 
 def test_dataset_builder_can_drop_bbox(tmp_path: Path, monkeypatch) -> None:
@@ -108,7 +131,7 @@ def test_dataset_builder_can_drop_bbox(tmp_path: Path, monkeypatch) -> None:
     line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
-    assert "bbox" not in out_obj["facts"][0]
+    assert "bbox" not in out_obj["pages"][0]["facts"][0]
 
 
 def test_dataset_builder_doc_split_map_ensures_non_empty_val_for_multi_doc(monkeypatch) -> None:
@@ -166,19 +189,43 @@ def test_dataset_builder_reorders_hebrew_row_right_to_left(tmp_path: Path, monke
         "pages": [
             {
                 "image": image_name,
-                "meta": {"entity_name": "חברה", "page_num": "1", "type": "other", "title": None},
+                "meta": {
+                    "entity_name": "חברה",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
                 "facts": [
                     {
                         "bbox": {"x": 10, "y": 10, "w": 10, "h": 10},
                         "value": "left",
-                        "refference": "",
+                        "note_ref": None,
+                        "comment_ref": None,
+                        "note_flag": False,
+                        "note_name": None,
+                        "note_num": None,
+                        "date": None,
+                        "period_type": None,
+                        "period_start": None,
+                        "period_end": None,
                         "path": [],
+                        "path_source": None,
                     },
                     {
                         "bbox": {"x": 100, "y": 10, "w": 10, "h": 10},
                         "value": "right",
-                        "refference": "",
+                        "note_ref": None,
+                        "comment_ref": None,
+                        "note_flag": False,
+                        "note_name": None,
+                        "note_num": None,
+                        "date": None,
+                        "period_type": None,
+                        "period_start": None,
+                        "period_end": None,
                         "path": [],
+                        "path_source": None,
                     },
                 ],
             }
@@ -203,7 +250,7 @@ def test_dataset_builder_reorders_hebrew_row_right_to_left(tmp_path: Path, monke
     line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
-    assert [fact["value"] for fact in out_obj["facts"]] == ["right", "left"]
+    assert [fact["value"] for fact in out_obj["pages"][0]["facts"]] == ["right", "left"]
 
 
 def test_dataset_builder_can_limit_to_reviewed_docs_and_explicit_validation(tmp_path: Path, monkeypatch) -> None:

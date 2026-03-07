@@ -66,6 +66,7 @@ from .annotation_core import (
     normalize_fact_data,
     serialize_annotations_json,
 )
+from .annotation_backups import atomic_write_text, create_annotation_backup
 from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
@@ -77,8 +78,15 @@ from .gemini_few_shot import (
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
-from .schema_contract import default_extraction_prompt_template
-from .schemas import PageType
+from .schema_contract import (
+    ENTITY_TYPE_VALUES,
+    PATH_SOURCE_VALUES,
+    PERIOD_TYPE_VALUES,
+    STATEMENT_TYPE_VALUES,
+    VALUE_TYPE_VALUES,
+    default_extraction_prompt_template,
+)
+from .schemas import PageMeta, PageType
 from .workspace import page_has_annotation
 
 FEW_SHOT_PRESET_CLASSIC = "classic_4"
@@ -117,6 +125,11 @@ GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
 QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
 MULTI_VALUE_PLACEHOLDER = "Multiple values"
 PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
+VALUE_TYPE_OPTIONS: tuple[str, ...] = ("", *VALUE_TYPE_VALUES)
+STATEMENT_TYPE_OPTIONS: tuple[str, ...] = ("", *STATEMENT_TYPE_VALUES)
+ENTITY_TYPE_OPTIONS: tuple[str, ...] = ("", *ENTITY_TYPE_VALUES)
+PERIOD_TYPE_OPTIONS: tuple[str, ...] = ("", *PERIOD_TYPE_VALUES)
+PATH_SOURCE_OPTIONS: tuple[str, ...] = ("", *PATH_SOURCE_VALUES)
 
 
 def _prompt_entity_apply_mode(parent: QWidget, entity_name: str) -> Optional[str]:
@@ -847,8 +860,8 @@ class JsonImportDialog(QDialog):
         hint = QLabel(
             "Paste JSON to import.\n"
             "Supported shapes: "
-            '{"meta": {...}, "facts": [...]} or {"image": "...", "meta": {...}, "facts": [...]} '
-            'or full {"pages": [...]} document.\n'
+            '{"images_dir":"...","metadata":{...},"pages":[{"image":"...","meta":{...},"facts":[...]}]} '
+            'or legacy {"meta": {...}, "facts": [...]} / {"image": "...", "meta": {...}, "facts": [...]}.\n'
             f'If "image" is omitted, current page "{default_page_name}" is used.\n'
             'Use the checkbox below for Gemini-style normalized coordinates (0..1000).'
         )
@@ -1241,6 +1254,7 @@ class AnnotationWindow(QMainWindow):
             "company_name": None,
             "company_id": None,
             "report_year": None,
+            "entity_type": None,
         }
         self._path_list_editable = True
         self._path_list_structure_editable = True
@@ -1273,7 +1287,7 @@ class AnnotationWindow(QMainWindow):
         self._gt_activity_provider: Optional[str] = None
         self._page_issue_summaries: Dict[str, PageIssueSummary] = {}
         self._last_document_issue_signature: Optional[tuple[int, int, int, int]] = None
-        self._last_saved_content: Dict[str, Any] = {"page_states": {}, "document_meta": {}}
+        self._last_saved_content: Dict[str, Any] = {"page_states": {}, "metadata": {}}
         self._pending_close_approved = False
         self._pending_auto_fit = False
 
@@ -1666,6 +1680,8 @@ class AnnotationWindow(QMainWindow):
         self.page_num_edit = QLineEdit()
         self.type_combo = QComboBox()
         self.type_combo.addItems([p.value for p in PageType])
+        self.statement_type_combo = QComboBox()
+        self.statement_type_combo.addItems(list(STATEMENT_TYPE_OPTIONS))
         self.title_edit = QLineEdit()
         self.doc_language_combo = QComboBox()
         self.doc_language_combo.addItems(["Auto", "Hebrew (he)", "English (en)"])
@@ -1674,26 +1690,32 @@ class AnnotationWindow(QMainWindow):
         self.company_name_edit = QLineEdit()
         self.company_id_edit = QLineEdit()
         self.report_year_edit = QLineEdit()
+        self.entity_type_combo = QComboBox()
+        self.entity_type_combo.addItems(list(ENTITY_TYPE_OPTIONS))
         self.report_year_edit.setValidator(QIntValidator(0, 9999, self))
         field_min_width = 248
         self.entity_name_edit.setMinimumWidth(field_min_width)
         self.page_num_edit.setMinimumWidth(field_min_width)
         self.type_combo.setMinimumWidth(field_min_width)
+        self.statement_type_combo.setMinimumWidth(field_min_width)
         self.title_edit.setMinimumWidth(field_min_width)
         self.doc_language_combo.setMinimumWidth(field_min_width)
         self.doc_direction_combo.setMinimumWidth(field_min_width)
         self.company_name_edit.setMinimumWidth(field_min_width)
         self.company_id_edit.setMinimumWidth(field_min_width)
         self.report_year_edit.setMinimumWidth(field_min_width)
+        self.entity_type_combo.setMinimumWidth(field_min_width)
         doc_form.addRow(self._inspector_label("Language"), self.doc_language_combo)
         doc_form.addRow(self._inspector_label("Direction"), self.doc_direction_combo)
         doc_form.addRow(self._inspector_label("Company Name"), self.company_name_edit)
         doc_form.addRow(self._inspector_label("Company ID"), self.company_id_edit)
         doc_form.addRow(self._inspector_label("Report Year"), self.report_year_edit)
+        doc_form.addRow(self._inspector_label("Entity Type"), self.entity_type_combo)
         right_layout.addWidget(doc_box)
         meta_form.addRow(self._inspector_label("Entity"), self.entity_name_edit)
         meta_form.addRow(self._inspector_label("Page"), self.page_num_edit)
-        meta_form.addRow(self._inspector_label("Type", required=True), self.type_combo)
+        meta_form.addRow(self._inspector_label("Page Type", required=True), self.type_combo)
+        meta_form.addRow(self._inspector_label("Statement Type"), self.statement_type_combo)
         meta_form.addRow(self._inspector_label("Title"), self.title_edit)
         right_layout.addWidget(page_meta_box)
 
@@ -1732,7 +1754,7 @@ class AnnotationWindow(QMainWindow):
         fact_layout.setSpacing(10)
         self.show_order_labels_check = QCheckBox("Show order labels on bboxes")
         self.show_order_labels_check.setObjectName("inspectorOption")
-        self.show_order_labels_check.setChecked(True)
+        self.show_order_labels_check.setChecked(False)
         self.facts_count_label = QLabel("No facts")
         self.facts_count_label.setObjectName("statusPill")
         self.facts_count_label.setProperty("tone", "accent")
@@ -1751,12 +1773,18 @@ class AnnotationWindow(QMainWindow):
         self.fact_beur_num_edit = QLineEdit()
         self.fact_refference_edit = QLineEdit()
         self.fact_date_edit = QLineEdit()
+        self.fact_period_type_combo = QComboBox()
+        self.fact_period_type_combo.addItems(list(PERIOD_TYPE_OPTIONS))
+        self.fact_period_start_edit = QLineEdit()
+        self.fact_period_end_edit = QLineEdit()
         self.fact_currency_combo = QComboBox()
         self.fact_currency_combo.addItems(["", *CURRENCY_OPTIONS])
         self.fact_scale_combo = QComboBox()
         self.fact_scale_combo.addItems(["", *[str(s) for s in SCALE_OPTIONS]])
         self.fact_value_type_combo = QComboBox()
-        self.fact_value_type_combo.addItems(["", "amount", "%"])
+        self.fact_value_type_combo.addItems(list(VALUE_TYPE_OPTIONS))
+        self.fact_path_source_combo = QComboBox()
+        self.fact_path_source_combo.addItems(list(PATH_SOURCE_OPTIONS))
         self.fact_path_list = QListWidget()
         self.fact_path_list.setObjectName("pathList")
         self.fact_path_list.setSelectionMode(QAbstractItemView.SingleSelection)
@@ -1828,14 +1856,20 @@ class AnnotationWindow(QMainWindow):
         self.fact_beur_num_edit.setValidator(QIntValidator(0, 1_000_000_000, self))
         self.fact_refference_edit.setMinimumWidth(fact_field_min_width)
         self.fact_date_edit.setMinimumWidth(fact_field_min_width)
+        self.fact_period_type_combo.setMinimumWidth(112)
+        self.fact_period_start_edit.setMinimumWidth(fact_field_min_width)
+        self.fact_period_end_edit.setMinimumWidth(fact_field_min_width)
         self.fact_currency_combo.setMinimumWidth(112)
         self.fact_scale_combo.setMinimumWidth(112)
         self.fact_value_type_combo.setMinimumWidth(112)
+        self.fact_path_source_combo.setMinimumWidth(112)
         self.fact_path_list.setMinimumWidth(0)
         self.fact_is_beur_combo.setMaximumWidth(220)
+        self.fact_period_type_combo.setMaximumWidth(220)
         self.fact_currency_combo.setMaximumWidth(220)
         self.fact_scale_combo.setMaximumWidth(220)
         self.fact_value_type_combo.setMaximumWidth(220)
+        self.fact_path_source_combo.setMaximumWidth(220)
 
         bbox_block = self._inspector_field_block("BBox", self.fact_bbox_label)
         bbox_block.setMaximumWidth(132)
@@ -1847,6 +1881,10 @@ class AnnotationWindow(QMainWindow):
         scale_block.setMaximumWidth(220)
         value_type_block = self._inspector_field_block("Value Type", self.fact_value_type_combo)
         value_type_block.setMaximumWidth(220)
+        period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
+        period_type_block.setMaximumWidth(220)
+        path_source_block = self._inspector_field_block("Path Source", self.fact_path_source_combo)
+        path_source_block.setMaximumWidth(220)
 
         add_fact_editor_row(
             bbox_block,
@@ -1855,7 +1893,7 @@ class AnnotationWindow(QMainWindow):
             right_stretch=1,
         )
         add_fact_editor_row(
-            self._inspector_field_block("Ref Comment", self.fact_note_edit),
+            self._inspector_field_block("Comment Ref", self.fact_note_edit),
             note_flag_block,
             left_stretch=2,
             right_stretch=1,
@@ -1865,11 +1903,16 @@ class AnnotationWindow(QMainWindow):
             self._inspector_field_block("Note Num", self.fact_beur_num_edit),
         )
         add_fact_editor_row(
-            self._inspector_field_block("Ref Note", self.fact_refference_edit, required=True),
+            self._inspector_field_block("Note Ref", self.fact_refference_edit),
             self._inspector_field_block("Date", self.fact_date_edit),
         )
         add_fact_editor_row(currency_block, scale_block)
-        add_fact_editor_row(value_type_block, QWidget())
+        add_fact_editor_row(value_type_block, path_source_block)
+        add_fact_editor_row(period_type_block, QWidget())
+        add_fact_editor_row(
+            self._inspector_field_block("Period Start", self.fact_period_start_edit),
+            self._inspector_field_block("Period End", self.fact_period_end_edit),
+        )
         fact_editor_layout.addWidget(self._inspector_field_block("Path", path_panel))
 
         self.dup_fact_btn = QPushButton("Duplicate")
@@ -1917,21 +1960,33 @@ class AnnotationWindow(QMainWindow):
         self.batch_set_value_btn = QPushButton("Set Value")
         self.batch_clear_value_btn = QPushButton("Clear Value")
         self.batch_refference_edit = QLineEdit()
-        self.batch_refference_edit.setPlaceholderText("Ref note for selected bboxes")
-        self.batch_set_refference_btn = QPushButton("Set Ref Note")
-        self.batch_clear_refference_btn = QPushButton("Clear Ref Note")
+        self.batch_refference_edit.setPlaceholderText("Note ref for selected bboxes")
+        self.batch_set_refference_btn = QPushButton("Set Note Ref")
+        self.batch_clear_refference_btn = QPushButton("Clear Note Ref")
         self.batch_note_edit = QLineEdit()
-        self.batch_note_edit.setPlaceholderText("Ref comment text for selected bboxes")
-        self.batch_set_note_btn = QPushButton("Set Ref Comment")
-        self.batch_clear_note_btn = QPushButton("Clear Ref Comment")
+        self.batch_note_edit.setPlaceholderText("Comment ref text for selected bboxes")
+        self.batch_set_note_btn = QPushButton("Set Comment Ref")
+        self.batch_clear_note_btn = QPushButton("Clear Comment Ref")
         self.batch_note_name_edit = QLineEdit()
         self.batch_note_name_edit.setPlaceholderText("Note name for selected bboxes")
         self.batch_set_note_name_btn = QPushButton("Set Note Name")
         self.batch_clear_note_name_btn = QPushButton("Clear Note Name")
         self.batch_date_edit = QLineEdit()
-        self.batch_date_edit.setPlaceholderText("Date for selected bboxes (e.g. 30.09.2021)")
+        self.batch_date_edit.setPlaceholderText("Date for selected bboxes (e.g. 2024-12-31)")
         self.batch_set_date_btn = QPushButton("Set Date")
         self.batch_clear_date_btn = QPushButton("Clear Date")
+        self.batch_period_type_combo = QComboBox()
+        self.batch_period_type_combo.addItems(list(PERIOD_TYPE_OPTIONS))
+        self.batch_set_period_type_btn = QPushButton("Set period_type")
+        self.batch_clear_period_type_btn = QPushButton("Clear period_type")
+        self.batch_period_start_edit = QLineEdit()
+        self.batch_period_start_edit.setPlaceholderText("Period start (YYYY-MM-DD)")
+        self.batch_set_period_start_btn = QPushButton("Set Period Start")
+        self.batch_clear_period_start_btn = QPushButton("Clear Period Start")
+        self.batch_period_end_edit = QLineEdit()
+        self.batch_period_end_edit.setPlaceholderText("Period end (YYYY-MM-DD)")
+        self.batch_set_period_end_btn = QPushButton("Set Period End")
+        self.batch_clear_period_end_btn = QPushButton("Clear Period End")
         self.batch_is_beur_combo = QComboBox()
         self.batch_is_beur_combo.addItems(["false", "true"])
         self.batch_set_is_beur_btn = QPushButton("Apply note_flag")
@@ -1950,9 +2005,13 @@ class AnnotationWindow(QMainWindow):
         self.batch_set_scale_btn = QPushButton("Set scale")
         self.batch_clear_scale_btn = QPushButton("Clear scale")
         self.batch_value_type_combo = QComboBox()
-        self.batch_value_type_combo.addItems(["", "amount", "%"])
+        self.batch_value_type_combo.addItems(list(VALUE_TYPE_OPTIONS))
         self.batch_set_value_type_btn = QPushButton("Set value_type")
         self.batch_clear_value_type_btn = QPushButton("Clear value_type")
+        self.batch_path_source_combo = QComboBox()
+        self.batch_path_source_combo.addItems(list(PATH_SOURCE_OPTIONS))
+        self.batch_set_path_source_btn = QPushButton("Set path_source")
+        self.batch_clear_path_source_btn = QPushButton("Clear path_source")
         self.batch_resize_step_spin = QSpinBox()
         self.batch_resize_step_spin.setRange(1, 500)
         self.batch_resize_step_spin.setSingleStep(1)
@@ -2000,6 +2059,23 @@ class AnnotationWindow(QMainWindow):
         batch_date_row.addWidget(self.batch_date_edit)
         batch_date_row.addWidget(self.batch_set_date_btn)
         batch_date_row.addWidget(self.batch_clear_date_btn)
+        batch_period_type_row = QHBoxLayout()
+        batch_period_type_row.setSpacing(8)
+        batch_period_type_row.addWidget(QLabel("period_type:"))
+        batch_period_type_row.addWidget(self.batch_period_type_combo)
+        batch_period_type_row.addWidget(self.batch_set_period_type_btn)
+        batch_period_type_row.addWidget(self.batch_clear_period_type_btn)
+        batch_period_type_row.addStretch(1)
+        batch_period_start_row = QHBoxLayout()
+        batch_period_start_row.setSpacing(8)
+        batch_period_start_row.addWidget(self.batch_period_start_edit)
+        batch_period_start_row.addWidget(self.batch_set_period_start_btn)
+        batch_period_start_row.addWidget(self.batch_clear_period_start_btn)
+        batch_period_end_row = QHBoxLayout()
+        batch_period_end_row.setSpacing(8)
+        batch_period_end_row.addWidget(self.batch_period_end_edit)
+        batch_period_end_row.addWidget(self.batch_set_period_end_btn)
+        batch_period_end_row.addWidget(self.batch_clear_period_end_btn)
         batch_is_beur_row = QHBoxLayout()
         batch_is_beur_row.setSpacing(8)
         batch_is_beur_row.addWidget(QLabel("note_flag:"))
@@ -2033,6 +2109,13 @@ class AnnotationWindow(QMainWindow):
         batch_value_type_row.addWidget(self.batch_set_value_type_btn)
         batch_value_type_row.addWidget(self.batch_clear_value_type_btn)
         batch_value_type_row.addStretch(1)
+        batch_path_source_row = QHBoxLayout()
+        batch_path_source_row.setSpacing(8)
+        batch_path_source_row.addWidget(QLabel("path_source:"))
+        batch_path_source_row.addWidget(self.batch_path_source_combo)
+        batch_path_source_row.addWidget(self.batch_set_path_source_btn)
+        batch_path_source_row.addWidget(self.batch_clear_path_source_btn)
+        batch_path_source_row.addStretch(1)
         batch_resize_head = QHBoxLayout()
         batch_resize_head.setSpacing(8)
         batch_resize_head.addWidget(QLabel("Grow step (px):"))
@@ -2054,11 +2137,15 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_note_row)
         batch_layout.addLayout(batch_note_name_row)
         batch_layout.addLayout(batch_date_row)
+        batch_layout.addLayout(batch_period_type_row)
+        batch_layout.addLayout(batch_period_start_row)
+        batch_layout.addLayout(batch_period_end_row)
         batch_layout.addLayout(batch_is_beur_row)
         batch_layout.addLayout(batch_beur_num_row)
         batch_layout.addLayout(batch_currency_row)
         batch_layout.addLayout(batch_scale_row)
         batch_layout.addLayout(batch_value_type_row)
+        batch_layout.addLayout(batch_path_source_row)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
         fact_layout.addWidget(self.batch_box)
@@ -2090,7 +2177,7 @@ class AnnotationWindow(QMainWindow):
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+click on boxes or Shift+drag on empty page area to select multiple boxes. "
-            "Use Batch Edit to change value/ref_note/ref_comment/note_name/date/note_flag/note_num/currency/scale/value_type and path levels across selected boxes. "
+            "Use Batch Edit to change value/note_ref/comment_ref/note_name/date/period fields/note_flag/note_num/currency/scale/value_type/path_source and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -2152,21 +2239,27 @@ class AnnotationWindow(QMainWindow):
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
+        self.statement_type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.doc_language_combo.activated.connect(lambda _: self._on_meta_edited())
         self.doc_direction_combo.activated.connect(lambda _: self._on_meta_edited())
         self.company_name_edit.editingFinished.connect(self._on_meta_edited)
         self.company_id_edit.editingFinished.connect(self._on_meta_edited)
         self.report_year_edit.editingFinished.connect(self._on_meta_edited)
+        self.entity_type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.fact_value_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("value"))
-        self.fact_note_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("ref_comment"))
+        self.fact_note_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("comment_ref"))
         self.fact_note_name_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_name"))
         self.fact_is_beur_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("note_flag"))
         self.fact_beur_num_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_num"))
-        self.fact_refference_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("ref_note"))
+        self.fact_refference_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_ref"))
         self.fact_date_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("date"))
+        self.fact_period_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("period_type"))
+        self.fact_period_start_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("period_start"))
+        self.fact_period_end_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("period_end"))
         self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("currency"))
         self.fact_scale_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("scale"))
         self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_type"))
+        self.fact_path_source_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("path_source"))
         self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_field_edited("path"))
         self.fact_path_list.itemSelectionChanged.connect(self._update_path_controls)
         self.fact_path_list.model().rowsMoved.connect(lambda *_: self._on_path_reordered())
@@ -2180,11 +2273,15 @@ class AnnotationWindow(QMainWindow):
         self.batch_note_edit.textChanged.connect(self._update_batch_controls)
         self.batch_note_name_edit.textChanged.connect(self._update_batch_controls)
         self.batch_date_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_period_type_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_period_start_edit.textChanged.connect(self._update_batch_controls)
+        self.batch_period_end_edit.textChanged.connect(self._update_batch_controls)
         self.batch_is_beur_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_beur_num_edit.textChanged.connect(self._update_batch_controls)
         self.batch_currency_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_scale_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_value_type_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_path_source_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
         self.batch_insert_path_btn.clicked.connect(self.batch_insert_path_level)
@@ -2200,6 +2297,12 @@ class AnnotationWindow(QMainWindow):
         self.batch_clear_note_name_btn.clicked.connect(self.batch_clear_note_name)
         self.batch_set_date_btn.clicked.connect(self.batch_set_date)
         self.batch_clear_date_btn.clicked.connect(self.batch_clear_date)
+        self.batch_set_period_type_btn.clicked.connect(self.batch_set_period_type)
+        self.batch_clear_period_type_btn.clicked.connect(self.batch_clear_period_type)
+        self.batch_set_period_start_btn.clicked.connect(self.batch_set_period_start)
+        self.batch_clear_period_start_btn.clicked.connect(self.batch_clear_period_start)
+        self.batch_set_period_end_btn.clicked.connect(self.batch_set_period_end)
+        self.batch_clear_period_end_btn.clicked.connect(self.batch_clear_period_end)
         self.batch_set_is_beur_btn.clicked.connect(self.batch_set_is_beur)
         self.batch_clear_is_beur_btn.clicked.connect(self.batch_clear_is_beur)
         self.batch_set_beur_num_btn.clicked.connect(self.batch_set_beur_num)
@@ -2210,6 +2313,8 @@ class AnnotationWindow(QMainWindow):
         self.batch_clear_scale_btn.clicked.connect(self.batch_clear_scale)
         self.batch_set_value_type_btn.clicked.connect(self.batch_set_value_type)
         self.batch_clear_value_type_btn.clicked.connect(self.batch_clear_value_type)
+        self.batch_set_path_source_btn.clicked.connect(self.batch_set_path_source)
+        self.batch_clear_path_source_btn.clicked.connect(self.batch_clear_path_source)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
         self.batch_expand_right_btn.clicked.connect(lambda: self.batch_expand_selected("right"))
         self.batch_expand_up_btn.clicked.connect(lambda: self.batch_expand_selected("up"))
@@ -2449,11 +2554,15 @@ class AnnotationWindow(QMainWindow):
         has_note_text = bool(self.batch_note_edit.text().strip()) if hasattr(self, "batch_note_edit") else False
         has_note_name_text = bool(self.batch_note_name_edit.text().strip()) if hasattr(self, "batch_note_name_edit") else False
         has_date_text = bool(self.batch_date_edit.text().strip()) if hasattr(self, "batch_date_edit") else False
+        has_period_type_choice = bool(self.batch_period_type_combo.currentText().strip()) if hasattr(self, "batch_period_type_combo") else False
+        has_period_start_text = bool(self.batch_period_start_edit.text().strip()) if hasattr(self, "batch_period_start_edit") else False
+        has_period_end_text = bool(self.batch_period_end_edit.text().strip()) if hasattr(self, "batch_period_end_edit") else False
         has_is_beur_choice = bool(self.batch_is_beur_combo.currentText().strip()) if hasattr(self, "batch_is_beur_combo") else False
         has_beur_num_text = bool(self.batch_beur_num_edit.text().strip()) if hasattr(self, "batch_beur_num_edit") else False
         has_currency_choice = bool(self.batch_currency_combo.currentText().strip()) if hasattr(self, "batch_currency_combo") else False
         has_scale_choice = bool(self.batch_scale_combo.currentText().strip()) if hasattr(self, "batch_scale_combo") else False
         has_value_type_choice = bool(self.batch_value_type_combo.currentText().strip()) if hasattr(self, "batch_value_type_combo") else False
+        has_path_source_choice = bool(self.batch_path_source_combo.currentText().strip()) if hasattr(self, "batch_path_source_combo") else False
         if hasattr(self, "batch_selected_label"):
             self.batch_selected_label.setText(f"Selected: {selected_count}")
         if hasattr(self, "batch_prepend_path_btn"):
@@ -2498,6 +2607,24 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_date_btn.setEnabled(has_selection and has_date_text)
         if hasattr(self, "batch_clear_date_btn"):
             self.batch_clear_date_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_period_type_combo"):
+            self.batch_period_type_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_period_type_btn"):
+            self.batch_set_period_type_btn.setEnabled(has_selection and has_period_type_choice)
+        if hasattr(self, "batch_clear_period_type_btn"):
+            self.batch_clear_period_type_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_period_start_edit"):
+            self.batch_period_start_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_period_start_btn"):
+            self.batch_set_period_start_btn.setEnabled(has_selection and has_period_start_text)
+        if hasattr(self, "batch_clear_period_start_btn"):
+            self.batch_clear_period_start_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_period_end_edit"):
+            self.batch_period_end_edit.setEnabled(has_selection)
+        if hasattr(self, "batch_set_period_end_btn"):
+            self.batch_set_period_end_btn.setEnabled(has_selection and has_period_end_text)
+        if hasattr(self, "batch_clear_period_end_btn"):
+            self.batch_clear_period_end_btn.setEnabled(has_selection)
         if hasattr(self, "batch_is_beur_combo"):
             self.batch_is_beur_combo.setEnabled(has_selection)
         if hasattr(self, "batch_set_is_beur_btn"):
@@ -2528,6 +2655,12 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_value_type_btn.setEnabled(has_selection and has_value_type_choice)
         if hasattr(self, "batch_clear_value_type_btn"):
             self.batch_clear_value_type_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_path_source_combo"):
+            self.batch_path_source_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_path_source_btn"):
+            self.batch_set_path_source_btn.setEnabled(has_selection and has_path_source_choice)
+        if hasattr(self, "batch_clear_path_source_btn"):
+            self.batch_clear_path_source_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_left_btn"):
             self.batch_expand_left_btn.setEnabled(has_selection)
         if hasattr(self, "batch_expand_right_btn"):
@@ -2659,7 +2792,7 @@ class AnnotationWindow(QMainWindow):
                 (
                     "Selected bboxes do not all share the same attribute path.\n"
                     f"Found paths: {detail}\n\n"
-                    "Clear ref_note for all selected bboxes anyway?"
+                    "Clear note_ref for all selected bboxes anyway?"
                 ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
@@ -2668,10 +2801,10 @@ class AnnotationWindow(QMainWindow):
                 return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["ref_note"] = None
+            fact["note_ref"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared ref_note")
+        self._batch_update_selected_facts(_transform, "Cleared note_ref")
 
     def batch_set_value(self) -> None:
         value = self.batch_value_edit.text().strip()
@@ -2695,33 +2828,33 @@ class AnnotationWindow(QMainWindow):
     def batch_set_refference(self) -> None:
         refference = self.batch_refference_edit.text().strip()
         if not refference:
-            self.statusBar().showMessage("Enter ref_note text first.", 2500)
+            self.statusBar().showMessage("Enter note_ref text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["ref_note"] = refference
+            fact["note_ref"] = refference
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated ref_note")
+        self._batch_update_selected_facts(_transform, "Updated note_ref")
 
     def batch_set_note(self) -> None:
         note = self.batch_note_edit.text().strip()
         if not note:
-            self.statusBar().showMessage("Enter ref comment text first.", 2500)
+            self.statusBar().showMessage("Enter comment_ref text first.", 2500)
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["ref_comment"] = note
+            fact["comment_ref"] = note
             return fact
 
-        self._batch_update_selected_facts(_transform, "Updated ref comment")
+        self._batch_update_selected_facts(_transform, "Updated comment_ref")
 
     def batch_clear_note(self) -> None:
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["ref_comment"] = None
+            fact["comment_ref"] = None
             return fact
 
-        self._batch_update_selected_facts(_transform, "Cleared ref comment")
+        self._batch_update_selected_facts(_transform, "Cleared comment_ref")
 
     def batch_set_note_name(self) -> None:
         note_name = self.batch_note_name_edit.text().strip()
@@ -2760,6 +2893,63 @@ class AnnotationWindow(QMainWindow):
             return fact
 
         self._batch_update_selected_facts(_transform, "Cleared date")
+
+    def batch_set_period_type(self) -> None:
+        period_type = self.batch_period_type_combo.currentText().strip()
+        if not period_type:
+            self.statusBar().showMessage("Choose period_type first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_type"] = period_type
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated period_type to {period_type}")
+
+    def batch_clear_period_type(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_type"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared period_type")
+
+    def batch_set_period_start(self) -> None:
+        period_start = self.batch_period_start_edit.text().strip()
+        if not period_start:
+            self.statusBar().showMessage("Enter period_start text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_start"] = period_start
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated period_start")
+
+    def batch_clear_period_start(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_start"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared period_start")
+
+    def batch_set_period_end(self) -> None:
+        period_end = self.batch_period_end_edit.text().strip()
+        if not period_end:
+            self.statusBar().showMessage("Enter period_end text first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_end"] = period_end
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Updated period_end")
+
+    def batch_clear_period_end(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["period_end"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared period_end")
 
     def batch_set_is_beur(self) -> None:
         selected = self.batch_is_beur_combo.currentText().strip().lower()
@@ -2865,6 +3055,25 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, "Cleared value_type")
 
+    def batch_set_path_source(self) -> None:
+        path_source = self.batch_path_source_combo.currentText().strip()
+        if not path_source:
+            self.statusBar().showMessage("Choose path_source first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["path_source"] = path_source
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated path_source to {path_source}")
+
+    def batch_clear_path_source(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["path_source"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared path_source")
+
     def _batch_resize_step(self, multiplier: int = 1) -> float:
         base = float(self.batch_resize_step_spin.value()) if hasattr(self, "batch_resize_step_spin") else 1.0
         mult = float(max(1, multiplier))
@@ -2957,9 +3166,13 @@ class AnnotationWindow(QMainWindow):
         self.fact_beur_num_edit.setEnabled(enabled)
         self.fact_refference_edit.setEnabled(enabled)
         self.fact_date_edit.setEnabled(enabled)
+        self.fact_period_type_combo.setEnabled(enabled)
+        self.fact_period_start_edit.setEnabled(enabled)
+        self.fact_period_end_edit.setEnabled(enabled)
         self.fact_currency_combo.setEnabled(enabled)
         self.fact_scale_combo.setEnabled(enabled)
         self.fact_value_type_combo.setEnabled(enabled)
+        self.fact_path_source_combo.setEnabled(enabled)
         self.fact_path_list.setEnabled(enabled)
         self._set_path_list_editable(enabled and not multi_select)
         self.dup_fact_btn.setEnabled(enabled and not multi_select)
@@ -2974,14 +3187,18 @@ class AnnotationWindow(QMainWindow):
             self.fact_beur_num_edit,
             self.fact_refference_edit,
             self.fact_date_edit,
+            self.fact_period_start_edit,
+            self.fact_period_end_edit,
         ):
             edit.setPlaceholderText("")
             edit.setModified(False)
         for combo in (
             self.fact_is_beur_combo,
+            self.fact_period_type_combo,
             self.fact_currency_combo,
             self.fact_scale_combo,
             self.fact_value_type_combo,
+            self.fact_path_source_combo,
         ):
             if hasattr(combo, "setPlaceholderText"):
                 combo.setPlaceholderText("")
@@ -3000,9 +3217,13 @@ class AnnotationWindow(QMainWindow):
             self.fact_beur_num_edit.setText("")
             self.fact_refference_edit.setText("")
             self.fact_date_edit.setText("")
+            self.fact_period_type_combo.setCurrentIndex(0)
+            self.fact_period_start_edit.setText("")
+            self.fact_period_end_edit.setText("")
             self.fact_currency_combo.setCurrentIndex(0)
             self.fact_scale_combo.setCurrentIndex(0)
             self.fact_value_type_combo.setCurrentIndex(0)
+            self.fact_path_source_combo.setCurrentIndex(0)
             self.fact_path_list.clear()
         finally:
             self._is_loading_fact_editor = False
@@ -3022,15 +3243,20 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
-            self.fact_note_edit.setText(str(fact.get("ref_comment") or ""))
+            self.fact_note_edit.setText(str(fact.get("comment_ref") or ""))
             self.fact_note_name_edit.setText(str(fact.get("note_name") or ""))
             is_beur = bool(fact.get("note_flag"))
             is_beur_text = "true" if is_beur else "false"
             idx_is_beur = self.fact_is_beur_combo.findText(is_beur_text)
             self.fact_is_beur_combo.setCurrentIndex(max(0, idx_is_beur))
             self.fact_beur_num_edit.setText("" if fact.get("note_num") is None else str(fact.get("note_num")))
-            self.fact_refference_edit.setText(str(fact.get("ref_note") or ""))
+            self.fact_refference_edit.setText(str(fact.get("note_ref") or ""))
             self.fact_date_edit.setText(str(fact.get("date") or ""))
+            period_type = str(fact.get("period_type") or "")
+            idx_period_type = self.fact_period_type_combo.findText(period_type)
+            self.fact_period_type_combo.setCurrentIndex(max(0, idx_period_type))
+            self.fact_period_start_edit.setText(str(fact.get("period_start") or ""))
+            self.fact_period_end_edit.setText(str(fact.get("period_end") or ""))
             self.fact_path_list.clear()
             for path_index, path_level in enumerate(fact.get("path") or []):
                 self.fact_path_list.addItem(self._make_path_item(str(path_level), path_index=path_index))
@@ -3048,6 +3274,10 @@ class AnnotationWindow(QMainWindow):
             value_type = str(fact.get("value_type") or "")
             idx_value_type = self.fact_value_type_combo.findText(value_type)
             self.fact_value_type_combo.setCurrentIndex(max(0, idx_value_type))
+
+            path_source = str(fact.get("path_source") or "")
+            idx_path_source = self.fact_path_source_combo.findText(path_source)
+            self.fact_path_source_combo.setCurrentIndex(max(0, idx_path_source))
         finally:
             self._is_loading_fact_editor = False
         self._update_path_controls()
@@ -3101,7 +3331,7 @@ class AnnotationWindow(QMainWindow):
             self._reset_fact_editor_placeholders()
             self.fact_bbox_label.setText(f"{selected_count} selected")
             self._set_multi_line_edit_value(self.fact_value_edit, "value", items)
-            self._set_multi_line_edit_value(self.fact_note_edit, "ref_comment", items)
+            self._set_multi_line_edit_value(self.fact_note_edit, "comment_ref", items)
             self._set_multi_line_edit_value(self.fact_note_name_edit, "note_name", items)
             self._set_multi_combo_value(
                 self.fact_is_beur_combo,
@@ -3110,8 +3340,11 @@ class AnnotationWindow(QMainWindow):
                 formatter=lambda value: "true" if bool(value) else "false",
             )
             self._set_multi_line_edit_value(self.fact_beur_num_edit, "note_num", items)
-            self._set_multi_line_edit_value(self.fact_refference_edit, "ref_note", items)
+            self._set_multi_line_edit_value(self.fact_refference_edit, "note_ref", items)
             self._set_multi_line_edit_value(self.fact_date_edit, "date", items)
+            self._set_multi_combo_value(self.fact_period_type_combo, "period_type", items)
+            self._set_multi_line_edit_value(self.fact_period_start_edit, "period_start", items)
+            self._set_multi_line_edit_value(self.fact_period_end_edit, "period_end", items)
             self._set_multi_combo_value(self.fact_currency_combo, "currency", items)
             self._set_multi_combo_value(
                 self.fact_scale_combo,
@@ -3120,6 +3353,7 @@ class AnnotationWindow(QMainWindow):
                 formatter=lambda value: "" if value is None else str(value),
             )
             self._set_multi_combo_value(self.fact_value_type_combo, "value_type", items)
+            self._set_multi_combo_value(self.fact_path_source_combo, "path_source", items)
 
             path_value, path_mixed = self._shared_fact_value(items, "path")
             self.fact_path_list.clear()
@@ -3209,13 +3443,17 @@ class AnnotationWindow(QMainWindow):
         return normalize_fact_data(
             {
                 "value": self.fact_value_edit.text().strip(),
-                "ref_comment": self.fact_note_edit.text().strip() or None,
+                "comment_ref": self.fact_note_edit.text().strip() or None,
                 "note_name": self.fact_note_name_edit.text().strip() or None,
                 "note_flag": is_beur_value,
                 "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
-                "ref_note": self.fact_refference_edit.text().strip() or None,
+                "note_ref": self.fact_refference_edit.text().strip() or None,
                 "date": self.fact_date_edit.text().strip() or None,
+                "period_type": self.fact_period_type_combo.currentText().strip() or None,
+                "period_start": self.fact_period_start_edit.text().strip() or None,
+                "period_end": self.fact_period_end_edit.text().strip() or None,
                 "path": path_parts,
+                "path_source": self.fact_path_source_combo.currentText().strip() or None,
                 "currency": self.fact_currency_combo.currentText().strip() or None,
                 "scale": int(scale_text) if scale_text else None,
                 "value_type": self.fact_value_type_combo.currentText().strip() or None,
@@ -3344,9 +3582,9 @@ class AnnotationWindow(QMainWindow):
         if field_name == "value":
             self._apply_fact_field_to_selected_items("value", self.fact_value_edit.text().strip(), widget=self.fact_value_edit)
             return
-        if field_name == "ref_comment":
+        if field_name == "comment_ref":
             self._apply_fact_field_to_selected_items(
-                "ref_comment",
+                "comment_ref",
                 self.fact_note_edit.text().strip() or None,
                 widget=self.fact_note_edit,
             )
@@ -3368,15 +3606,26 @@ class AnnotationWindow(QMainWindow):
                 widget=self.fact_beur_num_edit,
             )
             return
-        if field_name == "ref_note":
+        if field_name == "note_ref":
             self._apply_fact_field_to_selected_items(
-                "ref_note",
+                "note_ref",
                 self.fact_refference_edit.text().strip() or None,
                 widget=self.fact_refference_edit,
             )
             return
         if field_name == "date":
             self._apply_fact_field_to_selected_items("date", self.fact_date_edit.text().strip() or None, widget=self.fact_date_edit)
+            self._sync_fact_editor_from_selection()
+            return
+        if field_name == "period_type":
+            self._apply_fact_field_to_selected_items("period_type", self.fact_period_type_combo.currentText().strip() or None)
+            self._sync_fact_editor_from_selection()
+            return
+        if field_name == "period_start":
+            self._apply_fact_field_to_selected_items("period_start", self.fact_period_start_edit.text().strip() or None, widget=self.fact_period_start_edit)
+            return
+        if field_name == "period_end":
+            self._apply_fact_field_to_selected_items("period_end", self.fact_period_end_edit.text().strip() or None, widget=self.fact_period_end_edit)
             return
         if field_name == "currency":
             self._apply_fact_field_to_selected_items("currency", self.fact_currency_combo.currentText().strip() or None)
@@ -3387,6 +3636,9 @@ class AnnotationWindow(QMainWindow):
             return
         if field_name == "value_type":
             self._apply_fact_field_to_selected_items("value_type", self.fact_value_type_combo.currentText().strip() or None)
+            return
+        if field_name == "path_source":
+            self._apply_fact_field_to_selected_items("path_source", self.fact_path_source_combo.currentText().strip() or None)
             return
         if field_name == "path":
             self._apply_fact_path_to_selected_items()
@@ -3542,7 +3794,7 @@ class AnnotationWindow(QMainWindow):
         return {
             "current_index": self.current_index,
             "page_states": deepcopy(self.page_states),
-            "document_meta": deepcopy(self.document_meta),
+            "metadata": deepcopy(self.document_meta),
         }
 
     def _init_history(self) -> None:
@@ -3589,7 +3841,7 @@ class AnnotationWindow(QMainWindow):
         self._is_restoring_history = True
         try:
             self.page_states = snapshot.get("page_states", {})
-            self.document_meta = normalize_document_meta(snapshot.get("document_meta"))
+            self.document_meta = normalize_document_meta(snapshot.get("metadata", snapshot.get("document_meta")))
             self._history_index = index
             self._recompute_all_page_issues(emit=False)
             self.show_page(target_index)
@@ -3612,7 +3864,7 @@ class AnnotationWindow(QMainWindow):
     def _snapshot_saved_content(self) -> Dict[str, Any]:
         return {
             "page_states": deepcopy(self.page_states),
-            "document_meta": deepcopy(self.document_meta),
+            "metadata": deepcopy(self.document_meta),
         }
 
     def _mark_saved_content(self) -> None:
@@ -3671,6 +3923,7 @@ class AnnotationWindow(QMainWindow):
         company_id = self.company_id_edit.text().strip() or None
         report_year_text = self.report_year_edit.text().strip()
         report_year = int(report_year_text) if report_year_text else None
+        entity_type = self.entity_type_combo.currentText().strip() or None
         return normalize_document_meta(
             {
                 "language": language,
@@ -3678,6 +3931,7 @@ class AnnotationWindow(QMainWindow):
                 "company_name": company_name,
                 "company_id": company_id,
                 "report_year": report_year,
+                "entity_type": entity_type,
             }
         )
 
@@ -3685,7 +3939,8 @@ class AnnotationWindow(QMainWindow):
         return {
             "entity_name": self.entity_name_edit.text().strip() or None,
             "page_num": self.page_num_edit.text().strip() or None,
-            "type": self.type_combo.currentText(),
+            "page_type": self.type_combo.currentText(),
+            "statement_type": self.statement_type_combo.currentText().strip() or None,
             "title": self.title_edit.text().strip() or None,
         }
 
@@ -3853,11 +4108,17 @@ class AnnotationWindow(QMainWindow):
                 "note_name": self.fact_note_name_edit,
                 "note_num": self.fact_beur_num_edit,
                 "note_flag": self.fact_is_beur_combo,
-                "ref_note": self.fact_refference_edit,
+                "note_ref": self.fact_refference_edit,
+                "comment_ref": self.fact_note_edit,
+                "period_type": self.fact_period_type_combo,
+                "period_start": self.fact_period_start_edit,
+                "period_end": self.fact_period_end_edit,
+                "path_source": self.fact_path_source_combo,
             }
         else:
             widget_map = {
-                "type": self.type_combo,
+                "page_type": self.type_combo,
+                "statement_type": self.statement_type_combo,
                 "currency": self.facts_list,
                 "scale": self.facts_list,
                 "value_type": self.facts_list,
@@ -3889,6 +4150,7 @@ class AnnotationWindow(QMainWindow):
         company_name = normalized.get("company_name")
         company_id = normalized.get("company_id")
         report_year = normalized.get("report_year")
+        entity_type = str(normalized.get("entity_type") or "")
         if language == "he":
             self.doc_language_combo.setCurrentIndex(1)
         elif language == "en":
@@ -3905,6 +4167,8 @@ class AnnotationWindow(QMainWindow):
         self.company_name_edit.setText(str(company_name or ""))
         self.company_id_edit.setText(str(company_id or ""))
         self.report_year_edit.setText("" if report_year is None else str(report_year))
+        entity_type_idx = self.entity_type_combo.findText(entity_type)
+        self.entity_type_combo.setCurrentIndex(max(0, entity_type_idx))
 
     def _direction_payload_for_current_page(self) -> Dict[str, Any]:
         page_payload: Dict[str, Any] = {}
@@ -4078,12 +4342,16 @@ class AnnotationWindow(QMainWindow):
             round(float(bbox["w"]), 2),
             round(float(bbox["h"]), 2),
             str(normalized_fact.get("value") or ""),
-            str(normalized_fact.get("ref_comment") or ""),
+            str(normalized_fact.get("comment_ref") or ""),
             str(normalized_fact.get("note_flag") if normalized_fact.get("note_flag") is not None else ""),
             str(normalized_fact.get("note_name") or ""),
             str(normalized_fact.get("note_num") if normalized_fact.get("note_num") is not None else ""),
-            str(normalized_fact.get("ref_note") or ""),
+            str(normalized_fact.get("note_ref") or ""),
             str(normalized_fact.get("date") or ""),
+            str(normalized_fact.get("period_type") or ""),
+            str(normalized_fact.get("period_start") or ""),
+            str(normalized_fact.get("period_end") or ""),
+            str(normalized_fact.get("path_source") or ""),
             path,
         )
 
@@ -4092,7 +4360,9 @@ class AnnotationWindow(QMainWindow):
         if page_idx < 0:
             return
         state = self.page_states.get(page_name, self._default_state(page_idx))
-        normalized_meta = {**self._default_meta(page_idx), **(state.meta or {}), **(meta_payload or {})}
+        normalized_meta = PageMeta.model_validate(
+            {**self._default_meta(page_idx), **(state.meta or {}), **(meta_payload or {})}
+        ).model_dump(mode="json")
         self.page_states[page_name] = PageState(meta=normalized_meta, facts=list(state.facts))
 
         if self.current_index >= 0 and self.page_images[self.current_index].name == page_name:
@@ -4100,9 +4370,12 @@ class AnnotationWindow(QMainWindow):
             try:
                 self.entity_name_edit.setText(normalized_meta.get("entity_name") or "")
                 self.page_num_edit.setText(normalized_meta.get("page_num") or "")
-                type_value = normalized_meta.get("type") or PageType.other.value
+                type_value = normalized_meta.get("page_type") or PageType.other.value
                 type_idx = self.type_combo.findText(type_value)
                 self.type_combo.setCurrentIndex(type_idx if type_idx >= 0 else 0)
+                statement_type_value = str(normalized_meta.get("statement_type") or "")
+                statement_type_idx = self.statement_type_combo.findText(statement_type_value)
+                self.statement_type_combo.setCurrentIndex(max(0, statement_type_idx))
                 self.title_edit.setText(normalized_meta.get("title") or "")
             finally:
                 self._is_loading_page = False
@@ -4962,14 +5235,17 @@ class AnnotationWindow(QMainWindow):
                 continue
             self.scene.addItem(AnnotRectItem(rect, record.fact))
 
-        meta = {**self._default_meta(index), **(state.meta or {})}
+        meta = PageMeta.model_validate({**self._default_meta(index), **(state.meta or {})}).model_dump(mode="json")
         self._is_loading_page = True
         try:
             self.entity_name_edit.setText(meta.get("entity_name") or "")
             self.page_num_edit.setText(meta.get("page_num") or "")
-            type_value = meta.get("type") or PageType.other.value
+            type_value = meta.get("page_type") or PageType.other.value
             type_idx = self.type_combo.findText(type_value)
             self.type_combo.setCurrentIndex(type_idx if type_idx >= 0 else 0)
+            statement_type_value = str(meta.get("statement_type") or "")
+            statement_type_idx = self.statement_type_combo.findText(statement_type_value)
+            self.statement_type_combo.setCurrentIndex(max(0, statement_type_idx))
             self.title_edit.setText(meta.get("title") or "")
             self._set_document_meta_ui(self.document_meta)
         finally:
@@ -5045,15 +5321,15 @@ class AnnotationWindow(QMainWindow):
             rect = item_scene_rect(item)
             value = str(item.fact_data.get("value") or "")
             path = " > ".join(item.fact_data.get("path") or [])
-            ref_comment = str(item.fact_data.get("ref_comment") or "")
+            comment_ref = str(item.fact_data.get("comment_ref") or "")
             note_num = "" if item.fact_data.get("note_num") is None else str(item.fact_data.get("note_num"))
             note_name = str(item.fact_data.get("note_name") or "")
             summary = f"#{idx} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
                 summary = f"{summary} | {path}"
-            if ref_comment:
-                trimmed_ref_comment = (ref_comment[:32] + "...") if len(ref_comment) > 35 else ref_comment
-                summary = f"{summary} | ref_comment: {trimmed_ref_comment}"
+            if comment_ref:
+                trimmed_comment_ref = (comment_ref[:32] + "...") if len(comment_ref) > 35 else comment_ref
+                summary = f"{summary} | comment_ref: {trimmed_comment_ref}"
             if note_num:
                 trimmed_note_num = (note_num[:32] + "...") if len(note_num) > 35 else note_num
                 summary = f"{summary} | note_num: {trimmed_note_num}"
@@ -5061,8 +5337,12 @@ class AnnotationWindow(QMainWindow):
                 trimmed_note_name = (note_name[:32] + "...") if len(note_name) > 35 else note_name
                 summary = f"{summary} | note_name: {trimmed_note_name}"
             summary = f"{summary} | note_flag: {bool(item.fact_data.get('note_flag'))}"
-            if item.fact_data.get("ref_note"):
-                summary = f"{summary} | ref_note: {item.fact_data.get('ref_note')}"
+            if item.fact_data.get("note_ref"):
+                summary = f"{summary} | note_ref: {item.fact_data.get('note_ref')}"
+            if item.fact_data.get("period_type"):
+                summary = f"{summary} | period_type: {item.fact_data.get('period_type')}"
+            if item.fact_data.get("path_source"):
+                summary = f"{summary} | path_source: {item.fact_data.get('path_source')}"
             self.facts_list.addItem(QListWidgetItem(summary))
             list_item = self.facts_list.item(idx - 1)
             if list_item is not None and item in selected_items:
@@ -5293,6 +5573,69 @@ class AnnotationWindow(QMainWindow):
         else:
             self.statusBar().showMessage(f"Deleted {deleted_count} selected bboxes.", 2500)
 
+    @staticmethod
+    def _payload_uses_legacy_schema(payload: Any) -> bool:
+        if not isinstance(payload, dict):
+            return False
+        if "document_meta" in payload:
+            return True
+        pages = payload.get("pages")
+        if not isinstance(pages, list):
+            return False
+        for page in pages:
+            if not isinstance(page, dict):
+                continue
+            meta = page.get("meta")
+            if isinstance(meta, dict) and "type" in meta:
+                return True
+            facts = page.get("facts")
+            if not isinstance(facts, list):
+                continue
+            for fact in facts:
+                if not isinstance(fact, dict):
+                    continue
+                if any(
+                    key in fact
+                    for key in (
+                        "ref_comment",
+                        "comment",
+                        "ref_note",
+                        "note_reference",
+                        "refference",
+                        "reference",
+                        "ref",
+                        "is_beur",
+                        "beur_num",
+                        "beur_number",
+                    )
+                ):
+                    return True
+                if str(fact.get("value_type") or "").strip() == "%":
+                    return True
+        return False
+
+    def _backup_legacy_annotations_if_needed(self) -> Optional[dict[str, Any]]:
+        if not self.annotations_path.exists():
+            return None
+        try:
+            existing_payload = json.loads(self.annotations_path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+        if not self._payload_uses_legacy_schema(existing_payload):
+            return None
+        direction_info = resolve_reading_direction(
+            self.document_meta,
+            payload=existing_payload,
+            default_direction="rtl",
+        )
+        return create_annotation_backup(
+            REPO_ROOT,
+            self.annotations_path,
+            reason="schema_migration",
+            algo_version="annotator_schema_migration_v1",
+            direction_source=str(direction_info.get("source") or "annotator_save"),
+        )
+
     def save_annotations(self) -> bool:
         self._capture_current_state()
         try:
@@ -5319,8 +5662,11 @@ class AnnotationWindow(QMainWindow):
             except OSError:
                 no_changes = False
         self.annotations_path.parent.mkdir(parents=True, exist_ok=True)
+        backup_info: Optional[dict[str, Any]] = None
         try:
-            self.annotations_path.write_text(serialized, encoding="utf-8")
+            if not no_changes:
+                backup_info = self._backup_legacy_annotations_if_needed()
+            atomic_write_text(self.annotations_path, serialized, encoding="utf-8")
         except OSError as exc:
             QMessageBox.warning(self, "Save failed", str(exc))
             return False
@@ -5353,8 +5699,11 @@ class AnnotationWindow(QMainWindow):
                 )
             return True
         warning_suffix = f" | format_warnings={len(warning_findings)}" if warning_findings else ""
+        backup_suffix = ""
+        if backup_info is not None:
+            backup_suffix = f"\n\nLegacy backup created at:\n{backup_info['backup_path']}"
         self.statusBar().showMessage(f"Saved: {self.annotations_path}{warning_suffix}", 6000)
-        QMessageBox.information(self, "Saved", f"Annotations saved to:\n{self.annotations_path}")
+        QMessageBox.information(self, "Saved", f"Annotations saved to:\n{self.annotations_path}{backup_suffix}")
         self.annotations_saved.emit(self.annotations_path)
         self._mark_saved_content()
         if warning_findings:

@@ -36,13 +36,17 @@ class PageState:
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
-        "ref_comment": None,
+        "comment_ref": None,
         "note_flag": False,
         "note_name": None,
         "note_num": None,
-        "ref_note": None,
+        "note_ref": None,
         "date": None,
+        "period_type": None,
+        "period_start": None,
+        "period_end": None,
         "path": [],
+        "path_source": None,
         "currency": None,
         "scale": None,
         "value_type": None,
@@ -96,7 +100,8 @@ def default_page_meta(index: int) -> Dict[str, Any]:
     return {
         "entity_name": None,
         "page_num": None,
-        "type": PageType.other.value,
+        "page_type": PageType.other.value,
+        "statement_type": None,
         "title": None,
     }
 
@@ -108,7 +113,9 @@ def _coerce_raw_fact(raw_fact: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -> Dict[str, PageState]:
-    available = set(page_image_names)
+    page_names = list(page_image_names)
+    available = set(page_names)
+    index_map = {name: idx for idx, name in enumerate(page_names)}
     states: Dict[str, PageState] = {}
     pages = payload.get("pages", [])
     if not isinstance(pages, list):
@@ -123,6 +130,8 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
 
         raw_meta = page.get("meta")
         meta = raw_meta if isinstance(raw_meta, dict) else {}
+        page_index = index_map.get(str(page_name), 0)
+        meta_model = PageMeta(**{**default_page_meta(page_index), **meta})
         raw_facts = page.get("facts", [])
         facts: List[BoxRecord] = []
         if isinstance(raw_facts, list):
@@ -131,7 +140,7 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
                     continue
                 bbox = normalize_bbox_data(raw_fact.get("bbox"))
                 facts.append(BoxRecord(bbox=bbox, fact=_coerce_raw_fact(raw_fact)))
-        states[str(page_name)] = PageState(meta=meta, facts=facts)
+        states[str(page_name)] = PageState(meta=meta_model.model_dump(mode="json"), facts=facts)
     return states
 
 
@@ -172,8 +181,9 @@ def extract_document_meta(payload: Any) -> Dict[str, Any]:
             "company_name": None,
             "company_id": None,
             "report_year": None,
+            "entity_type": None,
         }
-    return normalize_document_meta(payload.get("document_meta"))
+    return normalize_document_meta(payload.get("metadata", payload.get("document_meta")))
 
 
 def build_annotations_payload(
@@ -205,7 +215,7 @@ def build_annotations_payload(
     payload: Dict[str, Any] = {"images_dir": str(images_dir), "pages": pages_out}
     compact_meta = compact_document_meta(document_meta)
     if compact_meta:
-        payload["document_meta"] = compact_meta
+        payload["metadata"] = compact_meta
     return payload
 
 

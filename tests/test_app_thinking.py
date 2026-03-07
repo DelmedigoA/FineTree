@@ -13,7 +13,15 @@ class _FakeParser:
 
     def finalize(self):
         return SimpleNamespace(
-            meta=SimpleNamespace(model_dump=lambda mode="json": {"entity_name": None, "page_num": None, "type": "other", "title": None}),
+            meta=SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                }
+            ),
             facts=[],
         )
 
@@ -26,7 +34,11 @@ def test_gemini_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Pa
 
     def _fake_stream_content_from_image(**kwargs):
         seen.update(kwargs)
-        yield '{"meta":{"entity_name":null,"page_num":null,"type":"other","title":null},"facts":[]}'
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
 
     monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
     monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
@@ -52,7 +64,11 @@ def test_qwen_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path
 
     def _fake_stream_content_from_image(**kwargs):
         seen.update(kwargs)
-        yield '{"meta":{"entity_name":null,"page_num":null,"type":"other","title":null},"facts":[]}'
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
 
     monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
     monkeypatch.setattr(qwen_vlm, "stream_content_from_image", _fake_stream_content_from_image)

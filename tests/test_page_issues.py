@@ -11,12 +11,16 @@ from finetree_annotator.page_issues import (
 def _fact(**overrides):
     base = {
         "value": "10",
-        "ref_comment": None,
+        "comment_ref": None,
         "note_flag": False,
         "note_num": None,
-        "ref_note": None,
+        "note_ref": None,
         "date": None,
+        "period_type": None,
+        "period_start": None,
+        "period_end": None,
         "path": [],
+        "path_source": None,
         "currency": None,
         "scale": None,
         "value_type": None,
@@ -69,7 +73,7 @@ def test_validate_page_issues_detects_non_notes_is_note_and_mixed_fields() -> No
             meta={"type": "other"},
             facts=[
                 _fact(value="10", note_flag=True, note_num=5, currency="USD", scale=1, value_type="amount"),
-                _fact(value="11", note_flag=False, currency="ILS", scale=1000, value_type="%"),
+                _fact(value="11", note_flag=False, currency="ILS", scale=1000, value_type="percent"),
             ],
         ),
     )
@@ -135,7 +139,7 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
                     value="12%",
                     note_flag=True,
                     note_num=7,
-                    ref_note="n7",
+                    note_ref="n7",
                     date="2024-13-40",
                     path=["assets", "", "cash"],
                     currency="USD",
@@ -146,7 +150,7 @@ def test_validate_page_issues_detects_selected_new_fact_rules() -> None:
         ),
     )
     codes = {issue.code for issue in summary.issues}
-    assert "ref_note_on_notes_page" in codes
+    assert "note_ref_on_notes_page" in codes
     assert "invalid_date" in codes
     assert "path_contains_empty_level" in codes
     assert "amount_type_percent_value" in codes
@@ -212,7 +216,7 @@ def test_validate_page_issues_detects_percent_specific_warnings() -> None:
         PageState(
             meta={"type": "other"},
             facts=[
-                _fact(value="8", value_type="%", currency="USD", scale=1000),
+                _fact(value="8", value_type="percent", currency="USD", scale=1000),
             ],
         ),
     )

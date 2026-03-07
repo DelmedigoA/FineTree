@@ -25,30 +25,42 @@ from .duplicate_facts import assert_no_duplicate_facts
 
 _MIN_BBOX_SIZE = 1.0
 InstructionMode = Literal["source", "minimal"]
-_MINIMAL_INSTRUCTION = "Extract metadata and financial facts from the provided image."
+_MINIMAL_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts from the provided image."
 _DEFAULT_SYSTEM_PROMPT = (
     "You are a precise financial statement extraction system. "
     "Return only valid JSON that matches the required schema."
 )
-_LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "note_ref", "note_reference", "refference")
+_LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "ref_note", "note_reference", "refference")
 _COMPACT_KEY_MAP: dict[str, str] = {
+    "images_dir": "id",
+    "metadata": "md",
+    "pages": "pg",
+    "image": "img",
     "meta": "m",
     "facts": "f",
     "bbox": "b",
+    "page_type": "pt",
+    "statement_type": "st",
     "entity_name": "e",
     "page_num": "p",
     "title": "ttl",
+    "entity_type": "et",
     "value": "v",
+    "comment_ref": "cmt",
     "ref_comment": "cmt",
     "comment": "cmt",
     "note_flag": "nflg",
     "note_name": "nnm",
     "note_num": "nt",
     "note": "nt",
-    "ref_note": "nref",
     "note_ref": "nref",
+    "ref_note": "nref",
     "note_reference": "nref",
     "date": "d",
+    "period_type": "ptp",
+    "period_start": "ps",
+    "period_end": "pe",
+    "path_source": "psrc",
     "currency": "cur",
     "scale": "sc",
     "value_type": "vt",
@@ -58,6 +70,31 @@ _COMPACT_KEY_MAP: dict[str, str] = {
     "reference": "ref",
     "refference": "ref",
 }
+
+
+def _iter_fact_dicts(payload: Any) -> list[dict[str, Any]]:
+    facts_out: list[dict[str, Any]] = []
+    if not isinstance(payload, dict):
+        return facts_out
+
+    facts = payload.get("facts")
+    if isinstance(facts, list):
+        for fact in facts:
+            if isinstance(fact, dict):
+                facts_out.append(fact)
+
+    pages = payload.get("pages")
+    if isinstance(pages, list):
+        for page in pages:
+            if not isinstance(page, dict):
+                continue
+            page_facts = page.get("facts")
+            if not isinstance(page_facts, list):
+                continue
+            for fact in page_facts:
+                if isinstance(fact, dict):
+                    facts_out.append(fact)
+    return facts_out
 
 
 def build_dataset(
@@ -520,48 +557,44 @@ def _scale_bbox_text_payload(
     updated = 0
     clamped = 0
     if isinstance(payload, dict):
-        facts = payload.get("facts")
-        if isinstance(facts, list):
-            for fact in facts:
-                if not isinstance(fact, dict):
-                    continue
-                raw_bbox = fact.get("bbox")
-                if isinstance(raw_bbox, dict):
-                    x_raw = raw_bbox.get("x")
-                    y_raw = raw_bbox.get("y")
-                    w_raw = raw_bbox.get("w")
-                    h_raw = raw_bbox.get("h")
-                elif isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
-                    x_raw, y_raw, w_raw, h_raw = raw_bbox[0], raw_bbox[1], raw_bbox[2], raw_bbox[3]
-                else:
-                    continue
-                try:
-                    x = float(x_raw) * scale_x
-                    y = float(y_raw) * scale_y
-                    w = float(w_raw) * scale_x
-                    h = float(h_raw) * scale_y
-                except Exception:
-                    continue
-                x, y, w, h, is_clamped = _clamp_bbox(x, y, w, h, image_w=new_w, image_h=new_h)
-                # Token-lean quantization for exported bbox:
-                # position rounds down; size rounds up to avoid under-covering the target region.
-                x_i = max(0, min(int(math.floor(x)), max(new_w - 1, 0)))
-                y_i = max(0, min(int(math.floor(y)), max(new_h - 1, 0)))
-                w_i = max(int(math.ceil(w)), int(_MIN_BBOX_SIZE))
-                h_i = max(int(math.ceil(h)), int(_MIN_BBOX_SIZE))
-                max_w = max(new_w - x_i, int(_MIN_BBOX_SIZE))
-                max_h = max(new_h - y_i, int(_MIN_BBOX_SIZE))
-                if w_i > max_w:
-                    w_i = max_w
-                    is_clamped = True
-                if h_i > max_h:
-                    h_i = max_h
-                    is_clamped = True
+        for fact in _iter_fact_dicts(payload):
+            raw_bbox = fact.get("bbox")
+            if isinstance(raw_bbox, dict):
+                x_raw = raw_bbox.get("x")
+                y_raw = raw_bbox.get("y")
+                w_raw = raw_bbox.get("w")
+                h_raw = raw_bbox.get("h")
+            elif isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
+                x_raw, y_raw, w_raw, h_raw = raw_bbox[0], raw_bbox[1], raw_bbox[2], raw_bbox[3]
+            else:
+                continue
+            try:
+                x = float(x_raw) * scale_x
+                y = float(y_raw) * scale_y
+                w = float(w_raw) * scale_x
+                h = float(h_raw) * scale_y
+            except Exception:
+                continue
+            x, y, w, h, is_clamped = _clamp_bbox(x, y, w, h, image_w=new_w, image_h=new_h)
+            # Token-lean quantization for exported bbox:
+            # position rounds down; size rounds up to avoid under-covering the target region.
+            x_i = max(0, min(int(math.floor(x)), max(new_w - 1, 0)))
+            y_i = max(0, min(int(math.floor(y)), max(new_h - 1, 0)))
+            w_i = max(int(math.ceil(w)), int(_MIN_BBOX_SIZE))
+            h_i = max(int(math.ceil(h)), int(_MIN_BBOX_SIZE))
+            max_w = max(new_w - x_i, int(_MIN_BBOX_SIZE))
+            max_h = max(new_h - y_i, int(_MIN_BBOX_SIZE))
+            if w_i > max_w:
+                w_i = max_w
+                is_clamped = True
+            if h_i > max_h:
+                h_i = max_h
+                is_clamped = True
 
-                fact["bbox"] = [x_i, y_i, w_i, h_i]
-                updated += 1
-                if is_clamped:
-                    clamped += 1
+            fact["bbox"] = [x_i, y_i, w_i, h_i]
+            updated += 1
+            if is_clamped:
+                clamped += 1
 
     return json.dumps(payload, ensure_ascii=False), updated, clamped, 0
 

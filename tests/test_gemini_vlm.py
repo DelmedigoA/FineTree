@@ -6,6 +6,34 @@ from pathlib import Path
 from finetree_annotator import gemini_vlm
 
 
+def _wrapper_payload(
+    *,
+    image: str = "page_0001.png",
+    images_dir: str = "data/pdf_images/doc1",
+    metadata: dict[str, object] | None = None,
+    meta: dict[str, object] | None = None,
+    facts: list[dict[str, object]] | None = None,
+) -> dict[str, object]:
+    return {
+        "images_dir": images_dir,
+        "metadata": metadata or {},
+        "pages": [
+            {
+                "image": image,
+                "meta": meta
+                or {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                "facts": facts or [],
+            }
+        ],
+    }
+
+
 def test_resolve_api_key_prefers_google_api_key_env(monkeypatch) -> None:
     gemini_vlm._api_key_from_doppler.cache_clear()
     monkeypatch.setenv("GOOGLE_API_KEY", "google-env-key")
@@ -96,8 +124,21 @@ def test_build_generation_contents_includes_few_shot_turns(tmp_path: Path, monke
         prompt="extract final",
         mime_type=None,
         few_shot_examples=[
-            {"image_path": example_1, "expected_json": json.dumps({"meta": {}, "facts": []})},
-            {"image_path": example_2, "expected_json": json.dumps({"meta": {"type": "other"}, "facts": []})},
+            {"image_path": example_1, "expected_json": json.dumps(_wrapper_payload())},
+            {
+                "image_path": example_2,
+                "expected_json": json.dumps(
+                    _wrapper_payload(
+                        meta={
+                            "entity_name": None,
+                            "page_num": None,
+                            "page_type": "other",
+                            "statement_type": None,
+                            "title": None,
+                        }
+                    )
+                ),
+            },
         ],
     )
 
@@ -195,33 +236,59 @@ def test_generation_config_uses_zero_budget_for_nonthinking_legacy_models(monkey
 def test_parse_llm_json_accepts_quad_backtick_fence() -> None:
     payload = (
         "````json\n"
-        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
-        '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10","refference":"","path":[]}]}\n'
+        + json.dumps(
+            _wrapper_payload(
+                meta={
+                    "entity_name": None,
+                    "page_num": "3",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                facts=[{"bbox": {"x": 1, "y": 2, "w": 3, "h": 4}, "value": "10", "note_ref": None, "path": []}],
+            )
+        )
+        + "\n"
         "````"
     )
     parsed = gemini_vlm._parse_llm_json(payload)
     assert isinstance(parsed, dict)
-    assert isinstance(parsed.get("facts"), list)
-    assert parsed["facts"][0]["bbox"]["x"] == 1
+    assert isinstance(parsed.get("pages"), list)
+    assert parsed["pages"][0]["facts"][0]["bbox"]["x"] == 1
 
 
 def test_parse_llm_json_accepts_bbox_array_shape() -> None:
-    payload = (
-        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
-        '"facts":[{"bbox":[1,2,3,4],"value":"10","refference":"","path":[]}]}'
+    payload = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "other",
+                "statement_type": None,
+                "title": None,
+            },
+            facts=[{"bbox": [1, 2, 3, 4], "value": "10", "note_ref": None, "path": []}],
+        )
     )
     parsed = gemini_vlm._parse_llm_json(payload)
     assert isinstance(parsed, dict)
-    assert isinstance(parsed.get("facts"), list)
-    assert parsed["facts"][0]["bbox"] == [1, 2, 3, 4]
+    assert isinstance(parsed.get("pages"), list)
+    assert parsed["pages"][0]["facts"][0]["bbox"] == [1, 2, 3, 4]
 
 
 def test_streaming_parser_finalize_falls_back_to_streamed_meta_and_facts() -> None:
     parser = gemini_vlm.StreamingPageExtractionParser()
-    chunk = (
-        "```json\n"
-        '{"meta":{"entity_name":null,"page_num":"3","type":"other","title":null},'
-        '"facts":[{"bbox":{"x":1,"y":2,"w":3,"h":4},"value":"10","refference":"","path":[]}]}'
+    chunk = "```json\n" + json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "other",
+                "statement_type": None,
+                "title": None,
+            },
+            facts=[{"bbox": {"x": 1, "y": 2, "w": 3, "h": 4}, "value": "10", "note_ref": None, "path": []}],
+        )
     )
     meta, facts = parser.feed(chunk)
     assert meta is not None

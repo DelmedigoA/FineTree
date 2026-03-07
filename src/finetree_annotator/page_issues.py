@@ -10,7 +10,7 @@ from typing import Any, Iterable, Mapping, Optional, Sequence
 from .annotation_core import PageState, normalize_fact_data
 from .date_normalization import normalize_date
 from .fact_normalization import normalize_note_num
-from .schemas import PageType
+from .schemas import PageType, StatementType, split_legacy_page_type
 
 PageIssueSeverity = str
 
@@ -157,27 +157,37 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
         issues_by_page = issue_map.setdefault(page_image, [])
         records = list(state.facts or [])
         facts = [normalize_fact_data(record.fact) for record in records]
-        page_type = _non_empty_text((state.meta or {}).get("type")) or PageType.other.value
+        page_meta = state.meta or {}
+        page_type = _non_empty_text(page_meta.get("page_type")) or PageType.other.value
+        statement_type = _non_empty_text(page_meta.get("statement_type"))
+        if not statement_type:
+            legacy_page_type, legacy_statement_type = split_legacy_page_type(page_meta.get("type"))
+            if not _non_empty_text(page_meta.get("page_type")):
+                page_type = legacy_page_type
+            if legacy_statement_type is not None:
+                statement_type = legacy_statement_type
 
-        if facts and page_type == PageType.notes.value and not any(bool(fact.get("note_flag")) for fact in facts):
+        if facts and statement_type == StatementType.notes_to_financial_statements.value and not any(
+            bool(fact.get("note_flag")) for fact in facts
+        ):
             issues_by_page.append(
                 PageIssue(
                     severity="warning",
                     code="notes_page_missing_note_flag",
-                    message="Page type is notes, but none of the facts are marked as note facts.",
+                    message="Statement type is notes_to_financial_statements, but none of the facts are marked as note facts.",
                     page_image=page_image,
-                    field_name="type",
+                    field_name="statement_type",
                 )
             )
 
-        if page_type != PageType.notes.value:
+        if statement_type != StatementType.notes_to_financial_statements.value:
             for fact_index, fact in enumerate(facts):
                 if bool(fact.get("note_flag")):
                     issues_by_page.append(
                         PageIssue(
                             severity="reg_flag",
                             code="note_flag_on_non_notes_page",
-                            message=f"Fact #{fact_index + 1} is marked as note, but page type is {page_type}.",
+                            message=f"Fact #{fact_index + 1} is marked as note, but statement_type is {statement_type or 'null'}.",
                             page_image=page_image,
                             fact_index=fact_index,
                             field_name="note_flag",
@@ -190,7 +200,7 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
             if isinstance(record.fact, dict):
                 raw_note_num = record.fact.get("note_num", record.fact.get("note", record.fact.get("beur_num")))
             note_num = fact.get("note_num")
-            ref_note = _non_empty_text(fact.get("ref_note"))
+            note_ref = _non_empty_text(fact.get("note_ref"))
             date_text = _non_empty_text(fact.get("date"))
             note_flag = bool(fact.get("note_flag"))
             note_name = _non_empty_text(fact.get("note_name"))
@@ -256,18 +266,18 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                             field_name="date",
                         )
                     )
-            if page_type == PageType.notes.value and ref_note:
+            if statement_type == StatementType.notes_to_financial_statements.value and note_ref:
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
-                        code="ref_note_on_notes_page",
-                        message=f"Fact #{fact_index + 1} has ref_note on a notes page.",
+                        code="note_ref_on_notes_page",
+                        message=f"Fact #{fact_index + 1} has note_ref on a notes_to_financial_statements page.",
                         page_image=page_image,
                         fact_index=fact_index,
-                        field_name="ref_note",
+                        field_name="note_ref",
                     )
                 )
-            if value_type == "%" and scale is not None:
+            if value_type == "percent" and scale is not None:
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
@@ -278,7 +288,7 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                         field_name="scale",
                     )
                 )
-            if value_type == "%" and currency:
+            if value_type == "percent" and currency:
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
@@ -387,7 +397,10 @@ def validate_document_issues(page_states: Sequence[tuple[str, PageState]]) -> Do
         meta = state.meta or {}
         entity_rows.append((index, page_image, _non_empty_text(meta.get("entity_name"))))
         page_num_rows.append((index, page_image, _non_empty_text(meta.get("page_num"))))
-        page_type_rows.append((index, page_image, _non_empty_text(meta.get("type")) or PageType.other.value))
+        page_type = _non_empty_text(meta.get("page_type")) or PageType.other.value
+        if not _non_empty_text(meta.get("page_type")) and _non_empty_text(meta.get("type")):
+            page_type, _statement_type = split_legacy_page_type(meta.get("type"))
+        page_type_rows.append((index, page_image, page_type))
 
     non_empty_entities = [(idx, page_image, entity) for idx, page_image, entity in entity_rows if entity]
     entity_counts = Counter(entity for _idx, _page, entity in non_empty_entities)
@@ -520,7 +533,7 @@ def validate_document_issues(page_states: Sequence[tuple[str, PageState]]) -> Do
                                 code="other_page_between_same_type_pages",
                                 message=f"Page is typed as other, but it sits between {prev_type} pages.",
                                 page_image=middle_page,
-                                field_name="type",
+                                field_name="page_type",
                             ),
                         )
             run_start = None

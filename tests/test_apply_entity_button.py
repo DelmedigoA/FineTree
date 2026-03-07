@@ -66,9 +66,12 @@ def test_apply_entity_button_backfills_missing_pages_after_confirmation(monkeypa
     monkeypatch.setattr(app_mod, "_prompt_entity_apply_mode", lambda *_args, **_kwargs: "missing_only")
 
     page_states = {
-        "page_0001.png": PageState(meta={"type": "other"}, facts=[]),
-        "page_0002.png": PageState(meta={"type": "notes", "title": "n2"}, facts=[]),
-        "page_0003.png": PageState(meta={"entity_name": "KEEP", "type": "other"}, facts=[]),
+        "page_0001.png": PageState(meta={"page_type": "other", "statement_type": None}, facts=[]),
+        "page_0002.png": PageState(
+            meta={"page_type": "statements", "statement_type": "notes_to_financial_statements", "title": "n2"},
+            facts=[],
+        ),
+        "page_0003.png": PageState(meta={"entity_name": "KEEP", "page_type": "other", "statement_type": None}, facts=[]),
     }
     window, status_bar, calls = _make_window("ACME LTD", page_states)
 
@@ -88,8 +91,8 @@ def test_apply_entity_button_does_nothing_when_confirmation_declined(monkeypatch
     monkeypatch.setattr(app_mod, "_prompt_entity_apply_mode", lambda *_args, **_kwargs: None)
 
     page_states = {
-        "page_0001.png": PageState(meta={"type": "other"}, facts=[]),
-        "page_0002.png": PageState(meta={"type": "other"}, facts=[]),
+        "page_0001.png": PageState(meta={"page_type": "other", "statement_type": None}, facts=[]),
+        "page_0002.png": PageState(meta={"page_type": "other", "statement_type": None}, facts=[]),
     }
     window, status_bar, calls = _make_window("ACME LTD", page_states)
 
@@ -118,7 +121,7 @@ def test_apply_entity_button_requires_non_empty_entity_name(monkeypatch) -> None
     )
 
     page_states = {
-        "page_0001.png": PageState(meta={"type": "other"}, facts=[]),
+        "page_0001.png": PageState(meta={"page_type": "other", "statement_type": None}, facts=[]),
     }
     window, status_bar, calls = _make_window("   ", page_states)
 
@@ -140,9 +143,12 @@ def test_apply_entity_button_can_force_overwrite_all_pages(monkeypatch) -> None:
     monkeypatch.setattr(app_mod, "_prompt_entity_apply_mode", lambda *_args, **_kwargs: "force_all")
 
     page_states = {
-        "page_0001.png": PageState(meta={"type": "other"}, facts=[]),
-        "page_0002.png": PageState(meta={"type": "notes", "title": "n2"}, facts=[]),
-        "page_0003.png": PageState(meta={"entity_name": "KEEP", "type": "other"}, facts=[]),
+        "page_0001.png": PageState(meta={"page_type": "other", "statement_type": None}, facts=[]),
+        "page_0002.png": PageState(
+            meta={"page_type": "statements", "statement_type": "notes_to_financial_statements", "title": "n2"},
+            facts=[],
+        ),
+        "page_0003.png": PageState(meta={"entity_name": "KEEP", "page_type": "other", "statement_type": None}, facts=[]),
     }
     window, status_bar, calls = _make_window("ACME LTD", page_states)
 

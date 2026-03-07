@@ -16,10 +16,10 @@ def test_backfill_missing_entity_name_uses_first_existing_value(tmp_path: Path) 
     src = ann_dir / "doc.json"
     payload = {
         "pages": [
-            {"image": "page_0001.png", "meta": {"entity_name": "ACME", "type": "other"}, "facts": []},
-            {"image": "page_0002.png", "meta": {"entity_name": None, "type": "other"}, "facts": []},
-            {"image": "page_0003.png", "meta": {"entity_name": "", "type": "other"}, "facts": []},
-            {"image": "page_0004.png", "meta": {"entity_name": "KEEP", "type": "other"}, "facts": []},
+            {"image": "page_0001.png", "meta": {"entity_name": "ACME", "page_type": "other"}, "facts": []},
+            {"image": "page_0002.png", "meta": {"entity_name": None, "page_type": "other"}, "facts": []},
+            {"image": "page_0003.png", "meta": {"entity_name": "", "page_type": "other"}, "facts": []},
+            {"image": "page_0004.png", "meta": {"entity_name": "KEEP", "page_type": "other"}, "facts": []},
         ]
     }
     src.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -46,8 +46,8 @@ def test_backfill_missing_entity_name_dry_run_does_not_write(tmp_path: Path) -> 
     src = ann_dir / "doc.json"
     payload = {
         "pages": [
-            {"image": "page_0001.png", "meta": {"entity_name": "ACME", "type": "other"}, "facts": []},
-            {"image": "page_0002.png", "meta": {"entity_name": None, "type": "other"}, "facts": []},
+            {"image": "page_0001.png", "meta": {"entity_name": "ACME", "page_type": "other"}, "facts": []},
+            {"image": "page_0002.png", "meta": {"entity_name": None, "page_type": "other"}, "facts": []},
         ]
     }
     original_text = json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
