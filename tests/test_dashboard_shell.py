@@ -471,6 +471,7 @@ def test_home_view_stats_include_annotated_image_and_token_totals(tmp_path: Path
                 progress_pct=100,
                 status="Complete",
                 updated_at=None,
+                fact_count=12,
                 annotated_token_count=450_000,
             ),
             WorkspaceDocumentSummary(
@@ -484,6 +485,7 @@ def test_home_view_stats_include_annotated_image_and_token_totals(tmp_path: Path
                 progress_pct=33,
                 status="In progress",
                 updated_at=None,
+                fact_count=21,
                 annotated_token_count=300_000,
             ),
         ]
@@ -504,6 +506,7 @@ def test_home_view_stats_include_annotated_image_and_token_totals(tmp_path: Path
         stats[title] = (value, caption)
 
     assert stats["Annotated Images"] == ("3", "Across workspace")
+    assert stats["Facts"] == ("33", "Across workspace")
     assert stats["Annotated Tokens"] == ("750,000", "75% of 1,000,000 target")
     view.close()
 

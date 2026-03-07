@@ -153,7 +153,7 @@ def default_extraction_prompt_template() -> str:
         8. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
         9. `page_type` must be one of: `{page_types}`.
         10. `statement_type` must be one of: `{statement_types}` or null.
-        11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities pages.
+        11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
         12. Non-statement structural pages use `statement_type=null`.
         13. `value_type` must be `amount`, `percent`, `ratio`, `count`, or null.
         14. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
@@ -198,6 +198,7 @@ def default_extraction_prompt_template() -> str:
         11. Use `statement_type="board_of_directors_report"` for דוח הדירקטוריון.
         12. Use `statement_type="auditors_report"` for דוח רואה החשבון המבקר.
         13. Use `statement_type="statement_of_activities"` for דוח על הפעילויות.
+        14. Use `statement_type="other_declaration"` for declaration/report pages that are business declarations but do not fit the other statement types.
 
         Path hierarchy rule:
         1. Build `path` with horizontal-axis hierarchy first (group -> subgroup -> line item).
@@ -205,6 +206,64 @@ def default_extraction_prompt_template() -> str:
         3. Do not encode period/currency/scale/value-format in `path` when already represented by dedicated fields.
         4. Keep labels exactly as shown. Do not invent levels.
         5. Do not include generic note markers like `Note`, `note`, `באור`, or `ביאור` inside `path`.
+        """
+    ).strip()
+
+
+def default_gemini_fill_prompt_template() -> str:
+    statement_types = "|".join(STATEMENT_TYPE_VALUES)
+    period_types = "|".join(PERIOD_TYPE_VALUES)
+    path_sources = "|".join(PATH_SOURCE_VALUES)
+
+    return dedent(
+        f"""
+        You are updating selected fields for already-annotated financial facts on a single page.
+
+        You receive:
+        1. The page image.
+        2. A redacted JSON snapshot where requested target fields are set to null.
+
+        Return ONLY valid JSON patch output.
+        Do NOT return markdown, code fences, comments, prose, or extra keys.
+
+        Important semantics:
+        - `instant` means the fact represents a value at a single point in time.
+        - `duration` means the fact represents a value over a period between two dates.
+
+        Requested fact fields:
+        {{{{FACT_FIELDS}}}}
+
+        Requested meta fields:
+        {{{{META_FIELDS}}}}
+
+        Input snapshot JSON:
+        {{{{REQUEST_JSON}}}}
+
+        Output schema (exact keys only):
+        {{
+          "meta_updates": {{
+            "statement_type": "{statement_types}|null"
+          }},
+          "fact_updates": [
+            {{
+              "fact_num": <integer >= 1>,
+              "updates": {{
+                "period_type": "{period_types}|null",
+                "period_start": "<YYYY-MM-DD|null>",
+                "period_end": "<YYYY-MM-DD|null>",
+                "path_source": "{path_sources}|null"
+              }}
+            }}
+          ]
+        }}
+
+        Rules:
+        1. Return patch-only JSON. Never return full page annotations.
+        2. Update only requested fields. Do not add non-requested fields.
+        3. `fact_num` must match the provided snapshot identity.
+        4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
+        5. Use JSON null (not string "null") for unknowns.
+        6. If no confident update for a requested field, omit that field from `updates`.
         """
     ).strip()
 
@@ -225,6 +284,7 @@ __all__ = [
     "SCALE_VALUES",
     "STATEMENT_TYPE_VALUES",
     "VALUE_TYPE_VALUES",
+    "default_gemini_fill_prompt_template",
     "default_extraction_prompt_template",
     "schema_snapshot",
 ]

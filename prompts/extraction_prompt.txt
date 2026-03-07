@@ -24,7 +24,7 @@ Top-level schema (exact keys only):
         "entity_name": "<string or null>",
         "page_num": "<string or null>",
         "page_type": "title|contents|declaration|statements|other",
-        "statement_type": "balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|null",
+        "statement_type": "balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration|null",
         "title": "<string or null>"
       },
       "facts": [
@@ -61,8 +61,8 @@ Type/validation rules (must match schema):
 7. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
 8. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
 9. `page_type` must be one of: `title|contents|declaration|statements|other`.
-10. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities` or null.
-11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities pages.
+10. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
+11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
 12. Non-statement structural pages use `statement_type=null`.
 13. `value_type` must be `amount`, `percent`, `ratio`, `count`, or null.
 14. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
@@ -107,6 +107,7 @@ Page classification rules:
 11. Use `statement_type="board_of_directors_report"` for דוח הדירקטוריון.
 12. Use `statement_type="auditors_report"` for דוח רואה החשבון המבקר.
 13. Use `statement_type="statement_of_activities"` for דוח על הפעילויות.
+14. Use `statement_type="other_declaration"` for declaration/report pages that are business declarations but do not fit the other statement types.
 
 Path hierarchy rule:
 1. Build `path` with horizontal-axis hierarchy first (group -> subgroup -> line item).

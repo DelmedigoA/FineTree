@@ -11,7 +11,6 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 
 from .annotation_core import PageState, bbox_to_list, default_page_meta, load_page_states, normalize_fact_data
 from .page_issues import validate_document_issues
-from .schemas import split_legacy_page_type
 
 IMAGE_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp")
 DEFAULT_DATA_ROOT = Path("data")
@@ -30,6 +29,7 @@ class WorkspaceDocumentSummary:
     status: str
     updated_at: Optional[float]
     annotated_token_count: int = 0
+    fact_count: int = 0
     reg_flag_count: int = 0
     warning_count: int = 0
     pages_with_reg_flags: int = 0
@@ -278,25 +278,22 @@ def set_document_reviewed(doc_id: str, reviewed: bool, data_root: Path = DEFAULT
 
 
 def page_has_annotation(state: PageState, index: int) -> bool:
-    if state.facts:
-        return True
-    defaults = default_page_meta(index)
+    _ = index
     meta = state.meta or {}
 
-    page_num = meta.get("page_num")
-    if isinstance(page_num, str):
-        if page_num.strip():
+    entity_name = meta.get("entity_name")
+    if isinstance(entity_name, str):
+        if entity_name.strip():
             return True
-    elif page_num not in (None, "", [], {}):
+    elif entity_name not in (None, "", [], {}, False):
         return True
 
-    page_type = str(meta.get("page_type") or "").strip()
-    default_type = str(defaults.get("page_type", defaults.get("type")) or "").strip()
-    legacy_type = str(meta.get("type") or "").strip()
-    if legacy_type:
-        legacy_page_type, legacy_statement_type = split_legacy_page_type(legacy_type)
-        if legacy_page_type != default_type or legacy_statement_type is not None:
+    title = meta.get("title")
+    if isinstance(title, str):
+        if title.strip():
             return True
+    elif title not in (None, "", [], {}, False):
+        return True
 
     return False
 
@@ -348,6 +345,17 @@ def compute_document_progress(images_dir: Path, annotations_path: Path) -> tuple
     return annotated_pages, page_count
 
 
+def compute_document_fact_count(images_dir: Path, annotations_path: Path) -> int:
+    pages, states = _state_map_for_document(images_dir, annotations_path)
+    if not pages:
+        return 0
+    fact_count = 0
+    for idx, page in enumerate(pages):
+        state = states.get(page.name, PageState(meta=default_page_meta(idx), facts=[]))
+        fact_count += len(state.facts)
+    return fact_count
+
+
 def compute_document_issue_summary(images_dir: Path, annotations_path: Path):
     pages, states = _state_map_for_document(images_dir, annotations_path)
     ordered_states = []
@@ -389,6 +397,7 @@ def build_document_summary(
         reviewed_ids = reviewed_doc_ids
     page_paths = page_image_paths(images_dir)
     annotated_pages, page_count, annotated_tokens = compute_document_annotation_stats(images_dir, annotations_path)
+    fact_count = compute_document_fact_count(images_dir, annotations_path)
     issue_summary = compute_document_issue_summary(images_dir, annotations_path)
     can_be_checked = page_count > 0 and annotated_pages >= page_count
     thumbnail_path = page_paths[0] if page_paths else None
@@ -413,6 +422,7 @@ def build_document_summary(
         page_count=page_count,
         annotated_page_count=annotated_pages,
         annotated_token_count=annotated_tokens,
+        fact_count=fact_count,
         progress_pct=progress_pct,
         status=status,
         updated_at=updated_at,

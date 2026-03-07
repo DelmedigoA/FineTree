@@ -174,6 +174,7 @@ def _normalize_statement_type_value(value: Any) -> str | None:
         "auditors_report": "auditors_report",
         "statement_of_activities": "statement_of_activities",
         "activities": "statement_of_activities",
+        "other_declaration": "other_declaration",
     }
     if text in aliases:
         return aliases[text]
@@ -229,6 +230,7 @@ _LEGACY_PAGE_TYPE_MAPPING: dict[str, tuple[str, str | None]] = {
     "board_of_directors_report": ("statements", "board_of_directors_report"),
     "auditor_report": ("statements", "auditors_report"),
     "auditors_report": ("statements", "auditors_report"),
+    "other_declaration": ("statements", "other_declaration"),
     "statement_of_changes_in_equity": ("statements", "statement_of_changes_in_equity"),
     "other": ("other", None),
 }
@@ -263,6 +265,7 @@ class StatementType(str, Enum):
     board_of_directors_report = "board_of_directors_report"
     auditors_report = "auditors_report"
     statement_of_activities = "statement_of_activities"
+    other_declaration = "other_declaration"
 
 
 class ValueType(str, Enum):

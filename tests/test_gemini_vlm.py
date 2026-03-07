@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from finetree_annotator import gemini_vlm
 
 
@@ -298,3 +300,90 @@ def test_streaming_parser_finalize_falls_back_to_streamed_meta_and_facts() -> No
     assert extraction.meta.page_num == "3"
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
+
+
+def test_parse_selected_field_patch_text_valid_payload() -> None:
+    payload = {
+        "meta_updates": {"statement_type": "income_statement"},
+        "fact_updates": [
+            {
+                "fact_num": 2,
+                "updates": {
+                    "period_type": "duration",
+                    "period_start": "2024-01-01",
+                    "period_end": "2024-12-31",
+                    "path_source": "observed",
+                },
+            }
+        ],
+    }
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(payload),
+        allowed_fact_fields={"period_type", "period_start", "period_end", "path_source"},
+        allow_statement_type=True,
+    )
+    assert parsed["meta_updates"]["statement_type"] == "income_statement"
+    assert parsed["fact_updates"][0]["fact_num"] == 2
+    assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
+
+
+def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None:
+    with pytest.raises(ValueError, match="unknown top-level keys"):
+        gemini_vlm.parse_selected_field_patch_text(
+            json.dumps(
+                {
+                    "meta_updates": {},
+                    "fact_updates": [],
+                    "unexpected": True,
+                }
+            ),
+            allowed_fact_fields={"period_type"},
+            allow_statement_type=False,
+        )
+
+
+def test_parse_selected_field_patch_text_rejects_duplicate_or_invalid_fact_num() -> None:
+    with pytest.raises(ValueError, match="Duplicate fact_num"):
+        gemini_vlm.parse_selected_field_patch_text(
+            json.dumps(
+                {
+                    "meta_updates": {},
+                    "fact_updates": [
+                        {"fact_num": 1, "updates": {"period_type": "instant"}},
+                        {"fact_num": 1, "updates": {"period_type": "duration"}},
+                    ],
+                }
+            ),
+            allowed_fact_fields={"period_type"},
+            allow_statement_type=False,
+        )
+
+    with pytest.raises(ValueError, match="fact_num must be an integer"):
+        gemini_vlm.parse_selected_field_patch_text(
+            json.dumps(
+                {
+                    "meta_updates": {},
+                    "fact_updates": [
+                        {"fact_num": "1", "updates": {"period_type": "instant"}},
+                    ],
+                }
+            ),
+            allowed_fact_fields={"period_type"},
+            allow_statement_type=False,
+        )
+
+
+def test_parse_selected_field_patch_text_rejects_non_requested_update_key() -> None:
+    with pytest.raises(ValueError, match="non-requested keys"):
+        gemini_vlm.parse_selected_field_patch_text(
+            json.dumps(
+                {
+                    "meta_updates": {},
+                    "fact_updates": [
+                        {"fact_num": 1, "updates": {"period_type": "instant", "note_ref": "n1"}},
+                    ],
+                }
+            ),
+            allowed_fact_fields={"period_type"},
+            allow_statement_type=False,
+        )

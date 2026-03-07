@@ -8,6 +8,7 @@ from finetree_annotator.schema_contract import (
     EXTRACTED_FACT_KEYS,
     PAGE_META_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
+    default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
 from finetree_annotator.schemas import ExtractedFact, Fact, PageExtraction, PageMeta
@@ -27,6 +28,11 @@ def test_schema_contract_required_prompt_keys_are_canonical() -> None:
 def test_extraction_prompt_file_is_in_sync_with_schema_contract() -> None:
     prompt_path = Path("prompts/extraction_prompt.txt")
     assert prompt_path.read_text(encoding="utf-8").strip() == default_extraction_prompt_template()
+
+
+def test_gemini_fill_prompt_file_is_in_sync_with_schema_contract() -> None:
+    prompt_path = Path("prompts/gemini_fill_prompt.txt")
+    assert prompt_path.read_text(encoding="utf-8").strip() == default_gemini_fill_prompt_template()
 
 
 def test_finetune_config_default_fallback_template_comes_from_schema_contract() -> None:
