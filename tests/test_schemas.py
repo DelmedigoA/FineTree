@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from finetree_annotator.schemas import DocumentMeta, ExtractedFact, PageExtraction
+from finetree_annotator.schemas import DocumentMeta, ExtractedFact, PageExtraction, PageMeta
 
 
 def _fact_payload(**overrides):
@@ -93,3 +93,17 @@ def test_document_meta_accepts_company_id_and_integer_report_year() -> None:
 def test_document_meta_rejects_noninteger_report_year() -> None:
     with pytest.raises(ValidationError):
         DocumentMeta.model_validate({"report_year": "FY2024"})
+
+
+def test_page_meta_accepts_other_declaration_statement_type() -> None:
+    meta = PageMeta.model_validate(
+        {
+            "entity_name": None,
+            "page_num": None,
+            "page_type": "statements",
+            "statement_type": "other_declaration",
+            "title": None,
+        }
+    )
+    assert meta.statement_type is not None
+    assert meta.statement_type.value == "other_declaration"

@@ -6,9 +6,8 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": null,
-        "page_type": "title",
-        "statement_type": null,
-        "title": "דוחות כספיים"
+        "type": "title",
+        "title": null
       },
       "facts": []
     },
@@ -17,9 +16,8 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": null,
-        "page_type": "contents",
-        "statement_type": null,
-        "title": "תוכן העניינים"
+        "type": "contents_page",
+        "title": null
       },
       "facts": []
     },
@@ -28,9 +26,8 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "2",
-        "page_type": "declaration",
-        "statement_type": "auditors_report",
-        "title": "דוח רואה החשבון המבקר לחברי העמותה"
+        "type": "declaration",
+        "title": null
       },
       "facts": []
     },
@@ -39,8 +36,7 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "3",
-        "page_type": "statements",
-        "statement_type": "balance_sheet",
+        "type": "balance_sheet",
         "title": "מאזנים"
       },
       "facts": [
@@ -52,23 +48,22 @@
             46.44
           ],
           "value": "2002",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "רכוש שוטף",
             "מזומנים ושווי מזומנים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -78,75 +73,72 @@
             34.52
           ],
           "value": "8196",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "רכוש שוטף",
             "מזומנים ושווי מזומנים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            492.67,
-            593.83,
+            497.1,
+            598.26,
             99.42,
             34.52
           ],
           "value": "14854",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "רכוש שוטף",
             "דמי חבר לקבל / לקוחות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            287.87,
-            585.88,
+            292.3,
+            590.31,
             99.42,
             34.52
           ],
           "value": "3800",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "רכוש שוטף",
             "דמי חבר לקבל / לקוחות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -156,23 +148,22 @@
             38.49
           ],
           "value": "16856",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "רכוש שוטף",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -182,23 +173,22 @@
             28.56
           ],
           "value": "11996",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "רכוש שוטף",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -208,22 +198,21 @@
             52.4
           ],
           "value": "26003",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "3",
+          "note_reference": "3",
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "רכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -233,22 +222,21 @@
             34.52
           ],
           "value": "8281",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "3",
+          "note_reference": "3",
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "רכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -258,22 +246,21 @@
             46.44
           ],
           "value": "42859",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ נכסים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -283,22 +270,21 @@
             34.52
           ],
           "value": "20277",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ נכסים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -308,23 +294,22 @@
             34.52
           ],
           "value": "27709",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "התחייבויות שוטפות",
             "אשראי מתאגידים בנקאיים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -334,23 +319,22 @@
             34.52
           ],
           "value": "11460",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "התחייבויות שוטפות",
             "אשראי מתאגידים בנקאיים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -360,23 +344,22 @@
             34.52
           ],
           "value": "15927",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "התחייבויות שוטפות",
             "ספקים ונותני שרותים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -386,23 +369,22 @@
             34.52
           ],
           "value": "12230",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "התחייבויות שוטפות",
             "ספקים ונותני שרותים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -412,23 +394,22 @@
             34.52
           ],
           "value": "37348",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "4",
+          "note_reference": "4",
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "התחייבויות שוטפות",
             "זכאים שונים ויתרות זכות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -438,23 +419,22 @@
             34.52
           ],
           "value": "30594",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "4",
+          "note_reference": "4",
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "התחייבויות שוטפות",
             "זכאים שונים ויתרות זכות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -464,23 +444,22 @@
             34.52
           ],
           "value": "80984",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "התחייבויות שוטפות",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -490,23 +469,22 @@
             34.52
           ],
           "value": "54284",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "התחייבויות שוטפות",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -516,22 +494,21 @@
             34.52
           ],
           "value": "80984",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ התחייבויות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -541,106 +518,102 @@
             34.52
           ],
           "value": "54284",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ התחייבויות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            565.58,
-            1321.4,
-            28.04,
-            30.18
+            556.71,
+            1311.05,
+            45.77,
+            46.44
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו לשימוש לפעילויות",
             "שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            350.98,
-            1324.81,
-            29.51,
-            27.23
+            342.11,
+            1307.08,
+            45.77,
+            46.44
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו לשימוש לפעילויות",
             "שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
             497.1,
             1362.72,
-            100.9,
-            41.55
+            99.42,
+            50.42
           ],
           "value": "(64128)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו לשימוש לפעילויות",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -650,135 +623,130 @@
             34.52
           ],
           "value": "(42288)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו לשימוש לפעילויות",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            493.18,
-            1409.24,
-            106.81,
-            40.07
+            499.09,
+            1410.72,
+            99.42,
+            50.42
           ],
           "value": "(64128)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו לשימוש לפעילויות",
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            277.81,
-            1408.18,
-            107.11,
-            41.55
+            252.69,
+            1400.79,
+            135.19,
+            50.42
           ],
           "value": "(42288)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו לשימוש לפעילויות",
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            492.16,
-            1459.74,
+            495.12,
+            1440.53,
             99.42,
-            28.25
+            50.42
           ],
           "value": "26003",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            296.92,
-            1455.86,
-            81.69,
-            38.6
+            298.4,
+            1448.47,
+            99.42,
+            50.42
           ],
           "value": "8281",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "גרעון בהון",
             "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -788,49 +756,47 @@
             48.43
           ],
           "value": "(38125)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "גרעון בהון",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            275.9,
-            1502.26,
-            105.53,
-            39.1
+            274.42,
+            1500.78,
+            123.26,
+            52.4
           ],
           "value": "(34007)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "גרעון בהון",
             "סה״כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -840,22 +806,21 @@
             34.52
           ],
           "value": "42859",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ התחייבויות ונכסים נטו"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -865,22 +830,21 @@
             34.52
           ],
           "value": "20277",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ התחייבויות ונכסים נטו"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         }
       ]
     },
@@ -889,362 +853,347 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "4",
-        "page_type": "statements",
-        "statement_type": "statement_of_activities",
+        "type": "income_statement",
         "title": "דוחות על הפעילויות"
       },
       "facts": [
         {
           "bbox": [
-            464.57,
-            575.2,
-            130.77,
+            462.8,
+            569.88,
+            148.5,
             34.5
           ],
           "value": "1445674",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "מחזור הפעילויות",
             "הכנסות ממתן שירותים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
             240.72,
             569.88,
-            132.55,
-            36.27
+            148.5,
+            34.5
           ],
           "value": "1280395",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "מחזור הפעילויות",
             "הכנסות ממתן שירותים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            463.99,
+            451.58,
             621.08,
-            136.09,
+            148.5,
             34.5
           ],
           "value": "1304248",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "5",
+          "note_reference": "5",
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "עלות הפעילויות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
             238.05,
             617.79,
-            139.64,
-            35.14
+            148.5,
+            40.46
           ],
           "value": "1344239",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "5",
+          "note_reference": "5",
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "עלות הפעילויות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            486.35,
+            452.67,
             665.0,
-            114.82,
+            148.5,
             34.5
           ],
           "value": "141426",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הכנסות (הוצאות) נטו מפעילויות (לפעילויות)"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            275.72,
+            243.81,
             666.99,
-            100.64,
+            148.5,
             32.51
           ],
           "value": "(63844)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הכנסות (הוצאות) נטו מפעילויות (לפעילויות)"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            488.01,
+            461.42,
             758.05,
-            121.91,
-            32.73
+            148.5,
+            34.5
           ],
           "value": "134960",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "6",
+          "note_reference": "6",
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            265.64,
+            230.19,
             756.06,
-            113.05,
-            32.73
+            148.5,
+            34.5
           ],
           "value": "142051",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "6",
+          "note_reference": "6",
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            518.9,
+            456.85,
             800.51,
-            86.45,
+            148.5,
             34.5
           ],
           "value": "6466",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הכנסות (הוצאות) נטו לפני מימון"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            248.73,
+            231.0,
             799.83,
-            129.68,
-            38.05
+            147.41,
+            34.5
           ],
           "value": "(205895)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הכנסות (הוצאות) נטו לפני מימון"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            503.37,
+            460.82,
             891.15,
-            105.95,
+            148.5,
             34.5
           ],
           "value": "10584",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "מימון, נטו"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            281.99,
+            228.81,
             893.14,
-            95.32,
+            148.5,
             34.5
           ],
           "value": "9102",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "מימון, נטו"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            513.36,
-            940.39,
-            91.77,
+            454.86,
+            936.84,
+            148.5,
             34.5
           ],
           "value": "(4118)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "גרעון לתקופה"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            250.77,
+            227.72,
             939.03,
-            125.45,
+            148.5,
             34.5
           ],
           "value": "(214997)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "גרעון לתקופה"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         }
       ]
     },
@@ -1253,37 +1202,35 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "5",
-        "page_type": "statements",
-        "statement_type": "statement_of_changes_in_equity",
+        "type": "profits",
         "title": "דוחות על השינויים בגרעון בהון"
       },
       "facts": [
         {
           "bbox": [
-            743.44,
-            654.97,
-            110.62,
-            29.28
+            737.55,
+            649.08,
+            125.35,
+            38.12
           ],
           "value": "180990",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-01-01",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-01-01",
           "path": [
             "יתרות ליום 1 בינואר 2022",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
         },
         {
           "bbox": [
@@ -1293,24 +1240,23 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-01-01",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-01-01",
           "path": [
             "יתרות ליום 1 בינואר 2022",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
         },
         {
           "bbox": [
@@ -1320,24 +1266,23 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-01-01",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-01-01",
           "path": [
             "יתרות ליום 1 בינואר 2022",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
         },
         {
           "bbox": [
@@ -1347,51 +1292,49 @@
             32.12
           ],
           "value": "180990",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-01-01",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-01-01",
           "path": [
             "יתרות ליום 1 בינואר 2022",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
         },
         {
           "bbox": [
-            739.61,
+            729.3,
             740.84,
-            114.45,
+            133.6,
             38.12
           ],
           "value": "(214997)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1401,25 +1344,24 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1429,25 +1371,24 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1457,53 +1398,50 @@
             32.12
           ],
           "value": "(214997)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            764.48,
+            747.85,
             880.72,
-            91.06,
+            111.69,
             34.59
           ],
           "value": "(9401)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1513,26 +1451,24 @@
             9.11
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1542,26 +1478,24 @@
             32.12
           ],
           "value": "9401",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1571,54 +1505,50 @@
             9.93
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            766.95,
+            770.95,
             922.19,
             85.3,
             32.12
           ],
           "value": "1120",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1628,26 +1558,24 @@
             8.7
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1657,26 +1585,24 @@
             36.23
           ],
           "value": "(1120)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1686,167 +1612,152 @@
             8.7
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            765.95,
-            971.19,
-            87.95,
+            747.85,
+            972.66,
+            110.05,
             32.12
           ],
           "value": "(8281)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
-            "סה״כ"
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            649.93,
-            978.55,
+            651.4,
+            980.02,
             13.62,
             9.11
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר",
-            "סה״כ"
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            399.48,
-            970.19,
+            400.95,
+            971.66,
             84.15,
             32.12
           ],
           "value": "8281",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "נכסים נטו ששימשו לרכוש קבוע",
-            "סה״כ"
+            "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            304.08,
-            977.78,
+            305.55,
+            979.25,
             14.74,
             11.88
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
-            "סה\"כ",
-            "סה״כ"
+            "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            751.03,
+            740.3,
             1016.42,
-            106.87,
+            121.6,
             32.53
           ],
           "value": "(42288)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2022",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1856,24 +1767,23 @@
             8.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2022",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1883,24 +1793,23 @@
             32.12
           ],
           "value": "8281",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2022",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -1910,51 +1819,49 @@
             32.12
           ],
           "value": "(34007)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2022",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            760.87,
+            753.5,
             1106.3,
-            99.38,
+            106.75,
             32.12
           ],
           "value": "(4118)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -1964,25 +1871,24 @@
             8.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -1992,25 +1898,24 @@
             4.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2020,52 +1925,50 @@
             32.12
           ],
           "value": "(4118)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "תוספות במהלך השנה",
             "גרעון לשנה",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            753.91,
-            1241.96,
-            103.99,
-            33.35
+            737.95,
+            1245.64,
+            119.95,
+            32.12
           ],
           "value": "(20160)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2075,25 +1978,24 @@
             13.56
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2103,25 +2005,24 @@
             32.12
           ],
           "value": "20160",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2131,24 +2032,23 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2158,25 +2058,24 @@
             32.12
           ],
           "value": "2438",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2186,25 +2085,24 @@
             12.78
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2214,25 +2112,24 @@
             32.12
           ],
           "value": "(2438)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2242,53 +2139,49 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            747.77,
+            737.95,
             1332.81,
-            110.13,
+            119.95,
             32.12
           ],
           "value": "(17722)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
-            "סה״כ"
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2298,26 +2191,23 @@
             10.76
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר",
-            "סה״כ"
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2327,26 +2217,23 @@
             32.12
           ],
           "value": "17722",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
             "שאין לגביהם הגבלה",
-            "נכסים נטו ששימשו לרכוש קבוע",
-            "סה״כ"
+            "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2356,52 +2243,48 @@
             12.59
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
-            "גריעות במהלך השנה",
             "העברת סכומים שלא קיימת לגביהם הגבלה",
-            "סה\"כ",
-            "סה״כ"
+            "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            749.0,
+            737.95,
             1380.99,
-            108.9,
-            27.21
+            119.95,
+            32.12
           ],
           "value": "(64128)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2023",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2411,24 +2294,23 @@
             7.47
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2023",
             "שאין לגביהם הגבלה",
             "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2438,24 +2320,23 @@
             32.12
           ],
           "value": "26003",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2023",
             "שאין לגביהם הגבלה",
             "נכסים נטו ששימשו לרכוש קבוע"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2465,23 +2346,22 @@
             32.12
           ],
           "value": "(38125)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "יתרות ליום 31 בדצמבר 2023",
             "סה\"כ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         }
       ]
     },
@@ -2490,8 +2370,7 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "6",
-        "page_type": "statements",
-        "statement_type": "notes_to_financial_statements",
+        "type": "notes",
         "title": "באורים לדוחות הכספיים"
       },
       "facts": [
@@ -2503,23 +2382,22 @@
             32.21
           ],
           "value": "29561",
-          "comment_ref": "3",
+          "comment": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 3,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "ריהוט וציוד משרדי",
             "עלות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2529,23 +2407,22 @@
             32.21
           ],
           "value": "3558",
-          "comment_ref": "3",
+          "comment": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 3,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "ריהוט וציוד משרדי",
             "פחת שנצבר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2555,23 +2432,22 @@
             32.21
           ],
           "value": "26003",
-          "comment_ref": "3",
+          "comment": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 3,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "ריהוט וציוד משרדי",
             "עלות מופחתת"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2581,23 +2457,22 @@
             32.21
           ],
           "value": "8281",
-          "comment_ref": "3",
+          "comment": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 3,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "ריהוט וציוד משרדי",
             "עלות מופחתת"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         }
       ]
     },
@@ -2606,210 +2481,201 @@
       "meta": {
         "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
         "page_num": "7",
-        "page_type": "statements",
-        "statement_type": "notes_to_financial_statements",
+        "type": "notes",
         "title": "באורים לדוחות הכספיים"
       },
       "facts": [
         {
           "bbox": [
-            520.77,
+            492.6,
             507.05,
-            81.53,
-            35.5
+            109.7,
+            31.98
           ],
           "value": "8230",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "מוסדות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            281.61,
+            269.29,
             507.05,
-            87.84,
-            30.22
+            100.16,
+            31.98
           ],
           "value": "20021",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "מוסדות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            508.44,
+            492.6,
             545.88,
-            99.78,
+            115.62,
             31.98
           ],
           "value": "25780",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "עובדים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            282.0,
+            267.92,
             545.88,
-            86.08,
-            30.22
+            100.16,
+            31.98
           ],
           "value": "10573",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "עובדים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            526.27,
+            513.95,
             582.42,
-            78.01,
+            90.33,
             31.98
           ],
           "value": "3338",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "אחרים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            351.44,
-            580.24,
-            23.57,
-            32.19
+            328.55,
+            578.48,
+            58.78,
+            33.95
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "אחרים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
-            508.68,
-            619.49,
-            99.55,
-            33.74
+            489.32,
+            621.25,
+            118.91,
+            31.98
           ],
           "value": "37348",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
-            279.85,
-            617.73,
-            89.6,
-            35.5
+            269.29,
+            621.25,
+            100.16,
+            31.98
           ],
           "value": "30594",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "זכאים שונים ויתרות זכות",
           "note_num": 4,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -2819,22 +2685,21 @@
             31.98
           ],
           "value": "483409",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "שכר עבודה"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2844,22 +2709,21 @@
             31.98
           ],
           "value": "389331",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "שכר עבודה"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -2869,22 +2733,21 @@
             31.98
           ],
           "value": "88943",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הוצאות נלוות לשכר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2894,22 +2757,21 @@
             31.98
           ],
           "value": "80649",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הוצאות נלוות לשכר"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -2919,22 +2781,21 @@
             31.98
           ],
           "value": "330793",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "קבלני משנה ועבודות חוץ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2944,22 +2805,21 @@
             31.98
           ],
           "value": "434594",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "קבלני משנה ועבודות חוץ"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -2969,22 +2829,21 @@
             31.98
           ],
           "value": "118105",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "שכירות מתקנים ומגרשים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -2994,22 +2853,21 @@
             31.98
           ],
           "value": "168043",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "שכירות מתקנים ומגרשים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3019,22 +2877,21 @@
             31.98
           ],
           "value": "4461",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הסעות והובלות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3044,22 +2901,21 @@
             31.98
           ],
           "value": "8495",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הסעות והובלות"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3069,22 +2925,21 @@
             33.35
           ],
           "value": "80865",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "קניות פרסים, ציוד וביגוד"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3094,22 +2949,21 @@
             31.98
           ],
           "value": "91309",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "קניות פרסים, ציוד וביגוד"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3119,22 +2973,21 @@
             31.98
           ],
           "value": "197672",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הפקת פרוייקטים ואירועים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3144,22 +2997,21 @@
             31.98
           ],
           "value": "171818",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הפקת פרוייקטים ואירועים"
           ],
-          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3169,22 +3021,21 @@
             31.98
           ],
           "value": "1304248",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3194,22 +3045,21 @@
             31.98
           ],
           "value": "1344239",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "עלות הפעילויות",
           "note_num": 5,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3219,22 +3069,21 @@
             31.98
           ],
           "value": "10389",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "משרדיות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3244,22 +3093,21 @@
             31.98
           ],
           "value": "11572",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "משרדיות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3269,22 +3117,21 @@
             31.98
           ],
           "value": "10134",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "אחזקה"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3294,22 +3141,21 @@
             31.98
           ],
           "value": "4983",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "אחזקה"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3319,22 +3165,21 @@
             31.98
           ],
           "value": "31856",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "שירותים מקצועיים"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3344,22 +3189,21 @@
             31.98
           ],
           "value": "39560",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "שירותים מקצועיים"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3369,22 +3213,21 @@
             31.98
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "כיבודים ואש\"ל"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3394,22 +3237,21 @@
             31.98
           ],
           "value": "4384",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "כיבודים ואש\"ל"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3419,22 +3261,21 @@
             38.83
           ],
           "value": "11658",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "ביטוחים"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3444,22 +3285,21 @@
             31.98
           ],
           "value": "12971",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "ביטוחים"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3469,22 +3309,21 @@
             40.2
           ],
           "value": "45309",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "אחזקת רכב"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3494,22 +3333,21 @@
             31.98
           ],
           "value": "45984",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "אחזקת רכב"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3519,22 +3357,21 @@
             31.98
           ],
           "value": "702",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "משפטיות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3544,22 +3381,21 @@
             31.98
           ],
           "value": "-",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "משפטיות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3569,22 +3405,21 @@
             31.98
           ],
           "value": "18964",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "פרסום"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3594,22 +3429,21 @@
             30.61
           ],
           "value": "13122",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "פרסום"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3619,22 +3453,21 @@
             41.57
           ],
           "value": "1715",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "מיסים ואגרות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3644,22 +3477,21 @@
             41.57
           ],
           "value": "4966",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "מיסים ואגרות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3669,22 +3501,21 @@
             29.24
           ],
           "value": "(35)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "שונות ובטולי יתרות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3694,22 +3525,21 @@
             31.98
           ],
           "value": "(261)",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "שונות ובטולי יתרות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3719,22 +3549,21 @@
             41.57
           ],
           "value": "1830",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "מתנות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3744,22 +3573,21 @@
             31.98
           ],
           "value": "3650",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "מתנות"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3769,22 +3597,21 @@
             44.31
           ],
           "value": "2438",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "הוצאות פחת"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3794,22 +3621,21 @@
             31.98
           ],
           "value": "1120",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "הוצאות פחת"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         },
         {
           "bbox": [
@@ -3819,22 +3645,21 @@
             31.98
           ],
           "value": "134960",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2023-12-31",
-          "period_type": "duration",
-          "period_start": "2023-01-01",
-          "period_end": "2023-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
         },
         {
           "bbox": [
@@ -3844,31 +3669,23 @@
             31.98
           ],
           "value": "142051",
-          "comment_ref": null,
+          "comment": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": 6,
-          "note_ref": null,
+          "note_reference": null,
           "date": "2022-12-31",
-          "period_type": "duration",
-          "period_start": "2022-01-01",
-          "period_end": "2022-12-31",
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
           "currency": "ILS",
           "scale": 1,
-          "value_type": "amount"
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
         }
       ]
     }
-  ],
-  "metadata": {
-    "language": "he",
-    "reading_direction": "rtl",
-    "company_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
-    "report_year": 2023,
-    "entity_type": "registered_nonprofit"
-  }
+  ]
 }

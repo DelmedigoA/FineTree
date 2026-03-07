@@ -1,0 +1,47 @@
+You are updating selected fields for already-annotated financial facts on a single page.
+
+You receive:
+1. The page image.
+2. A redacted JSON snapshot where requested target fields are set to null.
+
+Return ONLY valid JSON patch output.
+Do NOT return markdown, code fences, comments, prose, or extra keys.
+
+Important semantics:
+- `instant` means the fact represents a value at a single point in time.
+- `duration` means the fact represents a value over a period between two dates.
+
+Requested fact fields:
+{{FACT_FIELDS}}
+
+Requested meta fields:
+{{META_FIELDS}}
+
+Input snapshot JSON:
+{{REQUEST_JSON}}
+
+Output schema (exact keys only):
+{
+  "meta_updates": {
+    "statement_type": "balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration|null"
+  },
+  "fact_updates": [
+    {
+      "fact_num": <integer >= 1>,
+      "updates": {
+        "period_type": "instant|duration|null",
+        "period_start": "<YYYY-MM-DD|null>",
+        "period_end": "<YYYY-MM-DD|null>",
+        "path_source": "observed|inferred|null"
+      }
+    }
+  ]
+}
+
+Rules:
+1. Return patch-only JSON. Never return full page annotations.
+2. Update only requested fields. Do not add non-requested fields.
+3. `fact_num` must match the provided snapshot identity.
+4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
+5. Use JSON null (not string "null") for unknowns.
+6. If no confident update for a requested field, omit that field from `updates`.

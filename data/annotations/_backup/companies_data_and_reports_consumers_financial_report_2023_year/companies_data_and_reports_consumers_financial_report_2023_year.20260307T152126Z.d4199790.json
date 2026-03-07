@@ -1,0 +1,1767 @@
+{
+  "images_dir": "data/pdf_images/companies_data_and_reports_consumers_financial_report_2023_year",
+  "pages": [
+    {
+      "image": "page_0001.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "title",
+        "title": "דוחות כספיים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0002.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "contents_page",
+        "title": "תוכן העניינים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0003.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "3",
+        "type": "declaration",
+        "title": "דוח רואי החשבון המבקרים לבעלי המניות"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0004.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "4",
+        "type": "declaration",
+        "title": "הצהרת יו״ר הדירקטוריון"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0005.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "5",
+        "type": "declaration",
+        "title": "הצהרת מנכ״ל המועצה"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "6",
+        "type": "declaration",
+        "title": "הצהרת האחראי על ענייני הכספים"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "7",
+        "type": "balance_sheet",
+        "title": "דוח על המצב הכספי"
+      },
+      "facts": [
+        {
+          "bbox": [
+            497.85,
+            465.26,
+            97.59,
+            39.75
+          ],
+          "value": "871984",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווה מזומנים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            301.03,
+            467.6,
+            95.93,
+            37.41
+          ],
+          "value": "259086",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווה מזומנים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            512.74,
+            523.71,
+            84.35,
+            37.41
+          ],
+          "value": "35000",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "3",
+          "date": "2023-12-31",
+          "path": [
+            "רכוש שוטף",
+            "חייבים ויתרות חובה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            315.91,
+            523.71,
+            81.05,
+            39.75
+          ],
+          "value": "62896",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "3",
+          "date": "2022-12-31",
+          "path": [
+            "רכוש שוטף",
+            "חייבים ויתרות חובה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            499.51,
+            577.49,
+            97.59,
+            37.41
+          ],
+          "value": "906984",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "רכוש שוטף"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            301.03,
+            577.49,
+            94.28,
+            37.41
+          ],
+          "value": "321982",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "רכוש שוטף"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            499.51,
+            635.94,
+            94.28,
+            37.41
+          ],
+          "value": "105449",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "4",
+          "date": "2023-12-31",
+          "path": [
+            "רכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            304.34,
+            635.94,
+            92.62,
+            35.07
+          ],
+          "value": "159710",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "4",
+          "date": "2022-12-31",
+          "path": [
+            "רכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            473.04,
+            715.43,
+            120.74,
+            42.08
+          ],
+          "value": "1012433",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            299.37,
+            715.43,
+            95.93,
+            39.75
+          ],
+          "value": "481692",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            499.51,
+            808.95,
+            95.93,
+            37.41
+          ],
+          "value": "675195",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "5",
+          "date": "2023-12-31",
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            304.34,
+            806.61,
+            92.62,
+            37.41
+          ],
+          "value": "715025",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "5",
+          "date": "2022-12-31",
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            499.51,
+            853.37,
+            95.93,
+            37.41
+          ],
+          "value": "122787",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "6",
+          "date": "2023-12-31",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד מעביד"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            304.34,
+            853.37,
+            90.97,
+            37.41
+          ],
+          "value": "114829",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "6",
+          "date": "2022-12-31",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד מעביד"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            497.85,
+            942.21,
+            95.93,
+            39.75
+          ],
+          "value": "214451",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "נכסים נטו ששימשו לפעילות שאין לגביהם הגבלה",
+            "נכסים נטו לשימוש לפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            286.14,
+            942.21,
+            110.82,
+            39.75
+          ],
+          "value": "(348162)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "נכסים נטו ששימשו לפעילות שאין לגביהם הגבלה",
+            "נכסים נטו לשימוש לפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            497.85,
+            986.64,
+            95.93,
+            39.75
+          ],
+          "value": "214451",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "נכסים נטו ששימשו לפעילות שאין לגביהם הגבלה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            286.14,
+            986.64,
+            110.82,
+            36.04
+          ],
+          "value": "(348162)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "נכסים נטו ששימשו לפעילות שאין לגביהם הגבלה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            473.04,
+            1049.76,
+            120.74,
+            37.41
+          ],
+          "value": "1012433",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            301.03,
+            1049.76,
+            95.93,
+            37.41
+          ],
+          "value": "481692",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        }
+      ]
+    },
+    {
+      "image": "page_0008.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "8",
+        "type": "profits",
+        "title": "דו\"ח רווח והפסד"
+      },
+      "facts": [
+        {
+          "bbox": [
+            473.04,
+            561.12,
+            124.05,
+            37.41
+          ],
+          "value": "9030855",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "7",
+          "date": "2023-12-31",
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            264.64,
+            559.12,
+            142.05,
+            43.41
+          ],
+          "value": "9055500",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "7",
+          "date": "2022-12-31",
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            473.04,
+            621.91,
+            124.05,
+            37.41
+          ],
+          "value": "4726509",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "8",
+          "date": "2023-12-31",
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            269.6,
+            619.91,
+            137.09,
+            43.41
+          ],
+          "value": "5109546",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "8",
+          "date": "2022-12-31",
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            469.74,
+            685.03,
+            127.36,
+            37.41
+          ],
+          "value": "4304346",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            269.6,
+            683.03,
+            137.09,
+            43.41
+          ],
+          "value": "3945954",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            476.35,
+            745.82,
+            119.09,
+            37.41
+          ],
+          "value": "3931442",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "9",
+          "date": "2023-12-31",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            274.56,
+            743.82,
+            132.13,
+            43.41
+          ],
+          "value": "3981689",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": "9",
+          "date": "2022-12-31",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            522.66,
+            806.61,
+            72.78,
+            37.41
+          ],
+          "value": "4515",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "הוצאות מימון, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            315.91,
+            804.61,
+            90.78,
+            43.41
+          ],
+          "value": "4968",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "הוצאות מימון, נטו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            496.2,
+            858.05,
+            99.24,
+            37.41
+          ],
+          "value": "368389",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "הכנסות (הוצאות) נטו לפני הוצאות אחרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            284.49,
+            856.05,
+            122.2,
+            43.41
+          ],
+          "value": "(40703)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "הכנסות (הוצאות) נטו לפני הוצאות אחרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            492.89,
+            921.17,
+            102.55,
+            37.41
+          ],
+          "value": "194224",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "הכנסות אחרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            314.26,
+            919.17,
+            92.43,
+            43.41
+          ],
+          "value": "9401",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "הכנסות אחרות"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            497.85,
+            981.96,
+            97.59,
+            37.41
+          ],
+          "value": "562613",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "הכנסות (הוצאות) נטו לשנה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            284.49,
+            979.96,
+            122.2,
+            43.41
+          ],
+          "value": "(31302)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "הכנסות (הוצאות) נטו לשנה"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        }
+      ]
+    },
+    {
+      "image": "page_0009.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": "9",
+        "type": "activities",
+        "title": "דו\"ח על השינויים בנכסים נטו"
+      },
+      "facts": [
+        {
+          "bbox": [
+            758.53,
+            402.14,
+            124.13,
+            32.73
+          ],
+          "value": "(610860)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2022",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
+        },
+        {
+          "bbox": [
+            613.63,
+            406.81,
+            102.55,
+            32.73
+          ],
+          "value": "293700",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2022",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
+        },
+        {
+          "bbox": [
+            405.23,
+            409.15,
+            109.16,
+            35.07
+          ],
+          "value": "(316860)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-01-01",
+          "path": [
+            "יתרה ליום 1 בינואר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01"
+        },
+        {
+          "bbox": [
+            780.03,
+            530.73,
+            100.97,
+            35.07
+          ],
+          "value": "(31302)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "(הוצאות) נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            655.75,
+            540.62,
+            20.14,
+            20.9
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "(הוצאות) נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            415.01,
+            533.06,
+            99.24,
+            37.41
+          ],
+          "value": "(31302)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "(הוצאות) נטו לשנה",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            781.69,
+            626.58,
+            99.32,
+            35.07
+          ],
+          "value": "(30793)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            621.9,
+            631.26,
+            87.66,
+            32.73
+          ],
+          "value": "30793",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            476.35,
+            640.61,
+            16.54,
+            4.68
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            783.34,
+            692.05,
+            97.66,
+            32.73
+          ],
+          "value": "164783",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            597.09,
+            692.05,
+            110.82,
+            32.73
+          ],
+          "value": "(164783)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            476.35,
+            701.4,
+            16.54,
+            4.68
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            763.49,
+            780.89,
+            119.16,
+            37.41
+          ],
+          "value": "(507872)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2022",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            615.29,
+            785.57,
+            95.93,
+            35.07
+          ],
+          "value": "159710",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2022",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            406.88,
+            781.97,
+            112.62,
+            38.67
+          ],
+          "value": "(348162)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2022-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31"
+        },
+        {
+          "bbox": [
+            779.7,
+            937.54,
+            102.97,
+            35.07
+          ],
+          "value": "562613",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "הכנסות (הוצאות) נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            652.15,
+            945.03,
+            23.75,
+            19.1
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "הכנסות (הוצאות) נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            423.29,
+            937.54,
+            92.77,
+            35.07
+          ],
+          "value": "562613",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "הכנסות (הוצאות) נטו לשנה",
+            "סה״כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            791.57,
+            998.33,
+            89.74,
+            35.07
+          ],
+          "value": "(3194)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            633.34,
+            1003.0,
+            76.23,
+            32.73
+          ],
+          "value": "3194",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            472.75,
+            1008.75,
+            23.75,
+            19.1
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            791.57,
+            1066.13,
+            91.39,
+            35.07
+          ],
+          "value": "57455",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            608.22,
+            1063.79,
+            101.34,
+            37.41
+          ],
+          "value": "(57455)",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            469.14,
+            1068.27,
+            27.35,
+            20.9
+          ],
+          "value": "-",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023",
+          "path": [
+            "שינויים במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            776.69,
+            1131.59,
+            101.32,
+            35.07
+          ],
+          "value": "109002",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2023",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שלא יועדו"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            612.94,
+            1128.27,
+            100.62,
+            36.73
+          ],
+          "value": "105449",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2023",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        },
+        {
+          "bbox": [
+            417.77,
+            1128.27,
+            100.62,
+            39.07
+          ],
+          "value": "214451",
+          "ref_comment": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "ref_note": null,
+          "date": "2023-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר 2023",
+            "סה\"כ"
+          ],
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31"
+        }
+      ]
+    },
+    {
+      "image": "page_0010.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0011.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0012.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0013.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0014.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0015.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0016.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0017.png",
+      "meta": {
+        "entity_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+        "page_num": null,
+        "type": "other",
+        "title": null
+      },
+      "facts": []
+    }
+  ],
+  "document_meta": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "המועצה הישראלית לצרכנות (חברה מוגבלת בערבות)",
+    "report_year": 2023
+  }
+}

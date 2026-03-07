@@ -56,6 +56,7 @@ from .annotation_core import (
     PageState,
     SCALE_OPTIONS,
     apply_entity_name_to_pages,
+    bbox_to_list,
     build_annotations_payload,
     denormalize_bbox_from_1000,
     default_page_meta,
@@ -84,6 +85,7 @@ from .schema_contract import (
     PERIOD_TYPE_VALUES,
     STATEMENT_TYPE_VALUES,
     VALUE_TYPE_VALUES,
+    default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
 from .schemas import PageMeta, PageType
@@ -120,6 +122,7 @@ ASSETS_ROOT = PACKAGE_ROOT / "assets"
 ICONS_ROOT = ASSETS_ROOT / "icons"
 PROMPTS_ROOT = REPO_ROOT / "prompts"
 DEFAULT_EXTRACTION_PROMPT_PATH = PROMPTS_ROOT / "extraction_prompt.txt"
+DEFAULT_GEMINI_FILL_PROMPT_PATH = PROMPTS_ROOT / "gemini_fill_prompt.txt"
 LEGACY_EXTRACTION_PROMPT_PATH = REPO_ROOT / "prompt.txt"
 GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
 QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
@@ -130,6 +133,7 @@ STATEMENT_TYPE_OPTIONS: tuple[str, ...] = ("", *STATEMENT_TYPE_VALUES)
 ENTITY_TYPE_OPTIONS: tuple[str, ...] = ("", *ENTITY_TYPE_VALUES)
 PERIOD_TYPE_OPTIONS: tuple[str, ...] = ("", *PERIOD_TYPE_VALUES)
 PATH_SOURCE_OPTIONS: tuple[str, ...] = ("", *PATH_SOURCE_VALUES)
+GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = ("period_type", "period_start", "period_end", "path_source")
 
 
 def _prompt_entity_apply_mode(parent: QWidget, entity_name: str) -> Optional[str]:
@@ -1005,6 +1009,109 @@ class GeminiPromptDialog(QDialog):
         return FEW_SHOT_PRESET_CLASSIC
 
 
+class GeminiFillDialog(QDialog):
+    def __init__(
+        self,
+        *,
+        model_name: str,
+        thinking_enabled_default: bool,
+        prompt_builder: Callable[[set[str], bool], str],
+        parent: Optional[QWidget] = None,
+    ) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("Gemini Fill Selected Fields")
+        self.resize(960, 760)
+        self._prompt_builder = prompt_builder
+
+        root = QVBoxLayout(self)
+        hint = QLabel(
+            "Choose fields to auto-fill on selected facts.\n"
+            "Requested fields are redacted before sending to Gemini."
+        )
+        hint.setWordWrap(True)
+        root.addWidget(hint)
+
+        form = QFormLayout()
+        self.model_edit = QLineEdit(model_name)
+        self.thinking_check = QCheckBox("Enable thinking")
+        self.thinking_check.setChecked(bool(thinking_enabled_default))
+        form.addRow("model", self.model_edit)
+        form.addRow("thinking", self.thinking_check)
+        root.addLayout(form)
+
+        fields_box = QGroupBox("Fields To Fill")
+        fields_layout = QVBoxLayout(fields_box)
+        self.period_type_check = QCheckBox("period_type")
+        self.period_start_check = QCheckBox("period_start")
+        self.period_end_check = QCheckBox("period_end")
+        self.path_source_check = QCheckBox("path_source")
+        self.statement_type_check = QCheckBox("meta.statement_type")
+        self.period_type_check.setChecked(True)
+        self.period_start_check.setChecked(True)
+        self.period_end_check.setChecked(True)
+        self.path_source_check.setChecked(False)
+        self.statement_type_check.setChecked(False)
+        for checkbox in (
+            self.period_type_check,
+            self.period_start_check,
+            self.period_end_check,
+            self.path_source_check,
+            self.statement_type_check,
+        ):
+            fields_layout.addWidget(checkbox)
+            checkbox.toggled.connect(self._refresh_prompt_preview)
+        root.addWidget(fields_box)
+
+        preview_label = QLabel("Prompt Preview")
+        preview_label.setObjectName("hintText")
+        root.addWidget(preview_label)
+        self.prompt_edit = QPlainTextEdit()
+        self.prompt_edit.setReadOnly(True)
+        root.addWidget(self.prompt_edit, 1)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
+        if ok_btn is not None:
+            ok_btn.setText("Start Gemini Fill")
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        root.addWidget(self.button_box)
+        self._refresh_prompt_preview()
+
+    def selected_fact_fields(self) -> set[str]:
+        selected: set[str] = set()
+        if self.period_type_check.isChecked():
+            selected.add("period_type")
+        if self.period_start_check.isChecked():
+            selected.add("period_start")
+        if self.period_end_check.isChecked():
+            selected.add("period_end")
+        if self.path_source_check.isChecked():
+            selected.add("path_source")
+        return selected
+
+    def include_statement_type(self) -> bool:
+        return self.statement_type_check.isChecked()
+
+    def model(self) -> str:
+        return self.model_edit.text().strip()
+
+    def enable_thinking(self) -> bool:
+        return self.thinking_check.isChecked()
+
+    def prompt(self) -> str:
+        return self.prompt_edit.toPlainText()
+
+    def _refresh_prompt_preview(self) -> None:
+        selected_fact_fields = self.selected_fact_fields()
+        include_statement_type = self.include_statement_type()
+        prompt = self._prompt_builder(selected_fact_fields, include_statement_type)
+        self.prompt_edit.setPlainText(prompt)
+        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
+        if ok_btn is not None:
+            ok_btn.setEnabled(bool(selected_fact_fields) or include_statement_type)
+
+
 class GeminiStreamDialog(QDialog):
     stop_requested = pyqtSignal()
 
@@ -1112,6 +1219,63 @@ class GeminiStreamWorker(QObject):
             if not self._cancel_requested:
                 extraction = parser.finalize()
                 self.completed.emit(extraction)
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
+class GeminiFillWorker(QObject):
+    completed = pyqtSignal(dict)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        *,
+        image_path: Path,
+        prompt: str,
+        model: str,
+        api_key: Optional[str],
+        allowed_fact_fields: set[str],
+        allow_statement_type: bool,
+        enable_thinking: bool,
+        parent: Optional[QObject] = None,
+    ) -> None:
+        super().__init__(parent)
+        self.image_path = image_path
+        self.prompt = prompt
+        self.model = model
+        self.api_key = api_key
+        self.allowed_fact_fields = set(allowed_fact_fields)
+        self.allow_statement_type = bool(allow_statement_type)
+        self.enable_thinking = bool(enable_thinking)
+        self._cancel_requested = False
+
+    def request_cancel(self) -> None:
+        self._cancel_requested = True
+
+    def run(self) -> None:
+        try:
+            from .gemini_vlm import generate_content_from_image, parse_selected_field_patch_text
+
+            raw_text = generate_content_from_image(
+                image_path=self.image_path,
+                prompt=self.prompt,
+                model=self.model,
+                api_key=self.api_key,
+                enable_thinking=self.enable_thinking,
+            )
+            if self._cancel_requested:
+                return
+            parsed = parse_selected_field_patch_text(
+                raw_text,
+                allowed_fact_fields=self.allowed_fact_fields,
+                allow_statement_type=self.allow_statement_type,
+            )
+            if self._cancel_requested:
+                return
+            self.completed.emit(parsed)
         except Exception as exc:
             self.failed.emit(str(exc))
         finally:
@@ -1274,6 +1438,13 @@ class AnnotationWindow(QMainWindow):
         self._gemini_stream_seen_facts: set[tuple[Any, ...]] = set()
         self._gemini_stream_fact_count = 0
         self._gemini_stream_cancel_requested = False
+        self._gemini_fill_thread: Optional[QThread] = None
+        self._gemini_fill_worker: Optional[GeminiFillWorker] = None
+        self._gemini_fill_cancel_requested = False
+        self._gemini_fill_target_page: Optional[str] = None
+        self._gemini_fill_snapshot: Optional[dict[str, Any]] = None
+        self._gemini_fill_selected_fact_fields: set[str] = set()
+        self._gemini_fill_include_statement_type = False
         self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", "gemini-3-flash-preview")
         self._gemini_enable_thinking = True
         self._qwen_stream_thread: Optional[QThread] = None
@@ -1445,6 +1616,7 @@ class AnnotationWindow(QMainWindow):
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
             (self.gemini_gt_btn, "Gemini", "Gemini GT", self._load_repo_icon(GEMINI_BUTTON_ICON)),
+            (self.gemini_fill_btn, "Gemini Fill", "Gemini fill selected fields", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.qwen_gt_btn, "Qwen", "Qwen GT", self._load_repo_icon(QWEN_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
@@ -1511,6 +1683,7 @@ class AnnotationWindow(QMainWindow):
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
         self.gemini_gt_btn = QPushButton("Gemini GT")
+        self.gemini_fill_btn = QPushButton("Gemini Fill")
         self.qwen_gt_btn = QPushButton("Qwen GT")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
@@ -1532,6 +1705,7 @@ class AnnotationWindow(QMainWindow):
             self.redo_btn,
             self.import_btn,
             self.gemini_gt_btn,
+            self.gemini_fill_btn,
             self.qwen_gt_btn,
             self.delete_nav_btn,
             self.zoom_out_btn,
@@ -1548,6 +1722,7 @@ class AnnotationWindow(QMainWindow):
             btn.setObjectName("toolbarActionBtn")
         self._apply_top_nav_icons()
         self.gemini_gt_btn.setProperty("variant", "primary")
+        self.gemini_fill_btn.setProperty("variant", "primary")
         self.qwen_gt_btn.setProperty("variant", "primary")
         self.save_btn.setProperty("variant", "primary")
         for button in (self.import_btn, self.page_json_btn, self.help_btn, self.apply_entity_all_btn, self.exit_btn):
@@ -1579,6 +1754,7 @@ class AnnotationWindow(QMainWindow):
         gt_layout = QHBoxLayout()
         gt_layout.setSpacing(4)
         gt_layout.addWidget(self.gemini_gt_btn)
+        gt_layout.addWidget(self.gemini_fill_btn)
         gt_layout.addWidget(self.qwen_gt_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self._toolbar_group("Generation", gt_layout))
@@ -2226,6 +2402,7 @@ class AnnotationWindow(QMainWindow):
         self.save_btn.clicked.connect(self.save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.gemini_gt_btn.clicked.connect(self.generate_gemini_ground_truth)
+        self.gemini_fill_btn.clicked.connect(self.generate_gemini_fill_selected_fields)
         self.qwen_gt_btn.clicked.connect(self.generate_qwen_ground_truth)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
@@ -2354,6 +2531,7 @@ class AnnotationWindow(QMainWindow):
         self._clear_gt_activity()
         self._update_path_controls()
         self._update_batch_controls()
+        self._update_gemini_fill_button_state()
         self._update_history_controls()
 
     def _configure_hidden_status_bar(self) -> None:
@@ -3746,6 +3924,19 @@ class AnnotationWindow(QMainWindow):
             self.gemini_gt_btn.setEnabled(enabled)
         if hasattr(self, "qwen_gt_btn"):
             self.qwen_gt_btn.setEnabled(enabled)
+        self._update_gemini_fill_button_state(force_disable=not enabled)
+
+    def _update_gemini_fill_button_state(self, *, force_disable: bool = False) -> None:
+        if not hasattr(self, "gemini_fill_btn"):
+            return
+        has_selection = bool(self._selected_fact_items()) if not force_disable else False
+        no_active_generation = (
+            self._gemini_stream_thread is None
+            and self._qwen_stream_thread is None
+            and self._gemini_fill_thread is None
+        )
+        enabled = has_selection and no_active_generation and not force_disable
+        self.gemini_fill_btn.setEnabled(enabled)
 
     def toggle_batch_panel(self) -> None:
         visible = not self.batch_box.isVisible()
@@ -3773,6 +3964,9 @@ class AnnotationWindow(QMainWindow):
             return
         if self._qwen_stream_thread is not None:
             self._cancel_qwen_stream()
+            return
+        if self._gemini_fill_thread is not None:
+            self._cancel_gemini_fill()
             return
 
     def _apply_zoom(self, factor: float) -> None:
@@ -4257,6 +4451,27 @@ class AnnotationWindow(QMainWindow):
                 return resolved
         return None
 
+    def _resolve_gemini_fill_prompt_txt_path(self) -> Optional[Path]:
+        candidates: List[Path] = []
+        env_path = os.getenv("FINETREE_GEMINI_FILL_PROMPT_PATH")
+        if env_path:
+            candidates.append(Path(env_path).expanduser())
+
+        candidates.append(Path.cwd() / "prompts" / "gemini_fill_prompt.txt")
+        candidates.append(DEFAULT_GEMINI_FILL_PROMPT_PATH)
+        for parent in Path(__file__).resolve().parents:
+            candidates.append(parent / "prompts" / "gemini_fill_prompt.txt")
+
+        seen: set[Path] = set()
+        for path in candidates:
+            resolved = path.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            if resolved.is_file():
+                return resolved
+        return None
+
     def _load_gemini_few_shot_examples(
         self,
         *,
@@ -4332,6 +4547,28 @@ class AnnotationWindow(QMainWindow):
         prompt = prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
         return prompt
 
+    def _build_gemini_fill_prompt_from_template(
+        self,
+        template: str,
+        *,
+        request_payload: Dict[str, Any],
+        selected_fact_fields: set[str],
+        include_statement_type: bool,
+    ) -> str:
+        fact_fields = ", ".join(sorted(selected_fact_fields)) if selected_fact_fields else "none"
+        meta_fields = "statement_type" if include_statement_type else "none"
+        request_json = json.dumps(request_payload, ensure_ascii=False, indent=2)
+        prompt = template.replace("{{FACT_FIELDS}}", fact_fields)
+        prompt = prompt.replace("{{META_FIELDS}}", meta_fields)
+        prompt = prompt.replace("{{REQUEST_JSON}}", request_json)
+        return prompt
+
+    def _fact_payload_from_item(self, item: AnnotRectItem) -> Dict[str, Any]:
+        return {
+            "bbox": bbox_to_dict(item_scene_rect(item)),
+            **normalize_fact_data(item.fact_data),
+        }
+
     def _fact_uniqueness_key(self, fact_payload: Dict[str, Any]) -> tuple[Any, ...]:
         normalized_fact = normalize_fact_data(fact_payload)
         bbox = normalize_bbox_data(fact_payload.get("bbox"))
@@ -4354,6 +4591,66 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("path_source") or ""),
             path,
         )
+
+    def _current_page_fact_snapshot_signature(
+        self,
+        ordered_items: List[AnnotRectItem],
+    ) -> List[tuple[Any, ...]]:
+        signature: List[tuple[Any, ...]] = []
+        for item in ordered_items:
+            signature.append(self._fact_uniqueness_key(self._fact_payload_from_item(item)))
+        return signature
+
+    def _build_gemini_fill_request_payload(
+        self,
+        *,
+        page_name: str,
+        selected_fact_nums: List[int],
+        selected_fact_fields: set[str],
+        include_statement_type: bool,
+        ordered_items: List[AnnotRectItem],
+    ) -> Dict[str, Any]:
+        page_idx = self._page_index_by_name(page_name)
+        state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
+        page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
+
+        if include_statement_type:
+            page_meta["statement_type"] = None
+
+        facts_out: list[dict[str, Any]] = []
+        selected_lookup = set(selected_fact_nums)
+        for fact_num, item in enumerate(ordered_items, start=1):
+            if fact_num not in selected_lookup:
+                continue
+            payload = self._fact_payload_from_item(item)
+            fact_data = normalize_fact_data(payload)
+            redacted_fact = {**fact_data}
+            for field_name in selected_fact_fields:
+                if field_name in redacted_fact:
+                    redacted_fact[field_name] = None
+            facts_out.append(
+                {
+                    "fact_num": fact_num,
+                    "bbox": bbox_to_list(payload.get("bbox")),
+                    **redacted_fact,
+                }
+            )
+
+        return {
+            "images_dir": str(self.images_dir),
+            "metadata": normalize_document_meta(self.document_meta),
+            "pages": [
+                {
+                    "image": page_name,
+                    "meta": page_meta,
+                    "facts": facts_out,
+                }
+            ],
+            "request": {
+                "fact_fields": sorted(selected_fact_fields),
+                "meta_fields": ["statement_type"] if include_statement_type else [],
+            },
+        }
 
     def _apply_stream_meta(self, page_name: str, meta_payload: Dict[str, Any]) -> None:
         page_idx = self._page_index_by_name(page_name)
@@ -4524,12 +4821,292 @@ class AnnotationWindow(QMainWindow):
         else:
             self.statusBar().showMessage(f"Imported annotations for {imported_count} page(s).", 4500)
 
+    def generate_gemini_fill_selected_fields(self) -> None:
+        if self._qwen_stream_thread is not None:
+            QMessageBox.information(self, "Gemini Fill", "A Qwen stream is already running.")
+            return
+        if self._gemini_stream_thread is not None:
+            QMessageBox.information(self, "Gemini Fill", "A Gemini stream is already running.")
+            return
+        if self._gemini_fill_thread is not None:
+            QMessageBox.information(self, "Gemini Fill", "A Gemini fill task is already running.")
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            QMessageBox.warning(self, "Gemini Fill", "No current page is loaded.")
+            return
+
+        selected_items = self._selected_fact_items()
+        if not selected_items:
+            QMessageBox.information(self, "Gemini Fill", "Select one or more facts first.")
+            return
+
+        self._capture_current_state()
+        page_path = self.page_images[self.current_index]
+        page_name = page_path.name
+        ordered_items = self._sorted_fact_items()
+        selected_ids = {id(item) for item in selected_items}
+        selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if id(item) in selected_ids]
+        if not selected_fact_nums:
+            QMessageBox.information(self, "Gemini Fill", "No selected facts matched current page ordering.")
+            return
+
+        prompt_path = self._resolve_gemini_fill_prompt_txt_path()
+        if prompt_path is None:
+            prompt_template = default_gemini_fill_prompt_template()
+        else:
+            try:
+                prompt_template = prompt_path.read_text(encoding="utf-8")
+            except Exception as exc:
+                QMessageBox.warning(self, "Gemini Fill", f"Failed to read Gemini fill prompt template:\n{exc}")
+                return
+
+        def _prompt_preview_builder(selected_fact_fields: set[str], include_statement_type: bool) -> str:
+            request_payload = self._build_gemini_fill_request_payload(
+                page_name=page_name,
+                selected_fact_nums=selected_fact_nums,
+                selected_fact_fields=selected_fact_fields,
+                include_statement_type=include_statement_type,
+                ordered_items=ordered_items,
+            )
+            return self._build_gemini_fill_prompt_from_template(
+                prompt_template,
+                request_payload=request_payload,
+                selected_fact_fields=selected_fact_fields,
+                include_statement_type=include_statement_type,
+            )
+
+        dialog = GeminiFillDialog(
+            model_name=self._gemini_model_name,
+            thinking_enabled_default=self._gemini_enable_thinking,
+            prompt_builder=_prompt_preview_builder,
+            parent=self,
+        )
+        if dialog.exec_() != QDialog.Accepted:
+            return
+
+        selected_fact_fields = dialog.selected_fact_fields()
+        include_statement_type = dialog.include_statement_type()
+        if not selected_fact_fields and not include_statement_type:
+            QMessageBox.warning(self, "Gemini Fill", "Choose at least one fact field or statement_type.")
+            return
+
+        prompt_text = dialog.prompt().strip()
+        if not prompt_text:
+            QMessageBox.warning(self, "Gemini Fill", "Prompt cannot be empty.")
+            return
+        model_name = dialog.model().strip() or self._gemini_model_name
+        enable_thinking = dialog.enable_thinking()
+
+        try:
+            from .gemini_vlm import resolve_api_key
+        except Exception as exc:
+            QMessageBox.warning(self, "Gemini Fill", f"Gemini backend is unavailable:\n{exc}")
+            return
+
+        gemini_api_key = resolve_api_key()
+        if not gemini_api_key:
+            QMessageBox.warning(
+                self,
+                "Gemini Fill",
+                (
+                    "Gemini API key not found.\n\n"
+                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
+                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
+                ),
+            )
+            return
+
+        request_payload = self._build_gemini_fill_request_payload(
+            page_name=page_name,
+            selected_fact_nums=selected_fact_nums,
+            selected_fact_fields=selected_fact_fields,
+            include_statement_type=include_statement_type,
+            ordered_items=ordered_items,
+        )
+        prompt_text = self._build_gemini_fill_prompt_from_template(
+            prompt_template,
+            request_payload=request_payload,
+            selected_fact_fields=selected_fact_fields,
+            include_statement_type=include_statement_type,
+        )
+
+        self._gemini_model_name = model_name
+        self._gemini_enable_thinking = enable_thinking
+        self._gemini_fill_target_page = page_name
+        self._gemini_fill_selected_fact_fields = set(selected_fact_fields)
+        self._gemini_fill_include_statement_type = include_statement_type
+        self._gemini_fill_snapshot = {
+            "page_name": page_name,
+            "selected_fact_nums": list(selected_fact_nums),
+            "ordered_fact_signature": self._current_page_fact_snapshot_signature(ordered_items),
+        }
+        self._gemini_fill_cancel_requested = False
+
+        self._set_gt_activity(
+            "Gemini Fill",
+            f"Running Gemini fill for {len(selected_fact_nums)} selected fact(s)...",
+            fact_count=0,
+            running=True,
+        )
+
+        worker = GeminiFillWorker(
+            image_path=page_path,
+            prompt=prompt_text,
+            model=model_name,
+            api_key=gemini_api_key,
+            allowed_fact_fields=set(selected_fact_fields),
+            allow_statement_type=include_statement_type,
+            enable_thinking=enable_thinking,
+        )
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.completed.connect(self._on_gemini_fill_completed)
+        worker.failed.connect(self._on_gemini_fill_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_gemini_fill_finished)
+
+        self._gemini_fill_worker = worker
+        self._gemini_fill_thread = thread
+        self._set_gt_buttons_enabled(False)
+        self.statusBar().showMessage(f"Running Gemini Fill for {page_name}...", 3000)
+        thread.start()
+
+    def _cancel_gemini_fill(self) -> None:
+        if self._gemini_fill_worker is not None:
+            self._gemini_fill_cancel_requested = True
+            self._gemini_fill_worker.request_cancel()
+            self._set_gt_activity("Gemini Fill", "Stopping fill task...", fact_count=0, running=True)
+
+    def _on_gemini_fill_completed(self, patch_payload: Dict[str, Any]) -> None:
+        page_name = self._gemini_fill_target_page
+        snapshot = self._gemini_fill_snapshot or {}
+        if page_name is None:
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            self._on_gemini_fill_failed("Current page is unavailable.")
+            return
+        if self.page_images[self.current_index].name != page_name:
+            self._on_gemini_fill_failed("Current page changed during Gemini fill. Please rerun.")
+            return
+
+        ordered_items = self._sorted_fact_items()
+        current_signature = self._current_page_fact_snapshot_signature(ordered_items)
+        expected_signature = list(snapshot.get("ordered_fact_signature") or [])
+        if current_signature != expected_signature:
+            self._on_gemini_fill_failed("Selected facts changed during Gemini fill. Please rerun.")
+            return
+
+        selected_fact_nums = list(snapshot.get("selected_fact_nums") or [])
+        selected_lookup = set(int(num) for num in selected_fact_nums)
+        fact_updates = patch_payload.get("fact_updates")
+        if not isinstance(fact_updates, list):
+            self._on_gemini_fill_failed("Patch payload is missing fact_updates.")
+            return
+
+        staged_fact_updates: list[tuple[AnnotRectItem, Dict[str, Any]]] = []
+        try:
+            for entry in fact_updates:
+                if not isinstance(entry, dict):
+                    raise ValueError("Invalid fact_updates entry.")
+                fact_num = entry.get("fact_num")
+                if isinstance(fact_num, bool) or not isinstance(fact_num, int):
+                    raise ValueError("fact_num must be an integer.")
+                if fact_num not in selected_lookup:
+                    raise ValueError(f"Patch referenced non-selected fact_num: {fact_num}.")
+                if fact_num < 1 or fact_num > len(ordered_items):
+                    raise ValueError(f"fact_num out of range: {fact_num}.")
+                item = ordered_items[fact_num - 1]
+                updates = entry.get("updates")
+                if not isinstance(updates, dict):
+                    raise ValueError(f"updates for fact_num {fact_num} must be an object.")
+                current_fact = normalize_fact_data(item.fact_data)
+                staged_fact_updates.append((item, normalize_fact_data({**current_fact, **updates})))
+
+            staged_meta_updates: Dict[str, Any] = {}
+            meta_updates = patch_payload.get("meta_updates")
+            if isinstance(meta_updates, dict) and "statement_type" in meta_updates:
+                if not self._gemini_fill_include_statement_type:
+                    raise ValueError("Patch included statement_type update but statement_type was not requested.")
+                page_idx = self.current_index
+                state = self.page_states.get(page_name, self._default_state(page_idx))
+                normalized_meta = PageMeta.model_validate(
+                    {
+                        **self._default_meta(page_idx),
+                        **(state.meta or {}),
+                        "statement_type": meta_updates.get("statement_type"),
+                    }
+                ).model_dump(mode="json")
+                staged_meta_updates["statement_type"] = normalized_meta.get("statement_type")
+        except Exception as exc:
+            self._on_gemini_fill_failed(str(exc))
+            return
+
+        for item, updated_fact in staged_fact_updates:
+            item.fact_data = updated_fact
+        if staged_meta_updates:
+            self._apply_stream_meta(page_name, staged_meta_updates)
+        if staged_fact_updates or staged_meta_updates:
+            updated_count = len(staged_fact_updates)
+            self.refresh_facts_list()
+            self._record_history_snapshot()
+            self.statusBar().showMessage(
+                f"Gemini Fill complete ({updated_count} fact(s) updated).",
+                6000,
+            )
+            self._set_gt_activity(
+                "Gemini Fill",
+                f"Gemini Fill complete. Updated {updated_count} fact(s).",
+                fact_count=updated_count,
+                running=False,
+            )
+            QMessageBox.information(
+                self,
+                "Gemini Fill",
+                f"Gemini Fill finished.\nUpdated {updated_count} fact(s).",
+            )
+        else:
+            self._set_gt_activity(
+                "Gemini Fill",
+                "Gemini Fill complete. No changes returned.",
+                fact_count=0,
+                running=False,
+            )
+            self.statusBar().showMessage("Gemini Fill complete (no changes).", 5000)
+            QMessageBox.information(
+                self,
+                "Gemini Fill",
+                "Gemini Fill finished.\nNo changes were applied.",
+            )
+
+    def _on_gemini_fill_failed(self, message: str) -> None:
+        self._set_gt_activity("Gemini Fill", f"Error: {message}", fact_count=0, running=False)
+        QMessageBox.warning(self, "Gemini Fill failed", message)
+
+    def _on_gemini_fill_finished(self) -> None:
+        if self._gemini_fill_cancel_requested:
+            self._set_gt_activity("Gemini Fill", "Gemini Fill stopped.", fact_count=0, running=False)
+            self.statusBar().showMessage("Gemini Fill stopped.", 4000)
+        self._gemini_fill_thread = None
+        self._gemini_fill_worker = None
+        self._gemini_fill_target_page = None
+        self._gemini_fill_snapshot = None
+        self._gemini_fill_selected_fact_fields = set()
+        self._gemini_fill_include_statement_type = False
+        if self._gemini_stream_thread is None and self._qwen_stream_thread is None:
+            self._set_gt_buttons_enabled(True)
+
     def generate_gemini_ground_truth(self) -> None:
         if self._qwen_stream_thread is not None:
             QMessageBox.information(self, "Gemini GT", "A Qwen stream is already running.")
             return
         if self._gemini_stream_thread is not None:
             QMessageBox.information(self, "Gemini GT", "A Gemini stream is already running.")
+            return
+        if self._gemini_fill_thread is not None:
+            QMessageBox.information(self, "Gemini GT", "A Gemini fill task is already running.")
             return
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             QMessageBox.warning(self, "Gemini GT", "No current page is loaded.")
@@ -4769,7 +5346,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_stream_thread = None
         self._gemini_stream_worker = None
         self._gemini_stream_target_page = None
-        if self._qwen_stream_thread is None:
+        if self._qwen_stream_thread is None and self._gemini_fill_thread is None:
             self._set_gt_buttons_enabled(True)
 
     def generate_qwen_ground_truth(self) -> None:
@@ -4778,6 +5355,9 @@ class AnnotationWindow(QMainWindow):
             return
         if self._qwen_stream_thread is not None:
             QMessageBox.information(self, "Qwen GT", "A Qwen stream is already running.")
+            return
+        if self._gemini_fill_thread is not None:
+            QMessageBox.information(self, "Qwen GT", "A Gemini fill task is already running.")
             return
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             QMessageBox.warning(self, "Qwen GT", "No current page is loaded.")
@@ -5037,7 +5617,7 @@ class AnnotationWindow(QMainWindow):
         self._qwen_stream_thread = None
         self._qwen_stream_worker = None
         self._qwen_stream_target_page = None
-        if self._gemini_stream_thread is None:
+        if self._gemini_stream_thread is None and self._gemini_fill_thread is None:
             self._set_gt_buttons_enabled(True)
 
     def _capture_current_state(self) -> None:
@@ -5357,6 +5937,7 @@ class AnnotationWindow(QMainWindow):
         if refresh_issues:
             self._refresh_current_page_issues(use_current_fact_items=True)
         self._update_batch_controls()
+        self._update_gemini_fill_button_state()
 
     def _on_show_order_labels_toggled(self, _checked: bool) -> None:
         self._apply_fact_order_labels()
@@ -5433,6 +6014,7 @@ class AnnotationWindow(QMainWindow):
         self._syncing_selection = False
         self._sync_fact_editor_from_selection()
         self._update_batch_controls()
+        self._update_gemini_fill_button_state()
 
     def _on_fact_list_selection_changed(self) -> None:
         if self._syncing_selection:
@@ -5451,6 +6033,7 @@ class AnnotationWindow(QMainWindow):
             self._focus_fact_items_in_view(selected_items)
         self._sync_fact_editor_from_selection()
         self._update_batch_controls()
+        self._update_gemini_fill_button_state()
 
     def _selected_fact_items(self) -> List[AnnotRectItem]:
         return [

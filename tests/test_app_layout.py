@@ -70,11 +70,13 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.save_btn.text() == "Save"
     assert window.gemini_gt_btn.text() == "Gemini"
+    assert window.gemini_fill_btn.text() == "Gemini Fill"
     assert window.copy_image_btn.text() == "Copy Image"
     assert window.page_json_btn.text() == "JSON"
     assert window.exit_btn.text() == "Exit"
     assert window.page_jump_spin.minimumWidth() == 58
     assert not window.gemini_gt_btn.icon().isNull()
+    assert not window.gemini_fill_btn.icon().isNull()
     assert not window.qwen_gt_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
@@ -83,6 +85,7 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
     assert window.fact_editor_box.layout().count() == 9
     assert window.show_order_labels_check.isChecked() is False
+    assert window.gemini_fill_btn.isEnabled() is False
     assert window.fact_is_beur_combo.maximumWidth() == 220
     assert window.facts_count_label.text() == "No facts"
     assert window.statusBar().isHidden()
@@ -130,6 +133,181 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
 
     assert item_a.fact_data["currency"] == "USD"
     assert item_b.fact_data["currency"] == "USD"
+
+    window.close()
+
+
+def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.statement_type_combo.setCurrentText("income_statement")
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "100",
+            "period_type": "instant",
+            "period_start": None,
+            "period_end": "2024-12-31",
+            "path_source": "observed",
+        },
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {
+            "value": "200",
+            "period_type": "duration",
+            "period_start": "2024-01-01",
+            "period_end": "2024-12-31",
+            "path_source": "inferred",
+        },
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    ordered_items = window._sorted_fact_items()
+    selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if item in {item_a, item_b}]
+    payload = window._build_gemini_fill_request_payload(
+        page_name=window.page_images[window.current_index].name,
+        selected_fact_nums=selected_fact_nums,
+        selected_fact_fields={"period_type", "period_start", "period_end"},
+        include_statement_type=True,
+        ordered_items=ordered_items,
+    )
+
+    facts = payload["pages"][0]["facts"]
+    assert len(facts) == 2
+    assert payload["pages"][0]["meta"]["statement_type"] is None
+    assert all(fact["period_type"] is None for fact in facts)
+    assert all(fact["period_start"] is None for fact in facts)
+    assert all(fact["period_end"] is None for fact in facts)
+    assert {fact["path_source"] for fact in facts} == {"observed", "inferred"}
+    assert item_a.fact_data["period_type"] == "instant"
+    assert item_b.fact_data["period_type"] == "duration"
+
+    window.close()
+
+
+def test_gemini_fill_apply_updates_selected_facts_meta_and_history(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "date": "2024-12-31"})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "date": "2024"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    ordered_items = window._sorted_fact_items()
+    selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if item in {item_a, item_b}]
+    window._gemini_fill_target_page = window.page_images[window.current_index].name
+    window._gemini_fill_snapshot = {
+        "page_name": window._gemini_fill_target_page,
+        "selected_fact_nums": selected_fact_nums,
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+    }
+    window._gemini_fill_include_statement_type = True
+    history_before = window._history_index
+    info_messages: list[str] = []
+    monkeypatch.setattr(
+        app_mod.QMessageBox,
+        "information",
+        lambda *_args: info_messages.append(str(_args[2]) if len(_args) > 2 else "info"),
+    )
+
+    window._on_gemini_fill_completed(
+        {
+            "meta_updates": {"statement_type": "income_statement"},
+            "fact_updates": [
+                {
+                    "fact_num": selected_fact_nums[0],
+                    "updates": {
+                        "period_type": "instant",
+                        "period_start": None,
+                        "period_end": "2024-12-31",
+                    },
+                },
+                {
+                    "fact_num": selected_fact_nums[1],
+                    "updates": {
+                        "period_type": "duration",
+                        "period_start": "2024-01-01",
+                        "period_end": "2024-12-31",
+                        "path_source": "observed",
+                    },
+                },
+            ],
+        }
+    )
+
+    assert item_a.fact_data["period_type"] == "instant"
+    assert item_a.fact_data["period_end"] == "2024-12-31"
+    assert item_b.fact_data["period_type"] == "duration"
+    assert item_b.fact_data["period_start"] == "2024-01-01"
+    assert item_b.fact_data["path_source"] == "observed"
+    assert window.statement_type_combo.currentText() == "income_statement"
+    assert window._history_index > history_before
+    assert info_messages
+    assert "Gemini Fill finished." in info_messages[0]
+
+    window.close()
+
+
+def test_gemini_fill_rejects_stale_snapshot_without_partial_apply(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100"})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    ordered_items = window._sorted_fact_items()
+    window._gemini_fill_target_page = window.page_images[window.current_index].name
+    window._gemini_fill_snapshot = {
+        "page_name": window._gemini_fill_target_page,
+        "selected_fact_nums": [1],
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+    }
+    window._gemini_fill_include_statement_type = False
+
+    warnings: list[str] = []
+    monkeypatch.setattr(
+        app_mod.QMessageBox,
+        "warning",
+        lambda *_args: warnings.append(str(_args[2]) if len(_args) > 2 else "warning"),
+    )
+
+    item.fact_data = {**item.fact_data, "value": "changed"}
+    window._on_gemini_fill_completed(
+        {
+            "meta_updates": {},
+            "fact_updates": [{"fact_num": 1, "updates": {"period_type": "duration"}}],
+        }
+    )
+
+    assert item.fact_data["period_type"] is None
+    assert warnings
 
     window.close()
 

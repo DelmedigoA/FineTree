@@ -84,3 +84,30 @@ def test_qwen_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path
     worker.run()
 
     assert seen["enable_thinking"] is True
+
+
+def test_gemini_fill_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_generate_content_from_image(**kwargs):
+        seen.update(kwargs)
+        return '{"meta_updates":{},"fact_updates":[]}'
+
+    monkeypatch.setattr(gemini_vlm, "generate_content_from_image", _fake_generate_content_from_image)
+
+    worker = app_mod.GeminiFillWorker(
+        image_path=image_path,
+        prompt="fill",
+        model="gemini-3-flash-preview",
+        api_key="k",
+        allowed_fact_fields={"period_type"},
+        allow_statement_type=False,
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["enable_thinking"] is False

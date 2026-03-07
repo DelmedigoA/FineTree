@@ -260,9 +260,12 @@ class HomeDocumentCard(QFrame):
         stats_row.setSpacing(12)
         self.pages_label = QLabel()
         self.pages_label.setObjectName("monoLabel")
+        self.facts_label = QLabel()
+        self.facts_label.setObjectName("monoLabel")
         self.updated_label = QLabel()
         self.updated_label.setObjectName("monoLabel")
         stats_row.addWidget(self.pages_label)
+        stats_row.addWidget(self.facts_label)
         stats_row.addWidget(self.updated_label)
         stats_row.addStretch(1)
         body.addLayout(stats_row)
@@ -323,6 +326,7 @@ class HomeDocumentCard(QFrame):
         self.pages_label.setText(
             f"Pages {summary.annotated_page_count}/{summary.page_count or 0} annotated"
         )
+        self.facts_label.setText(f"Facts {_format_metric_int(int(summary.fact_count or 0))}")
         self.updated_label.setText(f"Updated {_format_timestamp(summary.updated_at)}")
         self.progress.setValue(summary.progress_pct)
         self.progress.setFormat(f"{summary.progress_pct}%")
@@ -529,6 +533,8 @@ class HomeView(QWidget):
         complete_docs = sum(1 for doc in visible_docs if doc.progress_pct >= 100 and doc.page_count > 0)
         total_annotated_images = sum(doc.annotated_page_count for doc in self._documents)
         visible_annotated_images = sum(doc.annotated_page_count for doc in visible_docs)
+        total_facts = sum(int(doc.fact_count or 0) for doc in self._documents)
+        visible_facts = sum(int(doc.fact_count or 0) for doc in visible_docs)
         total_annotated_tokens = sum(int(doc.annotated_token_count or 0) for doc in self._documents)
         token_progress_pct = int(round((total_annotated_tokens / TOKEN_TARGET) * 100)) if total_annotated_tokens else 0
         avg_progress = int(round((annotated_pages / visible_pages) * 100)) if visible_pages else 0
@@ -541,6 +547,15 @@ class HomeView(QWidget):
                 _format_metric_int(total_annotated_images),
                 (
                     f"{visible_annotated_images} visible in current filter"
+                    if len(visible_docs) != total_docs
+                    else "Across workspace"
+                ),
+            ),
+            self._stat_card(
+                "Facts",
+                _format_metric_int(total_facts),
+                (
+                    f"{_format_metric_int(visible_facts)} visible in current filter"
                     if len(visible_docs) != total_docs
                     else "Across workspace"
                 ),

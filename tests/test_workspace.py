@@ -13,15 +13,18 @@ class _DummyPage:
         Path(target).write_bytes(b"png")
 
 
-def test_page_has_annotation_ignores_default_type_only() -> None:
+def test_page_has_annotation_requires_entity_or_title() -> None:
     state = PageState(meta=default_page_meta(0), facts=[])
     assert workspace.page_has_annotation(state, 0) is False
 
     state.meta["type"] = "balance_sheet"
+    assert workspace.page_has_annotation(state, 0) is False
+
+    state.meta["entity_name"] = "Acme Ltd"
     assert workspace.page_has_annotation(state, 0) is True
 
 
-def test_page_has_annotation_ignores_document_level_defaults() -> None:
+def test_page_has_annotation_ignores_non_entity_title_metadata() -> None:
     state = PageState(
         meta={
             **default_page_meta(0),
@@ -33,10 +36,13 @@ def test_page_has_annotation_ignores_document_level_defaults() -> None:
     assert workspace.page_has_annotation(state, 0) is False
 
     state.meta["page_num"] = "5"
+    assert workspace.page_has_annotation(state, 0) is False
+
+    state.meta["title"] = "Annual Report"
     assert workspace.page_has_annotation(state, 0) is True
 
 
-def test_page_has_annotation_ignores_entity_and_title_only() -> None:
+def test_page_has_annotation_accepts_entity_or_title_only() -> None:
     state = PageState(
         meta={
             **default_page_meta(0),
@@ -45,7 +51,7 @@ def test_page_has_annotation_ignores_entity_and_title_only() -> None:
         },
         facts=[],
     )
-    assert workspace.page_has_annotation(state, 0) is False
+    assert workspace.page_has_annotation(state, 0) is True
 
 
 def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
@@ -67,7 +73,7 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
             },
             {
                 "image": "page_0002.png",
-                "meta": default_page_meta(1),
+                "meta": {**default_page_meta(1), "title": "Income Statement"},
                 "facts": [{"bbox": [1, 2, 3, 4], "value": "42"}],
             },
         ]
@@ -77,6 +83,7 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
     summary = workspace.build_document_summary("doc_a", data_root=data_root)
     assert summary.page_count == 2
     assert summary.annotated_page_count == 1
+    assert summary.fact_count == 1
     assert summary.annotated_token_count > 0
     assert summary.progress_pct == 50
     assert summary.status == "In progress"
@@ -120,7 +127,7 @@ def test_reviewed_document_state_persists_in_workspace_summary(tmp_path: Path) -
     (data_root / "raw_pdfs" / "doc_review.pdf").write_bytes(b"%PDF-1.4")
     (images_dir / "page_0001.png").write_bytes(b"png")
     (data_root / "annotations" / "doc_review.json").write_text(
-        json.dumps({"pages": [{"image": "page_0001.png", "meta": default_page_meta(0), "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
+        json.dumps({"pages": [{"image": "page_0001.png", "meta": {**default_page_meta(0), "title": "Reviewed Page"}, "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
         encoding="utf-8",
     )
 
@@ -144,7 +151,7 @@ def test_checked_document_state_persists_in_workspace_summary(tmp_path: Path) ->
     (data_root / "raw_pdfs" / "doc_checked.pdf").write_bytes(b"%PDF-1.4")
     (images_dir / "page_0001.png").write_bytes(b"png")
     (data_root / "annotations" / "doc_checked.json").write_text(
-        json.dumps({"pages": [{"image": "page_0001.png", "meta": default_page_meta(0), "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
+        json.dumps({"pages": [{"image": "page_0001.png", "meta": {**default_page_meta(0), "entity_name": "Checked Entity"}, "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
         encoding="utf-8",
     )
 
@@ -207,7 +214,7 @@ def test_build_document_summary_keeps_review_for_warning_only_issue(tmp_path: Pa
                 "pages": [
                     {
                         "image": "page_0001.png",
-                        "meta": {"type": "notes"},
+                        "meta": {"type": "notes", "title": "Notes Page"},
                         "facts": [{"bbox": [1, 2, 3, 4], "value": "10", "note_flag": False, "path": []}],
                     }
                 ]
@@ -239,7 +246,7 @@ def test_build_document_summary_blocks_review_for_real_reg_flags(tmp_path: Path)
                 "pages": [
                     {
                         "image": "page_0001.png",
-                        "meta": {"type": "other"},
+                        "meta": {"type": "other", "entity_name": "Acme Ltd"},
                         "facts": [{"bbox": [1, 2, 3, 4], "value": "", "note_flag": False, "path": []}],
                     }
                 ]

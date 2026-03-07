@@ -24,7 +24,7 @@ except Exception:  # pragma: no cover
 from .fact_normalization import normalize_fact_payload, normalize_note_num
 from .fact_ordering import normalize_document_meta
 from .schema_contract import CURRENCY_VALUES, PAGE_TYPE_VALUES, SCALE_VALUES, STATEMENT_TYPE_VALUES, VALUE_TYPE_VALUES
-from .schemas import PageExtraction, split_legacy_page_type
+from .schemas import Fact, PageExtraction, PageMeta, split_legacy_page_type
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -56,6 +56,8 @@ _VALID_STATEMENT_TYPES = set(STATEMENT_TYPE_VALUES)
 _VALID_CURRENCIES = set(CURRENCY_VALUES)
 _VALID_SCALES = set(SCALE_VALUES)
 _VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
+_VALID_PATCH_FACT_FIELDS = {"period_type", "period_start", "period_end", "path_source"}
+_VALID_PATCH_TOP_LEVEL_KEYS = {"meta_updates", "fact_updates"}
 
 
 def _is_gemini_3_model(model_name: Optional[str]) -> bool:
@@ -831,6 +833,118 @@ def parse_page_extraction_text(raw_text: str) -> PageExtraction:
     parsed = _parse_llm_json(raw_text)
     normalized = _normalize_page_extraction_payload(parsed)
     return PageExtraction.model_validate(normalized)
+
+
+def _validate_patch_fact_updates(
+    updates_payload: Any,
+    *,
+    allowed_fact_fields: set[str],
+) -> dict[str, Any]:
+    if not isinstance(updates_payload, dict):
+        raise ValueError("Each patch updates object must be a JSON object.")
+
+    unknown_update_keys = sorted(str(key) for key in updates_payload.keys() if str(key) not in allowed_fact_fields)
+    if unknown_update_keys:
+        raise ValueError(
+            f"Patch updates contain non-requested keys: {', '.join(unknown_update_keys)}."
+        )
+
+    baseline = {
+        "value": "0",
+        "comment_ref": None,
+        "note_flag": False,
+        "note_name": None,
+        "note_num": None,
+        "note_ref": None,
+        "date": None,
+        "period_type": None,
+        "period_start": None,
+        "period_end": None,
+        "path": [],
+        "path_source": None,
+        "currency": None,
+        "scale": None,
+        "value_type": None,
+    }
+    validated = Fact.model_validate({**baseline, **updates_payload}).model_dump(mode="json")
+    return {key: validated[key] for key in updates_payload.keys()}
+
+
+def parse_selected_field_patch_text(
+    raw_text: str,
+    *,
+    allowed_fact_fields: set[str] | list[str] | tuple[str, ...],
+    allow_statement_type: bool,
+) -> dict[str, Any]:
+    if not str(raw_text).strip():
+        raise ValueError("Gemini returned an empty patch response.")
+
+    parsed = _parse_llm_json(raw_text)
+    if not isinstance(parsed, dict):
+        raise ValueError("Patch response must be a JSON object.")
+
+    requested_fact_fields = {str(key).strip() for key in allowed_fact_fields if str(key).strip()}
+    invalid_requested = sorted(requested_fact_fields - _VALID_PATCH_FACT_FIELDS)
+    if invalid_requested:
+        raise ValueError(
+            f"Invalid requested patch fields: {', '.join(invalid_requested)}."
+        )
+
+    unknown_top_level = sorted(str(key) for key in parsed.keys() if str(key) not in _VALID_PATCH_TOP_LEVEL_KEYS)
+    if unknown_top_level:
+        raise ValueError(f"Patch response contains unknown top-level keys: {', '.join(unknown_top_level)}.")
+
+    raw_meta_updates = parsed.get("meta_updates")
+    meta_updates: dict[str, Any] = {}
+    if raw_meta_updates is not None:
+        if not isinstance(raw_meta_updates, dict):
+            raise ValueError("meta_updates must be a JSON object when provided.")
+        unknown_meta_keys = sorted(str(key) for key in raw_meta_updates.keys() if str(key) != "statement_type")
+        if unknown_meta_keys:
+            raise ValueError(f"meta_updates contains unknown keys: {', '.join(unknown_meta_keys)}.")
+        if raw_meta_updates and not allow_statement_type:
+            raise ValueError("meta_updates.statement_type is not allowed for this request.")
+        if "statement_type" in raw_meta_updates:
+            normalized_meta = PageMeta.model_validate(
+                {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "statements",
+                    "statement_type": raw_meta_updates.get("statement_type"),
+                    "title": None,
+                }
+            ).model_dump(mode="json")
+            meta_updates["statement_type"] = normalized_meta.get("statement_type")
+
+    raw_fact_updates = parsed.get("fact_updates")
+    if not isinstance(raw_fact_updates, list):
+        raise ValueError("fact_updates must be a JSON array.")
+
+    seen_fact_nums: set[int] = set()
+    normalized_fact_updates: list[dict[str, Any]] = []
+    for entry in raw_fact_updates:
+        if not isinstance(entry, dict):
+            raise ValueError("Each fact_updates entry must be a JSON object.")
+        unknown_entry_keys = sorted(str(key) for key in entry.keys() if str(key) not in {"fact_num", "updates"})
+        if unknown_entry_keys:
+            raise ValueError(f"fact_updates entry contains unknown keys: {', '.join(unknown_entry_keys)}.")
+        fact_num = entry.get("fact_num")
+        if isinstance(fact_num, bool) or not isinstance(fact_num, int) or fact_num < 1:
+            raise ValueError("fact_num must be an integer >= 1.")
+        if fact_num in seen_fact_nums:
+            raise ValueError(f"Duplicate fact_num in patch response: {fact_num}.")
+        seen_fact_nums.add(fact_num)
+
+        updates = _validate_patch_fact_updates(
+            entry.get("updates"),
+            allowed_fact_fields=requested_fact_fields,
+        )
+        normalized_fact_updates.append({"fact_num": fact_num, "updates": updates})
+
+    return {
+        "meta_updates": meta_updates,
+        "fact_updates": normalized_fact_updates,
+    }
 
 
 def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
