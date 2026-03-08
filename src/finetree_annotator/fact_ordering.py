@@ -12,6 +12,7 @@ from .schemas import (
     _normalize_doc_language_value,
     _normalize_entity_type_value,
     _normalize_reading_direction_value,
+    _normalize_report_scope_value,
     _normalize_report_year_value,
 )
 
@@ -38,6 +39,7 @@ def normalize_document_meta(raw: Any) -> dict[str, Any]:
             "company_id": None,
             "report_year": None,
             "entity_type": None,
+            "report_scope": None,
         }
 
     try:
@@ -64,6 +66,10 @@ def normalize_document_meta(raw: Any) -> dict[str, Any]:
         entity_type = _normalize_entity_type_value(raw.get("entity_type", raw.get("company_type")))
     except ValueError:
         entity_type = None
+    try:
+        report_scope = _normalize_report_scope_value(raw.get("report_scope"))
+    except ValueError:
+        report_scope = None
     return {
         "language": language,
         "reading_direction": direction,
@@ -71,6 +77,7 @@ def normalize_document_meta(raw: Any) -> dict[str, Any]:
         "company_id": company_id,
         "report_year": report_year,
         "entity_type": entity_type,
+        "report_scope": report_scope,
     }
 
 
@@ -89,6 +96,8 @@ def compact_document_meta(raw: Any) -> dict[str, Any]:
         out["report_year"] = int(normalized["report_year"])
     if normalized.get("entity_type"):
         out["entity_type"] = str(normalized["entity_type"])
+    if normalized.get("report_scope"):
+        out["report_scope"] = str(normalized["report_scope"])
     return out
 
 

@@ -45,6 +45,7 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     assert fact["currency"] == "ILS"
     assert fact["scale"] == 1000
     assert fact["value_type"] is None
+    assert fact["natural_sign"] == "positive"
 
 
 def test_normalize_bbox_data_rounds_and_enforces_min_size() -> None:
@@ -123,6 +124,7 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
                     bbox={"x": 10, "y": 20, "w": 30, "h": 40},
                     fact={
                         "value": "1,193",
+                        "equation": "1,000 + 193",
                         "note": "*estimated",
                         "is_beur": True,
                         "beur_num": "5",
@@ -146,6 +148,9 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     assert page_1["meta"]["statement_type"] == "notes_to_financial_statements"
     assert page_1["facts"][0]["currency"] == "USD"
     assert page_1["facts"][0]["comment_ref"] == "*estimated"
+    assert page_1["facts"][0]["fact_num"] == 1
+    assert page_1["facts"][0]["equation"] == "1,000 + 193"
+    assert page_1["facts"][0]["fact_equation"] is None
     assert page_1["facts"][0]["note_flag"] is True
     assert page_1["facts"][0]["note_num"] == 5
     assert page_1["facts"][0]["note_ref"] == "row-12"
@@ -251,6 +256,57 @@ def test_parse_import_payload_supports_single_page_shape_without_image() -> None
     assert states["page_0002.png"].facts[0].fact["note_ref"] == "5"
 
 
+def test_load_page_states_preserves_equation_field() -> None:
+    payload = {
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"type": "other", "annotation_note": "revisit", "annotation_status": "approved"},
+                "facts": [
+                    {
+                        "bbox": [1, 2, 3, 4],
+                        "value": "10",
+                        "fact_num": 4,
+                        "equation": "7 + 3",
+                        "fact_equation": "f1 + f3",
+                        "path": [],
+                    }
+                ],
+            }
+        ]
+    }
+    states = load_page_states(payload, ["page_0001.png"])
+    assert states["page_0001.png"].meta["annotation_note"] == "revisit"
+    assert states["page_0001.png"].meta["annotation_status"] == "approved"
+    assert states["page_0001.png"].facts[0].fact["fact_num"] == 4
+    assert states["page_0001.png"].facts[0].fact["equation"] == "7 + 3"
+    assert states["page_0001.png"].facts[0].fact["fact_equation"] == "f1 + f3"
+
+
+def test_build_annotations_payload_backfills_missing_fact_num_for_legacy_facts() -> None:
+    page_images = [Path("page_0001.png")]
+    page_states = {
+        "page_0001.png": PageState(
+            meta={"type": "other"},
+            facts=[
+                BoxRecord(
+                    bbox={"x": 0, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "10", "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 20, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "20", "path": []},
+                ),
+            ],
+        )
+    }
+
+    payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    assert payload["pages"][0]["meta"]["annotation_note"] is None
+    assert payload["pages"][0]["meta"]["annotation_status"] is None
+    assert [fact["fact_num"] for fact in payload["pages"][0]["facts"]] == [1, 2]
+
+
 def test_parse_import_payload_supports_full_document_shape() -> None:
     payload = {
         "pages": [
@@ -281,6 +337,7 @@ def test_extract_document_meta_normalizes_supported_values() -> None:
         "company_name": None,
         "company_id": "1234",
         "report_year": 2024,
+        "report_scope": None,
         "entity_type": None,
     }
 

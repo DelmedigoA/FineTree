@@ -332,16 +332,16 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
     QGroupBox#inspectorSection {{
         background: {tokens['surface_raised']};
         border: 1px solid {tokens['surface_border']};
-        border-radius: 18px;
-        margin-top: 14px;
-        padding-top: 16px;
+        border-radius: 14px;
+        margin-top: 10px;
+        padding-top: 12px;
     }}
     QGroupBox#inspectorSubsection {{
         background: {tokens['surface']};
         border: 1px solid {tokens['surface_border']};
-        border-radius: 16px;
-        margin-top: 12px;
-        padding-top: 14px;
+        border-radius: 12px;
+        margin-top: 8px;
+        padding-top: 10px;
     }}
     QFrame#docCard[statusTone="complete"] {{
         border-color: {tokens['ok']};
@@ -368,11 +368,11 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
     }}
     QGroupBox#inspectorSection::title,
     QGroupBox#inspectorSubsection::title {{
-        left: 18px;
+        left: 14px;
         padding: 0;
         color: {tokens['text']};
         font-family: {tokens['font_heading']};
-        font-size: 12pt;
+        font-size: 10.5pt;
         font-weight: 700;
     }}
     QLabel#statusPill {{
@@ -491,9 +491,9 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
         font-size: 8pt;
     }}
     QPushButton#smallActionBtn {{
-        min-height: 32px;
-        font-size: 10pt;
-        padding: 4px 10px;
+        min-height: 30px;
+        font-size: 9.5pt;
+        padding: 3px 9px;
     }}
     QListWidget {{
         padding: 6px;
@@ -546,11 +546,45 @@ def _app_stylesheet(tokens: dict[str, str]) -> str:
     QLabel#factBboxLabel {{
         background: {tokens['surface_alt']};
         border: 1px solid {tokens['surface_border']};
-        border-radius: 10px;
+        border-radius: 8px;
         color: {tokens['text_muted']};
         font-family: {tokens['font_mono']};
-        padding: 8px 10px;
-        min-height: 22px;
+        padding: 5px 8px;
+        min-height: 18px;
+    }}
+    QWidget#inspectorPanel QLabel#inspectorFieldLabel,
+    QWidget#inspectorPanel QLabel#inspectorFieldLabelRequired {{
+        padding-top: 3px;
+        font-size: 8.7pt;
+    }}
+    QWidget#inspectorPanel QLabel#inspectorFieldLabelCompact,
+    QWidget#inspectorPanel QLabel#inspectorFieldLabelCompactRequired {{
+        font-size: 8.2pt;
+        padding-bottom: 0;
+    }}
+    QWidget#inspectorPanel QLineEdit,
+    QWidget#inspectorPanel QComboBox,
+    QWidget#inspectorPanel QSpinBox {{
+        min-height: 30px;
+        padding: 2px 8px;
+        border-radius: 9px;
+        font-size: 10pt;
+    }}
+    QWidget#inspectorPanel QPushButton {{
+        min-height: 30px;
+        padding: 4px 10px;
+        font-size: 9.8pt;
+    }}
+    QWidget#inspectorPanel QPushButton#smallActionBtn {{
+        min-height: 26px;
+        padding: 2px 8px;
+        font-size: 9pt;
+    }}
+    QWidget#inspectorPanel QListWidget#factsList::item,
+    QWidget#inspectorPanel QListWidget#pageIssuesList::item {{
+        min-height: 24px;
+        padding: 6px 8px;
+        margin: 3px 0;
     }}
     QCheckBox#inspectorOption {{
         color: {tokens['text_muted']};

@@ -14,6 +14,7 @@ if str(SRC_ROOT) not in sys.path:
 
 from finetree_annotator.annotation_backups import atomic_write_text, create_annotation_backup  # noqa: E402
 from finetree_annotator.fact_normalization import normalize_annotation_payload  # noqa: E402
+from finetree_annotator.schema_io import save_canonical  # noqa: E402
 
 ALGO_VERSION = "fact_schema_format_v1"
 
@@ -45,6 +46,7 @@ def main(argv: list[str] | None = None) -> int:
     for file_path in files:
         payload = json.loads(file_path.read_text(encoding="utf-8"))
         normalized, findings = normalize_annotation_payload(payload)
+        normalized = save_canonical(normalized)
         if normalized == payload:
             continue
 
@@ -80,4 +82,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

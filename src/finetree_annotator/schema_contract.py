@@ -3,77 +3,59 @@ from __future__ import annotations
 from textwrap import dedent
 from typing import Any
 
-from .schemas import (
-    Currency,
-    EntityType,
-    ExtractedFact,
-    Metadata,
-    PageExtraction,
-    PageMeta,
-    PageType,
-    PathSource,
-    PeriodType,
-    Scale,
-    StatementType,
-    ValueType,
-)
+from .schema_registry import SchemaRegistry
 
-PROMPT_TOP_LEVEL_KEYS: tuple[str, ...] = tuple(PageExtraction.model_fields.keys())
-METADATA_KEYS: tuple[str, ...] = tuple(Metadata.model_fields.keys())
-PAGE_META_KEYS: tuple[str, ...] = tuple(PageMeta.model_fields.keys())
-EXTRACTED_FACT_KEYS: tuple[str, ...] = tuple(ExtractedFact.model_fields.keys())
-CANONICAL_FACT_KEYS: tuple[str, ...] = tuple(key for key in EXTRACTED_FACT_KEYS if key != "bbox")
-REQUIRED_PROMPT_CANONICAL_KEYS: tuple[str, ...] = (
-    "comment_ref",
-    "note_flag",
-    "note_name",
-    "note_num",
-    "note_ref",
-    "period_type",
-    "period_start",
-    "period_end",
-    "path_source",
-)
-LEGACY_FACT_KEYS: tuple[str, ...] = (
-    "ref_comment",
-    "comment",
-    "ref_note",
-    "note_reference",
-    "refference",
-    "reference",
-    "ref",
-    "is_beur",
-    "beur_num",
-    "beur_number",
-    "footnote",
-)
-PAGE_TYPE_VALUES: tuple[str, ...] = tuple(item.value for item in PageType)
-STATEMENT_TYPE_VALUES: tuple[str, ...] = tuple(item.value for item in StatementType)
-VALUE_TYPE_VALUES: tuple[str, ...] = tuple(item.value for item in ValueType)
-CURRENCY_VALUES: tuple[str, ...] = tuple(item.value for item in Currency)
-SCALE_VALUES: tuple[int, ...] = tuple(int(item.value) for item in Scale)
-ENTITY_TYPE_VALUES: tuple[str, ...] = tuple(item.value for item in EntityType)
-PERIOD_TYPE_VALUES: tuple[str, ...] = tuple(item.value for item in PeriodType)
-PATH_SOURCE_VALUES: tuple[str, ...] = tuple(item.value for item in PathSource)
+_EXTRACT_CONTRACT = SchemaRegistry.get_prompt_contract("extraction")
+_PATCH_CONTRACT = SchemaRegistry.get_prompt_contract("gemini_fill")
+_PAGE_META_MODEL_SPEC = SchemaRegistry.get_model_spec("page_meta")
+_FACT_MODEL_SPEC = SchemaRegistry.get_model_spec("fact")
+PROMPT_TOP_LEVEL_KEYS: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["top_level_keys"])
+METADATA_KEYS: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["metadata_keys"])
+PROMPT_PAGE_META_KEYS: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["page_meta_keys"])
+PAGE_META_KEYS: tuple[str, ...] = tuple(_PAGE_META_MODEL_SPEC.canonical_write_keys)
+PROMPT_FACT_KEYS: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["fact_keys"])
+CANONICAL_FACT_KEYS: tuple[str, ...] = tuple(_FACT_MODEL_SPEC.canonical_write_keys)
+EXTRACTED_FACT_KEYS: tuple[str, ...] = (*CANONICAL_FACT_KEYS, "bbox")
+REQUIRED_PROMPT_CANONICAL_KEYS: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["required_prompt_fact_keys"])
+LEGACY_FACT_KEYS: tuple[str, ...] = tuple(_FACT_MODEL_SPEC.read_alias_keys)
+PAGE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["page_types"])
+STATEMENT_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["statement_types"])
+VALUE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["value_types"])
+VALUE_CONTEXT_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["value_contexts"])
+BALANCE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["balance_types"])
+NATURAL_SIGN_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["natural_signs"])
+CURRENCY_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["currencies"])
+SCALE_VALUES: tuple[int, ...] = tuple(_EXTRACT_CONTRACT["enums"]["scales"])
+ENTITY_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["entity_types"])
+PERIOD_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["period_types"])
+PATH_SOURCE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["path_sources"])
+REPORT_SCOPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["report_scope"])
 
 
 def schema_snapshot() -> dict[str, Any]:
     return {
+        "schema_version": _EXTRACT_CONTRACT["schema_version"],
         "page_extraction_keys": list(PROMPT_TOP_LEVEL_KEYS),
         "metadata_keys": list(METADATA_KEYS),
         "page_meta_keys": list(PAGE_META_KEYS),
+        "prompt_page_meta_keys": list(PROMPT_PAGE_META_KEYS),
         "extracted_fact_keys": list(EXTRACTED_FACT_KEYS),
         "canonical_fact_keys": list(CANONICAL_FACT_KEYS),
+        "prompt_fact_keys": list(PROMPT_FACT_KEYS),
         "required_prompt_fact_keys": list(REQUIRED_PROMPT_CANONICAL_KEYS),
         "legacy_fact_keys": list(LEGACY_FACT_KEYS),
         "page_types": list(PAGE_TYPE_VALUES),
         "statement_types": list(STATEMENT_TYPE_VALUES),
         "value_types": list(VALUE_TYPE_VALUES),
+        "value_contexts": list(VALUE_CONTEXT_VALUES),
+        "balance_types": list(BALANCE_TYPE_VALUES),
+        "natural_signs": list(NATURAL_SIGN_VALUES),
         "currencies": list(CURRENCY_VALUES),
         "scales": list(SCALE_VALUES),
         "entity_types": list(ENTITY_TYPE_VALUES),
         "period_types": list(PERIOD_TYPE_VALUES),
         "path_sources": list(PATH_SOURCE_VALUES),
+        "report_scope_values": list(REPORT_SCOPE_VALUES),
     }
 
 
@@ -83,8 +65,12 @@ def default_extraction_prompt_template() -> str:
     currencies = "|".join(CURRENCY_VALUES)
     scales = "|".join(str(value) for value in SCALE_VALUES)
     value_types = "|".join(VALUE_TYPE_VALUES)
+    value_contexts = "|".join(VALUE_CONTEXT_VALUES)
+    balance_types = "|".join(BALANCE_TYPE_VALUES)
+    natural_signs = "|".join(NATURAL_SIGN_VALUES)
     entity_types = "|".join(ENTITY_TYPE_VALUES)
     period_types = "|".join(PERIOD_TYPE_VALUES)
+    report_scope_values = "|".join(REPORT_SCOPE_VALUES)
     path_sources = "|".join(PATH_SOURCE_VALUES)
 
     return dedent(
@@ -95,7 +81,8 @@ def default_extraction_prompt_template() -> str:
         Do NOT return markdown, code fences, comments, prose, or extra keys.
 
         Return a full document wrapper with exactly one page.
-        Runtime will overwrite `images_dir` and `pages[0].image`, but you must still include them.
+        Runtime owns `schema_version`, and overwrites `images_dir` and `pages[0].image`.
+        You must still include `images_dir` and `pages[0].image`.
 
         Top-level schema (exact keys only):
         {{
@@ -106,6 +93,7 @@ def default_extraction_prompt_template() -> str:
             "company_name": "<string or null>",
             "company_id": "<string or null>",
             "report_year": "<integer or null>",
+            "report_scope": "{report_scope_values}|null",
             "entity_type": "{entity_types}|null"
           }},
           "pages": [
@@ -122,13 +110,19 @@ def default_extraction_prompt_template() -> str:
                 {{
                   "bbox": [<x>, <y>, <w>, <h>],
                   "value": "<string>",
+                  "equation": "<string|null>",
                   "value_type": "{value_types}|null",
+                  "value_context": "{value_contexts}|null",
+                  "balance_type": "{balance_types}|null",
+                  "natural_sign": "{natural_signs}|null",
                   "currency": "{currencies}|null",
                   "scale": {scales}|null,
                   "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
                   "period_type": "{period_types}|null",
                   "period_start": "<YYYY-MM-DD|null>",
                   "period_end": "<YYYY-MM-DD|null>",
+                  "duration_type": "recurring|null",
+                  "recurring_period": "daily|quarterly|monthly|yearly|null",
                   "note_flag": <true|false>,
                   "note_num": "<integer or null>",
                   "note_name": "<string or null>",
@@ -151,39 +145,55 @@ def default_extraction_prompt_template() -> str:
         6. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
         7. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
         8. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
-        9. `page_type` must be one of: `{page_types}`.
-        10. `statement_type` must be one of: `{statement_types}` or null.
-        11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
-        12. Non-statement structural pages use `statement_type=null`.
-        13. `value_type` must be `amount`, `percent`, `ratio`, `count`, or null.
-        14. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-        15. `path_source` is only `observed`, `inferred`, or null.
-        16. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-        17. If `note_num` is present, `note_flag` must be `true`.
-        18. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-        19. Use JSON `null` literal for missing optional values (never `"null"` string).
-        20. Do not include any keys not listed above.
+        9. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
+        10. `report_scope` must be {report_scope_values} or null.
+        11. `page_type` must be one of: `{page_types}`.
+        12. `statement_type` must be one of: `{statement_types}` or null.
+        13. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
+        14. Non-statement structural pages use `statement_type=null`.
+        15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
+        16. `equation` must be a non-empty string or null. Use null unless the source explicitly shows an equation worth preserving.
+        17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+        18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+        19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
+        20. `balance_type` must be `debit`, `credit`, or null.
+        21. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+            - if `value` contains both `(` and `)`, set `natural_sign="negative"`
+            - if `value` is exactly `"-"`, set `natural_sign=null`
+            - otherwise set `natural_sign="positive"`
+        22. `duration_type` must be `recurring` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+        23. `path_source` is only `observed`, `inferred`, or null.
+        24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+        25. If `note_num` is present, `note_flag` must be `true`.
+        26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+        27. Use JSON `null` literal for missing optional values (never `"null"` string).
+        28. Do not include any keys not listed above.
 
         Extraction rules:
         1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
-        2. If source value is exactly `-`, keep `value` as `"-"`. For `—` or `–`, still extract the fact and set `value` to empty string `""`.
-        3. For non-percent values, normalize `value` to canonical numeric shape (`Num`, `Num.Num`, `(Num)`, `(Num.Num)`) or exact `"-"` when source is only `-`.
+        2. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
+        3. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
         4. For percent values, keep `%` in `value`.
-        5. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
-        6. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
-        7. `note_ref`: use when the fact points or references another note; else `null`.
-        8. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
-        9. `currency`: infer from page/header context when clear, else `null`.
-        10. `scale`: `1` unless page/header indicates thousands or millions.
-        11. `value_type`: use `amount` unless the fact is clearly a percent, ratio, or count.
-        12. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
-        13. `period_type="instant"` means the fact represents a value at a single point in time.
-        14. `period_type="duration"` means the fact represents a value over a period between two dates.
-        15. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-        16. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-        17. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-        18. Do not emit empty-value facts unless the source explicitly shows a placeholder dash (`-`, `—`, `–`) for that cell.
-
+        5. Leave `equation` null unless the source page explicitly prints an equation or arithmetic relation for that fact.
+        6. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
+        7. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
+        8. `note_ref`: use when the fact points or references another note; else `null`.
+        9. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
+        10. `currency`: infer from page/header context when clear, else `null`.
+        11. `scale`: `1` unless page/header indicates thousands or millions.
+        12. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
+        13. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
+        14. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
+        15. `period_type="instant"` means the fact represents a value at a single point in time.
+        16. `period_type="duration"` means the fact represents a value over a period between two dates.
+        17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
+        18. `duration_type="recurring"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
+        19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
+        20. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
+        21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+        22. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+        23. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+        24. Do not emit empty-value facts.
         Page classification rules:
         1. Use `page_type="title"` for cover/title pages.
         2. Use `page_type="contents"` for table-of-contents pages.
@@ -211,9 +221,14 @@ def default_extraction_prompt_template() -> str:
 
 
 def default_gemini_fill_prompt_template() -> str:
-    statement_types = "|".join(STATEMENT_TYPE_VALUES)
-    period_types = "|".join(PERIOD_TYPE_VALUES)
-    path_sources = "|".join(PATH_SOURCE_VALUES)
+    statement_types = "|".join(_PATCH_CONTRACT["statement_types"])
+    period_types = "|".join(_PATCH_CONTRACT["period_types"])
+    path_sources = "|".join(_PATCH_CONTRACT["path_sources"])
+    value_types = "|".join(_PATCH_CONTRACT["value_types"])
+    currencies = "|".join(_PATCH_CONTRACT["currencies"])
+    scales = "|".join(str(value) for value in _PATCH_CONTRACT["scales"])
+    balance_types = "|".join(BALANCE_TYPE_VALUES)
+    natural_signs = "|".join(NATURAL_SIGN_VALUES)
 
     return dedent(
         f"""
@@ -229,6 +244,8 @@ def default_gemini_fill_prompt_template() -> str:
         Important semantics:
         - `instant` means the fact represents a value at a single point in time.
         - `duration` means the fact represents a value over a period between two dates.
+        - `expected` indicates a projected or budgeted value; include future periods if available.
+        - `duration_type="recurring"` means the value repeats; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when known.
 
         Requested fact fields:
         {{{{FACT_FIELDS}}}}
@@ -248,10 +265,23 @@ def default_gemini_fill_prompt_template() -> str:
             {{
               "fact_num": <integer >= 1>,
               "updates": {{
+                "equation": "<string|null>",
                 "period_type": "{period_types}|null",
                 "period_start": "<YYYY-MM-DD|null>",
                 "period_end": "<YYYY-MM-DD|null>",
-                "path_source": "{path_sources}|null"
+                "duration_type": "recurring|null",
+                "recurring_period": "daily|quarterly|monthly|yearly|null",
+                "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
+                "value_context": "textual|tabular|mixed|null",
+                "value_type": "{value_types}|null",
+                "currency": "{currencies}|null",
+                "scale": {scales}|null,
+                "balance_type": "{balance_types}|null",
+                "natural_sign": "{natural_signs}|null",
+                "path_source": "{path_sources}|null",
+                "comment_ref": "<string|null>",
+                "note_ref": "<string|null>",
+                "note_name": "<string|null>"
               }}
             }}
           ]
@@ -263,12 +293,15 @@ def default_gemini_fill_prompt_template() -> str:
         3. `fact_num` must match the provided snapshot identity.
         4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
         5. Use JSON null (not string "null") for unknowns.
-        6. If no confident update for a requested field, omit that field from `updates`.
+        6. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+        7. If `equation` is requested, keep it as a non-empty equation string or omit it when unknown.
+        8. If no confident update for a requested field, omit that field from `updates`.
         """
     ).strip()
 
 
 __all__ = [
+    "BALANCE_TYPE_VALUES",
     "CANONICAL_FACT_KEYS",
     "CURRENCY_VALUES",
     "ENTITY_TYPE_VALUES",
@@ -279,11 +312,15 @@ __all__ = [
     "PAGE_TYPE_VALUES",
     "PATH_SOURCE_VALUES",
     "PERIOD_TYPE_VALUES",
+    "PROMPT_PAGE_META_KEYS",
     "PROMPT_TOP_LEVEL_KEYS",
+    "PROMPT_FACT_KEYS",
     "REQUIRED_PROMPT_CANONICAL_KEYS",
     "SCALE_VALUES",
     "STATEMENT_TYPE_VALUES",
+    "NATURAL_SIGN_VALUES",
     "VALUE_TYPE_VALUES",
+    "VALUE_CONTEXT_VALUES",
     "default_gemini_fill_prompt_template",
     "default_extraction_prompt_template",
     "schema_snapshot",

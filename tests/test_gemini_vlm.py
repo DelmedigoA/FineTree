@@ -208,6 +208,93 @@ def test_generation_config_uses_minimal_for_gemini_3_nonthinking(monkeypatch) ->
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "MINIMAL"}
 
 
+def test_generation_config_uses_low_for_gemini_3_pro_nonthinking(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MEDIUM = "MEDIUM"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-3.1-pro", enable_thinking=False)
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "LOW"}
+
+
+def test_generation_config_supports_explicit_medium_level(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MEDIUM = "MEDIUM"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-3.1-flash-lite", thinking_level="medium")
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "MEDIUM"}
+
+
+def test_generation_config_coerces_minimal_to_low_for_gemini_3_pro(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MEDIUM = "MEDIUM"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-3.1-pro", thinking_level="minimal")
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "LOW"}
+
+
 def test_generation_config_uses_zero_budget_for_nonthinking_legacy_models(monkeypatch) -> None:
     class _FakeThinkingConfig:
         def __init__(self, **kwargs):
@@ -233,6 +320,60 @@ def test_generation_config_uses_zero_budget_for_nonthinking_legacy_models(monkey
 
     assert isinstance(cfg, _FakeGenerateContentConfig)
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_budget": 0}
+
+
+def test_generation_config_uses_auto_budget_for_thinking_legacy_models(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    cfg = gemini_vlm._generation_config("gemini-2.5-flash", enable_thinking=True)
+
+    assert isinstance(cfg, _FakeGenerateContentConfig)
+    assert cfg.kwargs["thinking_config"].kwargs == {"thinking_budget": -1}
+
+
+def test_generation_config_rejects_unknown_thinking_level(monkeypatch) -> None:
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        MEDIUM = "MEDIUM"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    monkeypatch.setattr(gemini_vlm, "genai", object())
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    with pytest.raises(ValueError, match="thinking_level"):
+        gemini_vlm._generation_config("gemini-3.1-flash-lite", thinking_level="ultra")
 
 
 def test_parse_llm_json_accepts_quad_backtick_fence() -> None:
@@ -309,9 +450,11 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
             {
                 "fact_num": 2,
                 "updates": {
+                    "equation": "100 + 20",
                     "period_type": "duration",
                     "period_start": "2024-01-01",
                     "period_end": "2024-12-31",
+                    "balance_type": "credit",
                     "path_source": "observed",
                 },
             }
@@ -319,12 +462,14 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
     }
     parsed = gemini_vlm.parse_selected_field_patch_text(
         json.dumps(payload),
-        allowed_fact_fields={"period_type", "period_start", "period_end", "path_source"},
+        allowed_fact_fields={"equation", "period_type", "period_start", "period_end", "balance_type", "path_source"},
         allow_statement_type=True,
     )
     assert parsed["meta_updates"]["statement_type"] == "income_statement"
     assert parsed["fact_updates"][0]["fact_num"] == 2
+    assert parsed["fact_updates"][0]["updates"]["equation"] == "100 + 20"
     assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
+    assert parsed["fact_updates"][0]["updates"]["balance_type"] == "credit"
 
 
 def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None:

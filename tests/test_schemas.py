@@ -29,6 +29,58 @@ def test_extracted_fact_accepts_integer_note_num() -> None:
     assert fact.note_num == 7
 
 
+def test_extracted_fact_accepts_points_value_type() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value_type="points"))
+    assert fact.value_type is not None
+    assert fact.value_type.value == "points"
+
+
+def test_extracted_fact_accepts_value_context() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value_context="tabular"))
+    assert fact.value_context is not None
+    assert fact.value_context.value == "tabular"
+
+
+def test_extracted_fact_accepts_balance_type() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(balance_type="debit"))
+    assert fact.balance_type is not None
+    assert fact.balance_type.value == "debit"
+
+
+def test_extracted_fact_derives_natural_sign_from_value() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value="(123)", natural_sign="positive"))
+    assert fact.natural_sign is not None
+    assert fact.natural_sign.value == "negative"
+
+
+def test_extracted_fact_sets_natural_sign_null_for_dash_value() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value="-", natural_sign="positive"))
+    assert fact.natural_sign is None
+
+
+def test_extracted_fact_accepts_symbol_rich_value_text() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value="<>)().*, 10"))
+    assert fact.value == "<>)().*, 10"
+
+
+def test_extracted_fact_accepts_equation() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(equation="100 - 20 + 5"))
+    assert fact.equation == "100 - 20 + 5"
+
+
+def test_extracted_fact_accepts_fact_num_and_fact_equation() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(fact_num="7", fact_equation="f1 + f4 - f6"))
+    assert fact.fact_num == 7
+    assert fact.fact_equation == "f1 + f4 - f6"
+
+
+def test_extracted_fact_rejects_empty_or_null_value() -> None:
+    with pytest.raises(ValidationError):
+        ExtractedFact.model_validate(_fact_payload(value=""))
+    with pytest.raises(ValidationError):
+        ExtractedFact.model_validate(_fact_payload(value=None))
+
+
 def test_extracted_fact_accepts_legacy_comment_alias() -> None:
     payload = _fact_payload()
     payload.pop("ref_comment")
@@ -90,6 +142,17 @@ def test_document_meta_accepts_company_id_and_integer_report_year() -> None:
     assert meta.report_year == 2024
 
 
+def test_document_meta_accepts_report_scope() -> None:
+    meta = DocumentMeta.model_validate({"report_scope": "consolidated"})
+    assert meta.report_scope is not None
+    assert meta.report_scope.value == "consolidated"
+
+
+def test_document_meta_accepts_null_string_report_scope() -> None:
+    meta = DocumentMeta.model_validate({"report_scope": "null"})
+    assert meta.report_scope is None
+
+
 def test_document_meta_rejects_noninteger_report_year() -> None:
     with pytest.raises(ValidationError):
         DocumentMeta.model_validate({"report_year": "FY2024"})
@@ -107,3 +170,14 @@ def test_page_meta_accepts_other_declaration_statement_type() -> None:
     )
     assert meta.statement_type is not None
     assert meta.statement_type.value == "other_declaration"
+
+
+def test_page_meta_accepts_annotation_note() -> None:
+    meta = PageMeta.model_validate({"annotation_note": "  revisit this page  "})
+    assert meta.annotation_note == "revisit this page"
+
+
+def test_page_meta_accepts_annotation_status() -> None:
+    meta = PageMeta.model_validate({"annotation_status": " flag "})
+    assert meta.annotation_status is not None
+    assert meta.annotation_status.value == "flagged"

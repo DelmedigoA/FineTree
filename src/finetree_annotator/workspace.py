@@ -11,6 +11,7 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 
 from .annotation_core import PageState, bbox_to_list, default_page_meta, load_page_states, normalize_fact_data
 from .page_issues import validate_document_issues
+from .schema_io import load_any_schema
 
 IMAGE_SUFFIXES = (".png", ".jpg", ".jpeg", ".webp")
 DEFAULT_DATA_ROOT = Path("data")
@@ -181,7 +182,9 @@ def load_annotation_payload(annotations_path: Path) -> dict[str, Any]:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return {}
-    return payload if isinstance(payload, dict) else {}
+    if not isinstance(payload, dict):
+        return {}
+    return load_any_schema(payload)
 
 
 def load_reviewed_doc_ids(data_root: Path = DEFAULT_DATA_ROOT) -> set[str]:
@@ -280,13 +283,6 @@ def set_document_reviewed(doc_id: str, reviewed: bool, data_root: Path = DEFAULT
 def page_has_annotation(state: PageState, index: int) -> bool:
     _ = index
     meta = state.meta or {}
-
-    entity_name = meta.get("entity_name")
-    if isinstance(entity_name, str):
-        if entity_name.strip():
-            return True
-    elif entity_name not in (None, "", [], {}, False):
-        return True
 
     title = meta.get("title")
     if isinstance(title, str):

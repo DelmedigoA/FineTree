@@ -13,6 +13,7 @@ from ..fact_normalization import assert_fact_format
 from ..fact_normalization import normalize_fact_payload
 from ..fact_ordering import normalize_document_meta, reorder_facts, resolve_reading_direction
 from ..schema_contract import default_extraction_prompt_template
+from ..schema_io import load_any_schema
 from ..schemas import PageMeta
 from .config import FinetuneConfig, load_finetune_config
 
@@ -190,8 +191,8 @@ def build_unsloth_chat_datasets(
             is_val_doc = bool(split_map.get(doc_id, False))
             out_f = val_f if is_val_doc else train_f
 
-            payload = json.loads(annotation_path.read_text(encoding="utf-8"))
-            metadata = normalize_document_meta(payload.get("metadata", payload.get("document_meta")))
+            payload = load_any_schema(json.loads(annotation_path.read_text(encoding="utf-8")))
+            metadata = normalize_document_meta(payload.get("metadata"))
             direction_info = resolve_reading_direction(
                 metadata if isinstance(payload, dict) else None,
                 payload=payload,

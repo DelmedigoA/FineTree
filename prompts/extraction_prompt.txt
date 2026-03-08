@@ -4,7 +4,8 @@ Return ONLY valid JSON.
 Do NOT return markdown, code fences, comments, prose, or extra keys.
 
 Return a full document wrapper with exactly one page.
-Runtime will overwrite `images_dir` and `pages[0].image`, but you must still include them.
+Runtime owns `schema_version`, and overwrites `images_dir` and `pages[0].image`.
+You must still include `images_dir` and `pages[0].image`.
 
 Top-level schema (exact keys only):
 {
@@ -15,6 +16,7 @@ Top-level schema (exact keys only):
     "company_name": "<string or null>",
     "company_id": "<string or null>",
     "report_year": "<integer or null>",
+    "report_scope": "separate|consolidated|combined|pro_forma|other|null",
     "entity_type": "state_owned_enterprise|public_company|private_company|registered_nonprofit|nonprofit_npo|public_benefit_company|partnership|limited_partnership|limited_liability_company|other|null"
   },
   "pages": [
@@ -31,13 +33,19 @@ Top-level schema (exact keys only):
         {
           "bbox": [<x>, <y>, <w>, <h>],
           "value": "<string>",
-          "value_type": "amount|percent|ratio|count|null",
+          "equation": "<string|null>",
+          "value_type": "amount|percent|ratio|count|points|null",
+          "value_context": "textual|tabular|mixed|null",
+          "balance_type": "debit|credit|null",
+          "natural_sign": "positive|negative|null",
           "currency": "ILS|USD|EUR|GBP|null",
           "scale": 1|1000|1000000|null,
           "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
-          "period_type": "instant|duration|null",
+          "period_type": "instant|duration|expected|null",
           "period_start": "<YYYY-MM-DD|null>",
           "period_end": "<YYYY-MM-DD|null>",
+          "duration_type": "recurring|null",
+          "recurring_period": "daily|quarterly|monthly|yearly|null",
           "note_flag": <true|false>,
           "note_num": "<integer or null>",
           "note_name": "<string or null>",
@@ -60,39 +68,55 @@ Type/validation rules (must match schema):
 6. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
 7. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
 8. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
-9. `page_type` must be one of: `title|contents|declaration|statements|other`.
-10. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
-11. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
-12. Non-statement structural pages use `statement_type=null`.
-13. `value_type` must be `amount`, `percent`, `ratio`, `count`, or null.
-14. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-15. `path_source` is only `observed`, `inferred`, or null.
-16. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-17. If `note_num` is present, `note_flag` must be `true`.
-18. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-19. Use JSON `null` literal for missing optional values (never `"null"` string).
-20. Do not include any keys not listed above.
+9. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
+10. `report_scope` must be separate|consolidated|combined|pro_forma|other or null.
+11. `page_type` must be one of: `title|contents|declaration|statements|other`.
+12. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
+13. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
+14. Non-statement structural pages use `statement_type=null`.
+15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
+16. `equation` must be a non-empty string or null. Use null unless the source explicitly shows an equation worth preserving.
+17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
+20. `balance_type` must be `debit`, `credit`, or null.
+21. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+    - if `value` contains both `(` and `)`, set `natural_sign="negative"`
+    - if `value` is exactly `"-"`, set `natural_sign=null`
+    - otherwise set `natural_sign="positive"`
+22. `duration_type` must be `recurring` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+23. `path_source` is only `observed`, `inferred`, or null.
+24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+25. If `note_num` is present, `note_flag` must be `true`.
+26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+27. Use JSON `null` literal for missing optional values (never `"null"` string).
+28. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
-2. If source value is exactly `-`, keep `value` as `"-"`. For `—` or `–`, still extract the fact and set `value` to empty string `""`.
-3. For non-percent values, normalize `value` to canonical numeric shape (`Num`, `Num.Num`, `(Num)`, `(Num.Num)`) or exact `"-"` when source is only `-`.
+2. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
+3. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
 4. For percent values, keep `%` in `value`.
-5. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
-6. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
-7. `note_ref`: use when the fact points or references another note; else `null`.
-8. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
-9. `currency`: infer from page/header context when clear, else `null`.
-10. `scale`: `1` unless page/header indicates thousands or millions.
-11. `value_type`: use `amount` unless the fact is clearly a percent, ratio, or count.
-12. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
-13. `period_type="instant"` means the fact represents a value at a single point in time.
-14. `period_type="duration"` means the fact represents a value over a period between two dates.
-15. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-16. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-17. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-18. Do not emit empty-value facts unless the source explicitly shows a placeholder dash (`-`, `—`, `–`) for that cell.
-
+5. Leave `equation` null unless the source page explicitly prints an equation or arithmetic relation for that fact.
+6. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
+7. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
+8. `note_ref`: use when the fact points or references another note; else `null`.
+9. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
+10. `currency`: infer from page/header context when clear, else `null`.
+11. `scale`: `1` unless page/header indicates thousands or millions.
+12. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
+13. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
+14. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
+15. `period_type="instant"` means the fact represents a value at a single point in time.
+16. `period_type="duration"` means the fact represents a value over a period between two dates.
+17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
+18. `duration_type="recurring"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
+19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
+20. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
+21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+22. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+23. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+24. Do not emit empty-value facts.
 Page classification rules:
 1. Use `page_type="title"` for cover/title pages.
 2. Use `page_type="contents"` for table-of-contents pages.

@@ -32,6 +32,7 @@ _DEFAULT_SYSTEM_PROMPT = (
 )
 _LEGACY_PROMPT_KEYS: tuple[str, ...] = ("is_beur", "beur_num", "ref_note", "note_reference", "refference")
 _COMPACT_KEY_MAP: dict[str, str] = {
+    "schema_version": "sv",
     "images_dir": "id",
     "metadata": "md",
     "pages": "pg",

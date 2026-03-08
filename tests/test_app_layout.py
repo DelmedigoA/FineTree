@@ -70,7 +70,7 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.save_btn.text() == "Save"
     assert window.gemini_gt_btn.text() == "Gemini"
-    assert window.gemini_fill_btn.text() == "Gemini Fill"
+    assert window.gemini_fill_btn.text() == "Auto-Fix"
     assert window.copy_image_btn.text() == "Copy Image"
     assert window.page_json_btn.text() == "JSON"
     assert window.exit_btn.text() == "Exit"
@@ -80,13 +80,18 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert not window.qwen_gt_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
+    assert window.page_thumb_filter_combo.currentText() == "All Pages"
+    assert window.page_thumb_sort_combo.currentText() == "Page Order"
     assert window.facts_list.objectName() == "factsList"
-    assert window.facts_list.maximumHeight() == 190
+    assert window.facts_list.maximumHeight() == 176
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
-    assert window.fact_editor_box.layout().count() == 9
+    assert window.fact_editor_box.layout().count() == 11
+    assert window.apply_equation_btn.parentWidget() is not window.fact_editor_box
     assert window.show_order_labels_check.isChecked() is False
     assert window.gemini_fill_btn.isEnabled() is False
-    assert window.fact_is_beur_combo.maximumWidth() == 220
+    assert window.fact_is_beur_combo.maximumWidth() > 500
+    assert window.page_annotation_status_label.text() == "Unclassified"
+    assert window.page_flag_btn.text().endswith("Flag")
     assert window.facts_count_label.text() == "No facts"
     assert window.statusBar().isHidden()
     assert window.statusBar().maximumHeight() == 0
@@ -112,13 +117,18 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     item_b.setSelected(True)
     _qt_app().processEvents()
 
-    assert window.batch_box.isVisible()
-    assert window.batch_toggle_btn.text() == "Hide Batch Edit"
+    assert not window.batch_box.isVisible()
+    assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.fact_editor_box.title() == "Selected Facts (2)"
     assert window.fact_bbox_label.text() == "2 selected"
     assert window.fact_value_edit.placeholderText() == "Multiple values"
     assert window.fact_path_list.isEnabled()
     assert window.path_add_btn.isEnabled() is True
+
+    window.batch_toggle_btn.click()
+    _qt_app().processEvents()
+    assert window.batch_box.isVisible()
+    assert window.batch_toggle_btn.text() == "Hide Batch Edit"
 
     window.fact_value_edit.setText("shared")
     window.fact_value_edit.setModified(True)
@@ -137,6 +147,144 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     window.close()
 
 
+def test_alt_f_focuses_fact_annotation_panel(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100"})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.setFocus()
+    _qt_app().processEvents()
+    QTest.keyClick(window, Qt.Key_F, Qt.AltModifier)
+    _qt_app().processEvents()
+
+    assert QApplication.focusWidget() is window.fact_value_edit
+    window.close()
+
+
+def test_note_num_clear_sets_null(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "note_flag": True, "note_num": 9})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_beur_num_edit.text() == "9"
+    window.fact_beur_num_edit.setText("")
+    window.fact_beur_num_edit.setModified(True)
+    assert window.fact_beur_num_edit.hasAcceptableInput() is True
+    window._on_fact_editor_field_edited("note_num")
+
+    assert item.fact_data["note_num"] is None
+    window.close()
+
+
+def test_page_revisit_note_persists_and_shows_in_thumbnail_tooltip(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
+    monkeypatch.setattr(app_mod.QMessageBox, "warning", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    window.page_annotation_note_edit.setText("revisit disclosures")
+    window._on_meta_edited()
+    _qt_app().processEvents()
+
+    page_name = window.page_images[window.current_index].name
+    assert window.page_states[page_name].meta["annotation_note"] == "revisit disclosures"
+    thumb_item = window.page_thumb_list.item(window.current_index)
+    assert thumb_item is not None
+    assert "Revisit: revisit disclosures" in thumb_item.toolTip()
+
+    assert window.save_annotations() is True
+    window.close()
+
+    reloaded = AnnotationWindow(images_dir, annotations_path)
+    reloaded.show()
+    _qt_app().processEvents()
+    reloaded_page_name = reloaded.page_images[reloaded.current_index].name
+    assert reloaded.page_states[reloaded_page_name].meta["annotation_note"] == "revisit disclosures"
+    assert reloaded.page_annotation_note_edit.text() == "revisit disclosures"
+    reloaded.close()
+
+
+def test_page_approval_and_flag_controls_persist_and_drive_thumbnail_filter_sort(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
+    monkeypatch.setattr(app_mod.QMessageBox, "warning", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    _write_test_png(images_dir / "page_0002.png")
+    _write_test_png(images_dir / "page_0003.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    assert window.current_index == 0
+    window.page_approve_continue_btn.click()
+    _qt_app().processEvents()
+    assert window.page_states["page_0001.png"].meta["annotation_status"] == "approved"
+    assert window.current_index == 1
+
+    window.page_flag_btn.click()
+    _qt_app().processEvents()
+    assert window.page_states["page_0002.png"].meta["annotation_status"] == "flagged"
+    assert window.page_annotation_status_label.text() == "Flagged"
+
+    approved_idx = window.page_thumb_filter_combo.findText("Approved")
+    window.page_thumb_filter_combo.setCurrentIndex(approved_idx)
+    window._on_page_thumbnail_filter_or_sort_changed()
+    _qt_app().processEvents()
+    assert window.page_thumb_list.count() == 1
+    assert window.page_thumb_list.item(0).data(Qt.UserRole) == 0
+    assert window.current_index == 0
+
+    all_idx = window.page_thumb_filter_combo.findText("All Pages")
+    window.page_thumb_filter_combo.setCurrentIndex(all_idx)
+    sort_idx = window.page_thumb_sort_combo.findText("Approved First")
+    window.page_thumb_sort_combo.setCurrentIndex(sort_idx)
+    window._on_page_thumbnail_filter_or_sort_changed()
+    _qt_app().processEvents()
+    order = [window.page_thumb_list.item(i).data(Qt.UserRole) for i in range(window.page_thumb_list.count())]
+    assert order == [0, 2, 1]
+
+    assert window.save_annotations() is True
+    window.close()
+
+    reloaded = AnnotationWindow(images_dir, annotations_path)
+    reloaded.show()
+    _qt_app().processEvents()
+    assert reloaded.page_states["page_0001.png"].meta["annotation_status"] == "approved"
+    assert reloaded.page_states["page_0002.png"].meta["annotation_status"] == "flagged"
+    reloaded.close()
+
+
 def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -150,9 +298,11 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         QRectF(10, 10, 20, 20),
         {
             "value": "100",
+            "equation": "40 + 60",
             "period_type": "instant",
             "period_start": None,
             "period_end": "2024-12-31",
+            "balance_type": "debit",
             "path_source": "observed",
         },
     )
@@ -160,9 +310,11 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         QRectF(40, 10, 20, 20),
         {
             "value": "200",
+            "equation": "120 + 80",
             "period_type": "duration",
             "period_start": "2024-01-01",
             "period_end": "2024-12-31",
+            "balance_type": "credit",
             "path_source": "inferred",
         },
     )
@@ -174,11 +326,11 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     _qt_app().processEvents()
 
     ordered_items = window._sorted_fact_items()
-    selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if item in {item_a, item_b}]
+    selected_fact_nums = [item.fact_data["fact_num"] for item in ordered_items if item in {item_a, item_b}]
     payload = window._build_gemini_fill_request_payload(
         page_name=window.page_images[window.current_index].name,
         selected_fact_nums=selected_fact_nums,
-        selected_fact_fields={"period_type", "period_start", "period_end"},
+        selected_fact_fields={"equation", "period_type", "period_start", "period_end", "balance_type"},
         include_statement_type=True,
         ordered_items=ordered_items,
     )
@@ -186,13 +338,55 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     facts = payload["pages"][0]["facts"]
     assert len(facts) == 2
     assert payload["pages"][0]["meta"]["statement_type"] is None
+    assert all(fact["equation"] is None for fact in facts)
     assert all(fact["period_type"] is None for fact in facts)
     assert all(fact["period_start"] is None for fact in facts)
     assert all(fact["period_end"] is None for fact in facts)
+    assert all(fact["balance_type"] is None for fact in facts)
     assert {fact["path_source"] for fact in facts} == {"observed", "inferred"}
+    assert item_a.fact_data["equation"] == "40 + 60"
     assert item_a.fact_data["period_type"] == "instant"
+    assert item_a.fact_data["balance_type"] == "debit"
+    assert item_b.fact_data["equation"] == "120 + 80"
     assert item_b.fact_data["period_type"] == "duration"
+    assert item_b.fact_data["balance_type"] == "credit"
 
+    window.close()
+
+
+def test_fact_editor_shows_balance_type_and_deterministic_natural_sign(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "(120)", "balance_type": "credit", "path": []},
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_balance_type_combo.currentText() == "credit"
+    assert window.fact_natural_sign_label.text() == "negative"
+
+    idx = window.fact_balance_type_combo.findText("debit")
+    window.fact_balance_type_combo.setCurrentIndex(idx)
+    window._on_fact_editor_field_edited("balance_type")
+    assert item.fact_data["balance_type"] == "debit"
+
+    window.fact_value_edit.setText("-")
+    window.fact_value_edit.setModified(True)
+    window._on_fact_editor_field_edited("value")
+    _qt_app().processEvents()
+
+    assert item.fact_data["natural_sign"] is None
+    assert window.fact_natural_sign_label.text() == "-"
     window.close()
 
 
@@ -214,7 +408,7 @@ def test_gemini_fill_apply_updates_selected_facts_meta_and_history(tmp_path: Pat
     _qt_app().processEvents()
 
     ordered_items = window._sorted_fact_items()
-    selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if item in {item_a, item_b}]
+    selected_fact_nums = [item.fact_data["fact_num"] for item in ordered_items if item in {item_a, item_b}]
     window._gemini_fill_target_page = window.page_images[window.current_index].name
     window._gemini_fill_snapshot = {
         "page_name": window._gemini_fill_target_page,
@@ -263,7 +457,7 @@ def test_gemini_fill_apply_updates_selected_facts_meta_and_history(tmp_path: Pat
     assert window.statement_type_combo.currentText() == "income_statement"
     assert window._history_index > history_before
     assert info_messages
-    assert "Gemini Fill finished." in info_messages[0]
+    assert "Gemini Auto-Fix finished." in info_messages[0]
 
     window.close()
 
@@ -413,6 +607,33 @@ def test_multi_selection_shared_prefix_allows_direct_path_removal(tmp_path: Path
 
     assert item_a.fact_data["path"] == ["מאזן", "מזומנים"]
     assert item_b.fact_data["path"] == ["מאזן", "לקוחות"]
+
+    window.close()
+
+
+def test_multi_selection_invert_path_reverses_each_selected_fact(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "path": ["A", "B", "C"]})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "path": ["X", "Y"]})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.path_invert_btn.isEnabled() is True
+    window.invert_selected_path_levels()
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["C", "B", "A"]
+    assert item_b.fact_data["path"] == ["Y", "X"]
 
     window.close()
 
@@ -688,6 +909,368 @@ def test_command_drag_creates_one_bbox(tmp_path: Path) -> None:
 
     items = [item for item in window.scene.items() if isinstance(item, AnnotRectItem)]
     assert len(items) == 1
+    window.close()
+
+
+def test_equation_builder_applies_balance_type_sign_rules() -> None:
+    candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = app_mod._build_equation_candidate_from_facts(
+        [
+            {"fact_num": 1, "value": "100", "balance_type": "debit"},
+            {"fact_num": 2, "value": "30", "balance_type": "credit"},
+            {"fact_num": 3, "value": "(5)", "balance_type": "credit"},
+            {"fact_num": 4, "value": "-", "balance_type": "credit"},
+        ]
+    )
+
+    assert candidate_text == "- 100 + 30 - 5 + 0"
+    assert result_text == "-75"
+    assert fact_candidate_text == "- f1 + f2 - f3 + f4"
+    assert invalid_values == []
+    assert [term.get("effective_normalized_value") for term in structured_terms] == [-100, 30, -5, 0]
+
+
+def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+    monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *_args, **_kwargs: None)
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "999", "fact_num": 9})
+    ref_high = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "20", "fact_num": 5})
+    ref_low = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "100", "fact_num": 1})
+    ref_invalid = AnnotRectItem(QRectF(30, 120, 20, 20), {"value": "abc", "fact_num": 3})
+    ref_negative = AnnotRectItem(QRectF(30, 150, 20, 20), {"value": "(5)", "fact_num": 2})
+    ref_dash = AnnotRectItem(QRectF(30, 180, 20, 20), {"value": "-", "fact_num": 4})
+    window.scene.addItem(target)
+    window.scene.addItem(ref_high)
+    window.scene.addItem(ref_low)
+    window.scene.addItem(ref_invalid)
+    window.scene.addItem(ref_negative)
+    window.scene.addItem(ref_dash)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 50)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(80, 180)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 180)))
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    _qt_app().processEvents()
+
+    assert target.fact_data.get("equation") is None
+    assert target.fact_data.get("fact_equation") is None
+    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20"
+    assert window.fact_equation_result_label.text() == "115"
+    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+    assert "Does not match target value" in window.fact_equation_status_label.text()
+    assert "Ignored 1 invalid value" in window.fact_equation_status_label.text()
+    assert {"fact_num": 4, "fact_reference": "f4", "normalized_value": 0, "raw_value": "-", "status": "normalized_dash"} in [
+        {
+            "fact_num": term.get("fact_num"),
+            "fact_reference": term.get("fact_reference"),
+            "normalized_value": term.get("normalized_value"),
+            "raw_value": term.get("raw_value"),
+            "status": term.get("status"),
+        }
+        for term in window._equation_candidate_terms
+    ]
+    assert window.apply_equation_btn.isEnabled() is True
+
+    window.apply_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert target.fact_data["equation"] == "100 - 5 + 0 + 20"
+    assert target.fact_data["fact_equation"] == "f1 - f2 + f4 + f5"
+    assert window.apply_equation_btn.isEnabled() is False
+    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20"
+    assert window.fact_equation_result_label.text() == "115"
+    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+
+    assert window.save_annotations() is True
+    window.close()
+
+    reloaded = AnnotationWindow(images_dir, annotations_path)
+    reloaded.show()
+    _qt_app().processEvents()
+
+    reloaded_item = reloaded._fact_items[0]
+    assert reloaded_item.fact_data["equation"] == "100 - 5 + 0 + 20"
+    assert reloaded_item.fact_data["fact_equation"] == "f1 - f2 + f4 + f5"
+    reloaded.close()
+
+
+def test_alt_shift_approves_equation_candidate(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "fact_num": 9})
+    ref_a = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "100", "fact_num": 1})
+    ref_b = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "20", "fact_num": 2})
+    window.scene.addItem(target)
+    window.scene.addItem(ref_a)
+    window.scene.addItem(ref_b)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 50)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 120)))
+    _qt_app().processEvents()
+
+    assert target.fact_data.get("equation") is None
+    assert target.fact_data.get("fact_equation") is None
+    assert window.apply_equation_btn.isEnabled() is True
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Shift, Qt.AltModifier, ""))
+    _qt_app().processEvents()
+
+    assert target.fact_data["equation"] == "100 + 20"
+    assert target.fact_data["fact_equation"] == "f1 + f2"
+    assert window.apply_equation_btn.isEnabled() is False
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.close()
+
+
+def test_clear_equation_button_clears_equation_without_deleting_fact(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "120", "equation": "100 + 20", "fact_equation": "f1 + f2", "fact_num": 1},
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.clear_equation_btn.isEnabled() is True
+    window.clear_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert len(window._fact_items) == 1
+    assert item.scene() is window.scene
+    assert item.fact_data.get("value") == "120"
+    assert item.fact_data.get("equation") is None
+    assert item.fact_data.get("fact_equation") is None
+    assert window.fact_equation_edit.text() == ""
+    assert window.clear_equation_btn.isEnabled() is False
+    window.close()
+
+
+def test_clear_equation_button_clears_for_multi_selection(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "120", "equation": "100 + 20", "fact_equation": "f1 + f2", "fact_num": 1},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "55", "equation": "60 - 5", "fact_equation": "f3 - f4", "fact_num": 2},
+    )
+    item_c = AnnotRectItem(
+        QRectF(70, 10, 20, 20),
+        {"value": "999", "equation": None, "fact_equation": None, "fact_num": 3},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.scene.addItem(item_c)
+    window.refresh_facts_list()
+    window.show()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    item_c.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.clear_equation_btn.isEnabled() is True
+    window.clear_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert len(window._fact_items) == 3
+    assert item_a.fact_data.get("equation") is None
+    assert item_a.fact_data.get("fact_equation") is None
+    assert item_b.fact_data.get("equation") is None
+    assert item_b.fact_data.get("fact_equation") is None
+    assert item_c.fact_data.get("equation") is None
+    assert item_c.fact_data.get("fact_equation") is None
+    assert window.clear_equation_btn.isEnabled() is False
+    window.close()
+
+
+def test_delete_shortcut_ignored_while_equation_field_focused(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "120", "equation": "100 + 20", "fact_equation": "f1 + f2", "fact_num": 1},
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_equation_edit.setFocus()
+    _qt_app().processEvents()
+    QTest.keyClick(window.fact_equation_edit, Qt.Key_Backspace)
+    _qt_app().processEvents()
+
+    assert len(window._fact_items) == 1
+    assert item.scene() is window.scene
+
+    window.view.setFocus()
+    _qt_app().processEvents()
+    QTest.keyClick(window, Qt.Key_Delete)
+    _qt_app().processEvents()
+    assert len(window._fact_items) == 0
+    window.close()
+
+
+def test_equation_preview_clears_on_selection_change_without_persisting(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "999"})
+    ref_a = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "40"})
+    ref_b = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "2"})
+    window.scene.addItem(target)
+    window.scene.addItem(ref_a)
+    window.scene.addItem(ref_b)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 50)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    _qt_app().processEvents()
+
+    assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3]
+    assert window.fact_equation_edit.text() == "40 + 2"
+    assert target.fact_data.get("equation") is None
+    assert target.fact_data.get("fact_equation") is None
+
+    ref_a.setSelected(True)
+    _qt_app().processEvents()
+
+    assert target.fact_data.get("equation") is None
+    assert window.apply_equation_btn.isEnabled() is False
+    assert window.fact_equation_edit.text() == ""
+    window.close()
+
+
+def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=240, height=240)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "103", "fact_num": 9})
+    ref_a = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "100", "fact_num": 1})
+    ref_b = AnnotRectItem(QRectF(70, 60, 20, 20), {"value": "(5)", "fact_num": 2})
+    ref_c = AnnotRectItem(QRectF(30, 110, 20, 20), {"value": "8", "fact_num": 3})
+    ref_d = AnnotRectItem(QRectF(70, 110, 20, 20), {"value": "2", "fact_num": 4})
+    window.scene.addItem(target)
+    window.scene.addItem(ref_a)
+    window.scene.addItem(ref_b)
+    window.scene.addItem(ref_c)
+    window.scene.addItem(ref_d)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(25, 55)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(55, 85)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(55, 85)))
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(80, 70)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 70)))
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(25, 105)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(95, 135)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(95, 135)))
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 120)))
+
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "100 - 5 + 8"
+    assert window.fact_equation_result_label.text() == "103"
+    assert "#027a48" in window.fact_equation_result_label.styleSheet()
+    assert "Matches target value." in window.fact_equation_status_label.text()
+    assert window._equation_candidate_fact_text == "f1 - f2 + f3"
+    assert sorted(item.fact_data["fact_num"] for item in window._equation_reference_preview_items) == [1, 2, 3]
+    assert window.apply_equation_btn.isEnabled() is True
+
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "100 - 5 + 8"
+    assert window._equation_candidate_fact_text == "f1 - f2 + f3"
+    assert target.fact_data.get("equation") is None
+    assert target.fact_data.get("fact_equation") is None
+    window.close()
+
+
+def test_invalid_saved_equation_shows_cannot_calculate_in_red(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "10", "equation": "abc", "fact_equation": "f1 + f2"})
+    window.scene.addItem(target)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_result_label.text() == "cannot calculate"
+    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+    assert "cannot be calculated" in window.fact_equation_status_label.text().lower()
     window.close()
 
 

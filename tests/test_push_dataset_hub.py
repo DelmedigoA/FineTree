@@ -122,7 +122,7 @@ def test_assert_source_instruction_schema_passes_for_canonical_prompt(tmp_path: 
                         {
                             "type": "text",
                             "text": (
-                                "Use keys comment_ref, note_flag, note_name, note_num, note_ref, "
+                                "Use keys equation, balance_type, natural_sign, comment_ref, note_flag, note_name, note_num, note_ref, "
                                 "period_type, period_start, period_end, path_source and return strict JSON."
                             ),
                         },
