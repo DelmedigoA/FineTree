@@ -13,6 +13,7 @@ from pydantic import ValidationError
 
 from .fact_ordering import compact_document_meta, normalize_document_meta
 from .fact_normalization import normalize_fact_payload
+from .schema_io import save_canonical
 from .schema_contract import CANONICAL_FACT_KEYS, CURRENCY_VALUES, SCALE_VALUES
 from .schemas import Fact, PageMeta, PageType
 
@@ -36,6 +37,11 @@ class PageState:
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
+        "fact_num": None,
+        "equation": None,
+        "fact_equation": None,
+        "balance_type": None,
+        "natural_sign": None,
         "comment_ref": None,
         "note_flag": False,
         "note_name": None,
@@ -45,12 +51,35 @@ def default_fact_data() -> Dict[str, Any]:
         "period_type": None,
         "period_start": None,
         "period_end": None,
+        "duration_type": None,
+        "recurring_period": None,
         "path": [],
         "path_source": None,
         "currency": None,
         "scale": None,
         "value_type": None,
+        "value_context": None,
     }
+
+
+def _assign_missing_fact_numbers(facts: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    assigned: List[Dict[str, Any]] = []
+    used_fact_nums: set[int] = set()
+    next_fact_num = 1
+
+    for raw_fact in facts:
+        fact = normalize_fact_data(raw_fact)
+        fact_num = fact.get("fact_num")
+        if isinstance(fact_num, int) and fact_num >= 1 and fact_num not in used_fact_nums:
+            used_fact_nums.add(fact_num)
+        else:
+            while next_fact_num in used_fact_nums:
+                next_fact_num += 1
+            fact["fact_num"] = next_fact_num
+            used_fact_nums.add(next_fact_num)
+            next_fact_num += 1
+        assigned.append(fact)
+    return assigned
 
 
 def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
@@ -103,6 +132,8 @@ def default_page_meta(index: int) -> Dict[str, Any]:
         "page_type": PageType.other.value,
         "statement_type": None,
         "title": None,
+        "annotation_note": None,
+        "annotation_status": None,
     }
 
 
@@ -135,11 +166,11 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
         raw_facts = page.get("facts", [])
         facts: List[BoxRecord] = []
         if isinstance(raw_facts, list):
-            for raw_fact in raw_facts:
-                if not isinstance(raw_fact, dict):
-                    continue
+            raw_fact_dicts = [fact for fact in raw_facts if isinstance(fact, dict)]
+            normalized_facts = _assign_missing_fact_numbers([_coerce_raw_fact(fact) for fact in raw_fact_dicts])
+            for raw_fact, normalized_fact in zip(raw_fact_dicts, normalized_facts):
                 bbox = normalize_bbox_data(raw_fact.get("bbox"))
-                facts.append(BoxRecord(bbox=bbox, fact=_coerce_raw_fact(raw_fact)))
+                facts.append(BoxRecord(bbox=bbox, fact=normalized_fact))
         states[str(page_name)] = PageState(meta=meta_model.model_dump(mode="json"), facts=facts)
     return states
 
@@ -201,8 +232,9 @@ def build_annotations_payload(
         meta_model = PageMeta(**meta)
 
         facts_out = []
-        for box in state.facts:
-            fact_model = Fact(**normalize_fact_data(box.fact))
+        normalized_facts = _assign_missing_fact_numbers([box.fact for box in state.facts])
+        for box, normalized_fact in zip(state.facts, normalized_facts):
+            fact_model = Fact(**normalized_fact)
             facts_out.append(
                 {
                     "bbox": bbox_to_list(box.bbox),
@@ -214,9 +246,8 @@ def build_annotations_payload(
 
     payload: Dict[str, Any] = {"images_dir": str(images_dir), "pages": pages_out}
     compact_meta = compact_document_meta(document_meta)
-    if compact_meta:
-        payload["metadata"] = compact_meta
-    return payload
+    payload["metadata"] = compact_meta
+    return save_canonical(payload)
 
 
 def apply_entity_name_to_pages(

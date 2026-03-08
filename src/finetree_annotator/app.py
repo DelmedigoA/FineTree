@@ -4,17 +4,19 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sys
 from copy import deepcopy
 from dataclasses import dataclass
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, pyqtSignal
-from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTransform
+from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, pyqtSignal, QRegularExpression
+from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTransform, QRegularExpressionValidator
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -80,14 +82,11 @@ from .gemini_few_shot import (
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
 from .schema_contract import (
-    ENTITY_TYPE_VALUES,
-    PATH_SOURCE_VALUES,
-    PERIOD_TYPE_VALUES,
-    STATEMENT_TYPE_VALUES,
-    VALUE_TYPE_VALUES,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
+from .schema_io import load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
+from .schema_ui import enum_options
 from .schemas import PageMeta, PageType
 from .workspace import page_has_annotation
 
@@ -128,12 +127,67 @@ GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
 QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
 MULTI_VALUE_PLACEHOLDER = "Multiple values"
 PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
-VALUE_TYPE_OPTIONS: tuple[str, ...] = ("", *VALUE_TYPE_VALUES)
-STATEMENT_TYPE_OPTIONS: tuple[str, ...] = ("", *STATEMENT_TYPE_VALUES)
-ENTITY_TYPE_OPTIONS: tuple[str, ...] = ("", *ENTITY_TYPE_VALUES)
-PERIOD_TYPE_OPTIONS: tuple[str, ...] = ("", *PERIOD_TYPE_VALUES)
-PATH_SOURCE_OPTIONS: tuple[str, ...] = ("", *PATH_SOURCE_VALUES)
-GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = ("period_type", "period_start", "period_end", "path_source")
+VALUE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "value_type")
+VALUE_CONTEXT_OPTIONS: tuple[str, ...] = enum_options("fact", "value_context")
+BALANCE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "balance_type")
+STATEMENT_TYPE_OPTIONS: tuple[str, ...] = enum_options("page_meta", "statement_type")
+ENTITY_TYPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "entity_type")
+PERIOD_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "period_type")
+PATH_SOURCE_OPTIONS: tuple[str, ...] = enum_options("fact", "path_source")
+DURATION_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "duration_type")
+RECURRING_PERIOD_OPTIONS: tuple[str, ...] = enum_options("fact", "recurring_period")
+REPORT_SCOPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "report_scope")
+GEMINI_THINKING_LEVEL_OPTIONS: tuple[str, ...] = ("minimal", "low", "medium", "high")
+PAGE_STATUS_FILTER_OPTIONS: tuple[tuple[str, str], ...] = (
+    ("All Pages", "all"),
+    ("Approved", "approved"),
+    ("Flagged", "flagged"),
+    ("Unclassified", "none"),
+)
+PAGE_STATUS_SORT_OPTIONS: tuple[tuple[str, str], ...] = (
+    ("Page Order", "page"),
+    ("Approved First", "approved_first"),
+    ("Flagged First", "flagged_first"),
+)
+GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
+    ("equation", False),
+    ("period_type", True),
+    ("period_start", True),
+    ("period_end", True),
+    ("duration_type", True),
+    ("recurring_period", True),
+    ("balance_type", True),
+    ("value_context", True),
+    ("path_source", False),
+    ("value_type", False),
+    ("currency", False),
+    ("scale", False),
+    ("date", False),
+    ("comment_ref", False),
+    ("note_ref", False),
+    ("note_name", False),
+)
+GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
+    "equation",
+    "period_type",
+    "period_start",
+    "period_end",
+    "duration_type",
+    "recurring_period",
+    "value_context",
+    "balance_type",
+    "path_source",
+    "value_type",
+    "currency",
+    "scale",
+    "date",
+    "comment_ref",
+    "note_ref",
+    "note_name",
+)
+_EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
+_SAFE_EQUATION_CHARS_RE = re.compile(r"^[\d,\.\+\-\s]+$")
+_SAFE_EQUATION_TERM_RE = re.compile(r"[+-]?\d[\d,]*(?:\.\d+)?")
 
 
 def _prompt_entity_apply_mode(parent: QWidget, entity_name: str) -> Optional[str]:
@@ -201,6 +255,175 @@ def item_scene_rect(item: QGraphicsRectItem) -> QRectF:
         return QRectF()
 
 
+def _format_decimal_plain(value: Decimal) -> str:
+    text = format(value.normalize(), "f")
+    if "." in text:
+        text = text.rstrip("0").rstrip(".")
+    if text in {"", "-0"}:
+        return "0"
+    return text
+
+
+def _decimal_to_number(value: Decimal) -> int | float:
+    normalized = value.normalize()
+    if normalized == normalized.to_integral():
+        return int(normalized)
+    return float(normalized)
+
+
+def _coerce_positive_int(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if value >= 1 else None
+    if isinstance(value, float) and float(value).is_integer():
+        parsed = int(value)
+        return parsed if parsed >= 1 else None
+    text = str(value or "").strip()
+    if text.isdigit():
+        parsed = int(text)
+        return parsed if parsed >= 1 else None
+    return None
+
+
+def _normalize_balance_type_for_equation(value: Any) -> str | None:
+    text = str(value or "").strip().lower()
+    if text in {"debit", "credit"}:
+        return text
+    return None
+
+
+def _normalize_page_annotation_status(value: Any) -> str | None:
+    text = str(value or "").strip().lower()
+    if text in {"approved", "flagged"}:
+        return text
+    return None
+
+
+def _parse_fact_value_for_equation(value: Any) -> tuple[Decimal | None, str | None, dict[str, Any]]:
+    raw = str(value or "").strip()
+    if not raw:
+        return None, None, {"raw_value": "", "normalized_value": None, "status": "invalid"}
+
+    if raw == "-":
+        return Decimal("0"), "0", {"raw_value": "-", "normalized_value": 0, "status": "normalized_dash"}
+
+    negative = False
+    text = raw
+    if text.startswith("(") and text.endswith(")"):
+        negative = True
+        text = text[1:-1].strip()
+    if text.startswith("+"):
+        text = text[1:].strip()
+    elif text.startswith("-"):
+        negative = True
+        text = text[1:].strip()
+
+    if not _EQUATION_NUMERIC_VALUE_RE.fullmatch(text):
+        return None, None, {"raw_value": raw, "normalized_value": None, "status": "invalid"}
+
+    try:
+        parsed = Decimal(text.replace(",", ""))
+    except InvalidOperation:
+        return None, None, {"raw_value": raw, "normalized_value": None, "status": "invalid"}
+    normalized = -parsed if negative else parsed
+    return normalized, text, {
+        "raw_value": raw,
+        "normalized_value": _decimal_to_number(normalized),
+        "status": "ok",
+    }
+
+
+def _build_equation_candidate_from_facts(
+    facts: list[dict[str, Any]],
+) -> tuple[str | None, str | None, str | None, list[str], list[dict[str, Any]]]:
+    numeric_terms: list[str] = []
+    fact_terms: list[str] = []
+    total = Decimal("0")
+    invalid_values: list[str] = []
+    structured_terms: list[dict[str, Any]] = []
+    valid_count = 0
+
+    for fact in facts:
+        fact_num = _coerce_positive_int(fact.get("fact_num"))
+        raw_value = fact.get("value")
+        balance_type = _normalize_balance_type_for_equation(fact.get("balance_type"))
+        parsed, display, term_meta = _parse_fact_value_for_equation(raw_value)
+        effective_value = parsed
+        if parsed is not None and balance_type == "debit":
+            effective_value = -parsed
+        term_meta = {
+            **term_meta,
+            "fact_num": fact_num,
+            "fact_reference": f"f{fact_num}" if fact_num is not None else None,
+            "balance_type": balance_type,
+            "effective_normalized_value": _decimal_to_number(effective_value) if effective_value is not None else None,
+        }
+        if parsed is None or display is None or fact_num is None:
+            rendered = str(raw_value or "").strip() or "<empty>"
+            invalid_values.append(rendered)
+            structured_terms.append(term_meta)
+            continue
+
+        prefix = ""
+        if valid_count > 0:
+            prefix = "- " if effective_value < 0 else "+ "
+        elif effective_value < 0:
+            prefix = "- "
+
+        numeric_terms.append(f"{prefix}{display}" if prefix else display)
+        fact_terms.append(f"{prefix}f{fact_num}" if prefix else f"f{fact_num}")
+        total += effective_value
+        structured_terms.append(term_meta)
+        valid_count += 1
+
+    if valid_count == 0:
+        return None, None, None, invalid_values, structured_terms
+    return (
+        " ".join(numeric_terms),
+        _format_decimal_plain(total),
+        " ".join(fact_terms),
+        invalid_values,
+        structured_terms,
+    )
+
+
+def _equation_result_match_state(result_text: str | None, target_value: Any) -> tuple[str, str]:
+    if result_text is None:
+        return "danger", "Cannot calculate preview."
+
+    result_value, _display, _meta = _parse_fact_value_for_equation(result_text)
+    if result_value is None:
+        return "danger", "Cannot calculate preview."
+
+    target_value_decimal, target_display, _meta = _parse_fact_value_for_equation(target_value)
+    if target_value_decimal is None or target_display is None:
+        return "neutral", "Preview only; target value is non-numeric."
+    if result_value == target_value_decimal:
+        return "ok", "Matches target value."
+    return "danger", f"Does not match target value ({target_display})."
+
+
+def _evaluate_equation_string(equation: Any) -> str | None:
+    text = str(equation or "").strip()
+    if not text or not _SAFE_EQUATION_CHARS_RE.fullmatch(text):
+        return None
+    normalized = re.sub(r"\s+", "", text)
+    if not normalized:
+        return None
+    terms = _SAFE_EQUATION_TERM_RE.findall(normalized)
+    if not terms or "".join(terms) != normalized:
+        return None
+
+    total = Decimal("0")
+    for term in terms:
+        try:
+            total += Decimal(term.replace(",", ""))
+        except InvalidOperation:
+            return None
+    return _format_decimal_plain(total)
+
+
 class AnnotationView(QGraphicsView):
     zoom_requested = pyqtSignal(float)
     nudge_selected_requested = pyqtSignal(int, int)
@@ -208,6 +431,8 @@ class AnnotationView(QGraphicsView):
     select_all_requested = pyqtSignal()
     previous_page_requested = pyqtSignal()
     next_page_requested = pyqtSignal()
+    calculate_drag_active_changed = pyqtSignal(bool)
+    equation_approval_requested = pyqtSignal()
     _PAN_STEP = 60
 
     def __init__(self, scene: QGraphicsScene, parent: Optional[QWidget] = None) -> None:
@@ -219,6 +444,7 @@ class AnnotationView(QGraphicsView):
         self._lens_zoom = 2.8
         self._lens_radius = 74
         self._lens_view_pos: Optional[QPoint] = None
+        self._calculate_drag_active = False
         # Grouped bbox drags generate many small repaints; bounding-rect updates are cheaper here.
         self.setViewportUpdateMode(QGraphicsView.BoundingRectViewportUpdate)
         self.setMouseTracking(True)
@@ -301,6 +527,16 @@ class AnnotationView(QGraphicsView):
             int(Qt.KeypadModifier),
             int(Qt.ShiftModifier | Qt.KeypadModifier),
         }
+        if key == Qt.Key_Alt and not event.isAutoRepeat():
+            if not self._calculate_drag_active:
+                self._calculate_drag_active = True
+                self.calculate_drag_active_changed.emit(True)
+            event.accept()
+            return
+        if key == Qt.Key_Shift and self._calculate_drag_active and not event.isAutoRepeat():
+            self.equation_approval_requested.emit()
+            event.accept()
+            return
         if key == Qt.Key_A and event.modifiers() in (Qt.ControlModifier, Qt.MetaModifier):
             self.select_all_requested.emit()
             event.accept()
@@ -361,6 +597,15 @@ class AnnotationView(QGraphicsView):
             event.accept()
             return
         super().keyPressEvent(event)
+
+    def keyReleaseEvent(self, event) -> None:
+        if event.key() == Qt.Key_Alt and not event.isAutoRepeat():
+            if self._calculate_drag_active:
+                self._calculate_drag_active = False
+                self.calculate_drag_active_changed.emit(False)
+            event.accept()
+            return
+        super().keyReleaseEvent(event)
 
     def leaveEvent(self, event) -> None:
         self._lens_view_pos = None
@@ -454,10 +699,6 @@ class AnnotRectItem(QGraphicsRectItem):
     def __init__(self, rect: QRectF, fact_data: Optional[Dict[str, Any]] = None) -> None:
         super().__init__(rect)
         self.fact_data: Dict[str, Any] = normalize_fact_data(fact_data)
-        pen = QPen(Qt.red)
-        pen.setWidth(1)
-        pen.setCosmetic(True)
-        self.setPen(pen)
         self.setBrush(Qt.transparent)
         self.setFlag(QGraphicsRectItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsRectItem.ItemIsMovable, True)
@@ -470,6 +711,14 @@ class AnnotRectItem(QGraphicsRectItem):
         self._press_scene_rect: Optional[QRectF] = None
         self._order_label: Optional[int] = None
         self._show_order_label = True
+        self._equation_reference_preview = False
+
+    def set_equation_reference_preview(self, enabled: bool) -> None:
+        next_value = bool(enabled)
+        if self._equation_reference_preview == next_value:
+            return
+        self._equation_reference_preview = next_value
+        self.update()
 
     def set_order_label(self, order: Optional[int], *, visible: bool = True) -> None:
         next_order = int(order) if order is not None else None
@@ -481,7 +730,22 @@ class AnnotRectItem(QGraphicsRectItem):
         self.update()
 
     def paint(self, painter, option, widget=None) -> None:
-        super().paint(painter, option, widget)
+        painter.save()
+        pen_color = QColor("#d92d20")
+        pen_width = 1
+        if self._equation_reference_preview:
+            pen_color = QColor("#14804a")
+            pen_width = 2
+        elif self.isSelected():
+            pen_color = QColor("#175cd3")
+            pen_width = 2
+        pen = QPen(pen_color)
+        pen.setWidth(pen_width)
+        pen.setCosmetic(True)
+        painter.setPen(pen)
+        painter.setBrush(Qt.transparent)
+        painter.drawRect(self.rect())
+        painter.restore()
         if not self._show_order_label or self._order_label is None:
             return
 
@@ -723,6 +987,9 @@ class AnnotationScene(QGraphicsScene):
     box_duplicated = pyqtSignal(object)
     box_double_clicked = pyqtSignal(object)
     box_moved = pyqtSignal(object)
+    equation_reference_selection_started = pyqtSignal()
+    equation_reference_selection_changed = pyqtSignal(object)
+    equation_reference_approval_requested = pyqtSignal()
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -733,16 +1000,94 @@ class AnnotationScene(QGraphicsScene):
         self._selecting = False
         self._select_start = None
         self._temp_select_item: Optional[QGraphicsRectItem] = None
+        self._calculate_drag_active = False
+        self._equation_session_active = False
+        self._equation_reference_items: list[AnnotRectItem] = []
+        self._equation_selecting = False
+        self._equation_click_candidate: Optional[AnnotRectItem] = None
+        self._equation_interaction_start: Optional[QPointF] = None
+        self._equation_select_start = None
+        self._temp_equation_select_item: Optional[QGraphicsRectItem] = None
         self._pending_toggle_selection: Optional[tuple[AnnotRectItem, ...]] = None
 
     def set_image_rect(self, rect: QRectF) -> None:
         self.image_rect = rect
 
+    def set_calculate_drag_active(self, active: bool) -> None:
+        self._calculate_drag_active = bool(active)
+        if self._calculate_drag_active:
+            return
+        if self._temp_equation_select_item is not None:
+            self.removeItem(self._temp_equation_select_item)
+            self._temp_equation_select_item = None
+        self._equation_session_active = False
+        self._equation_reference_items = []
+        self._equation_selecting = False
+        self._equation_click_candidate = None
+        self._equation_interaction_start = None
+        self._equation_select_start = None
+
     def _selected_annot_items(self) -> list[AnnotRectItem]:
         return [item for item in self.selectedItems() if isinstance(item, AnnotRectItem)]
 
+    def _begin_equation_selection_session(self) -> None:
+        if self._equation_session_active:
+            return
+        self._equation_session_active = True
+        self._equation_reference_items = []
+        self.equation_reference_selection_started.emit()
+        self.equation_reference_selection_changed.emit([])
+
+    def _dedupe_equation_items(self, items: list[AnnotRectItem]) -> list[AnnotRectItem]:
+        unique_items: list[AnnotRectItem] = []
+        seen_ids: set[int] = set()
+        for item in items:
+            item_id = id(item)
+            if item_id in seen_ids:
+                continue
+            seen_ids.add(item_id)
+            unique_items.append(item)
+        return unique_items
+
+    def _set_equation_reference_items(self, items: list[AnnotRectItem]) -> None:
+        self._equation_reference_items = self._dedupe_equation_items(items)
+        self.equation_reference_selection_changed.emit(list(self._equation_reference_items))
+
+    def _toggle_equation_reference_item(self, item: AnnotRectItem) -> None:
+        current_ids = {id(current) for current in self._equation_reference_items}
+        if id(item) in current_ids:
+            self._set_equation_reference_items(
+                [current for current in self._equation_reference_items if current is not item]
+            )
+            return
+        self._set_equation_reference_items([*self._equation_reference_items, item])
+
+    def _equation_drag_exceeds_threshold(self, pos: QPointF) -> bool:
+        if self._equation_interaction_start is None:
+            return False
+        delta = pos - self._equation_interaction_start
+        return abs(delta.x()) >= 4 or abs(delta.y()) >= 4
+
+    def _equation_selection_items(self, rect: QRectF) -> list[AnnotRectItem]:
+        if rect.width() < 4 or rect.height() < 4:
+            return []
+        return [
+            item
+            for item in self.items(rect, Qt.IntersectsItemShape)
+            if isinstance(item, AnnotRectItem)
+        ]
+
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.LeftButton and self.image_rect.contains(event.scenePos()):
+            if self._calculate_drag_active:
+                self._begin_equation_selection_session()
+                item = self.itemAt(event.scenePos(), QTransform())
+                self._equation_selecting = False
+                self._equation_interaction_start = event.scenePos()
+                self._equation_select_start = event.scenePos()
+                self._equation_click_candidate = item if isinstance(item, AnnotRectItem) else None
+                event.accept()
+                return
             item = self.itemAt(event.scenePos(), QTransform())
             if isinstance(item, AnnotRectItem) and (event.modifiers() & Qt.ShiftModifier):
                 next_selection = list(self._selected_annot_items())
@@ -793,6 +1138,24 @@ class AnnotationScene(QGraphicsScene):
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event) -> None:
+        if self._calculate_drag_active and self._equation_interaction_start is not None and self._equation_select_start is not None:
+            if not self._equation_selecting and self._equation_drag_exceeds_threshold(event.scenePos()):
+                self._equation_selecting = True
+                self._temp_equation_select_item = QGraphicsRectItem(QRectF(self._equation_select_start, self._equation_select_start))
+                select_pen = QPen(QColor("#14804a"))
+                select_pen.setWidth(1)
+                select_pen.setStyle(Qt.DashLine)
+                self._temp_equation_select_item.setPen(select_pen)
+                self._temp_equation_select_item.setBrush(Qt.transparent)
+                self.addItem(self._temp_equation_select_item)
+            if self._equation_selecting and self._temp_equation_select_item:
+                rect = QRectF(self._equation_select_start, event.scenePos()).normalized().intersected(self.image_rect)
+                self._temp_equation_select_item.setRect(rect)
+                self.equation_reference_selection_changed.emit(
+                    self._dedupe_equation_items([*self._equation_reference_items, *self._equation_selection_items(rect)])
+                )
+                event.accept()
+                return
         if self._selecting and self._temp_select_item and self._select_start:
             rect = QRectF(self._select_start, event.scenePos()).normalized().intersected(self.image_rect)
             self._temp_select_item.setRect(rect)
@@ -807,6 +1170,34 @@ class AnnotationScene(QGraphicsScene):
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event) -> None:
+        if self._equation_interaction_start is not None:
+            if self._equation_selecting and self._temp_equation_select_item:
+                rect = self._temp_equation_select_item.rect().normalized().intersected(self.image_rect)
+                self.removeItem(self._temp_equation_select_item)
+                self._temp_equation_select_item = None
+                self._equation_selecting = False
+                self._equation_select_start = None
+                self._equation_click_candidate = None
+                self._equation_interaction_start = None
+                self._set_equation_reference_items([*self._equation_reference_items, *self._equation_selection_items(rect)])
+                if event.modifiers() & Qt.ShiftModifier:
+                    self.equation_reference_approval_requested.emit()
+                event.accept()
+                return
+            if self._equation_click_candidate is not None:
+                click_item = self._equation_click_candidate
+                self._equation_click_candidate = None
+                self._equation_interaction_start = None
+                self._equation_select_start = None
+                self._toggle_equation_reference_item(click_item)
+                if event.modifiers() & Qt.ShiftModifier:
+                    self.equation_reference_approval_requested.emit()
+                event.accept()
+                return
+            self._equation_interaction_start = None
+            self._equation_select_start = None
+            event.accept()
+            return
         if self._pending_toggle_selection is not None:
             next_selection = self._pending_toggle_selection
             self._pending_toggle_selection = None
@@ -929,6 +1320,7 @@ class GeminiPromptDialog(QDialog):
         few_shot_summary: str = "",
         show_thinking_control: bool = True,
         thinking_enabled_default: bool = True,
+        thinking_level_default: str = "high",
         thinking_tooltip: str = "",
     ) -> None:
         super().__init__(parent)
@@ -949,12 +1341,24 @@ class GeminiPromptDialog(QDialog):
         form.addRow("model", self.model_edit)
         self.thinking_check = QCheckBox("Enable thinking")
         self.thinking_check.setChecked(bool(thinking_enabled_default))
+        self.thinking_level_combo = QComboBox()
+        self.thinking_level_combo.addItems(list(GEMINI_THINKING_LEVEL_OPTIONS))
+        normalized_default_level = str(thinking_level_default or "").strip().lower()
+        if normalized_default_level not in GEMINI_THINKING_LEVEL_OPTIONS:
+            normalized_default_level = "high" if thinking_enabled_default else "minimal"
+        level_idx = self.thinking_level_combo.findText(normalized_default_level)
+        self.thinking_level_combo.setCurrentIndex(max(0, level_idx))
         if thinking_tooltip:
             self.thinking_check.setToolTip(thinking_tooltip)
+            self.thinking_level_combo.setToolTip(thinking_tooltip)
         if show_thinking_control:
             form.addRow("thinking", self.thinking_check)
+            form.addRow("thinking_level", self.thinking_level_combo)
         else:
             self.thinking_check.setVisible(False)
+            self.thinking_level_combo.setVisible(False)
+        self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
+        self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
         self.few_shot_check = QCheckBox("Use few-shot examples")
         self.few_shot_check.setChecked(bool(few_shot_enabled_default))
         self.few_shot_preset_combo = QComboBox()
@@ -995,7 +1399,17 @@ class GeminiPromptDialog(QDialog):
         return self.model_edit.text().strip()
 
     def enable_thinking(self) -> bool:
-        return self.thinking_check.isVisible() and self.thinking_check.isChecked()
+        return self.thinking_level() != "minimal"
+
+    def thinking_level(self) -> str:
+        if not self.thinking_level_combo.isVisible():
+            return "high" if (self.thinking_check.isVisible() and self.thinking_check.isChecked()) else "minimal"
+        chosen = self.thinking_level_combo.currentText().strip().lower()
+        if chosen not in GEMINI_THINKING_LEVEL_OPTIONS:
+            chosen = "high" if self.thinking_check.isChecked() else "minimal"
+        if not self.thinking_check.isChecked():
+            return "minimal"
+        return chosen
 
     def use_few_shot(self) -> bool:
         return self.few_shot_check.isVisible() and self.few_shot_check.isChecked()
@@ -1015,17 +1429,18 @@ class GeminiFillDialog(QDialog):
         *,
         model_name: str,
         thinking_enabled_default: bool,
+        thinking_level_default: str,
         prompt_builder: Callable[[set[str], bool], str],
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Gemini Fill Selected Fields")
+        self.setWindowTitle("Gemini Auto-Fix Selected Fields")
         self.resize(960, 760)
         self._prompt_builder = prompt_builder
 
         root = QVBoxLayout(self)
         hint = QLabel(
-            "Choose fields to auto-fill on selected facts.\n"
+            "Choose fields to auto-fix on selected facts.\n"
             "Requested fields are redacted before sending to Gemini."
         )
         hint.setWordWrap(True)
@@ -1035,31 +1450,33 @@ class GeminiFillDialog(QDialog):
         self.model_edit = QLineEdit(model_name)
         self.thinking_check = QCheckBox("Enable thinking")
         self.thinking_check.setChecked(bool(thinking_enabled_default))
+        self.thinking_level_combo = QComboBox()
+        self.thinking_level_combo.addItems(list(GEMINI_THINKING_LEVEL_OPTIONS))
+        normalized_default_level = str(thinking_level_default or "").strip().lower()
+        if normalized_default_level not in GEMINI_THINKING_LEVEL_OPTIONS:
+            normalized_default_level = "high" if thinking_enabled_default else "minimal"
+        level_idx = self.thinking_level_combo.findText(normalized_default_level)
+        self.thinking_level_combo.setCurrentIndex(max(0, level_idx))
+        self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
+        self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
         form.addRow("model", self.model_edit)
         form.addRow("thinking", self.thinking_check)
+        form.addRow("thinking_level", self.thinking_level_combo)
         root.addLayout(form)
 
-        fields_box = QGroupBox("Fields To Fill")
+        fields_box = QGroupBox("Fields To Auto-Fix")
         fields_layout = QVBoxLayout(fields_box)
-        self.period_type_check = QCheckBox("period_type")
-        self.period_start_check = QCheckBox("period_start")
-        self.period_end_check = QCheckBox("period_end")
-        self.path_source_check = QCheckBox("path_source")
-        self.statement_type_check = QCheckBox("meta.statement_type")
-        self.period_type_check.setChecked(True)
-        self.period_start_check.setChecked(True)
-        self.period_end_check.setChecked(True)
-        self.path_source_check.setChecked(False)
-        self.statement_type_check.setChecked(False)
-        for checkbox in (
-            self.period_type_check,
-            self.period_start_check,
-            self.period_end_check,
-            self.path_source_check,
-            self.statement_type_check,
-        ):
+        self._fact_field_checks: dict[str, QCheckBox] = {}
+        for field_name, checked_default in GEMINI_AUTO_FIX_FIELD_CHOICES:
+            checkbox = QCheckBox(field_name)
+            checkbox.setChecked(bool(checked_default))
             fields_layout.addWidget(checkbox)
             checkbox.toggled.connect(self._refresh_prompt_preview)
+            self._fact_field_checks[field_name] = checkbox
+        self.statement_type_check = QCheckBox("meta.statement_type")
+        self.statement_type_check.setChecked(False)
+        fields_layout.addWidget(self.statement_type_check)
+        self.statement_type_check.toggled.connect(self._refresh_prompt_preview)
         root.addWidget(fields_box)
 
         preview_label = QLabel("Prompt Preview")
@@ -1072,23 +1489,18 @@ class GeminiFillDialog(QDialog):
         self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
-            ok_btn.setText("Start Gemini Fill")
+            ok_btn.setText("Start Gemini Auto-Fix")
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         root.addWidget(self.button_box)
         self._refresh_prompt_preview()
 
     def selected_fact_fields(self) -> set[str]:
-        selected: set[str] = set()
-        if self.period_type_check.isChecked():
-            selected.add("period_type")
-        if self.period_start_check.isChecked():
-            selected.add("period_start")
-        if self.period_end_check.isChecked():
-            selected.add("period_end")
-        if self.path_source_check.isChecked():
-            selected.add("path_source")
-        return selected
+        return {
+            field_name
+            for field_name, checkbox in self._fact_field_checks.items()
+            if checkbox.isChecked()
+        }
 
     def include_statement_type(self) -> bool:
         return self.statement_type_check.isChecked()
@@ -1097,7 +1509,15 @@ class GeminiFillDialog(QDialog):
         return self.model_edit.text().strip()
 
     def enable_thinking(self) -> bool:
-        return self.thinking_check.isChecked()
+        return self.thinking_level() != "minimal"
+
+    def thinking_level(self) -> str:
+        chosen = self.thinking_level_combo.currentText().strip().lower()
+        if chosen not in GEMINI_THINKING_LEVEL_OPTIONS:
+            chosen = "high" if self.thinking_check.isChecked() else "minimal"
+        if not self.thinking_check.isChecked():
+            return "minimal"
+        return chosen
 
     def prompt(self) -> str:
         return self.prompt_edit.toPlainText()
@@ -1178,6 +1598,7 @@ class GeminiStreamWorker(QObject):
         api_key: Optional[str] = None,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
         enable_thinking: bool = True,
+        thinking_level: Optional[str] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -1187,6 +1608,7 @@ class GeminiStreamWorker(QObject):
         self.api_key = api_key
         self.few_shot_examples = few_shot_examples
         self.enable_thinking = bool(enable_thinking)
+        self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
         self._cancel_requested = False
 
     def request_cancel(self) -> None:
@@ -1204,6 +1626,7 @@ class GeminiStreamWorker(QObject):
                 api_key=self.api_key,
                 few_shot_examples=self.few_shot_examples,
                 enable_thinking=self.enable_thinking,
+                thinking_level=self.thinking_level,
             ):
                 if self._cancel_requested:
                     break
@@ -1240,6 +1663,7 @@ class GeminiFillWorker(QObject):
         allowed_fact_fields: set[str],
         allow_statement_type: bool,
         enable_thinking: bool,
+        thinking_level: Optional[str] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -1250,6 +1674,7 @@ class GeminiFillWorker(QObject):
         self.allowed_fact_fields = set(allowed_fact_fields)
         self.allow_statement_type = bool(allow_statement_type)
         self.enable_thinking = bool(enable_thinking)
+        self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
         self._cancel_requested = False
 
     def request_cancel(self) -> None:
@@ -1265,6 +1690,7 @@ class GeminiFillWorker(QObject):
                 model=self.model,
                 api_key=self.api_key,
                 enable_thinking=self.enable_thinking,
+                thinking_level=self.thinking_level,
             )
             if self._cancel_requested:
                 return
@@ -1418,6 +1844,7 @@ class AnnotationWindow(QMainWindow):
             "company_name": None,
             "company_id": None,
             "report_year": None,
+            "report_scope": None,
             "entity_type": None,
         }
         self._path_list_editable = True
@@ -1447,6 +1874,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_include_statement_type = False
         self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", "gemini-3-flash-preview")
         self._gemini_enable_thinking = True
+        self._gemini_thinking_level = "high"
         self._qwen_stream_thread: Optional[QThread] = None
         self._qwen_stream_worker: Optional[QwenStreamWorker] = None
         self._qwen_stream_target_page: Optional[str] = None
@@ -1461,6 +1889,16 @@ class AnnotationWindow(QMainWindow):
         self._last_saved_content: Dict[str, Any] = {"page_states": {}, "metadata": {}}
         self._pending_close_approved = False
         self._pending_auto_fit = False
+        self._equation_target_item: Optional[AnnotRectItem] = None
+        self._equation_candidate_text: Optional[str] = None
+        self._equation_candidate_fact_text: Optional[str] = None
+        self._equation_candidate_result_text: Optional[str] = None
+        self._equation_candidate_invalid_values: list[str] = []
+        self._equation_candidate_terms: list[dict[str, Any]] = []
+        self._equation_reference_preview_items: list[AnnotRectItem] = []
+        self._page_annotation_status: str | None = None
+        self._thumbnail_page_indices: list[int] = []
+        self._thumbnail_row_lookup: dict[int, int] = {}
 
         if not self.page_images:
             raise RuntimeError(f"No page images found under: {self.images_dir}")
@@ -1574,9 +2012,9 @@ class AnnotationWindow(QMainWindow):
         form.setFieldGrowthPolicy(QFormLayout.ExpandingFieldsGrow)
         form.setLabelAlignment(Qt.AlignLeft | Qt.AlignTop)
         form.setFormAlignment(Qt.AlignLeft | Qt.AlignTop)
-        form.setHorizontalSpacing(10)
-        form.setVerticalSpacing(8)
-        form.setContentsMargins(18, 20, 18, 18)
+        form.setHorizontalSpacing(8)
+        form.setVerticalSpacing(6)
+        form.setContentsMargins(14, 14, 14, 12)
 
     def _inspector_label(self, text: str, *, required: bool = False) -> QLabel:
         label = QLabel(f"{text} *" if required else text)
@@ -1616,7 +2054,7 @@ class AnnotationWindow(QMainWindow):
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
             (self.gemini_gt_btn, "Gemini", "Gemini GT", self._load_repo_icon(GEMINI_BUTTON_ICON)),
-            (self.gemini_fill_btn, "Gemini Fill", "Gemini fill selected fields", self._load_repo_icon(GEMINI_BUTTON_ICON)),
+            (self.gemini_fill_btn, "Auto-Fix", "Gemini auto-fix selected fields", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.qwen_gt_btn, "Qwen", "Qwen GT", self._load_repo_icon(QWEN_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
@@ -1626,6 +2064,8 @@ class AnnotationWindow(QMainWindow):
             (self.fit_btn, "Fit", "Fit page to view height", None),
             (self.page_json_btn, "JSON", "Show current page JSON", None),
             (self.apply_entity_all_btn, "Apply Entity", "Apply current entity across pages", None),
+            (self.page_approve_continue_btn, "Approve + Next", "Mark page approved and move to next page", None),
+            (self.page_flag_btn, "⚑ Flag", "Mark page for review", None),
             (self.help_btn, "Help", "Help and shortcuts", None),
             (self.save_btn, "Save", "Save annotations (Ctrl+S)", None),
             (self.exit_btn, "Exit", "Close annotator", None),
@@ -1683,7 +2123,7 @@ class AnnotationWindow(QMainWindow):
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
         self.gemini_gt_btn = QPushButton("Gemini GT")
-        self.gemini_fill_btn = QPushButton("Gemini Fill")
+        self.gemini_fill_btn = QPushButton("Gemini Auto-Fix")
         self.qwen_gt_btn = QPushButton("Qwen GT")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
@@ -1694,6 +2134,8 @@ class AnnotationWindow(QMainWindow):
         self.fit_btn = QPushButton("Fit")
         self.page_json_btn = QPushButton("Page JSON")
         self.apply_entity_all_btn = QPushButton("Apply Entity To Missing")
+        self.page_approve_continue_btn = QPushButton("Approve + Next")
+        self.page_flag_btn = QPushButton("\u2691 Flag")
         self.help_btn = QPushButton("Help")
         self.save_btn = QPushButton("Save (Ctrl+S)")
         self.exit_btn = QPushButton("Exit")
@@ -1715,6 +2157,8 @@ class AnnotationWindow(QMainWindow):
             self.fit_btn,
             self.page_json_btn,
             self.apply_entity_all_btn,
+            self.page_approve_continue_btn,
+            self.page_flag_btn,
             self.help_btn,
             self.save_btn,
             self.exit_btn,
@@ -1727,6 +2171,7 @@ class AnnotationWindow(QMainWindow):
         self.save_btn.setProperty("variant", "primary")
         for button in (self.import_btn, self.page_json_btn, self.help_btn, self.apply_entity_all_btn, self.exit_btn):
             button.setProperty("variant", "ghost")
+        self.page_flag_btn.setProperty("variant", "ghost")
 
         doc_layout = QHBoxLayout()
         doc_layout.setSpacing(6)
@@ -1734,6 +2179,8 @@ class AnnotationWindow(QMainWindow):
         doc_layout.addWidget(self.import_btn)
         doc_layout.addWidget(self.page_json_btn)
         doc_layout.addWidget(self.help_btn)
+        doc_layout.addWidget(self.page_approve_continue_btn)
+        doc_layout.addWidget(self.page_flag_btn)
         doc_layout.addWidget(self.exit_btn)
         nav.addWidget(self._toolbar_group("Document", doc_layout))
         nav.addWidget(self._toolbar_divider())
@@ -1797,6 +2244,9 @@ class AnnotationWindow(QMainWindow):
         self.scene.box_duplicated.connect(self._on_box_duplicated)
         self.scene.box_double_clicked.connect(self._on_box_double_clicked)
         self.scene.box_moved.connect(self._on_box_geometry_changed)
+        self.scene.equation_reference_selection_started.connect(self._on_equation_reference_selection_started)
+        self.scene.equation_reference_selection_changed.connect(self._on_equation_reference_selection_changed)
+        self.scene.equation_reference_approval_requested.connect(self._on_equation_approval_requested)
         self.view = AnnotationView(self.scene)
         self.view.setRenderHint(QPainter.Antialiasing, True)
         self.view.setRenderHint(QPainter.SmoothPixmapTransform, True)
@@ -1808,6 +2258,8 @@ class AnnotationWindow(QMainWindow):
         self.view.nudge_selected_requested.connect(self._nudge_selected_facts)
         self.view.resize_selected_requested.connect(self.batch_expand_selected)
         self.view.select_all_requested.connect(self.select_all_bboxes)
+        self.view.calculate_drag_active_changed.connect(self.scene.set_calculate_drag_active)
+        self.view.equation_approval_requested.connect(self._on_equation_approval_requested)
         self.page_thumb_list = QListWidget()
         self.page_thumb_list.setObjectName("thumbList")
         self.page_thumb_list.setViewMode(QListView.IconMode)
@@ -1830,7 +2282,19 @@ class AnnotationWindow(QMainWindow):
         thumb_layout.setSpacing(4)
         thumb_title = QLabel("Pages")
         thumb_title.setObjectName("hintText")
+        self.page_thumb_filter_combo = QComboBox()
+        for label, value in PAGE_STATUS_FILTER_OPTIONS:
+            self.page_thumb_filter_combo.addItem(label, value)
+        self.page_thumb_filter_combo.setCurrentIndex(0)
+        self.page_thumb_sort_combo = QComboBox()
+        for label, value in PAGE_STATUS_SORT_OPTIONS:
+            self.page_thumb_sort_combo.addItem(label, value)
+        self.page_thumb_sort_combo.setCurrentIndex(0)
+        self.page_thumb_filter_combo.setMinimumWidth(120)
+        self.page_thumb_sort_combo.setMinimumWidth(120)
         thumb_layout.addWidget(thumb_title)
+        thumb_layout.addWidget(self.page_thumb_filter_combo)
+        thumb_layout.addWidget(self.page_thumb_sort_combo)
         thumb_layout.addWidget(self.page_thumb_list, 1)
 
         splitter.addWidget(thumb_panel)
@@ -1838,10 +2302,10 @@ class AnnotationWindow(QMainWindow):
 
         right = QWidget()
         right.setObjectName("inspectorPanel")
-        right.setMinimumWidth(344)
+        right.setMinimumWidth(320)
         right_layout = QVBoxLayout(right)
         right_layout.setContentsMargins(0, 0, 0, 0)
-        right_layout.setSpacing(10)
+        right_layout.setSpacing(8)
 
         doc_box = QGroupBox("Document Metadata")
         doc_box.setObjectName("inspectorSection")
@@ -1859,6 +2323,10 @@ class AnnotationWindow(QMainWindow):
         self.statement_type_combo = QComboBox()
         self.statement_type_combo.addItems(list(STATEMENT_TYPE_OPTIONS))
         self.title_edit = QLineEdit()
+        self.page_annotation_note_edit = QLineEdit()
+        self.page_annotation_status_label = QLabel("Unclassified")
+        self.page_annotation_status_label.setObjectName("statusPill")
+        self.page_annotation_status_label.setProperty("tone", "accent")
         self.doc_language_combo = QComboBox()
         self.doc_language_combo.addItems(["Auto", "Hebrew (he)", "English (en)"])
         self.doc_direction_combo = QComboBox()
@@ -1866,6 +2334,8 @@ class AnnotationWindow(QMainWindow):
         self.company_name_edit = QLineEdit()
         self.company_id_edit = QLineEdit()
         self.report_year_edit = QLineEdit()
+        self.report_scope_combo = QComboBox()
+        self.report_scope_combo.addItems(list(REPORT_SCOPE_OPTIONS))
         self.entity_type_combo = QComboBox()
         self.entity_type_combo.addItems(list(ENTITY_TYPE_OPTIONS))
         self.report_year_edit.setValidator(QIntValidator(0, 9999, self))
@@ -1875,31 +2345,35 @@ class AnnotationWindow(QMainWindow):
         self.type_combo.setMinimumWidth(field_min_width)
         self.statement_type_combo.setMinimumWidth(field_min_width)
         self.title_edit.setMinimumWidth(field_min_width)
+        self.page_annotation_note_edit.setMinimumWidth(field_min_width)
         self.doc_language_combo.setMinimumWidth(field_min_width)
         self.doc_direction_combo.setMinimumWidth(field_min_width)
         self.company_name_edit.setMinimumWidth(field_min_width)
         self.company_id_edit.setMinimumWidth(field_min_width)
         self.report_year_edit.setMinimumWidth(field_min_width)
+        self.report_scope_combo.setMinimumWidth(field_min_width)
         self.entity_type_combo.setMinimumWidth(field_min_width)
         doc_form.addRow(self._inspector_label("Language"), self.doc_language_combo)
         doc_form.addRow(self._inspector_label("Direction"), self.doc_direction_combo)
         doc_form.addRow(self._inspector_label("Company Name"), self.company_name_edit)
         doc_form.addRow(self._inspector_label("Company ID"), self.company_id_edit)
         doc_form.addRow(self._inspector_label("Report Year"), self.report_year_edit)
+        doc_form.addRow(self._inspector_label("Report Scope"), self.report_scope_combo)
         doc_form.addRow(self._inspector_label("Entity Type"), self.entity_type_combo)
-        right_layout.addWidget(doc_box)
         meta_form.addRow(self._inspector_label("Entity"), self.entity_name_edit)
         meta_form.addRow(self._inspector_label("Page"), self.page_num_edit)
         meta_form.addRow(self._inspector_label("Page Type", required=True), self.type_combo)
         meta_form.addRow(self._inspector_label("Statement Type"), self.statement_type_combo)
         meta_form.addRow(self._inspector_label("Title"), self.title_edit)
-        right_layout.addWidget(page_meta_box)
+        self.page_annotation_note_edit.setPlaceholderText("Annotation-only reminder to revisit this page")
+        meta_form.addRow(self._inspector_label("Revisit Note"), self.page_annotation_note_edit)
+        meta_form.addRow(self._inspector_label("Page Review"), self.page_annotation_status_label)
 
         self.page_issues_box = QGroupBox("Page Issues")
         self.page_issues_box.setObjectName("inspectorSection")
         page_issues_layout = QVBoxLayout(self.page_issues_box)
-        page_issues_layout.setContentsMargins(18, 20, 18, 18)
-        page_issues_layout.setSpacing(10)
+        page_issues_layout.setContentsMargins(14, 14, 14, 12)
+        page_issues_layout.setSpacing(8)
         page_issues_header = QHBoxLayout()
         page_issues_header.setSpacing(8)
         self.page_reg_flags_label = QLabel("Reg Flags: 0")
@@ -1921,13 +2395,11 @@ class AnnotationWindow(QMainWindow):
         page_issues_layout.addLayout(page_issues_header)
         page_issues_layout.addWidget(self.page_issues_hint_label)
         page_issues_layout.addWidget(self.page_issues_list)
-        right_layout.addWidget(self.page_issues_box)
-
         fact_box = QGroupBox("Facts (Bounding Boxes)")
         fact_box.setObjectName("inspectorSection")
         fact_layout = QVBoxLayout(fact_box)
-        fact_layout.setContentsMargins(18, 20, 18, 18)
-        fact_layout.setSpacing(10)
+        fact_layout.setContentsMargins(14, 14, 14, 12)
+        fact_layout.setSpacing(8)
         self.show_order_labels_check = QCheckBox("Show order labels on bboxes")
         self.show_order_labels_check.setObjectName("inspectorOption")
         self.show_order_labels_check.setChecked(False)
@@ -1939,9 +2411,11 @@ class AnnotationWindow(QMainWindow):
         self.facts_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.facts_list.setSpacing(4)
         self.facts_list.setMinimumHeight(120)
-        self.facts_list.setMaximumHeight(190)
+        self.facts_list.setMaximumHeight(176)
         self.fact_bbox_label = QLabel("-")
         self.fact_value_edit = QLineEdit()
+        self.fact_equation_edit = QLineEdit()
+        self.fact_equation_edit.setReadOnly(True)
         self.fact_note_edit = QLineEdit()
         self.fact_note_name_edit = QLineEdit()
         self.fact_is_beur_combo = QComboBox()
@@ -1951,6 +2425,10 @@ class AnnotationWindow(QMainWindow):
         self.fact_date_edit = QLineEdit()
         self.fact_period_type_combo = QComboBox()
         self.fact_period_type_combo.addItems(list(PERIOD_TYPE_OPTIONS))
+        self.fact_duration_type_combo = QComboBox()
+        self.fact_duration_type_combo.addItems(list(DURATION_TYPE_OPTIONS))
+        self.fact_recurring_period_combo = QComboBox()
+        self.fact_recurring_period_combo.addItems(list(RECURRING_PERIOD_OPTIONS))
         self.fact_period_start_edit = QLineEdit()
         self.fact_period_end_edit = QLineEdit()
         self.fact_currency_combo = QComboBox()
@@ -1959,6 +2437,12 @@ class AnnotationWindow(QMainWindow):
         self.fact_scale_combo.addItems(["", *[str(s) for s in SCALE_OPTIONS]])
         self.fact_value_type_combo = QComboBox()
         self.fact_value_type_combo.addItems(list(VALUE_TYPE_OPTIONS))
+        self.fact_value_context_combo = QComboBox()
+        self.fact_value_context_combo.addItems(list(VALUE_CONTEXT_OPTIONS))
+        self.fact_balance_type_combo = QComboBox()
+        self.fact_balance_type_combo.addItems(list(BALANCE_TYPE_OPTIONS))
+        self.fact_natural_sign_label = QLabel("-")
+        self.fact_natural_sign_label.setObjectName("factBboxLabel")
         self.fact_path_source_combo = QComboBox()
         self.fact_path_source_combo.addItems(list(PATH_SOURCE_OPTIONS))
         self.fact_path_list = QListWidget()
@@ -1974,38 +2458,41 @@ class AnnotationWindow(QMainWindow):
         self.fact_path_list.setDragEnabled(True)
         self.fact_path_list.viewport().setAcceptDrops(True)
         self.fact_path_list.setDropIndicatorShown(True)
-        self.fact_path_list.setMinimumHeight(104)
-        self.fact_path_list.setMaximumHeight(140)
+        self.fact_path_list.setMinimumHeight(92)
+        self.fact_path_list.setMaximumHeight(128)
 
         self.path_add_btn = QPushButton("+ Add Level")
         self.path_remove_btn = QPushButton("Remove")
         self.path_up_btn = QPushButton("Move Up")
         self.path_down_btn = QPushButton("Move Down")
+        self.path_invert_btn = QPushButton("Invert")
         self.path_add_btn.setObjectName("smallActionBtn")
         self.path_remove_btn.setObjectName("smallActionBtn")
         self.path_up_btn.setObjectName("smallActionBtn")
         self.path_down_btn.setObjectName("smallActionBtn")
+        self.path_invert_btn.setObjectName("smallActionBtn")
 
         path_actions = QHBoxLayout()
-        path_actions.setSpacing(8)
+        path_actions.setSpacing(6)
         path_actions.addWidget(self.path_add_btn)
         path_actions.addWidget(self.path_remove_btn)
         path_actions.addWidget(self.path_up_btn)
         path_actions.addWidget(self.path_down_btn)
+        path_actions.addWidget(self.path_invert_btn)
         path_actions.addStretch(1)
 
         path_panel = QWidget()
         path_panel_layout = QVBoxLayout(path_panel)
         path_panel_layout.setContentsMargins(0, 0, 0, 0)
-        path_panel_layout.setSpacing(8)
+        path_panel_layout.setSpacing(6)
         path_panel_layout.addWidget(self.fact_path_list)
         path_panel_layout.addLayout(path_actions)
 
         self.fact_editor_box = QGroupBox("Selected Fact")
         self.fact_editor_box.setObjectName("inspectorSubsection")
         fact_editor_layout = QVBoxLayout(self.fact_editor_box)
-        fact_editor_layout.setContentsMargins(18, 18, 18, 16)
-        fact_editor_layout.setSpacing(10)
+        fact_editor_layout.setContentsMargins(14, 12, 14, 12)
+        fact_editor_layout.setSpacing(7)
 
         def add_fact_editor_row(
             left_block: QWidget,
@@ -2016,7 +2503,7 @@ class AnnotationWindow(QMainWindow):
         ) -> None:
             row = QHBoxLayout()
             row.setContentsMargins(0, 0, 0, 0)
-            row.setSpacing(10)
+            row.setSpacing(8)
             row.addWidget(left_block, left_stretch)
             row.addWidget(right_block, right_stretch)
             fact_editor_layout.addLayout(row)
@@ -2025,11 +2512,13 @@ class AnnotationWindow(QMainWindow):
         fact_field_min_width = 132
         self.fact_bbox_label.setMinimumWidth(0)
         self.fact_value_edit.setMinimumWidth(fact_field_min_width)
+        self.fact_equation_edit.setMinimumWidth(fact_field_min_width)
         self.fact_note_edit.setMinimumWidth(fact_field_min_width)
         self.fact_note_name_edit.setMinimumWidth(fact_field_min_width)
         self.fact_is_beur_combo.setMinimumWidth(112)
         self.fact_beur_num_edit.setMinimumWidth(fact_field_min_width)
-        self.fact_beur_num_edit.setValidator(QIntValidator(0, 1_000_000_000, self))
+        # Empty must stay acceptable so clearing note_num can be committed as null.
+        self.fact_beur_num_edit.setValidator(QRegularExpressionValidator(QRegularExpression(r"^\d*$"), self))
         self.fact_refference_edit.setMinimumWidth(fact_field_min_width)
         self.fact_date_edit.setMinimumWidth(fact_field_min_width)
         self.fact_period_type_combo.setMinimumWidth(112)
@@ -2038,40 +2527,81 @@ class AnnotationWindow(QMainWindow):
         self.fact_currency_combo.setMinimumWidth(112)
         self.fact_scale_combo.setMinimumWidth(112)
         self.fact_value_type_combo.setMinimumWidth(112)
+        self.fact_value_context_combo.setMinimumWidth(112)
+        self.fact_balance_type_combo.setMinimumWidth(112)
         self.fact_path_source_combo.setMinimumWidth(112)
+        self.fact_duration_type_combo.setMinimumWidth(112)
+        self.fact_recurring_period_combo.setMinimumWidth(112)
         self.fact_path_list.setMinimumWidth(0)
-        self.fact_is_beur_combo.setMaximumWidth(220)
-        self.fact_period_type_combo.setMaximumWidth(220)
-        self.fact_currency_combo.setMaximumWidth(220)
-        self.fact_scale_combo.setMaximumWidth(220)
-        self.fact_value_type_combo.setMaximumWidth(220)
-        self.fact_path_source_combo.setMaximumWidth(220)
+        self.fact_equation_result_label = QLabel("-")
+        self.fact_equation_result_label.setObjectName("hintText")
+        self.fact_equation_status_label = QLabel("")
+        self.fact_equation_status_label.setObjectName("hintText")
+        self.fact_equation_status_label.setWordWrap(True)
+        self.apply_equation_btn = QPushButton("Apply Equation")
+        self.apply_equation_btn.setObjectName("smallActionBtn")
+        self.clear_equation_btn = QPushButton("Clear")
+        self.clear_equation_btn.setObjectName("smallActionBtn")
+        self.clear_equation_btn.setProperty("variant", "ghost")
+
+        equation_preview_panel = QWidget()
+        equation_preview_layout = QVBoxLayout(equation_preview_panel)
+        equation_preview_layout.setContentsMargins(0, 0, 0, 0)
+        equation_preview_layout.setSpacing(2)
+        equation_preview_header = QHBoxLayout()
+        equation_preview_header.setContentsMargins(0, 0, 0, 0)
+        equation_preview_header.setSpacing(6)
+        equation_preview_header.addWidget(self.fact_equation_result_label, 0, Qt.AlignVCenter)
+        equation_preview_header.addWidget(self.apply_equation_btn, 0, Qt.AlignVCenter)
+        equation_preview_header.addWidget(self.clear_equation_btn, 0, Qt.AlignVCenter)
+        equation_preview_header.addStretch(1)
+        equation_preview_layout.addLayout(equation_preview_header)
+        equation_preview_layout.addWidget(self.fact_equation_status_label)
 
         bbox_block = self._inspector_field_block("BBox", self.fact_bbox_label)
         bbox_block.setMaximumWidth(132)
         note_flag_block = self._inspector_field_block("Note Flag", self.fact_is_beur_combo)
-        note_flag_block.setMaximumWidth(220)
         currency_block = self._inspector_field_block("Currency", self.fact_currency_combo)
-        currency_block.setMaximumWidth(220)
         scale_block = self._inspector_field_block("Scale", self.fact_scale_combo)
-        scale_block.setMaximumWidth(220)
         value_type_block = self._inspector_field_block("Value Type", self.fact_value_type_combo)
-        value_type_block.setMaximumWidth(220)
+        value_context_block = self._inspector_field_block("Value Context", self.fact_value_context_combo)
+        balance_type_block = self._inspector_field_block("Balance Type", self.fact_balance_type_combo)
+        natural_sign_block = self._inspector_field_block("Natural Sign", self.fact_natural_sign_label)
         period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
-        period_type_block.setMaximumWidth(220)
+        duration_type_block = self._inspector_field_block("Duration Type", self.fact_duration_type_combo)
+        recurring_period_block = self._inspector_field_block("Recurring Period", self.fact_recurring_period_combo)
         path_source_block = self._inspector_field_block("Path Source", self.fact_path_source_combo)
-        path_source_block.setMaximumWidth(220)
+        value_with_sign_panel = QWidget()
+        value_with_sign_layout = QHBoxLayout(value_with_sign_panel)
+        value_with_sign_layout.setContentsMargins(0, 0, 0, 0)
+        value_with_sign_layout.setSpacing(8)
+        value_with_sign_layout.addWidget(
+            self._inspector_field_block("Value", self.fact_value_edit, required=True),
+            1,
+        )
+        value_with_sign_layout.addWidget(natural_sign_block, 0)
+        period_range_panel = QWidget()
+        period_range_layout = QHBoxLayout(period_range_panel)
+        period_range_layout.setContentsMargins(0, 0, 0, 0)
+        period_range_layout.setSpacing(8)
+        period_range_layout.addWidget(self.fact_period_start_edit)
+        period_range_layout.addWidget(self.fact_period_end_edit)
+        period_range_block = self._inspector_field_block("Period Range", period_range_panel)
 
         add_fact_editor_row(
             bbox_block,
-            self._inspector_field_block("Value", self.fact_value_edit, required=True),
+            value_with_sign_panel,
             left_stretch=0,
             right_stretch=1,
         )
         add_fact_editor_row(
+            self._inspector_field_block("Equation", self.fact_equation_edit),
+            self._inspector_field_block("Result Preview", equation_preview_panel),
+        )
+        add_fact_editor_row(
             self._inspector_field_block("Comment Ref", self.fact_note_edit),
             note_flag_block,
-            left_stretch=2,
+            left_stretch=1,
             right_stretch=1,
         )
         add_fact_editor_row(
@@ -2083,12 +2613,10 @@ class AnnotationWindow(QMainWindow):
             self._inspector_field_block("Date", self.fact_date_edit),
         )
         add_fact_editor_row(currency_block, scale_block)
-        add_fact_editor_row(value_type_block, path_source_block)
-        add_fact_editor_row(period_type_block, QWidget())
-        add_fact_editor_row(
-            self._inspector_field_block("Period Start", self.fact_period_start_edit),
-            self._inspector_field_block("Period End", self.fact_period_end_edit),
-        )
+        add_fact_editor_row(value_type_block, value_context_block)
+        add_fact_editor_row(balance_type_block, path_source_block)
+        add_fact_editor_row(period_type_block, duration_type_block)
+        add_fact_editor_row(recurring_period_block, period_range_block)
         fact_editor_layout.addWidget(self._inspector_field_block("Path", path_panel))
 
         self.dup_fact_btn = QPushButton("Duplicate")
@@ -2117,7 +2645,7 @@ class AnnotationWindow(QMainWindow):
         self.batch_box = QGroupBox("Batch Edit Selected BBoxes")
         self.batch_box.setObjectName("inspectorSubsection")
         batch_layout = QVBoxLayout(self.batch_box)
-        batch_layout.setContentsMargins(18, 20, 18, 18)
+        batch_layout.setContentsMargins(14, 14, 14, 12)
         batch_layout.setSpacing(8)
         self.batch_selected_label = QLabel("Selected: 0")
         self.batch_selected_label.setObjectName("hintText")
@@ -2155,6 +2683,14 @@ class AnnotationWindow(QMainWindow):
         self.batch_period_type_combo.addItems(list(PERIOD_TYPE_OPTIONS))
         self.batch_set_period_type_btn = QPushButton("Set period_type")
         self.batch_clear_period_type_btn = QPushButton("Clear period_type")
+        self.batch_duration_type_combo = QComboBox()
+        self.batch_duration_type_combo.addItems(list(DURATION_TYPE_OPTIONS))
+        self.batch_set_duration_type_btn = QPushButton("Set duration_type")
+        self.batch_clear_duration_type_btn = QPushButton("Clear duration_type")
+        self.batch_recurring_period_combo = QComboBox()
+        self.batch_recurring_period_combo.addItems(list(RECURRING_PERIOD_OPTIONS))
+        self.batch_set_recurring_period_btn = QPushButton("Set recurring_period")
+        self.batch_clear_recurring_period_btn = QPushButton("Clear recurring_period")
         self.batch_period_start_edit = QLineEdit()
         self.batch_period_start_edit.setPlaceholderText("Period start (YYYY-MM-DD)")
         self.batch_set_period_start_btn = QPushButton("Set Period Start")
@@ -2184,6 +2720,14 @@ class AnnotationWindow(QMainWindow):
         self.batch_value_type_combo.addItems(list(VALUE_TYPE_OPTIONS))
         self.batch_set_value_type_btn = QPushButton("Set value_type")
         self.batch_clear_value_type_btn = QPushButton("Clear value_type")
+        self.batch_value_context_combo = QComboBox()
+        self.batch_value_context_combo.addItems(list(VALUE_CONTEXT_OPTIONS))
+        self.batch_set_value_context_btn = QPushButton("Set value_context")
+        self.batch_clear_value_context_btn = QPushButton("Clear value_context")
+        self.batch_balance_type_combo = QComboBox()
+        self.batch_balance_type_combo.addItems(list(BALANCE_TYPE_OPTIONS))
+        self.batch_set_balance_type_btn = QPushButton("Set balance_type")
+        self.batch_clear_balance_type_btn = QPushButton("Clear balance_type")
         self.batch_path_source_combo = QComboBox()
         self.batch_path_source_combo.addItems(list(PATH_SOURCE_OPTIONS))
         self.batch_set_path_source_btn = QPushButton("Set path_source")
@@ -2242,6 +2786,20 @@ class AnnotationWindow(QMainWindow):
         batch_period_type_row.addWidget(self.batch_set_period_type_btn)
         batch_period_type_row.addWidget(self.batch_clear_period_type_btn)
         batch_period_type_row.addStretch(1)
+        batch_duration_type_row = QHBoxLayout()
+        batch_duration_type_row.setSpacing(8)
+        batch_duration_type_row.addWidget(QLabel("duration_type:"))
+        batch_duration_type_row.addWidget(self.batch_duration_type_combo)
+        batch_duration_type_row.addWidget(self.batch_set_duration_type_btn)
+        batch_duration_type_row.addWidget(self.batch_clear_duration_type_btn)
+        batch_duration_type_row.addStretch(1)
+        batch_recurring_period_row = QHBoxLayout()
+        batch_recurring_period_row.setSpacing(8)
+        batch_recurring_period_row.addWidget(QLabel("recurring_period:"))
+        batch_recurring_period_row.addWidget(self.batch_recurring_period_combo)
+        batch_recurring_period_row.addWidget(self.batch_set_recurring_period_btn)
+        batch_recurring_period_row.addWidget(self.batch_clear_recurring_period_btn)
+        batch_recurring_period_row.addStretch(1)
         batch_period_start_row = QHBoxLayout()
         batch_period_start_row.setSpacing(8)
         batch_period_start_row.addWidget(self.batch_period_start_edit)
@@ -2285,6 +2843,20 @@ class AnnotationWindow(QMainWindow):
         batch_value_type_row.addWidget(self.batch_set_value_type_btn)
         batch_value_type_row.addWidget(self.batch_clear_value_type_btn)
         batch_value_type_row.addStretch(1)
+        batch_value_context_row = QHBoxLayout()
+        batch_value_context_row.setSpacing(8)
+        batch_value_context_row.addWidget(QLabel("value_context:"))
+        batch_value_context_row.addWidget(self.batch_value_context_combo)
+        batch_value_context_row.addWidget(self.batch_set_value_context_btn)
+        batch_value_context_row.addWidget(self.batch_clear_value_context_btn)
+        batch_value_context_row.addStretch(1)
+        batch_balance_type_row = QHBoxLayout()
+        batch_balance_type_row.setSpacing(8)
+        batch_balance_type_row.addWidget(QLabel("balance_type:"))
+        batch_balance_type_row.addWidget(self.batch_balance_type_combo)
+        batch_balance_type_row.addWidget(self.batch_set_balance_type_btn)
+        batch_balance_type_row.addWidget(self.batch_clear_balance_type_btn)
+        batch_balance_type_row.addStretch(1)
         batch_path_source_row = QHBoxLayout()
         batch_path_source_row.setSpacing(8)
         batch_path_source_row.addWidget(QLabel("path_source:"))
@@ -2314,6 +2886,8 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_note_name_row)
         batch_layout.addLayout(batch_date_row)
         batch_layout.addLayout(batch_period_type_row)
+        batch_layout.addLayout(batch_duration_type_row)
+        batch_layout.addLayout(batch_recurring_period_row)
         batch_layout.addLayout(batch_period_start_row)
         batch_layout.addLayout(batch_period_end_row)
         batch_layout.addLayout(batch_is_beur_row)
@@ -2321,19 +2895,20 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_currency_row)
         batch_layout.addLayout(batch_scale_row)
         batch_layout.addLayout(batch_value_type_row)
+        batch_layout.addLayout(batch_value_context_row)
+        batch_layout.addLayout(batch_balance_type_row)
         batch_layout.addLayout(batch_path_source_row)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
         fact_layout.addWidget(self.batch_box)
-        right_layout.addWidget(fact_box, 1)
 
         self.batch_box.setVisible(False)
 
         self.gt_activity_box = QGroupBox("Generation Activity")
         self.gt_activity_box.setObjectName("inspectorSubsection")
         gt_activity_layout = QVBoxLayout(self.gt_activity_box)
-        gt_activity_layout.setContentsMargins(18, 20, 18, 18)
-        gt_activity_layout.setSpacing(8)
+        gt_activity_layout.setContentsMargins(14, 14, 14, 12)
+        gt_activity_layout.setSpacing(7)
         self.gt_activity_status_label = QLabel("No active generation.")
         self.gt_activity_status_label.setObjectName("subtitleLabel")
         self.gt_activity_provider_label = QLabel("Idle")
@@ -2348,12 +2923,12 @@ class AnnotationWindow(QMainWindow):
         gt_activity_layout.addWidget(self.gt_activity_status_label)
         gt_activity_layout.addWidget(self.gt_activity_count_label)
         gt_activity_layout.addWidget(self.gt_activity_stop_btn, 0, Qt.AlignLeft)
-        right_layout.addWidget(self.gt_activity_box)
-
         tip = QLabel(
             "Select a box to edit fields here. "
             "Use Shift+click on boxes or Shift+drag on empty page area to select multiple boxes. "
-            "Use Batch Edit to change value/note_ref/comment_ref/note_name/date/period fields/note_flag/note_num/currency/scale/value_type/path_source and path levels across selected boxes. "
+            "Use Alt+drag on the page to preview an equation for the selected box, then press Shift (Alt+Shift) or click Apply Equation to save it. "
+            "Use Approve + Next or \u2691 Flag from the top toolbar for internal page decisions, then filter/sort from the Pages panel. "
+            "Use Batch Edit to change value/note_ref/comment_ref/note_name/date/period/duration_type/recurring_period fields/note_flag/note_num/currency/scale/value_type/value_context/balance_type/path_source and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -2361,10 +2936,16 @@ class AnnotationWindow(QMainWindow):
         )
         tip.setObjectName("hintText")
         tip.setWordWrap(True)
+        right_layout.addWidget(doc_box)
+        right_layout.addWidget(page_meta_box)
+        right_layout.addWidget(self.page_issues_box)
+        right_layout.addWidget(fact_box, 1)
+        right_layout.addWidget(self.gt_activity_box)
         right_layout.addWidget(tip)
         right_layout.addStretch(1)
 
         right_scroll = QScrollArea()
+        self.right_scroll = right_scroll
         right_scroll.setObjectName("inspectorScroll")
         right_scroll.setWidgetResizable(True)
         right_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -2388,6 +2969,8 @@ class AnnotationWindow(QMainWindow):
         self.page_jump_spin.valueChanged.connect(self._on_page_jump_requested)
         self.page_jump_btn.clicked.connect(lambda: self._on_page_jump_requested(self.page_jump_spin.value()))
         self.page_thumb_list.currentRowChanged.connect(self._on_thumbnail_row_changed)
+        self.page_thumb_filter_combo.activated.connect(lambda _: self._on_page_thumbnail_filter_or_sort_changed())
+        self.page_thumb_sort_combo.activated.connect(lambda _: self._on_page_thumbnail_filter_or_sort_changed())
         self.undo_btn.clicked.connect(self.undo)
         self.redo_btn.clicked.connect(self.redo)
         self.zoom_out_btn.clicked.connect(self.zoom_out)
@@ -2407,6 +2990,8 @@ class AnnotationWindow(QMainWindow):
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
+        self.apply_equation_btn.clicked.connect(self.apply_equation_to_selected_fact)
+        self.clear_equation_btn.clicked.connect(self.clear_equation_from_selected_fact)
         self.batch_toggle_btn.clicked.connect(self.toggle_batch_panel)
         self.gt_activity_stop_btn.clicked.connect(self._stop_active_generation)
         self.page_issues_list.itemClicked.connect(self._on_page_issue_clicked)
@@ -2415,6 +3000,9 @@ class AnnotationWindow(QMainWindow):
         self.entity_name_edit.editingFinished.connect(self._on_meta_edited)
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
+        self.page_annotation_note_edit.editingFinished.connect(self._on_meta_edited)
+        self.page_approve_continue_btn.clicked.connect(self.approve_current_page_and_continue)
+        self.page_flag_btn.clicked.connect(self.flag_current_page_for_review)
         self.type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.statement_type_combo.activated.connect(lambda _: self._on_meta_edited())
         self.doc_language_combo.activated.connect(lambda _: self._on_meta_edited())
@@ -2431,11 +3019,15 @@ class AnnotationWindow(QMainWindow):
         self.fact_refference_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("note_ref"))
         self.fact_date_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("date"))
         self.fact_period_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("period_type"))
+        self.fact_duration_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("duration_type"))
+        self.fact_recurring_period_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("recurring_period"))
         self.fact_period_start_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("period_start"))
         self.fact_period_end_edit.editingFinished.connect(lambda: self._on_fact_editor_field_edited("period_end"))
         self.fact_currency_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("currency"))
         self.fact_scale_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("scale"))
         self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_type"))
+        self.fact_value_context_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_context"))
+        self.fact_balance_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("balance_type"))
         self.fact_path_source_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("path_source"))
         self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_field_edited("path"))
         self.fact_path_list.itemSelectionChanged.connect(self._update_path_controls)
@@ -2444,6 +3036,7 @@ class AnnotationWindow(QMainWindow):
         self.path_remove_btn.clicked.connect(self.remove_selected_path_level)
         self.path_up_btn.clicked.connect(self.move_selected_path_up)
         self.path_down_btn.clicked.connect(self.move_selected_path_down)
+        self.path_invert_btn.clicked.connect(self.invert_selected_path_levels)
         self.batch_path_level_edit.textChanged.connect(self._update_batch_controls)
         self.batch_value_edit.textChanged.connect(self._update_batch_controls)
         self.batch_refference_edit.textChanged.connect(self._update_batch_controls)
@@ -2451,6 +3044,8 @@ class AnnotationWindow(QMainWindow):
         self.batch_note_name_edit.textChanged.connect(self._update_batch_controls)
         self.batch_date_edit.textChanged.connect(self._update_batch_controls)
         self.batch_period_type_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_duration_type_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_recurring_period_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_period_start_edit.textChanged.connect(self._update_batch_controls)
         self.batch_period_end_edit.textChanged.connect(self._update_batch_controls)
         self.batch_is_beur_combo.activated.connect(lambda _: self._update_batch_controls())
@@ -2458,6 +3053,8 @@ class AnnotationWindow(QMainWindow):
         self.batch_currency_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_scale_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_value_type_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_value_context_combo.activated.connect(lambda _: self._update_batch_controls())
+        self.batch_balance_type_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_path_source_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
@@ -2476,6 +3073,10 @@ class AnnotationWindow(QMainWindow):
         self.batch_clear_date_btn.clicked.connect(self.batch_clear_date)
         self.batch_set_period_type_btn.clicked.connect(self.batch_set_period_type)
         self.batch_clear_period_type_btn.clicked.connect(self.batch_clear_period_type)
+        self.batch_set_duration_type_btn.clicked.connect(self.batch_set_duration_type)
+        self.batch_clear_duration_type_btn.clicked.connect(self.batch_clear_duration_type)
+        self.batch_set_recurring_period_btn.clicked.connect(self.batch_set_recurring_period)
+        self.batch_clear_recurring_period_btn.clicked.connect(self.batch_clear_recurring_period)
         self.batch_set_period_start_btn.clicked.connect(self.batch_set_period_start)
         self.batch_clear_period_start_btn.clicked.connect(self.batch_clear_period_start)
         self.batch_set_period_end_btn.clicked.connect(self.batch_set_period_end)
@@ -2490,6 +3091,10 @@ class AnnotationWindow(QMainWindow):
         self.batch_clear_scale_btn.clicked.connect(self.batch_clear_scale)
         self.batch_set_value_type_btn.clicked.connect(self.batch_set_value_type)
         self.batch_clear_value_type_btn.clicked.connect(self.batch_clear_value_type)
+        self.batch_set_value_context_btn.clicked.connect(self.batch_set_value_context)
+        self.batch_clear_value_context_btn.clicked.connect(self.batch_clear_value_context)
+        self.batch_set_balance_type_btn.clicked.connect(self.batch_set_balance_type)
+        self.batch_clear_balance_type_btn.clicked.connect(self.batch_clear_balance_type)
         self.batch_set_path_source_btn.clicked.connect(self.batch_set_path_source)
         self.batch_clear_path_source_btn.clicked.connect(self.batch_clear_path_source)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
@@ -2509,13 +3114,14 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Meta+Shift+G"), self, activated=self.generate_qwen_ground_truth)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
         QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
-        delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self.delete_selected_fact)
+        delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self._delete_selected_fact_shortcut)
         delete_shortcut.setContext(Qt.ApplicationShortcut)
-        backspace_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self.delete_selected_fact)
+        backspace_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selected_fact_shortcut)
         backspace_shortcut.setContext(Qt.ApplicationShortcut)
         QShortcut(QKeySequence("Ctrl+="), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl+-"), self, activated=self.zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self._fit_view_height)
+        QShortcut(QKeySequence("Alt+F"), self, activated=self.focus_fact_annotation_panel)
         QShortcut(QKeySequence("F1"), self, activated=self.show_help_dialog)
 
         save_action = QAction("Save", self)
@@ -2628,6 +3234,7 @@ class AnnotationWindow(QMainWindow):
         self.path_remove_btn.setEnabled((structural_enabled and row >= 0) or removable_shared_level)
         self.path_up_btn.setEnabled(structural_enabled and row > 0)
         self.path_down_btn.setEnabled(structural_enabled and 0 <= row < count - 1)
+        self.path_invert_btn.setEnabled(list_enabled and bool(self._selected_fact_items()))
 
     def add_path_level(self) -> None:
         if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
@@ -2717,6 +3324,30 @@ class AnnotationWindow(QMainWindow):
         self._update_path_controls()
         self._on_fact_editor_field_edited("path")
 
+    def invert_selected_path_levels(self) -> None:
+        selected_items = self._selected_fact_items()
+        if not selected_items:
+            self.statusBar().showMessage("No selected bboxes.", 2500)
+            return
+
+        changed_count = 0
+        for item in selected_items:
+            current = normalize_fact_data(item.fact_data)
+            path = [str(part).strip() for part in (current.get("path") or []) if str(part).strip()]
+            updated = normalize_fact_data({**current, "path": list(reversed(path))})
+            if updated == current:
+                continue
+            item.fact_data = updated
+            changed_count += 1
+
+        if changed_count == 0:
+            self.statusBar().showMessage("Invert path made no changes.", 2500)
+            return
+
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self.statusBar().showMessage(f"Inverted path hierarchy ({changed_count} bbox(es)).", 3500)
+
     def _on_path_reordered(self) -> None:
         if not self._path_list_structure_editable:
             return
@@ -2733,6 +3364,8 @@ class AnnotationWindow(QMainWindow):
         has_note_name_text = bool(self.batch_note_name_edit.text().strip()) if hasattr(self, "batch_note_name_edit") else False
         has_date_text = bool(self.batch_date_edit.text().strip()) if hasattr(self, "batch_date_edit") else False
         has_period_type_choice = bool(self.batch_period_type_combo.currentText().strip()) if hasattr(self, "batch_period_type_combo") else False
+        has_duration_type_choice = bool(self.batch_duration_type_combo.currentText().strip()) if hasattr(self, "batch_duration_type_combo") else False
+        has_recurring_period_choice = bool(self.batch_recurring_period_combo.currentText().strip()) if hasattr(self, "batch_recurring_period_combo") else False
         has_period_start_text = bool(self.batch_period_start_edit.text().strip()) if hasattr(self, "batch_period_start_edit") else False
         has_period_end_text = bool(self.batch_period_end_edit.text().strip()) if hasattr(self, "batch_period_end_edit") else False
         has_is_beur_choice = bool(self.batch_is_beur_combo.currentText().strip()) if hasattr(self, "batch_is_beur_combo") else False
@@ -2740,6 +3373,8 @@ class AnnotationWindow(QMainWindow):
         has_currency_choice = bool(self.batch_currency_combo.currentText().strip()) if hasattr(self, "batch_currency_combo") else False
         has_scale_choice = bool(self.batch_scale_combo.currentText().strip()) if hasattr(self, "batch_scale_combo") else False
         has_value_type_choice = bool(self.batch_value_type_combo.currentText().strip()) if hasattr(self, "batch_value_type_combo") else False
+        has_value_context_choice = bool(self.batch_value_context_combo.currentText().strip()) if hasattr(self, "batch_value_context_combo") else False
+        has_balance_type_choice = bool(self.batch_balance_type_combo.currentText().strip()) if hasattr(self, "batch_balance_type_combo") else False
         has_path_source_choice = bool(self.batch_path_source_combo.currentText().strip()) if hasattr(self, "batch_path_source_combo") else False
         if hasattr(self, "batch_selected_label"):
             self.batch_selected_label.setText(f"Selected: {selected_count}")
@@ -2791,6 +3426,18 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_period_type_btn.setEnabled(has_selection and has_period_type_choice)
         if hasattr(self, "batch_clear_period_type_btn"):
             self.batch_clear_period_type_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_duration_type_combo"):
+            self.batch_duration_type_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_duration_type_btn"):
+            self.batch_set_duration_type_btn.setEnabled(has_selection and has_duration_type_choice)
+        if hasattr(self, "batch_clear_duration_type_btn"):
+            self.batch_clear_duration_type_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_recurring_period_combo"):
+            self.batch_recurring_period_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_recurring_period_btn"):
+            self.batch_set_recurring_period_btn.setEnabled(has_selection and has_recurring_period_choice)
+        if hasattr(self, "batch_clear_recurring_period_btn"):
+            self.batch_clear_recurring_period_btn.setEnabled(has_selection)
         if hasattr(self, "batch_period_start_edit"):
             self.batch_period_start_edit.setEnabled(has_selection)
         if hasattr(self, "batch_set_period_start_btn"):
@@ -2833,6 +3480,18 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_value_type_btn.setEnabled(has_selection and has_value_type_choice)
         if hasattr(self, "batch_clear_value_type_btn"):
             self.batch_clear_value_type_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_value_context_combo"):
+            self.batch_value_context_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_value_context_btn"):
+            self.batch_set_value_context_btn.setEnabled(has_selection and has_value_context_choice)
+        if hasattr(self, "batch_clear_value_context_btn"):
+            self.batch_clear_value_context_btn.setEnabled(has_selection)
+        if hasattr(self, "batch_balance_type_combo"):
+            self.batch_balance_type_combo.setEnabled(has_selection)
+        if hasattr(self, "batch_set_balance_type_btn"):
+            self.batch_set_balance_type_btn.setEnabled(has_selection and has_balance_type_choice)
+        if hasattr(self, "batch_clear_balance_type_btn"):
+            self.batch_clear_balance_type_btn.setEnabled(has_selection)
         if hasattr(self, "batch_path_source_combo"):
             self.batch_path_source_combo.setEnabled(has_selection)
         if hasattr(self, "batch_set_path_source_btn"):
@@ -3091,6 +3750,44 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, "Cleared period_type")
 
+    def batch_set_duration_type(self) -> None:
+        duration_type = self.batch_duration_type_combo.currentText().strip()
+        if not duration_type:
+            self.statusBar().showMessage("Choose duration_type first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["duration_type"] = duration_type
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated duration_type to {duration_type}")
+
+    def batch_clear_duration_type(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["duration_type"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared duration_type")
+
+    def batch_set_recurring_period(self) -> None:
+        recurring_period = self.batch_recurring_period_combo.currentText().strip()
+        if not recurring_period:
+            self.statusBar().showMessage("Choose recurring_period first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["recurring_period"] = recurring_period
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated recurring_period to {recurring_period}")
+
+    def batch_clear_recurring_period(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["recurring_period"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared recurring_period")
+
     def batch_set_period_start(self) -> None:
         period_start = self.batch_period_start_edit.text().strip()
         if not period_start:
@@ -3233,6 +3930,44 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, "Cleared value_type")
 
+    def batch_set_value_context(self) -> None:
+        value_context = self.batch_value_context_combo.currentText().strip()
+        if not value_context:
+            self.statusBar().showMessage("Choose value_context first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value_context"] = value_context
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated value_context to {value_context}")
+
+    def batch_clear_value_context(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["value_context"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared value_context")
+
+    def batch_set_balance_type(self) -> None:
+        balance_type = self.batch_balance_type_combo.currentText().strip()
+        if not balance_type:
+            self.statusBar().showMessage("Choose balance_type first.", 2500)
+            return
+
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["balance_type"] = balance_type
+            return fact
+
+        self._batch_update_selected_facts(_transform, f"Updated balance_type to {balance_type}")
+
+    def batch_clear_balance_type(self) -> None:
+        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
+            fact["balance_type"] = None
+            return fact
+
+        self._batch_update_selected_facts(_transform, "Cleared balance_type")
+
     def batch_set_path_source(self) -> None:
         path_source = self.batch_path_source_combo.currentText().strip()
         if not path_source:
@@ -3336,8 +4071,133 @@ class AnnotationWindow(QMainWindow):
         self._record_history_snapshot()
         self.statusBar().showMessage(f"{success_message} ({changed_count} bbox(es)).", 3500)
 
+    def _set_equation_reference_preview_items(self, items: List[AnnotRectItem]) -> None:
+        current_ids = {id(item) for item in items if self._is_alive_fact_item(item)}
+        for item in self._equation_reference_preview_items:
+            if self._is_alive_fact_item(item):
+                item.set_equation_reference_preview(id(item) in current_ids)
+        next_items: list[AnnotRectItem] = []
+        for item in items:
+            if not self._is_alive_fact_item(item):
+                continue
+            item.set_equation_reference_preview(True)
+            next_items.append(item)
+        self._equation_reference_preview_items = next_items
+
+    def _clear_equation_candidate(self) -> None:
+        self._equation_target_item = None
+        self._equation_candidate_text = None
+        self._equation_candidate_fact_text = None
+        self._equation_candidate_result_text = None
+        self._equation_candidate_invalid_values = []
+        self._equation_candidate_terms = []
+        self._set_equation_reference_preview_items([])
+        if hasattr(self, "fact_equation_edit"):
+            self._refresh_equation_panel()
+
+    def _set_equation_result_display(self, text: str, *, tone: str = "neutral") -> None:
+        self.fact_equation_result_label.setText(text)
+        if tone == "danger":
+            self.fact_equation_result_label.setStyleSheet("color: #b42318; font-weight: 600;")
+        elif tone == "ok":
+            self.fact_equation_result_label.setStyleSheet("color: #027a48; font-weight: 600;")
+        else:
+            self.fact_equation_result_label.setStyleSheet("")
+
+    def _refresh_equation_panel(self) -> None:
+        if not hasattr(self, "fact_equation_edit"):
+            return
+
+        selected_items = self._selected_fact_items()
+        selection_has_saved_equation = any(
+            bool(normalize_fact_data(item.fact_data).get("equation") or normalize_fact_data(item.fact_data).get("fact_equation"))
+            for item in selected_items
+            if self._is_alive_fact_item(item)
+        )
+        single_item = selected_items[0] if len(selected_items) == 1 else None
+        saved_equation = ""
+        saved_fact_equation = ""
+        if single_item is not None:
+            saved_fact = normalize_fact_data(single_item.fact_data)
+            saved_equation = str(saved_fact.get("equation") or "")
+            saved_fact_equation = str(saved_fact.get("fact_equation") or "")
+            target_value = saved_fact.get("value")
+        else:
+            target_value = None
+
+        self.fact_equation_edit.setEnabled(single_item is not None)
+        self.fact_equation_result_label.setEnabled(single_item is not None)
+        self.fact_equation_status_label.setEnabled(single_item is not None)
+        self.apply_equation_btn.setEnabled(False)
+        self.clear_equation_btn.setEnabled(False)
+
+        if single_item is None:
+            self.fact_equation_edit.setText("")
+            self.fact_equation_status_label.setText("")
+            self._set_equation_result_display("-", tone="neutral")
+            self.clear_equation_btn.setEnabled(selection_has_saved_equation)
+            return
+
+        pending_for_selection = self._equation_target_item is single_item and self._equation_candidate_text is not None
+        has_saved_equation = bool(saved_equation or saved_fact_equation)
+        if pending_for_selection:
+            self.fact_equation_edit.setText(self._equation_candidate_text or "")
+            if self._equation_candidate_result_text is not None:
+                result_tone, comparison_message = _equation_result_match_state(
+                    self._equation_candidate_result_text,
+                    target_value,
+                )
+                self._set_equation_result_display(self._equation_candidate_result_text, tone=result_tone)
+            else:
+                comparison_message = "Cannot calculate preview."
+                self._set_equation_result_display("cannot calculate", tone="danger")
+
+            if self._equation_candidate_invalid_values:
+                preview = ", ".join(self._equation_candidate_invalid_values[:3])
+                if len(self._equation_candidate_invalid_values) > 3:
+                    preview = f"{preview}, +{len(self._equation_candidate_invalid_values) - 3} more"
+                self.fact_equation_status_label.setText(
+                    f"Ignored {len(self._equation_candidate_invalid_values)} invalid value(s): {preview}. {comparison_message}"
+                )
+            else:
+                self.fact_equation_status_label.setText(
+                    f"Candidate equation preview. {comparison_message} Press Shift (Alt+Shift) or click Apply Equation to save it."
+                )
+
+            self.apply_equation_btn.setEnabled(
+                self._equation_candidate_result_text is not None
+                and bool(self._equation_candidate_text)
+                and (
+                    self._equation_candidate_text != saved_equation
+                    or (self._equation_candidate_fact_text or "") != saved_fact_equation
+                )
+            )
+            self.clear_equation_btn.setEnabled(has_saved_equation)
+            return
+
+        self.fact_equation_edit.setText(saved_equation)
+        if not saved_equation:
+            self.fact_equation_status_label.setText(
+                "Hold Alt and drag on the page to build an equation preview, then press Shift to approve."
+            )
+            self._set_equation_result_display("-", tone="neutral")
+            self.clear_equation_btn.setEnabled(False)
+            return
+
+        preview = _evaluate_equation_string(saved_equation)
+        if preview is None:
+            self.fact_equation_status_label.setText("Saved equation cannot be calculated.")
+            self._set_equation_result_display("cannot calculate", tone="danger")
+            return
+
+        result_tone, comparison_message = _equation_result_match_state(preview, target_value)
+        self.fact_equation_status_label.setText(f"Saved equation preview. {comparison_message}")
+        self._set_equation_result_display(preview, tone=result_tone)
+        self.clear_equation_btn.setEnabled(True)
+
     def _set_fact_editor_enabled(self, enabled: bool, *, multi_select: bool = False) -> None:
         self.fact_value_edit.setEnabled(enabled)
+        self.fact_equation_edit.setEnabled(enabled and not multi_select)
         self.fact_note_edit.setEnabled(enabled)
         self.fact_note_name_edit.setEnabled(enabled)
         self.fact_is_beur_combo.setEnabled(enabled)
@@ -3345,21 +4205,34 @@ class AnnotationWindow(QMainWindow):
         self.fact_refference_edit.setEnabled(enabled)
         self.fact_date_edit.setEnabled(enabled)
         self.fact_period_type_combo.setEnabled(enabled)
+        self.fact_duration_type_combo.setEnabled(enabled)
+        self.fact_recurring_period_combo.setEnabled(enabled)
         self.fact_period_start_edit.setEnabled(enabled)
         self.fact_period_end_edit.setEnabled(enabled)
         self.fact_currency_combo.setEnabled(enabled)
         self.fact_scale_combo.setEnabled(enabled)
         self.fact_value_type_combo.setEnabled(enabled)
+        self.fact_value_context_combo.setEnabled(enabled)
+        self.fact_balance_type_combo.setEnabled(enabled)
         self.fact_path_source_combo.setEnabled(enabled)
         self.fact_path_list.setEnabled(enabled)
+        self.fact_natural_sign_label.setEnabled(enabled)
+        self.fact_equation_result_label.setEnabled(enabled and not multi_select)
+        self.fact_equation_status_label.setEnabled(enabled and not multi_select)
+        self.apply_equation_btn.setEnabled(False)
+        self.clear_equation_btn.setEnabled(False)
         self._set_path_list_editable(enabled and not multi_select)
         self.dup_fact_btn.setEnabled(enabled and not multi_select)
         self.del_fact_btn.setEnabled(enabled)
+        if not enabled or multi_select:
+            self._set_equation_result_display("-", tone="neutral")
+            self.fact_equation_status_label.setText("" if not enabled else "Equation preview is available for a single selected fact.")
         self._update_path_controls()
 
     def _reset_fact_editor_placeholders(self) -> None:
         for edit in (
             self.fact_value_edit,
+            self.fact_equation_edit,
             self.fact_note_edit,
             self.fact_note_name_edit,
             self.fact_beur_num_edit,
@@ -3373,9 +4246,13 @@ class AnnotationWindow(QMainWindow):
         for combo in (
             self.fact_is_beur_combo,
             self.fact_period_type_combo,
+            self.fact_duration_type_combo,
+            self.fact_recurring_period_combo,
             self.fact_currency_combo,
             self.fact_scale_combo,
             self.fact_value_type_combo,
+            self.fact_value_context_combo,
+            self.fact_balance_type_combo,
             self.fact_path_source_combo,
         ):
             if hasattr(combo, "setPlaceholderText"):
@@ -3389,6 +4266,7 @@ class AnnotationWindow(QMainWindow):
             self._reset_fact_editor_placeholders()
             self.fact_bbox_label.setText("-")
             self.fact_value_edit.setText("")
+            self.fact_equation_edit.setText("")
             self.fact_note_edit.setText("")
             self.fact_note_name_edit.setText("")
             self.fact_is_beur_combo.setCurrentIndex(0)
@@ -3396,13 +4274,20 @@ class AnnotationWindow(QMainWindow):
             self.fact_refference_edit.setText("")
             self.fact_date_edit.setText("")
             self.fact_period_type_combo.setCurrentIndex(0)
+            self.fact_duration_type_combo.setCurrentIndex(0)
+            self.fact_recurring_period_combo.setCurrentIndex(0)
             self.fact_period_start_edit.setText("")
             self.fact_period_end_edit.setText("")
             self.fact_currency_combo.setCurrentIndex(0)
             self.fact_scale_combo.setCurrentIndex(0)
             self.fact_value_type_combo.setCurrentIndex(0)
+            self.fact_value_context_combo.setCurrentIndex(0)
+            self.fact_balance_type_combo.setCurrentIndex(0)
             self.fact_path_source_combo.setCurrentIndex(0)
             self.fact_path_list.clear()
+            self.fact_natural_sign_label.setText("-")
+            self.fact_equation_status_label.setText("")
+            self._set_equation_result_display("-", tone="neutral")
         finally:
             self._is_loading_fact_editor = False
         self._update_path_controls()
@@ -3421,6 +4306,7 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
+            self.fact_equation_edit.setText(str(fact.get("equation") or ""))
             self.fact_note_edit.setText(str(fact.get("comment_ref") or ""))
             self.fact_note_name_edit.setText(str(fact.get("note_name") or ""))
             is_beur = bool(fact.get("note_flag"))
@@ -3433,6 +4319,12 @@ class AnnotationWindow(QMainWindow):
             period_type = str(fact.get("period_type") or "")
             idx_period_type = self.fact_period_type_combo.findText(period_type)
             self.fact_period_type_combo.setCurrentIndex(max(0, idx_period_type))
+            duration_type = str(fact.get("duration_type") or "")
+            idx_duration_type = self.fact_duration_type_combo.findText(duration_type)
+            self.fact_duration_type_combo.setCurrentIndex(max(0, idx_duration_type))
+            recurring_period = str(fact.get("recurring_period") or "")
+            idx_recurring_period = self.fact_recurring_period_combo.findText(recurring_period)
+            self.fact_recurring_period_combo.setCurrentIndex(max(0, idx_recurring_period))
             self.fact_period_start_edit.setText(str(fact.get("period_start") or ""))
             self.fact_period_end_edit.setText(str(fact.get("period_end") or ""))
             self.fact_path_list.clear()
@@ -3452,6 +4344,13 @@ class AnnotationWindow(QMainWindow):
             value_type = str(fact.get("value_type") or "")
             idx_value_type = self.fact_value_type_combo.findText(value_type)
             self.fact_value_type_combo.setCurrentIndex(max(0, idx_value_type))
+            value_context = str(fact.get("value_context") or "")
+            idx_value_context = self.fact_value_context_combo.findText(value_context)
+            self.fact_value_context_combo.setCurrentIndex(max(0, idx_value_context))
+            balance_type = str(fact.get("balance_type") or "")
+            idx_balance_type = self.fact_balance_type_combo.findText(balance_type)
+            self.fact_balance_type_combo.setCurrentIndex(max(0, idx_balance_type))
+            self.fact_natural_sign_label.setText(str(fact.get("natural_sign") or "-"))
 
             path_source = str(fact.get("path_source") or "")
             idx_path_source = self.fact_path_source_combo.findText(path_source)
@@ -3509,6 +4408,7 @@ class AnnotationWindow(QMainWindow):
             self._reset_fact_editor_placeholders()
             self.fact_bbox_label.setText(f"{selected_count} selected")
             self._set_multi_line_edit_value(self.fact_value_edit, "value", items)
+            self.fact_equation_edit.clear()
             self._set_multi_line_edit_value(self.fact_note_edit, "comment_ref", items)
             self._set_multi_line_edit_value(self.fact_note_name_edit, "note_name", items)
             self._set_multi_combo_value(
@@ -3521,6 +4421,8 @@ class AnnotationWindow(QMainWindow):
             self._set_multi_line_edit_value(self.fact_refference_edit, "note_ref", items)
             self._set_multi_line_edit_value(self.fact_date_edit, "date", items)
             self._set_multi_combo_value(self.fact_period_type_combo, "period_type", items)
+            self._set_multi_combo_value(self.fact_duration_type_combo, "duration_type", items)
+            self._set_multi_combo_value(self.fact_recurring_period_combo, "recurring_period", items)
             self._set_multi_line_edit_value(self.fact_period_start_edit, "period_start", items)
             self._set_multi_line_edit_value(self.fact_period_end_edit, "period_end", items)
             self._set_multi_combo_value(self.fact_currency_combo, "currency", items)
@@ -3531,7 +4433,13 @@ class AnnotationWindow(QMainWindow):
                 formatter=lambda value: "" if value is None else str(value),
             )
             self._set_multi_combo_value(self.fact_value_type_combo, "value_type", items)
+            self._set_multi_combo_value(self.fact_value_context_combo, "value_context", items)
+            self._set_multi_combo_value(self.fact_balance_type_combo, "balance_type", items)
             self._set_multi_combo_value(self.fact_path_source_combo, "path_source", items)
+            natural_sign_value, natural_sign_mixed = self._shared_fact_value(items, "natural_sign")
+            self.fact_natural_sign_label.setText(
+                MULTI_VALUE_PLACEHOLDER if natural_sign_mixed else str(natural_sign_value or "-")
+            )
 
             path_value, path_mixed = self._shared_fact_value(items, "path")
             self.fact_path_list.clear()
@@ -3627,14 +4535,18 @@ class AnnotationWindow(QMainWindow):
                 "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
                 "note_ref": self.fact_refference_edit.text().strip() or None,
                 "date": self.fact_date_edit.text().strip() or None,
-                "period_type": self.fact_period_type_combo.currentText().strip() or None,
-                "period_start": self.fact_period_start_edit.text().strip() or None,
-                "period_end": self.fact_period_end_edit.text().strip() or None,
-                "path": path_parts,
+            "period_type": self.fact_period_type_combo.currentText().strip() or None,
+            "period_start": self.fact_period_start_edit.text().strip() or None,
+            "period_end": self.fact_period_end_edit.text().strip() or None,
+            "duration_type": self.fact_duration_type_combo.currentText().strip() or None,
+            "recurring_period": self.fact_recurring_period_combo.currentText().strip() or None,
+            "path": path_parts,
                 "path_source": self.fact_path_source_combo.currentText().strip() or None,
                 "currency": self.fact_currency_combo.currentText().strip() or None,
                 "scale": int(scale_text) if scale_text else None,
                 "value_type": self.fact_value_type_combo.currentText().strip() or None,
+                "value_context": self.fact_value_context_combo.currentText().strip() or None,
+                "balance_type": self.fact_balance_type_combo.currentText().strip() or None,
             }
         )
 
@@ -3651,20 +4563,22 @@ class AnnotationWindow(QMainWindow):
     def _sync_fact_editor_from_selection(self) -> None:
         selected_items = self._selected_fact_items()
         if not selected_items:
+            self.batch_box.setVisible(False)
             self._clear_fact_editor()
             self._set_fact_editor_enabled(False)
             self.batch_toggle_btn.setText("Show Batch Edit")
+            self._refresh_equation_panel()
             return
         if len(selected_items) == 1:
             self._set_fact_editor_enabled(True, multi_select=False)
             self._populate_fact_editor(selected_items[0])
             self.batch_toggle_btn.setText("Hide Batch Edit" if self.batch_box.isVisible() else "Show Batch Edit")
+            self._refresh_equation_panel()
             return
-        if not self.batch_box.isVisible():
-            self.batch_box.setVisible(True)
         self._set_fact_editor_enabled(True, multi_select=True)
         self._populate_multi_fact_editor(selected_items)
-        self.batch_toggle_btn.setText("Hide Batch Edit")
+        self.batch_toggle_btn.setText("Hide Batch Edit" if self.batch_box.isVisible() else "Show Batch Edit")
+        self._refresh_equation_panel()
 
     def _apply_fact_field_to_selected_items(
         self,
@@ -3799,6 +4713,12 @@ class AnnotationWindow(QMainWindow):
             self._apply_fact_field_to_selected_items("period_type", self.fact_period_type_combo.currentText().strip() or None)
             self._sync_fact_editor_from_selection()
             return
+        if field_name == "duration_type":
+            self._apply_fact_field_to_selected_items("duration_type", self.fact_duration_type_combo.currentText().strip() or None)
+            return
+        if field_name == "recurring_period":
+            self._apply_fact_field_to_selected_items("recurring_period", self.fact_recurring_period_combo.currentText().strip() or None)
+            return
         if field_name == "period_start":
             self._apply_fact_field_to_selected_items("period_start", self.fact_period_start_edit.text().strip() or None, widget=self.fact_period_start_edit)
             return
@@ -3814,6 +4734,13 @@ class AnnotationWindow(QMainWindow):
             return
         if field_name == "value_type":
             self._apply_fact_field_to_selected_items("value_type", self.fact_value_type_combo.currentText().strip() or None)
+            return
+        if field_name == "value_context":
+            self._apply_fact_field_to_selected_items("value_context", self.fact_value_context_combo.currentText().strip() or None)
+            return
+        if field_name == "balance_type":
+            self._apply_fact_field_to_selected_items("balance_type", self.fact_balance_type_combo.currentText().strip() or None)
+            self._sync_fact_editor_from_selection()
             return
         if field_name == "path_source":
             self._apply_fact_field_to_selected_items("path_source", self.fact_path_source_combo.currentText().strip() or None)
@@ -4118,6 +5045,7 @@ class AnnotationWindow(QMainWindow):
         report_year_text = self.report_year_edit.text().strip()
         report_year = int(report_year_text) if report_year_text else None
         entity_type = self.entity_type_combo.currentText().strip() or None
+        report_scope = self.report_scope_combo.currentText().strip() or None
         return normalize_document_meta(
             {
                 "language": language,
@@ -4126,6 +5054,7 @@ class AnnotationWindow(QMainWindow):
                 "company_id": company_id,
                 "report_year": report_year,
                 "entity_type": entity_type,
+                "report_scope": report_scope,
             }
         )
 
@@ -4136,6 +5065,8 @@ class AnnotationWindow(QMainWindow):
             "page_type": self.type_combo.currentText(),
             "statement_type": self.statement_type_combo.currentText().strip() or None,
             "title": self.title_edit.text().strip() or None,
+            "annotation_note": self.page_annotation_note_edit.text().strip() or None,
+            "annotation_status": _normalize_page_annotation_status(self._page_annotation_status),
         }
 
     def _live_page_state(self, *, use_current_fact_items: bool = False) -> Optional[PageState]:
@@ -4210,6 +5141,103 @@ class AnnotationWindow(QMainWindow):
             parts.append("No issues")
         return " | ".join(parts)
 
+    def _page_annotation_note_for_index(self, index: int) -> str:
+        if index < 0 or index >= len(self.page_images):
+            return ""
+        if index == self.current_index and hasattr(self, "page_annotation_note_edit"):
+            return str(self.page_annotation_note_edit.text() or "").strip()
+        page_name = self.page_images[index].name
+        state = self.page_states.get(page_name, self._default_state(index))
+        meta = state.meta or {}
+        return str(meta.get("annotation_note") or "").strip()
+
+    def _page_annotation_status_for_index(self, index: int) -> str | None:
+        if index < 0 or index >= len(self.page_images):
+            return None
+        if index == self.current_index and hasattr(self, "_page_annotation_status"):
+            return _normalize_page_annotation_status(self._page_annotation_status)
+        page_name = self.page_images[index].name
+        state = self.page_states.get(page_name, self._default_state(index))
+        meta = state.meta or {}
+        return _normalize_page_annotation_status(meta.get("annotation_status"))
+
+    def _page_annotation_status_text(self, status: str | None) -> str:
+        if status == "approved":
+            return "Approved"
+        if status == "flagged":
+            return "Flagged"
+        return "Unclassified"
+
+    def _refresh_page_annotation_status_ui(self) -> None:
+        status = _normalize_page_annotation_status(self._page_annotation_status)
+        self._page_annotation_status = status
+        text = self._page_annotation_status_text(status)
+        tone = "ok" if status == "approved" else ("warn" if status == "flagged" else "accent")
+        self.page_annotation_status_label.setText(text)
+        self.page_annotation_status_label.setProperty("tone", tone)
+        self.page_annotation_status_label.style().unpolish(self.page_annotation_status_label)
+        self.page_annotation_status_label.style().polish(self.page_annotation_status_label)
+
+    def _thumbnail_filter_mode(self) -> str:
+        return str(self.page_thumb_filter_combo.currentData() or "all")
+
+    def _thumbnail_sort_mode(self) -> str:
+        return str(self.page_thumb_sort_combo.currentData() or "page")
+
+    def _is_page_visible_for_filter(self, index: int, filter_mode: str) -> bool:
+        status = self._page_annotation_status_for_index(index)
+        if filter_mode == "approved":
+            return status == "approved"
+        if filter_mode == "flagged":
+            return status == "flagged"
+        if filter_mode == "none":
+            return status is None
+        return True
+
+    def _visible_thumbnail_page_indices(self) -> list[int]:
+        filter_mode = self._thumbnail_filter_mode()
+        visible_indices = [
+            index for index in range(len(self.page_images))
+            if self._is_page_visible_for_filter(index, filter_mode)
+        ]
+        sort_mode = self._thumbnail_sort_mode()
+        if sort_mode == "approved_first":
+            rank = {"approved": 0, None: 1, "flagged": 2}
+            visible_indices.sort(key=lambda idx: (rank.get(self._page_annotation_status_for_index(idx), 1), idx))
+            return visible_indices
+        if sort_mode == "flagged_first":
+            rank = {"flagged": 0, None: 1, "approved": 2}
+            visible_indices.sort(key=lambda idx: (rank.get(self._page_annotation_status_for_index(idx), 1), idx))
+            return visible_indices
+        return visible_indices
+
+    def _thumbnail_row_for_page_index(self, page_index: int) -> int:
+        return int(self._thumbnail_row_lookup.get(page_index, -1))
+
+    def _page_index_for_thumbnail_row(self, row: int) -> int:
+        if row < 0 or row >= len(self._thumbnail_page_indices):
+            return -1
+        return int(self._thumbnail_page_indices[row])
+
+    def _next_page_index_in_thumbnail_order(self) -> int | None:
+        row = self._thumbnail_row_for_page_index(self.current_index)
+        if row >= 0 and row + 1 < len(self._thumbnail_page_indices):
+            return self._page_index_for_thumbnail_row(row + 1)
+        if 0 <= self.current_index + 1 < len(self.page_images):
+            return self.current_index + 1
+        return None
+
+    def _thumbnail_tooltip_text(self, summary: PageIssueSummary, index: int) -> str:
+        base = self._issue_tooltip_text(summary)
+        status = self._page_annotation_status_for_index(index)
+        if status is not None:
+            base = f"{base} | Annotation: {self._page_annotation_status_text(status)}"
+        note = self._page_annotation_note_for_index(index)
+        if not note:
+            return base
+        truncated = note if len(note) <= 120 else f"{note[:117]}..."
+        return f"{base} | Revisit: {truncated}"
+
     def _issue_badge_text(self, count: int) -> str:
         if count <= 0:
             return ""
@@ -4250,7 +5278,7 @@ class AnnotationWindow(QMainWindow):
     def _recompute_all_page_issues(self, *, emit: bool = True) -> None:
         document_summary = self._document_issue_summaries()
         self._page_issue_summaries = dict(document_summary.page_summaries)
-        if hasattr(self, "page_thumb_list") and self.page_thumb_list.count() == len(self.page_images):
+        if hasattr(self, "page_thumb_list"):
             for idx in range(len(self.page_images)):
                 self._refresh_thumbnail_for_index(idx)
         if self.current_index >= 0 and self.current_index < len(self.page_images):
@@ -4286,7 +5314,7 @@ class AnnotationWindow(QMainWindow):
         self._page_issue_summaries = dict(document_summary.page_summaries)
         summary = self._page_issue_summaries.get(page_name, PageIssueSummary(page_image=page_name))
         self._update_page_issue_panel(summary)
-        if hasattr(self, "page_thumb_list") and self.page_thumb_list.count() == len(self.page_images):
+        if hasattr(self, "page_thumb_list"):
             for idx in range(len(self.page_images)):
                 self._refresh_thumbnail_for_index(idx)
         else:
@@ -4307,6 +5335,11 @@ class AnnotationWindow(QMainWindow):
                 "period_type": self.fact_period_type_combo,
                 "period_start": self.fact_period_start_edit,
                 "period_end": self.fact_period_end_edit,
+                "duration_type": self.fact_duration_type_combo,
+                "recurring_period": self.fact_recurring_period_combo,
+                "value_type": self.fact_value_type_combo,
+                "value_context": self.fact_value_context_combo,
+                "balance_type": self.fact_balance_type_combo,
                 "path_source": self.fact_path_source_combo,
             }
         else:
@@ -4316,6 +5349,7 @@ class AnnotationWindow(QMainWindow):
                 "currency": self.facts_list,
                 "scale": self.facts_list,
                 "value_type": self.facts_list,
+                "value_context": self.facts_list,
             }
         widget = widget_map.get(field_name)
         if widget is not None:
@@ -4361,6 +5395,9 @@ class AnnotationWindow(QMainWindow):
         self.company_name_edit.setText(str(company_name or ""))
         self.company_id_edit.setText(str(company_id or ""))
         self.report_year_edit.setText("" if report_year is None else str(report_year))
+        report_scope = str(normalized.get("report_scope") or "")
+        report_scope_idx = self.report_scope_combo.findText(report_scope)
+        self.report_scope_combo.setCurrentIndex(max(0, report_scope_idx))
         entity_type_idx = self.entity_type_combo.findText(entity_type)
         self.entity_type_combo.setCurrentIndex(max(0, entity_type_idx))
 
@@ -4585,9 +5622,18 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("note_num") if normalized_fact.get("note_num") is not None else ""),
             str(normalized_fact.get("note_ref") or ""),
             str(normalized_fact.get("date") or ""),
+            str(normalized_fact.get("equation") or ""),
             str(normalized_fact.get("period_type") or ""),
             str(normalized_fact.get("period_start") or ""),
             str(normalized_fact.get("period_end") or ""),
+            str(normalized_fact.get("duration_type") or ""),
+            str(normalized_fact.get("recurring_period") or ""),
+            str(normalized_fact.get("currency") or ""),
+            str(normalized_fact.get("scale") if normalized_fact.get("scale") is not None else ""),
+            str(normalized_fact.get("value_type") or ""),
+            str(normalized_fact.get("value_context") or ""),
+            str(normalized_fact.get("balance_type") or ""),
+            str(normalized_fact.get("natural_sign") or ""),
             str(normalized_fact.get("path_source") or ""),
             path,
         )
@@ -4619,7 +5665,8 @@ class AnnotationWindow(QMainWindow):
 
         facts_out: list[dict[str, Any]] = []
         selected_lookup = set(selected_fact_nums)
-        for fact_num, item in enumerate(ordered_items, start=1):
+        for item in ordered_items:
+            fact_num = self._fact_num_for_item(item)
             if fact_num not in selected_lookup:
                 continue
             payload = self._fact_payload_from_item(item)
@@ -4674,6 +5721,9 @@ class AnnotationWindow(QMainWindow):
                 statement_type_idx = self.statement_type_combo.findText(statement_type_value)
                 self.statement_type_combo.setCurrentIndex(max(0, statement_type_idx))
                 self.title_edit.setText(normalized_meta.get("title") or "")
+                self.page_annotation_note_edit.setText(normalized_meta.get("annotation_note") or "")
+                self._page_annotation_status = _normalize_page_annotation_status(normalized_meta.get("annotation_status"))
+                self._refresh_page_annotation_status_ui()
             finally:
                 self._is_loading_page = False
             self._refresh_current_page_issues()
@@ -4823,21 +5873,21 @@ class AnnotationWindow(QMainWindow):
 
     def generate_gemini_fill_selected_fields(self) -> None:
         if self._qwen_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Fill", "A Qwen stream is already running.")
+            QMessageBox.information(self, "Gemini Auto-Fix", "A Qwen stream is already running.")
             return
         if self._gemini_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Fill", "A Gemini stream is already running.")
+            QMessageBox.information(self, "Gemini Auto-Fix", "A Gemini stream is already running.")
             return
         if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Gemini Fill", "A Gemini fill task is already running.")
+            QMessageBox.information(self, "Gemini Auto-Fix", "A Gemini auto-fix task is already running.")
             return
         if self.current_index < 0 or self.current_index >= len(self.page_images):
-            QMessageBox.warning(self, "Gemini Fill", "No current page is loaded.")
+            QMessageBox.warning(self, "Gemini Auto-Fix", "No current page is loaded.")
             return
 
         selected_items = self._selected_fact_items()
         if not selected_items:
-            QMessageBox.information(self, "Gemini Fill", "Select one or more facts first.")
+            QMessageBox.information(self, "Gemini Auto-Fix", "Select one or more facts first.")
             return
 
         self._capture_current_state()
@@ -4845,9 +5895,15 @@ class AnnotationWindow(QMainWindow):
         page_name = page_path.name
         ordered_items = self._sorted_fact_items()
         selected_ids = {id(item) for item in selected_items}
-        selected_fact_nums = [idx + 1 for idx, item in enumerate(ordered_items) if id(item) in selected_ids]
+        selected_fact_nums = [
+            fact_num
+            for item in ordered_items
+            if id(item) in selected_ids
+            for fact_num in [self._fact_num_for_item(item)]
+            if fact_num is not None
+        ]
         if not selected_fact_nums:
-            QMessageBox.information(self, "Gemini Fill", "No selected facts matched current page ordering.")
+            QMessageBox.information(self, "Gemini Auto-Fix", "No selected facts matched current page ordering.")
             return
 
         prompt_path = self._resolve_gemini_fill_prompt_txt_path()
@@ -4857,7 +5913,7 @@ class AnnotationWindow(QMainWindow):
             try:
                 prompt_template = prompt_path.read_text(encoding="utf-8")
             except Exception as exc:
-                QMessageBox.warning(self, "Gemini Fill", f"Failed to read Gemini fill prompt template:\n{exc}")
+                QMessageBox.warning(self, "Gemini Auto-Fix", f"Failed to read Gemini auto-fix prompt template:\n{exc}")
                 return
 
         def _prompt_preview_builder(selected_fact_fields: set[str], include_statement_type: bool) -> str:
@@ -4878,6 +5934,7 @@ class AnnotationWindow(QMainWindow):
         dialog = GeminiFillDialog(
             model_name=self._gemini_model_name,
             thinking_enabled_default=self._gemini_enable_thinking,
+            thinking_level_default=self._gemini_thinking_level,
             prompt_builder=_prompt_preview_builder,
             parent=self,
         )
@@ -4887,27 +5944,28 @@ class AnnotationWindow(QMainWindow):
         selected_fact_fields = dialog.selected_fact_fields()
         include_statement_type = dialog.include_statement_type()
         if not selected_fact_fields and not include_statement_type:
-            QMessageBox.warning(self, "Gemini Fill", "Choose at least one fact field or statement_type.")
+            QMessageBox.warning(self, "Gemini Auto-Fix", "Choose at least one fact field or statement_type.")
             return
 
         prompt_text = dialog.prompt().strip()
         if not prompt_text:
-            QMessageBox.warning(self, "Gemini Fill", "Prompt cannot be empty.")
+            QMessageBox.warning(self, "Gemini Auto-Fix", "Prompt cannot be empty.")
             return
         model_name = dialog.model().strip() or self._gemini_model_name
         enable_thinking = dialog.enable_thinking()
+        thinking_level = dialog.thinking_level()
 
         try:
             from .gemini_vlm import resolve_api_key
         except Exception as exc:
-            QMessageBox.warning(self, "Gemini Fill", f"Gemini backend is unavailable:\n{exc}")
+            QMessageBox.warning(self, "Gemini Auto-Fix", f"Gemini backend is unavailable:\n{exc}")
             return
 
         gemini_api_key = resolve_api_key()
         if not gemini_api_key:
             QMessageBox.warning(
                 self,
-                "Gemini Fill",
+                "Gemini Auto-Fix",
                 (
                     "Gemini API key not found.\n\n"
                     "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
@@ -4932,6 +5990,7 @@ class AnnotationWindow(QMainWindow):
 
         self._gemini_model_name = model_name
         self._gemini_enable_thinking = enable_thinking
+        self._gemini_thinking_level = thinking_level
         self._gemini_fill_target_page = page_name
         self._gemini_fill_selected_fact_fields = set(selected_fact_fields)
         self._gemini_fill_include_statement_type = include_statement_type
@@ -4943,8 +6002,8 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_cancel_requested = False
 
         self._set_gt_activity(
-            "Gemini Fill",
-            f"Running Gemini fill for {len(selected_fact_nums)} selected fact(s)...",
+            "Gemini Auto-Fix",
+            f"Running Gemini auto-fix for {len(selected_fact_nums)} selected fact(s) ({thinking_level})...",
             fact_count=0,
             running=True,
         )
@@ -4957,6 +6016,7 @@ class AnnotationWindow(QMainWindow):
             allowed_fact_fields=set(selected_fact_fields),
             allow_statement_type=include_statement_type,
             enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
         )
         thread = QThread(self)
         worker.moveToThread(thread)
@@ -4971,14 +6031,14 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_worker = worker
         self._gemini_fill_thread = thread
         self._set_gt_buttons_enabled(False)
-        self.statusBar().showMessage(f"Running Gemini Fill for {page_name}...", 3000)
+        self.statusBar().showMessage(f"Running Gemini Auto-Fix for {page_name}...", 3000)
         thread.start()
 
     def _cancel_gemini_fill(self) -> None:
         if self._gemini_fill_worker is not None:
             self._gemini_fill_cancel_requested = True
             self._gemini_fill_worker.request_cancel()
-            self._set_gt_activity("Gemini Fill", "Stopping fill task...", fact_count=0, running=True)
+            self._set_gt_activity("Gemini Auto-Fix", "Stopping auto-fix task...", fact_count=0, running=True)
 
     def _on_gemini_fill_completed(self, patch_payload: Dict[str, Any]) -> None:
         page_name = self._gemini_fill_target_page
@@ -5001,6 +6061,12 @@ class AnnotationWindow(QMainWindow):
 
         selected_fact_nums = list(snapshot.get("selected_fact_nums") or [])
         selected_lookup = set(int(num) for num in selected_fact_nums)
+        ordered_items_by_fact_num = {
+            fact_num: item
+            for item in ordered_items
+            for fact_num in [self._fact_num_for_item(item)]
+            if fact_num is not None
+        }
         fact_updates = patch_payload.get("fact_updates")
         if not isinstance(fact_updates, list):
             self._on_gemini_fill_failed("Patch payload is missing fact_updates.")
@@ -5016,9 +6082,9 @@ class AnnotationWindow(QMainWindow):
                     raise ValueError("fact_num must be an integer.")
                 if fact_num not in selected_lookup:
                     raise ValueError(f"Patch referenced non-selected fact_num: {fact_num}.")
-                if fact_num < 1 or fact_num > len(ordered_items):
+                item = ordered_items_by_fact_num.get(fact_num)
+                if item is None:
                     raise ValueError(f"fact_num out of range: {fact_num}.")
-                item = ordered_items[fact_num - 1]
                 updates = entry.get("updates")
                 if not isinstance(updates, dict):
                     raise ValueError(f"updates for fact_num {fact_num} must be an object.")
@@ -5053,42 +6119,42 @@ class AnnotationWindow(QMainWindow):
             self.refresh_facts_list()
             self._record_history_snapshot()
             self.statusBar().showMessage(
-                f"Gemini Fill complete ({updated_count} fact(s) updated).",
+                f"Gemini Auto-Fix complete ({updated_count} fact(s) updated).",
                 6000,
             )
             self._set_gt_activity(
-                "Gemini Fill",
-                f"Gemini Fill complete. Updated {updated_count} fact(s).",
+                "Gemini Auto-Fix",
+                f"Gemini Auto-Fix complete. Updated {updated_count} fact(s).",
                 fact_count=updated_count,
                 running=False,
             )
             QMessageBox.information(
                 self,
-                "Gemini Fill",
-                f"Gemini Fill finished.\nUpdated {updated_count} fact(s).",
+                "Gemini Auto-Fix",
+                f"Gemini Auto-Fix finished.\nUpdated {updated_count} fact(s).",
             )
         else:
             self._set_gt_activity(
-                "Gemini Fill",
-                "Gemini Fill complete. No changes returned.",
+                "Gemini Auto-Fix",
+                "Gemini Auto-Fix complete. No changes returned.",
                 fact_count=0,
                 running=False,
             )
-            self.statusBar().showMessage("Gemini Fill complete (no changes).", 5000)
+            self.statusBar().showMessage("Gemini Auto-Fix complete (no changes).", 5000)
             QMessageBox.information(
                 self,
-                "Gemini Fill",
-                "Gemini Fill finished.\nNo changes were applied.",
+                "Gemini Auto-Fix",
+                "Gemini Auto-Fix finished.\nNo changes were applied.",
             )
 
     def _on_gemini_fill_failed(self, message: str) -> None:
-        self._set_gt_activity("Gemini Fill", f"Error: {message}", fact_count=0, running=False)
-        QMessageBox.warning(self, "Gemini Fill failed", message)
+        self._set_gt_activity("Gemini Auto-Fix", f"Error: {message}", fact_count=0, running=False)
+        QMessageBox.warning(self, "Gemini Auto-Fix failed", message)
 
     def _on_gemini_fill_finished(self) -> None:
         if self._gemini_fill_cancel_requested:
-            self._set_gt_activity("Gemini Fill", "Gemini Fill stopped.", fact_count=0, running=False)
-            self.statusBar().showMessage("Gemini Fill stopped.", 4000)
+            self._set_gt_activity("Gemini Auto-Fix", "Gemini Auto-Fix stopped.", fact_count=0, running=False)
+            self.statusBar().showMessage("Gemini Auto-Fix stopped.", 4000)
         self._gemini_fill_thread = None
         self._gemini_fill_worker = None
         self._gemini_fill_target_page = None
@@ -5106,7 +6172,7 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.information(self, "Gemini GT", "A Gemini stream is already running.")
             return
         if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Gemini GT", "A Gemini fill task is already running.")
+            QMessageBox.information(self, "Gemini GT", "A Gemini auto-fix task is already running.")
             return
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             QMessageBox.warning(self, "Gemini GT", "No current page is loaded.")
@@ -5149,6 +6215,7 @@ class AnnotationWindow(QMainWindow):
             show_few_shot_controls=True,
             show_thinking_control=True,
             thinking_enabled_default=self._gemini_enable_thinking,
+            thinking_level_default=self._gemini_thinking_level,
             thinking_tooltip="Checked uses Gemini thinking mode. Unchecked requests minimal/non-thinking mode.",
             few_shot_enabled_default=True,
             few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
@@ -5159,6 +6226,7 @@ class AnnotationWindow(QMainWindow):
         prompt_text = prompt_dialog.prompt().strip()
         model_name = prompt_dialog.model().strip() or self._gemini_model_name
         enable_thinking = prompt_dialog.enable_thinking()
+        thinking_level = prompt_dialog.thinking_level()
         use_few_shot = prompt_dialog.use_few_shot()
         few_shot_preset = prompt_dialog.few_shot_preset()
         if not prompt_text:
@@ -5186,6 +6254,7 @@ class AnnotationWindow(QMainWindow):
 
         self._gemini_model_name = model_name
         self._gemini_enable_thinking = enable_thinking
+        self._gemini_thinking_level = thinking_level
         few_shot_examples: Optional[list[dict[str, Any]]] = None
         if use_few_shot:
             loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
@@ -5222,7 +6291,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_stream_fact_count = 0
         self._gemini_stream_cancel_requested = False
 
-        thinking_mode = "thinking" if enable_thinking else "non-thinking"
+        thinking_mode = f"thinking={thinking_level}"
         if few_shot_examples:
             self._set_gt_activity(
                 "Gemini",
@@ -5245,6 +6314,7 @@ class AnnotationWindow(QMainWindow):
             api_key=gemini_api_key,
             few_shot_examples=few_shot_examples,
             enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
         )
         thread = QThread(self)
         worker.moveToThread(thread)
@@ -5357,7 +6427,7 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.information(self, "Qwen GT", "A Qwen stream is already running.")
             return
         if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Qwen GT", "A Gemini fill task is already running.")
+            QMessageBox.information(self, "Qwen GT", "A Gemini auto-fix task is already running.")
             return
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             QMessageBox.warning(self, "Qwen GT", "No current page is loaded.")
@@ -5723,27 +6793,55 @@ class AnnotationWindow(QMainWindow):
             painter.drawRoundedRect(6, 6, 24, 18, 8, 8)
             painter.setPen(QColor("#ffffff"))
             painter.drawText(QRectF(6, 6, 24, 18), Qt.AlignCenter, "OK")
+        if self._page_annotation_note_for_index(index):
+            self._draw_issue_badge(
+                painter,
+                max(6, icon_size.width() - 28),
+                max(6, icon_size.height() - 24),
+                "RV",
+                "#2563eb",
+            )
+        page_status = self._page_annotation_status_for_index(index)
+        if page_status == "approved":
+            self._draw_issue_badge(
+                painter,
+                6,
+                max(6, icon_size.height() - 24),
+                "AP",
+                "#14804a",
+            )
+        elif page_status == "flagged":
+            self._draw_issue_badge(
+                painter,
+                6,
+                max(6, icon_size.height() - 24),
+                "FG",
+                "#b54708",
+            )
         painter.end()
         return QIcon(canvas)
 
     def _refresh_thumbnail_for_index(self, index: int) -> None:
         if not hasattr(self, "page_thumb_list"):
             return
-        if index < 0 or index >= self.page_thumb_list.count() or index >= len(self.page_images):
+        if index < 0 or index >= len(self.page_images):
             return
-        item = self.page_thumb_list.item(index)
+        row = self._thumbnail_row_for_page_index(index)
+        if row < 0:
+            return
+        item = self.page_thumb_list.item(row)
         if item is None:
             return
         page_path = self.page_images[index]
         page_summary = self._page_issue_summaries.get(page_path.name, PageIssueSummary(page_image=page_path.name))
         item.setIcon(self._thumbnail_icon_for_page(page_path, index))
-        item.setToolTip(self._issue_tooltip_text(page_summary))
+        item.setToolTip(self._thumbnail_tooltip_text(page_summary, index))
 
     def _load_existing_annotations(self) -> None:
         if not self.annotations_path.exists():
             return
         try:
-            payload = json.loads(self.annotations_path.read_text(encoding="utf-8"))
+            payload = load_any_schema(json.loads(self.annotations_path.read_text(encoding="utf-8")))
         except Exception as exc:
             QMessageBox.warning(self, "Failed to load annotations", str(exc))
             return
@@ -5755,17 +6853,24 @@ class AnnotationWindow(QMainWindow):
     def _populate_page_thumbnails(self) -> None:
         if not hasattr(self, "page_thumb_list"):
             return
+        visible_indices = self._visible_thumbnail_page_indices()
+        self._thumbnail_page_indices = list(visible_indices)
+        self._thumbnail_row_lookup = {page_index: row for row, page_index in enumerate(visible_indices)}
         self.page_thumb_list.blockSignals(True)
         self.page_thumb_list.clear()
         icon_size = self.page_thumb_list.iconSize()
-        for idx, page_path in enumerate(self.page_images):
-            item = QListWidgetItem(str(idx + 1))
+        for page_index in visible_indices:
+            page_path = self.page_images[page_index]
+            item = QListWidgetItem(str(page_index + 1))
             page_summary = self._page_issue_summaries.get(page_path.name, PageIssueSummary(page_image=page_path.name))
-            item.setToolTip(self._issue_tooltip_text(page_summary))
+            item.setData(Qt.UserRole, page_index)
+            item.setToolTip(self._thumbnail_tooltip_text(page_summary, page_index))
             item.setTextAlignment(Qt.AlignCenter)
-            item.setIcon(self._thumbnail_icon_for_page(page_path, idx))
+            item.setIcon(self._thumbnail_icon_for_page(page_path, page_index))
             item.setSizeHint(QSize(icon_size.width() + 20, icon_size.height() + 30))
             self.page_thumb_list.addItem(item)
+        row = self._thumbnail_row_for_page_index(self.current_index)
+        self.page_thumb_list.setCurrentRow(row)
         self.page_thumb_list.blockSignals(False)
 
     def _on_page_jump_requested(self, page_number: int) -> None:
@@ -5776,12 +6881,24 @@ class AnnotationWindow(QMainWindow):
             return
         self.show_page(index)
 
+    def _on_page_thumbnail_filter_or_sort_changed(self) -> None:
+        self._populate_page_thumbnails()
+        current_row = self._thumbnail_row_for_page_index(self.current_index)
+        if current_row >= 0:
+            self.page_thumb_list.blockSignals(True)
+            self.page_thumb_list.setCurrentRow(current_row)
+            self.page_thumb_list.blockSignals(False)
+            return
+        if self._thumbnail_page_indices:
+            self.show_page(self._thumbnail_page_indices[0])
+
     def _on_thumbnail_row_changed(self, row: int) -> None:
-        if row < 0 or row >= len(self.page_images):
+        index = self._page_index_for_thumbnail_row(row)
+        if index < 0 or index >= len(self.page_images):
             return
-        if row == self.current_index:
+        if index == self.current_index:
             return
-        self.show_page(row)
+        self.show_page(index)
 
     def show_page(self, index: int) -> None:
         if index < 0 or index >= len(self.page_images):
@@ -5789,6 +6906,7 @@ class AnnotationWindow(QMainWindow):
 
         if not self._is_restoring_history:
             self._capture_current_state()
+        self._clear_equation_candidate()
         self.current_index = index
         page_path = self.page_images[index]
         page_name = page_path.name
@@ -5827,6 +6945,9 @@ class AnnotationWindow(QMainWindow):
             statement_type_idx = self.statement_type_combo.findText(statement_type_value)
             self.statement_type_combo.setCurrentIndex(max(0, statement_type_idx))
             self.title_edit.setText(meta.get("title") or "")
+            self.page_annotation_note_edit.setText(meta.get("annotation_note") or "")
+            self._page_annotation_status = _normalize_page_annotation_status(meta.get("annotation_status"))
+            self._refresh_page_annotation_status_ui()
             self._set_document_meta_ui(self.document_meta)
         finally:
             self._is_loading_page = False
@@ -5838,8 +6959,9 @@ class AnnotationWindow(QMainWindow):
         self.page_jump_spin.setValue(index + 1)
         self.page_jump_spin.blockSignals(False)
         self.page_thumb_list.blockSignals(True)
-        self.page_thumb_list.setCurrentRow(index)
-        current_thumb = self.page_thumb_list.item(index)
+        thumb_row = self._thumbnail_row_for_page_index(index)
+        self.page_thumb_list.setCurrentRow(thumb_row)
+        current_thumb = self.page_thumb_list.item(thumb_row) if thumb_row >= 0 else None
         if current_thumb is not None:
             self.page_thumb_list.scrollToItem(current_thumb, QAbstractItemView.PositionAtCenter)
         self.page_thumb_list.blockSignals(False)
@@ -5854,9 +6976,38 @@ class AnnotationWindow(QMainWindow):
         super().resizeEvent(event)
         self._apply_pending_auto_fit()
 
+    def _scene_fact_items(self) -> List[AnnotRectItem]:
+        return [item for item in self.scene.items() if isinstance(item, AnnotRectItem) and self._is_alive_fact_item(item)]
+
+    def _fact_num_for_item(self, item: AnnotRectItem) -> int | None:
+        if not self._is_alive_fact_item(item):
+            return None
+        return _coerce_positive_int(normalize_fact_data(item.fact_data).get("fact_num"))
+
+    def _ensure_fact_numbers_for_items(self, ordered_items: List[AnnotRectItem]) -> None:
+        used_fact_nums: set[int] = set()
+        next_fact_num = 1
+        for item in ordered_items:
+            if not self._is_alive_fact_item(item):
+                continue
+            normalized_fact = normalize_fact_data(item.fact_data)
+            fact_num = _coerce_positive_int(normalized_fact.get("fact_num"))
+            if fact_num is None or fact_num in used_fact_nums:
+                while next_fact_num in used_fact_nums:
+                    next_fact_num += 1
+                normalized_fact["fact_num"] = next_fact_num
+                used_fact_nums.add(next_fact_num)
+                next_fact_num += 1
+            else:
+                used_fact_nums.add(fact_num)
+                next_fact_num = max(next_fact_num, fact_num + 1)
+            if normalized_fact != item.fact_data:
+                item.fact_data = normalized_fact
+
     def _sorted_fact_items(self) -> List[AnnotRectItem]:
-        items = [i for i in self.scene.items() if isinstance(i, AnnotRectItem) and self._is_alive_fact_item(i)]
+        items = self._scene_fact_items()
         if len(items) <= 1:
+            self._ensure_fact_numbers_for_items(items)
             return items
         facts_for_order: list[dict[str, Any]] = []
         for item in items:
@@ -5868,14 +7019,16 @@ class AnnotationWindow(QMainWindow):
             row_tolerance_ratio=0.35,
             row_tolerance_min_px=6.0,
         )
-        return [items[idx] for idx in ordered_indices if 0 <= idx < len(items)]
+        ordered_items = [items[idx] for idx in ordered_indices if 0 <= idx < len(items)]
+        self._ensure_fact_numbers_for_items(ordered_items)
+        return ordered_items
 
     def _apply_fact_order_labels(self) -> None:
         show_labels = self.show_order_labels_check.isChecked()
         indexed_item_ids = {id(item) for item in self._fact_items}
-        for idx, item in enumerate(self._fact_items, start=1):
+        for item in self._fact_items:
             if self._is_alive_fact_item(item):
-                item.set_order_label(idx, visible=show_labels)
+                item.set_order_label(self._fact_num_for_item(item), visible=show_labels)
         for scene_item in self.scene.items():
             if (
                 isinstance(scene_item, AnnotRectItem)
@@ -5904,7 +7057,8 @@ class AnnotationWindow(QMainWindow):
             comment_ref = str(item.fact_data.get("comment_ref") or "")
             note_num = "" if item.fact_data.get("note_num") is None else str(item.fact_data.get("note_num"))
             note_name = str(item.fact_data.get("note_name") or "")
-            summary = f"#{idx} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
+            fact_num = self._fact_num_for_item(item) or idx
+            summary = f"#{fact_num} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
                 summary = f"{summary} | {path}"
             if comment_ref:
@@ -5921,8 +7075,26 @@ class AnnotationWindow(QMainWindow):
                 summary = f"{summary} | note_ref: {item.fact_data.get('note_ref')}"
             if item.fact_data.get("period_type"):
                 summary = f"{summary} | period_type: {item.fact_data.get('period_type')}"
+            if item.fact_data.get("duration_type"):
+                summary = f"{summary} | duration_type: {item.fact_data.get('duration_type')}"
+            if item.fact_data.get("recurring_period"):
+                summary = f"{summary} | recurring_period: {item.fact_data.get('recurring_period')}"
+            if item.fact_data.get("value_context"):
+                summary = f"{summary} | value_context: {item.fact_data.get('value_context')}"
+            if item.fact_data.get("balance_type"):
+                summary = f"{summary} | balance_type: {item.fact_data.get('balance_type')}"
+            if item.fact_data.get("natural_sign"):
+                summary = f"{summary} | natural_sign: {item.fact_data.get('natural_sign')}"
             if item.fact_data.get("path_source"):
                 summary = f"{summary} | path_source: {item.fact_data.get('path_source')}"
+            if item.fact_data.get("equation"):
+                equation = str(item.fact_data.get("equation") or "")
+                trimmed_equation = (equation[:40] + "...") if len(equation) > 43 else equation
+                summary = f"{summary} | equation: {trimmed_equation}"
+            if item.fact_data.get("fact_equation"):
+                fact_equation = str(item.fact_data.get("fact_equation") or "")
+                trimmed_fact_equation = (fact_equation[:40] + "...") if len(fact_equation) > 43 else fact_equation
+                summary = f"{summary} | fact_equation: {trimmed_fact_equation}"
             self.facts_list.addItem(QListWidgetItem(summary))
             list_item = self.facts_list.item(idx - 1)
             if list_item is not None and item in selected_items:
@@ -5938,6 +7110,130 @@ class AnnotationWindow(QMainWindow):
             self._refresh_current_page_issues(use_current_fact_items=True)
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
+
+    def _on_equation_reference_selection_started(self) -> None:
+        selected_items = self._selected_fact_items()
+        self._clear_equation_candidate()
+        if len(selected_items) != 1:
+            self.statusBar().showMessage("Select one target bbox before using Alt-drag.", 2500)
+            return
+        self._equation_target_item = selected_items[0]
+        self._refresh_equation_panel()
+
+    def _sort_items_for_equation(self, items: List[AnnotRectItem]) -> List[AnnotRectItem]:
+        return sorted(
+            [item for item in items if self._is_alive_fact_item(item)],
+            key=lambda item: (
+                self._fact_num_for_item(item) or sys.maxsize,
+                self._fact_items.index(item) if item in self._fact_items else sys.maxsize,
+            ),
+        )
+
+    def _on_equation_reference_selection_changed(self, items: object) -> None:
+        if not self._is_alive_fact_item(self._equation_target_item):
+            self._clear_equation_candidate()
+            return
+
+        target_item = self._equation_target_item
+        assert target_item is not None
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1 or selected_items[0] is not target_item:
+            self._clear_equation_candidate()
+            return
+
+        raw_items = items if isinstance(items, list) else []
+        reference_items = [
+            item
+            for item in raw_items
+            if isinstance(item, AnnotRectItem) and self._is_alive_fact_item(item) and item is not target_item
+        ]
+        ordered_reference_items = self._sort_items_for_equation(reference_items)
+        self._set_equation_reference_preview_items(ordered_reference_items)
+
+        candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = _build_equation_candidate_from_facts(
+            [
+                {
+                    "fact_num": self._fact_num_for_item(item),
+                    "value": normalize_fact_data(item.fact_data).get("value"),
+                    "balance_type": normalize_fact_data(item.fact_data).get("balance_type"),
+                }
+                for item in ordered_reference_items
+            ]
+        )
+        self._equation_candidate_text = candidate_text
+        self._equation_candidate_fact_text = fact_candidate_text
+        self._equation_candidate_result_text = result_text
+        self._equation_candidate_invalid_values = invalid_values
+        self._equation_candidate_terms = structured_terms
+        self._refresh_equation_panel()
+
+    def _on_equation_approval_requested(self) -> None:
+        if not self.apply_equation_btn.isEnabled():
+            return
+        self.apply_equation_to_selected_fact()
+
+    def clear_equation_from_selected_fact(self) -> None:
+        selected_items = [item for item in self._selected_fact_items() if self._is_alive_fact_item(item)]
+        if not selected_items:
+            self._clear_equation_candidate()
+            self.statusBar().showMessage("Select at least one bbox to clear equation.", 2200)
+            return
+
+        cleared_count = 0
+        for item in selected_items:
+            current = normalize_fact_data(item.fact_data)
+            if not current.get("equation") and not current.get("fact_equation"):
+                continue
+            updated = normalize_fact_data({**current, "equation": None, "fact_equation": None})
+            if updated == current:
+                continue
+            item.fact_data = updated
+            cleared_count += 1
+
+        if cleared_count == 0:
+            self.statusBar().showMessage("Selected facts have no saved equation.", 2200)
+            return
+        self._clear_equation_candidate()
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        if cleared_count == 1:
+            self.statusBar().showMessage("Cleared equation from 1 selected fact.", 2500)
+        else:
+            self.statusBar().showMessage(f"Cleared equation from {cleared_count} selected facts.", 2500)
+
+    def apply_equation_to_selected_fact(self) -> None:
+        target_item = self._equation_target_item
+        if not self._is_alive_fact_item(target_item):
+            self._clear_equation_candidate()
+            return
+        if self._equation_candidate_text is None or self._equation_candidate_result_text is None:
+            self.statusBar().showMessage("No calculable equation preview to apply.", 2500)
+            return
+
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1 or selected_items[0] is not target_item:
+            self._clear_equation_candidate()
+            self.statusBar().showMessage("Re-select the target bbox before applying the equation.", 3000)
+            return
+
+        current = normalize_fact_data(target_item.fact_data)
+        updated = normalize_fact_data(
+            {
+                **current,
+                "equation": self._equation_candidate_text,
+                "fact_equation": self._equation_candidate_fact_text,
+            }
+        )
+        if updated == current:
+            self._clear_equation_candidate()
+            self.statusBar().showMessage("Equation is already applied to the selected fact.", 2500)
+            return
+
+        target_item.fact_data = updated
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self._clear_equation_candidate()
+        self.statusBar().showMessage("Applied equation to selected fact.", 2500)
 
     def _on_show_order_labels_toggled(self, _checked: bool) -> None:
         self._apply_fact_order_labels()
@@ -5986,16 +7282,49 @@ class AnnotationWindow(QMainWindow):
             return
         previous = normalize_document_meta(self.document_meta)
         self.document_meta = self._document_meta_from_ui()
+        self._refresh_page_annotation_status_ui()
         if self.document_meta != previous:
             self.refresh_facts_list()
         else:
             self._refresh_current_page_issues()
-        self._refresh_thumbnail_for_index(self.current_index)
+        self._populate_page_thumbnails()
         self._record_history_snapshot()
+
+    def _set_current_page_annotation_status(self, status: str) -> bool:
+        normalized_status = _normalize_page_annotation_status(status)
+        if normalized_status is None:
+            return False
+        if normalized_status == _normalize_page_annotation_status(self._page_annotation_status):
+            self.statusBar().showMessage(
+                f"Page already marked as {self._page_annotation_status_text(normalized_status).lower()}.",
+                2200,
+            )
+            return False
+        self._page_annotation_status = normalized_status
+        self._refresh_page_annotation_status_ui()
+        self._on_meta_edited()
+        self.statusBar().showMessage(
+            f"Page marked as {self._page_annotation_status_text(normalized_status).lower()}.",
+            2200,
+        )
+        return True
+
+    def approve_current_page_and_continue(self) -> None:
+        changed = self._set_current_page_annotation_status("approved")
+        next_index = self._next_page_index_in_thumbnail_order()
+        if next_index is not None and next_index != self.current_index:
+            self.show_page(next_index)
+            return
+        if changed:
+            self.statusBar().showMessage("Page approved. No additional page to continue to.", 2600)
+
+    def flag_current_page_for_review(self) -> None:
+        self._set_current_page_annotation_status("flagged")
 
     def _on_scene_selection_changed(self) -> None:
         if self._syncing_selection:
             return
+        self._clear_equation_candidate()
         selected_items = set(self._selected_fact_items())
         selected = self._selected_fact_item()
         self._syncing_selection = True
@@ -6019,6 +7348,7 @@ class AnnotationWindow(QMainWindow):
     def _on_fact_list_selection_changed(self) -> None:
         if self._syncing_selection:
             return
+        self._clear_equation_candidate()
         selected_rows = [self.facts_list.row(list_item) for list_item in self.facts_list.selectedItems()]
         self._syncing_selection = True
         self.scene.clearSelection()
@@ -6135,6 +7465,30 @@ class AnnotationWindow(QMainWindow):
         self._record_history_snapshot()
         self.statusBar().showMessage("Duplicated selected bbox.", 2500)
 
+    def focus_fact_annotation_panel(self) -> None:
+        selected_count = len(self._selected_fact_items())
+        anchor_widget = self.fact_editor_box if selected_count == 1 else self.facts_list
+        self.right_scroll.ensureWidgetVisible(anchor_widget, 0, 18)
+        focus_widget: QWidget = self.fact_value_edit if selected_count == 1 else self.facts_list
+        focus_widget.setFocus(Qt.ShortcutFocusReason)
+        if focus_widget is self.fact_value_edit:
+            self.fact_value_edit.selectAll()
+        self.statusBar().showMessage("Focused fact annotation panel.", 1500)
+
+    def _delete_shortcut_blocked_by_focus(self) -> bool:
+        focus_widget = QApplication.focusWidget()
+        if focus_widget is None:
+            return False
+        if isinstance(focus_widget, (QLineEdit, QPlainTextEdit, QComboBox, QSpinBox)):
+            return True
+        return isinstance(focus_widget, QListWidget) and focus_widget is self.fact_path_list
+
+    def _delete_selected_fact_shortcut(self) -> None:
+        if self._delete_shortcut_blocked_by_focus():
+            self.statusBar().showMessage("Delete shortcut is disabled while editing fields.", 2200)
+            return
+        self.delete_selected_fact()
+
     def delete_selected_fact(self) -> None:
         selected_items = self._selected_fact_items()
         if not selected_items:
@@ -6158,44 +7512,7 @@ class AnnotationWindow(QMainWindow):
 
     @staticmethod
     def _payload_uses_legacy_schema(payload: Any) -> bool:
-        if not isinstance(payload, dict):
-            return False
-        if "document_meta" in payload:
-            return True
-        pages = payload.get("pages")
-        if not isinstance(pages, list):
-            return False
-        for page in pages:
-            if not isinstance(page, dict):
-                continue
-            meta = page.get("meta")
-            if isinstance(meta, dict) and "type" in meta:
-                return True
-            facts = page.get("facts")
-            if not isinstance(facts, list):
-                continue
-            for fact in facts:
-                if not isinstance(fact, dict):
-                    continue
-                if any(
-                    key in fact
-                    for key in (
-                        "ref_comment",
-                        "comment",
-                        "ref_note",
-                        "note_reference",
-                        "refference",
-                        "reference",
-                        "ref",
-                        "is_beur",
-                        "beur_num",
-                        "beur_number",
-                    )
-                ):
-                    return True
-                if str(fact.get("value_type") or "").strip() == "%":
-                    return True
-        return False
+        return payload_uses_legacy_aliases(payload)
 
     def _backup_legacy_annotations_if_needed(self) -> Optional[dict[str, Any]]:
         if not self.annotations_path.exists():
@@ -6204,7 +7521,7 @@ class AnnotationWindow(QMainWindow):
             existing_payload = json.loads(self.annotations_path.read_text(encoding="utf-8"))
         except Exception:
             return None
-        if not self._payload_uses_legacy_schema(existing_payload):
+        if not payload_requires_migration(existing_payload):
             return None
         direction_info = resolve_reading_direction(
             self.document_meta,
@@ -6400,6 +7717,7 @@ class AnnotationWindow(QMainWindow):
             "- Ctrl+=: Zoom in\n"
             "- Ctrl+-: Zoom out\n"
             "- Ctrl+0: Fit page height to panel\n"
+            "- Alt+F: Focus fact annotation panel\n"
             "- F1: Open this help\n"
             "\n"
             "Page navigation\n"
@@ -6417,6 +7735,8 @@ class AnnotationWindow(QMainWindow):
             "- Shift+Arrow: Move selected bbox(es) by 10 px\n"
             "- Alt+Arrow: Grow selected bbox(es) in one direction by batch step\n"
             "- Alt+Shift+Arrow: Grow selected bbox(es) by 10x batch step\n"
+            "- Hold Alt + drag: Build equation preview for the selected target bbox\n"
+            "- While holding Alt, press Shift: Approve/apply current equation preview\n"
             "- Ctrl+Arrow: Pan page\n"
             "\n"
             "Mouse interactions\n"

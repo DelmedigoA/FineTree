@@ -23,7 +23,7 @@ except Exception:  # pragma: no cover
 
 from .fact_normalization import normalize_fact_payload, normalize_note_num
 from .fact_ordering import normalize_document_meta
-from .schema_contract import CURRENCY_VALUES, PAGE_TYPE_VALUES, SCALE_VALUES, STATEMENT_TYPE_VALUES, VALUE_TYPE_VALUES
+from .schema_registry import SchemaRegistry
 from .schemas import Fact, PageExtraction, PageMeta, split_legacy_page_type
 
 
@@ -51,46 +51,141 @@ _ALLOWED_RESPONSE_JSON_SCHEMA_KEYS = {
     "required",
     "propertyOrdering",
 }
-_VALID_PAGE_TYPES = set(PAGE_TYPE_VALUES)
-_VALID_STATEMENT_TYPES = set(STATEMENT_TYPE_VALUES)
-_VALID_CURRENCIES = set(CURRENCY_VALUES)
-_VALID_SCALES = set(SCALE_VALUES)
-_VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
-_VALID_PATCH_FACT_FIELDS = {"period_type", "period_start", "period_end", "path_source"}
+_EXTRACT_CONTRACT = SchemaRegistry.get_prompt_contract("extraction")
+_PATCH_CONTRACT = SchemaRegistry.get_prompt_contract("gemini_fill")
+_VALID_PAGE_TYPES = set(_EXTRACT_CONTRACT["enums"]["page_types"])
+_VALID_STATEMENT_TYPES = set(_EXTRACT_CONTRACT["enums"]["statement_types"])
+_VALID_CURRENCIES = set(_EXTRACT_CONTRACT["enums"]["currencies"])
+_VALID_SCALES = set(_EXTRACT_CONTRACT["enums"]["scales"])
+_VALID_VALUE_TYPES = set(_EXTRACT_CONTRACT["enums"]["value_types"])
+_VALID_PATCH_FACT_FIELDS = set(_PATCH_CONTRACT["fact_patch_fields"])
 _VALID_PATCH_TOP_LEVEL_KEYS = {"meta_updates", "fact_updates"}
+_LEGACY_THINKING_BUDGET_AUTO = -1
+_LEGACY_THINKING_BUDGET_DISABLED = 0
+_VALID_THINKING_LEVELS = {"minimal", "low", "medium", "high"}
+_GEMINI_3_THINKING_LEVEL_ATTRS = {
+    "minimal": "MINIMAL",
+    "low": "LOW",
+    "medium": "MEDIUM",
+    "high": "HIGH",
+}
+
+
+def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
+    text = str(model_name or "").strip().lower()
+    if not text:
+        return ""
+    text = re.sub(r"\s+", "-", text)
+    text = re.sub(r"-+", "-", text)
+    text = re.sub(r"^gemini[-]?3", "gemini-3", text)
+    return text
 
 
 def _is_gemini_3_model(model_name: Optional[str]) -> bool:
-    normalized = str(model_name or "").strip().lower()
+    normalized = _normalize_gemini_model_name(model_name)
     return normalized.startswith("gemini-3")
 
 
-def _thinking_config_for_model(model_name: Optional[str], enable_thinking: Optional[bool]) -> Any:
-    if enable_thinking is None:
+def _is_gemini_3_pro_model(model_name: Optional[str]) -> bool:
+    normalized = _normalize_gemini_model_name(model_name)
+    if not normalized.startswith("gemini-3"):
+        return False
+    return "pro" in normalized and "flash" not in normalized
+
+
+def _normalize_thinking_level(thinking_level: Optional[str]) -> str | None:
+    if thinking_level is None:
+        return None
+    text = str(thinking_level).strip().lower().replace("-", "_").replace(" ", "_")
+    aliases = {
+        "none": "minimal",
+        "off": "minimal",
+        "no_thinking": "minimal",
+    }
+    normalized = aliases.get(text, text)
+    if normalized not in _VALID_THINKING_LEVELS:
+        raise ValueError("thinking_level must be one of: minimal, low, medium, high.")
+    return normalized
+
+
+def _thinking_level_for_gemini_3_model(
+    model_name: Optional[str],
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+) -> Any:
+    if types is None:
+        return None
+
+    normalized_level = _normalize_thinking_level(thinking_level)
+    if normalized_level is None:
+        if enable_thinking is None:
+            return None
+        normalized_level = "high" if enable_thinking else "minimal"
+
+    if _is_gemini_3_pro_model(model_name) and normalized_level == "minimal":
+        # Gemini 3.1 Pro does not expose the minimal level, so fall back to low.
+        normalized_level = "low"
+
+    attr_name = _GEMINI_3_THINKING_LEVEL_ATTRS.get(normalized_level)
+    if attr_name is not None:
+        level = getattr(types.ThinkingLevel, attr_name, None)
+        if level is not None:
+            return level
+
+    level_name = normalized_level.upper()
+    level = getattr(types.ThinkingLevel, level_name, None)
+    if level is not None:
+        return level
+
+    # Compatibility fallback for SDK builds that expose only HIGH/MINIMAL.
+    if normalized_level in {"low", "medium"}:
+        return getattr(types.ThinkingLevel, "HIGH", getattr(types.ThinkingLevel, "MINIMAL", None))
+    if normalized_level == "minimal":
+        return getattr(types.ThinkingLevel, "MINIMAL", getattr(types.ThinkingLevel, "LOW", None))
+    if normalized_level == "high":
+        return getattr(types.ThinkingLevel, "HIGH", None)
+
+    # Gemini 3.1 Pro does not support minimal.
+    return None
+
+
+def _thinking_config_for_model(
+    model_name: Optional[str],
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str] = None,
+) -> Any:
+    if enable_thinking is None and thinking_level is None:
         return None
     if types is None:
         return None
 
     if _is_gemini_3_model(model_name):
-        level = types.ThinkingLevel.HIGH if enable_thinking else types.ThinkingLevel.MINIMAL
+        level = _thinking_level_for_gemini_3_model(model_name, enable_thinking, thinking_level)
+        if level is None:
+            return None
         return types.ThinkingConfig(thinking_level=level)
 
-    if enable_thinking:
-        return None
-    return types.ThinkingConfig(thinking_budget=0)
+    normalized_level = _normalize_thinking_level(thinking_level)
+    if normalized_level is None:
+        if enable_thinking is None:
+            return None
+        normalized_level = "high" if enable_thinking else "minimal"
+    budget = _LEGACY_THINKING_BUDGET_DISABLED if normalized_level == "minimal" else _LEGACY_THINKING_BUDGET_AUTO
+    return types.ThinkingConfig(thinking_budget=budget)
 
 
 def _generation_config(
     model_name: Optional[str],
     *,
     enable_thinking: Optional[bool] = None,
+    thinking_level: Optional[str] = None,
     response_mime_type: Optional[str] = None,
     response_json_schema: Any = None,
 ) -> Any:
     _require_google_genai()
 
     config_kwargs: dict[str, Any] = {}
-    thinking_config = _thinking_config_for_model(model_name, enable_thinking)
+    thinking_config = _thinking_config_for_model(model_name, enable_thinking, thinking_level=thinking_level)
     if thinking_config is not None:
         config_kwargs["thinking_config"] = thinking_config
     if response_mime_type is not None:
@@ -692,6 +787,7 @@ def generate_content_from_image(
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     enable_thinking: Optional[bool] = None,
+    thinking_level: Optional[str] = None,
 ) -> str:
     _require_google_genai()
     if not image_path.is_file():
@@ -709,7 +805,7 @@ def generate_content_from_image(
         "model": model,
         "contents": contents,
     }
-    config = _generation_config(model, enable_thinking=enable_thinking)
+    config = _generation_config(model, enable_thinking=enable_thinking, thinking_level=thinking_level)
     if config is not None:
         request_kwargs["config"] = config
     response = client.models.generate_content(**request_kwargs)
@@ -724,6 +820,7 @@ def stream_content_from_image(
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     enable_thinking: Optional[bool] = None,
+    thinking_level: Optional[str] = None,
 ) -> Iterator[str]:
     _require_google_genai()
     if not image_path.is_file():
@@ -743,7 +840,7 @@ def stream_content_from_image(
             "model": model,
             "contents": contents,
         }
-        config = _generation_config(model, enable_thinking=enable_thinking)
+        config = _generation_config(model, enable_thinking=enable_thinking, thinking_level=thinking_level)
         if config is not None:
             request_kwargs["config"] = config
         stream = stream_fn(**request_kwargs)
@@ -761,6 +858,7 @@ def stream_content_from_image(
         api_key=api_key,
         few_shot_examples=few_shot_examples,
         enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
     )
     if text:
         yield text
@@ -774,6 +872,7 @@ def generate_structured_json_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     enable_thinking: Optional[bool] = None,
+    thinking_level: Optional[str] = None,
 ) -> str:
     _require_google_genai()
     if not image_path.is_file():
@@ -796,6 +895,7 @@ def generate_structured_json_from_image(
         config=_generation_config(
             model,
             enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
             response_mime_type="application/json",
             response_json_schema=schema,
         ),
@@ -813,6 +913,7 @@ def generate_page_extraction_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     enable_thinking: Optional[bool] = None,
+    thinking_level: Optional[str] = None,
 ) -> PageExtraction:
     # Temporarily avoid Gemini-side schema enforcement to prevent INVALID_ARGUMENT
     # errors from response_json_schema. We still enforce strict local validation.
@@ -823,6 +924,7 @@ def generate_page_extraction_from_image(
         mime_type=mime_type,
         api_key=api_key,
         enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
     )
     return parse_page_extraction_text(raw_text)
 
@@ -851,6 +953,7 @@ def _validate_patch_fact_updates(
 
     baseline = {
         "value": "0",
+        "equation": None,
         "comment_ref": None,
         "note_flag": False,
         "note_name": None,
@@ -860,11 +963,16 @@ def _validate_patch_fact_updates(
         "period_type": None,
         "period_start": None,
         "period_end": None,
+        "duration_type": None,
+        "recurring_period": None,
         "path": [],
         "path_source": None,
         "currency": None,
         "scale": None,
         "value_type": None,
+        "value_context": None,
+        "balance_type": None,
+        "natural_sign": None,
     }
     validated = Fact.model_validate({**baseline, **updates_payload}).model_dump(mode="json")
     return {key: validated[key] for key in updates_payload.keys()}
@@ -954,6 +1062,12 @@ def parse_args(argv: Optional[list[str]] = None) -> argparse.Namespace:
     parser.add_argument("--model", default=DEFAULT_GEMINI_MODEL, help="Gemini model name.")
     parser.add_argument("--mime-type", default=None, help="Override MIME type (default: infer from extension).")
     parser.add_argument("--api-key", default=None, help="Google API key (default: env GOOGLE_API_KEY/GEMINI_API_KEY).")
+    parser.add_argument(
+        "--thinking-level",
+        default=None,
+        choices=sorted(_VALID_THINKING_LEVELS),
+        help="Optional thinking level override: minimal|low|medium|high.",
+    )
     return parser.parse_args(argv)
 
 
@@ -966,6 +1080,7 @@ def main(argv: Optional[list[str]] = None) -> int:
             model=args.model,
             mime_type=args.mime_type,
             api_key=args.api_key,
+            thinking_level=args.thinking_level,
         )
     except Exception as exc:
         print(str(exc), file=sys.stderr)

@@ -74,6 +74,18 @@ finetree-annotator --images-dir data/pdf_images/test --annotations data/annotati
 finetree-pdf-to-images data/raw_pdfs/test.pdf
 ```
 
+### Metadata fields
+
+When editing document metadata (either via the UI or the JSON schema), the `metadata.report_scope`
+field accepts the following values:
+
+- `separate`
+- `consolidated`
+- `combined`
+- `pro_forma`
+- `other`
+- `null` (use JSON `null` or the literal string `"null"` when the scope is unknown)
+
 ### Gemini VLM (Image + Prompt)
 
 ```bash
@@ -99,6 +111,41 @@ Optional flags:
 - `--model` (default: `gemini-3-flash-preview`)
 - `--mime-type` (override auto-detected image MIME type)
 - `--api-key` (use explicit key instead of env vars)
+- `--thinking-level` (minimal|low|medium|high; default is `minimal` for the non-thinking presets, and the CLI/UI remaps `minimal` to `low` when it runs against Gemini 3.1 Pro because that level is not exposed).
+
+### Gemini thinking levels
+
+We configure thinking levels through the same `--thinking-level` knob used by the CLI and by the `types.GenerateContentConfig(types.ThinkingConfig(...))` wrapper in the SDK. The supported thinking levels for each Gemini 3 line are:
+
+| Thinking Level | Gemini 3.1 Pro | Gemini 3.1 Flash-Lite | Gemini 3 Flash | Description |
+| --- | --- | --- | --- | --- |
+| `minimal` | Not supported (falls back to `low`) | Supported (default for no thinking) | Supported | Matches the “no thinking” setting for most queries; keeps latency low but the model may still run light reasoning on harder prompts. |
+| `low` | Supported | Supported | Supported | Minimal-thinking mode that favors throughput and lower cost. |
+| `medium` | Supported | Supported | Supported | Balanced mix of reasoning depth and latency. |
+| `high` | Supported (default/dynamic) | Supported (dynamic) | Supported (default/dynamic) | Maximizes reasoning depth; expect longer first-token latency and more carefully reasoned text.
+
+When calling the SDK directly, requests look like:
+
+```python
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model="gemini-3.1-pro-preview",
+    contents="How does AI work?",
+    config=types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(
+            thinking_level=types.ThinkingLevel.LOW
+        )
+    ),
+)
+
+print(response.text)
+```
+
+The CLI/UI and helper functions in this repo automatically normalize the requested level to the proper `types.ThinkingLevel` enum and remap `minimal` to `low` on Gemini 3.1 Pro so you never send an unsupported value.
 
 ### Qwen VLM (Local, Multimodal)
 

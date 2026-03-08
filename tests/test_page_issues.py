@@ -59,10 +59,10 @@ def test_validate_page_issues_detects_fact_level_reg_flags() -> None:
         ),
     )
     codes = [issue.code for issue in summary.issues]
-    assert "fact_missing_value" in codes
+    assert "fact_missing_value" not in codes
     assert "note_flag_missing_note_num" in codes
     assert "note_num_without_note_flag" in codes
-    assert summary.reg_flag_count == 2
+    assert summary.reg_flag_count == 1
     assert summary.warning_count == 1
 
 
@@ -279,7 +279,7 @@ def test_aggregate_document_issues_counts_pages_and_totals() -> None:
         PageState(meta={"type": "other"}, facts=[_fact(value="10", currency="USD"), _fact(value="11", currency="ILS")]),
     )
     doc_summary = aggregate_document_issues({"page_a.png": page_a, "page_b.png": page_b})
-    assert doc_summary.reg_flag_count == 1
+    assert doc_summary.reg_flag_count == 0
     assert doc_summary.warning_count == 2
-    assert doc_summary.pages_with_reg_flags == 1
+    assert doc_summary.pages_with_reg_flags == 0
     assert doc_summary.pages_with_warnings == 1

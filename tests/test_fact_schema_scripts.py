@@ -72,7 +72,7 @@ def test_fix_fact_schema_format_script_rewrites_with_backup(tmp_path: Path) -> N
 
     fixed = json.loads(src_path.read_text(encoding="utf-8"))
     fact = fixed["pages"][0]["facts"][0]
-    assert fact["value"] == "(123)"
+    assert fact["value"] == "-123"
     assert fact["comment_ref"] == "free text"
     assert fact["note_flag"] is False
     assert fact["note_num"] == 9

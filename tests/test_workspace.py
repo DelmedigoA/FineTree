@@ -13,7 +13,7 @@ class _DummyPage:
         Path(target).write_bytes(b"png")
 
 
-def test_page_has_annotation_requires_entity_or_title() -> None:
+def test_page_has_annotation_requires_title() -> None:
     state = PageState(meta=default_page_meta(0), facts=[])
     assert workspace.page_has_annotation(state, 0) is False
 
@@ -21,7 +21,7 @@ def test_page_has_annotation_requires_entity_or_title() -> None:
     assert workspace.page_has_annotation(state, 0) is False
 
     state.meta["entity_name"] = "Acme Ltd"
-    assert workspace.page_has_annotation(state, 0) is True
+    assert workspace.page_has_annotation(state, 0) is False
 
 
 def test_page_has_annotation_ignores_non_entity_title_metadata() -> None:
@@ -38,15 +38,17 @@ def test_page_has_annotation_ignores_non_entity_title_metadata() -> None:
     state.meta["page_num"] = "5"
     assert workspace.page_has_annotation(state, 0) is False
 
+    state.meta["annotation_note"] = "revisit later"
+    assert workspace.page_has_annotation(state, 0) is False
+
     state.meta["title"] = "Annual Report"
     assert workspace.page_has_annotation(state, 0) is True
 
 
-def test_page_has_annotation_accepts_entity_or_title_only() -> None:
+def test_page_has_annotation_accepts_title() -> None:
     state = PageState(
         meta={
             **default_page_meta(0),
-            "entity_name": "Entity",
             "title": "Annual report",
         },
         facts=[],
@@ -151,7 +153,7 @@ def test_checked_document_state_persists_in_workspace_summary(tmp_path: Path) ->
     (data_root / "raw_pdfs" / "doc_checked.pdf").write_bytes(b"%PDF-1.4")
     (images_dir / "page_0001.png").write_bytes(b"png")
     (data_root / "annotations" / "doc_checked.json").write_text(
-        json.dumps({"pages": [{"image": "page_0001.png", "meta": {**default_page_meta(0), "entity_name": "Checked Entity"}, "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
+        json.dumps({"pages": [{"image": "page_0001.png", "meta": {**default_page_meta(0), "title": "Checked Page"}, "facts": [{"bbox": [1, 2, 3, 4], "value": "10"}]}]}),
         encoding="utf-8",
     )
 
@@ -247,7 +249,7 @@ def test_build_document_summary_blocks_review_for_real_reg_flags(tmp_path: Path)
                     {
                         "image": "page_0001.png",
                         "meta": {"type": "other", "entity_name": "Acme Ltd"},
-                        "facts": [{"bbox": [1, 2, 3, 4], "value": "", "note_flag": False, "path": []}],
+                        "facts": [{"bbox": [1, 2, 3, 4], "value": "10", "note_flag": False, "note_num": 3, "path": []}],
                     }
                 ]
             }

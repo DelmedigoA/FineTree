@@ -8,7 +8,13 @@ from typing import Any, Mapping
 
 from .date_normalization import normalize_date
 from .schema_contract import CANONICAL_FACT_KEYS as _CANONICAL_FACT_KEY_TUPLE
-from .schema_contract import CURRENCY_VALUES, LEGACY_FACT_KEYS as _LEGACY_FACT_KEY_TUPLE, SCALE_VALUES, VALUE_TYPE_VALUES
+from .schema_contract import (
+    BALANCE_TYPE_VALUES,
+    CURRENCY_VALUES,
+    LEGACY_FACT_KEYS as _LEGACY_FACT_KEY_TUPLE,
+    SCALE_VALUES,
+    VALUE_TYPE_VALUES,
+)
 from .schemas import is_legacy_page_type_value, split_legacy_page_type
 
 CANONICAL_FACT_KEYS = set(_CANONICAL_FACT_KEY_TUPLE)
@@ -17,15 +23,11 @@ CANONICAL_AND_META_KEYS = CANONICAL_FACT_KEYS | {"bbox"}
 _VALID_CURRENCIES = set(CURRENCY_VALUES)
 _VALID_SCALES = set(SCALE_VALUES)
 _VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
-_NUMERIC_OR_PAREN_RE = re.compile(r"^\(?\d+(?:\.\d+)?\)?$")
-_NEGATIVE_RE = re.compile(r"^-(\d+(?:\.\d+)?)$")
-_RANGE_VALUE_RE = re.compile(r"^\d+\s*-\s*\d+$")
+_VALID_BALANCE_TYPES = set(BALANCE_TYPE_VALUES)
 _DATE_YMD_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATE_YEAR_RE = re.compile(r"^\d{4}$")
 _SINGLE_ALLOWED_DASH = "-"
 _EMPTY_DASH_PLACEHOLDERS = {"—", "–"}
-_CURRENCY_SIGNS_RE = re.compile(r"[$₪€£]")
-_CURRENCY_CODES_RE = re.compile(r"\b(?:USD|ILS|EUR|GBP)\b", flags=re.IGNORECASE)
 DEFAULT_ANNOTATIONS_GLOB = "data/annotations/*.json"
 
 
@@ -82,12 +84,74 @@ def _normalize_value_type(value: Any) -> str | None:
     return text if text in _VALID_VALUE_TYPES else None
 
 
+def _normalize_value_context(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered in {"textual", "tabular", "mixed"} else None
+
+
+def _normalize_balance_type(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered in _VALID_BALANCE_TYPES else None
+
+
+def _derive_natural_sign_from_value(value: str) -> str | None:
+    text = str(value or "").strip()
+    if text == "-":
+        return None
+    if "(" in text and ")" in text:
+        return "negative"
+    return "positive"
+
+
+def _normalize_equation(value: Any) -> str | None:
+    return _to_optional_text(value)
+
+
+def _normalize_fact_num(value: Any) -> int | None:
+    if value in ("", None):
+        return None
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if value >= 1 else None
+    if isinstance(value, float) and float(value).is_integer():
+        parsed = int(value)
+        return parsed if parsed >= 1 else None
+    text = str(value).strip()
+    if text.isdigit():
+        parsed = int(text)
+        return parsed if parsed >= 1 else None
+    return None
+
+
 def _normalize_period_type(value: Any) -> str | None:
     text = _to_optional_text(value)
     if text is None:
         return None
     lowered = text.lower()
-    return lowered if lowered in {"instant", "duration"} else None
+    return lowered if lowered in {"instant", "duration", "expected"} else None
+
+
+def _normalize_duration_type(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered == "recurring" else None
+
+
+def _normalize_recurring_period(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    return lowered if lowered in {"daily", "quarterly", "monthly", "yearly"} else None
 
 
 def _normalize_day_date(value: Any) -> str | None:
@@ -164,43 +228,14 @@ def _coerce_note_flag(value: Any) -> tuple[bool, list[str]]:
     return False, ["nonboolean_note_flag"]
 
 def normalize_value(raw_value: Any) -> tuple[str, list[str]]:
-    raw_text = str(raw_value or "").strip()
+    if raw_value is None:
+        return _SINGLE_ALLOWED_DASH, ["empty_value"]
+    raw_text = str(raw_value).strip()
     if not raw_text:
-        return "", []
-
-    if "%" in raw_text:
-        # User explicitly requested permissive handling for values containing '%'.
-        return raw_text, []
-
-    if raw_text == _SINGLE_ALLOWED_DASH:
-        return _SINGLE_ALLOWED_DASH, []
-
+        return _SINGLE_ALLOWED_DASH, ["empty_value"]
     if raw_text in _EMPTY_DASH_PLACEHOLDERS:
-        return "", ["placeholder_value"]
-
-    # Some source pages prefix numeric values with '*' as a marker.
-    # Strip leading marker(s) before numeric normalization.
-    raw_text = re.sub(r"^\*+\s*", "", raw_text)
-
-    cleaned = _CURRENCY_SIGNS_RE.sub("", raw_text)
-    cleaned = _CURRENCY_CODES_RE.sub("", cleaned)
-    cleaned = cleaned.replace(",", "")
-    cleaned = "".join(cleaned.split())
-
-    # After stripping currency tokens, placeholders like "$ -" become "-".
-    if cleaned == _SINGLE_ALLOWED_DASH:
-        return _SINGLE_ALLOWED_DASH, []
-    if cleaned in _EMPTY_DASH_PLACEHOLDERS:
-        return "", []
-
-    neg_match = _NEGATIVE_RE.match(cleaned)
-    if neg_match:
-        cleaned = f"({neg_match.group(1)})"
-
-    if _NUMERIC_OR_PAREN_RE.match(cleaned):
-        return cleaned, []
-
-    return raw_text, ["noncanonical_value"]
+        return _SINGLE_ALLOWED_DASH, ["placeholder_value"]
+    return raw_text, []
 
 
 def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
@@ -217,9 +252,16 @@ def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
             "ref_note",
             "note_reference",
             "note_num",
+            "fact_num",
+            "fact_equation",
+            "balance_type",
+            "natural_sign",
             "period_type",
             "period_start",
             "period_end",
+            "duration_type",
+            "recurring_period",
+            "value_context",
             "path_source",
         )
     )
@@ -265,15 +307,7 @@ def normalize_fact_payload(
     note_ref = _to_optional_text(ref_note_raw)
 
     normalized_value_type = _normalize_value_type(payload.get("value_type"))
-    raw_value_text = str(payload.get("value") or "").strip()
     value_input: Any = payload.get("value")
-    keep_percent_range_value = bool(
-        raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type == "percent"
-    )
-    if raw_value_text and _RANGE_VALUE_RE.match(raw_value_text) and normalized_value_type != "percent":
-        if not note_ref:
-            note_ref = raw_value_text.replace(" ", "")
-        value_input = ""
 
     note_flag_raw = payload.get("note_flag", payload.get("is_note"))
     if note_flag_raw in ("", None):
@@ -281,10 +315,8 @@ def normalize_fact_payload(
     note_flag, bool_warnings = _coerce_note_flag(note_flag_raw)
     note_num, _note_num_warnings = normalize_note_num(note_num_raw)
 
-    if keep_percent_range_value:
-        value, value_warnings = raw_value_text, []
-    else:
-        value, value_warnings = normalize_value(value_input)
+    value, value_warnings = normalize_value(value_input)
+    natural_sign = _derive_natural_sign_from_value(value)
     date_value, date_warnings = normalize_date(payload.get("date"))
 
     period_type = _normalize_period_type(payload.get("period_type"))
@@ -297,9 +329,17 @@ def normalize_fact_payload(
         period_start = inferred_start
     if period_end is None and inferred_end is not None:
         period_end = inferred_end
+    duration_type = _normalize_duration_type(payload.get("duration_type"))
+    recurring_period = _normalize_recurring_period(payload.get("recurring_period"))
+    value_context = _normalize_value_context(payload.get("value_context"))
 
     normalized: dict[str, Any] = {
         "value": value,
+        "fact_num": _normalize_fact_num(payload.get("fact_num")),
+        "equation": _normalize_equation(payload.get("equation")),
+        "fact_equation": _normalize_equation(payload.get("fact_equation")),
+        "balance_type": _normalize_balance_type(payload.get("balance_type")),
+        "natural_sign": natural_sign,
         "comment_ref": _to_optional_text(comment_raw),
         "note_flag": note_flag,
         "note_name": _to_optional_text(note_name_raw),
@@ -309,11 +349,14 @@ def normalize_fact_payload(
         "period_type": period_type,
         "period_start": period_start,
         "period_end": period_end,
+        "duration_type": duration_type,
+        "recurring_period": recurring_period,
         "path": _normalize_path(payload.get("path")),
         "path_source": _normalize_path_source(payload.get("path_source")),
         "currency": _normalize_currency(payload.get("currency")),
         "scale": _normalize_scale(payload.get("scale")),
         "value_type": normalized_value_type,
+        "value_context": value_context,
     }
     if include_bbox and "bbox" in payload:
         normalized["bbox"] = payload.get("bbox")

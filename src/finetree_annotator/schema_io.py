@@ -1,0 +1,183 @@
+from __future__ import annotations
+
+from copy import deepcopy
+from typing import Any
+
+from .fact_normalization import LEGACY_FACT_KEYS, normalize_annotation_payload, normalize_fact_payload
+from .fact_ordering import compact_document_meta
+from .schema_registry import CURRENT_SCHEMA_VERSION
+from .schemas import PageMeta
+
+
+def _assign_missing_fact_numbers(facts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    assigned: list[dict[str, Any]] = []
+    used_fact_nums: set[int] = set()
+    next_fact_num = 1
+
+    for raw_fact in facts:
+        normalized_fact, _fact_warnings = normalize_fact_payload(raw_fact, include_bbox=False)
+        fact_num = normalized_fact.get("fact_num")
+        if isinstance(fact_num, int) and fact_num >= 1 and fact_num not in used_fact_nums:
+            used_fact_nums.add(fact_num)
+        else:
+            while next_fact_num in used_fact_nums:
+                next_fact_num += 1
+            normalized_fact["fact_num"] = next_fact_num
+            used_fact_nums.add(next_fact_num)
+            next_fact_num += 1
+        assigned.append(normalized_fact)
+    return assigned
+
+
+def _metadata_dict(payload: dict[str, Any]) -> dict[str, Any]:
+    raw_metadata = payload.get("metadata")
+    if isinstance(raw_metadata, dict):
+        return compact_document_meta(raw_metadata)
+    return compact_document_meta(payload.get("document_meta"))
+
+
+def detect_payload_schema_version(payload: Any) -> int | None:
+    if not isinstance(payload, dict):
+        return None
+    raw = payload.get("schema_version")
+    if isinstance(raw, int):
+        return raw
+    if isinstance(raw, str) and raw.isdigit():
+        return int(raw)
+    return None
+
+
+def payload_uses_legacy_aliases(payload: Any) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    if "document_meta" in payload:
+        return True
+    pages = payload.get("pages")
+    if not isinstance(pages, list):
+        return False
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        meta = page.get("meta")
+        if isinstance(meta, dict) and "type" in meta:
+            return True
+        facts = page.get("facts")
+        if not isinstance(facts, list):
+            continue
+        for fact in facts:
+            if not isinstance(fact, dict):
+                continue
+            if any(alias in fact for alias in LEGACY_FACT_KEYS):
+                return True
+            value_type = str(fact.get("value_type") or "").strip().lower()
+            if value_type in {"%", "regular", "percentage"}:
+                return True
+    return False
+
+
+def payload_requires_migration(payload: Any, *, target_version: int = CURRENT_SCHEMA_VERSION) -> bool:
+    if not isinstance(payload, dict):
+        return False
+    version = detect_payload_schema_version(payload)
+    if version is None:
+        return True
+    if version != int(target_version):
+        return True
+    return payload_uses_legacy_aliases(payload)
+
+
+def normalize_payload(
+    payload: Any,
+    *,
+    from_version: str | int = "auto",
+    to_version: int = CURRENT_SCHEMA_VERSION,
+) -> dict[str, Any]:
+    _ = from_version
+    if not isinstance(payload, dict):
+        return {
+            "schema_version": int(to_version),
+            "images_dir": None,
+            "metadata": {},
+            "pages": [],
+        }
+    normalized_payload, _findings = normalize_annotation_payload(deepcopy(payload))
+    canonical_pages: list[dict[str, Any]] = []
+    for page in normalized_payload.get("pages", []):
+        if not isinstance(page, dict):
+            continue
+        image = page.get("image")
+        image_name = str(image).strip() if isinstance(image, str) else None
+        raw_meta = page.get("meta") if isinstance(page.get("meta"), dict) else {}
+        try:
+            meta = PageMeta.model_validate(raw_meta).model_dump(mode="json")
+        except Exception:
+            meta = PageMeta.model_validate({}).model_dump(mode="json")
+        facts_out: list[dict[str, Any]] = []
+        raw_facts = [fact for fact in page.get("facts", []) if isinstance(fact, dict)]
+        normalized_facts = _assign_missing_fact_numbers(raw_facts)
+        for raw_fact, normalized_fact in zip(raw_facts, normalized_facts):
+            include_bbox = "bbox" in raw_fact
+            if include_bbox:
+                normalized_fact["bbox"] = _normalize_bbox_to_list(raw_fact.get("bbox"))
+            facts_out.append(normalized_fact)
+        canonical_pages.append(
+            {
+                "image": image_name,
+                "meta": meta,
+                "facts": facts_out,
+            }
+        )
+
+    images_dir = normalized_payload.get("images_dir")
+    normalized_images_dir = str(images_dir).strip() if isinstance(images_dir, str) else None
+    return {
+        "schema_version": int(to_version),
+        "images_dir": normalized_images_dir or None,
+        "metadata": _metadata_dict(normalized_payload),
+        "pages": canonical_pages,
+    }
+
+
+def _normalize_bbox_to_list(raw_bbox: Any) -> list[float]:
+    def _to_float(value: Any, default: float) -> float:
+        try:
+            return float(value)
+        except Exception:
+            return default
+
+    if isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
+        x = _to_float(raw_bbox[0], 0.0)
+        y = _to_float(raw_bbox[1], 0.0)
+        w = max(_to_float(raw_bbox[2], 1.0), 1.0)
+        h = max(_to_float(raw_bbox[3], 1.0), 1.0)
+        return [round(x, 2), round(y, 2), round(w, 2), round(h, 2)]
+    if isinstance(raw_bbox, dict):
+        x = _to_float(raw_bbox.get("x"), 0.0)
+        y = _to_float(raw_bbox.get("y"), 0.0)
+        w = max(_to_float(raw_bbox.get("w"), 1.0), 1.0)
+        h = max(_to_float(raw_bbox.get("h"), 1.0), 1.0)
+        return [round(x, 2), round(y, 2), round(w, 2), round(h, 2)]
+    return [0.0, 0.0, 1.0, 1.0]
+
+
+def load_any_schema(
+    payload: Any,
+    *,
+    from_version: str | int = "auto",
+    to_version: int = CURRENT_SCHEMA_VERSION,
+) -> dict[str, Any]:
+    return normalize_payload(payload, from_version=from_version, to_version=to_version)
+
+
+def save_canonical(payload: Any, *, to_version: int = CURRENT_SCHEMA_VERSION) -> dict[str, Any]:
+    return normalize_payload(payload, from_version="auto", to_version=to_version)
+
+
+__all__ = [
+    "detect_payload_schema_version",
+    "load_any_schema",
+    "normalize_payload",
+    "payload_requires_migration",
+    "payload_uses_legacy_aliases",
+    "save_canonical",
+]

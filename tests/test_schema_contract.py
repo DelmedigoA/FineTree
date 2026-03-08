@@ -7,6 +7,8 @@ from finetree_annotator.schema_contract import (
     CANONICAL_FACT_KEYS,
     EXTRACTED_FACT_KEYS,
     PAGE_META_KEYS,
+    PROMPT_PAGE_META_KEYS,
+    PROMPT_FACT_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
@@ -18,11 +20,15 @@ def test_schema_contract_tracks_pydantic_models() -> None:
     assert PAGE_META_KEYS == tuple(PageMeta.model_fields.keys())
     assert CANONICAL_FACT_KEYS == tuple(Fact.model_fields.keys())
     assert EXTRACTED_FACT_KEYS == tuple(ExtractedFact.model_fields.keys())
-    assert tuple(PageExtraction.model_fields.keys()) == ("images_dir", "metadata", "pages")
+    assert tuple(PageExtraction.model_fields.keys()) == ("schema_version", "images_dir", "metadata", "pages")
 
 
 def test_schema_contract_required_prompt_keys_are_canonical() -> None:
     assert set(REQUIRED_PROMPT_CANONICAL_KEYS).issubset(set(CANONICAL_FACT_KEYS))
+    assert "annotation_note" not in PROMPT_PAGE_META_KEYS
+    assert "annotation_status" not in PROMPT_PAGE_META_KEYS
+    assert "fact_num" not in PROMPT_FACT_KEYS
+    assert "fact_equation" not in PROMPT_FACT_KEYS
 
 
 def test_extraction_prompt_file_is_in_sync_with_schema_contract() -> None:
@@ -45,3 +51,13 @@ def test_metadata_fields_are_in_model_prompt() -> None:
     assert "company_name" in prompt
     assert "company_id" in prompt
     assert "report_year" in prompt
+
+
+def test_balance_semantics_fields_are_in_prompts() -> None:
+    extraction_prompt = default_extraction_prompt_template()
+    fill_prompt = default_gemini_fill_prompt_template()
+    assert "balance_type" in extraction_prompt
+    assert "natural_sign" in extraction_prompt
+    assert "equation" in fill_prompt
+    assert "balance_type" in fill_prompt
+    assert "natural_sign" in fill_prompt

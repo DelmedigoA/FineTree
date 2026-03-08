@@ -24,7 +24,7 @@ def test_normalize_fact_payload_maps_legacy_keys_to_canonical() -> None:
         }
     )
     assert warnings == []
-    assert normalized["value"] == "1234"
+    assert normalized["value"] == "1,234"
     assert normalized["comment_ref"] == "*free text"
     assert normalized["note_flag"] is False
     assert normalized["note_num"] == 19
@@ -43,37 +43,40 @@ def test_normalize_date_accepts_year_year_month_and_converts_dmy() -> None:
     assert dmy_warnings == []
 
 
-def test_normalize_value_allows_percent_and_normalizes_negative_non_percent() -> None:
+def test_normalize_value_preserves_raw_nonempty_text() -> None:
     percent_value, percent_warnings = normalize_value(" 12.5% ")
     negative_value, negative_warnings = normalize_value("-123.45")
     assert percent_value == "12.5%"
     assert percent_warnings == []
-    assert negative_value == "(123.45)"
+    assert negative_value == "-123.45"
     assert negative_warnings == []
 
 
-def test_normalize_value_dash_and_noncanonical_report_warnings() -> None:
+def test_normalize_value_dash_and_placeholder_report_warnings() -> None:
     hyphen_value, hyphen_warnings = normalize_value("-")
     dash_value, dash_warnings = normalize_value("—")
+    empty_value, empty_warnings = normalize_value("  ")
     bad_value, bad_warnings = normalize_value("abc")
     assert hyphen_value == "-"
     assert hyphen_warnings == []
-    assert dash_value == ""
+    assert dash_value == "-"
     assert "placeholder_value" in dash_warnings
+    assert empty_value == "-"
+    assert "empty_value" in empty_warnings
     assert bad_value == "abc"
-    assert "noncanonical_value" in bad_warnings
+    assert bad_warnings == []
 
 
 def test_normalize_value_handles_marker_prefixed_numeric_and_currency_dash() -> None:
     marker_value, marker_warnings = normalize_value("*62,565")
     currency_dash_value, currency_dash_warnings = normalize_value("$           -")
-    assert marker_value == "62565"
+    assert marker_value == "*62,565"
     assert marker_warnings == []
-    assert currency_dash_value == "-"
+    assert currency_dash_value == "$           -"
     assert currency_dash_warnings == []
 
 
-def test_normalize_fact_payload_moves_range_value_to_note_reference() -> None:
+def test_normalize_fact_payload_keeps_range_value_in_value_field() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "7-15",
@@ -82,8 +85,8 @@ def test_normalize_fact_payload_moves_range_value_to_note_reference() -> None:
             "path": [],
         }
     )
-    assert normalized["value"] == ""
-    assert normalized["note_ref"] == "7-15"
+    assert normalized["value"] == "7-15"
+    assert normalized["note_ref"] is None
     assert warnings == []
 
 
@@ -99,6 +102,42 @@ def test_normalize_fact_payload_keeps_range_value_for_percent_type() -> None:
     assert normalized["value"] == "7-15"
     assert normalized["note_ref"] is None
     assert normalized["value_type"] == "percent"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_preserves_equation() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "100",
+            "fact_num": "7",
+            "equation": "80 + 20",
+            "fact_equation": "f1 + f3",
+            "path": [],
+        }
+    )
+    assert normalized["fact_num"] == 7
+    assert normalized["equation"] == "80 + 20"
+    assert normalized["fact_equation"] == "f1 + f3"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_sets_balance_type_and_deterministic_natural_sign() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "(200)",
+            "balance_type": "debit",
+            "natural_sign": "positive",
+            "path": [],
+        }
+    )
+    assert normalized["balance_type"] == "debit"
+    assert normalized["natural_sign"] == "negative"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_sets_natural_sign_null_for_dash() -> None:
+    normalized, warnings = normalize_fact_payload({"value": "-", "path": []})
+    assert normalized["natural_sign"] is None
     assert warnings == []
 
 
@@ -140,7 +179,7 @@ def test_normalize_annotation_payload_reports_issues() -> None:
     assert normalized["pages"][0]["facts"][0]["note_num"] == 7
     assert normalized["pages"][0]["facts"][0]["note_flag"] is False
     assert normalized["pages"][0]["facts"][0]["date"] == "2024-12-31"
-    assert normalized["pages"][0]["facts"][0]["value"] == "(123)"
+    assert normalized["pages"][0]["facts"][0]["value"] == "-123"
     assert findings
     assert "legacy_keys" in findings[0]["issue_codes"]
 

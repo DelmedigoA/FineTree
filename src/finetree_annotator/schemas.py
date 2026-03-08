@@ -7,6 +7,8 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 from .date_normalization import normalize_date
 
+CURRENT_SCHEMA_VERSION = 2
+
 
 def _normalize_note_reference_value(value: Any) -> str | None:
     if value is None:
@@ -20,6 +22,59 @@ def _normalize_note_name_value(value: Any) -> str | None:
         return None
     text = str(value).strip()
     return text or None
+
+
+def _normalize_page_annotation_note_value(value: Any) -> str | None:
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _normalize_page_annotation_status_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    aliases = {
+        "approved": "approved",
+        "approve": "approved",
+        "flagged": "flagged",
+        "flag": "flagged",
+    }
+    normalized = aliases.get(text)
+    if normalized is None:
+        raise ValueError("annotation_status must be 'approved', 'flagged', or null.")
+    return normalized
+
+
+def _normalize_equation_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _normalize_fact_num_value(value: Any) -> int | None:
+    if value in ("", None):
+        return None
+    if isinstance(value, bool):
+        raise ValueError("fact_num must be an integer >= 1 or null.")
+    if isinstance(value, int):
+        if value < 1:
+            raise ValueError("fact_num must be an integer >= 1 or null.")
+        return value
+    if isinstance(value, float) and float(value).is_integer():
+        parsed = int(value)
+        if parsed < 1:
+            raise ValueError("fact_num must be an integer >= 1 or null.")
+        return parsed
+    text = str(value).strip()
+    if text.isdigit():
+        parsed = int(text)
+        if parsed < 1:
+            raise ValueError("fact_num must be an integer >= 1 or null.")
+        return parsed
+    raise ValueError("fact_num must be an integer >= 1 or null.")
 
 
 def _normalize_note_num_value(value: Any) -> int | None:
@@ -117,6 +172,21 @@ def _normalize_report_year_value(value: Any) -> int | None:
     raise ValueError("report_year must be an integer or null.")
 
 
+def _normalize_schema_version_value(value: Any) -> int:
+    if value in ("", None):
+        return CURRENT_SCHEMA_VERSION
+    if isinstance(value, bool):
+        raise ValueError("schema_version must be an integer.")
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float) and float(value).is_integer():
+        return int(value)
+    text = str(value).strip()
+    if text.isdigit():
+        return int(text)
+    raise ValueError("schema_version must be an integer.")
+
+
 def _normalize_entity_type_value(value: Any) -> str | None:
     if value in ("", None):
         return None
@@ -136,6 +206,36 @@ def _normalize_entity_type_value(value: Any) -> str | None:
     if text in aliases:
         return aliases[text]
     raise ValueError("entity_type must be a supported enum value or null.")
+
+
+def _normalize_report_scope_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    lowered = text.lower()
+    if lowered == "null":
+        return None
+    normalized = lowered.replace(" ", "_").replace("-", "_")
+    aliases = {
+        "proforma": "pro_forma",
+        "pro_forma": "pro_forma",
+        "pro forma": "pro_forma",
+    }
+    normalized = aliases.get(normalized, normalized)
+    allowed = {
+        "separate",
+        "consolidated",
+        "combined",
+        "pro_forma",
+        "other",
+    }
+    if normalized in allowed:
+        return normalized
+    raise ValueError(
+        "report_scope must be separate, consolidated, combined, pro_forma, other, or null."
+    )
 
 
 def _normalize_page_type_value(value: Any) -> str | None:
@@ -190,18 +290,90 @@ def _normalize_value_type_value(value: Any) -> str | None:
         return "percent"
     if lowered in {"amount", "regular"}:
         return "amount"
-    if lowered in {"ratio", "count"}:
+    if lowered in {"ratio", "count", "points"}:
         return lowered
-    raise ValueError("value_type must be 'amount', 'percent', 'ratio', 'count', or null.")
+    raise ValueError("value_type must be 'amount', 'percent', 'ratio', 'count', 'points', or null.")
+
+
+def _normalize_value_context_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    if text in {"textual", "tabular", "mixed"}:
+        return text
+    raise ValueError("value_context must be 'textual', 'tabular', 'mixed', or null.")
+
+
+def _normalize_balance_type_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    if text in {"debit", "credit"}:
+        return text
+    raise ValueError("balance_type must be 'debit', 'credit', or null.")
+
+
+def _normalize_natural_sign_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    aliases = {
+        "plus": "positive",
+        "+": "positive",
+        "positive": "positive",
+        "minus": "negative",
+        "-": "negative",
+        "negative": "negative",
+    }
+    normalized = aliases.get(text)
+    if normalized is not None:
+        return normalized
+    raise ValueError("natural_sign must be 'positive', 'negative', or null.")
+
+
+def _derive_natural_sign_from_value(value: str) -> str | None:
+    text = str(value or "").strip()
+    if text == "-":
+        return None
+    if "(" in text and ")" in text:
+        return "negative"
+    return "positive"
+
+
+def _normalize_required_value(value: Any) -> str:
+    if value is None:
+        raise ValueError("value must be a non-empty string.")
+    text = str(value).strip()
+    if not text:
+        raise ValueError("value must be a non-empty string.")
+    return text
 
 
 def _normalize_period_type_value(value: Any) -> str | None:
     if value in ("", None):
         return None
     text = str(value).strip().lower()
-    if text in {"instant", "duration"}:
+    if text in {"instant", "duration", "expected"}:
         return text
-    raise ValueError("period_type must be 'instant', 'duration', or null.")
+    raise ValueError("period_type must be 'instant', 'duration', 'expected', or null.")
+
+
+def _normalize_duration_type_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    if text == "recurring":
+        return text
+    raise ValueError("duration_type must be 'recurring' or null.")
+
+
+def _normalize_recurring_period_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    if text in {"daily", "quarterly", "monthly", "yearly"}:
+        return text
+    raise ValueError("recurring_period must be daily, quarterly, monthly, yearly, or null.")
 
 
 def _normalize_path_source_value(value: Any) -> str | None:
@@ -273,6 +445,23 @@ class ValueType(str, Enum):
     percent = "percent"
     ratio = "ratio"
     count = "count"
+    points = "points"
+
+
+class ValueContext(str, Enum):
+    textual = "textual"
+    tabular = "tabular"
+    mixed = "mixed"
+
+
+class BalanceType(str, Enum):
+    debit = "debit"
+    credit = "credit"
+
+
+class NaturalSign(str, Enum):
+    positive = "positive"
+    negative = "negative"
 
 
 class Currency(str, Enum):
@@ -311,9 +500,34 @@ class EntityType(str, Enum):
     other = "other"
 
 
+class ReportScope(str, Enum):
+    separate = "separate"
+    consolidated = "consolidated"
+    combined = "combined"
+    pro_forma = "pro_forma"
+    other = "other"
+
+
 class PeriodType(str, Enum):
     instant = "instant"
     duration = "duration"
+    expected = "expected"
+
+
+class DurationType(str, Enum):
+    recurring = "recurring"
+
+
+class RecurringPeriod(str, Enum):
+    daily = "daily"
+    quarterly = "quarterly"
+    monthly = "monthly"
+    yearly = "yearly"
+
+
+class AnnotationStatus(str, Enum):
+    approved = "approved"
+    flagged = "flagged"
 
 
 class PathSource(str, Enum):
@@ -327,6 +541,8 @@ class PageMeta(BaseModel):
     page_type: PageType = PageType.other
     statement_type: Optional[StatementType] = None
     title: Optional[str] = None
+    annotation_note: Optional[str] = None
+    annotation_status: Optional[AnnotationStatus] = None
     model_config = ConfigDict(extra="forbid")
 
     @model_validator(mode="before")
@@ -382,6 +598,16 @@ class PageMeta(BaseModel):
     def _normalize_statement_type(cls, value: Any) -> str | None:
         return _normalize_statement_type_value(value)
 
+    @field_validator("annotation_note", mode="before")
+    @classmethod
+    def _normalize_annotation_note(cls, value: Any) -> str | None:
+        return _normalize_page_annotation_note_value(value)
+
+    @field_validator("annotation_status", mode="before")
+    @classmethod
+    def _normalize_annotation_status(cls, value: Any) -> str | None:
+        return _normalize_page_annotation_status_value(value)
+
     @property
     def type(self) -> StatementType | PageType:
         if self.statement_type is not None:
@@ -391,6 +617,11 @@ class PageMeta(BaseModel):
 
 class Fact(BaseModel):
     value: str
+    fact_num: Optional[int] = None
+    equation: Optional[str] = None
+    fact_equation: Optional[str] = None
+    balance_type: Optional[BalanceType] = None
+    natural_sign: Optional[NaturalSign] = None
     comment_ref: Optional[str] = Field(default=None, validation_alias=AliasChoices("comment_ref", "ref_comment", "comment"))
     note_flag: bool = Field(
         default=False,
@@ -406,17 +637,40 @@ class Fact(BaseModel):
     period_type: Optional[PeriodType] = None
     period_start: Optional[str] = None
     period_end: Optional[str] = None
+    duration_type: Optional[DurationType] = None
+    recurring_period: Optional[RecurringPeriod] = None
     path: List[str]
     path_source: Optional[PathSource] = None
     currency: Optional[Currency] = None
     scale: Optional[Scale] = None
     value_type: Optional[ValueType] = None
+    value_context: Optional[ValueContext] = None
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def _validate_value(cls, value: Any) -> str:
+        return _normalize_required_value(value)
 
     @field_validator("comment_ref", mode="before")
     @classmethod
     def _normalize_comment_ref(cls, value: Any) -> str | None:
         return _normalize_note_reference_value(value)
+
+    @field_validator("equation", mode="before")
+    @classmethod
+    def _normalize_equation(cls, value: Any) -> str | None:
+        return _normalize_equation_value(value)
+
+    @field_validator("fact_equation", mode="before")
+    @classmethod
+    def _normalize_fact_equation(cls, value: Any) -> str | None:
+        return _normalize_equation_value(value)
+
+    @field_validator("fact_num", mode="before")
+    @classmethod
+    def _normalize_fact_num(cls, value: Any) -> int | None:
+        return _normalize_fact_num_value(value)
 
     @field_validator("note_ref", mode="before")
     @classmethod
@@ -458,6 +712,16 @@ class Fact(BaseModel):
     def _validate_period_end(cls, value: Any) -> str | None:
         return _validate_day_date(value)
 
+    @field_validator("duration_type", mode="before")
+    @classmethod
+    def _validate_duration_type(cls, value: Any) -> str | None:
+        return _normalize_duration_type_value(value)
+
+    @field_validator("recurring_period", mode="before")
+    @classmethod
+    def _validate_recurring_period(cls, value: Any) -> str | None:
+        return _normalize_recurring_period_value(value)
+
     @field_validator("path_source", mode="before")
     @classmethod
     def _validate_path_source(cls, value: Any) -> str | None:
@@ -468,10 +732,27 @@ class Fact(BaseModel):
     def _validate_value_type(cls, value: Any) -> str | None:
         return _normalize_value_type_value(value)
 
+    @field_validator("value_context", mode="before")
+    @classmethod
+    def _validate_value_context(cls, value: Any) -> str | None:
+        return _normalize_value_context_value(value)
+
+    @field_validator("balance_type", mode="before")
+    @classmethod
+    def _validate_balance_type(cls, value: Any) -> str | None:
+        return _normalize_balance_type_value(value)
+
+    @field_validator("natural_sign", mode="before")
+    @classmethod
+    def _validate_natural_sign(cls, value: Any) -> str | None:
+        return _normalize_natural_sign_value(value)
+
     @model_validator(mode="after")
     def _validate_note_num_requires_note_flag(self) -> "Fact":
         if self.note_num is not None and not self.note_flag:
             raise ValueError("note_num requires note_flag=true.")
+        derived_sign = _derive_natural_sign_from_value(self.value)
+        self.natural_sign = NaturalSign(derived_sign) if derived_sign is not None else None
         return self
 
     @property
@@ -515,6 +796,7 @@ class Metadata(BaseModel):
     company_name: Optional[str] = None
     company_id: Optional[str] = None
     report_year: Optional[int] = None
+    report_scope: Optional[ReportScope] = None
     entity_type: Optional[EntityType] = None
     model_config = ConfigDict(extra="forbid")
 
@@ -543,6 +825,11 @@ class Metadata(BaseModel):
     def _normalize_report_year(cls, value: Any) -> int | None:
         return _normalize_report_year_value(value)
 
+    @field_validator("report_scope", mode="before")
+    @classmethod
+    def _normalize_report_scope(cls, value: Any) -> str | None:
+        return _normalize_report_scope_value(value)
+
     @field_validator("entity_type", mode="before")
     @classmethod
     def _normalize_entity_type(cls, value: Any) -> str | None:
@@ -553,10 +840,16 @@ DocumentMeta = Metadata
 
 
 class Document(BaseModel):
+    schema_version: int = CURRENT_SCHEMA_VERSION
     images_dir: Optional[str] = None
     metadata: Optional[Metadata] = Field(default=None, validation_alias=AliasChoices("metadata", "document_meta"))
     pages: List[Page] = Field(default_factory=list)
     model_config = ConfigDict(extra="forbid")
+
+    @field_validator("schema_version", mode="before")
+    @classmethod
+    def _normalize_schema_version(cls, value: Any) -> int:
+        return _normalize_schema_version_value(value)
 
 
 class PageExtraction(Document):
