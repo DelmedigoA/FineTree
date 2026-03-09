@@ -239,6 +239,24 @@ def test_gemini_fill_dialog_uses_supported_model_dropdown() -> None:
     dialog.close()
 
 
+def test_qwen_prompt_dialog_accepts_thinking_controls() -> None:
+    _qt_app()
+    dialog = app_mod.QwenPromptDialog(
+        prompt_text="test",
+        model_name="qwen-flash-gt",
+        show_thinking_control=True,
+        thinking_enabled_default=True,
+        thinking_level_default="high",
+        few_shot_summary="summary",
+    )
+    options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
+    assert "qwen-flash-gt" in options
+    assert dialog.model() == "qwen-flash-gt"
+    assert dialog.thinking_check.isChecked() is True
+    assert dialog.thinking_level_combo.currentText().strip().lower() == "high"
+    dialog.close()
+
+
 def test_note_num_clear_sets_null(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"

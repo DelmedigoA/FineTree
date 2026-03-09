@@ -56,6 +56,39 @@ def test_gemini_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Pa
     assert seen["enable_thinking"] is False
 
 
+def test_gemini_stream_worker_forwards_model_and_thinking_level(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
+
+    monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
+    monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.GeminiStreamWorker(
+        image_path=image_path,
+        prompt="extract",
+        model="gemini-3.1-pro-preview",
+        api_key="k",
+        enable_thinking=True,
+        thinking_level="high",
+    )
+
+    worker.run()
+
+    assert seen["model"] == "gemini-3.1-pro-preview"
+    assert seen["enable_thinking"] is True
+    assert seen["thinking_level"] == "high"
+
+
 def test_qwen_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path) -> None:
     image_path = tmp_path / "page.png"
     image_path.write_bytes(b"img")

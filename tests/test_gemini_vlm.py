@@ -154,6 +154,173 @@ def test_build_generation_contents_includes_few_shot_turns(tmp_path: Path, monke
     assert contents[4]["parts"][1]["text"] == "extract final"
 
 
+def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    example_image = tmp_path / "example.png"
+    target_image.write_bytes(b"target")
+    example_image.write_bytes(b"example")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        Part = _FakePart
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    class _FakeResponse:
+        text = '{"ok":true}'
+
+        def model_dump(self, mode="json"):
+            _ = mode
+            return {"text": self.text, "thinking": "hidden-thought"}
+
+    class _FakeModels:
+        def generate_content(self, **kwargs):
+            assert kwargs["model"] == "gemini-3.1-pro-preview"
+            return _FakeResponse()
+
+    class _FakeClient:
+        def __init__(self, api_key=None):
+            self.api_key = api_key
+            self.models = _FakeModels()
+
+    class _FakeGenAI:
+        Client = _FakeClient
+
+    monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    text = gemini_vlm.generate_content_from_image(
+        image_path=target_image,
+        prompt="extract now",
+        model="Gemini Pro",
+        api_key="k",
+        few_shot_examples=[{"image_path": example_image, "expected_json": '{"pages":[]}'}],
+        enable_thinking=True,
+        thinking_level="high",
+    )
+
+    assert text == '{"ok":true}'
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+    response_payload = json.loads((log_dir / "response.json").read_text(encoding="utf-8"))
+
+    assert request_payload["model"] == "gemini-3.1-pro-preview"
+    assert request_payload["prompt"] == "extract now"
+    assert request_payload["exact_request"]["contents"][0]["role"] == "user"
+    assert request_payload["exact_request"]["contents"][0]["parts"][0] == {"type": "image_file", "file": "few_shot_01_example.png"}
+    assert request_payload["exact_request"]["contents"][-1]["parts"][0] == {"type": "image_file", "file": "input_target.png"}
+    assert request_payload["few_shot_examples"][0]["expected_json"] == '{"pages":[]}'
+    assert (log_dir / request_payload["logged_image_path"]).read_bytes() == b"target"
+    assert (log_dir / request_payload["few_shot_examples"][0]["logged_image_path"]).read_bytes() == b"example"
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == '{"ok":true}'
+    assert response_payload["thinking"] == "hidden-thought"
+
+
+def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    target_image.write_bytes(b"target")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeThinkingConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeThinkingLevel:
+        HIGH = "HIGH"
+        LOW = "LOW"
+        MINIMAL = "MINIMAL"
+
+    class _FakeTypes:
+        Part = _FakePart
+        ThinkingConfig = _FakeThinkingConfig
+        GenerateContentConfig = _FakeGenerateContentConfig
+        ThinkingLevel = _FakeThinkingLevel
+
+    class _FakeChunk:
+        def __init__(self, text: str, thought: str):
+            self.text = text
+            self.thought = thought
+
+        def model_dump(self, mode="json"):
+            _ = mode
+            return {"text": self.text, "thought": self.thought}
+
+    class _FakeModels:
+        def generate_content_stream(self, **kwargs):
+            assert kwargs["model"] == "gemini-3.1-pro-preview"
+            return iter([
+                _FakeChunk("part-1 ", "think-1"),
+                _FakeChunk("part-2", "think-2"),
+            ])
+
+    class _FakeClient:
+        def __init__(self, api_key=None):
+            self.api_key = api_key
+            self.models = _FakeModels()
+
+    class _FakeGenAI:
+        Client = _FakeClient
+
+    monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    chunks = list(
+        gemini_vlm.stream_content_from_image(
+            image_path=target_image,
+            prompt="extract stream",
+            model="Gemini Pro",
+            api_key="k",
+            enable_thinking=True,
+            thinking_level="high",
+        )
+    )
+
+    assert chunks == ["part-1 ", "part-2"]
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    event_lines = (log_dir / "events.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    event_payloads = [json.loads(line) for line in event_lines]
+    chunk_events = [payload for payload in event_payloads if payload["event"] == "stream_chunk"]
+    request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+
+    assert len(chunk_events) == 2
+    assert request_payload["exact_request"]["contents"] == [{"type": "image_file", "file": "input_target.png"}, "extract stream"]
+    assert chunk_events[0]["raw"]["thought"] == "think-1"
+    assert chunk_events[1]["raw"]["thought"] == "think-2"
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 part-2"
+
+
 def test_generation_config_uses_high_thinking_for_gemini_3(monkeypatch) -> None:
     class _FakeThinkingConfig:
         def __init__(self, **kwargs):
@@ -374,6 +541,14 @@ def test_generation_config_rejects_unknown_thinking_level(monkeypatch) -> None:
 
     with pytest.raises(ValueError, match="thinking_level"):
         gemini_vlm._generation_config("gemini-3.1-flash-lite", thinking_level="ultra")
+
+
+def test_resolve_supported_gemini_model_name_maps_generic_pro_alias() -> None:
+    assert gemini_vlm.resolve_supported_gemini_model_name("Gemini Pro") == "gemini-3.1-pro-preview"
+
+
+def test_resolve_supported_gemini_model_name_preserves_supported_exact_model() -> None:
+    assert gemini_vlm.resolve_supported_gemini_model_name("gemini-2.5-pro") == "gemini-2.5-pro"
 
 
 def test_parse_llm_json_accepts_quad_backtick_fence() -> None:

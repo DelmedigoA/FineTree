@@ -1,0 +1,14 @@
+{
+  "operation": "stream_content",
+  "model": "",
+  "prompt": "test prompt",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-148/test_stream_content_from_image5/page.png",
+  "logged_image_path": "input_target.png",
+  "enable_thinking": null,
+  "few_shot_examples": [],
+  "config_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-148/test_stream_content_from_image5/cfg.yaml",
+  "max_new_tokens": null,
+  "do_sample": null,
+  "temperature": null,
+  "top_p": null
+}

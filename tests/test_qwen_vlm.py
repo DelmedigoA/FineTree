@@ -204,6 +204,54 @@ def test_generate_content_from_image_passes_max_new_tokens(monkeypatch) -> None:
     assert seen["max_new_tokens"] == 7
 
 
+def test_stream_content_from_image_writes_timestamped_log_folder(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    image_path = tmp_path / "page.png"
+    example_path = tmp_path / "example.png"
+    image_path.write_bytes(b"img-target")
+    example_path.write_bytes(b"img-example")
+
+    def _fake_flash_stream(**kwargs):
+        log_event = kwargs["log_event"]
+        log_event("backend_stream_event", {"backend": "qwen_flash", "event_payload": {"raw": "one"}})
+        yield "flash "
+        log_event("backend_stream_event", {"backend": "qwen_flash", "event_payload": {"raw": "two"}})
+        yield "ok"
+
+    monkeypatch.setattr(qwen_vlm, "_stream_content_from_qwen_flash_endpoint", _fake_flash_stream)
+
+    output = "".join(
+        qwen_vlm.stream_content_from_image(
+            image_path=image_path,
+            prompt="extract",
+            model="qwen-flash-gt",
+            few_shot_examples=[
+                {"image_path": example_path, "expected_json": '{"meta":{},"facts":[]}'},
+            ],
+            enable_thinking=True,
+        )
+    )
+
+    assert output == "flash ok"
+    log_dirs = list((tmp_path / "qwen_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+    response_payload = json.loads((log_dir / "response.json").read_text(encoding="utf-8"))
+    events = [json.loads(line) for line in (log_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+
+    assert request_payload["prompt"] == "extract"
+    assert request_payload["exact_request"]["backend"] == "qwen_flash"
+    assert request_payload["exact_request"]["payload"]["messages"][0]["content"][0] == {"type": "image_file", "file": "few_shot_01_example.png"}
+    assert request_payload["exact_request"]["payload"]["messages"][-1]["content"][0] == {"type": "image_file", "file": "input_target.png"}
+    assert (log_dir / request_payload["logged_image_path"]).read_bytes() == b"img-target"
+    assert (log_dir / request_payload["few_shot_examples"][0]["logged_image_path"]).read_bytes() == b"img-example"
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == "flash ok"
+    assert response_payload["text"] == "flash ok"
+    assert any(event["event"] == "backend_stream_event" for event in events)
+    assert any(event["event"] == "output_chunk" and event["text"] == "flash " for event in events)
+
+
 def test_resolve_adapter_reference_supports_hub_repo() -> None:
     adapter_ref, is_local = qwen_vlm._resolve_adapter_reference("asafd60/qwen35-test")
     assert adapter_ref == "asafd60/qwen35-test"

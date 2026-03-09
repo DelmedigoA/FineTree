@@ -10,6 +10,11 @@ DEFAULT_TEST_FEW_SHOT_PAGES: tuple[str, ...] = (
     "page_0009.png",
     "page_0002.png",
 )
+DEFAULT_TEST_ONE_SHOT_PAGE = "page_0005.png"
+DEFAULT_2015_TWO_SHOT_SELECTIONS: tuple[tuple[str, str], ...] = (
+    ("2015", "page_0004.png"),
+    ("2015", "page_0011.png"),
+)
 DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS: tuple[tuple[str, str], ...] = (
     ("test", "page_0009.png"),
     ("test", "page_0004.png"),
@@ -224,7 +229,9 @@ def load_complex_few_shot_examples(
 
 
 __all__ = [
+    "DEFAULT_2015_TWO_SHOT_SELECTIONS",
     "DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS",
+    "DEFAULT_TEST_ONE_SHOT_PAGE",
     "DEFAULT_TEST_FEW_SHOT_PAGES",
     "build_repo_roots",
     "load_complex_few_shot_examples",

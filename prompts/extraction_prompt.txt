@@ -102,34 +102,35 @@ Type/validation rules (must match schema):
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
-2. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
-3. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
-4. For percent values, keep `%` in `value`.
-5. Leave `equation` null unless the source page explicitly prints an equation or arithmetic relation for that fact.
-6. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
-7. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
-8. `note_ref`: use when the fact points or references another note; else `null`.
-9. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
-10. `currency`: infer from page/header context when clear, else `null`.
-11. `scale`: `1` unless page/header indicates thousands or millions.
-12. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
-13. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
-14. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
-15. `period_type="instant"` means the fact represents a value at a single point in time.
-16. `period_type="duration"` means the fact represents a value over a period between two dates.
-17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
-18. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
-19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-20. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
-21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
-22. `row_role` and `aggregation_role` are independent:
+2. Only emit facts anchored on a visible numeric value or numeric symbol cell. Do not emit standalone text labels, section titles, row labels, column headers, page titles, or captions such as `נכסים שוטפים` unless they are part of a numeric fact being extracted.
+3. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
+4. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
+5. For percent values, keep `%` in `value`.
+6. Leave `equation` null unless the source page explicitly prints an equation or arithmetic relation for that fact.
+7. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
+8. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
+9. `note_ref`: use when the fact points or references another note; else `null`.
+10. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
+11. `currency`: infer from page/header context when clear, else `null`.
+12. `scale`: `1` unless page/header indicates thousands or millions.
+13. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
+14. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
+15. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
+16. `period_type="instant"` means the fact represents a value at a single point in time.
+17. `period_type="duration"` means the fact represents a value over a period between two dates.
+18. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
+19. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
+20. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
+21. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
+22. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+23. `row_role` and `aggregation_role` are independent:
     - `row_role`: `detail|total`
     - `aggregation_role`: `additive|subtractive`
     A total row can still be `additive` or `subtractive` when it contributes to a higher-level total.
-23. Do not use `balance_type` to choose equation operators.
-24. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-25. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-26. Do not emit empty-value facts.
+24. Do not use `balance_type` to choose equation operators.
+25. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+26. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+27. Do not emit empty-value facts.
 Page classification rules:
 1. Use `page_type="title"` for cover/title pages.
 2. Use `page_type="contents"` for table-of-contents pages.
