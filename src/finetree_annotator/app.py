@@ -70,9 +70,11 @@ from .annotation_core import (
     serialize_annotations_json,
 )
 from .annotation_backups import atomic_write_text, create_annotation_backup
+from .equation_integrity import audit_and_rebuild_financial_facts, resequence_fact_numbers_and_remap_fact_equations
 from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
+from .gemini_vlm import DEFAULT_GEMINI_MODEL, SUPPORTED_GEMINI_MODELS
 from .gemini_few_shot import (
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
     DEFAULT_TEST_FEW_SHOT_PAGES,
@@ -114,6 +116,7 @@ QWEN_GT_MODEL_CHOICES: tuple[str, ...] = (
     "qwen3.5-27b",
     "Qwen/Qwen3.5-27B",
 )
+GEMINI_MODEL_CHOICES: tuple[str, ...] = SUPPORTED_GEMINI_MODELS
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_ROOT.parents[1]
@@ -130,6 +133,7 @@ PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
 VALUE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "value_type")
 VALUE_CONTEXT_OPTIONS: tuple[str, ...] = enum_options("fact", "value_context")
 BALANCE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "balance_type")
+ROW_ROLE_OPTIONS: tuple[str, ...] = enum_options("fact", "row_role")
 AGGREGATION_ROLE_OPTIONS: tuple[str, ...] = enum_options("fact", "aggregation_role")
 STATEMENT_TYPE_OPTIONS: tuple[str, ...] = enum_options("page_meta", "statement_type")
 ENTITY_TYPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "entity_type")
@@ -158,6 +162,7 @@ GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
     ("duration_type", True),
     ("recurring_period", True),
     ("balance_type", True),
+    ("row_role", True),
     ("aggregation_role", True),
     ("value_context", True),
     ("path_source", False),
@@ -178,6 +183,7 @@ GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
     "recurring_period",
     "value_context",
     "balance_type",
+    "row_role",
     "aggregation_role",
     "path_source",
     "value_type",
@@ -311,8 +317,9 @@ def _normalize_aggregation_role_for_equation(value: Any) -> str | None:
         "-": "subtractive",
         "minus": "subtractive",
         "subtractive": "subtractive",
-        "total": "total",
-        "unknown": "unknown",
+        # Backward compatibility with pre-row_role payloads.
+        "total": "additive",
+        "unknown": "additive",
     }
     return aliases.get(text)
 
@@ -487,6 +494,8 @@ def _equation_result_match_state(
 
 def _evaluate_equation_string(equation: Any) -> str | None:
     text = str(equation or "").strip()
+    if "=" in text:
+        text = text.split("=", 1)[0].strip()
     if not text or not _SAFE_EQUATION_CHARS_RE.fullmatch(text):
         return None
     normalized = re.sub(r"\s+", "", text)
@@ -793,12 +802,20 @@ class AnnotRectItem(QGraphicsRectItem):
         self._order_label: Optional[int] = None
         self._show_order_label = True
         self._equation_reference_preview = False
+        self._equation_match_ok = False
 
     def set_equation_reference_preview(self, enabled: bool) -> None:
         next_value = bool(enabled)
         if self._equation_reference_preview == next_value:
             return
         self._equation_reference_preview = next_value
+        self.update()
+
+    def set_equation_match_ok(self, enabled: bool) -> None:
+        next_value = bool(enabled)
+        if self._equation_match_ok == next_value:
+            return
+        self._equation_match_ok = next_value
         self.update()
 
     def set_order_label(self, order: Optional[int], *, visible: bool = True) -> None:
@@ -814,11 +831,14 @@ class AnnotRectItem(QGraphicsRectItem):
         painter.save()
         pen_color = QColor("#d92d20")
         pen_width = 1
-        if self._equation_reference_preview:
+        if self.isSelected():
+            pen_color = QColor("#175cd3")
+            pen_width = 2
+        elif self._equation_reference_preview:
             pen_color = QColor("#14804a")
             pen_width = 2
-        elif self.isSelected():
-            pen_color = QColor("#175cd3")
+        elif self._equation_match_ok:
+            pen_color = QColor("#14804a")
             pen_width = 2
         pen = QPen(pen_color)
         pen.setWidth(pen_width)
@@ -1514,8 +1534,13 @@ class GeminiPromptDialog(QDialog):
 
         form = QFormLayout()
         self.form_layout = form
-        self.model_edit = QLineEdit(model_name)
-        form.addRow("model", self.model_edit)
+        self.model_combo = QComboBox()
+        self.model_combo.setEditable(True)
+        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
+        for option in GEMINI_MODEL_CHOICES:
+            self.model_combo.addItem(option)
+        self.model_combo.setCurrentText(model_name)
+        form.addRow("model", self.model_combo)
         self.thinking_check = QCheckBox("Enable thinking")
         self.thinking_check.setChecked(bool(thinking_enabled_default))
         self.thinking_level_combo = QComboBox()
@@ -1573,7 +1598,7 @@ class GeminiPromptDialog(QDialog):
         return self.prompt_edit.toPlainText()
 
     def model(self) -> str:
-        return self.model_edit.text().strip()
+        return self.model_combo.currentText().strip()
 
     def enable_thinking(self) -> bool:
         return self.thinking_level() != "minimal"
@@ -1624,7 +1649,12 @@ class GeminiFillDialog(QDialog):
         root.addWidget(hint)
 
         form = QFormLayout()
-        self.model_edit = QLineEdit(model_name)
+        self.model_combo = QComboBox()
+        self.model_combo.setEditable(True)
+        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
+        for option in GEMINI_MODEL_CHOICES:
+            self.model_combo.addItem(option)
+        self.model_combo.setCurrentText(model_name)
         self.thinking_check = QCheckBox("Enable thinking")
         self.thinking_check.setChecked(bool(thinking_enabled_default))
         self.thinking_level_combo = QComboBox()
@@ -1636,7 +1666,7 @@ class GeminiFillDialog(QDialog):
         self.thinking_level_combo.setCurrentIndex(max(0, level_idx))
         self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
         self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
-        form.addRow("model", self.model_edit)
+        form.addRow("model", self.model_combo)
         form.addRow("thinking", self.thinking_check)
         form.addRow("thinking_level", self.thinking_level_combo)
         root.addLayout(form)
@@ -1683,7 +1713,7 @@ class GeminiFillDialog(QDialog):
         return self.statement_type_check.isChecked()
 
     def model(self) -> str:
-        return self.model_edit.text().strip()
+        return self.model_combo.currentText().strip()
 
     def enable_thinking(self) -> bool:
         return self.thinking_level() != "minimal"
@@ -1909,17 +1939,10 @@ class QwenPromptDialog(GeminiPromptDialog):
             few_shot_summary=few_shot_summary,
         )
         self.setWindowTitle("Qwen Prompt")
-        self.model_combo = QComboBox()
-        self.model_combo.setEditable(True)
-        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
+        self.model_combo.clear()
         for option in QWEN_GT_MODEL_CHOICES:
             self.model_combo.addItem(option)
         self.model_combo.setCurrentText(model_name)
-        self.model_edit.setVisible(False)
-        model_row, _ = self.form_layout.getWidgetPosition(self.model_edit)
-        if model_row >= 0:
-            self.form_layout.removeRow(model_row)
-        self.form_layout.insertRow(0, "model", self.model_combo)
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
             ok_btn.setText("Start Qwen GT")
@@ -2050,7 +2073,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_snapshot: Optional[dict[str, Any]] = None
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
-        self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", "gemini-3-flash-preview")
+        self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
         self._gemini_enable_thinking = True
         self._gemini_thinking_level = "high"
         self._qwen_stream_thread: Optional[QThread] = None
@@ -2619,6 +2642,8 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_context_combo.addItems(list(VALUE_CONTEXT_OPTIONS))
         self.fact_balance_type_combo = QComboBox()
         self.fact_balance_type_combo.addItems(list(BALANCE_TYPE_OPTIONS))
+        self.fact_row_role_combo = QComboBox()
+        self.fact_row_role_combo.addItems(list(ROW_ROLE_OPTIONS))
         self.fact_aggregation_role_combo = QComboBox()
         self.fact_aggregation_role_combo.addItems(list(AGGREGATION_ROLE_OPTIONS))
         self.fact_natural_sign_label = QLabel("-")
@@ -2709,6 +2734,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.setMinimumWidth(112)
         self.fact_value_context_combo.setMinimumWidth(112)
         self.fact_balance_type_combo.setMinimumWidth(112)
+        self.fact_row_role_combo.setMinimumWidth(112)
         self.fact_aggregation_role_combo.setMinimumWidth(112)
         self.fact_path_source_combo.setMinimumWidth(112)
         self.fact_duration_type_combo.setMinimumWidth(112)
@@ -2747,6 +2773,7 @@ class AnnotationWindow(QMainWindow):
         value_type_block = self._inspector_field_block("Value Type", self.fact_value_type_combo)
         value_context_block = self._inspector_field_block("Value Context", self.fact_value_context_combo)
         balance_type_block = self._inspector_field_block("Balance Type", self.fact_balance_type_combo)
+        row_role_block = self._inspector_field_block("Row Role", self.fact_row_role_combo)
         aggregation_role_block = self._inspector_field_block("Aggregation Role", self.fact_aggregation_role_combo)
         natural_sign_block = self._inspector_field_block("Natural Sign", self.fact_natural_sign_label)
         period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
@@ -2763,6 +2790,7 @@ class AnnotationWindow(QMainWindow):
             1,
         )
         value_with_sign_layout.addWidget(natural_sign_block, 0)
+        value_with_sign_layout.addWidget(row_role_block, 0)
         value_with_sign_layout.addWidget(aggregation_role_block, 0)
         period_range_panel = QWidget()
         period_range_layout = QHBoxLayout(period_range_panel)
@@ -3209,6 +3237,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_type"))
         self.fact_value_context_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_context"))
         self.fact_balance_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("balance_type"))
+        self.fact_row_role_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("row_role"))
         self.fact_aggregation_role_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("aggregation_role"))
         self.fact_path_source_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("path_source"))
         self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_field_edited("path"))
@@ -4437,6 +4466,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.setEnabled(enabled)
         self.fact_value_context_combo.setEnabled(enabled)
         self.fact_balance_type_combo.setEnabled(enabled)
+        self.fact_row_role_combo.setEnabled(enabled)
         self.fact_aggregation_role_combo.setEnabled(enabled)
         self.fact_path_source_combo.setEnabled(enabled)
         self.fact_path_list.setEnabled(enabled)
@@ -4478,6 +4508,7 @@ class AnnotationWindow(QMainWindow):
             self.fact_value_type_combo,
             self.fact_value_context_combo,
             self.fact_balance_type_combo,
+            self.fact_row_role_combo,
             self.fact_aggregation_role_combo,
             self.fact_path_source_combo,
         ):
@@ -4509,6 +4540,7 @@ class AnnotationWindow(QMainWindow):
             self.fact_value_type_combo.setCurrentIndex(0)
             self.fact_value_context_combo.setCurrentIndex(0)
             self.fact_balance_type_combo.setCurrentIndex(0)
+            self.fact_row_role_combo.setCurrentIndex(0)
             self.fact_aggregation_role_combo.setCurrentIndex(0)
             self.fact_path_source_combo.setCurrentIndex(0)
             self.fact_path_list.clear()
@@ -4577,6 +4609,9 @@ class AnnotationWindow(QMainWindow):
             balance_type = str(fact.get("balance_type") or "")
             idx_balance_type = self.fact_balance_type_combo.findText(balance_type)
             self.fact_balance_type_combo.setCurrentIndex(max(0, idx_balance_type))
+            row_role = str(fact.get("row_role") or "")
+            idx_row_role = self.fact_row_role_combo.findText(row_role)
+            self.fact_row_role_combo.setCurrentIndex(max(0, idx_row_role))
             aggregation_role = str(fact.get("aggregation_role") or "")
             idx_aggregation_role = self.fact_aggregation_role_combo.findText(aggregation_role)
             self.fact_aggregation_role_combo.setCurrentIndex(max(0, idx_aggregation_role))
@@ -4665,6 +4700,7 @@ class AnnotationWindow(QMainWindow):
             self._set_multi_combo_value(self.fact_value_type_combo, "value_type", items)
             self._set_multi_combo_value(self.fact_value_context_combo, "value_context", items)
             self._set_multi_combo_value(self.fact_balance_type_combo, "balance_type", items)
+            self._set_multi_combo_value(self.fact_row_role_combo, "row_role", items)
             self._set_multi_combo_value(self.fact_aggregation_role_combo, "aggregation_role", items)
             self._set_multi_combo_value(self.fact_path_source_combo, "path_source", items)
             natural_sign_value, natural_sign_mixed = self._shared_fact_value(items, "natural_sign")
@@ -4777,6 +4813,7 @@ class AnnotationWindow(QMainWindow):
             "value_type": self.fact_value_type_combo.currentText().strip() or None,
             "value_context": self.fact_value_context_combo.currentText().strip() or None,
             "balance_type": self.fact_balance_type_combo.currentText().strip() or None,
+            "row_role": self.fact_row_role_combo.currentText().strip() or None,
             "aggregation_role": self.fact_aggregation_role_combo.currentText().strip() or None,
         }
         return normalize_fact_data(payload)
@@ -4975,6 +5012,13 @@ class AnnotationWindow(QMainWindow):
             return
         if field_name == "balance_type":
             self._apply_fact_field_to_selected_items("balance_type", self.fact_balance_type_combo.currentText().strip() or None)
+            self._sync_fact_editor_from_selection()
+            return
+        if field_name == "row_role":
+            self._apply_fact_field_to_selected_items(
+                "row_role",
+                self.fact_row_role_combo.currentText().strip() or None,
+            )
             self._sync_fact_editor_from_selection()
             return
         if field_name == "aggregation_role":
@@ -5582,6 +5626,7 @@ class AnnotationWindow(QMainWindow):
                 "value_type": self.fact_value_type_combo,
                 "value_context": self.fact_value_context_combo,
                 "balance_type": self.fact_balance_type_combo,
+                "row_role": self.fact_row_role_combo,
                 "aggregation_role": self.fact_aggregation_role_combo,
                 "path_source": self.fact_path_source_combo,
             }
@@ -5877,6 +5922,7 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("value_context") or ""),
             str(normalized_fact.get("balance_type") or ""),
             str(normalized_fact.get("natural_sign") or ""),
+            str(normalized_fact.get("row_role") or ""),
             str(normalized_fact.get("aggregation_role") or ""),
             str(normalized_fact.get("path_source") or ""),
             path,
@@ -7229,24 +7275,14 @@ class AnnotationWindow(QMainWindow):
         return _coerce_positive_int(normalize_fact_data(item.fact_data).get("fact_num"))
 
     def _ensure_fact_numbers_for_items(self, ordered_items: List[AnnotRectItem]) -> None:
-        used_fact_nums: set[int] = set()
-        next_fact_num = 1
-        for item in ordered_items:
-            if not self._is_alive_fact_item(item):
-                continue
-            normalized_fact = normalize_fact_data(item.fact_data)
-            fact_num = _coerce_positive_int(normalized_fact.get("fact_num"))
-            if fact_num is None or fact_num in used_fact_nums:
-                while next_fact_num in used_fact_nums:
-                    next_fact_num += 1
-                normalized_fact["fact_num"] = next_fact_num
-                used_fact_nums.add(next_fact_num)
-                next_fact_num += 1
-            else:
-                used_fact_nums.add(fact_num)
-                next_fact_num = max(next_fact_num, fact_num + 1)
-            if normalized_fact != item.fact_data:
-                item.fact_data = normalized_fact
+        alive_items = [item for item in ordered_items if self._is_alive_fact_item(item)]
+        if not alive_items:
+            return
+        current_facts = [normalize_fact_data(item.fact_data) for item in alive_items]
+        resequenced_facts = resequence_fact_numbers_and_remap_fact_equations(current_facts)
+        for item, current_fact, resequenced_fact in zip(alive_items, current_facts, resequenced_facts):
+            if resequenced_fact != current_fact:
+                item.fact_data = resequenced_fact
 
     def _sorted_fact_items(self) -> List[AnnotRectItem]:
         items = self._scene_fact_items()
@@ -7281,11 +7317,57 @@ class AnnotationWindow(QMainWindow):
             ):
                 scene_item.set_order_label(None, visible=False)
 
+    @staticmethod
+    def _fact_has_matching_saved_equation(fact: Dict[str, Any]) -> bool:
+        saved_equation = str(fact.get("equation") or "").strip()
+        if not saved_equation:
+            return False
+        preview = _evaluate_equation_string(saved_equation)
+        if preview is None:
+            return False
+        tone, _message = _equation_result_match_state(
+            preview,
+            fact.get("value"),
+            fact.get("natural_sign"),
+            fact.get("aggregation_role"),
+        )
+        return tone == "ok"
+
+    def _apply_equation_match_visuals(self) -> None:
+        indexed_item_ids = {id(item) for item in self._fact_items}
+        for item in self._fact_items:
+            if not self._is_alive_fact_item(item):
+                continue
+            fact = normalize_fact_data(item.fact_data)
+            item.set_equation_match_ok(self._fact_has_matching_saved_equation(fact))
+        for scene_item in self.scene.items():
+            if (
+                isinstance(scene_item, AnnotRectItem)
+                and self._is_alive_fact_item(scene_item)
+                and id(scene_item) not in indexed_item_ids
+            ):
+                scene_item.set_equation_match_ok(False)
+
     def refresh_facts_list(self, *, refresh_issues: bool = True) -> None:
         selected = self._selected_fact_item()
         selected_items = set(self._selected_fact_items())
         self._fact_items = self._sorted_fact_items()
+        if self.current_index >= 0 and self.current_index < len(self.page_images):
+            current_page_name = self.page_images[self.current_index].name
+            current_state = self.page_states.get(current_page_name)
+            statement_type = None
+            if current_state is not None and isinstance(current_state.meta, dict):
+                statement_type = str(current_state.meta.get("statement_type") or "").strip() or None
+            rebuilt_facts, _equation_findings = audit_and_rebuild_financial_facts(
+                [normalize_fact_data(item.fact_data) for item in self._fact_items],
+                statement_type=statement_type,
+                apply_repairs=True,
+            )
+            for item, rebuilt_fact in zip(self._fact_items, rebuilt_facts):
+                if rebuilt_fact != normalize_fact_data(item.fact_data):
+                    item.fact_data = rebuilt_fact
         self._apply_fact_order_labels()
+        self._apply_equation_match_visuals()
         self._syncing_selection = True
         self.facts_list.clear()
         facts_count = len(self._fact_items)
@@ -7329,6 +7411,8 @@ class AnnotationWindow(QMainWindow):
                 summary = f"{summary} | balance_type: {item.fact_data.get('balance_type')}"
             if item.fact_data.get("natural_sign"):
                 summary = f"{summary} | natural_sign: {item.fact_data.get('natural_sign')}"
+            if item.fact_data.get("row_role"):
+                summary = f"{summary} | row_role: {item.fact_data.get('row_role')}"
             if item.fact_data.get("aggregation_role"):
                 summary = f"{summary} | aggregation_role: {item.fact_data.get('aggregation_role')}"
             if item.fact_data.get("path_source"):

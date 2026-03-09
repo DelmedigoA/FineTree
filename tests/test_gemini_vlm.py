@@ -231,7 +231,7 @@ def test_generation_config_uses_low_for_gemini_3_pro_nonthinking(monkeypatch) ->
     monkeypatch.setattr(gemini_vlm, "genai", object())
     monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
 
-    cfg = gemini_vlm._generation_config("gemini-3.1-pro", enable_thinking=False)
+    cfg = gemini_vlm._generation_config("gemini-3.1-pro-preview", enable_thinking=False)
 
     assert isinstance(cfg, _FakeGenerateContentConfig)
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "LOW"}
@@ -289,7 +289,7 @@ def test_generation_config_coerces_minimal_to_low_for_gemini_3_pro(monkeypatch) 
     monkeypatch.setattr(gemini_vlm, "genai", object())
     monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
 
-    cfg = gemini_vlm._generation_config("gemini-3.1-pro", thinking_level="minimal")
+    cfg = gemini_vlm._generation_config("gemini-3.1-pro-preview", thinking_level="minimal")
 
     assert isinstance(cfg, _FakeGenerateContentConfig)
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "LOW"}

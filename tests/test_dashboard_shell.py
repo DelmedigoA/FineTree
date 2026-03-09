@@ -6,6 +6,7 @@ from types import SimpleNamespace
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
+import pytest
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget
 
@@ -23,6 +24,11 @@ def _qt_app() -> QApplication:
         app = QApplication([])
     _APP = app
     return app
+
+
+@pytest.fixture(autouse=True)
+def _stub_dashboard_workspace(monkeypatch) -> None:
+    monkeypatch.setattr(dashboard, "discover_workspace_documents", lambda: [])
 
 
 class _FakeAnnotationWindow(QWidget):

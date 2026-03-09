@@ -278,7 +278,7 @@ def test_load_page_states_preserves_equation_field() -> None:
     states = load_page_states(payload, ["page_0001.png"])
     assert states["page_0001.png"].meta["annotation_note"] == "revisit"
     assert states["page_0001.png"].meta["annotation_status"] == "approved"
-    assert states["page_0001.png"].facts[0].fact["fact_num"] == 4
+    assert states["page_0001.png"].facts[0].fact["fact_num"] == 1
     assert states["page_0001.png"].facts[0].fact["equation"] == "7 + 3"
     assert states["page_0001.png"].facts[0].fact["fact_equation"] == "f1 + f3"
 
@@ -305,6 +305,71 @@ def test_build_annotations_payload_backfills_missing_fact_num_for_legacy_facts()
     assert payload["pages"][0]["meta"]["annotation_note"] is None
     assert payload["pages"][0]["meta"]["annotation_status"] is None
     assert [fact["fact_num"] for fact in payload["pages"][0]["facts"]] == [1, 2]
+
+
+def test_build_annotations_payload_resequences_fact_nums_contiguously() -> None:
+    page_images = [Path("page_0001.png")]
+    page_states = {
+        "page_0001.png": PageState(
+            meta={"type": "other"},
+            facts=[
+                BoxRecord(
+                    bbox={"x": 0, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "10", "fact_num": 3, "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 20, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "20", "fact_num": 3, "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 40, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "30", "fact_num": 7, "path": []},
+                ),
+            ],
+        )
+    }
+
+    payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    assert [fact["fact_num"] for fact in payload["pages"][0]["facts"]] == [1, 2, 3]
+
+
+def test_build_annotations_payload_remaps_fact_equation_refs_when_fact_nums_shift() -> None:
+    page_images = [Path("page_0001.png")]
+    page_states = {
+        "page_0001.png": PageState(
+            meta={"type": "other"},
+            facts=[
+                BoxRecord(
+                    bbox={"x": 0, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "900", "fact_num": 4, "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 20, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "100", "fact_num": 1, "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 40, "y": 0, "w": 10, "h": 10},
+                    fact={"value": "20", "fact_num": 2, "path": []},
+                ),
+                BoxRecord(
+                    bbox={"x": 60, "y": 0, "w": 10, "h": 10},
+                    fact={
+                        "value": "120",
+                        "fact_num": 3,
+                        "equation": "100 + 20",
+                        "fact_equation": "f1 + f2",
+                        "path": [],
+                    },
+                ),
+            ],
+        )
+    }
+
+    payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
+    facts = payload["pages"][0]["facts"]
+    assert [fact["fact_num"] for fact in facts] == [1, 2, 3, 4]
+    assert facts[3]["fact_equation"] == "f2 + f3"
+    assert facts[3]["equation"] == "100 + 20"
 
 
 def test_parse_import_payload_supports_full_document_shape() -> None:

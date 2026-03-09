@@ -283,3 +283,37 @@ def test_aggregate_document_issues_counts_pages_and_totals() -> None:
     assert doc_summary.warning_count == 2
     assert doc_summary.pages_with_reg_flags == 0
     assert doc_summary.pages_with_warnings == 1
+
+
+def test_validate_page_issues_flags_equation_and_period_integrity_findings() -> None:
+    summary = validate_page_issues(
+        "page_0013.png",
+        PageState(
+            meta={"type": "other"},
+            facts=[
+                _fact(
+                    fact_num=1,
+                    value="10",
+                    period_type="instant",
+                    period_start="2024-01-01",
+                ),
+                _fact(
+                    fact_num=2,
+                    value="9",
+                    row_role="total",
+                    aggregation_role="additive",
+                    equation="10 + 1",
+                    fact_equation="f1 + f99",
+                    period_type="duration",
+                    period_start="2023-01-01",
+                    period_end="2023-12-31",
+                    date="2024",
+                ),
+            ],
+        ),
+    )
+    codes = {issue.code for issue in summary.issues}
+    assert "instant_period_start_not_null" in codes
+    assert "fact_equation_missing_reference" in codes
+    assert "equation_rebuild_unresolved" in codes
+    assert "duration_date_year_mismatch" in codes

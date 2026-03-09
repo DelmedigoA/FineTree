@@ -147,6 +147,18 @@ def test_normalize_fact_payload_accepts_aggregation_role() -> None:
     assert warnings == []
 
 
+def test_normalize_fact_payload_accepts_row_role() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "row_role": "total",
+            "path": [],
+        }
+    )
+    assert normalized["row_role"] == "total"
+    assert warnings == []
+
+
 def test_normalize_fact_payload_infers_subtractive_aggregation_role_from_benikuy_path() -> None:
     normalized, warnings = normalize_fact_payload(
         {
@@ -158,14 +170,15 @@ def test_normalize_fact_payload_infers_subtractive_aggregation_role_from_benikuy
     assert warnings == []
 
 
-def test_normalize_fact_payload_infers_total_aggregation_role_from_subtotal_path() -> None:
+def test_normalize_fact_payload_infers_total_row_role_from_subtotal_path() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "60713",
             "path": ["רכוש קבוע", 'סה"כ רכוש קבוע'],
         }
     )
-    assert normalized["aggregation_role"] == "total"
+    assert normalized["row_role"] == "total"
+    assert normalized["aggregation_role"] == "additive"
     assert warnings == []
 
 
@@ -176,6 +189,20 @@ def test_normalize_fact_payload_defaults_aggregation_role_to_additive_for_numeri
             "path": ["רכוש קבוע", "עלות"],
         }
     )
+    assert normalized["row_role"] == "detail"
+    assert normalized["aggregation_role"] == "additive"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_maps_legacy_total_aggregation_role_to_row_role_total() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "60713",
+            "aggregation_role": "total",
+            "path": ["רכוש קבוע", 'סה"כ רכוש קבוע'],
+        }
+    )
+    assert normalized["row_role"] == "total"
     assert normalized["aggregation_role"] == "additive"
     assert warnings == []
 

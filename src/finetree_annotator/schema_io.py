@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from .equation_integrity import resequence_fact_numbers_and_remap_fact_equations
 from .fact_normalization import LEGACY_FACT_KEYS, normalize_annotation_payload, normalize_fact_payload
 from .fact_ordering import compact_document_meta
 from .schema_registry import CURRENT_SCHEMA_VERSION
@@ -10,23 +11,11 @@ from .schemas import PageMeta
 
 
 def _assign_missing_fact_numbers(facts: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    assigned: list[dict[str, Any]] = []
-    used_fact_nums: set[int] = set()
-    next_fact_num = 1
-
+    normalized_facts: list[dict[str, Any]] = []
     for raw_fact in facts:
         normalized_fact, _fact_warnings = normalize_fact_payload(raw_fact, include_bbox=False)
-        fact_num = normalized_fact.get("fact_num")
-        if isinstance(fact_num, int) and fact_num >= 1 and fact_num not in used_fact_nums:
-            used_fact_nums.add(fact_num)
-        else:
-            while next_fact_num in used_fact_nums:
-                next_fact_num += 1
-            normalized_fact["fact_num"] = next_fact_num
-            used_fact_nums.add(next_fact_num)
-            next_fact_num += 1
-        assigned.append(normalized_fact)
-    return assigned
+        normalized_facts.append(normalized_fact)
+    return resequence_fact_numbers_and_remap_fact_equations(normalized_facts)
 
 
 def _metadata_dict(payload: dict[str, Any]) -> dict[str, Any]:
