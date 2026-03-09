@@ -448,25 +448,6 @@ def _effective_target_value_for_equation(
     return target_value_decimal, _format_decimal_plain(target_value_decimal)
 
 
-def _format_equation_with_target(
-    equation_text: Any,
-    target_value: Any,
-    target_natural_sign: Any,
-    target_aggregation_role: Any,
-) -> str:
-    expression = str(equation_text or "").strip()
-    if not expression:
-        return ""
-    _target_value_decimal, target_display = _effective_target_value_for_equation(
-        target_value,
-        target_natural_sign,
-        target_aggregation_role,
-    )
-    if target_display is None:
-        return expression
-    return f"{expression} = {target_display}"
-
-
 def _equation_result_match_state(
     result_text: str | None,
     target_value: Any,
@@ -4372,14 +4353,7 @@ class AnnotationWindow(QMainWindow):
         pending_for_selection = self._equation_target_item is single_item and self._equation_candidate_text is not None
         has_saved_equation = bool(saved_equation or saved_fact_equation)
         if pending_for_selection:
-            self.fact_equation_edit.setText(
-                _format_equation_with_target(
-                    self._equation_candidate_text,
-                    target_value,
-                    target_natural_sign,
-                    target_aggregation_role,
-                )
-            )
+            self.fact_equation_edit.setText(str(self._equation_candidate_text or "").strip())
             if self._equation_candidate_result_text is not None:
                 result_tone, comparison_message = _equation_result_match_state(
                     self._equation_candidate_result_text,
@@ -4415,14 +4389,7 @@ class AnnotationWindow(QMainWindow):
             self.clear_equation_btn.setEnabled(has_saved_equation)
             return
 
-        self.fact_equation_edit.setText(
-            _format_equation_with_target(
-                saved_equation,
-                target_value,
-                target_natural_sign,
-                target_aggregation_role,
-            )
-        )
+        self.fact_equation_edit.setText(saved_equation)
         if not saved_equation:
             self.fact_equation_status_label.setText(
                 "Hold Alt and drag on the page to build an equation preview, then press Shift to approve."
