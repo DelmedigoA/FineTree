@@ -102,6 +102,71 @@ def theme_palette(theme_name: str) -> dict[str, str]:
     return dict(THEMES[normalize_theme_name(theme_name)])
 
 
+def _split_font_stack(value: str) -> list[str]:
+    families: list[str] = []
+    for token in str(value or "").split(","):
+        name = token.strip().strip("'").strip('"')
+        if name:
+            families.append(name)
+    return families
+
+
+def _resolve_font_family(
+    preferred_stack: str,
+    available: dict[str, str],
+    *,
+    fallback: str,
+) -> str:
+    generic = {"sans-serif", "serif", "monospace", "system-ui"}
+    for family in _split_font_stack(preferred_stack):
+        key = family.casefold()
+        if key in generic:
+            continue
+        matched = available.get(key)
+        if matched:
+            return matched
+    return fallback
+
+
+def _quote_font_family(family: str) -> str:
+    escaped = str(family).replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+
+
+def _available_font_families() -> dict[str, str]:
+    return {name.casefold(): name for name in QFontDatabase().families()}
+
+
+def _resolve_theme_font_tokens(tokens: dict[str, str], *, default_family: str = "Sans Serif") -> dict[str, str]:
+    resolved = dict(tokens)
+    available = _available_font_families()
+    default_family = str(default_family or "Sans Serif")
+    heading_family = _resolve_font_family(
+        resolved.get("font_heading", ""),
+        available,
+        fallback=default_family,
+    )
+    body_family = _resolve_font_family(
+        resolved.get("font_body", ""),
+        available,
+        fallback=heading_family,
+    )
+    mono_fallback = _resolve_font_family(
+        "'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+        available,
+        fallback=body_family,
+    )
+    mono_family = _resolve_font_family(
+        resolved.get("font_mono", ""),
+        available,
+        fallback=mono_fallback,
+    )
+    resolved["font_heading"] = _quote_font_family(heading_family)
+    resolved["font_body"] = _quote_font_family(body_family)
+    resolved["font_mono"] = _quote_font_family(mono_family)
+    return resolved
+
+
 def _load_font_assets() -> None:
     fonts_dir = Path(__file__).resolve().parent / "assets" / "fonts"
     if not fonts_dir.is_dir():
@@ -640,9 +705,12 @@ def apply_theme(app: QApplication, theme_name: str) -> str:
     _load_font_assets()
     if "Fusion" in QStyleFactory.keys():
         app.setStyle("Fusion")
-    tokens = theme_palette(resolved)
+    tokens = _resolve_theme_font_tokens(
+        theme_palette(resolved),
+        default_family=app.font().family() or "Sans Serif",
+    )
     base_font = QFont()
-    base_font.setFamilies([font.strip() for font in tokens["font_body"].replace("'", "").split(",") if font.strip()])
+    base_font.setFamily(tokens["font_body"].strip('"'))
     if base_font.pointSize() < 11:
         base_font.setPointSize(11)
     app.setFont(base_font)

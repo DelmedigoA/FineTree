@@ -143,7 +143,9 @@ def _normalize_duration_type(value: Any) -> str | None:
     if text is None:
         return None
     lowered = text.lower()
-    return lowered if lowered == "recurring" else None
+    if lowered in {"recurring", "recurrent"}:
+        return "recurrent"
+    return None
 
 
 def _normalize_recurring_period(value: Any) -> str | None:

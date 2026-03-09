@@ -633,7 +633,7 @@ class HomeView(QWidget):
 
 
 class AnnotatorHost(QWidget):
-    document_saved = pyqtSignal(Path)
+    document_saved = pyqtSignal(object)
     current_document_changed = pyqtSignal(object)
     document_issues_changed = pyqtSignal(object, object)
 
@@ -681,7 +681,10 @@ class AnnotatorHost(QWidget):
         if key not in self._windows:
             window = app_mod.AnnotationWindow(images_dir=context.images_dir, annotations_path=context.annotations_path)
             window.setWindowFlags(Qt.Widget)
-            window.annotations_saved.connect(self.document_saved.emit)
+            if hasattr(window, "annotations_save_status"):
+                window.annotations_save_status.connect(self.document_saved.emit)
+            else:
+                window.annotations_saved.connect(self.document_saved.emit)
             if hasattr(window, "document_issues_changed"):
                 window.document_issues_changed.connect(
                     lambda summary, ctx=context: self.document_issues_changed.emit(ctx, summary)
@@ -1701,9 +1704,26 @@ class DashboardWindow(QMainWindow):
         self._import_worker = None
         self._import_thread = None
 
-    def _on_document_saved(self, _annotations_path: Path) -> None:
+    def _on_document_saved(self, payload: object) -> None:
         self.reload_workspace()
-        self.statusBar().showMessage("Workspace document saved.", 3000)
+        message = "Workspace document saved."
+        duration_ms = 3000
+        if isinstance(payload, dict):
+            warning_count = int(payload.get("warning_count") or 0)
+            no_changes = bool(payload.get("no_changes"))
+            backup_path = payload.get("backup_path")
+            if no_changes:
+                message = "Workspace document saved (no changes)."
+            if warning_count > 0:
+                message = (
+                    f"{message.rstrip('.')} with {warning_count} format warning(s). "
+                    "Run scripts/check_fact_schema_format.py for details."
+                )
+                duration_ms = 7000
+            if backup_path:
+                message = f"{message.rstrip('.')} Legacy backup created."
+                duration_ms = max(duration_ms, 7000)
+        self.statusBar().showMessage(message, duration_ms)
 
     def _on_current_document_changed(self, context: Optional[DocumentContext]) -> None:
         if context is None:

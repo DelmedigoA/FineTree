@@ -8,6 +8,8 @@ def test_schema_ui_enum_options_derive_from_registry() -> None:
     assert statement_opts[0] == ""
     assert "income_statement" in statement_opts
     assert "other_declaration" in statement_opts
+    duration_opts = enum_options("fact", "duration_type")
+    assert "recurrent" in duration_opts
 
 
 def test_schema_ui_descriptors_include_expected_fields() -> None:

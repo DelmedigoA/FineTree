@@ -390,6 +390,68 @@ def test_fact_editor_shows_balance_type_and_deterministic_natural_sign(tmp_path:
     window.close()
 
 
+def test_fact_editor_shows_recurring_period_only_for_recurrent_duration_type(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "120", "duration_type": "recurrent", "recurring_period": "monthly", "path": []},
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_duration_type_combo.currentText() == "recurrent"
+    assert window.fact_recurring_period_combo.currentText() == "monthly"
+    assert window.fact_recurring_period_block.isVisible() is True
+
+    window.fact_duration_type_combo.setCurrentIndex(0)
+    window._on_fact_editor_field_edited("duration_type")
+    _qt_app().processEvents()
+
+    assert item.fact_data["duration_type"] is None
+    assert window.fact_recurring_period_block.isVisible() is False
+
+    idx = window.fact_duration_type_combo.findText("recurrent")
+    window.fact_duration_type_combo.setCurrentIndex(idx)
+    window._on_fact_editor_field_edited("duration_type")
+    _qt_app().processEvents()
+
+    assert item.fact_data["duration_type"] == "recurrent"
+    assert window.fact_recurring_period_block.isVisible() is True
+    window.close()
+
+
+def test_date_field_hidden_in_ui_but_kept_in_fact_payload(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "date": "2024-12-31", "path": []})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_date_edit.isVisible() is False
+    assert window.batch_date_edit.isVisible() is False
+    assert window.fact_date_edit.text() == "2024-12-31"
+    assert window._fact_data_from_editor()["date"] == "2024-12-31"
+    assert item.fact_data["date"] == "2024-12-31"
+    window.close()
+
+
 def test_gemini_fill_apply_updates_selected_facts_meta_and_history(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -669,6 +731,119 @@ def test_shift_click_adds_separate_bboxes_to_selection(tmp_path: Path) -> None:
     window.close()
 
 
+def test_click_without_shift_selects_only_clicked_bbox(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100"})
+    item_b = AnnotRectItem(QRectF(60, 10, 20, 20), {"value": "200"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+    assert set(window._selected_fact_items()) == {item_a, item_b}
+
+    point_b = window.view.mapFromScene(item_b.mapRectToScene(item_b.rect()).center())
+    QTest.mouseClick(window.view.viewport(), Qt.LeftButton, Qt.NoModifier, point_b)
+    _qt_app().processEvents()
+
+    assert set(window._selected_fact_items()) == {item_b}
+    window.close()
+
+
+def test_drag_selects_multiple_bboxes_without_shift(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(20, 20, 20, 20), {"value": "100"})
+    item_b = AnnotRectItem(QRectF(70, 20, 20, 20), {"value": "200"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(10, 10), modifiers=Qt.NoModifier))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(110, 60), modifiers=Qt.NoModifier))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(110, 60), modifiers=Qt.NoModifier))
+    _qt_app().processEvents()
+
+    assert set(window._selected_fact_items()) == {item_a, item_b}
+    window.close()
+
+
+def test_shift_drag_adds_bboxes_to_existing_selection(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(20, 20, 20, 20), {"value": "100"})
+    item_b = AnnotRectItem(QRectF(70, 20, 20, 20), {"value": "200"})
+    item_c = AnnotRectItem(QRectF(120, 20, 20, 20), {"value": "300"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.scene.addItem(item_c)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    item_a.setSelected(True)
+    _qt_app().processEvents()
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(60, 10), modifiers=Qt.ShiftModifier))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(160, 60), modifiers=Qt.ShiftModifier))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(160, 60), modifiers=Qt.ShiftModifier))
+    _qt_app().processEvents()
+
+    assert set(window._selected_fact_items()) == {item_a, item_b, item_c}
+    window.close()
+
+
+def test_click_empty_page_clears_selection(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(20, 20, 20, 20), {"value": "100"})
+    item_b = AnnotRectItem(QRectF(70, 20, 20, 20), {"value": "200"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+    assert len(window._selected_fact_items()) == 2
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(150, 150), modifiers=Qt.NoModifier))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(150, 150), modifiers=Qt.NoModifier))
+    _qt_app().processEvents()
+
+    assert window._selected_fact_items() == []
+    window.close()
+
+
 def test_batch_expand_selected_applies_to_all_selected_bboxes(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -694,6 +869,40 @@ def test_batch_expand_selected_applies_to_all_selected_bboxes(tmp_path: Path) ->
     assert width_a == 30.0
     assert width_b == 30.0
 
+    window.close()
+
+
+def test_handle_resize_updates_all_selected_bboxes_visually(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=260, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(20, 20, 20, 20), {"value": "100"})
+    item_b = AnnotRectItem(QRectF(70, 20, 20, 20), {"value": "200"})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    _qt_app().processEvents()
+
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.scene._begin_group_resize(item_a, item_a._H_RIGHT)
+    anchor_start = item_scene_rect(item_a)
+    widened_anchor = QRectF(anchor_start)
+    widened_anchor.setRight(anchor_start.right() + 12)
+    item_a._clamp_and_apply_resize(widened_anchor, item_a._H_RIGHT)
+    window.scene._update_group_resize_from_anchor(item_a)
+    window.scene._end_group_resize(item_a)
+    _qt_app().processEvents()
+
+    assert item_a.rect().width() == 32.0
+    assert item_b.rect().width() == 32.0
     window.close()
 
 
@@ -929,6 +1138,25 @@ def test_equation_builder_applies_balance_type_sign_rules() -> None:
     assert [term.get("effective_normalized_value") for term in structured_terms] == [-100, 30, -5, 0]
 
 
+def test_equation_result_match_state_applies_target_balance_type_sign() -> None:
+    tone, message = app_mod._equation_result_match_state("-100", "100", "debit")
+    assert tone == "ok"
+    assert message == "Matches target value."
+
+    tone, message = app_mod._equation_result_match_state("100", "100", "debit")
+    assert tone == "danger"
+    assert "(-100)" in message
+
+    tone, message = app_mod._equation_result_match_state("100", "100", "credit")
+    assert tone == "ok"
+    assert message == "Matches target value."
+
+
+def test_format_equation_with_target_uses_effective_target_sign() -> None:
+    assert app_mod._format_equation_with_target("100 - 40", "60", "credit") == "100 - 40 = 60"
+    assert app_mod._format_equation_with_target("100 - 40", "60", "debit") == "100 - 40 = -60"
+
+
 def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -964,7 +1192,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
 
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
-    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20"
+    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b42318" in window.fact_equation_result_label.styleSheet()
     assert "Does not match target value" in window.fact_equation_status_label.text()
@@ -987,7 +1215,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     assert target.fact_data["equation"] == "100 - 5 + 0 + 20"
     assert target.fact_data["fact_equation"] == "f1 - f2 + f4 + f5"
     assert window.apply_equation_btn.isEnabled() is False
-    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20"
+    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b42318" in window.fact_equation_result_label.styleSheet()
 
@@ -1181,7 +1409,7 @@ def test_equation_preview_clears_on_selection_change_without_persisting(tmp_path
     _qt_app().processEvents()
 
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3]
-    assert window.fact_equation_edit.text() == "40 + 2"
+    assert window.fact_equation_edit.text() == "40 + 2 = 999"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
 
@@ -1235,7 +1463,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
 
     _qt_app().processEvents()
 
-    assert window.fact_equation_edit.text() == "100 - 5 + 8"
+    assert window.fact_equation_edit.text() == "100 - 5 + 8 = 103"
     assert window.fact_equation_result_label.text() == "103"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
     assert "Matches target value." in window.fact_equation_status_label.text()
@@ -1246,7 +1474,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     _qt_app().processEvents()
 
-    assert window.fact_equation_edit.text() == "100 - 5 + 8"
+    assert window.fact_equation_edit.text() == "100 - 5 + 8 = 103"
     assert window._equation_candidate_fact_text == "f1 - f2 + f3"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None

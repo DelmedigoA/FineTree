@@ -121,7 +121,7 @@ def default_extraction_prompt_template() -> str:
                   "period_type": "{period_types}|null",
                   "period_start": "<YYYY-MM-DD|null>",
                   "period_end": "<YYYY-MM-DD|null>",
-                  "duration_type": "recurring|null",
+                  "duration_type": "recurrent|null",
                   "recurring_period": "daily|quarterly|monthly|yearly|null",
                   "note_flag": <true|false>,
                   "note_num": "<integer or null>",
@@ -161,7 +161,7 @@ def default_extraction_prompt_template() -> str:
             - if `value` contains both `(` and `)`, set `natural_sign="negative"`
             - if `value` is exactly `"-"`, set `natural_sign=null`
             - otherwise set `natural_sign="positive"`
-        22. `duration_type` must be `recurring` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+        22. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
         23. `path_source` is only `observed`, `inferred`, or null.
         24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
         25. If `note_num` is present, `note_flag` must be `true`.
@@ -187,7 +187,7 @@ def default_extraction_prompt_template() -> str:
         15. `period_type="instant"` means the fact represents a value at a single point in time.
         16. `period_type="duration"` means the fact represents a value over a period between two dates.
         17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
-        18. `duration_type="recurring"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
+        18. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
         19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
         20. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
         21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
@@ -245,7 +245,7 @@ def default_gemini_fill_prompt_template() -> str:
         - `instant` means the fact represents a value at a single point in time.
         - `duration` means the fact represents a value over a period between two dates.
         - `expected` indicates a projected or budgeted value; include future periods if available.
-        - `duration_type="recurring"` means the value repeats; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when known.
+        - `duration_type="recurrent"` means the value repeats; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when known.
 
         Requested fact fields:
         {{{{FACT_FIELDS}}}}
@@ -269,7 +269,7 @@ def default_gemini_fill_prompt_template() -> str:
                 "period_type": "{period_types}|null",
                 "period_start": "<YYYY-MM-DD|null>",
                 "period_end": "<YYYY-MM-DD|null>",
-                "duration_type": "recurring|null",
+                "duration_type": "recurrent|null",
                 "recurring_period": "daily|quarterly|monthly|yearly|null",
                 "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
                 "value_context": "textual|tabular|mixed|null",
