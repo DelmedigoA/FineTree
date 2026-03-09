@@ -144,6 +144,13 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
     assert item_a.fact_data["currency"] == "USD"
     assert item_b.fact_data["currency"] == "USD"
 
+    idx = window.fact_aggregation_role_combo.findText("subtractive")
+    window.fact_aggregation_role_combo.setCurrentIndex(idx)
+    window._on_fact_editor_field_edited("aggregation_role")
+
+    assert item_a.fact_data["aggregation_role"] == "subtractive"
+    assert item_b.fact_data["aggregation_role"] == "subtractive"
+
     window.close()
 
 
@@ -354,7 +361,7 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     window.close()
 
 
-def test_fact_editor_shows_balance_type_and_deterministic_natural_sign(tmp_path: Path) -> None:
+def test_fact_editor_shows_balance_and_aggregation_role_and_deterministic_natural_sign(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -364,7 +371,7 @@ def test_fact_editor_shows_balance_type_and_deterministic_natural_sign(tmp_path:
     window = AnnotationWindow(images_dir, annotations_path)
     item = AnnotRectItem(
         QRectF(10, 10, 20, 20),
-        {"value": "(120)", "balance_type": "credit", "path": []},
+        {"value": "(120)", "balance_type": "credit", "aggregation_role": "subtractive", "path": []},
     )
     window.scene.addItem(item)
     window.refresh_facts_list()
@@ -373,12 +380,19 @@ def test_fact_editor_shows_balance_type_and_deterministic_natural_sign(tmp_path:
     _qt_app().processEvents()
 
     assert window.fact_balance_type_combo.currentText() == "credit"
+    assert window.fact_aggregation_role_combo.currentText() == "subtractive"
     assert window.fact_natural_sign_label.text() == "negative"
 
     idx = window.fact_balance_type_combo.findText("debit")
     window.fact_balance_type_combo.setCurrentIndex(idx)
     window._on_fact_editor_field_edited("balance_type")
     assert item.fact_data["balance_type"] == "debit"
+    assert item.fact_data["aggregation_role"] == "subtractive"
+
+    idx = window.fact_aggregation_role_combo.findText("additive")
+    window.fact_aggregation_role_combo.setCurrentIndex(idx)
+    window._on_fact_editor_field_edited("aggregation_role")
+    assert item.fact_data["aggregation_role"] == "additive"
 
     window.fact_value_edit.setText("-")
     window.fact_value_edit.setModified(True)
@@ -1121,40 +1135,59 @@ def test_command_drag_creates_one_bbox(tmp_path: Path) -> None:
     window.close()
 
 
-def test_equation_builder_applies_balance_type_sign_rules() -> None:
+def test_equation_builder_uses_natural_sign_and_aggregation_role_for_polarity() -> None:
     candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = app_mod._build_equation_candidate_from_facts(
         [
-            {"fact_num": 1, "value": "100", "balance_type": "debit"},
-            {"fact_num": 2, "value": "30", "balance_type": "credit"},
-            {"fact_num": 3, "value": "(5)", "balance_type": "credit"},
-            {"fact_num": 4, "value": "-", "balance_type": "credit"},
+            {"fact_num": 1, "value": "100", "natural_sign": "positive", "aggregation_role": "additive"},
+            {"fact_num": 2, "value": "30", "natural_sign": "positive", "aggregation_role": "additive"},
+            {"fact_num": 3, "value": "5", "natural_sign": "positive", "aggregation_role": "subtractive"},
+            {"fact_num": 4, "value": "(7)", "natural_sign": "negative", "aggregation_role": "subtractive"},
+            {"fact_num": 5, "value": "-", "natural_sign": None, "aggregation_role": "additive"},
         ]
     )
 
-    assert candidate_text == "- 100 + 30 - 5 + 0"
-    assert result_text == "-75"
-    assert fact_candidate_text == "- f1 + f2 - f3 + f4"
+    assert candidate_text == "100 + 30 - 5 + 7 + 0"
+    assert result_text == "132"
+    assert fact_candidate_text == "f1 + f2 - f3 + f4 + f5"
     assert invalid_values == []
-    assert [term.get("effective_normalized_value") for term in structured_terms] == [-100, 30, -5, 0]
+    assert [term.get("effective_normalized_value") for term in structured_terms] == [100, 30, -5, 7, 0]
+    assert [term.get("contribution_sign") for term in structured_terms] == [1, 1, -1, 1, 1]
 
 
-def test_equation_result_match_state_applies_target_balance_type_sign() -> None:
-    tone, message = app_mod._equation_result_match_state("-100", "100", "debit")
+def test_equation_result_match_state_applies_target_contribution_sign() -> None:
+    tone, message = app_mod._equation_result_match_state("-100", "100", "negative", "additive")
     assert tone == "ok"
     assert message == "Matches target value."
 
-    tone, message = app_mod._equation_result_match_state("100", "100", "debit")
+    tone, message = app_mod._equation_result_match_state("100", "100", "positive", "subtractive")
     assert tone == "danger"
     assert "(-100)" in message
 
-    tone, message = app_mod._equation_result_match_state("100", "100", "credit")
+    tone, message = app_mod._equation_result_match_state("100", "100", "positive", "additive")
     assert tone == "ok"
     assert message == "Matches target value."
 
 
-def test_format_equation_with_target_uses_effective_target_sign() -> None:
-    assert app_mod._format_equation_with_target("100 - 40", "60", "credit") == "100 - 40 = 60"
-    assert app_mod._format_equation_with_target("100 - 40", "60", "debit") == "100 - 40 = -60"
+def test_format_equation_with_target_uses_target_contribution_sign() -> None:
+    assert app_mod._format_equation_with_target("100 - 40", "60", "positive", "additive") == "100 - 40 = 60"
+    assert app_mod._format_equation_with_target("100 - 40", "60", "positive", "subtractive") == "100 - 40 = -60"
+
+
+def test_equation_builder_uses_inferred_aggregation_roles_when_missing() -> None:
+    facts = [
+        app_mod.normalize_fact_data({"fact_num": 10, "value": "269968", "path": ["רכוש קבוע", "עלות"]}),
+        app_mod.normalize_fact_data({"fact_num": 12, "value": "209255", "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"]}),
+    ]
+
+    candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = app_mod._build_equation_candidate_from_facts(
+        facts
+    )
+
+    assert candidate_text == "269968 - 209255"
+    assert result_text == "60713"
+    assert fact_candidate_text == "f10 - f12"
+    assert invalid_values == []
+    assert [term.get("aggregation_role") for term in structured_terms] == ["additive", "subtractive"]
 
 
 def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, monkeypatch) -> None:
@@ -1194,7 +1227,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     assert target.fact_data.get("fact_equation") is None
     assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
     assert window.fact_equation_result_label.text() == "115"
-    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+    assert "#b7791f" in window.fact_equation_result_label.styleSheet()
     assert "Does not match target value" in window.fact_equation_status_label.text()
     assert "Ignored 1 invalid value" in window.fact_equation_status_label.text()
     assert {"fact_num": 4, "fact_reference": "f4", "normalized_value": 0, "raw_value": "-", "status": "normalized_dash"} in [
@@ -1217,7 +1250,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     assert window.apply_equation_btn.isEnabled() is False
     assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
     assert window.fact_equation_result_label.text() == "115"
-    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+    assert "#b7791f" in window.fact_equation_result_label.styleSheet()
 
     assert window.save_annotations() is True
     window.close()
@@ -1497,7 +1530,7 @@ def test_invalid_saved_equation_shows_cannot_calculate_in_red(tmp_path: Path) ->
     _qt_app().processEvents()
 
     assert window.fact_equation_result_label.text() == "cannot calculate"
-    assert "#b42318" in window.fact_equation_result_label.styleSheet()
+    assert "#b7791f" in window.fact_equation_result_label.styleSheet()
     assert "cannot be calculated" in window.fact_equation_status_label.text().lower()
     window.close()
 

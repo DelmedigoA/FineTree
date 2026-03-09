@@ -47,6 +47,12 @@ def test_extracted_fact_accepts_balance_type() -> None:
     assert fact.balance_type.value == "debit"
 
 
+def test_extracted_fact_accepts_aggregation_role() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(aggregation_role="subtractive"))
+    assert fact.aggregation_role is not None
+    assert fact.aggregation_role.value == "subtractive"
+
+
 def test_extracted_fact_accepts_recurrent_duration_type() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(duration_type="recurrent"))
     assert fact.duration_type is not None

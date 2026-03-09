@@ -58,6 +58,8 @@ def test_balance_semantics_fields_are_in_prompts() -> None:
     fill_prompt = default_gemini_fill_prompt_template()
     assert "balance_type" in extraction_prompt
     assert "natural_sign" in extraction_prompt
+    assert "aggregation_role" in extraction_prompt
     assert "equation" in fill_prompt
     assert "balance_type" in fill_prompt
     assert "natural_sign" in fill_prompt
+    assert "aggregation_role" in fill_prompt
