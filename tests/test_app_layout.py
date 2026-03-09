@@ -50,6 +50,37 @@ class _SceneMouseEvent:
         self.accepted = True
 
 
+class _FakePainter:
+    def __init__(self) -> None:
+        self.pen_colors: list[str] = []
+        self.draw_text_calls: list[tuple[object, object, object]] = []
+
+    def save(self) -> None:
+        return None
+
+    def restore(self) -> None:
+        return None
+
+    def setPen(self, pen) -> None:
+        color = pen.color() if hasattr(pen, "color") else pen
+        if hasattr(color, "name"):
+            self.pen_colors.append(color.name())
+        else:
+            self.pen_colors.append(str(color))
+
+    def setBrush(self, _brush) -> None:
+        return None
+
+    def drawRect(self, _rect) -> None:
+        return None
+
+    def drawRoundedRect(self, _rect, _rx, _ry) -> None:
+        return None
+
+    def drawText(self, rect, flags, text) -> None:
+        self.draw_text_calls.append((rect, flags, text))
+
+
 @pytest.fixture(autouse=True)
 def _auto_discard_unsaved_close(monkeypatch):
     monkeypatch.setattr(app_mod, "_prompt_unsaved_close_action", lambda _parent: "discard")
@@ -176,6 +207,36 @@ def test_alt_f_focuses_fact_annotation_panel(tmp_path: Path) -> None:
 
     assert QApplication.focusWidget() is window.fact_value_edit
     window.close()
+
+
+def test_gemini_prompt_dialog_uses_supported_model_dropdown() -> None:
+    _qt_app()
+    dialog = app_mod.GeminiPromptDialog(
+        prompt_text="test",
+        model_name="gemini-2.5-pro",
+    )
+    options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
+    assert "gemini-3-flash-preview" in options
+    assert "gemini-3.1-pro-preview" in options
+    assert "gemini-2.5-flash" in options
+    assert dialog.model() == "gemini-2.5-pro"
+    dialog.close()
+
+
+def test_gemini_fill_dialog_uses_supported_model_dropdown() -> None:
+    _qt_app()
+    dialog = app_mod.GeminiFillDialog(
+        model_name="gemini-3.1-flash-lite",
+        thinking_enabled_default=True,
+        thinking_level_default="high",
+        prompt_builder=lambda *_args: "preview",
+    )
+    options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
+    assert "gemini-3-flash-preview" in options
+    assert "gemini-3.1-flash-lite" in options
+    assert "gemini-2.5-pro" in options
+    assert dialog.model() == "gemini-3.1-flash-lite"
+    dialog.close()
 
 
 def test_note_num_clear_sets_null(tmp_path: Path) -> None:
@@ -361,7 +422,7 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     window.close()
 
 
-def test_fact_editor_shows_balance_and_aggregation_role_and_deterministic_natural_sign(tmp_path: Path) -> None:
+def test_fact_editor_shows_balance_row_role_aggregation_role_and_deterministic_natural_sign(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -380,6 +441,7 @@ def test_fact_editor_shows_balance_and_aggregation_role_and_deterministic_natura
     _qt_app().processEvents()
 
     assert window.fact_balance_type_combo.currentText() == "credit"
+    assert window.fact_row_role_combo.currentText() == "detail"
     assert window.fact_aggregation_role_combo.currentText() == "subtractive"
     assert window.fact_natural_sign_label.text() == "negative"
 
@@ -393,6 +455,11 @@ def test_fact_editor_shows_balance_and_aggregation_role_and_deterministic_natura
     window.fact_aggregation_role_combo.setCurrentIndex(idx)
     window._on_fact_editor_field_edited("aggregation_role")
     assert item.fact_data["aggregation_role"] == "additive"
+
+    idx = window.fact_row_role_combo.findText("total")
+    window.fact_row_role_combo.setCurrentIndex(idx)
+    window._on_fact_editor_field_edited("row_role")
+    assert item.fact_data["row_role"] == "total"
 
     window.fact_value_edit.setText("-")
     window.fact_value_edit.setModified(True)
@@ -1173,6 +1240,10 @@ def test_format_equation_with_target_uses_target_contribution_sign() -> None:
     assert app_mod._format_equation_with_target("100 - 40", "60", "positive", "subtractive") == "100 - 40 = -60"
 
 
+def test_evaluate_equation_string_uses_left_side_when_equals_present() -> None:
+    assert app_mod._evaluate_equation_string("971771 + 599659 = 599659") == "1571430"
+
+
 def test_equation_builder_uses_inferred_aggregation_roles_when_missing() -> None:
     facts = [
         app_mod.normalize_fact_data({"fact_num": 10, "value": "269968", "path": ["רכוש קבוע", "עלות"]}),
@@ -1225,12 +1296,12 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
 
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
-    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
+    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0 = 999"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
     assert "Does not match target value" in window.fact_equation_status_label.text()
     assert "Ignored 1 invalid value" in window.fact_equation_status_label.text()
-    assert {"fact_num": 4, "fact_reference": "f4", "normalized_value": 0, "raw_value": "-", "status": "normalized_dash"} in [
+    assert {"fact_num": 6, "fact_reference": "f6", "normalized_value": 0, "raw_value": "-", "status": "normalized_dash"} in [
         {
             "fact_num": term.get("fact_num"),
             "fact_reference": term.get("fact_reference"),
@@ -1245,10 +1316,10 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     window.apply_equation_btn.click()
     _qt_app().processEvents()
 
-    assert target.fact_data["equation"] == "100 - 5 + 0 + 20"
-    assert target.fact_data["fact_equation"] == "f1 - f2 + f4 + f5"
+    assert target.fact_data["equation"] == "20 + 100 - 5 + 0"
+    assert target.fact_data["fact_equation"] == "f2 + f3 - f5 + f6"
     assert window.apply_equation_btn.isEnabled() is False
-    assert window.fact_equation_edit.text() == "100 - 5 + 0 + 20 = 999"
+    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0 = 999"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
 
@@ -1260,8 +1331,8 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     _qt_app().processEvents()
 
     reloaded_item = reloaded._fact_items[0]
-    assert reloaded_item.fact_data["equation"] == "100 - 5 + 0 + 20"
-    assert reloaded_item.fact_data["fact_equation"] == "f1 - f2 + f4 + f5"
+    assert reloaded_item.fact_data["equation"] == "20 + 100 - 5 + 0"
+    assert reloaded_item.fact_data["fact_equation"] == "f2 + f3 - f5 + f6"
     reloaded.close()
 
 
@@ -1298,7 +1369,7 @@ def test_alt_shift_approves_equation_candidate(tmp_path: Path) -> None:
     _qt_app().processEvents()
 
     assert target.fact_data["equation"] == "100 + 20"
-    assert target.fact_data["fact_equation"] == "f1 + f2"
+    assert target.fact_data["fact_equation"] == "f2 + f3"
     assert window.apply_equation_btn.isEnabled() is False
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     window.close()
@@ -1455,6 +1526,110 @@ def test_equation_preview_clears_on_selection_change_without_persisting(tmp_path
     window.close()
 
 
+def test_refresh_facts_list_resequences_fact_nums_contiguously(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "fact_num": 7})
+    b = AnnotRectItem(QRectF(10, 50, 20, 20), {"value": "200", "fact_num": 7})
+    c = AnnotRectItem(QRectF(10, 90, 20, 20), {"value": "300", "fact_num": 11})
+    window.scene.addItem(a)
+    window.scene.addItem(b)
+    window.scene.addItem(c)
+    window.refresh_facts_list()
+
+    assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3]
+    window.close()
+
+
+def test_refresh_facts_list_remaps_fact_equation_refs_when_fact_nums_shift(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=240, height=240)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    inserted = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "900", "fact_num": 4})
+    child_a = AnnotRectItem(QRectF(10, 50, 20, 20), {"value": "100", "fact_num": 1})
+    child_b = AnnotRectItem(QRectF(10, 90, 20, 20), {"value": "20", "fact_num": 2})
+    target = AnnotRectItem(
+        QRectF(10, 130, 20, 20),
+        {"value": "120", "fact_num": 3, "equation": "100 + 20", "fact_equation": "f1 + f2"},
+    )
+    window.scene.addItem(inserted)
+    window.scene.addItem(child_a)
+    window.scene.addItem(child_b)
+    window.scene.addItem(target)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4]
+    assert target.fact_data["fact_equation"] == "f2 + f3"
+    assert target.fact_data["equation"] == "100 + 20"
+    assert window.fact_equation_edit.text() == "100 + 20 = 120"
+    assert window.fact_equation_result_label.text() == "120"
+    assert "#027a48" in window.fact_equation_result_label.styleSheet()
+    assert "Matches target value." in window.fact_equation_status_label.text()
+    window.close()
+
+
+def test_refresh_facts_list_marks_only_matching_saved_equations_as_green(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=240, height=240)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    ok_item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "120", "equation": "100 + 20", "fact_num": 1},
+    )
+    bad_item = AnnotRectItem(
+        QRectF(10, 50, 20, 20),
+        {"value": "120", "equation": "100 + 30", "fact_num": 2},
+    )
+    no_equation = AnnotRectItem(QRectF(10, 90, 20, 20), {"value": "120", "fact_num": 3})
+    window.scene.addItem(ok_item)
+    window.scene.addItem(bad_item)
+    window.scene.addItem(no_equation)
+    window.refresh_facts_list()
+
+    assert ok_item._equation_match_ok is True
+    assert bad_item._equation_match_ok is False
+    assert no_equation._equation_match_ok is False
+    window.close()
+
+
+def test_equation_match_bbox_paint_has_no_top_v_badge() -> None:
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "equation": "100 + 20", "fact_num": 1})
+    item.set_equation_match_ok(True)
+    painter = _FakePainter()
+
+    item.paint(painter, None)
+
+    assert painter.draw_text_calls == []
+    assert painter.pen_colors[0] == "#14804a"
+
+
+def test_selected_equation_match_bbox_uses_standard_blue_outline() -> None:
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "equation": "100 + 20", "fact_num": 1})
+    item.set_equation_match_ok(True)
+    item.setSelected(True)
+    painter = _FakePainter()
+
+    item.paint(painter, None)
+
+    assert painter.pen_colors[0] == "#175cd3"
+
+
 def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -1500,15 +1675,15 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     assert window.fact_equation_result_label.text() == "103"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
     assert "Matches target value." in window.fact_equation_status_label.text()
-    assert window._equation_candidate_fact_text == "f1 - f2 + f3"
-    assert sorted(item.fact_data["fact_num"] for item in window._equation_reference_preview_items) == [1, 2, 3]
+    assert window._equation_candidate_fact_text == "f2 - f3 + f4"
+    assert sorted(item.fact_data["fact_num"] for item in window._equation_reference_preview_items) == [2, 3, 4]
     assert window.apply_equation_btn.isEnabled() is True
 
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     _qt_app().processEvents()
 
     assert window.fact_equation_edit.text() == "100 - 5 + 8 = 103"
-    assert window._equation_candidate_fact_text == "f1 - f2 + f3"
+    assert window._equation_candidate_fact_text == "f2 - f3 + f4"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
     window.close()

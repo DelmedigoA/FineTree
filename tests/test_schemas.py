@@ -53,6 +53,12 @@ def test_extracted_fact_accepts_aggregation_role() -> None:
     assert fact.aggregation_role.value == "subtractive"
 
 
+def test_extracted_fact_accepts_row_role() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(row_role="total"))
+    assert fact.row_role is not None
+    assert fact.row_role.value == "total"
+
+
 def test_extracted_fact_accepts_recurrent_duration_type() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(duration_type="recurrent"))
     assert fact.duration_type is not None

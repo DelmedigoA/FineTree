@@ -9,6 +9,7 @@ from typing import Any, Iterable, Mapping, Optional, Sequence
 
 from .annotation_core import PageState, normalize_fact_data
 from .date_normalization import normalize_date
+from .equation_integrity import audit_and_rebuild_financial_facts
 from .fact_normalization import normalize_note_num
 from .schemas import PageType, StatementType, split_legacy_page_type
 
@@ -375,6 +376,47 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                     key=key,
                     code=code,
                     label=label,
+                )
+            )
+
+        fact_index_by_num: dict[int, int] = {}
+        for fact_index, fact in enumerate(facts):
+            fact_num = fact.get("fact_num")
+            if isinstance(fact_num, int) and fact_num >= 1:
+                fact_index_by_num[fact_num] = fact_index
+
+        _rebuilt_facts, integrity_findings = audit_and_rebuild_financial_facts(
+            facts,
+            statement_type=statement_type or None,
+            apply_repairs=False,
+        )
+        suppressed_codes = {
+            "row_role_corrected",
+            "aggregation_role_corrected",
+            "equation_rebuilt",
+            "fact_equation_rebuilt",
+        }
+        for finding in integrity_findings:
+            code = str(finding.get("code") or "").strip()
+            if not code:
+                continue
+            if code in suppressed_codes:
+                continue
+            severity = str(finding.get("severity") or "warning").strip().lower()
+            message = str(finding.get("message") or "").strip() or code
+            field_name = str(finding.get("field_name") or "").strip() or None
+            fact_num_raw = finding.get("fact_num")
+            fact_index = None
+            if isinstance(fact_num_raw, int):
+                fact_index = fact_index_by_num.get(fact_num_raw)
+            issues_by_page.append(
+                PageIssue(
+                    severity="reg_flag" if severity == "reg_flag" else "warning",
+                    code=code,
+                    message=message,
+                    page_image=page_image,
+                    fact_index=fact_index,
+                    field_name=field_name,
                 )
             )
 

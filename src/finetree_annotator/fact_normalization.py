@@ -28,19 +28,24 @@ _DATE_YMD_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATE_YEAR_RE = re.compile(r"^\d{4}$")
 _SINGLE_ALLOWED_DASH = "-"
 _EMPTY_DASH_PLACEHOLDERS = {"—", "–"}
-_AGGREGATION_TOTAL_MARKERS: tuple[str, ...] = (
+_ROW_TOTAL_MARKERS: tuple[str, ...] = (
     'סה"כ',
     "סה״כ",
     "סהכ",
+    "סך",
     "סך הכל",
     "total",
     "subtotal",
     "net subtotal",
+    "net total",
+    "net",
 )
 _AGGREGATION_SUBTRACTIVE_MARKERS: tuple[str, ...] = (
     "בניכוי",
+    "פחות",
     "less",
     "minus",
+    "net of",
     "contra",
     "accumulated depreciation",
     "פחת שנצבר",
@@ -129,8 +134,30 @@ def _normalize_aggregation_role(value: Any) -> str | None:
         "-": "subtractive",
         "minus": "subtractive",
         "subtractive": "subtractive",
+        # Legacy aggregation buckets collapse to additive contribution.
+        "total": "additive",
+        "unknown": "additive",
+    }
+    normalized = aliases.get(lowered)
+    if normalized is not None:
+        return normalized
+    return None
+
+
+def _normalize_row_role(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    aliases = {
+        "detail": "detail",
+        "details": "detail",
+        "child": "detail",
+        "line": "detail",
         "total": "total",
-        "unknown": "unknown",
+        "subtotal": "total",
+        "net": "total",
+        "summary": "total",
     }
     normalized = aliases.get(lowered)
     if normalized is not None:
@@ -153,12 +180,11 @@ def _normalize_text_for_role_inference(value: Any) -> str:
 
 def _infer_aggregation_role(
     *,
-    value: str,
     path: list[str],
     comment_ref: Any,
     note_name: Any,
     note_ref: Any,
-) -> str | None:
+) -> str:
     contexts: list[str] = []
     for candidate in (comment_ref, note_name, note_ref):
         normalized = _normalize_text_for_role_inference(candidate)
@@ -170,14 +196,31 @@ def _infer_aggregation_role(
             contexts.append(normalized)
 
     for text in contexts:
-        if any(marker in text for marker in _AGGREGATION_TOTAL_MARKERS):
-            return "total"
-    for text in contexts:
         if any(marker in text for marker in _AGGREGATION_SUBTRACTIVE_MARKERS):
             return "subtractive"
-    if value != _SINGLE_ALLOWED_DASH:
-        return "additive"
-    return None
+    return "additive"
+
+
+def _infer_row_role(
+    *,
+    path: list[str],
+    comment_ref: Any,
+    note_name: Any,
+    note_ref: Any,
+) -> str:
+    contexts: list[str] = []
+    for candidate in (comment_ref, note_name, note_ref):
+        normalized = _normalize_text_for_role_inference(candidate)
+        if normalized:
+            contexts.append(normalized)
+    for level in path:
+        normalized = _normalize_text_for_role_inference(level)
+        if normalized:
+            contexts.append(normalized)
+    for text in contexts:
+        if any(marker in text for marker in _ROW_TOTAL_MARKERS):
+            return "total"
+    return "detail"
 
 
 def _derive_natural_sign_from_value(value: str) -> str | None:
@@ -338,6 +381,7 @@ def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
             "fact_equation",
             "balance_type",
             "natural_sign",
+            "row_role",
             "aggregation_role",
             "period_type",
             "period_start",
@@ -416,10 +460,22 @@ def normalize_fact_payload(
     duration_type = _normalize_duration_type(payload.get("duration_type"))
     recurring_period = _normalize_recurring_period(payload.get("recurring_period"))
     value_context = _normalize_value_context(payload.get("value_context"))
-    aggregation_role = _normalize_aggregation_role(payload.get("aggregation_role"))
+    raw_aggregation_role = payload.get("aggregation_role")
+    row_role = _normalize_row_role(payload.get("row_role"))
+    raw_aggregation_role_text = str(raw_aggregation_role or "").strip().lower()
+    if row_role is None and raw_aggregation_role_text == "total":
+        row_role = "total"
+    if row_role is None:
+        row_role = _infer_row_role(
+            path=path_value,
+            comment_ref=comment_raw,
+            note_name=note_name_raw,
+            note_ref=note_ref,
+        )
+
+    aggregation_role = _normalize_aggregation_role(raw_aggregation_role)
     if aggregation_role is None:
         aggregation_role = _infer_aggregation_role(
-            value=value,
             path=path_value,
             comment_ref=comment_raw,
             note_name=note_name_raw,
@@ -433,6 +489,7 @@ def normalize_fact_payload(
         "fact_equation": _normalize_equation(payload.get("fact_equation")),
         "balance_type": _normalize_balance_type(payload.get("balance_type")),
         "natural_sign": natural_sign,
+        "row_role": row_role,
         "aggregation_role": aggregation_role,
         "comment_ref": _to_optional_text(comment_raw),
         "note_flag": note_flag,

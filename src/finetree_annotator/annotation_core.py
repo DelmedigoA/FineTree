@@ -11,6 +11,8 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from pydantic import ValidationError
 
+from .equation_integrity import audit_and_rebuild_financial_facts
+from .equation_integrity import resequence_fact_numbers_and_remap_fact_equations
 from .fact_ordering import compact_document_meta, normalize_document_meta
 from .fact_normalization import normalize_fact_payload
 from .schema_io import save_canonical
@@ -42,7 +44,8 @@ def default_fact_data() -> Dict[str, Any]:
         "fact_equation": None,
         "balance_type": None,
         "natural_sign": None,
-        "aggregation_role": None,
+        "row_role": "detail",
+        "aggregation_role": "additive",
         "comment_ref": None,
         "note_flag": False,
         "note_name": None,
@@ -64,23 +67,8 @@ def default_fact_data() -> Dict[str, Any]:
 
 
 def _assign_missing_fact_numbers(facts: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    assigned: List[Dict[str, Any]] = []
-    used_fact_nums: set[int] = set()
-    next_fact_num = 1
-
-    for raw_fact in facts:
-        fact = normalize_fact_data(raw_fact)
-        fact_num = fact.get("fact_num")
-        if isinstance(fact_num, int) and fact_num >= 1 and fact_num not in used_fact_nums:
-            used_fact_nums.add(fact_num)
-        else:
-            while next_fact_num in used_fact_nums:
-                next_fact_num += 1
-            fact["fact_num"] = next_fact_num
-            used_fact_nums.add(next_fact_num)
-            next_fact_num += 1
-        assigned.append(fact)
-    return assigned
+    normalized_facts = [normalize_fact_data(raw_fact) for raw_fact in facts]
+    return resequence_fact_numbers_and_remap_fact_equations(normalized_facts)
 
 
 def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
@@ -234,6 +222,11 @@ def build_annotations_payload(
 
         facts_out = []
         normalized_facts = _assign_missing_fact_numbers([box.fact for box in state.facts])
+        normalized_facts, _equation_findings = audit_and_rebuild_financial_facts(
+            normalized_facts,
+            statement_type=(meta_model.statement_type.value if meta_model.statement_type is not None else None),
+            apply_repairs=True,
+        )
         for box, normalized_fact in zip(state.facts, normalized_facts):
             fact_model = Fact(**normalized_fact)
             facts_out.append(

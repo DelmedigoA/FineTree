@@ -28,6 +28,13 @@ from .schemas import Fact, PageExtraction, PageMeta, split_legacy_page_type
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
+SUPPORTED_GEMINI_MODELS: tuple[str, ...] = (
+    "gemini-3-flash-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3.1-pro-preview",
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
+)
 _ALLOWED_RESPONSE_JSON_SCHEMA_KEYS = {
     "$id",
     "$defs",
@@ -973,6 +980,8 @@ def _validate_patch_fact_updates(
         "value_context": None,
         "balance_type": None,
         "natural_sign": None,
+        "row_role": "detail",
+        "aggregation_role": "additive",
     }
     validated = Fact.model_validate({**baseline, **updates_payload}).model_dump(mode="json")
     return {key: validated[key] for key in updates_payload.keys()}
