@@ -331,6 +331,26 @@ def _normalize_natural_sign_value(value: Any) -> str | None:
     raise ValueError("natural_sign must be 'positive', 'negative', or null.")
 
 
+def _normalize_aggregation_role_value(value: Any) -> str | None:
+    if value in ("", None):
+        return None
+    text = str(value).strip().lower()
+    aliases = {
+        "+": "additive",
+        "plus": "additive",
+        "additive": "additive",
+        "-": "subtractive",
+        "minus": "subtractive",
+        "subtractive": "subtractive",
+        "total": "total",
+        "unknown": "unknown",
+    }
+    normalized = aliases.get(text)
+    if normalized is not None:
+        return normalized
+    raise ValueError("aggregation_role must be 'additive', 'subtractive', 'total', 'unknown', or null.")
+
+
 def _derive_natural_sign_from_value(value: str) -> str | None:
     text = str(value or "").strip()
     if text == "-":
@@ -462,6 +482,13 @@ class BalanceType(str, Enum):
 class NaturalSign(str, Enum):
     positive = "positive"
     negative = "negative"
+
+
+class AggregationRole(str, Enum):
+    additive = "additive"
+    subtractive = "subtractive"
+    total = "total"
+    unknown = "unknown"
 
 
 class Currency(str, Enum):
@@ -622,6 +649,7 @@ class Fact(BaseModel):
     fact_equation: Optional[str] = None
     balance_type: Optional[BalanceType] = None
     natural_sign: Optional[NaturalSign] = None
+    aggregation_role: Optional[AggregationRole] = None
     comment_ref: Optional[str] = Field(default=None, validation_alias=AliasChoices("comment_ref", "ref_comment", "comment"))
     note_flag: bool = Field(
         default=False,
@@ -746,6 +774,11 @@ class Fact(BaseModel):
     @classmethod
     def _validate_natural_sign(cls, value: Any) -> str | None:
         return _normalize_natural_sign_value(value)
+
+    @field_validator("aggregation_role", mode="before")
+    @classmethod
+    def _validate_aggregation_role(cls, value: Any) -> str | None:
+        return _normalize_aggregation_role_value(value)
 
     @model_validator(mode="after")
     def _validate_note_num_requires_note_flag(self) -> "Fact":

@@ -28,6 +28,23 @@ _DATE_YMD_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATE_YEAR_RE = re.compile(r"^\d{4}$")
 _SINGLE_ALLOWED_DASH = "-"
 _EMPTY_DASH_PLACEHOLDERS = {"—", "–"}
+_AGGREGATION_TOTAL_MARKERS: tuple[str, ...] = (
+    'סה"כ',
+    "סה״כ",
+    "סהכ",
+    "סך הכל",
+    "total",
+    "subtotal",
+    "net subtotal",
+)
+_AGGREGATION_SUBTRACTIVE_MARKERS: tuple[str, ...] = (
+    "בניכוי",
+    "less",
+    "minus",
+    "contra",
+    "accumulated depreciation",
+    "פחת שנצבר",
+)
 DEFAULT_ANNOTATIONS_GLOB = "data/annotations/*.json"
 
 
@@ -98,6 +115,69 @@ def _normalize_balance_type(value: Any) -> str | None:
         return None
     lowered = text.lower()
     return lowered if lowered in _VALID_BALANCE_TYPES else None
+
+
+def _normalize_aggregation_role(value: Any) -> str | None:
+    text = _to_optional_text(value)
+    if text is None:
+        return None
+    lowered = text.lower()
+    aliases = {
+        "+": "additive",
+        "plus": "additive",
+        "additive": "additive",
+        "-": "subtractive",
+        "minus": "subtractive",
+        "subtractive": "subtractive",
+        "total": "total",
+        "unknown": "unknown",
+    }
+    normalized = aliases.get(lowered)
+    if normalized is not None:
+        return normalized
+    return None
+
+
+def _normalize_text_for_role_inference(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    text = (
+        text.replace("״", '"')
+        .replace("“", '"')
+        .replace("”", '"')
+        .replace("׳", "'")
+        .replace("–", "-")
+        .replace("—", "-")
+    )
+    return re.sub(r"\s+", " ", text)
+
+
+def _infer_aggregation_role(
+    *,
+    value: str,
+    path: list[str],
+    comment_ref: Any,
+    note_name: Any,
+    note_ref: Any,
+) -> str | None:
+    contexts: list[str] = []
+    for candidate in (comment_ref, note_name, note_ref):
+        normalized = _normalize_text_for_role_inference(candidate)
+        if normalized:
+            contexts.append(normalized)
+    for level in path:
+        normalized = _normalize_text_for_role_inference(level)
+        if normalized:
+            contexts.append(normalized)
+
+    for text in contexts:
+        if any(marker in text for marker in _AGGREGATION_TOTAL_MARKERS):
+            return "total"
+    for text in contexts:
+        if any(marker in text for marker in _AGGREGATION_SUBTRACTIVE_MARKERS):
+            return "subtractive"
+    if value != _SINGLE_ALLOWED_DASH:
+        return "additive"
+    return None
 
 
 def _derive_natural_sign_from_value(value: str) -> str | None:
@@ -258,6 +338,7 @@ def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
             "fact_equation",
             "balance_type",
             "natural_sign",
+            "aggregation_role",
             "period_type",
             "period_start",
             "period_end",
@@ -307,6 +388,7 @@ def normalize_fact_payload(
     if ref_note_raw in ("", None):
         ref_note_raw = payload.get("refference", payload.get("reference", payload.get("ref")))
     note_ref = _to_optional_text(ref_note_raw)
+    path_value = _normalize_path(payload.get("path"))
 
     normalized_value_type = _normalize_value_type(payload.get("value_type"))
     value_input: Any = payload.get("value")
@@ -334,6 +416,15 @@ def normalize_fact_payload(
     duration_type = _normalize_duration_type(payload.get("duration_type"))
     recurring_period = _normalize_recurring_period(payload.get("recurring_period"))
     value_context = _normalize_value_context(payload.get("value_context"))
+    aggregation_role = _normalize_aggregation_role(payload.get("aggregation_role"))
+    if aggregation_role is None:
+        aggregation_role = _infer_aggregation_role(
+            value=value,
+            path=path_value,
+            comment_ref=comment_raw,
+            note_name=note_name_raw,
+            note_ref=note_ref,
+        )
 
     normalized: dict[str, Any] = {
         "value": value,
@@ -342,6 +433,7 @@ def normalize_fact_payload(
         "fact_equation": _normalize_equation(payload.get("fact_equation")),
         "balance_type": _normalize_balance_type(payload.get("balance_type")),
         "natural_sign": natural_sign,
+        "aggregation_role": aggregation_role,
         "comment_ref": _to_optional_text(comment_raw),
         "note_flag": note_flag,
         "note_name": _to_optional_text(note_name_raw),
@@ -353,7 +445,7 @@ def normalize_fact_payload(
         "period_end": period_end,
         "duration_type": duration_type,
         "recurring_period": recurring_period,
-        "path": _normalize_path(payload.get("path")),
+        "path": path_value,
         "path_source": _normalize_path_source(payload.get("path_source")),
         "currency": _normalize_currency(payload.get("currency")),
         "scale": _normalize_scale(payload.get("scale")),

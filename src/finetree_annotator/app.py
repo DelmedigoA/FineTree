@@ -130,6 +130,7 @@ PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
 VALUE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "value_type")
 VALUE_CONTEXT_OPTIONS: tuple[str, ...] = enum_options("fact", "value_context")
 BALANCE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "balance_type")
+AGGREGATION_ROLE_OPTIONS: tuple[str, ...] = enum_options("fact", "aggregation_role")
 STATEMENT_TYPE_OPTIONS: tuple[str, ...] = enum_options("page_meta", "statement_type")
 ENTITY_TYPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "entity_type")
 PERIOD_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "period_type")
@@ -157,6 +158,7 @@ GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
     ("duration_type", True),
     ("recurring_period", True),
     ("balance_type", True),
+    ("aggregation_role", True),
     ("value_context", True),
     ("path_source", False),
     ("value_type", False),
@@ -176,6 +178,7 @@ GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
     "recurring_period",
     "value_context",
     "balance_type",
+    "aggregation_role",
     "path_source",
     "value_type",
     "currency",
@@ -286,11 +289,44 @@ def _coerce_positive_int(value: Any) -> int | None:
     return None
 
 
-def _normalize_balance_type_for_equation(value: Any) -> str | None:
+def _normalize_natural_sign_for_equation(value: Any) -> str | None:
     text = str(value or "").strip().lower()
-    if text in {"debit", "credit"}:
-        return text
-    return None
+    aliases = {
+        "+": "positive",
+        "plus": "positive",
+        "positive": "positive",
+        "-": "negative",
+        "minus": "negative",
+        "negative": "negative",
+    }
+    return aliases.get(text)
+
+
+def _normalize_aggregation_role_for_equation(value: Any) -> str | None:
+    text = str(value or "").strip().lower()
+    aliases = {
+        "+": "additive",
+        "plus": "additive",
+        "additive": "additive",
+        "-": "subtractive",
+        "minus": "subtractive",
+        "subtractive": "subtractive",
+        "total": "total",
+        "unknown": "unknown",
+    }
+    return aliases.get(text)
+
+
+def _natural_sign_multiplier(value: Any) -> int:
+    return -1 if _normalize_natural_sign_for_equation(value) == "negative" else 1
+
+
+def _aggregation_role_multiplier(value: Any) -> int:
+    return -1 if _normalize_aggregation_role_for_equation(value) == "subtractive" else 1
+
+
+def _contribution_multiplier(natural_sign: Any, aggregation_role: Any) -> int:
+    return _natural_sign_multiplier(natural_sign) * _aggregation_role_multiplier(aggregation_role)
 
 
 def _normalize_page_annotation_status(value: Any) -> str | None:
@@ -347,16 +383,19 @@ def _build_equation_candidate_from_facts(
     for fact in facts:
         fact_num = _coerce_positive_int(fact.get("fact_num"))
         raw_value = fact.get("value")
-        balance_type = _normalize_balance_type_for_equation(fact.get("balance_type"))
+        natural_sign = _normalize_natural_sign_for_equation(fact.get("natural_sign"))
+        aggregation_role = _normalize_aggregation_role_for_equation(fact.get("aggregation_role"))
         parsed, display, term_meta = _parse_fact_value_for_equation(raw_value)
-        effective_value = parsed
-        if parsed is not None and balance_type == "debit":
-            effective_value = -parsed
+        magnitude = parsed.copy_abs() if parsed is not None else None
+        contribution_sign = _contribution_multiplier(natural_sign, aggregation_role)
+        effective_value = magnitude * Decimal(contribution_sign) if magnitude is not None else None
         term_meta = {
             **term_meta,
             "fact_num": fact_num,
             "fact_reference": f"f{fact_num}" if fact_num is not None else None,
-            "balance_type": balance_type,
+            "natural_sign": natural_sign,
+            "aggregation_role": aggregation_role,
+            "contribution_sign": contribution_sign,
             "effective_normalized_value": _decimal_to_number(effective_value) if effective_value is not None else None,
         }
         if parsed is None or display is None or fact_num is None:
@@ -390,27 +429,31 @@ def _build_equation_candidate_from_facts(
 
 def _effective_target_value_for_equation(
     target_value: Any,
-    target_balance_type: Any,
+    target_natural_sign: Any,
+    target_aggregation_role: Any,
 ) -> tuple[Decimal | None, str | None]:
     target_value_decimal, _target_display, _meta = _parse_fact_value_for_equation(target_value)
     if target_value_decimal is None:
         return None, None
-    if _normalize_balance_type_for_equation(target_balance_type) == "debit":
-        target_value_decimal = -target_value_decimal
+    target_value_decimal = target_value_decimal.copy_abs() * Decimal(
+        _contribution_multiplier(target_natural_sign, target_aggregation_role)
+    )
     return target_value_decimal, _format_decimal_plain(target_value_decimal)
 
 
 def _format_equation_with_target(
     equation_text: Any,
     target_value: Any,
-    target_balance_type: Any,
+    target_natural_sign: Any,
+    target_aggregation_role: Any,
 ) -> str:
     expression = str(equation_text or "").strip()
     if not expression:
         return ""
     _target_value_decimal, target_display = _effective_target_value_for_equation(
         target_value,
-        target_balance_type,
+        target_natural_sign,
+        target_aggregation_role,
     )
     if target_display is None:
         return expression
@@ -420,7 +463,8 @@ def _format_equation_with_target(
 def _equation_result_match_state(
     result_text: str | None,
     target_value: Any,
-    target_balance_type: Any = None,
+    target_natural_sign: Any = None,
+    target_aggregation_role: Any = None,
 ) -> tuple[str, str]:
     if result_text is None:
         return "danger", "Cannot calculate preview."
@@ -431,7 +475,8 @@ def _equation_result_match_state(
 
     target_value_decimal, target_display = _effective_target_value_for_equation(
         target_value,
-        target_balance_type,
+        target_natural_sign,
+        target_aggregation_role,
     )
     if target_value_decimal is None or target_display is None:
         return "neutral", "Preview only; target value is non-numeric."
@@ -2574,6 +2619,8 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_context_combo.addItems(list(VALUE_CONTEXT_OPTIONS))
         self.fact_balance_type_combo = QComboBox()
         self.fact_balance_type_combo.addItems(list(BALANCE_TYPE_OPTIONS))
+        self.fact_aggregation_role_combo = QComboBox()
+        self.fact_aggregation_role_combo.addItems(list(AGGREGATION_ROLE_OPTIONS))
         self.fact_natural_sign_label = QLabel("-")
         self.fact_natural_sign_label.setObjectName("factBboxLabel")
         self.fact_path_source_combo = QComboBox()
@@ -2662,6 +2709,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.setMinimumWidth(112)
         self.fact_value_context_combo.setMinimumWidth(112)
         self.fact_balance_type_combo.setMinimumWidth(112)
+        self.fact_aggregation_role_combo.setMinimumWidth(112)
         self.fact_path_source_combo.setMinimumWidth(112)
         self.fact_duration_type_combo.setMinimumWidth(112)
         self.fact_recurring_period_combo.setMinimumWidth(112)
@@ -2699,6 +2747,7 @@ class AnnotationWindow(QMainWindow):
         value_type_block = self._inspector_field_block("Value Type", self.fact_value_type_combo)
         value_context_block = self._inspector_field_block("Value Context", self.fact_value_context_combo)
         balance_type_block = self._inspector_field_block("Balance Type", self.fact_balance_type_combo)
+        aggregation_role_block = self._inspector_field_block("Aggregation Role", self.fact_aggregation_role_combo)
         natural_sign_block = self._inspector_field_block("Natural Sign", self.fact_natural_sign_label)
         period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
         duration_type_block = self._inspector_field_block("Duration Type", self.fact_duration_type_combo)
@@ -2714,6 +2763,7 @@ class AnnotationWindow(QMainWindow):
             1,
         )
         value_with_sign_layout.addWidget(natural_sign_block, 0)
+        value_with_sign_layout.addWidget(aggregation_role_block, 0)
         period_range_panel = QWidget()
         period_range_layout = QHBoxLayout(period_range_panel)
         period_range_layout.setContentsMargins(0, 0, 0, 0)
@@ -3159,6 +3209,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_type"))
         self.fact_value_context_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_context"))
         self.fact_balance_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("balance_type"))
+        self.fact_aggregation_role_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("aggregation_role"))
         self.fact_path_source_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("path_source"))
         self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_field_edited("path"))
         self.fact_path_list.itemSelectionChanged.connect(self._update_path_controls)
@@ -4228,7 +4279,7 @@ class AnnotationWindow(QMainWindow):
     def _set_equation_result_display(self, text: str, *, tone: str = "neutral") -> None:
         self.fact_equation_result_label.setText(text)
         if tone == "danger":
-            self.fact_equation_result_label.setStyleSheet("color: #b42318; font-weight: 600;")
+            self.fact_equation_result_label.setStyleSheet("color: #b7791f; font-weight: 600;")
         elif tone == "ok":
             self.fact_equation_result_label.setStyleSheet("color: #027a48; font-weight: 600;")
         else:
@@ -4269,10 +4320,12 @@ class AnnotationWindow(QMainWindow):
             saved_equation = str(saved_fact.get("equation") or "")
             saved_fact_equation = str(saved_fact.get("fact_equation") or "")
             target_value = saved_fact.get("value")
-            target_balance_type = saved_fact.get("balance_type")
+            target_natural_sign = saved_fact.get("natural_sign")
+            target_aggregation_role = saved_fact.get("aggregation_role")
         else:
             target_value = None
-            target_balance_type = None
+            target_natural_sign = None
+            target_aggregation_role = None
 
         self.fact_equation_edit.setEnabled(single_item is not None)
         self.fact_equation_result_label.setEnabled(single_item is not None)
@@ -4294,14 +4347,16 @@ class AnnotationWindow(QMainWindow):
                 _format_equation_with_target(
                     self._equation_candidate_text,
                     target_value,
-                    target_balance_type,
+                    target_natural_sign,
+                    target_aggregation_role,
                 )
             )
             if self._equation_candidate_result_text is not None:
                 result_tone, comparison_message = _equation_result_match_state(
                     self._equation_candidate_result_text,
                     target_value,
-                    target_balance_type,
+                    target_natural_sign,
+                    target_aggregation_role,
                 )
                 self._set_equation_result_display(self._equation_candidate_result_text, tone=result_tone)
             else:
@@ -4332,7 +4387,12 @@ class AnnotationWindow(QMainWindow):
             return
 
         self.fact_equation_edit.setText(
-            _format_equation_with_target(saved_equation, target_value, target_balance_type)
+            _format_equation_with_target(
+                saved_equation,
+                target_value,
+                target_natural_sign,
+                target_aggregation_role,
+            )
         )
         if not saved_equation:
             self.fact_equation_status_label.setText(
@@ -4348,7 +4408,12 @@ class AnnotationWindow(QMainWindow):
             self._set_equation_result_display("cannot calculate", tone="danger")
             return
 
-        result_tone, comparison_message = _equation_result_match_state(preview, target_value, target_balance_type)
+        result_tone, comparison_message = _equation_result_match_state(
+            preview,
+            target_value,
+            target_natural_sign,
+            target_aggregation_role,
+        )
         self.fact_equation_status_label.setText(f"Saved equation preview. {comparison_message}")
         self._set_equation_result_display(preview, tone=result_tone)
         self.clear_equation_btn.setEnabled(True)
@@ -4372,6 +4437,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_type_combo.setEnabled(enabled)
         self.fact_value_context_combo.setEnabled(enabled)
         self.fact_balance_type_combo.setEnabled(enabled)
+        self.fact_aggregation_role_combo.setEnabled(enabled)
         self.fact_path_source_combo.setEnabled(enabled)
         self.fact_path_list.setEnabled(enabled)
         self.fact_natural_sign_label.setEnabled(enabled)
@@ -4412,6 +4478,7 @@ class AnnotationWindow(QMainWindow):
             self.fact_value_type_combo,
             self.fact_value_context_combo,
             self.fact_balance_type_combo,
+            self.fact_aggregation_role_combo,
             self.fact_path_source_combo,
         ):
             if hasattr(combo, "setPlaceholderText"):
@@ -4442,6 +4509,7 @@ class AnnotationWindow(QMainWindow):
             self.fact_value_type_combo.setCurrentIndex(0)
             self.fact_value_context_combo.setCurrentIndex(0)
             self.fact_balance_type_combo.setCurrentIndex(0)
+            self.fact_aggregation_role_combo.setCurrentIndex(0)
             self.fact_path_source_combo.setCurrentIndex(0)
             self.fact_path_list.clear()
             self.fact_natural_sign_label.setText("-")
@@ -4509,6 +4577,9 @@ class AnnotationWindow(QMainWindow):
             balance_type = str(fact.get("balance_type") or "")
             idx_balance_type = self.fact_balance_type_combo.findText(balance_type)
             self.fact_balance_type_combo.setCurrentIndex(max(0, idx_balance_type))
+            aggregation_role = str(fact.get("aggregation_role") or "")
+            idx_aggregation_role = self.fact_aggregation_role_combo.findText(aggregation_role)
+            self.fact_aggregation_role_combo.setCurrentIndex(max(0, idx_aggregation_role))
             self.fact_natural_sign_label.setText(str(fact.get("natural_sign") or "-"))
 
             path_source = str(fact.get("path_source") or "")
@@ -4594,6 +4665,7 @@ class AnnotationWindow(QMainWindow):
             self._set_multi_combo_value(self.fact_value_type_combo, "value_type", items)
             self._set_multi_combo_value(self.fact_value_context_combo, "value_context", items)
             self._set_multi_combo_value(self.fact_balance_type_combo, "balance_type", items)
+            self._set_multi_combo_value(self.fact_aggregation_role_combo, "aggregation_role", items)
             self._set_multi_combo_value(self.fact_path_source_combo, "path_source", items)
             natural_sign_value, natural_sign_mixed = self._shared_fact_value(items, "natural_sign")
             self.fact_natural_sign_label.setText(
@@ -4685,29 +4757,29 @@ class AnnotationWindow(QMainWindow):
         scale_text = self.fact_scale_combo.currentText().strip()
         is_beur_text = self.fact_is_beur_combo.currentText().strip().lower()
         is_beur_value = is_beur_text == "true"
-        return normalize_fact_data(
-            {
-                "value": self.fact_value_edit.text().strip(),
-                "comment_ref": self.fact_note_edit.text().strip() or None,
-                "note_name": self.fact_note_name_edit.text().strip() or None,
-                "note_flag": is_beur_value,
-                "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
-                "note_ref": self.fact_refference_edit.text().strip() or None,
-                "date": self.fact_date_edit.text().strip() or None,
+        payload: Dict[str, Any] = {
+            "value": self.fact_value_edit.text().strip(),
+            "comment_ref": self.fact_note_edit.text().strip() or None,
+            "note_name": self.fact_note_name_edit.text().strip() or None,
+            "note_flag": is_beur_value,
+            "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
+            "note_ref": self.fact_refference_edit.text().strip() or None,
+            "date": self.fact_date_edit.text().strip() or None,
             "period_type": self.fact_period_type_combo.currentText().strip() or None,
             "period_start": self.fact_period_start_edit.text().strip() or None,
             "period_end": self.fact_period_end_edit.text().strip() or None,
             "duration_type": self.fact_duration_type_combo.currentText().strip() or None,
             "recurring_period": self.fact_recurring_period_combo.currentText().strip() or None,
             "path": path_parts,
-                "path_source": self.fact_path_source_combo.currentText().strip() or None,
-                "currency": self.fact_currency_combo.currentText().strip() or None,
-                "scale": int(scale_text) if scale_text else None,
-                "value_type": self.fact_value_type_combo.currentText().strip() or None,
-                "value_context": self.fact_value_context_combo.currentText().strip() or None,
-                "balance_type": self.fact_balance_type_combo.currentText().strip() or None,
-            }
-        )
+            "path_source": self.fact_path_source_combo.currentText().strip() or None,
+            "currency": self.fact_currency_combo.currentText().strip() or None,
+            "scale": int(scale_text) if scale_text else None,
+            "value_type": self.fact_value_type_combo.currentText().strip() or None,
+            "value_context": self.fact_value_context_combo.currentText().strip() or None,
+            "balance_type": self.fact_balance_type_combo.currentText().strip() or None,
+            "aggregation_role": self.fact_aggregation_role_combo.currentText().strip() or None,
+        }
+        return normalize_fact_data(payload)
 
     def _is_alive_fact_item(self, item: Optional[AnnotRectItem]) -> bool:
         if not isinstance(item, AnnotRectItem):
@@ -4903,6 +4975,13 @@ class AnnotationWindow(QMainWindow):
             return
         if field_name == "balance_type":
             self._apply_fact_field_to_selected_items("balance_type", self.fact_balance_type_combo.currentText().strip() or None)
+            self._sync_fact_editor_from_selection()
+            return
+        if field_name == "aggregation_role":
+            self._apply_fact_field_to_selected_items(
+                "aggregation_role",
+                self.fact_aggregation_role_combo.currentText().strip() or None,
+            )
             self._sync_fact_editor_from_selection()
             return
         if field_name == "path_source":
@@ -5503,6 +5582,7 @@ class AnnotationWindow(QMainWindow):
                 "value_type": self.fact_value_type_combo,
                 "value_context": self.fact_value_context_combo,
                 "balance_type": self.fact_balance_type_combo,
+                "aggregation_role": self.fact_aggregation_role_combo,
                 "path_source": self.fact_path_source_combo,
             }
         else:
@@ -5797,6 +5877,7 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("value_context") or ""),
             str(normalized_fact.get("balance_type") or ""),
             str(normalized_fact.get("natural_sign") or ""),
+            str(normalized_fact.get("aggregation_role") or ""),
             str(normalized_fact.get("path_source") or ""),
             path,
         )
@@ -7248,6 +7329,8 @@ class AnnotationWindow(QMainWindow):
                 summary = f"{summary} | balance_type: {item.fact_data.get('balance_type')}"
             if item.fact_data.get("natural_sign"):
                 summary = f"{summary} | natural_sign: {item.fact_data.get('natural_sign')}"
+            if item.fact_data.get("aggregation_role"):
+                summary = f"{summary} | aggregation_role: {item.fact_data.get('aggregation_role')}"
             if item.fact_data.get("path_source"):
                 summary = f"{summary} | path_source: {item.fact_data.get('path_source')}"
             if item.fact_data.get("equation"):
@@ -7318,7 +7401,8 @@ class AnnotationWindow(QMainWindow):
                 {
                     "fact_num": self._fact_num_for_item(item),
                     "value": normalize_fact_data(item.fact_data).get("value"),
-                    "balance_type": normalize_fact_data(item.fact_data).get("balance_type"),
+                    "natural_sign": normalize_fact_data(item.fact_data).get("natural_sign"),
+                    "aggregation_role": normalize_fact_data(item.fact_data).get("aggregation_role"),
                 }
                 for item in ordered_reference_items
             ]

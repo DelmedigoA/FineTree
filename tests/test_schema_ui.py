@@ -10,6 +10,8 @@ def test_schema_ui_enum_options_derive_from_registry() -> None:
     assert "other_declaration" in statement_opts
     duration_opts = enum_options("fact", "duration_type")
     assert "recurrent" in duration_opts
+    aggregation_role_opts = enum_options("fact", "aggregation_role")
+    assert "subtractive" in aggregation_role_opts
 
 
 def test_schema_ui_descriptors_include_expected_fields() -> None:
@@ -17,4 +19,5 @@ def test_schema_ui_descriptors_include_expected_fields() -> None:
     assert "page_meta.statement_type" in descriptors
     assert "metadata.entity_type" in descriptors
     assert "fact.balance_type" in descriptors
+    assert "fact.aggregation_role" in descriptors
     assert "fact.path_source" in descriptors

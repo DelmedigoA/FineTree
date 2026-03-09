@@ -42,6 +42,7 @@ def default_fact_data() -> Dict[str, Any]:
         "fact_equation": None,
         "balance_type": None,
         "natural_sign": None,
+        "aggregation_role": None,
         "comment_ref": None,
         "note_flag": False,
         "note_name": None,

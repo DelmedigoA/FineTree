@@ -38,6 +38,7 @@ Top-level schema (exact keys only):
           "value_context": "textual|tabular|mixed|null",
           "balance_type": "debit|credit|null",
           "natural_sign": "positive|negative|null",
+          "aggregation_role": "additive|subtractive|total|unknown|null",
           "currency": "ILS|USD|EUR|GBP|null",
           "scale": 1|1000|1000000|null,
           "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
@@ -84,13 +85,17 @@ Type/validation rules (must match schema):
     - if `value` contains both `(` and `)`, set `natural_sign="negative"`
     - if `value` is exactly `"-"`, set `natural_sign=null`
     - otherwise set `natural_sign="positive"`
-22. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-23. `path_source` is only `observed`, `inferred`, or null.
-24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-25. If `note_num` is present, `note_flag` must be `true`.
-26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-27. Use JSON `null` literal for missing optional values (never `"null"` string).
-28. Do not include any keys not listed above.
+22. `aggregation_role` must be `additive`, `subtractive`, `total`, `unknown`, or null:
+    - rows starting with `בניכוי` or contra lines (for example accumulated depreciation) => `subtractive`
+    - subtotal rows (for example `סה"כ`) => `total`
+    - regular child rows that add into a subtotal => `additive`
+23. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+24. `path_source` is only `observed`, `inferred`, or null.
+25. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+26. If `note_num` is present, `note_flag` must be `true`.
+27. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+28. Use JSON `null` literal for missing optional values (never `"null"` string).
+29. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
@@ -114,9 +119,14 @@ Extraction rules:
 19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
 20. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
 21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
-22. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-23. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-24. Do not emit empty-value facts.
+22. `aggregation_role` describes parent-subtotal contribution:
+    - `בניכוי` / contra-items (for example accumulated depreciation) => `subtractive`
+    - subtotal rows such as `סה"כ` => `total`
+    - regular child rows => `additive`
+    Do not use `balance_type` to choose equation operators.
+23. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+24. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+25. Do not emit empty-value facts.
 Page classification rules:
 1. Use `page_type="title"` for cover/title pages.
 2. Use `page_type="contents"` for table-of-contents pages.

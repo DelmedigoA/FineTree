@@ -135,6 +135,51 @@ def test_normalize_fact_payload_sets_balance_type_and_deterministic_natural_sign
     assert warnings == []
 
 
+def test_normalize_fact_payload_accepts_aggregation_role() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "aggregation_role": "subtractive",
+            "path": [],
+        }
+    )
+    assert normalized["aggregation_role"] == "subtractive"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_infers_subtractive_aggregation_role_from_benikuy_path() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "209255",
+            "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"],
+        }
+    )
+    assert normalized["aggregation_role"] == "subtractive"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_infers_total_aggregation_role_from_subtotal_path() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "60713",
+            "path": ["רכוש קבוע", 'סה"כ רכוש קבוע'],
+        }
+    )
+    assert normalized["aggregation_role"] == "total"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_defaults_aggregation_role_to_additive_for_numeric_fact() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "269968",
+            "path": ["רכוש קבוע", "עלות"],
+        }
+    )
+    assert normalized["aggregation_role"] == "additive"
+    assert warnings == []
+
+
 def test_normalize_fact_payload_sets_natural_sign_null_for_dash() -> None:
     normalized, warnings = normalize_fact_payload({"value": "-", "path": []})
     assert normalized["natural_sign"] is None
