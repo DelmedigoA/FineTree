@@ -4,7 +4,9 @@ import json
 from pathlib import Path
 
 from finetree_annotator.gemini_few_shot import (
+    DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
+    DEFAULT_TEST_ONE_SHOT_PAGE,
     DEFAULT_TEST_FEW_SHOT_PAGES,
     load_complex_few_shot_examples,
     load_test_pdf_few_shot_examples,
@@ -61,6 +63,25 @@ def test_load_test_pdf_few_shot_examples_reads_all_fixed_pages(tmp_path: Path) -
         assert isinstance(parsed.get("pages"), list)
         assert len(parsed["pages"]) == 1
         assert isinstance(parsed["pages"][0].get("facts"), list)
+
+
+def test_load_test_pdf_few_shot_examples_supports_one_shot_selection(tmp_path: Path) -> None:
+    image_dir = tmp_path / "data/pdf_images/test"
+    image_dir.mkdir(parents=True)
+    (image_dir / DEFAULT_TEST_ONE_SHOT_PAGE).write_bytes(b"img")
+
+    ann_path = tmp_path / "data/annotations/test.json"
+    ann_path.parent.mkdir(parents=True)
+    _write_test_annotation(ann_path, [DEFAULT_TEST_ONE_SHOT_PAGE])
+
+    examples, warnings = load_test_pdf_few_shot_examples(
+        repo_roots=[tmp_path],
+        page_names=(DEFAULT_TEST_ONE_SHOT_PAGE,),
+    )
+
+    assert warnings == []
+    assert len(examples) == 1
+    assert Path(examples[0]["image_path"]).name == DEFAULT_TEST_ONE_SHOT_PAGE
 
 
 def test_load_test_pdf_few_shot_examples_skips_missing_with_warning(tmp_path: Path) -> None:
@@ -124,6 +145,42 @@ def test_load_complex_few_shot_examples_reads_multi_dataset_selection(tmp_path: 
     assert warnings == []
     assert len(examples) == 2
     assert [Path(ex["image_path"]).name for ex in examples] == ["page_0009.png", "page_0018.png"]
+
+
+def test_load_complex_few_shot_examples_reads_2015_two_shot_selection(tmp_path: Path) -> None:
+    image_dir = tmp_path / "data/pdf_images/2015"
+    image_dir.mkdir(parents=True)
+    for page_name in ("page_0004.png", "page_0011.png"):
+        (image_dir / page_name).write_bytes(b"img")
+
+    payload = {
+        "images_dir": "data/pdf_images/2015",
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0004.png",
+                "meta": {"page_type": "statements", "statement_type": "balance_sheet"},
+                "facts": [{"value": "10", "note_ref": None, "path": []}],
+            },
+            {
+                "image": "page_0011.png",
+                "meta": {"page_type": "statements", "statement_type": "other"},
+                "facts": [{"value": "20", "note_ref": None, "path": []}],
+            },
+        ],
+    }
+
+    ann_dir = tmp_path / "data/annotations"
+    ann_dir.mkdir(parents=True)
+    (ann_dir / "2015.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    examples, warnings = load_complex_few_shot_examples(
+        repo_roots=[tmp_path],
+        selections=DEFAULT_2015_TWO_SHOT_SELECTIONS,
+    )
+
+    assert warnings == []
+    assert [Path(ex["image_path"]).name for ex in examples] == ["page_0004.png", "page_0011.png"]
 
 
 def test_default_complex_few_shot_selection_has_seven_items() -> None:

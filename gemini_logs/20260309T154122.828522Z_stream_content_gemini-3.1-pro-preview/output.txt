@@ -1,0 +1,226 @@
+```json
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+    "company_id": null,
+    "report_year": 2014,
+    "report_scope": "separate",
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+        "page_num": "8",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            114,
+            167,
+            157,
+            16
+          ],
+          "value": "ליום 31 בדצמבר",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": null,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            132,
+            183,
+            27,
+            15
+          ],
+          "value": "2013",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            258,
+            183,
+            30,
+            15
+          ],
+          "value": "2014",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            186,
+            198,
+            25,
+            15
+          ],
+          "value": "ש\"ח",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": null,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            139,
+            218,
+            50,
+            16
+          ],
+          "value": "484,069",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            258,
+            218,
+            50,
+            16
+          ],
+          "value": "524,076",
+          "equation": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "balance_type": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "aggregation_role": "additive",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "מכללת אורנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

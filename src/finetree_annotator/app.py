@@ -74,9 +74,11 @@ from .equation_integrity import audit_and_rebuild_financial_facts, resequence_fa
 from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
-from .gemini_vlm import DEFAULT_GEMINI_MODEL, SUPPORTED_GEMINI_MODELS
+from .gemini_vlm import DEFAULT_GEMINI_MODEL, SUPPORTED_GEMINI_MODELS, resolve_supported_gemini_model_name
 from .gemini_few_shot import (
+    DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
+    DEFAULT_TEST_ONE_SHOT_PAGE,
     DEFAULT_TEST_FEW_SHOT_PAGES,
     build_repo_roots,
     load_complex_few_shot_examples,
@@ -92,15 +94,21 @@ from .schema_ui import enum_options
 from .schemas import PageMeta, PageType
 from .workspace import page_has_annotation
 
+FEW_SHOT_PRESET_ONE_SHOT = "test_1"
+FEW_SHOT_PRESET_2015_TWO_SHOT = "2015_2"
 FEW_SHOT_PRESET_CLASSIC = "classic_4"
 FEW_SHOT_PRESET_EXTENDED = "extended_7"
 
 FEW_SHOT_PRESET_CHOICES: tuple[tuple[str, str], ...] = (
+    (FEW_SHOT_PRESET_ONE_SHOT, "Test 1-shot"),
+    (FEW_SHOT_PRESET_2015_TWO_SHOT, "2015 2-shot"),
     (FEW_SHOT_PRESET_CLASSIC, "Classic 4-shot"),
     (FEW_SHOT_PRESET_EXTENDED, "Extended 7-shot"),
 )
 
 FEW_SHOT_PRESET_SUMMARY: dict[str, str] = {
+    FEW_SHOT_PRESET_ONE_SHOT: "test(1): page_num 4",
+    FEW_SHOT_PRESET_2015_TWO_SHOT: "2015(2): pages 4,11",
     FEW_SHOT_PRESET_CLASSIC: "classic(4): test 1,4,9,2",
     FEW_SHOT_PRESET_EXTENDED: "extended(7): test 9,4,5,10 | pdf_3 18,23 | pdf_2 8",
 }
@@ -197,6 +205,26 @@ GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
 _EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
 _SAFE_EQUATION_CHARS_RE = re.compile(r"^[\d,\.\+\-\s]+$")
 _SAFE_EQUATION_TERM_RE = re.compile(r"[+-]?\d[\d,]*(?:\.\d+)?")
+
+
+def _shared_path_prefix(path_signatures: List[tuple[str, ...]]) -> list[str]:
+    prefix: list[str] = list(path_signatures[0]) if path_signatures else []
+    for path in path_signatures[1:]:
+        common = 0
+        while common < len(prefix) and common < len(path) and prefix[common] == path[common]:
+            common += 1
+        prefix = prefix[:common]
+    return prefix
+
+
+def _shared_path_elements(path_signatures: List[tuple[str, ...]]) -> list[str]:
+    if not path_signatures:
+        return []
+    ordered_unique: list[str] = []
+    for part in path_signatures[0]:
+        if part and part not in ordered_unique:
+            ordered_unique.append(part)
+    return [part for part in ordered_unique if all(part in path for path in path_signatures[1:])]
 
 
 def _prompt_entity_apply_mode(parent: QWidget, entity_name: str) -> Optional[str]:
@@ -1908,6 +1936,10 @@ class QwenPromptDialog(GeminiPromptDialog):
         few_shot_presets: tuple[tuple[str, str], ...] = FEW_SHOT_PRESET_CHOICES,
         few_shot_preset_default: str = FEW_SHOT_PRESET_CLASSIC,
         few_shot_summary: str = "",
+        show_thinking_control: bool = True,
+        thinking_enabled_default: bool = False,
+        thinking_level_default: str = "minimal",
+        thinking_tooltip: str = "",
     ) -> None:
         super().__init__(
             prompt_text=prompt_text,
@@ -1918,6 +1950,10 @@ class QwenPromptDialog(GeminiPromptDialog):
             few_shot_presets=few_shot_presets,
             few_shot_preset_default=few_shot_preset_default,
             few_shot_summary=few_shot_summary,
+            show_thinking_control=show_thinking_control,
+            thinking_enabled_default=thinking_enabled_default,
+            thinking_level_default=thinking_level_default,
+            thinking_tooltip=thinking_tooltip,
         )
         self.setWindowTitle("Qwen Prompt")
         self.model_combo.clear()
@@ -4685,12 +4721,8 @@ class AnnotationWindow(QMainWindow):
                     self.fact_path_list.setCurrentRow(0)
             else:
                 path_signatures = self._selected_path_signatures(items)
-                prefix: list[str] = list(path_signatures[0]) if path_signatures else []
-                for path in path_signatures[1:]:
-                    common = 0
-                    while common < len(prefix) and common < len(path) and prefix[common] == path[common]:
-                        common += 1
-                    prefix = prefix[:common]
+                prefix = _shared_path_prefix(path_signatures)
+                shared_elements = _shared_path_elements(path_signatures)
 
                 if prefix:
                     for level_index, level in enumerate(prefix):
@@ -4703,6 +4735,21 @@ class AnnotationWindow(QMainWindow):
                                 path_index=level_index,
                             )
                         )
+
+                for level in shared_elements:
+                    if level in prefix:
+                        continue
+                    self.fact_path_list.addItem(
+                        self._make_path_item(
+                            str(level),
+                            tone="shared",
+                            editable=False,
+                            tooltip=(
+                                f"Shared path element across all {selected_count} selected bboxes, "
+                                "but not at a shared editable position."
+                            ),
+                        )
+                    )
 
                 if path_signatures:
                     if prefix and all(len(path) == len(prefix) + 1 for path in path_signatures):
@@ -4734,12 +4781,13 @@ class AnnotationWindow(QMainWindow):
                     self.fact_path_list.setCurrentRow(0)
             self.fact_path_list.setToolTip(
                 (
-                    "Shared path nodes are highlighted in green and can be renamed across selected bboxes. "
+                    "Shared path nodes and elements are highlighted in green. "
+                    "Only shared leading nodes are editable across selected bboxes. "
                     "Diverging path nodes are highlighted in orange."
                 )
                 if path_mixed and self._path_list_editable
                 else (
-                    "Selected bboxes do not share an editable path prefix. Use Batch Edit to change path structure."
+                    "Selected bboxes do not share an editable path prefix. Shared non-prefix elements are shown for reference; use Batch Edit to change path structure."
                     if path_mixed
                     else "Selected bboxes share the same path. Edits here apply to every selected bbox."
                 )
@@ -5775,6 +5823,16 @@ class AnnotationWindow(QMainWindow):
                 repo_roots=repo_roots,
                 selections=DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
             )
+        if preset == FEW_SHOT_PRESET_2015_TWO_SHOT:
+            return load_complex_few_shot_examples(
+                repo_roots=repo_roots,
+                selections=DEFAULT_2015_TWO_SHOT_SELECTIONS,
+            )
+        if preset == FEW_SHOT_PRESET_ONE_SHOT:
+            return load_test_pdf_few_shot_examples(
+                repo_roots=repo_roots,
+                page_names=(DEFAULT_TEST_ONE_SHOT_PAGE,),
+            )
         return load_test_pdf_few_shot_examples(
             repo_roots=repo_roots,
             page_names=DEFAULT_TEST_FEW_SHOT_PAGES,
@@ -6208,7 +6266,7 @@ class AnnotationWindow(QMainWindow):
         if not prompt_text:
             QMessageBox.warning(self, "Gemini Auto-Fix", "Prompt cannot be empty.")
             return
-        model_name = dialog.model().strip() or self._gemini_model_name
+        model_name = resolve_supported_gemini_model_name(dialog.model().strip() or self._gemini_model_name)
         enable_thinking = dialog.enable_thinking()
         thinking_level = dialog.thinking_level()
 
@@ -6481,7 +6539,7 @@ class AnnotationWindow(QMainWindow):
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
         prompt_text = prompt_dialog.prompt().strip()
-        model_name = prompt_dialog.model().strip() or self._gemini_model_name
+        model_name = resolve_supported_gemini_model_name(prompt_dialog.model().strip() or self._gemini_model_name)
         enable_thinking = prompt_dialog.enable_thinking()
         thinking_level = prompt_dialog.thinking_level()
         use_few_shot = prompt_dialog.use_few_shot()

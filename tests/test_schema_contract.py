@@ -51,6 +51,8 @@ def test_metadata_fields_are_in_model_prompt() -> None:
     assert "company_name" in prompt
     assert "company_id" in prompt
     assert "report_year" in prompt
+    assert "Only emit facts anchored on a visible numeric value" in prompt
+    assert "נכסים שוטפים" in prompt
 
 
 def test_balance_semantics_fields_are_in_prompts() -> None:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+from datetime import datetime, timezone
 from functools import lru_cache
 import json
 import mimetypes
@@ -35,6 +36,10 @@ SUPPORTED_GEMINI_MODELS: tuple[str, ...] = (
     "gemini-2.5-flash",
     "gemini-2.5-pro",
 )
+_SUPPORTED_GEMINI_MODEL_MAP: dict[str, str] = {
+    model.lower(): model
+    for model in SUPPORTED_GEMINI_MODELS
+}
 _ALLOWED_RESPONSE_JSON_SCHEMA_KEYS = {
     "$id",
     "$defs",
@@ -86,6 +91,26 @@ def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
     text = re.sub(r"-+", "-", text)
     text = re.sub(r"^gemini[-]?3", "gemini-3", text)
     return text
+
+
+def resolve_supported_gemini_model_name(model_name: Optional[str]) -> str:
+    normalized = _normalize_gemini_model_name(model_name)
+    if not normalized:
+        return DEFAULT_GEMINI_MODEL
+    direct = _SUPPORTED_GEMINI_MODEL_MAP.get(normalized)
+    if direct is not None:
+        return direct
+    if "pro" in normalized and "flash" not in normalized:
+        if "2.5" in normalized:
+            return "gemini-2.5-pro"
+        return "gemini-3.1-pro-preview"
+    if "flash" in normalized:
+        if "2.5" in normalized:
+            return "gemini-2.5-flash"
+        if "lite" in normalized or "3.1" in normalized:
+            return "gemini-3.1-flash-lite"
+        return "gemini-3-flash-preview"
+    return str(model_name or "").strip() or DEFAULT_GEMINI_MODEL
 
 
 def _is_gemini_3_model(model_name: Optional[str]) -> bool:
@@ -224,6 +249,193 @@ def _part_from_text(text: str) -> Any:
     if callable(from_text):
         return from_text(text=text)
     return {"text": text}
+
+
+def _gemini_logs_dir() -> Path:
+    path = Path.cwd() / "gemini_logs"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _safe_filename_fragment(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    text = re.sub(r"[^a-z0-9._-]+", "-", text)
+    text = re.sub(r"-+", "-", text).strip("-")
+    return text or "unknown"
+
+
+def _serialize_gemini_log_value(value: Any) -> Any:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
+    if isinstance(value, Path):
+        return str(value)
+    if isinstance(value, dict):
+        return {str(key): _serialize_gemini_log_value(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple, set)):
+        return [_serialize_gemini_log_value(item) for item in value]
+
+    for method_name in ("model_dump", "to_json_dict", "to_dict"):
+        method = getattr(value, method_name, None)
+        if callable(method):
+            try:
+                if method_name == "model_dump":
+                    return _serialize_gemini_log_value(method(mode="json"))
+                return _serialize_gemini_log_value(method())
+            except TypeError:
+                try:
+                    return _serialize_gemini_log_value(method())
+                except Exception:
+                    pass
+            except Exception:
+                pass
+
+    if hasattr(value, "__dict__"):
+        try:
+            return _serialize_gemini_log_value(vars(value))
+        except Exception:
+            pass
+
+    return str(value)
+
+
+def _copy_gemini_log_image(source_path: Path, target_path: Path) -> None:
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source_path, target_path)
+
+
+def _create_gemini_log_session(
+    *,
+    operation: str,
+    model: str,
+    image_path: Path,
+    prompt: str,
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+    few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    extra_request: Optional[dict[str, Any]] = None,
+) -> Path:
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
+    dirname = (
+        f"{timestamp}_{_safe_filename_fragment(operation)}_{_safe_filename_fragment(model)}"
+    )
+    session_dir = _gemini_logs_dir() / dirname
+    session_dir.mkdir(parents=True, exist_ok=True)
+
+    target_copy_name = f"input_target{image_path.suffix.lower() or '.bin'}"
+    _copy_gemini_log_image(image_path, session_dir / target_copy_name)
+
+    logged_examples: list[dict[str, Any]] = []
+    for index, raw_example in enumerate(few_shot_examples or [], start=1):
+        if not isinstance(raw_example, dict):
+            continue
+        raw_image_path = raw_example.get("image_path")
+        example_image_path = raw_image_path if isinstance(raw_image_path, Path) else Path(str(raw_image_path or "")).expanduser()
+        if not example_image_path.is_file():
+            continue
+        copy_name = f"few_shot_{index:02d}_{example_image_path.name}"
+        _copy_gemini_log_image(example_image_path, session_dir / copy_name)
+        logged_examples.append(
+            {
+                "source_image_path": str(example_image_path),
+                "logged_image_path": copy_name,
+                "expected_json": str(raw_example.get("expected_json") or ""),
+            }
+        )
+
+    request_payload = {
+        "operation": operation,
+        "model": model,
+        "prompt": prompt,
+        "image_path": str(image_path),
+        "logged_image_path": target_copy_name,
+        "enable_thinking": enable_thinking,
+        "thinking_level": thinking_level,
+        "few_shot_examples": logged_examples,
+    }
+    if extra_request:
+        request_payload.update(extra_request)
+    (session_dir / "request.json").write_text(
+        json.dumps(request_payload, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+
+    _append_gemini_log_event(
+        session_dir,
+        "session_started",
+        {
+            "operation": operation,
+            "model": model,
+            "image_path": str(image_path),
+            "enable_thinking": enable_thinking,
+            "thinking_level": thinking_level,
+        },
+    )
+    return session_dir
+
+
+def _append_gemini_log_event(session_dir: Path, event: str, payload: dict[str, Any]) -> None:
+    record = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "event": event,
+        **payload,
+    }
+    with (session_dir / "events.jsonl").open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(record, ensure_ascii=False, default=str))
+        fh.write("\n")
+
+
+def _read_gemini_log_request(session_dir: Path) -> dict[str, Any]:
+    return json.loads((session_dir / "request.json").read_text(encoding="utf-8"))
+
+
+def _update_gemini_log_request(session_dir: Path, updates: dict[str, Any]) -> None:
+    payload = _read_gemini_log_request(session_dir)
+    payload.update(updates)
+    (session_dir / "request.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+
+
+def _build_logged_gemini_contents(session_dir: Path, prompt: str) -> list[Any]:
+    request_payload = _read_gemini_log_request(session_dir)
+    target_ref = {"type": "image_file", "file": request_payload["logged_image_path"]}
+    examples = request_payload.get("few_shot_examples") or []
+    if not examples:
+        return [target_ref, prompt]
+
+    contents: list[Any] = []
+    for example in examples:
+        contents.append(
+            {
+                "role": "user",
+                "parts": [
+                    {"type": "image_file", "file": example["logged_image_path"]},
+                    {"type": "text", "text": "Example input page."},
+                ],
+            }
+        )
+        contents.append(
+            {
+                "role": "model",
+                "parts": [{"type": "text", "text": example["expected_json"]}],
+            }
+        )
+    contents.append(
+        {
+            "role": "user",
+            "parts": [target_ref, {"type": "text", "text": prompt}],
+        }
+    )
+    return contents
+
+
+def _write_gemini_log_output(session_dir: Path, *, text: str, raw: Any) -> None:
+    (session_dir / "output.txt").write_text(str(text or ""), encoding="utf-8")
+    (session_dir / "response.json").write_text(
+        json.dumps(_serialize_gemini_log_value(raw), ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
 
 
 def _build_generation_contents(
@@ -800,6 +1012,16 @@ def generate_content_from_image(
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
+    resolved_model = resolve_supported_gemini_model_name(model)
+    session_dir = _create_gemini_log_session(
+        operation="generate_content",
+        model=resolved_model,
+        image_path=image_path,
+        prompt=prompt,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        few_shot_examples=few_shot_examples,
+    )
     key = _resolve_api_key(api_key)
     client = genai.Client(api_key=key) if key else genai.Client()
     contents = _build_generation_contents(
@@ -808,15 +1030,43 @@ def generate_content_from_image(
         mime_type=mime_type,
         few_shot_examples=few_shot_examples,
     )
+    _append_gemini_log_event(
+        session_dir,
+        "request",
+        {
+            "few_shot_count": len(few_shot_examples or []),
+            "contents": _serialize_gemini_log_value(contents),
+        },
+    )
     request_kwargs: dict[str, Any] = {
-        "model": model,
+        "model": resolved_model,
         "contents": contents,
     }
-    config = _generation_config(model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+    config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
     if config is not None:
         request_kwargs["config"] = config
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "exact_request": {
+                "model": resolved_model,
+                "contents": _build_logged_gemini_contents(session_dir, prompt),
+                "config": _serialize_gemini_log_value(config),
+            }
+        },
+    )
     response = client.models.generate_content(**request_kwargs)
-    return response.text or ""
+    text = response.text or ""
+    _append_gemini_log_event(
+        session_dir,
+        "response",
+        {
+            "text": text,
+            "raw": _serialize_gemini_log_value(response),
+        },
+    )
+    _write_gemini_log_output(session_dir, text=text, raw=response)
+    return text
 
 
 def stream_content_from_image(
@@ -832,6 +1082,16 @@ def stream_content_from_image(
     _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
+    resolved_model = resolve_supported_gemini_model_name(model)
+    session_dir = _create_gemini_log_session(
+        operation="stream_content",
+        model=resolved_model,
+        image_path=image_path,
+        prompt=prompt,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        few_shot_examples=few_shot_examples,
+    )
     key = _resolve_api_key(api_key)
     client = genai.Client(api_key=key) if key else genai.Client()
     contents = _build_generation_contents(
@@ -840,33 +1100,82 @@ def stream_content_from_image(
         mime_type=mime_type,
         few_shot_examples=few_shot_examples,
     )
+    _append_gemini_log_event(
+        session_dir,
+        "request",
+        {
+            "few_shot_count": len(few_shot_examples or []),
+            "contents": _serialize_gemini_log_value(contents),
+        },
+    )
 
     stream_fn = getattr(client.models, "generate_content_stream", None)
     if callable(stream_fn):
+        collected_text: list[str] = []
         request_kwargs: dict[str, Any] = {
-            "model": model,
+            "model": resolved_model,
             "contents": contents,
         }
-        config = _generation_config(model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+        config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
         if config is not None:
             request_kwargs["config"] = config
+        _update_gemini_log_request(
+            session_dir,
+            {
+                "exact_request": {
+                    "model": resolved_model,
+                    "contents": _build_logged_gemini_contents(session_dir, prompt),
+                    "config": _serialize_gemini_log_value(config),
+                }
+            },
+        )
         stream = stream_fn(**request_kwargs)
-        for chunk in stream:
+        for index, chunk in enumerate(stream):
             text = getattr(chunk, "text", None)
+            _append_gemini_log_event(
+                session_dir,
+                "stream_chunk",
+                {
+                    "index": index,
+                    "text": text or "",
+                    "raw": _serialize_gemini_log_value(chunk),
+                },
+            )
             if text:
+                collected_text.append(text)
                 yield text
+        _write_gemini_log_output(session_dir, text="".join(collected_text), raw={"streamed": True})
         return
 
-    text = generate_content_from_image(
-        image_path=image_path,
-        prompt=prompt,
-        model=model,
-        mime_type=mime_type,
-        api_key=api_key,
-        few_shot_examples=few_shot_examples,
-        enable_thinking=enable_thinking,
-        thinking_level=thinking_level,
+    _append_gemini_log_event(session_dir, "stream_fallback", {"reason": "generate_content_stream unavailable"})
+    request_kwargs = {
+        "model": resolved_model,
+        "contents": contents,
+    }
+    config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+    if config is not None:
+        request_kwargs["config"] = config
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "exact_request": {
+                "model": resolved_model,
+                "contents": _build_logged_gemini_contents(session_dir, prompt),
+                "config": _serialize_gemini_log_value(config),
+            }
+        },
     )
+    response = client.models.generate_content(**request_kwargs)
+    text = response.text or ""
+    _append_gemini_log_event(
+        session_dir,
+        "response",
+        {
+            "text": text,
+            "raw": _serialize_gemini_log_value(response),
+        },
+    )
+    _write_gemini_log_output(session_dir, text=text, raw=response)
     if text:
         yield text
 
@@ -885,29 +1194,69 @@ def generate_structured_json_from_image(
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
+    resolved_model = resolve_supported_gemini_model_name(model)
+    session_dir = _create_gemini_log_session(
+        operation="generate_structured_json",
+        model=resolved_model,
+        image_path=image_path,
+        prompt=prompt,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        extra_request={"schema": _serialize_gemini_log_value(schema)},
+    )
+
     image_bytes = image_path.read_bytes()
     inferred_mime_type = _infer_mime_type(image_path, mime_type)
 
     key = _resolve_api_key(api_key)
     client = genai.Client(api_key=key) if key else genai.Client()
-    response = client.models.generate_content(
-        model=model,
-        contents=[
-            types.Part.from_bytes(
-                data=image_bytes,
-                mime_type=inferred_mime_type,
-            ),
-            prompt,
-        ],
-        config=_generation_config(
-            model,
-            enable_thinking=enable_thinking,
-            thinking_level=thinking_level,
-            response_mime_type="application/json",
-            response_json_schema=schema,
+    contents = [
+        types.Part.from_bytes(
+            data=image_bytes,
+            mime_type=inferred_mime_type,
         ),
+        prompt,
+    ]
+    _append_gemini_log_event(
+        session_dir,
+        "request",
+        {
+            "contents": _serialize_gemini_log_value(contents),
+            "schema": _serialize_gemini_log_value(schema),
+        },
+    )
+    config = _generation_config(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        response_mime_type="application/json",
+        response_json_schema=schema,
+    )
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "exact_request": {
+                "model": resolved_model,
+                "contents": [{"type": "image_file", "file": _read_gemini_log_request(session_dir)["logged_image_path"]}, prompt],
+                "config": _serialize_gemini_log_value(config),
+            }
+        },
+    )
+    response = client.models.generate_content(
+        model=resolved_model,
+        contents=contents,
+        config=config,
     )
     text = response.text or ""
+    _append_gemini_log_event(
+        session_dir,
+        "response",
+        {
+            "text": text,
+            "raw": _serialize_gemini_log_value(response),
+        },
+    )
+    _write_gemini_log_output(session_dir, text=text, raw=response)
     if not text.strip():
         raise ValueError("Gemini returned an empty response.")
     return text
