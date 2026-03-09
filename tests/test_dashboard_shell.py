@@ -720,6 +720,44 @@ def test_dashboard_marks_document_checked(monkeypatch, tmp_path: Path) -> None:
     window.close()
 
 
+def test_dashboard_shows_saved_message_in_status_pane(tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    reloads: list[str] = []
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window._on_document_saved(tmp_path / "doc.json")
+
+    assert reloads == ["reload"]
+    assert window.statusBar().currentMessage() == "Workspace document saved."
+    window.close()
+
+
+def test_dashboard_shows_save_warnings_in_status_pane(tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    reloads: list[str] = []
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window._on_document_saved(
+        {
+            "annotations_path": tmp_path / "doc.json",
+            "no_changes": False,
+            "warning_count": 3,
+            "backup_path": tmp_path / "doc.backup.json",
+        }
+    )
+
+    assert reloads == ["reload"]
+    message = window.statusBar().currentMessage()
+    assert "Workspace document saved" in message
+    assert "with 3 format warning(s)" in message
+    assert "Legacy backup created." in message
+    window.close()
+
+
 def test_dashboard_refuses_checked_for_incomplete_documents(monkeypatch, tmp_path: Path) -> None:
     _qt_app()
     ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)

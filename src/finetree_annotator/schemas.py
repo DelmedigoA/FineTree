@@ -362,9 +362,9 @@ def _normalize_duration_type_value(value: Any) -> str | None:
     if value in ("", None):
         return None
     text = str(value).strip().lower()
-    if text == "recurring":
-        return text
-    raise ValueError("duration_type must be 'recurring' or null.")
+    if text in {"recurring", "recurrent"}:
+        return "recurrent"
+    raise ValueError("duration_type must be 'recurrent' or null.")
 
 
 def _normalize_recurring_period_value(value: Any) -> str | None:
@@ -515,7 +515,7 @@ class PeriodType(str, Enum):
 
 
 class DurationType(str, Enum):
-    recurring = "recurring"
+    recurrent = "recurrent"
 
 
 class RecurringPeriod(str, Enum):

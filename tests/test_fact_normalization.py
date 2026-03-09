@@ -141,6 +141,30 @@ def test_normalize_fact_payload_sets_natural_sign_null_for_dash() -> None:
     assert warnings == []
 
 
+def test_normalize_fact_payload_accepts_recurrent_duration_type() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "duration_type": "recurrent",
+            "path": [],
+        }
+    )
+    assert normalized["duration_type"] == "recurrent"
+    assert warnings == []
+
+
+def test_normalize_fact_payload_maps_recurring_duration_type_to_recurrent() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "duration_type": "recurring",
+            "path": [],
+        }
+    )
+    assert normalized["duration_type"] == "recurrent"
+    assert warnings == []
+
+
 def test_normalize_fact_payload_coerces_empty_note_reference_to_null() -> None:
     normalized, warnings = normalize_fact_payload(
         {

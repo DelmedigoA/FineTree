@@ -47,6 +47,18 @@ def test_extracted_fact_accepts_balance_type() -> None:
     assert fact.balance_type.value == "debit"
 
 
+def test_extracted_fact_accepts_recurrent_duration_type() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(duration_type="recurrent"))
+    assert fact.duration_type is not None
+    assert fact.duration_type.value == "recurrent"
+
+
+def test_extracted_fact_maps_legacy_recurring_duration_type_to_recurrent() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(duration_type="recurring"))
+    assert fact.duration_type is not None
+    assert fact.duration_type.value == "recurrent"
+
+
 def test_extracted_fact_derives_natural_sign_from_value() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(value="(123)", natural_sign="positive"))
     assert fact.natural_sign is not None

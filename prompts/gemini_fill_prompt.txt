@@ -11,7 +11,7 @@ Important semantics:
 - `instant` means the fact represents a value at a single point in time.
 - `duration` means the fact represents a value over a period between two dates.
 - `expected` indicates a projected or budgeted value; include future periods if available.
-- `duration_type="recurring"` means the value repeats; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when known.
+- `duration_type="recurrent"` means the value repeats; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when known.
 
 Requested fact fields:
 {{FACT_FIELDS}}
@@ -35,7 +35,7 @@ Output schema (exact keys only):
         "period_type": "instant|duration|expected|null",
         "period_start": "<YYYY-MM-DD|null>",
         "period_end": "<YYYY-MM-DD|null>",
-        "duration_type": "recurring|null",
+        "duration_type": "recurrent|null",
         "recurring_period": "daily|quarterly|monthly|yearly|null",
         "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
         "value_context": "textual|tabular|mixed|null",

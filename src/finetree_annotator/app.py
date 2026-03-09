@@ -388,7 +388,40 @@ def _build_equation_candidate_from_facts(
     )
 
 
-def _equation_result_match_state(result_text: str | None, target_value: Any) -> tuple[str, str]:
+def _effective_target_value_for_equation(
+    target_value: Any,
+    target_balance_type: Any,
+) -> tuple[Decimal | None, str | None]:
+    target_value_decimal, _target_display, _meta = _parse_fact_value_for_equation(target_value)
+    if target_value_decimal is None:
+        return None, None
+    if _normalize_balance_type_for_equation(target_balance_type) == "debit":
+        target_value_decimal = -target_value_decimal
+    return target_value_decimal, _format_decimal_plain(target_value_decimal)
+
+
+def _format_equation_with_target(
+    equation_text: Any,
+    target_value: Any,
+    target_balance_type: Any,
+) -> str:
+    expression = str(equation_text or "").strip()
+    if not expression:
+        return ""
+    _target_value_decimal, target_display = _effective_target_value_for_equation(
+        target_value,
+        target_balance_type,
+    )
+    if target_display is None:
+        return expression
+    return f"{expression} = {target_display}"
+
+
+def _equation_result_match_state(
+    result_text: str | None,
+    target_value: Any,
+    target_balance_type: Any = None,
+) -> tuple[str, str]:
     if result_text is None:
         return "danger", "Cannot calculate preview."
 
@@ -396,7 +429,10 @@ def _equation_result_match_state(result_text: str | None, target_value: Any) -> 
     if result_value is None:
         return "danger", "Cannot calculate preview."
 
-    target_value_decimal, target_display, _meta = _parse_fact_value_for_equation(target_value)
+    target_value_decimal, target_display = _effective_target_value_for_equation(
+        target_value,
+        target_balance_type,
+    )
     if target_value_decimal is None or target_display is None:
         return "neutral", "Preview only; target value is non-numeric."
     if result_value == target_value_decimal:
@@ -930,11 +966,14 @@ class AnnotRectItem(QGraphicsRectItem):
                 return
             handle = self._handle_at(event.pos())
             if handle is not None:
+                scene = self.scene()
                 self._active_handle = handle
                 self._resize_start_rect = item_scene_rect(self)
                 self._resize_start_scene_pos = event.scenePos()
                 self.setFlag(QGraphicsRectItem.ItemIsMovable, False)
                 self.setCursor(self._cursor_for_handle(handle))
+                if isinstance(scene, AnnotationScene):
+                    scene._begin_group_resize(self, handle)
                 event.accept()
                 return
         self.setCursor(Qt.ClosedHandCursor)
@@ -956,6 +995,9 @@ class AnnotRectItem(QGraphicsRectItem):
                 rect.setBottom(rect.bottom() + delta.y())
 
             self._clamp_and_apply_resize(rect, handle)
+            scene = self.scene()
+            if isinstance(scene, AnnotationScene):
+                scene._update_group_resize_from_anchor(self)
             event.accept()
             return
         super().mouseMoveEvent(event)
@@ -968,8 +1010,10 @@ class AnnotRectItem(QGraphicsRectItem):
             self._resize_start_scene_pos = None
             self.setFlag(QGraphicsRectItem.ItemIsMovable, True)
             self.setCursor(Qt.OpenHandCursor)
-            if isinstance(scene, AnnotationScene) and self._geometry_changed_since_press():
-                scene.box_moved.emit(self)
+            if isinstance(scene, AnnotationScene):
+                scene._end_group_resize(self)
+                if self._geometry_changed_since_press():
+                    scene.box_moved.emit(self)
             self._press_scene_rect = None
             event.accept()
             return
@@ -1009,6 +1053,11 @@ class AnnotationScene(QGraphicsScene):
         self._equation_select_start = None
         self._temp_equation_select_item: Optional[QGraphicsRectItem] = None
         self._pending_toggle_selection: Optional[tuple[AnnotRectItem, ...]] = None
+        self._select_append_mode = False
+        self._group_resize_anchor: Optional[AnnotRectItem] = None
+        self._group_resize_handle: Optional[str] = None
+        self._group_resize_anchor_start_rect: Optional[QRectF] = None
+        self._group_resize_other_start_rects: list[tuple[AnnotRectItem, QRectF]] = []
 
     def set_image_rect(self, rect: QRectF) -> None:
         self.image_rect = rect
@@ -1029,6 +1078,84 @@ class AnnotationScene(QGraphicsScene):
 
     def _selected_annot_items(self) -> list[AnnotRectItem]:
         return [item for item in self.selectedItems() if isinstance(item, AnnotRectItem)]
+
+    def _reset_group_resize_state(self) -> None:
+        self._group_resize_anchor = None
+        self._group_resize_handle = None
+        self._group_resize_anchor_start_rect = None
+        self._group_resize_other_start_rects = []
+
+    def _begin_group_resize(self, anchor_item: AnnotRectItem, handle: str) -> None:
+        selected_items = [
+            item
+            for item in self._selected_annot_items()
+            if item is not anchor_item and item.scene() is self
+        ]
+        if not selected_items:
+            self._reset_group_resize_state()
+            return
+        self._group_resize_anchor = anchor_item
+        self._group_resize_handle = handle
+        self._group_resize_anchor_start_rect = item_scene_rect(anchor_item)
+        self._group_resize_other_start_rects = [
+            (item, item_scene_rect(item))
+            for item in selected_items
+        ]
+
+    def _update_group_resize_from_anchor(self, anchor_item: AnnotRectItem) -> None:
+        if self._group_resize_anchor is not anchor_item:
+            return
+        if self._group_resize_handle is None or self._group_resize_anchor_start_rect is None:
+            return
+
+        handle = self._group_resize_handle
+        anchor_start = self._group_resize_anchor_start_rect
+        anchor_current = item_scene_rect(anchor_item)
+
+        moving_left = handle in (
+            AnnotRectItem._H_LEFT,
+            AnnotRectItem._H_TOP_LEFT,
+            AnnotRectItem._H_BOTTOM_LEFT,
+        )
+        moving_right = handle in (
+            AnnotRectItem._H_RIGHT,
+            AnnotRectItem._H_TOP_RIGHT,
+            AnnotRectItem._H_BOTTOM_RIGHT,
+        )
+        moving_top = handle in (
+            AnnotRectItem._H_TOP,
+            AnnotRectItem._H_TOP_LEFT,
+            AnnotRectItem._H_TOP_RIGHT,
+        )
+        moving_bottom = handle in (
+            AnnotRectItem._H_BOTTOM,
+            AnnotRectItem._H_BOTTOM_LEFT,
+            AnnotRectItem._H_BOTTOM_RIGHT,
+        )
+
+        delta_left = anchor_current.left() - anchor_start.left() if moving_left else 0.0
+        delta_right = anchor_current.right() - anchor_start.right() if moving_right else 0.0
+        delta_top = anchor_current.top() - anchor_start.top() if moving_top else 0.0
+        delta_bottom = anchor_current.bottom() - anchor_start.bottom() if moving_bottom else 0.0
+
+        for item, start_rect in self._group_resize_other_start_rects:
+            if item.scene() is not self:
+                continue
+            updated = QRectF(start_rect)
+            if moving_left:
+                updated.setLeft(start_rect.left() + delta_left)
+            if moving_right:
+                updated.setRight(start_rect.right() + delta_right)
+            if moving_top:
+                updated.setTop(start_rect.top() + delta_top)
+            if moving_bottom:
+                updated.setBottom(start_rect.bottom() + delta_bottom)
+            item._clamp_and_apply_resize(updated, handle)
+
+    def _end_group_resize(self, anchor_item: AnnotRectItem) -> None:
+        if self._group_resize_anchor is not anchor_item:
+            return
+        self._reset_group_resize_state()
 
     def _begin_equation_selection_session(self) -> None:
         if self._equation_session_active:
@@ -1079,6 +1206,7 @@ class AnnotationScene(QGraphicsScene):
 
     def mousePressEvent(self, event) -> None:
         if event.button() == Qt.LeftButton and self.image_rect.contains(event.scenePos()):
+            modifiers = event.modifiers()
             if self._calculate_drag_active:
                 self._begin_equation_selection_session()
                 item = self.itemAt(event.scenePos(), QTransform())
@@ -1089,17 +1217,17 @@ class AnnotationScene(QGraphicsScene):
                 event.accept()
                 return
             item = self.itemAt(event.scenePos(), QTransform())
-            if isinstance(item, AnnotRectItem) and (event.modifiers() & Qt.ShiftModifier):
+            if isinstance(item, AnnotRectItem):
                 next_selection = list(self._selected_annot_items())
-                if item in next_selection:
-                    next_selection = [selected_item for selected_item in next_selection if selected_item is not item]
-                else:
-                    next_selection.append(item)
-                self._pending_toggle_selection = tuple(next_selection)
-                event.accept()
-                return
-            if (event.modifiers() & Qt.ShiftModifier) and (item is None or isinstance(item, QGraphicsPixmapItem)):
+                if modifiers & Qt.ShiftModifier:
+                    if item not in next_selection:
+                        next_selection.append(item)
+                        self._pending_toggle_selection = tuple(next_selection)
+                    event.accept()
+                    return
+            if modifiers in (Qt.NoModifier, Qt.ShiftModifier) and (item is None or isinstance(item, QGraphicsPixmapItem)):
                 self._selecting = True
+                self._select_append_mode = bool(modifiers & Qt.ShiftModifier)
                 self._select_start = event.scenePos()
                 self._temp_select_item = QGraphicsRectItem(QRectF(self._select_start, self._select_start))
                 select_pen = QPen(Qt.darkGreen)
@@ -1214,10 +1342,14 @@ class AnnotationScene(QGraphicsScene):
             self._selecting = False
             self._select_start = None
             if rect.width() >= 4 and rect.height() >= 4:
-                self.clearSelection()
+                if not self._select_append_mode:
+                    self.clearSelection()
                 for item in self.items(rect, Qt.IntersectsItemShape):
                     if isinstance(item, AnnotRectItem):
                         item.setSelected(True)
+            elif not self._select_append_mode:
+                self.clearSelection()
+            self._select_append_mode = False
             event.accept()
             return
         if self._drawing and self._temp_rect_item:
@@ -1827,6 +1959,7 @@ class QwenStreamWorker(QObject):
 
 class AnnotationWindow(QMainWindow):
     annotations_saved = pyqtSignal(object)
+    annotations_save_status = pyqtSignal(object)
     document_issues_changed = pyqtSignal(object)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
@@ -2570,6 +2703,7 @@ class AnnotationWindow(QMainWindow):
         period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
         duration_type_block = self._inspector_field_block("Duration Type", self.fact_duration_type_combo)
         recurring_period_block = self._inspector_field_block("Recurring Period", self.fact_recurring_period_combo)
+        self.fact_recurring_period_block = recurring_period_block
         path_source_block = self._inspector_field_block("Path Source", self.fact_path_source_combo)
         value_with_sign_panel = QWidget()
         value_with_sign_layout = QHBoxLayout(value_with_sign_panel)
@@ -2608,10 +2742,13 @@ class AnnotationWindow(QMainWindow):
             self._inspector_field_block("Note Name", self.fact_note_name_edit),
             self._inspector_field_block("Note Num", self.fact_beur_num_edit),
         )
-        add_fact_editor_row(
-            self._inspector_field_block("Note Ref", self.fact_refference_edit),
-            self._inspector_field_block("Date", self.fact_date_edit),
-        )
+        note_ref_block = self._inspector_field_block("Note Ref", self.fact_refference_edit)
+        note_ref_row = QHBoxLayout()
+        note_ref_row.setContentsMargins(0, 0, 0, 0)
+        note_ref_row.setSpacing(8)
+        note_ref_row.addWidget(note_ref_block, 1)
+        note_ref_row.addStretch(1)
+        fact_editor_layout.addLayout(note_ref_row)
         add_fact_editor_row(currency_block, scale_block)
         add_fact_editor_row(value_type_block, value_context_block)
         add_fact_editor_row(balance_type_block, path_source_block)
@@ -2774,11 +2911,6 @@ class AnnotationWindow(QMainWindow):
         batch_note_name_row.addWidget(self.batch_note_name_edit)
         batch_note_name_row.addWidget(self.batch_set_note_name_btn)
         batch_note_name_row.addWidget(self.batch_clear_note_name_btn)
-        batch_date_row = QHBoxLayout()
-        batch_date_row.setSpacing(8)
-        batch_date_row.addWidget(self.batch_date_edit)
-        batch_date_row.addWidget(self.batch_set_date_btn)
-        batch_date_row.addWidget(self.batch_clear_date_btn)
         batch_period_type_row = QHBoxLayout()
         batch_period_type_row.setSpacing(8)
         batch_period_type_row.addWidget(QLabel("period_type:"))
@@ -2884,7 +3016,6 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_refference_row)
         batch_layout.addLayout(batch_note_row)
         batch_layout.addLayout(batch_note_name_row)
-        batch_layout.addLayout(batch_date_row)
         batch_layout.addLayout(batch_period_type_row)
         batch_layout.addLayout(batch_duration_type_row)
         batch_layout.addLayout(batch_recurring_period_row)
@@ -2925,10 +3056,10 @@ class AnnotationWindow(QMainWindow):
         gt_activity_layout.addWidget(self.gt_activity_stop_btn, 0, Qt.AlignLeft)
         tip = QLabel(
             "Select a box to edit fields here. "
-            "Use Shift+click on boxes or Shift+drag on empty page area to select multiple boxes. "
+            "Click a box to select it, drag on empty page area for rectangle select, and hold Shift to add to selection. "
             "Use Alt+drag on the page to preview an equation for the selected box, then press Shift (Alt+Shift) or click Apply Equation to save it. "
             "Use Approve + Next or \u2691 Flag from the top toolbar for internal page decisions, then filter/sort from the Pages panel. "
-            "Use Batch Edit to change value/note_ref/comment_ref/note_name/date/period/duration_type/recurring_period fields/note_flag/note_num/currency/scale/value_type/value_context/balance_type/path_source and path levels across selected boxes. "
+            "Use Batch Edit to change value/note_ref/comment_ref/note_name/period/duration_type/recurring_period fields/note_flag/note_num/currency/scale/value_type/value_context/balance_type/path_source and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -3102,7 +3233,6 @@ class AnnotationWindow(QMainWindow):
         self.batch_expand_up_btn.clicked.connect(lambda: self.batch_expand_selected("up"))
         self.batch_expand_down_btn.clicked.connect(lambda: self.batch_expand_selected("down"))
 
-        QShortcut(QKeySequence("Ctrl+S"), self, activated=self.save_annotations)
         QShortcut(QKeySequence("Ctrl+Z"), self, activated=self.undo)
         QShortcut(QKeySequence("Ctrl+Y"), self, activated=self.redo)
         QShortcut(QKeySequence("Ctrl+Shift+Z"), self, activated=self.redo)
@@ -3125,7 +3255,7 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("F1"), self, activated=self.show_help_dialog)
 
         save_action = QAction("Save", self)
-        save_action.setShortcut(QKeySequence("Ctrl+S"))
+        save_action.setShortcut(QKeySequence.Save)
         save_action.triggered.connect(self.save_annotations)
         self.addAction(save_action)
         self.page_label.setObjectName("monoLabel")
@@ -4104,6 +4234,23 @@ class AnnotationWindow(QMainWindow):
         else:
             self.fact_equation_result_label.setStyleSheet("")
 
+    @staticmethod
+    def _duration_type_requires_recurrence(value: Any) -> bool:
+        text = str(value or "").strip().lower()
+        return text in {"recurrent", "recurring"}
+
+    def _refresh_recurring_period_visibility(self) -> None:
+        if not hasattr(self, "fact_recurring_period_block"):
+            return
+        selected_count = len(self._selected_fact_items()) if hasattr(self, "scene") else 0
+        show_recurrence = (
+            selected_count == 1
+            and self._duration_type_requires_recurrence(self.fact_duration_type_combo.currentText())
+            and self.fact_duration_type_combo.isEnabled()
+        )
+        self.fact_recurring_period_block.setVisible(show_recurrence)
+        self.fact_recurring_period_combo.setEnabled(show_recurrence)
+
     def _refresh_equation_panel(self) -> None:
         if not hasattr(self, "fact_equation_edit"):
             return
@@ -4122,8 +4269,10 @@ class AnnotationWindow(QMainWindow):
             saved_equation = str(saved_fact.get("equation") or "")
             saved_fact_equation = str(saved_fact.get("fact_equation") or "")
             target_value = saved_fact.get("value")
+            target_balance_type = saved_fact.get("balance_type")
         else:
             target_value = None
+            target_balance_type = None
 
         self.fact_equation_edit.setEnabled(single_item is not None)
         self.fact_equation_result_label.setEnabled(single_item is not None)
@@ -4141,11 +4290,18 @@ class AnnotationWindow(QMainWindow):
         pending_for_selection = self._equation_target_item is single_item and self._equation_candidate_text is not None
         has_saved_equation = bool(saved_equation or saved_fact_equation)
         if pending_for_selection:
-            self.fact_equation_edit.setText(self._equation_candidate_text or "")
+            self.fact_equation_edit.setText(
+                _format_equation_with_target(
+                    self._equation_candidate_text,
+                    target_value,
+                    target_balance_type,
+                )
+            )
             if self._equation_candidate_result_text is not None:
                 result_tone, comparison_message = _equation_result_match_state(
                     self._equation_candidate_result_text,
                     target_value,
+                    target_balance_type,
                 )
                 self._set_equation_result_display(self._equation_candidate_result_text, tone=result_tone)
             else:
@@ -4175,7 +4331,9 @@ class AnnotationWindow(QMainWindow):
             self.clear_equation_btn.setEnabled(has_saved_equation)
             return
 
-        self.fact_equation_edit.setText(saved_equation)
+        self.fact_equation_edit.setText(
+            _format_equation_with_target(saved_equation, target_value, target_balance_type)
+        )
         if not saved_equation:
             self.fact_equation_status_label.setText(
                 "Hold Alt and drag on the page to build an equation preview, then press Shift to approve."
@@ -4190,7 +4348,7 @@ class AnnotationWindow(QMainWindow):
             self._set_equation_result_display("cannot calculate", tone="danger")
             return
 
-        result_tone, comparison_message = _equation_result_match_state(preview, target_value)
+        result_tone, comparison_message = _equation_result_match_state(preview, target_value, target_balance_type)
         self.fact_equation_status_label.setText(f"Saved equation preview. {comparison_message}")
         self._set_equation_result_display(preview, tone=result_tone)
         self.clear_equation_btn.setEnabled(True)
@@ -4227,6 +4385,7 @@ class AnnotationWindow(QMainWindow):
         if not enabled or multi_select:
             self._set_equation_result_display("-", tone="neutral")
             self.fact_equation_status_label.setText("" if not enabled else "Equation preview is available for a single selected fact.")
+        self._refresh_recurring_period_visibility()
         self._update_path_controls()
 
     def _reset_fact_editor_placeholders(self) -> None:
@@ -4568,17 +4727,20 @@ class AnnotationWindow(QMainWindow):
             self._set_fact_editor_enabled(False)
             self.batch_toggle_btn.setText("Show Batch Edit")
             self._refresh_equation_panel()
+            self._refresh_recurring_period_visibility()
             return
         if len(selected_items) == 1:
             self._set_fact_editor_enabled(True, multi_select=False)
             self._populate_fact_editor(selected_items[0])
             self.batch_toggle_btn.setText("Hide Batch Edit" if self.batch_box.isVisible() else "Show Batch Edit")
             self._refresh_equation_panel()
+            self._refresh_recurring_period_visibility()
             return
         self._set_fact_editor_enabled(True, multi_select=True)
         self._populate_multi_fact_editor(selected_items)
         self.batch_toggle_btn.setText("Hide Batch Edit" if self.batch_box.isVisible() else "Show Batch Edit")
         self._refresh_equation_panel()
+        self._refresh_recurring_period_visibility()
 
     def _apply_fact_field_to_selected_items(
         self,
@@ -4715,6 +4877,7 @@ class AnnotationWindow(QMainWindow):
             return
         if field_name == "duration_type":
             self._apply_fact_field_to_selected_items("duration_type", self.fact_duration_type_combo.currentText().strip() or None)
+            self._sync_fact_editor_from_selection()
             return
         if field_name == "recurring_period":
             self._apply_fact_field_to_selected_items("recurring_period", self.fact_recurring_period_combo.currentText().strip() or None)
@@ -7554,6 +7717,7 @@ class AnnotationWindow(QMainWindow):
             for finding in format_findings
             if any(code in {"noncanonical_date", "placeholder_value", "noncanonical_value"} for code in finding.get("issue_codes", []))
         ]
+        warning_count = len(warning_findings)
         serialized = serialize_annotations_json(payload)
         no_changes = False
         if self.annotations_path.exists():
@@ -7571,55 +7735,37 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.warning(self, "Save failed", str(exc))
             return False
         if no_changes:
-            warning_suffix = f" | format_warnings={len(warning_findings)}" if warning_findings else ""
+            warning_suffix = f" | format_warnings={warning_count}" if warning_count else ""
             self.statusBar().showMessage(
                 f"No changes detected. File is up to date: {self.annotations_path}{warning_suffix}",
                 6000,
             )
-            QMessageBox.information(
-                self,
-                "Saved",
-                f"Annotations saved to:\n{self.annotations_path}\n\nNo changes detected.",
-            )
             self.annotations_saved.emit(self.annotations_path)
+            self.annotations_save_status.emit(
+                {
+                    "annotations_path": self.annotations_path,
+                    "no_changes": True,
+                    "warning_count": warning_count,
+                    "backup_path": None,
+                }
+            )
             self._mark_saved_content()
-            if warning_findings:
-                preview = "\n".join(
-                    f"- {f.get('page')} fact#{int(f.get('fact_index', 0)) + 1}: {', '.join(f.get('issue_codes', []))}"
-                    for f in warning_findings[:8]
-                )
-                QMessageBox.warning(
-                    self,
-                    "Format warnings",
-                    (
-                        "Saved successfully, but some facts have non-canonical date/value format.\n\n"
-                        f"{preview}\n\n"
-                        "Use scripts/check_fact_schema_format.py for full details."
-                    ),
-                )
             return True
-        warning_suffix = f" | format_warnings={len(warning_findings)}" if warning_findings else ""
-        backup_suffix = ""
+        warning_suffix = f" | format_warnings={warning_count}" if warning_count else ""
+        backup_path: Optional[Path] = None
         if backup_info is not None:
-            backup_suffix = f"\n\nLegacy backup created at:\n{backup_info['backup_path']}"
+            backup_path = Path(str(backup_info["backup_path"]))
         self.statusBar().showMessage(f"Saved: {self.annotations_path}{warning_suffix}", 6000)
-        QMessageBox.information(self, "Saved", f"Annotations saved to:\n{self.annotations_path}{backup_suffix}")
         self.annotations_saved.emit(self.annotations_path)
+        self.annotations_save_status.emit(
+            {
+                "annotations_path": self.annotations_path,
+                "no_changes": False,
+                "warning_count": warning_count,
+                "backup_path": backup_path,
+            }
+        )
         self._mark_saved_content()
-        if warning_findings:
-            preview = "\n".join(
-                f"- {f.get('page')} fact#{int(f.get('fact_index', 0)) + 1}: {', '.join(f.get('issue_codes', []))}"
-                for f in warning_findings[:8]
-            )
-            QMessageBox.warning(
-                self,
-                "Format warnings",
-                (
-                    "Saved successfully, but some facts have non-canonical date/value format.\n\n"
-                    f"{preview}\n\n"
-                    "Use scripts/check_fact_schema_format.py for full details."
-                ),
-            )
         return True
 
     def closeEvent(self, event: QCloseEvent) -> None:
@@ -7729,8 +7875,9 @@ class AnnotationWindow(QMainWindow):
             "\n"
             "Selection and editing\n"
             "- Ctrl/Cmd+A: Select all bboxes on the current page when the page view is focused\n"
-            "- Shift + click on bbox: Add/remove it from the selection\n"
-            "- Shift + left-drag on empty page area: Rectangle-select multiple bboxes\n"
+            "- Click on a bbox: Select only that bbox\n"
+            "- Left-drag on empty page area: Rectangle-select bboxes\n"
+            "- Shift + click or Shift + left-drag: Add to the current selection\n"
             "- Arrow keys: Move selected bbox(es) by 1 px\n"
             "- Shift+Arrow: Move selected bbox(es) by 10 px\n"
             "- Alt+Arrow: Grow selected bbox(es) in one direction by batch step\n"

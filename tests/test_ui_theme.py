@@ -36,3 +36,27 @@ def test_stylesheet_includes_inspector_rules() -> None:
     assert "QListWidget#pageIssuesList" in stylesheet
     assert "QLabel#factBboxLabel" in stylesheet
     assert "QWidget#inspectorFieldBlock" in stylesheet
+
+
+def test_resolve_theme_font_tokens_uses_available_fonts(monkeypatch) -> None:
+    monkeypatch.setattr(
+        ui_theme,
+        "_available_font_families",
+        lambda: {
+            "avenir next": "Avenir Next",
+            "segoe ui": "Segoe UI",
+            "sf mono": "SF Mono",
+            "menlo": "Menlo",
+        },
+    )
+    tokens = {
+        "font_heading": "Avenir Next, Manrope, 'Segoe UI', sans-serif",
+        "font_body": "'IBM Plex Sans', 'SF Pro Text', 'Segoe UI', sans-serif",
+        "font_mono": "'IBM Plex Mono', 'SF Mono', Menlo, monospace",
+    }
+
+    resolved = ui_theme._resolve_theme_font_tokens(tokens)
+
+    assert resolved["font_heading"] == '"Avenir Next"'
+    assert resolved["font_body"] == '"Segoe UI"'
+    assert resolved["font_mono"] == '"SF Mono"'
