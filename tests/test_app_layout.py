@@ -1235,11 +1235,6 @@ def test_equation_result_match_state_applies_target_contribution_sign() -> None:
     assert message == "Matches target value."
 
 
-def test_format_equation_with_target_uses_target_contribution_sign() -> None:
-    assert app_mod._format_equation_with_target("100 - 40", "60", "positive", "additive") == "100 - 40 = 60"
-    assert app_mod._format_equation_with_target("100 - 40", "60", "positive", "subtractive") == "100 - 40 = -60"
-
-
 def test_evaluate_equation_string_uses_left_side_when_equals_present() -> None:
     assert app_mod._evaluate_equation_string("971771 + 599659 = 599659") == "1571430"
 
@@ -1296,7 +1291,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
 
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
-    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0 = 999"
+    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
     assert "Does not match target value" in window.fact_equation_status_label.text()
@@ -1319,7 +1314,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     assert target.fact_data["equation"] == "20 + 100 - 5 + 0"
     assert target.fact_data["fact_equation"] == "f2 + f3 - f5 + f6"
     assert window.apply_equation_btn.isEnabled() is False
-    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0 = 999"
+    assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
 
@@ -1513,7 +1508,7 @@ def test_equation_preview_clears_on_selection_change_without_persisting(tmp_path
     _qt_app().processEvents()
 
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3]
-    assert window.fact_equation_edit.text() == "40 + 2 = 999"
+    assert window.fact_equation_edit.text() == "40 + 2"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
 
@@ -1573,10 +1568,34 @@ def test_refresh_facts_list_remaps_fact_equation_refs_when_fact_nums_shift(tmp_p
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4]
     assert target.fact_data["fact_equation"] == "f2 + f3"
     assert target.fact_data["equation"] == "100 + 20"
-    assert window.fact_equation_edit.text() == "100 + 20 = 120"
+    assert window.fact_equation_edit.text() == "100 + 20"
     assert window.fact_equation_result_label.text() == "120"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
     assert "Matches target value." in window.fact_equation_status_label.text()
+    window.close()
+
+
+def test_saved_mismatching_equation_displays_raw_expression_with_preview_result(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=240, height=240)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "3595", "equation": "13639 + 10044", "fact_num": 1},
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "13639 + 10044"
+    assert window.fact_equation_result_label.text() == "23683"
+    assert "Does not match target value (3595)." in window.fact_equation_status_label.text()
     window.close()
 
 
@@ -1671,7 +1690,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
 
     _qt_app().processEvents()
 
-    assert window.fact_equation_edit.text() == "100 - 5 + 8 = 103"
+    assert window.fact_equation_edit.text() == "100 - 5 + 8"
     assert window.fact_equation_result_label.text() == "103"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
     assert "Matches target value." in window.fact_equation_status_label.text()
@@ -1682,7 +1701,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     _qt_app().processEvents()
 
-    assert window.fact_equation_edit.text() == "100 - 5 + 8 = 103"
+    assert window.fact_equation_edit.text() == "100 - 5 + 8"
     assert window._equation_candidate_fact_text == "f2 - f3 + f4"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
@@ -1704,6 +1723,7 @@ def test_invalid_saved_equation_shows_cannot_calculate_in_red(tmp_path: Path) ->
     target.setSelected(True)
     _qt_app().processEvents()
 
+    assert window.fact_equation_edit.text() == "abc"
     assert window.fact_equation_result_label.text() == "cannot calculate"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
     assert "cannot be calculated" in window.fact_equation_status_label.text().lower()
