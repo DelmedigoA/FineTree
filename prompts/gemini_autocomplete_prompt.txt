@@ -66,8 +66,6 @@ Top-level schema (exact keys only):
         {
           "bbox": [<x>, <y>, <w>, <h>],
           "value": "<string>",
-          "equation": "<string|null>",
-          "equation_children": [{"fact_num": <integer >= 1>, "operator": "+|-"}] | null,
           "value_type": "amount|percent|ratio|count|points|null",
           "value_context": "textual|tabular|mixed|null",
           "natural_sign": "positive|negative|null",
@@ -109,23 +107,21 @@ Type/validation rules (must match schema):
 13. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
 14. Non-statement structural pages use `statement_type=null`.
 15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
-16. `equation` must be a non-empty string or null. Use null unless the source explicitly shows an equation worth preserving.
-17. `equation_children` must be null for detail rows. Total rows must include a non-empty ordered list of child fact references with explicit `+` / `-` operators.
-18. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
-19. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-20. `value_context` must be `textual`, `tabular`, `mixed`, or null.
-21. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+16. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+17. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+18. `value_context` must be `textual`, `tabular`, `mixed`, or null.
+19. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
     - if `value` contains both `(` and `)`, set `natural_sign="negative"`
     - if `value` is exactly `"-"`, set `natural_sign=null`
     - otherwise set `natural_sign="positive"`
-22. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
-23. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-24. `path_source` is only `observed`, `inferred`, or null.
-25. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-26. If `note_num` is present, `note_flag` must be `true`.
-27. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-28. Use JSON `null` literal for missing optional values (never `"null"` string).
-29. Do not include any keys not listed above.
+20. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
+21. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+22. `path_source` is only `observed`, `inferred`, or null.
+23. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+24. If `note_num` is present, `note_flag` must be `true`.
+25. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+26. Use JSON `null` literal for missing optional values (never `"null"` string).
+27. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
@@ -133,27 +129,24 @@ Extraction rules:
 3. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
 4. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
 5. For percent values, keep `%` in `value`.
-6. Leave `equation` null unless the source page explicitly prints an equation or arithmetic relation for that fact.
-7. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
-8. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
-9. `note_ref`: use when the fact points or references another note; else `null`.
-10. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
-11. `currency`: infer from page/header context when clear, else `null`.
-12. `scale`: `1` unless page/header indicates thousands or millions.
-13. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
-14. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
-15. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
-16. `period_type="instant"` means the fact represents a value at a single point in time.
-17. `period_type="duration"` means the fact represents a value over a period between two dates.
-18. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
-19. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
-20. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
-22. `equation_children` is the arithmetic source of truth for totals. Store children in the intended left-to-right equation order, defaulting operators to `+` unless the child is explicitly subtractive for that parent total.
-23. `equation` and `fact_equation` are derived display fields. If you provide them, they must match `equation_children`; otherwise use null and let runtime rebuild them.
-24. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-25. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-26. Do not emit empty-value facts.
+6. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
+7. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
+8. `note_ref`: use when the fact points or references another note; else `null`.
+9. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
+10. `currency`: infer from page/header context when clear, else `null`.
+11. `scale`: `1` unless page/header indicates thousands or millions.
+12. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
+13. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
+14. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
+15. `period_type="instant"` means the fact represents a value at a single point in time.
+16. `period_type="duration"` means the fact represents a value over a period between two dates.
+17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
+18. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
+19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
+20. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+21. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+22. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+23. Do not emit empty-value facts.
 Page classification rules:
 1. Use `page_type="title"` for cover/title pages.
 2. Use `page_type="contents"` for table-of-contents pages.

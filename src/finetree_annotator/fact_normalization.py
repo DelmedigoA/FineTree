@@ -169,7 +169,7 @@ def _normalize_equation(value: Any) -> str | None:
     return _to_optional_text(value)
 
 
-def _normalize_equation_children(value: Any) -> list[dict[str, Any]] | None:
+def _normalize_legacy_equation_children(value: Any) -> list[dict[str, Any]] | None:
     if value in ("", None):
         return None
     if not isinstance(value, list):
@@ -186,15 +186,26 @@ def _normalize_equation_children(value: Any) -> list[dict[str, Any]] | None:
     return out or None
 
 
+def _fact_equation_from_children(value: Any) -> str | None:
+    children = _normalize_legacy_equation_children(value)
+    if not children:
+        return None
+    terms: list[str] = []
+    for idx, child in enumerate(children):
+        fact_num = int(child["fact_num"])
+        operator = str(child.get("operator") or "+")
+        if idx == 0:
+            terms.append(f"- f{fact_num}" if operator == "-" else f"f{fact_num}")
+        else:
+            terms.append(f"{operator} f{fact_num}")
+    text = " ".join(terms).strip()
+    return text or None
+
+
 def _equation_signature(entry: Mapping[str, Any]) -> tuple[Any, ...]:
     equation = str(entry.get("equation") or "")
     fact_equation = str(entry.get("fact_equation") or "")
-    children = tuple(
-        (int(child.get("fact_num")), str(child.get("operator") or "+"))
-        for child in (entry.get("equation_children") or [])
-        if isinstance(child, Mapping) and isinstance(child.get("fact_num"), int)
-    )
-    return equation, fact_equation, children
+    return equation, fact_equation
 
 
 def _normalize_equation_entry(
@@ -208,7 +219,7 @@ def _normalize_equation_entry(
         equation = _normalize_equation(value)
         if equation is None:
             return None
-        return {"equation": equation, "fact_equation": None, "equation_children": None}
+        return {"equation": equation, "fact_equation": None}
     if not isinstance(value, Mapping):
         return None
     equation = _normalize_equation(value.get("equation"))
@@ -217,7 +228,6 @@ def _normalize_equation_entry(
     return {
         "equation": equation,
         "fact_equation": _normalize_equation(value.get("fact_equation")),
-        "equation_children": _normalize_equation_children(value.get("equation_children")),
     }
 
 
@@ -384,7 +394,6 @@ def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
             "fact_num",
             "fact_equation",
             "equations",
-            "equation_children",
             "balance_type",
             "natural_sign",
             "row_role",
@@ -478,14 +487,14 @@ def normalize_fact_payload(
             note_ref=note_ref,
         )
 
-    normalized_equation = _normalize_equation(payload.get("equation"))
-    normalized_fact_equation = _normalize_equation(payload.get("fact_equation"))
-    normalized_equation_children = _normalize_equation_children(payload.get("equation_children"))
+    legacy_equation = _normalize_equation(payload.get("equation"))
+    legacy_fact_equation = _normalize_equation(payload.get("fact_equation"))
+    if legacy_fact_equation is None:
+        legacy_fact_equation = _fact_equation_from_children(payload.get("equation_children"))
     active_equation = _normalize_equation_entry(
         {
-            "equation": normalized_equation,
-            "fact_equation": normalized_fact_equation,
-            "equation_children": normalized_equation_children,
+            "equation": legacy_equation,
+            "fact_equation": legacy_fact_equation,
         },
         allow_equation_only_string=False,
     )
@@ -503,18 +512,9 @@ def normalize_fact_payload(
                 equations = [active_equation, *equations]
             elif matching_index != 0:
                 equations = [equations[matching_index], *equations[:matching_index], *equations[matching_index + 1 :]]
-    elif equations:
-        active_equation = equations[0]
-        normalized_equation = active_equation.get("equation")
-        normalized_fact_equation = active_equation.get("fact_equation")
-        normalized_equation_children = active_equation.get("equation_children")
-
     normalized: dict[str, Any] = {
         "value": value,
         "fact_num": _normalize_fact_num(payload.get("fact_num")),
-        "equation": normalized_equation,
-        "fact_equation": normalized_fact_equation,
-        "equation_children": normalized_equation_children,
         "equations": equations,
         "natural_sign": natural_sign,
         "row_role": row_role,

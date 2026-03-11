@@ -1,0 +1,31 @@
+{
+  "operation": "stream_content",
+  "model": "",
+  "prompt": "test prompt",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-202/test_stream_content_from_image6/page.png",
+  "logged_image_path": "input_target.png",
+  "enable_thinking": null,
+  "few_shot_examples": [],
+  "config_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-202/test_stream_content_from_image6/cfg.yaml",
+  "max_new_tokens": null,
+  "do_sample": null,
+  "temperature": null,
+  "top_p": null,
+  "exact_request": {
+    "backend": "runpod_queue",
+    "payload": {
+      "input": {
+        "image_file": "input_target.png",
+        "image_mime_type": "image/png",
+        "response_mode": "text",
+        "prompt": "test prompt",
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "model": "qwenasaf",
+        "temperature": 0.7,
+        "top_p": 0.8
+      }
+    }
+  }
+}

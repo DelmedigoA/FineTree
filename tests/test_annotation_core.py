@@ -149,8 +149,7 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     assert page_1["facts"][0]["currency"] == "USD"
     assert page_1["facts"][0]["comment_ref"] == "*estimated"
     assert page_1["facts"][0]["fact_num"] == 1
-    assert page_1["facts"][0]["equation"] == "1,000 + 193"
-    assert page_1["facts"][0]["fact_equation"] is None
+    assert page_1["facts"][0]["equations"] == [{"equation": "1,000 + 193", "fact_equation": None}]
     assert page_1["facts"][0]["note_flag"] is True
     assert page_1["facts"][0]["note_num"] == 5
     assert page_1["facts"][0]["note_ref"] == "row-12"
@@ -279,8 +278,7 @@ def test_load_page_states_preserves_equation_field() -> None:
     assert states["page_0001.png"].meta["annotation_note"] == "revisit"
     assert states["page_0001.png"].meta["annotation_status"] == "approved"
     assert states["page_0001.png"].facts[0].fact["fact_num"] == 1
-    assert states["page_0001.png"].facts[0].fact["equation"] == "7 + 3"
-    assert states["page_0001.png"].facts[0].fact["fact_equation"] == "f1 + f3"
+    assert states["page_0001.png"].facts[0].fact["equations"] == [{"equation": "7 + 3", "fact_equation": "f1 + f3"}]
 
 
 def test_build_annotations_payload_backfills_missing_fact_num_for_legacy_facts() -> None:
@@ -368,8 +366,8 @@ def test_build_annotations_payload_remaps_fact_equation_refs_when_fact_nums_shif
     payload = build_annotations_payload(Path("data/pdf_images/test"), page_images, page_states)
     facts = payload["pages"][0]["facts"]
     assert [fact["fact_num"] for fact in facts] == [1, 2, 3, 4]
-    assert facts[3]["fact_equation"] == "f2 + f3"
-    assert facts[3]["equation"] == "100 + 20"
+    assert facts[3]["equations"][0]["fact_equation"] == "f2 + f3"
+    assert facts[3]["equations"][0]["equation"] == "100 + 20"
 
 
 def test_parse_import_payload_supports_full_document_shape() -> None:

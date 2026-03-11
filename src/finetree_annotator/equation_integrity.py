@@ -36,7 +36,11 @@ def _format_decimal_plain(value: Decimal) -> str:
 
 
 def _normalize_fact(data: Mapping[str, Any]) -> dict[str, Any]:
-    normalized, _warnings = normalize_fact_payload(dict(data), include_bbox=False)
+    source = dict(data)
+    normalized, _warnings = normalize_fact_payload(source, include_bbox=False)
+    legacy_fact_equation = str(source.get("fact_equation") or "").strip()
+    if legacy_fact_equation and not normalized.get("equations"):
+        normalized["_legacy_fact_equation"] = legacy_fact_equation
     return normalized
 
 
@@ -99,17 +103,32 @@ def _parse_fact_value_for_equation(value: Any) -> tuple[Decimal | None, str | No
     return (-parsed if negative else parsed), text
 
 
-def _parse_fact_equation_children(value: Any) -> list[dict[str, Any]] | None:
+def _parse_fact_equation_terms(value: Any) -> list[dict[str, Any]] | None:
     text = str(value or "").strip()
     if not text:
         return []
     if not _FACT_EQUATION_RE.fullmatch(text):
         return None
-    children: list[dict[str, Any]] = []
+    terms: list[dict[str, Any]] = []
     for sign_text, fact_num_text in _FACT_EQUATION_TOKEN_RE.findall(text):
         operator = "-" if sign_text.strip() == "-" else "+"
-        children.append({"fact_num": int(fact_num_text), "operator": operator})
-    return children
+        terms.append({"fact_num": int(fact_num_text), "operator": operator})
+    return terms
+
+
+def _render_fact_equation_terms(terms: Sequence[Mapping[str, Any]]) -> str | None:
+    out: list[str] = []
+    for idx, entry in enumerate(terms):
+        ref = entry.get("fact_num")
+        operator = str(entry.get("operator") or "").strip()
+        if not isinstance(ref, int) or operator not in {"+", "-"}:
+            continue
+        if idx == 0:
+            out.append(f"- f{ref}" if operator == "-" else f"f{ref}")
+        else:
+            out.append(f"{operator} f{ref}")
+    text = " ".join(out).strip()
+    return text or None
 
 
 def _fact_equation_ref_set(value: Any) -> set[int]:
@@ -142,39 +161,10 @@ def remap_fact_equation_references(
     return _FACT_EQUATION_FACTNUM_RE.sub(_replace, text)
 
 
-def _remap_equation_children_references(
-    equation_children: Any,
-    fact_num_remap: Mapping[int, int],
-    *,
-    ambiguous_old_nums: set[int] | None = None,
-) -> list[dict[str, Any]] | None:
-    if not isinstance(equation_children, list):
-        return None
-    ambiguous = set(ambiguous_old_nums or set())
-    out: list[dict[str, Any]] = []
-    for entry in equation_children:
-        if not isinstance(entry, Mapping):
-            continue
-        raw_fact_num = entry.get("fact_num")
-        if not isinstance(raw_fact_num, int):
-            continue
-        next_fact_num = raw_fact_num if raw_fact_num in ambiguous else fact_num_remap.get(raw_fact_num, raw_fact_num)
-        operator = str(entry.get("operator") or "").strip()
-        if operator not in {"+", "-"}:
-            continue
-        out.append({"fact_num": next_fact_num, "operator": operator})
-    return out or None
-
-
 def _equation_variant_signature(entry: Mapping[str, Any]) -> tuple[Any, ...]:
     equation = str(entry.get("equation") or "").strip()
     fact_equation = str(entry.get("fact_equation") or "").strip()
-    children = tuple(
-        (int(child.get("fact_num")), str(child.get("operator") or "+"))
-        for child in (entry.get("equation_children") or [])
-        if isinstance(child, Mapping) and isinstance(child.get("fact_num"), int)
-    )
-    return equation, fact_equation, children
+    return equation, fact_equation
 
 
 def _remap_equation_variants(
@@ -198,15 +188,9 @@ def _remap_equation_variants(
             fact_num_remap,
             ambiguous_old_nums=ambiguous_old_nums,
         )
-        remapped_children = _remap_equation_children_references(
-            entry.get("equation_children"),
-            fact_num_remap,
-            ambiguous_old_nums=ambiguous_old_nums,
-        )
         normalized_entry = {
             "equation": equation,
             "fact_equation": remapped_fact_equation,
-            "equation_children": remapped_children,
         }
         signature = _equation_variant_signature(normalized_entry)
         if signature in seen:
@@ -214,6 +198,60 @@ def _remap_equation_variants(
         seen.add(signature)
         out.append(normalized_entry)
     return out or None
+
+
+def _normalized_equation_variants_from_fact(fact: Mapping[str, Any]) -> list[dict[str, Any]]:
+    normalized = _remap_equation_variants(fact.get("equations"), {})
+    if normalized is not None:
+        return normalized
+    legacy_equation = str(fact.get("equation") or "").strip()
+    if not legacy_equation:
+        return []
+    legacy_fact_equation = str(fact.get("fact_equation") or "").strip() or None
+    return [{"equation": legacy_equation, "fact_equation": legacy_fact_equation}]
+
+
+def _active_equation_texts(fact: Mapping[str, Any]) -> tuple[str, str]:
+    variants = _normalized_equation_variants_from_fact(fact)
+    if not variants:
+        legacy_fact_equation = str(fact.get("_legacy_fact_equation") or "").strip()
+        if legacy_fact_equation:
+            return "", legacy_fact_equation
+        return "", ""
+    active = variants[0]
+    return str(active.get("equation") or "").strip(), str(active.get("fact_equation") or "").strip()
+
+
+def _set_active_equation_variant(
+    fact: dict[str, Any],
+    *,
+    equation: str | None,
+    fact_equation: str | None,
+) -> None:
+    existing_variants = _normalized_equation_variants_from_fact(fact)
+    normalized_equation = str(equation or "").strip()
+    if not normalized_equation:
+        fact["equations"] = None
+        fact.pop("_legacy_fact_equation", None)
+        fact.pop("equation", None)
+        fact.pop("fact_equation", None)
+        return
+    normalized_fact_equation = str(fact_equation or "").strip() or None
+    active = {
+        "equation": normalized_equation,
+        "fact_equation": normalized_fact_equation,
+    }
+    active_sig = _equation_variant_signature(active)
+    ordered = [active]
+    for entry in existing_variants:
+        signature = _equation_variant_signature(entry)
+        if signature == active_sig:
+            continue
+        ordered.append(entry)
+    fact["equations"] = ordered
+    fact.pop("_legacy_fact_equation", None)
+    fact.pop("equation", None)
+    fact.pop("fact_equation", None)
 
 
 def resequence_fact_numbers_and_remap_fact_equations(
@@ -236,35 +274,29 @@ def resequence_fact_numbers_and_remap_fact_equations(
     resequenced: list[dict[str, Any]] = []
     for next_fact_num, fact in enumerate(normalized_facts, start=1):
         updated = dict(fact)
+        updated.pop("equation", None)
+        updated.pop("fact_equation", None)
+        legacy_fact_equation = str(updated.get("_legacy_fact_equation") or "").strip()
+        if legacy_fact_equation:
+            updated["_legacy_fact_equation"] = remap_fact_equation_references(
+                legacy_fact_equation,
+                fact_num_remap,
+                ambiguous_old_nums=ambiguous_old_nums,
+            )
         updated["fact_num"] = next_fact_num
-        remapped_children = _remap_equation_children_references(
-            updated.get("equation_children"),
-            fact_num_remap,
-            ambiguous_old_nums=ambiguous_old_nums,
-        )
-        if remapped_children is not None:
-            updated["equation_children"] = remapped_children
-        remapped_fact_equation = remap_fact_equation_references(
-            updated.get("fact_equation"),
-            fact_num_remap,
-            ambiguous_old_nums=ambiguous_old_nums,
-        )
-        if remapped_fact_equation != updated.get("fact_equation"):
-            updated["fact_equation"] = remapped_fact_equation
+        had_equations = isinstance(updated.get("equations"), list)
         remapped_equations = _remap_equation_variants(
             updated.get("equations"),
             fact_num_remap,
             ambiguous_old_nums=ambiguous_old_nums,
         )
-        if remapped_equations is not None:
+        if had_equations or remapped_equations is not None:
             updated["equations"] = remapped_equations
-            active_variant = remapped_equations[0]
-            updated["equation"] = active_variant.get("equation")
-            updated["fact_equation"] = active_variant.get("fact_equation")
-            updated["equation_children"] = active_variant.get("equation_children")
         resequenced.append(updated)
 
     rebuilt, _findings = audit_and_rebuild_financial_facts(resequenced, apply_repairs=True)
+    for fact in rebuilt:
+        fact.pop("_legacy_fact_equation", None)
     return rebuilt
 
 
@@ -289,17 +321,16 @@ def _effective_target_value(fact: Mapping[str, Any]) -> Decimal | None:
     return target_value
 
 
-def _build_equation_from_children(
-    equation_children: Sequence[Mapping[str, Any]],
+def _build_equation_from_fact_equation_terms(
+    fact_equation_terms: Sequence[Mapping[str, Any]],
     facts_by_num: Mapping[int, Mapping[str, Any]],
 ) -> tuple[str | None, str | None, Decimal | None, list[int]]:
     numeric_terms: list[str] = []
-    fact_terms: list[str] = []
     total = Decimal("0")
     invalid_refs: list[int] = []
     valid_count = 0
 
-    for entry in equation_children:
+    for entry in fact_equation_terms:
         ref = entry.get("fact_num")
         operator = str(entry.get("operator") or "").strip()
         if not isinstance(ref, int) or operator not in {"+", "-"}:
@@ -313,7 +344,7 @@ def _build_equation_from_children(
             invalid_refs.append(ref)
             continue
 
-        contribution = parsed * Decimal(-1 if operator == "-" else 1)
+        contribution = parsed * Decimal(_natural_sign_multiplier(fact.get("natural_sign"))) * Decimal(-1 if operator == "-" else 1)
         rendered_sign = -1 if contribution < 0 else 1
         prefix = ""
         if valid_count > 0:
@@ -321,13 +352,13 @@ def _build_equation_from_children(
         elif rendered_sign < 0:
             prefix = "- "
         numeric_terms.append(f"{prefix}{display}" if prefix else display)
-        fact_terms.append(f"{prefix}f{ref}" if prefix else f"f{ref}")
         total += contribution
         valid_count += 1
 
     if valid_count == 0:
         return None, None, None, invalid_refs
-    return " ".join(numeric_terms), " ".join(fact_terms), total, invalid_refs
+    rendered_fact_equation = _render_fact_equation_terms(fact_equation_terms)
+    return " ".join(numeric_terms), rendered_fact_equation, total, invalid_refs
 
 
 def _enforce_period_integrity(
@@ -402,14 +433,11 @@ def _enforce_period_integrity(
 def _cycle_nodes(facts_by_num: Mapping[int, Mapping[str, Any]]) -> set[int]:
     children_by_num: dict[int, list[int]] = {}
     for fact_num, fact in facts_by_num.items():
-        entries = fact.get("equation_children")
-        if not isinstance(entries, list):
+        _active_equation, active_fact_equation = _active_equation_texts(fact)
+        terms = _parse_fact_equation_terms(active_fact_equation)
+        if terms is None or not terms:
             continue
-        children_by_num[fact_num] = [
-            int(entry["fact_num"])
-            for entry in entries
-            if isinstance(entry, Mapping) and isinstance(entry.get("fact_num"), int)
-        ]
+        children_by_num[fact_num] = [int(entry["fact_num"]) for entry in terms if isinstance(entry.get("fact_num"), int)]
 
     cycle_nodes: set[int] = set()
     visiting: set[int] = set()
@@ -418,7 +446,7 @@ def _cycle_nodes(facts_by_num: Mapping[int, Mapping[str, Any]]) -> set[int]:
     def _dfs(node: int, stack: list[int]) -> None:
         if node in visiting:
             if node in stack:
-                cycle_nodes.update(stack[stack.index(node):])
+                cycle_nodes.update(stack[stack.index(node) :])
             else:
                 cycle_nodes.add(node)
             return
@@ -475,66 +503,33 @@ def audit_and_rebuild_financial_facts(
             apply_repairs=apply_repairs,
         )
 
-    facts_by_num = {
-        int(fact_num): fact
-        for fact in normalized_facts
-        for fact_num in [fact.get("fact_num")]
-        if isinstance(fact_num, int) and fact_num >= 1
-    }
-
-    for fact in normalized_facts:
-        fact_num = fact.get("fact_num") if isinstance(fact.get("fact_num"), int) else None
-        saved_equation = str(fact.get("equation") or "").strip()
-        saved_fact_equation = str(fact.get("fact_equation") or "").strip()
-        equation_children = fact.get("equation_children")
-        if equation_children is None and saved_fact_equation:
-            parsed_children = _parse_fact_equation_children(saved_fact_equation)
-            if parsed_children is None:
-                findings.append(
-                    {
-                        "code": "invalid_fact_equation_syntax",
-                        "severity": "reg_flag",
-                        "fact_num": fact_num,
-                        "field_name": "fact_equation",
-                        "message": "fact_equation has invalid syntax; expected terms like 'f1 - f2 + f3'.",
-                    }
-                )
-            elif parsed_children:
-                if apply_repairs:
-                    fact["equation_children"] = parsed_children
-                equation_children = parsed_children
-            elif saved_equation:
-                findings.append(
-                    {
-                        "code": "equation_missing_fact_equation",
-                        "severity": "warning",
-                        "fact_num": fact_num,
-                        "field_name": "fact_equation",
-                        "message": "equation exists without fact_equation references.",
-                    }
-                )
-
-        row_role = _normalize_row_role(fact.get("row_role")) or "detail"
-        if row_role == "detail" and fact.get("equation_children") is not None:
+        saved_equation, saved_fact_equation = _active_equation_texts(fact)
+        fact_equation_terms = _parse_fact_equation_terms(saved_fact_equation)
+        if fact_equation_terms is None:
             findings.append(
                 {
-                    "code": "detail_has_equation_children",
+                    "code": "invalid_fact_equation_syntax",
                     "severity": "reg_flag",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": "detail rows must not contain equation_children.",
+                    "field_name": "fact_equation",
+                    "message": "fact_equation has invalid syntax; expected terms like 'f1 - f2 + f3'.",
                 }
             )
             if apply_repairs:
-                fact["equation_children"] = None
-        if row_role == "total" and not fact.get("equation_children"):
+                _set_active_equation_variant(
+                    fact,
+                    equation=saved_equation or None,
+                    fact_equation=None,
+                )
+            fact_equation_terms = []
+        elif not fact_equation_terms and saved_equation:
             findings.append(
                 {
-                    "code": "total_missing_equation_children",
-                    "severity": "reg_flag",
+                    "code": "equation_missing_fact_equation",
+                    "severity": "warning",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": "total rows must contain at least one equation_children entry.",
+                    "field_name": "fact_equation",
+                    "message": "equation exists without fact_equation references.",
                 }
             )
 
@@ -548,23 +543,22 @@ def audit_and_rebuild_financial_facts(
 
     for fact in normalized_facts:
         fact_num = fact.get("fact_num") if isinstance(fact.get("fact_num"), int) else None
-        equation_children = fact.get("equation_children")
-        if not isinstance(equation_children, list):
+        _saved_equation, saved_fact_equation = _active_equation_texts(fact)
+        fact_equation_terms = _parse_fact_equation_terms(saved_fact_equation)
+        if fact_equation_terms is None or not fact_equation_terms:
             continue
 
         seen_refs: set[int] = set()
         duplicate_refs: list[int] = []
         missing_refs: list[int] = []
         self_refs: list[int] = []
-        normalized_children: list[dict[str, Any]] = []
-        for entry in equation_children:
-            if not isinstance(entry, Mapping):
-                continue
+        normalized_terms: list[dict[str, Any]] = []
+        for entry in fact_equation_terms:
             ref = entry.get("fact_num")
             operator = str(entry.get("operator") or "").strip()
             if not isinstance(ref, int) or operator not in {"+", "-"}:
                 continue
-            normalized_children.append({"fact_num": ref, "operator": operator})
+            normalized_terms.append({"fact_num": ref, "operator": operator})
             if ref == fact_num:
                 self_refs.append(ref)
             if ref in seen_refs:
@@ -574,28 +568,24 @@ def audit_and_rebuild_financial_facts(
             if ref not in facts_by_num:
                 missing_refs.append(ref)
 
-        if normalized_children != equation_children and apply_repairs:
-            fact["equation_children"] = normalized_children or None
-            equation_children = fact.get("equation_children")
-
         if duplicate_refs:
             findings.append(
                 {
-                    "code": "duplicate_equation_child_reference",
+                    "code": "duplicate_fact_equation_reference",
                     "severity": "reg_flag",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": f"equation_children includes duplicate child references: {sorted(set(duplicate_refs))}.",
+                    "field_name": "fact_equation",
+                    "message": f"fact_equation includes duplicate references: {sorted(set(duplicate_refs))}.",
                 }
             )
         if self_refs:
             findings.append(
                 {
-                    "code": "equation_children_self_reference",
+                    "code": "fact_equation_self_reference",
                     "severity": "reg_flag",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": "equation_children must not reference the parent fact itself.",
+                    "field_name": "fact_equation",
+                    "message": "fact_equation must not reference the parent fact itself.",
                 }
             )
         if missing_refs:
@@ -604,8 +594,8 @@ def audit_and_rebuild_financial_facts(
                     "code": "fact_equation_missing_reference",
                     "severity": "reg_flag",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": f"equation_children references missing facts: {sorted(set(missing_refs))}.",
+                    "field_name": "fact_equation",
+                    "message": f"fact_equation references missing facts: {sorted(set(missing_refs))}.",
                 }
             )
         if fact_num in cycle_nodes:
@@ -614,13 +604,13 @@ def audit_and_rebuild_financial_facts(
                     "code": "equation_graph_cycle",
                     "severity": "reg_flag",
                     "fact_num": fact_num,
-                    "field_name": "equation_children",
-                    "message": "equation_children graph must be acyclic.",
+                    "field_name": "fact_equation",
+                    "message": "fact_equation graph must be acyclic.",
                 }
             )
 
-        rebuilt_equation, rebuilt_fact_equation, rebuilt_total, invalid_refs = _build_equation_from_children(
-            normalized_children,
+        rebuilt_equation, rebuilt_fact_equation, rebuilt_total, invalid_refs = _build_equation_from_fact_equation_terms(
+            normalized_terms,
             facts_by_num,
         )
         if invalid_refs:
@@ -644,23 +634,20 @@ def audit_and_rebuild_financial_facts(
                     "severity": "reg_flag",
                     "fact_num": fact_num,
                     "field_name": "equation",
-                    "message": "Could not rebuild equation from referenced child facts.",
+                    "message": "Could not rebuild equation from fact_equation references.",
                 }
             )
             continue
 
-        saved_equation = str(fact.get("equation") or "").strip()
-        saved_fact_equation = str(fact.get("fact_equation") or "").strip()
-        if saved_fact_equation != rebuilt_fact_equation or _fact_equation_ref_set(saved_fact_equation) != {
-            child["fact_num"] for child in normalized_children
-        }:
+        saved_equation, _saved_fact_equation_again = _active_equation_texts(fact)
+        if saved_fact_equation != rebuilt_fact_equation or _fact_equation_ref_set(saved_fact_equation) != _fact_equation_ref_set(rebuilt_fact_equation):
             findings.append(
                 {
                     "code": "fact_equation_rebuilt",
                     "severity": "warning",
                     "fact_num": fact_num,
                     "field_name": "fact_equation",
-                    "message": "fact_equation references/order were rebuilt from equation_children.",
+                    "message": "fact_equation references/order were normalized from fact_equation terms.",
                 }
             )
         if saved_equation != rebuilt_equation:
@@ -670,12 +657,15 @@ def audit_and_rebuild_financial_facts(
                     "severity": "warning",
                     "fact_num": fact_num,
                     "field_name": "equation",
-                    "message": "equation text was rebuilt from equation_children.",
+                    "message": "equation text was rebuilt from fact_equation references.",
                 }
             )
         if apply_repairs:
-            fact["equation"] = rebuilt_equation
-            fact["fact_equation"] = rebuilt_fact_equation
+            _set_active_equation_variant(
+                fact,
+                equation=rebuilt_equation,
+                fact_equation=rebuilt_fact_equation,
+            )
 
         target_value = _effective_target_value(fact)
         if target_value is None:
@@ -703,6 +693,8 @@ def audit_and_rebuild_financial_facts(
                 }
             )
 
+    for fact in normalized_facts:
+        fact.pop("_legacy_fact_equation", None)
     return normalized_facts, findings
 
 

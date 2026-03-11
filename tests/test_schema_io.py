@@ -112,4 +112,4 @@ def test_load_any_schema_remaps_fact_equation_refs_when_fact_nums_shift() -> Non
     out = load_any_schema(payload)
     facts = out["pages"][0]["facts"]
     assert [fact["fact_num"] for fact in facts] == [1, 2, 3, 4]
-    assert facts[3]["fact_equation"] == "f2 + f3"
+    assert facts[3]["equations"][0]["fact_equation"] == "f2 + f3"

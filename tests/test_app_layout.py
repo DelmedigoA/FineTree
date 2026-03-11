@@ -525,7 +525,6 @@ def test_gemini_autocomplete_ignores_meta_and_merges_only_missing_facts(tmp_path
                     "bbox": [40, 10, 20, 20],
                     "value": "200",
                     "equation": None,
-                    "equation_children": None,
                     "value_type": None,
                     "value_context": None,
                     "natural_sign": "positive",
@@ -581,7 +580,6 @@ def test_gemini_stream_fact_keeps_pixel_bbox_without_1000_denormalization(tmp_pa
             "bbox": [474, 731, 58, 30],
             "value": "18,763",
             "equation": None,
-            "equation_children": None,
             "value_type": "amount",
             "value_context": "tabular",
             "natural_sign": "positive",
@@ -636,7 +634,6 @@ def test_autocomplete_bbox_mode_converts_normalized_1000_when_ink_score_is_bette
                 "bbox": [500, 500, 200, 100],
                 "value": "12",
                 "row_role": "detail",
-                "equation_children": None,
                 "path": ["A"],
             }
         ],
@@ -675,7 +672,6 @@ def test_autocomplete_bbox_mode_keeps_pixel_when_pixel_score_is_better(tmp_path:
                 "bbox": [120, 110, 30, 20],
                 "value": "55",
                 "row_role": "detail",
-                "equation_children": None,
                 "path": ["A"],
             }
         ],
@@ -705,7 +701,6 @@ def test_autocomplete_bbox_mode_defaults_to_pixel_when_scores_are_ambiguous(tmp_
                 "bbox": [120, 110, 30, 20],
                 "value": "55",
                 "row_role": "detail",
-                "equation_children": None,
                 "path": ["A"],
             }
         ],
@@ -766,7 +761,6 @@ def test_gemini_autocomplete_merges_buffered_facts_between_locked_prefix_and_suf
                     "value": "M1",
                     "equation": "A + B",
                     "fact_equation": "f1 + f2",
-                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
                     "value_type": "amount",
                     "value_context": "tabular",
                     "natural_sign": "positive",
@@ -794,7 +788,6 @@ def test_gemini_autocomplete_merges_buffered_facts_between_locked_prefix_and_suf
                     "value": "M2",
                     "equation": None,
                     "fact_equation": None,
-                    "equation_children": None,
                     "value_type": "amount",
                     "value_context": "tabular",
                     "natural_sign": "positive",
@@ -823,8 +816,7 @@ def test_gemini_autocomplete_merges_buffered_facts_between_locked_prefix_and_suf
 
     assert [item.fact_data["value"] for item in window._fact_items] == ["A", "B", "M1", "M2", "X", "Y", "Z"]
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4, 5, 6, 7]
-    assert window._fact_items[2].fact_data["fact_equation"] is None
-    assert window._fact_items[2].fact_data["equation_children"] is None
+    assert window._fact_items[2].fact_data.get("equations") is None
 
     window.close()
 
@@ -882,7 +874,6 @@ def test_gemini_autocomplete_rejects_stale_snapshot_without_changes(tmp_path: Pa
                     "bbox": [40, 10, 20, 20],
                     "value": "200",
                     "equation": None,
-                    "equation_children": None,
                     "value_type": "amount",
                     "value_context": "tabular",
                     "natural_sign": "positive",
@@ -933,7 +924,6 @@ def test_gemini_autocomplete_remaps_locked_equation_refs_after_geometry_resequen
             "fact_num": 2,
             "equation": "100",
             "fact_equation": "f1",
-            "equation_children": [{"fact_num": 1, "operator": "+"}],
             "row_role": "total",
         },
     )
@@ -974,7 +964,6 @@ def test_gemini_autocomplete_remaps_locked_equation_refs_after_geometry_resequen
                     "bbox": [20, 20, 40, 20],
                     "value": "50",
                     "equation": None,
-                    "equation_children": None,
                     "value_type": "amount",
                     "value_context": "tabular",
                     "natural_sign": "positive",
@@ -1002,8 +991,7 @@ def test_gemini_autocomplete_remaps_locked_equation_refs_after_geometry_resequen
     window._on_gemini_stream_completed(extraction)
 
     assert [item.fact_data["value"] for item in window._fact_items] == ["50", "100", "100"]
-    assert window._fact_items[2].fact_data["fact_equation"] == "f2"
-    assert window._fact_items[2].fact_data["equation_children"] == [{"fact_num": 2, "operator": "+"}]
+    assert window._fact_items[2].fact_data["equations"][0]["fact_equation"] == "f2"
 
     window.close()
 
@@ -1153,9 +1141,8 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         QRectF(10, 10, 20, 20),
         {
             "value": "100",
-            "equation": "40 + 60",
+            "equations": [{"equation": "40 + 60", "fact_equation": None}],
             "row_role": "total",
-            "equation_children": [{"fact_num": 3, "operator": "+"}, {"fact_num": 4, "operator": "+"}],
             "period_type": "instant",
             "period_start": None,
             "period_end": "2024-12-31",
@@ -1166,9 +1153,8 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         QRectF(40, 10, 20, 20),
         {
             "value": "200",
-            "equation": "120 + 80",
+            "equations": [{"equation": "120 + 80", "fact_equation": None}],
             "row_role": "total",
-            "equation_children": [{"fact_num": 5, "operator": "+"}, {"fact_num": 6, "operator": "+"}],
             "period_type": "duration",
             "period_start": "2024-01-01",
             "period_end": "2024-12-31",
@@ -1187,7 +1173,7 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     payload = window._build_gemini_fill_request_payload(
         page_name=window.page_images[window.current_index].name,
         selected_fact_nums=selected_fact_nums,
-        selected_fact_fields={"equation_children", "period_type", "period_start", "period_end"},
+        selected_fact_fields={"period_type", "period_start", "period_end"},
         include_statement_type=True,
         ordered_items=ordered_items,
     )
@@ -1195,14 +1181,13 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     facts = payload["pages"][0]["facts"]
     assert len(facts) == 2
     assert payload["pages"][0]["meta"]["statement_type"] is None
-    assert all(fact["equation_children"] is None for fact in facts)
     assert all(fact["period_type"] is None for fact in facts)
     assert all(fact["period_start"] is None for fact in facts)
     assert all(fact["period_end"] is None for fact in facts)
     assert {fact["path_source"] for fact in facts} == {"observed", "inferred"}
-    assert item_a.fact_data["equation_children"] == [{"fact_num": 3, "operator": "+"}, {"fact_num": 4, "operator": "+"}]
+    assert item_a.fact_data["equations"][0]["equation"] == "40 + 60"
     assert item_a.fact_data["period_type"] == "instant"
-    assert item_b.fact_data["equation_children"] == [{"fact_num": 5, "operator": "+"}, {"fact_num": 6, "operator": "+"}]
+    assert item_b.fact_data["equations"][0]["equation"] == "120 + 80"
     assert item_b.fact_data["period_type"] == "duration"
 
     window.close()
@@ -2155,6 +2140,25 @@ def test_equation_builder_defaults_to_additive_when_operator_missing() -> None:
     assert [term.get("operator") for term in structured_terms] == ["+", "+"]
 
 
+def test_equation_builder_preserves_operator_for_dash_placeholder_terms() -> None:
+    facts = [
+        app_mod.normalize_fact_data({"fact_num": 1, "value": "100", "path": ["A"]}),
+        app_mod.normalize_fact_data({"fact_num": 2, "value": "-", "path": ["A"]}),
+    ]
+
+    candidate_text, result_text, fact_candidate_text, invalid_values, _structured_terms = app_mod._build_equation_candidate_from_facts(
+        [
+            {**facts[0], "operator": "+"},
+            {**facts[1], "operator": "-"},
+        ]
+    )
+
+    assert candidate_text == "100 - 0"
+    assert fact_candidate_text == "f1 - f2"
+    assert result_text == "100"
+    assert invalid_values == []
+
+
 def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -2188,8 +2192,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     _qt_app().processEvents()
 
-    assert target.fact_data.get("equation") is None
-    assert target.fact_data.get("fact_equation") is None
+    assert target.fact_data.get("equations") is None
     assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
@@ -2210,8 +2213,8 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     window.apply_equation_btn.click()
     _qt_app().processEvents()
 
-    assert target.fact_data["equation"] == "20 + 100 - 5 + 0"
-    assert target.fact_data["fact_equation"] == "f2 + f3 - f5 + f6"
+    assert target.fact_data["equations"][0]["equation"] == "20 + 100 - 5 + 0"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3 - f5 + f6"
     assert window.apply_equation_btn.isEnabled() is False
     assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0"
     assert window.fact_equation_result_label.text() == "115"
@@ -2225,8 +2228,8 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     _qt_app().processEvents()
 
     reloaded_item = reloaded._fact_items[0]
-    assert reloaded_item.fact_data["equation"] == "20 + 100 - 5 + 0"
-    assert reloaded_item.fact_data["fact_equation"] == "f2 + f3 - f5 + f6"
+    assert reloaded_item.fact_data["equations"][0]["equation"] == "20 + 100 - 5 + 0"
+    assert reloaded_item.fact_data["equations"][0]["fact_equation"] == "f2 + f3 - f5 + f6"
     reloaded.close()
 
 
@@ -2255,15 +2258,14 @@ def test_alt_shift_approves_equation_candidate(tmp_path: Path) -> None:
     window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 120)))
     _qt_app().processEvents()
 
-    assert target.fact_data.get("equation") is None
-    assert target.fact_data.get("fact_equation") is None
+    assert target.fact_data.get("equations") is None
     assert window.apply_equation_btn.isEnabled() is True
 
     window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Shift, Qt.AltModifier, ""))
     _qt_app().processEvents()
 
-    assert target.fact_data["equation"] == "100 + 20"
-    assert target.fact_data["fact_equation"] == "f2 + f3"
+    assert target.fact_data["equations"][0]["equation"] == "100 + 20"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3"
     assert window.apply_equation_btn.isEnabled() is False
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     window.close()
@@ -2294,8 +2296,7 @@ def test_clear_equation_button_clears_equation_without_deleting_fact(tmp_path: P
     assert len(window._fact_items) == 1
     assert item.scene() is window.scene
     assert item.fact_data.get("value") == "120"
-    assert item.fact_data.get("equation") is None
-    assert item.fact_data.get("fact_equation") is None
+    assert item.fact_data.get("equations") is None
     assert window.fact_equation_edit.text() == ""
     assert window.clear_equation_btn.isEnabled() is False
     window.close()
@@ -2336,13 +2337,45 @@ def test_clear_equation_button_clears_for_multi_selection(tmp_path: Path) -> Non
     _qt_app().processEvents()
 
     assert len(window._fact_items) == 3
-    assert item_a.fact_data.get("equation") is None
-    assert item_a.fact_data.get("fact_equation") is None
-    assert item_b.fact_data.get("equation") is None
-    assert item_b.fact_data.get("fact_equation") is None
-    assert item_c.fact_data.get("equation") is None
-    assert item_c.fact_data.get("fact_equation") is None
+    assert item_a.fact_data.get("equations") is None
+    assert item_b.fact_data.get("equations") is None
+    assert item_c.fact_data.get("equations") is None
     assert window.clear_equation_btn.isEnabled() is False
+    window.close()
+
+
+def test_clear_equation_button_removes_all_saved_equation_variants(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_variants_list.count() == 2
+    window.clear_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data.get("equations") is None
     window.close()
 
 
@@ -2378,8 +2411,8 @@ def test_equation_variants_list_switches_active_equation(tmp_path: Path) -> None
     window._on_equation_variant_item_clicked(variant_item)
     _qt_app().processEvents()
 
-    assert item.fact_data["equation"] == "80 + 40"
-    assert item.fact_data["fact_equation"] == "f3 + f4"
+    assert item.fact_data["equations"][0]["equation"] == "80 + 40"
+    assert item.fact_data["equations"][0]["fact_equation"] == "f3 + f4"
     assert item.fact_data["equations"][0]["equation"] == "80 + 40"
     assert item.fact_data["equations"][1]["equation"] == "100 + 20"
     window.close()
@@ -2399,7 +2432,6 @@ def test_add_equation_variant_button_appends_candidate_and_sets_active(tmp_path:
             "value": "120",
             "equation": "100 + 20",
             "fact_equation": "f2 + f3",
-            "equation_children": [{"fact_num": 2, "operator": "+"}, {"fact_num": 3, "operator": "+"}],
             "fact_num": 1,
         },
     )
@@ -2423,10 +2455,220 @@ def test_add_equation_variant_button_appends_candidate_and_sets_active(tmp_path:
     window.equation_add_variant_btn.click()
     _qt_app().processEvents()
 
-    assert item.fact_data["equation"] == "90 + 30"
-    assert item.fact_data["fact_equation"] == "f4 + f5"
+    assert item.fact_data["equations"][0]["equation"] == "90 + 30"
+    assert item.fact_data["equations"][0]["fact_equation"] == "f4 + f5"
     assert item.fact_data["equations"][0]["equation"] == "90 + 30"
     assert item.fact_data["equations"][1]["equation"] == "100 + 20"
+    window.close()
+
+
+def test_delete_selected_saved_equation_button_removes_active_variant(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_variants_list.count() == 2
+    assert window.equation_delete_variant_btn.isEnabled() is True
+    window.equation_delete_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equations"][0]["equation"] == "80 + 40"
+    assert item.fact_data["equations"][0]["fact_equation"] == "f3 + f4"
+    assert item.fact_data["equations"] == [{"equation": "80 + 40", "fact_equation": "f3 + f4"}]
+    focus_widget = QApplication.focusWidget()
+    assert focus_widget is not window.fact_note_edit
+    assert focus_widget in {window.fact_equation_variants_list, window.fact_equation_variants_list.viewport()}
+    window.close()
+
+
+def test_delete_saved_equation_works_with_current_row_even_without_explicit_selection(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    # Simulate a focused row with no explicit selected items.
+    window.fact_equation_variants_list.clearSelection()
+    window.fact_equation_variants_list.setCurrentRow(1, app_mod.QItemSelectionModel.NoUpdate)
+    _qt_app().processEvents()
+
+    window.equation_delete_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equations"][0]["equation"] == "100 + 20"
+    assert item.fact_data["equations"] == [{"equation": "100 + 20", "fact_equation": "f1 + f2"}]
+    window.close()
+
+
+def test_equation_variant_order_buttons_reorder_saved_equations(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.equation_variant_down_btn.isEnabled() is True
+    window.equation_variant_down_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equations"][0]["equation"] == "80 + 40"
+    assert item.fact_data["equations"][0]["equation"] == "80 + 40"
+    assert item.fact_data["equations"][1]["equation"] == "100 + 20"
+    window.close()
+
+
+def test_delete_selected_saved_equations_removes_multiple_variants(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+                {"equation": "70 + 50", "fact_equation": "f5 + f6"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    row_0 = window.fact_equation_variants_list.item(0)
+    row_1 = window.fact_equation_variants_list.item(1)
+    row_2 = window.fact_equation_variants_list.item(2)
+    row_0.setSelected(False)
+    row_1.setSelected(True)
+    row_2.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.equation_delete_variant_btn.isEnabled() is True
+    window.equation_delete_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equations"][0]["equation"] == "100 + 20"
+    assert item.fact_data["equations"] == [{"equation": "100 + 20", "fact_equation": "f1 + f2"}]
+    window.close()
+
+
+def test_readding_dash_subtractive_equation_does_not_restore_deleted_additive_variant(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "100",
+            "equation": "100 + 0",
+            "fact_equation": "f2 + f3",
+            "equations": [{"equation": "100 + 0", "fact_equation": "f2 + f3"}],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_variants_list.count() == 1
+    window.equation_delete_variant_btn.click()
+    _qt_app().processEvents()
+    assert item.fact_data.get("equations") is None
+
+    window._equation_target_item = item
+    window._equation_candidate_text = "100 - 0"
+    window._equation_candidate_fact_text = "f2 - f3"
+    window._equation_candidate_result_text = "100"
+    window._equation_candidate_terms = [
+        {"equation_child": {"fact_num": 2, "operator": "+"}},
+        {"equation_child": {"fact_num": 3, "operator": "-"}},
+    ]
+    window._refresh_equation_panel()
+    assert window.equation_add_variant_btn.isEnabled() is True
+
+    window.equation_add_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equations"] == [{"equation": "100 - 0", "fact_equation": "f2 - f3"}]
     window.close()
 
 
@@ -2492,13 +2734,12 @@ def test_equation_preview_clears_on_selection_change_without_persisting(tmp_path
 
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3]
     assert window.fact_equation_edit.text() == "40 + 2"
-    assert target.fact_data.get("equation") is None
-    assert target.fact_data.get("fact_equation") is None
+    assert target.fact_data.get("equations") is None
 
     ref_a.setSelected(True)
     _qt_app().processEvents()
 
-    assert target.fact_data.get("equation") is None
+    assert target.fact_data.get("equations") is None
     assert window.apply_equation_btn.isEnabled() is False
     assert window.fact_equation_edit.text() == ""
     window.close()
@@ -2549,8 +2790,8 @@ def test_refresh_facts_list_remaps_fact_equation_refs_when_fact_nums_shift(tmp_p
     _qt_app().processEvents()
 
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4]
-    assert target.fact_data["fact_equation"] == "f2 + f3"
-    assert target.fact_data["equation"] == "100 + 20"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3"
+    assert target.fact_data["equations"][0]["equation"] == "100 + 20"
     assert window.fact_equation_edit.text() == "100 + 20"
     assert window.fact_equation_result_label.text() == "120"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
@@ -2686,8 +2927,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
 
     assert window.fact_equation_edit.text() == "100 - 5 + 8"
     assert window._equation_candidate_fact_text == "f2 - f3 + f4"
-    assert target.fact_data.get("equation") is None
-    assert target.fact_data.get("fact_equation") is None
+    assert target.fact_data.get("equations") is None
     window.close()
 
 
@@ -2808,12 +3048,9 @@ def test_equation_operator_override_updates_preview_and_saved_children(tmp_path:
     window.apply_equation_btn.click()
     _qt_app().processEvents()
 
-    assert target.fact_data["equation"] == "100 - 5"
-    assert target.fact_data["fact_equation"] == "f2 - f3"
-    assert target.fact_data["equation_children"] == [
-        {"fact_num": 2, "operator": "+"},
-        {"fact_num": 3, "operator": "-"},
-    ]
+    assert target.fact_data["equations"][0]["equation"] == "100 - 5"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 - f3"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 - f3"
     window.close()
 
 
@@ -2861,14 +3098,8 @@ def test_same_child_can_use_different_operators_under_different_targets(tmp_path
     window.apply_equation_btn.click()
     _qt_app().processEvents()
 
-    assert target_a.fact_data["equation_children"] == [
-        {"fact_num": 3, "operator": "+"},
-        {"fact_num": 4, "operator": "-"},
-    ]
-    assert target_b.fact_data["equation_children"] == [
-        {"fact_num": 3, "operator": "+"},
-        {"fact_num": 4, "operator": "+"},
-    ]
+    assert target_a.fact_data["equations"][0]["fact_equation"] == "f3 - f4"
+    assert target_b.fact_data["equations"][0]["fact_equation"] == "f3 + f4"
     window.close()
 
 

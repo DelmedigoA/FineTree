@@ -29,7 +29,9 @@ def test_schema_contract_required_prompt_keys_are_canonical() -> None:
     assert "annotation_note" not in PROMPT_PAGE_META_KEYS
     assert "annotation_status" not in PROMPT_PAGE_META_KEYS
     assert "fact_num" not in PROMPT_FACT_KEYS
+    assert "equation" not in PROMPT_FACT_KEYS
     assert "fact_equation" not in PROMPT_FACT_KEYS
+    assert "equations" not in PROMPT_FACT_KEYS
 
 
 def test_extraction_prompt_file_is_in_sync_with_schema_contract() -> None:
@@ -65,10 +67,11 @@ def test_structural_equation_fields_are_in_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
     fill_prompt = default_gemini_fill_prompt_template()
     autocomplete_prompt = default_gemini_autocomplete_prompt_template()
-    assert "equation_children" in extraction_prompt
+    assert "equation" not in extraction_prompt
     assert "natural_sign" in extraction_prompt
     assert "row_role" in extraction_prompt
-    assert "equation_children" in fill_prompt
+    assert "equation_children" not in extraction_prompt
+    assert "fact_equation" not in fill_prompt
     assert "natural_sign" in fill_prompt
     assert "row_role" in fill_prompt
     assert "locked facts" in autocomplete_prompt.lower()

@@ -19,10 +19,8 @@ SCHEMA_MODEL_MAP: dict[str, type[BaseModel]] = {
 }
 PROMPT_RUNTIME_OWNED_KEYS: tuple[str, ...] = ("schema_version",)
 PROMPT_RUNTIME_OWNED_PAGE_META_KEYS: tuple[str, ...] = ("annotation_note", "annotation_status")
-PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num", "fact_equation", "equations")
+PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num", "equations")
 PROMPT_REQUIRED_FACT_KEYS: tuple[str, ...] = (
-    "equation",
-    "equation_children",
     "natural_sign",
     "row_role",
     "comment_ref",
@@ -53,9 +51,6 @@ _FIELD_DESCRIPTIONS: dict[tuple[str, str], str] = {
     ("page_meta", "annotation_status"): "Annotation-only page decision status",
     ("fact", "value"): "Extracted value text",
     ("fact", "fact_num"): "Stable persisted fact order number",
-    ("fact", "equation"): "Optional arithmetic expression tied to the fact",
-    ("fact", "fact_equation"): "Optional arithmetic expression referencing fact numbers",
-    ("fact", "equation_children"): "Ordered child fact references and +/- operators for total rows",
     ("fact", "equations"): "Optional list of saved equation variants for a fact",
     ("fact", "natural_sign"): "Sign implied by the value text",
     ("fact", "row_role"): "Whether row is a detail line or a subtotal/total line",
@@ -260,7 +255,6 @@ class SchemaRegistry:
                 "value_contexts": list(enum_lookup.get("value_context", ())),
                 "natural_signs": list(enum_lookup.get("natural_sign", ())),
                 "row_roles": list(enum_lookup.get("row_role", ())),
-                "equation_child_operators": ["+", "-"],
                 "currencies": list(enum_lookup.get("currency", ())),
                 "scales": list(enum_lookup.get("scale", ())),
                 "entity_types": list(enum_lookup.get("entity_type", ())),
@@ -276,7 +270,6 @@ class SchemaRegistry:
                 "schema_version": SchemaRegistry.current_version(),
                 "statement_types": list(enum_lookup.get("statement_type", ())),
                 "fact_patch_fields": [
-                    "equation_children",
                     "period_type",
                     "period_start",
                     "period_end",

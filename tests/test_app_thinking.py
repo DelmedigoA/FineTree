@@ -105,7 +105,6 @@ def test_gemini_stream_worker_stops_after_max_facts(monkeypatch, tmp_path: Path)
                         "bbox": [10 + idx, 20, 5, 5],
                         "value": str(idx + 1),
                         "equation": None,
-                        "equation_children": None,
                         "value_type": None,
                         "value_context": None,
                         "natural_sign": "positive",
@@ -187,13 +186,12 @@ def test_gemini_stream_worker_allows_partial_finalize_error(monkeypatch, tmp_pat
                         "bbox": [10, 20, 30, 40],
                         "value": "100",
                         "row_role": "total",
-                        "equation_children": None,
                     }
                 ],
             )
 
         def finalize(self):
-            raise ValueError("total rows must contain at least one equation_children entry.")
+            raise ValueError("total rows must contain at least one fact_equation reference.")
 
     monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FinalizeFailParser)
     monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
@@ -220,7 +218,8 @@ def test_gemini_stream_worker_allows_partial_finalize_error(monkeypatch, tmp_pat
     fact_payload = extraction.facts[0].model_dump(mode="json")
     assert fact_payload["value"] == "100"
     assert fact_payload["row_role"] == "total"
-    assert fact_payload["equation_children"] is None
+    assert "fact_equation" not in fact_payload
+    assert fact_payload.get("equations") is None
 
 
 def test_gemini_stream_worker_finalize_error_without_partial_still_fails(monkeypatch, tmp_path: Path) -> None:
