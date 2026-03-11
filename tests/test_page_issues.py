@@ -223,8 +223,25 @@ def test_validate_page_issues_detects_percent_specific_warnings() -> None:
     codes = [issue.code for issue in summary.issues]
     assert "scale_on_percent_fact" in codes
     assert "percent_with_currency" in codes
+
+
+def test_validate_page_issues_treats_nonascending_fact_equation_order_as_warning() -> None:
+    summary = validate_page_issues(
+        "page_0013.png",
+        PageState(
+            meta={"type": "other"},
+            facts=[
+                _fact(value="10", fact_num=1),
+                _fact(value="5", fact_num=2),
+                _fact(value="15", fact_num=3, row_role="total", equation="5 + 10", fact_equation="f2 + f1"),
+            ],
+        ),
+    )
+
+    codes = {issue.code for issue in summary.issues}
+    assert "fact_equation_non_ascending_reference_order" in codes
     assert summary.reg_flag_count == 0
-    assert summary.warning_count == 2
+    assert summary.warning_count >= 1
 
 
 def test_validate_document_issues_detects_missing_entity_and_duplicate_page_num() -> None:

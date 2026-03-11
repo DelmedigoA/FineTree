@@ -11,6 +11,7 @@ from typing import Any, Optional
 
 from pdf2image import convert_from_path, pdfinfo_from_path
 
+from .annotation_backups import atomic_write_text
 from .annotation_core import PageState, bbox_to_list, default_page_meta, load_page_states, normalize_fact_data
 from .page_issues import validate_document_issues
 from .schema_io import load_any_schema
@@ -309,6 +310,32 @@ def page_is_approved(state: PageState) -> bool:
     meta = state.meta or {}
     status = meta.get("annotation_status")
     return isinstance(status, str) and status.strip().lower() == "approved"
+
+
+def reset_document_approved_pages(annotations_path: Path) -> int:
+    payload = load_annotation_payload(annotations_path)
+    pages = payload.get("pages")
+    if not isinstance(pages, list):
+        return 0
+    changed = 0
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        meta = page.get("meta") if isinstance(page.get("meta"), dict) else {}
+        status = str(meta.get("annotation_status") or "").strip().lower()
+        if status != "approved":
+            continue
+        meta["annotation_status"] = None
+        page["meta"] = meta
+        changed += 1
+    if changed <= 0:
+        return 0
+    atomic_write_text(
+        Path(annotations_path),
+        json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return changed
 
 
 def _state_map_for_document(images_dir: Path, annotations_path: Path) -> tuple[list[Path], dict[str, PageState]]:

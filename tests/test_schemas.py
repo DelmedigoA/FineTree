@@ -159,6 +159,30 @@ def test_extracted_fact_rejects_noncanonical_date() -> None:
         ExtractedFact.model_validate(_fact_payload(date="31.12.2024"))
 
 
+def test_extracted_fact_accepts_duration_without_range() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(period_type="duration", period_start=None, period_end=None))
+    assert fact.period_type is not None
+    assert fact.period_type.value == "duration"
+    assert fact.period_start is None
+    assert fact.period_end is None
+
+
+def test_extracted_fact_accepts_duration_with_complete_range() -> None:
+    fact = ExtractedFact.model_validate(
+        _fact_payload(period_type="duration", period_start="2024-01-01", period_end="2024-12-31")
+    )
+    assert fact.period_type is not None
+    assert fact.period_start == "2024-01-01"
+    assert fact.period_end == "2024-12-31"
+
+
+def test_extracted_fact_rejects_duration_with_one_missing_boundary() -> None:
+    with pytest.raises(ValidationError):
+        ExtractedFact.model_validate(_fact_payload(period_type="duration", period_start="2024-01-01", period_end=None))
+    with pytest.raises(ValidationError):
+        ExtractedFact.model_validate(_fact_payload(period_type="duration", period_start=None, period_end="2024-12-31"))
+
+
 def test_extracted_fact_rejects_empty_path_levels() -> None:
     with pytest.raises(ValidationError):
         ExtractedFact.model_validate(_fact_payload(path=["assets", "", "cash"]))

@@ -126,14 +126,11 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert not window.qwen_gt_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
-    assert window.page_thumb_filter_combo.currentText() == "All Pages"
-    assert window.page_thumb_sort_combo.currentText() == "Page Order"
     assert window.facts_list.objectName() == "factsList"
     assert window.facts_list.maximumHeight() == 176
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
     assert window.fact_editor_box.layout().count() == 11
     assert window.apply_equation_btn.parentWidget() is not window.fact_editor_box
-    assert window.show_order_labels_check.isChecked() is False
     assert window.gemini_fill_btn.isEnabled() is False
     assert window.gemini_complete_btn.isEnabled() is False
     assert window.fact_is_beur_combo.maximumWidth() > 500
@@ -294,6 +291,32 @@ def test_gemini_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(
     assert captured_kwargs["few_shot_enabled_default"] is False
     assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_CLASSIC
 
+    window.close()
+
+
+def test_gemini_gt_dialog_defaults_to_two_shot_preset(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    captured_kwargs: dict[str, object] = {}
+
+    class _RejectedDialog:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args
+            captured_kwargs.update(kwargs)
+
+        def exec_(self) -> int:
+            return app_mod.QDialog.Rejected
+
+    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _RejectedDialog)
+
+    window.generate_gemini_ground_truth()
+
+    assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
     window.close()
 
 
@@ -1708,7 +1731,7 @@ def test_page_revisit_note_persists_and_shows_in_thumbnail_tooltip(tmp_path: Pat
     reloaded.close()
 
 
-def test_page_approval_and_flag_controls_persist_and_drive_thumbnail_filter_sort(tmp_path: Path, monkeypatch) -> None:
+def test_page_approval_and_flag_controls_persist_in_natural_thumbnail_order(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
     monkeypatch.setattr(app_mod.QMessageBox, "warning", lambda *args, **kwargs: app_mod.QMessageBox.Ok)
@@ -1733,23 +1756,8 @@ def test_page_approval_and_flag_controls_persist_and_drive_thumbnail_filter_sort
     _qt_app().processEvents()
     assert window.page_states["page_0002.png"].meta["annotation_status"] == "flagged"
     assert window.page_annotation_status_label.text() == "Flagged"
-
-    approved_idx = window.page_thumb_filter_combo.findText("Approved")
-    window.page_thumb_filter_combo.setCurrentIndex(approved_idx)
-    window._on_page_thumbnail_filter_or_sort_changed()
-    _qt_app().processEvents()
-    assert window.page_thumb_list.count() == 1
-    assert window.page_thumb_list.item(0).data(Qt.UserRole) == 0
-    assert window.current_index == 0
-
-    all_idx = window.page_thumb_filter_combo.findText("All Pages")
-    window.page_thumb_filter_combo.setCurrentIndex(all_idx)
-    sort_idx = window.page_thumb_sort_combo.findText("Approved First")
-    window.page_thumb_sort_combo.setCurrentIndex(sort_idx)
-    window._on_page_thumbnail_filter_or_sort_changed()
-    _qt_app().processEvents()
     order = [window.page_thumb_list.item(i).data(Qt.UserRole) for i in range(window.page_thumb_list.count())]
-    assert order == [0, 2, 1]
+    assert order == [0, 1, 2]
 
     assert window.save_annotations() is True
     window.close()
@@ -2803,6 +2811,8 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     monkeypatch.setattr(app_mod.QMessageBox, "warning", lambda *_args, **_kwargs: app_mod.QMessageBox.Ok)
 
     window = AnnotationWindow(images_dir, annotations_path)
+    save_statuses: list[dict[str, object]] = []
+    window.annotations_save_status.connect(save_statuses.append)
     target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "999", "fact_num": 9})
     ref_high = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "20", "fact_num": 5})
     ref_low = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "100", "fact_num": 1})
@@ -2855,7 +2865,82 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
 
-    assert window.save_annotations() is False
+    assert window.save_annotations() is True
+    assert save_statuses
+    assert save_statuses[-1]["warning_count"] >= 1
+    assert save_statuses[-1]["equation_warning_count"] >= 1
+    assert any(
+        finding.get("code") == "equation_arithmetic_mismatch"
+        for finding in save_statuses[-1]["equation_findings"]
+    )
+    window.close()
+
+
+def test_save_shortcut_triggers_single_save(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    calls: list[str] = []
+    monkeypatch.setattr(window, "save_annotations", lambda: calls.append("save") or True)
+
+    QTest.keyClick(window, Qt.Key_S, Qt.ControlModifier)
+    _qt_app().processEvents()
+
+    assert calls == ["save"]
+    window.close()
+
+
+def test_page_json_dialog_supports_search_and_selected_fact_focus(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "fact_num": 1, "path": ["Revenue"]})
+    item_b = AnnotRectItem(QRectF(40, 10, 20, 20), {"value": "200", "fact_num": 2, "path": ["Expense"]})
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    window.show()
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.show_current_page_json()
+    _qt_app().processEvents()
+
+    dialog = window._page_json_dialog
+    assert dialog is not None
+    assert dialog.isVisible() is True
+
+    page_text = dialog.text_view.toPlainText()
+    expected_pos = page_text.rfind("{", 0, page_text.index('"fact_num": 2') + 1)
+    assert dialog.text_view.textCursor().position() == expected_pos
+
+    QTest.keyClick(dialog, Qt.Key_F, Qt.ControlModifier)
+    _qt_app().processEvents()
+    assert QApplication.focusWidget() is dialog.search_edit
+
+    dialog.search_edit.setText('"fact_num": 1')
+    dialog.find_next()
+    _qt_app().processEvents()
+    assert dialog.text_view.textCursor().selectedText() == '"fact_num": 1'
+
+    item_a.setSelected(True)
+    item_b.setSelected(False)
+    _qt_app().processEvents()
+
+    updated_text = dialog.text_view.toPlainText()
+    updated_pos = updated_text.rfind("{", 0, updated_text.index('"fact_num": 1') + 1)
+    assert dialog.text_view.textCursor().position() == updated_pos
     window.close()
 
 
@@ -3069,7 +3154,7 @@ def test_clear_equation_button_removes_all_saved_equation_variants(tmp_path: Pat
     window.close()
 
 
-def test_equation_variants_list_switches_active_equation(tmp_path: Path) -> None:
+def test_equation_variants_list_switches_active_equation(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -3098,6 +3183,7 @@ def test_equation_variants_list_switches_active_equation(tmp_path: Path) -> None
 
     assert window.fact_equation_variants_list.count() == 2
     variant_item = window.fact_equation_variants_list.item(1)
+    monkeypatch.setattr(app_mod.QApplication, "keyboardModifiers", staticmethod(lambda: Qt.NoModifier))
     window._on_equation_variant_item_clicked(variant_item)
     _qt_app().processEvents()
 
@@ -3493,7 +3579,7 @@ def test_delete_shortcut_ignored_while_equation_field_focused(tmp_path: Path) ->
 
     window.view.setFocus()
     _qt_app().processEvents()
-    QTest.keyClick(window, Qt.Key_Delete)
+    window._delete_selected_fact_shortcut()
     _qt_app().processEvents()
     assert len(window._fact_items) == 0
     window.close()

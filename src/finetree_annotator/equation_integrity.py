@@ -397,6 +397,9 @@ def _enforce_period_integrity(
     if period_type != "duration":
         return
 
+    if not period_start and not period_end:
+        return
+
     if not period_start or not period_end:
         findings.append(
             {
@@ -613,6 +616,17 @@ def audit_and_rebuild_financial_facts(
                     "fact_num": fact_num,
                     "field_name": "fact_equation",
                     "message": "fact_equation graph must be acyclic.",
+                }
+            )
+        ordered_refs = [int(entry["fact_num"]) for entry in normalized_terms]
+        if ordered_refs and ordered_refs != sorted(ordered_refs):
+            findings.append(
+                {
+                    "code": "fact_equation_non_ascending_reference_order",
+                    "severity": "warning",
+                    "fact_num": fact_num,
+                    "field_name": "fact_equation",
+                    "message": "fact_equation references facts in non-ascending order.",
                 }
             )
 

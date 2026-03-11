@@ -132,6 +132,18 @@ def _resolve_gemini_model_name(model_name: str) -> str:
     return resolved
 
 
+def _resolve_qwen_model_name(model_name: str) -> str:
+    normalized = _normalize_model_selector(model_name)
+    alias_default = str(
+        os.getenv("FINETREE_PLAYGROUND_QWEN_MODEL")
+        or os.getenv("FINETREE_SERVED_MODEL_NAME")
+        or "qwen-gt"
+    ).strip() or "qwen-gt"
+    if normalized in {"", "qwen", "qwen-gt", "qwen-flash", "qwen-flash-gt"}:
+        return alias_default
+    return str(model_name or "").strip() or alias_default
+
+
 def _build_gemini_prompt(*, system_prompt: str, user_prompt: str, history: list[dict[str, str]]) -> str:
     contextual_prompt = _build_contextual_user_prompt(user_prompt=user_prompt, history=history)
     system_text = str(system_prompt or "").strip()
@@ -281,7 +293,7 @@ def _build_contextual_user_prompt(user_prompt: str, history: list[dict[str, str]
 def _build_openai_chat_payload(request_payload: dict[str, Any]) -> dict[str, Any]:
     system_prompt = str(request_payload.get("system_prompt") or "").strip()
     user_prompt = str(request_payload.get("user_prompt") or "").strip() or "Describe this image."
-    model = str(request_payload.get("model") or "").strip() or "qwen-gt"
+    model = _resolve_qwen_model_name(str(request_payload.get("model") or "").strip() or "qwen-gt")
     image_data_url = str(request_payload.get("image_data_url") or "").strip() or _DEFAULT_TINY_IMAGE_DATA_URL
     history = _normalize_history(request_payload.get("history"))
     contextual_prompt = _build_contextual_user_prompt(user_prompt=user_prompt, history=history)

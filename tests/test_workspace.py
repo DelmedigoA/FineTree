@@ -378,3 +378,27 @@ def test_build_document_summary_includes_document_level_warnings(tmp_path: Path)
     assert summary.reg_flag_count == 0
     assert summary.warning_count == 4
     assert summary.pages_with_warnings == 3
+
+
+def test_reset_document_approved_pages_clears_only_approved_statuses(tmp_path: Path) -> None:
+    annotations_path = tmp_path / "doc.json"
+    annotations_path.write_text(
+        json.dumps(
+            {
+                "pages": [
+                    {"image": "page_0001.png", "meta": {"annotation_status": "approved"}, "facts": []},
+                    {"image": "page_0002.png", "meta": {"annotation_status": "flagged"}, "facts": []},
+                    {"image": "page_0003.png", "meta": {"annotation_status": None}, "facts": []},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    changed = workspace.reset_document_approved_pages(annotations_path)
+    payload = json.loads(annotations_path.read_text(encoding="utf-8"))
+
+    assert changed == 1
+    assert payload["pages"][0]["meta"]["annotation_status"] is None
+    assert payload["pages"][1]["meta"]["annotation_status"] == "flagged"
+    assert payload["pages"][2]["meta"]["annotation_status"] is None
