@@ -1,0 +1,726 @@
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "הרמה - גבעה חדשה בדימונה (ע\"ר)",
+    "company_id": null,
+    "report_year": 2022,
+    "report_scope": "separate",
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "הרמה - גבעה חדשה בדימונה (ע\"ר)",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים (לא מבוקרים)"
+      },
+      "facts": [
+        {
+          "bbox": [
+            262,
+            210,
+            50,
+            12
+          ],
+          "value": "38,427",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "חשמל ומים",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            210,
+            46,
+            13
+          ],
+          "value": "22,294",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "חשמל ומים",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            275,
+            230,
+            38,
+            13
+          ],
+          "value": "2,754",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "אחזקה",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            140,
+            230,
+            42,
+            12
+          ],
+          "value": "8,035",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "אחזקה",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            275,
+            248,
+            38,
+            11
+          ],
+          "value": "3,913",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "ביטוחים",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            140,
+            248,
+            42,
+            13
+          ],
+          "value": "3,940",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "ביטוחים",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            263,
+            267,
+            49,
+            11
+          ],
+          "value": "98,577",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "פחת",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            128,
+            265,
+            53,
+            13
+          ],
+          "value": "90,828",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "פחת",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            254,
+            286,
+            59,
+            9
+          ],
+          "value": "- - -",
+          "value_type": null,
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "אחרות",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            151,
+            284,
+            29,
+            10
+          ],
+          "value": "600",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "אחרות",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            257,
+            301,
+            56,
+            12
+          ],
+          "value": "143,671",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            123,
+            300,
+            58,
+            13
+          ],
+          "value": "125,697",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הוצאות לפעילויות",
+          "path": [
+            "באור 4 - הוצאות לפעילויות",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            451,
+            50,
+            12
+          ],
+          "value": "14,449",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "שירותים מקצועיים",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            137,
+            452,
+            44,
+            12
+          ],
+          "value": "2,500",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "שירותים מקצועיים",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            275,
+            470,
+            38,
+            11
+          ],
+          "value": "1,470",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "עמלות בנק",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            139,
+            469,
+            42,
+            12
+          ],
+          "value": "1,389",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "עמלות בנק",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            273,
+            489,
+            39,
+            11
+          ],
+          "value": "2,086",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "משרדיות וטלפון",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            137,
+            487,
+            43,
+            13
+          ],
+          "value": "2,067",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "משרדיות וטלפון",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            275,
+            507,
+            38,
+            12
+          ],
+          "value": "3,393",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "אחרות",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            149,
+            505,
+            31,
+            11
+          ],
+          "value": "836",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "אחרות",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            522,
+            51,
+            12
+          ],
+          "value": "21,398",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "2022"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            521,
+            45,
+            11
+          ],
+          "value": "6,792",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "באור 5 - הוצאות הנהלה וכלליות",
+            "2021"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

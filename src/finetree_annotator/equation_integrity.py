@@ -10,6 +10,18 @@ _EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
 _FACT_EQUATION_RE = re.compile(r"^\s*[+-]?\s*f\d+(?:\s*[+-]\s*f\d+)*\s*$", flags=re.IGNORECASE)
 _FACT_EQUATION_TOKEN_RE = re.compile(r"([+-]?)\s*f(\d+)", flags=re.IGNORECASE)
 _FACT_EQUATION_FACTNUM_RE = re.compile(r"f(\d+)", flags=re.IGNORECASE)
+EQUATION_INTEGRITY_REG_FLAG_CODES: frozenset[str] = frozenset(
+    {
+        "invalid_fact_equation_syntax",
+        "duplicate_fact_equation_reference",
+        "fact_equation_self_reference",
+        "fact_equation_missing_reference",
+        "equation_graph_cycle",
+        "fact_equation_invalid_child_value",
+        "equation_rebuild_unresolved",
+        "equation_arithmetic_mismatch",
+    }
+)
 
 _ROW_TOTAL_MARKERS: tuple[str, ...] = (
     'סה"כ',
@@ -57,24 +69,11 @@ def _normalize_text_for_role_inference(value: Any) -> str:
     return re.sub(r"\s+", " ", text)
 
 
-def _normalize_natural_sign(value: Any) -> str | None:
-    text = str(value or "").strip().lower()
-    if text == "negative":
-        return "negative"
-    if text == "positive":
-        return "positive"
-    return None
-
-
 def _normalize_row_role(value: Any) -> str | None:
     text = str(value or "").strip().lower()
     if text in {"detail", "total"}:
         return text
     return None
-
-
-def _natural_sign_multiplier(value: Any) -> int:
-    return -1 if _normalize_natural_sign(value) == "negative" else 1
 
 
 def _parse_fact_value_for_equation(value: Any) -> tuple[Decimal | None, str | None]:
@@ -347,7 +346,7 @@ def _build_equation_from_fact_equation_terms(
         raw_child_value = str(fact.get("value") or "").strip()
         force_operator_sign = raw_child_value == "-"
         contribution_sign = -1 if operator == "-" else 1
-        contribution = parsed * Decimal(_natural_sign_multiplier(fact.get("natural_sign"))) * Decimal(-1 if operator == "-" else 1)
+        contribution = parsed * Decimal(contribution_sign)
         rendered_sign = -1 if contribution < 0 else 1
         prefix = ""
         if valid_count > 0:
@@ -706,8 +705,32 @@ def audit_and_rebuild_financial_facts(
     return normalized_facts, findings
 
 
+def equation_integrity_reg_flags(
+    facts: Sequence[Mapping[str, Any]],
+    *,
+    statement_type: str | None = None,
+) -> list[dict[str, Any]]:
+    _rebuilt, findings = audit_and_rebuild_financial_facts(
+        facts,
+        statement_type=statement_type,
+        apply_repairs=False,
+    )
+    reg_flags: list[dict[str, Any]] = []
+    for finding in findings:
+        severity = str(finding.get("severity") or "").strip().lower()
+        code = str(finding.get("code") or "").strip()
+        if severity != "reg_flag":
+            continue
+        if code not in EQUATION_INTEGRITY_REG_FLAG_CODES:
+            continue
+        reg_flags.append(dict(finding))
+    return reg_flags
+
+
 __all__ = [
     "audit_and_rebuild_financial_facts",
+    "equation_integrity_reg_flags",
     "remap_fact_equation_references",
     "resequence_fact_numbers_and_remap_fact_equations",
+    "EQUATION_INTEGRITY_REG_FLAG_CODES",
 ]

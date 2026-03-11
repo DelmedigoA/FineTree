@@ -1,0 +1,266 @@
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "\"הרמה\" – גבעה חדשה בדימונה (ע\"ר)",
+    "company_id": null,
+    "report_year": 2022,
+    "report_scope": "separate",
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "\"הרמה\" – גבעה חדשה בדימונה (ע\"ר)",
+        "page_num": "3",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
+        "title": "דוח על הפעילויות (לא מבוקרים)"
+      },
+      "facts": [
+        {
+          "bbox": [
+            268,
+            223,
+            55,
+            12
+          ],
+          "value": "184,114",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות מתרומות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            125,
+            222,
+            54,
+            11
+          ],
+          "value": "161,638",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות מתרומות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            266,
+            242,
+            55,
+            12
+          ],
+          "value": "143,671",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות לפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "4",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            124,
+            241,
+            54,
+            12
+          ],
+          "value": "125,697",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות לפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "4",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            272,
+            259,
+            49,
+            12
+          ],
+          "value": "21,398",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": "5",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            140,
+            257,
+            38,
+            13
+          ],
+          "value": "6,792",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": "5",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            272,
+            278,
+            49,
+            12
+          ],
+          "value": "19,045",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2022",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "עודף נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            132,
+            276,
+            46,
+            13
+          ],
+          "value": "29,149",
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2021",
+          "period_type": "duration",
+          "period_start": "2021-01-01",
+          "period_end": "2021-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "עודף נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 
 from finetree_annotator.annotation_core import PageState, default_page_meta
@@ -11,6 +12,12 @@ class _DummyPage:
     def save(self, target: Path | str, format: str = "PNG") -> None:
         _ = format
         Path(target).write_bytes(b"png")
+
+
+def _legacy_sanitize_doc_id(raw_name: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", str(raw_name or "").strip())
+    cleaned = cleaned.strip("._-")
+    return cleaned or "document"
 
 
 def test_page_has_annotation_requires_title() -> None:
@@ -136,7 +143,7 @@ def test_discover_workspace_documents_merges_legacy_sanitized_images_with_origin
 
     original_pdf = raw_root / "דוח כספי 2014 - אגודת הסטודנטים.pdf"
     original_pdf.write_bytes(b"%PDF-1.4")
-    legacy_doc_id = workspace.sanitize_doc_id(original_pdf.stem)
+    legacy_doc_id = _legacy_sanitize_doc_id(original_pdf.stem)
     legacy_images_dir = images_root / legacy_doc_id
     legacy_images_dir.mkdir()
     (legacy_images_dir / "page_0001.png").write_bytes(b"png")
@@ -148,6 +155,57 @@ def test_discover_workspace_documents_merges_legacy_sanitized_images_with_origin
     assert summaries[0].source_pdf == original_pdf
     assert summaries[0].images_dir == legacy_images_dir
     assert summaries[0].status == "Ready"
+
+
+def test_discover_workspace_documents_keeps_distinct_hebrew_raw_pdfs(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    raw_root = data_root / "raw_pdfs"
+    raw_root.mkdir(parents=True)
+    (data_root / "pdf_images").mkdir(parents=True)
+    (data_root / "annotations").mkdir(parents=True)
+
+    pdf_a = raw_root / "דוח כספי 2024 - בצוותא.pdf"
+    pdf_b = raw_root / "דוח כספי 2024 - סחלבים.pdf"
+    pdf_a.write_bytes(b"%PDF-1.4")
+    pdf_b.write_bytes(b"%PDF-1.4")
+
+    summaries = workspace.discover_workspace_documents(data_root=data_root)
+    by_pdf = {summary.source_pdf.name: summary for summary in summaries if summary.source_pdf is not None}
+
+    assert pdf_a.name in by_pdf
+    assert pdf_b.name in by_pdf
+    assert by_pdf[pdf_a.name].doc_id != by_pdf[pdf_b.name].doc_id
+    assert by_pdf[pdf_a.name].status == "Needs extraction"
+    assert by_pdf[pdf_b.name].status == "Needs extraction"
+
+
+def test_discover_workspace_documents_avoids_legacy_duplicate_when_modern_doc_exists(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    raw_root = data_root / "raw_pdfs"
+    images_root = data_root / "pdf_images"
+    raw_root.mkdir(parents=True)
+    images_root.mkdir(parents=True)
+    (data_root / "annotations").mkdir(parents=True)
+
+    source_pdf = raw_root / "דוח כספי 2024 - בצוותא.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    modern_doc_id = workspace.sanitize_doc_id(source_pdf.stem)
+    legacy_doc_id = _legacy_sanitize_doc_id(source_pdf.stem)
+    assert modern_doc_id != legacy_doc_id
+
+    modern_images_dir = images_root / modern_doc_id
+    modern_images_dir.mkdir()
+    (modern_images_dir / "page_0001.png").write_bytes(b"png")
+
+    summaries = workspace.discover_workspace_documents(data_root=data_root)
+    doc_ids = {summary.doc_id for summary in summaries}
+    assert modern_doc_id in doc_ids
+    assert legacy_doc_id not in doc_ids
+
+    matching = [summary for summary in summaries if summary.doc_id == modern_doc_id]
+    assert len(matching) == 1
+    assert matching[0].source_pdf == source_pdf
+    assert matching[0].images_dir == modern_images_dir
 
 
 def test_reviewed_document_state_persists_in_workspace_summary(tmp_path: Path) -> None:

@@ -561,7 +561,7 @@ def test_gemini_autocomplete_ignores_meta_and_merges_only_missing_facts(tmp_path
     window.close()
 
 
-def test_gemini_stream_fact_keeps_pixel_bbox_without_1000_denormalization(tmp_path: Path) -> None:
+def test_gemini_gt_stream_fact_is_buffered_until_completion(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -573,6 +573,7 @@ def test_gemini_stream_fact_keeps_pixel_bbox_without_1000_denormalization(tmp_pa
     window._gemini_stream_target_page = page_name
     window._gemini_stream_mode = "gt"
     window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
 
     added = window._apply_stream_fact(
         page_name,
@@ -600,14 +601,647 @@ def test_gemini_stream_fact_keeps_pixel_bbox_without_1000_denormalization(tmp_pa
             "note_ref": None,
             "comment_ref": None,
         },
+        stream_source="gemini",
     )
 
-    rect = item_scene_rect(window._fact_items[0])
     assert added is True
+    assert len(window._fact_items) == 0
+    assert len(window._gemini_gt_buffered_facts) == 1
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [474, 731, 58, 30],
+                    "value": "18,763",
+                    "equation": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["A"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    rect = item_scene_rect(window._fact_items[0])
+    assert len(window._fact_items) == 1
     assert rect.x() == pytest.approx(474.0)
     assert rect.y() == pytest.approx(731.0)
     assert rect.width() == pytest.approx(58.0)
     assert rect.height() == pytest.approx(30.0)
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
+
+    window.close()
+
+
+def test_gemini_gt_stream_renders_live_after_lock_threshold(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=200,
+        height=200,
+        dark_rects=[(120, 20, 20, 10), (120, 40, 20, 10), (120, 60, 20, 10), (120, 80, 20, 10)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_fact_count = 0
+
+    payloads = [
+        {
+            "bbox": [120, 20, 20, 10],
+            "value": "10",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["A"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [120, 40, 20, 10],
+            "value": "11",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["B"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [120, 60, 20, 10],
+            "value": "12",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["C"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [120, 80, 20, 10],
+            "value": "13",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["D"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+    ]
+
+    for payload in payloads[:3]:
+        window._on_gemini_stream_fact(payload)
+    assert len(window._fact_items) == 0
+    assert window._gemini_gt_live_bbox_mode_locked is False
+
+    window._on_gemini_stream_fact(payloads[3])
+
+    assert len(window._fact_items) == 4
+    assert window._gemini_gt_live_bbox_mode_locked is True
+    assert window._gemini_gt_live_applied is True
+    rect = item_scene_rect(window._fact_items[0])
+    assert rect.x() == pytest.approx(120.0)
+    assert rect.y() == pytest.approx(20.0)
+
+    window.close()
+
+
+def test_gemini_gt_finalize_reconciles_mode_after_live_lock(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_fact_count = 0
+
+    calls = {"count": 0}
+    def _fake_resolve(target_page: str, fact_payloads: list[dict[str, object]]):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            window._gemini_autocomplete_last_bbox_scores = {
+                app_mod.BBOX_MODE_PIXEL_AS_IS: 0.9,
+                app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.1,
+            }
+            return (
+                window._gemini_gt_payloads_for_bbox_mode(
+                    page_name=target_page,
+                    fact_payloads=fact_payloads,
+                    mode=app_mod.BBOX_MODE_PIXEL_AS_IS,
+                ),
+                app_mod.BBOX_MODE_PIXEL_AS_IS,
+            )
+        window._gemini_autocomplete_last_bbox_scores = {
+            app_mod.BBOX_MODE_PIXEL_AS_IS: 0.1,
+            app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.9,
+        }
+        return (
+            window._gemini_gt_payloads_for_bbox_mode(
+                page_name=target_page,
+                fact_payloads=fact_payloads,
+                mode=app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+            ),
+            app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+        )
+
+    window._resolve_autocomplete_bbox_mode = _fake_resolve  # type: ignore[assignment]
+
+    payloads = [
+        {
+            "bbox": [100, 100, 40, 20],
+            "value": "10",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["A"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [100, 140, 40, 20],
+            "value": "11",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["B"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [150, 100, 40, 20],
+            "value": "12",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["C"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+        {
+            "bbox": [150, 140, 40, 20],
+            "value": "13",
+            "equation": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["D"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+    ]
+
+    for payload in payloads:
+        window._on_gemini_stream_fact(payload)
+
+    assert len(window._fact_items) == 4
+    live_rect = item_scene_rect(window._fact_items[0])
+    assert live_rect.x() == pytest.approx(100.0)
+    assert window._gemini_gt_live_bbox_mode_locked is True
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[SimpleNamespace(model_dump=lambda mode="json", _payload=payload: _payload) for payload in payloads],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+    final_rect = item_scene_rect(window._fact_items[0])
+    assert final_rect.x() == pytest.approx(20.0)
+    assert final_rect.y() == pytest.approx(20.0)
+    assert final_rect.width() == pytest.approx(8.0)
+    assert final_rect.height() == pytest.approx(4.0)
+    assert window._gemini_stream_fact_count == 4
+
+    window.close()
+
+
+def test_gemini_gt_bbox_mode_converts_normalized_1000_when_ink_score_is_better(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=200,
+        height=200,
+        dark_rects=[(100, 100, 40, 20)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = set()
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [500, 500, 200, 100],
+                    "value": "12",
+                    "equation": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["A"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    rect = item_scene_rect(window._fact_items[0])
+    assert rect.x() == pytest.approx(100.0)
+    assert rect.y() == pytest.approx(100.0)
+    assert rect.width() == pytest.approx(40.0)
+    assert rect.height() == pytest.approx(20.0)
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+    assert window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL] > window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_PIXEL_AS_IS]
+
+    window.close()
+
+
+def test_gemini_gt_bbox_mode_keeps_pixel_when_pixel_score_is_better(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=200,
+        height=200,
+        dark_rects=[(120, 110, 30, 20)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = set()
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [120, 110, 30, 20],
+                    "value": "55",
+                    "equation": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["A"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    rect = item_scene_rect(window._fact_items[0])
+    assert rect.x() == pytest.approx(120.0)
+    assert rect.y() == pytest.approx(110.0)
+    assert rect.width() == pytest.approx(30.0)
+    assert rect.height() == pytest.approx(20.0)
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
+    assert window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_PIXEL_AS_IS] >= window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL]
+
+    window.close()
+
+
+def test_gemini_gt_bbox_mode_defaults_to_pixel_when_scores_are_ambiguous(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = set()
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [120, 110, 30, 20],
+                    "value": "55",
+                    "equation": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["A"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
+
+    window.close()
+
+
+def test_gemini_gt_dedupes_facts_across_stream_and_finalize(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200, dark_rects=[(120, 110, 30, 20)])
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_fact_count = 0
+
+    payload = {
+        "bbox": [120, 110, 30, 20],
+        "value": "55",
+        "equation": None,
+        "value_type": "amount",
+        "value_context": "tabular",
+        "natural_sign": "positive",
+        "row_role": "detail",
+        "currency": "ILS",
+        "scale": 1,
+        "date": "2014",
+        "period_type": "duration",
+        "period_start": "2014-01-01",
+        "period_end": "2014-12-31",
+        "duration_type": None,
+        "recurring_period": None,
+        "note_flag": False,
+        "note_num": None,
+        "note_name": None,
+        "path": ["A"],
+        "path_source": "observed",
+        "note_ref": None,
+        "comment_ref": None,
+    }
+
+    window._on_gemini_stream_fact(payload)
+    assert len(window._fact_items) == 0
+    assert len(window._gemini_gt_buffered_facts) == 1
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[SimpleNamespace(model_dump=lambda mode="json", _payload=payload: _payload)],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert len(window._fact_items) == 1
+    assert window._gemini_stream_fact_count == 1
 
     window.close()
 
@@ -2103,7 +2737,7 @@ def test_equation_builder_uses_natural_sign_and_operator_for_polarity() -> None:
 
     assert candidate_text == "100 + 30 - 5 + 7 + 0"
     assert result_text == "132"
-    assert fact_candidate_text == "f1 + f2 - f3 + f4 + f5"
+    assert fact_candidate_text == "f1 + f2 - f3 - f4 + f5"
     assert invalid_values == []
     assert [term.get("effective_normalized_value") for term in structured_terms] == [100, 30, -5, 7, 0]
     assert [term.get("contribution_sign") for term in structured_terms] == [1, 1, -1, 1, 1]
@@ -2166,6 +2800,7 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     _write_test_png(images_dir / "page_0001.png", width=220, height=220)
     annotations_path = tmp_path / "annotations.json"
     monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(app_mod.QMessageBox, "warning", lambda *_args, **_kwargs: app_mod.QMessageBox.Ok)
 
     window = AnnotationWindow(images_dir, annotations_path)
     target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "999", "fact_num": 9})
@@ -2214,23 +2849,14 @@ def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, mo
     _qt_app().processEvents()
 
     assert target.fact_data["equations"][0]["equation"] == "20 + 100 - 5 + 0"
-    assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3 - f5 + f6"
+    assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3 + f5 + f6"
     assert window.apply_equation_btn.isEnabled() is False
     assert window.fact_equation_edit.text() == "20 + 100 - 5 + 0"
     assert window.fact_equation_result_label.text() == "115"
     assert "#b7791f" in window.fact_equation_result_label.styleSheet()
 
-    assert window.save_annotations() is True
+    assert window.save_annotations() is False
     window.close()
-
-    reloaded = AnnotationWindow(images_dir, annotations_path)
-    reloaded.show()
-    _qt_app().processEvents()
-
-    reloaded_item = reloaded._fact_items[0]
-    assert reloaded_item.fact_data["equations"][0]["equation"] == "20 + 100 - 5 + 0"
-    assert reloaded_item.fact_data["equations"][0]["fact_equation"] == "f2 + f3 - f5 + f6"
-    reloaded.close()
 
 
 def test_alt_shift_approves_equation_candidate(tmp_path: Path) -> None:
@@ -2267,6 +2893,70 @@ def test_alt_shift_approves_equation_candidate(tmp_path: Path) -> None:
     assert target.fact_data["equations"][0]["equation"] == "100 + 20"
     assert target.fact_data["equations"][0]["fact_equation"] == "f2 + f3"
     assert window.apply_equation_btn.isEnabled() is False
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.close()
+
+
+def test_alt_shift_apply_exits_equation_mode_and_next_target_requires_alt_again(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=260, height=260)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "fact_num": 9})
+    target_b = AnnotRectItem(QRectF(10, 45, 20, 20), {"value": "120", "fact_num": 10})
+    ref_a = AnnotRectItem(QRectF(30, 100, 20, 20), {"value": "100", "fact_num": 1})
+    ref_b = AnnotRectItem(QRectF(30, 130, 20, 20), {"value": "20", "fact_num": 2})
+    window.scene.addItem(target_a)
+    window.scene.addItem(target_b)
+    window.scene.addItem(ref_a)
+    window.scene.addItem(ref_b)
+    window.refresh_facts_list()
+    window.show()
+    target_a.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 95)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(85, 160)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(85, 160)))
+    _qt_app().processEvents()
+
+    assert window.apply_equation_btn.isEnabled() is True
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Shift, Qt.AltModifier, ""))
+    _qt_app().processEvents()
+    assert target_a.fact_data["equations"][0]["equation"] == "100 + 20"
+    assert window.view._calculate_drag_active is False
+    assert window.scene._calculate_drag_active is False
+
+    window.scene.clearSelection()
+    target_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 95)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(85, 160)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(85, 160)))
+    _qt_app().processEvents()
+
+    assert window._equation_target_item is None
+    assert window.apply_equation_btn.isEnabled() is False
+
+    window.scene.clearSelection()
+    target_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 95)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(85, 160)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(85, 160)))
+    _qt_app().processEvents()
+
+    assert window._equation_target_item is target_b
+    assert window.fact_equation_edit.text() == "100 + 20"
+    assert window.apply_equation_btn.isEnabled() is True
+
     window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
     window.close()
 
@@ -3021,7 +3711,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     assert window.fact_equation_result_label.text() == "103"
     assert "#027a48" in window.fact_equation_result_label.styleSheet()
     assert "Matches target value." in window.fact_equation_status_label.text()
-    assert window._equation_candidate_fact_text == "f2 - f3 + f4"
+    assert window._equation_candidate_fact_text == "f2 + f3 + f4"
     assert sorted(item.fact_data["fact_num"] for item in window._equation_reference_preview_items) == [2, 3, 4]
     assert window.apply_equation_btn.isEnabled() is True
 
@@ -3029,7 +3719,7 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     _qt_app().processEvents()
 
     assert window.fact_equation_edit.text() == "100 - 5 + 8"
-    assert window._equation_candidate_fact_text == "f2 - f3 + f4"
+    assert window._equation_candidate_fact_text == "f2 + f3 + f4"
     assert target.fact_data.get("equations") is None
     window.close()
 

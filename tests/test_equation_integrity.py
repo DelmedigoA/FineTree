@@ -82,6 +82,26 @@ def test_audit_and_rebuild_financial_facts_preserves_subtractive_dash_sign() -> 
     assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
 
 
+def test_audit_and_rebuild_financial_facts_treats_negative_children_as_signed_references() -> None:
+    facts = [
+        {"fact_num": 1, "value": "(5)", "path": ["A"]},
+        {"fact_num": 2, "value": "100", "path": ["A"]},
+        {
+            "fact_num": 3,
+            "value": "95",
+            "row_role": "total",
+            "path": ["A", "total"],
+            "equation": "100 - 5",
+            "fact_equation": "f2 + f1",
+        },
+    ]
+
+    rebuilt, findings = audit_and_rebuild_financial_facts(facts, apply_repairs=True)
+    total_fact = next(fact for fact in rebuilt if fact["fact_num"] == 3)
+    assert total_fact["equations"] == [{"equation": "100 - 5", "fact_equation": "f2 + f1"}]
+    assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
+
+
 def test_audit_and_rebuild_financial_facts_supports_same_child_in_multiple_parents() -> None:
     facts = [
         {"fact_num": 1, "value": "100", "path": ["A"]},

@@ -1685,7 +1685,7 @@
           "equations": [
             {
               "equation": "- 4887 + 44141",
-              "fact_equation": "- f20 + f22"
+              "fact_equation": "f20 + f22"
             }
           ],
           "natural_sign": "positive",
@@ -2449,8 +2449,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            575.62,
-            784.62,
+            573.08,
+            782.08,
             87.72,
             32.76
           ]
@@ -3035,7 +3035,7 @@
           "bbox": [
             330.57,
             1321.75,
-            54.48,
+            58.23,
             31.26
           ]
         },
@@ -3082,7 +3082,7 @@
           "equations": [
             {
               "equation": "4736 - 561",
-              "fact_equation": "f26 - f28"
+              "fact_equation": "f26 + f28"
             }
           ],
           "natural_sign": "positive",
@@ -3109,7 +3109,7 @@
           "bbox": [
             322.17,
             1387.27,
-            62.89,
+            66.64,
             32.76
           ]
         }
@@ -3266,12 +3266,7 @@
         {
           "value": "44553",
           "fact_num": 5,
-          "equations": [
-            {
-              "equation": "- 4887 + 44141 + 5164 + 135",
-              "fact_equation": "- f1 + f2 + f3 + f4"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3444,12 +3439,7 @@
         {
           "value": "5863",
           "fact_num": 10,
-          "equations": [
-            {
-              "equation": "5863 + 0 + 0 + 0",
-              "fact_equation": "f6 + f7 + f8 + f9"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3623,12 +3613,7 @@
         {
           "value": "3129",
           "fact_num": 15,
-          "equations": [
-            {
-              "equation": "0 + 0 + 3129 + 0",
-              "fact_equation": "f11 + f12 + f13 + f14"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3802,12 +3787,7 @@
         {
           "value": "(3096)",
           "fact_num": 20,
-          "equations": [
-            {
-              "equation": "0 + 0 - 2978 - 118",
-              "fact_equation": "f16 + f17 - f18 - f19"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -3981,12 +3961,7 @@
         {
           "value": "(1338)",
           "fact_num": 25,
-          "equations": [
-            {
-              "equation": "- 1338 + 0 + 0 + 0",
-              "fact_equation": "- f21 + f22 + f23 + f24"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -4160,12 +4135,7 @@
         {
           "value": "-",
           "fact_num": 30,
-          "equations": [
-            {
-              "equation": "- 4857 + 4857 + 0 + 0",
-              "fact_equation": "- f26 + f27 + f28 + f29"
-            }
-          ],
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4339,12 +4309,7 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equations": [
-            {
-              "equation": "1198 - 1198 + 0 + 0",
-              "fact_equation": "f31 - f32 + f33 + f34"
-            }
-          ],
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4518,12 +4483,7 @@
         {
           "value": "-",
           "fact_num": 40,
-          "equations": [
-            {
-              "equation": "5412 - 5412 + 0 + 0",
-              "fact_equation": "f36 - f37 + f38 + f39"
-            }
-          ],
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4557,12 +4517,7 @@
         {
           "value": "1391",
           "fact_num": 41,
-          "equations": [
-            {
-              "equation": "- 4887 + 5863 + 0 + 0 - 1338 - 4857 + 1198 + 5412",
-              "fact_equation": "- f1 + f6 + f11 + f16 - f21 - f26 + f31 + f36"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4596,12 +4551,7 @@
         {
           "value": "42388",
           "fact_num": 42,
-          "equations": [
-            {
-              "equation": "44141 + 0 + 0 + 0 + 0 + 4857 - 1198 - 5412",
-              "fact_equation": "f2 + f7 + f12 + f17 + f22 + f27 - f32 - f37"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4635,12 +4585,7 @@
         {
           "value": "5315",
           "fact_num": 43,
-          "equations": [
-            {
-              "equation": "5164 + 0 + 3129 - 2978 + 0 + 0 + 0 + 0",
-              "fact_equation": "f3 + f8 + f13 - f18 + f23 + f28 + f33 + f38"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4674,12 +4619,7 @@
         {
           "value": "17",
           "fact_num": 44,
-          "equations": [
-            {
-              "equation": "135 + 0 + 0 - 118 + 0 + 0 + 0 + 0",
-              "fact_equation": "f4 + f9 + f14 - f19 + f24 + f29 + f34 + f39"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4713,12 +4653,7 @@
         {
           "value": "49111",
           "fact_num": 45,
-          "equations": [
-            {
-              "equation": "1391 + 42388 + 5315 + 17",
-              "fact_equation": "f41 + f42 + f43 + f44"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4901,12 +4836,7 @@
         {
           "value": "41240",
           "fact_num": 5,
-          "equations": [
-            {
-              "equation": "- 10152 + 45866 + 5381 + 145",
-              "fact_equation": "- f1 + f2 + f3 + f4"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5079,12 +5009,7 @@
         {
           "value": "4175",
           "fact_num": 10,
-          "equations": [
-            {
-              "equation": "4175 + 0 + 0 + 0",
-              "fact_equation": "f6 + f7 + f8 + f9"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5258,12 +5183,7 @@
         {
           "value": "3520",
           "fact_num": 15,
-          "equations": [
-            {
-              "equation": "0 + 0 + 3520 + 0",
-              "fact_equation": "f11 + f12 + f13 + f14"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5437,12 +5357,7 @@
         {
           "value": "(3747)",
           "fact_num": 20,
-          "equations": [
-            {
-              "equation": "0 + 0 - 3737 - 10",
-              "fact_equation": "f16 + f17 - f18 - f19"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -5620,12 +5535,7 @@
         {
           "value": "(635)",
           "fact_num": 25,
-          "equations": [
-            {
-              "equation": "- 635 + 0 + 0 + 0",
-              "fact_equation": "- f21 + f22 + f23 + f24"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -5804,12 +5714,7 @@
         {
           "value": "-",
           "fact_num": 30,
-          "equations": [
-            {
-              "equation": "- 3815 + 3815 + 0 + 0",
-              "fact_equation": "- f26 + f27 + f28 + f29"
-            }
-          ],
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -5988,12 +5893,7 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equations": [
-            {
-              "equation": "5540 - 5540 + 0 + 0",
-              "fact_equation": "f31 - f32 + f33 + f34"
-            }
-          ],
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -6028,12 +5928,7 @@
         {
           "value": "(4887)",
           "fact_num": 36,
-          "equations": [
-            {
-              "equation": "- 10152 + 4175 + 0 + 0 - 635 - 3815 + 5540",
-              "fact_equation": "- f1 + f6 + f11 + f16 - f21 - f26 + f31"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -6067,12 +5962,7 @@
         {
           "value": "44141",
           "fact_num": 37,
-          "equations": [
-            {
-              "equation": "45866 + 0 + 0 + 0 + 0 + 3815 - 5540",
-              "fact_equation": "f2 + f7 + f12 + f17 + f22 + f27 - f32"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6106,12 +5996,7 @@
         {
           "value": "5164",
           "fact_num": 38,
-          "equations": [
-            {
-              "equation": "5381 + 0 + 3520 - 3737 + 0 + 0 + 0",
-              "fact_equation": "f3 + f8 + f13 - f18 + f23 + f28 + f33"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6145,12 +6030,7 @@
         {
           "value": "135",
           "fact_num": 39,
-          "equations": [
-            {
-              "equation": "145 + 0 + 0 - 10 + 0 + 0 + 0",
-              "fact_equation": "f4 + f9 + f14 - f19 + f24 + f29 + f34"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6184,12 +6064,7 @@
         {
           "value": "44553",
           "fact_num": 40,
-          "equations": [
-            {
-              "equation": "41240 + 4175 + 3520 - 3747 - 635 + 0 + 0",
-              "fact_equation": "f5 + f10 + f15 - f20 - f25 + f30 + f35"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6368,12 +6243,7 @@
         {
           "value": "6002",
           "fact_num": 5,
-          "equations": [
-            {
-              "equation": "5863 + 139",
-              "fact_equation": "f1 + f3"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6406,12 +6276,7 @@
         {
           "value": "5253",
           "fact_num": 6,
-          "equations": [
-            {
-              "equation": "4175 + 1078",
-              "fact_equation": "f2 + f4"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6840,12 +6705,7 @@
         {
           "value": "(3727)",
           "fact_num": 19,
-          "equations": [
-            {
-              "equation": "- 173 - 4764 + 1198 - 93 + 2105 - 2000",
-              "fact_equation": "- f7 - f9 + f11 - f13 + f15 - f17"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -6878,12 +6738,7 @@
         {
           "value": "(4723)",
           "fact_num": 20,
-          "equations": [
-            {
-              "equation": "91 - 3777 + 0 - 37 + 0 - 1000",
-              "fact_equation": "f8 - f10 + f12 - f14 + f16 - f18"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -7048,12 +6903,7 @@
         {
           "value": "5404",
           "fact_num": 25,
-          "equations": [
-            {
-              "equation": "6002 - 3727 + 3129",
-              "fact_equation": "f5 - f19 + f23"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7085,12 +6935,7 @@
         {
           "value": "4050",
           "fact_num": 26,
-          "equations": [
-            {
-              "equation": "5253 - 4723 + 3520",
-              "fact_equation": "f6 - f20 + f24"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7186,12 +7031,7 @@
         {
           "value": "10255",
           "fact_num": 29,
-          "equations": [
-            {
-              "equation": "5404 + 4851",
-              "fact_equation": "f25 + f27"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7223,12 +7063,7 @@
         {
           "value": "4851",
           "fact_num": 30,
-          "equations": [
-            {
-              "equation": "4050 + 801",
-              "fact_equation": "f26 + f28"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7682,12 +7517,7 @@
         {
           "value": "(8)",
           "fact_num": 13,
-          "equations": [
-            {
-              "equation": "- 2978 - 118 - 1686 - 638 + 5343 + 69",
-              "fact_equation": "- f1 - f3 - f5 - f7 + f9 + f11"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -7721,12 +7551,7 @@
         {
           "value": "1940",
           "fact_num": 14,
-          "equations": [
-            {
-              "equation": "- 3737 - 10 + 285 - 137 + 5473 + 66",
-              "fact_equation": "- f2 - f4 + f6 - f8 + f10 + f12"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8168,12 +7993,7 @@
         {
           "value": "147",
           "fact_num": 27,
-          "equations": [
-            {
-              "equation": "398 - 679 + 2253 - 3439 + 470 + 1144",
-              "fact_equation": "f15 - f17 + f19 - f21 + f23 + f25"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8207,12 +8027,7 @@
         {
           "value": "(862)",
           "fact_num": 28,
-          "equations": [
-            {
-              "equation": "1180 - 2846 - 1079 + 243 + 777 + 863",
-              "fact_equation": "f16 - f18 - f20 + f22 + f24 + f26"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -8246,12 +8061,7 @@
         {
           "value": "139",
           "fact_num": 29,
-          "equations": [
-            {
-              "equation": "- 8 + 147",
-              "fact_equation": "- f13 + f27"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8284,12 +8094,7 @@
         {
           "value": "1078",
           "fact_num": 30,
-          "equations": [
-            {
-              "equation": "1940 - 862",
-              "fact_equation": "f14 - f28"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -9738,8 +9543,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            226.5,
-            665.9,
+            229.04,
+            663.36,
             72.62,
             31.74
           ]
@@ -9887,12 +9692,7 @@
         {
           "value": "(1198)",
           "fact_num": 15,
-          "equations": [
-            {
-              "equation": "- 1198 + 0 + 0 + 0",
-              "fact_equation": "- f11 + f12 + f13 + f14"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": "7",
@@ -9927,12 +9727,7 @@
         {
           "value": "164820",
           "fact_num": 16,
-          "equations": [
-            {
-              "equation": "162883 + 3135 - 1198",
-              "fact_equation": "f1 + f6 - f11"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "7",
@@ -10087,12 +9882,7 @@
         {
           "value": "199887",
           "fact_num": 20,
-          "equations": [
-            {
-              "equation": "196321 + 4764 - 1198",
-              "fact_equation": "f5 + f10 - f15"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "7",
@@ -17398,12 +17188,7 @@
         {
           "value": "1274",
           "fact_num": 9,
-          "equations": [
-            {
-              "equation": "1666 - 331 + 102 - 163",
-              "fact_equation": "f1 - f3 + f5 - f7"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17433,12 +17218,7 @@
         {
           "value": "(561)",
           "fact_num": 10,
-          "equations": [
-            {
-              "equation": "- 286 - 251 + 34 - 58",
-              "fact_equation": "- f2 - f4 + f6 - f8"
-            }
-          ],
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -17666,12 +17446,7 @@
         {
           "value": "183",
           "fact_num": 17,
-          "equations": [
-            {
-              "equation": "68 + 3 + 112",
-              "fact_equation": "f11 + f13 + f15"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17704,12 +17479,7 @@
         {
           "value": "286",
           "fact_num": 18,
-          "equations": [
-            {
-              "equation": "96 + 115 + 75",
-              "fact_equation": "f12 + f14 + f16"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17808,12 +17578,7 @@
         {
           "value": "34",
           "fact_num": 21,
-          "equations": [
-            {
-              "equation": "34",
-              "fact_equation": "f19"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17846,12 +17611,7 @@
         {
           "value": "59",
           "fact_num": 22,
-          "equations": [
-            {
-              "equation": "59",
-              "fact_equation": "f20"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,

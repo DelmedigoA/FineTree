@@ -92,7 +92,7 @@ from .schema_contract import (
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
-from .schema_io import load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
+from .schema_io import EquationIntegrityError, load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
 from .schema_ui import enum_options
 from .schemas import PageExtraction, PageMeta, PageType
 from .workspace import page_has_annotation
@@ -133,6 +133,7 @@ BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
 BBOX_MODE_SWITCH_MARGIN = 0.08
 BBOX_DARK_LUMA_THRESHOLD = 220.0
 BBOX_INK_TARGET_RATIO = 0.12
+GEMINI_GT_BBOX_LOCK_MIN_FACTS = 4
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_ROOT.parents[1]
@@ -456,7 +457,12 @@ def _build_equation_candidate_from_facts(
             prefix = "- "
 
         numeric_terms.append(f"{prefix}{display}" if prefix else display)
-        fact_terms.append(f"{prefix}f{fact_num}" if prefix else f"f{fact_num}")
+        fact_prefix = ""
+        if valid_count > 0:
+            fact_prefix = "- " if operator == "-" else "+ "
+        elif operator == "-":
+            fact_prefix = "- "
+        fact_terms.append(f"{fact_prefix}f{fact_num}" if fact_prefix else f"f{fact_num}")
         total += effective_value
         structured_terms.append(term_meta)
         valid_count += 1
@@ -660,6 +666,12 @@ class AnnotationView(QGraphicsView):
         if not self._lens_enabled:
             self._lens_view_pos = None
         self.viewport().update()
+
+    def disable_calculate_drag_mode(self) -> None:
+        if not self._calculate_drag_active:
+            return
+        self._calculate_drag_active = False
+        self.calculate_drag_active_changed.emit(False)
 
     def _update_lens_pos(self, pos: QPoint) -> None:
         if not self._lens_enabled:
@@ -1255,10 +1267,7 @@ class AnnotationScene(QGraphicsScene):
     def set_image_rect(self, rect: QRectF) -> None:
         self.image_rect = rect
 
-    def set_calculate_drag_active(self, active: bool) -> None:
-        self._calculate_drag_active = bool(active)
-        if self._calculate_drag_active:
-            return
+    def reset_equation_reference_session(self) -> None:
         if self._temp_equation_select_item is not None:
             self.removeItem(self._temp_equation_select_item)
             self._temp_equation_select_item = None
@@ -1270,6 +1279,12 @@ class AnnotationScene(QGraphicsScene):
         self._equation_click_candidate = None
         self._equation_interaction_start = None
         self._equation_select_start = None
+
+    def set_calculate_drag_active(self, active: bool) -> None:
+        self._calculate_drag_active = bool(active)
+        if self._calculate_drag_active:
+            return
+        self.reset_equation_reference_session()
 
     def _selected_annot_items(self) -> list[AnnotRectItem]:
         return [item for item in self.selectedItems() if isinstance(item, AnnotRectItem)]
@@ -2383,6 +2398,13 @@ class AnnotationWindow(QMainWindow):
         self._gemini_autocomplete_buffered_facts: list[dict[str, Any]] = []
         self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self._gemini_autocomplete_last_bbox_scores: dict[str, float] = {}
+        self._gemini_gt_buffered_facts: list[dict[str, Any]] = []
+        self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_last_bbox_scores: dict[str, float] = {}
+        self._gemini_gt_live_lock_min_facts = GEMINI_GT_BBOX_LOCK_MIN_FACTS
+        self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_live_bbox_mode_locked = False
+        self._gemini_gt_live_applied = False
         self._gemini_fill_thread: Optional[QThread] = None
         self._gemini_fill_worker: Optional[GeminiFillWorker] = None
         self._gemini_fill_cancel_requested = False
@@ -2939,7 +2961,9 @@ class AnnotationWindow(QMainWindow):
         self.facts_list.setMaximumHeight(176)
         self.fact_bbox_label = QLabel("-")
         self.fact_value_edit = QLineEdit()
+        self.fact_value_edit.setObjectName("factValueEdit")
         self.fact_equation_edit = QLineEdit()
+        self.fact_equation_edit.setObjectName("factEquationEdit")
         self.fact_equation_edit.setReadOnly(True)
         self.fact_note_edit = QLineEdit()
         self.fact_note_name_edit = QLineEdit()
@@ -3248,12 +3272,14 @@ class AnnotationWindow(QMainWindow):
         fact_action_row.addWidget(self.del_fact_btn)
         self.batch_toggle_btn = QPushButton("Show Batch Edit")
         self.batch_toggle_btn.setObjectName("smallActionBtn")
+        self.batch_toggle_btn.setProperty("qaName", "batchToggleBtn")
         self.batch_toggle_btn.setProperty("variant", "ghost")
         fact_action_row.addWidget(self.batch_toggle_btn)
         fact_action_row.addStretch(1)
         fact_layout.addLayout(fact_action_row)
         self.batch_box = QGroupBox("Batch Edit Selected BBoxes")
         self.batch_box.setObjectName("inspectorSubsection")
+        self.batch_box.setProperty("qaName", "batchEditBox")
         batch_layout = QVBoxLayout(self.batch_box)
         batch_layout.setContentsMargins(14, 14, 14, 12)
         batch_layout.setSpacing(8)
@@ -7101,6 +7127,132 @@ class AnnotationWindow(QMainWindow):
         self._apply_page_state_to_scene(page_name)
         return True, None
 
+    def _merge_gemini_gt_buffered_facts(self, page_name: str) -> tuple[bool, str | None]:
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return False, "Target page is unavailable."
+
+        if not self._gemini_gt_buffered_facts:
+            self._gemini_stream_fact_count = 0
+            self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+            self._gemini_gt_last_bbox_scores = {
+                BBOX_MODE_PIXEL_AS_IS: 0.0,
+                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+            }
+            self._gemini_gt_live_applied = False
+            state = self.page_states.get(page_name, self._default_state(page_idx))
+            self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=[])
+            self._apply_page_state_to_scene(page_name)
+            return True, None
+
+        _resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
+            page_name,
+            self._gemini_gt_buffered_facts,
+        )
+        self._gemini_gt_last_bbox_mode = bbox_mode
+        self._gemini_gt_last_bbox_scores = dict(
+            self._gemini_autocomplete_last_bbox_scores
+            or {
+                BBOX_MODE_PIXEL_AS_IS: 0.0,
+                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+            }
+        )
+        resolved_payloads = self._gemini_gt_payloads_for_bbox_mode(
+            page_name=page_name,
+            fact_payloads=self._gemini_gt_buffered_facts,
+            mode=bbox_mode,
+        )
+        merged_records = self._build_box_records_from_fact_payloads(resolved_payloads)
+
+        state = self.page_states.get(page_name, self._default_state(page_idx))
+        self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+        self._gemini_stream_fact_count = len(merged_records)
+        self._gemini_gt_live_applied = bool(merged_records)
+        self._apply_page_state_to_scene(page_name)
+        return True, None
+
+    def _gemini_gt_payloads_for_bbox_mode(
+        self,
+        *,
+        page_name: str,
+        fact_payloads: list[dict[str, Any]],
+        mode: str,
+    ) -> list[dict[str, Any]]:
+        image_dims = self._image_dimensions_for_page(page_name)
+        if image_dims is None:
+            return [deepcopy(payload) for payload in fact_payloads]
+        return self._autocomplete_candidate_payloads_for_bbox_mode(
+            fact_payloads=fact_payloads,
+            mode=mode,
+            image_width=image_dims[0],
+            image_height=image_dims[1],
+        )
+
+    def _build_box_records_from_fact_payloads(self, fact_payloads: list[dict[str, Any]]) -> list[BoxRecord]:
+        deduped_payloads: list[dict[str, Any]] = []
+        seen_keys: set[tuple[Any, ...]] = set()
+        for payload in fact_payloads:
+            payload_key = self._fact_uniqueness_key(payload)
+            if payload_key in seen_keys:
+                continue
+            seen_keys.add(payload_key)
+            deduped_payloads.append(deepcopy(payload))
+
+        ordered_payloads = self._ordered_fact_payloads_by_geometry(deduped_payloads)
+        resequenced_facts = resequence_fact_numbers_and_remap_fact_equations(
+            [normalize_fact_data(payload) for payload in ordered_payloads]
+        )
+        return [
+            BoxRecord(
+                bbox=normalize_bbox_data(payload.get("bbox")),
+                fact=resequenced_fact,
+            )
+            for payload, resequenced_fact in zip(ordered_payloads, resequenced_facts)
+        ]
+
+    def _render_gemini_gt_live_buffer(self, page_name: str) -> bool:
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return False
+        if not self._gemini_gt_buffered_facts:
+            return False
+
+        resolved_payloads = self._gemini_gt_payloads_for_bbox_mode(
+            page_name=page_name,
+            fact_payloads=self._gemini_gt_buffered_facts,
+            mode=self._gemini_gt_live_bbox_mode,
+        )
+        merged_records = self._build_box_records_from_fact_payloads(resolved_payloads)
+        state = self.page_states.get(page_name, self._default_state(page_idx))
+        self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+        self._gemini_gt_live_applied = bool(merged_records)
+        self._apply_page_state_to_scene(page_name)
+        return True
+
+    def _update_gemini_gt_live_stream(self, page_name: str) -> None:
+        if self._gemini_stream_mode != "gt":
+            return
+        if not self._gemini_gt_buffered_facts:
+            return
+        if not self._gemini_gt_live_bbox_mode_locked:
+            if len(self._gemini_gt_buffered_facts) < max(1, int(self._gemini_gt_live_lock_min_facts)):
+                return
+            _resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
+                page_name,
+                self._gemini_gt_buffered_facts,
+            )
+            self._gemini_gt_live_bbox_mode = bbox_mode
+            self._gemini_gt_live_bbox_mode_locked = True
+            self._gemini_gt_last_bbox_mode = bbox_mode
+            self._gemini_gt_last_bbox_scores = dict(
+                self._gemini_autocomplete_last_bbox_scores
+                or {
+                    BBOX_MODE_PIXEL_AS_IS: 0.0,
+                    BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+                }
+            )
+        self._render_gemini_gt_live_buffer(page_name)
+
     def _build_gemini_fill_request_payload(
         self,
         *,
@@ -7234,6 +7386,8 @@ class AnnotationWindow(QMainWindow):
         page_name: str,
         fact_payload: Dict[str, Any],
         seen_facts: Optional[set[tuple[Any, ...]]] = None,
+        *,
+        stream_source: str = "gemini",
     ) -> bool:
         active_seen = seen_facts if seen_facts is not None else self._gemini_stream_seen_facts
         fact_key = self._fact_uniqueness_key(fact_payload)
@@ -7245,11 +7399,18 @@ class AnnotationWindow(QMainWindow):
         if page_idx < 0:
             return False
 
-        if self._gemini_stream_mode == "autocomplete":
+        if stream_source == "gemini" and self._gemini_stream_mode == "autocomplete":
             normalized_payload = self._normalized_autocomplete_generated_fact_payload(fact_payload)
             if normalized_payload is None:
                 return False
             self._gemini_autocomplete_buffered_facts.append(normalized_payload)
+            return True
+
+        if stream_source == "gemini" and self._gemini_stream_mode == "gt":
+            normalized_payload = self._normalized_stream_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._gemini_gt_buffered_facts.append(normalized_payload)
             return True
 
         normalized_payload = self._normalized_stream_fact_payload(fact_payload)
@@ -7687,9 +7848,24 @@ class AnnotationWindow(QMainWindow):
                     f"({self._gemini_stream_fact_count} new fact(s) merged, bbox mode: {bbox_mode_label})."
                 ),
             )
+        bbox_mode_label = (
+            "normalized_1000→pixel"
+            if self._gemini_gt_last_bbox_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+            else "pixel"
+        )
+        pixel_score = float(self._gemini_gt_last_bbox_scores.get(BBOX_MODE_PIXEL_AS_IS, 0.0))
+        normalized_score = float(self._gemini_gt_last_bbox_scores.get(BBOX_MODE_NORMALIZED_1000_TO_PIXEL, 0.0))
         return (
-            f"Gemini GT complete. Parsed {self._gemini_stream_fact_count} fact(s).",
-            f"Gemini GT complete ({self._gemini_stream_fact_count} fact(s)).",
+            (
+                "Gemini GT complete. "
+                f"Parsed {self._gemini_stream_fact_count} fact(s) "
+                f"(bbox mode: {bbox_mode_label}, pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."
+            ),
+            (
+                "Gemini GT complete "
+                f"({self._gemini_stream_fact_count} fact(s), bbox mode: {bbox_mode_label}, "
+                f"pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."
+            ),
         )
 
     def _start_gemini_stream(
@@ -7714,6 +7890,12 @@ class AnnotationWindow(QMainWindow):
         self._gemini_autocomplete_buffered_facts = []
         self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self._gemini_autocomplete_last_bbox_scores = {}
+        self._gemini_gt_buffered_facts = []
+        self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_last_bbox_scores = {}
+        self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_live_bbox_mode_locked = False
+        self._gemini_gt_live_applied = False
         self._gemini_stream_cancel_requested = False
         self._gemini_stream_mode = mode
         self._gemini_stream_apply_meta = bool(apply_meta)
@@ -8088,9 +8270,16 @@ class AnnotationWindow(QMainWindow):
         page_name = self._gemini_stream_target_page
         if page_name is None:
             return
-        added = self._apply_stream_fact(page_name, fact_payload, seen_facts=self._gemini_stream_seen_facts)
+        added = self._apply_stream_fact(
+            page_name,
+            fact_payload,
+            seen_facts=self._gemini_stream_seen_facts,
+            stream_source="gemini",
+        )
         if added:
             self._gemini_stream_fact_count += 1
+            if self._gemini_stream_mode == "gt":
+                self._update_gemini_gt_live_stream(page_name)
             progress_text = (
                 f"Streaming missing facts... {self._gemini_stream_fact_count} parsed"
                 if self._gemini_stream_mode == "autocomplete"
@@ -8131,6 +8320,7 @@ class AnnotationWindow(QMainWindow):
                     page_name,
                     fact_payload,
                     seen_facts=self._gemini_stream_seen_facts,
+                    stream_source="gemini",
                 )
                 if added:
                     self._gemini_stream_fact_count += 1
@@ -8138,6 +8328,11 @@ class AnnotationWindow(QMainWindow):
                 merged, error_message = self._merge_autocomplete_buffered_facts(page_name)
                 if not merged:
                     self._on_gemini_stream_failed(error_message or "Gemini Auto Complete could not merge results.")
+                    return
+            elif self._gemini_stream_mode == "gt":
+                merged, error_message = self._merge_gemini_gt_buffered_facts(page_name)
+                if not merged:
+                    self._on_gemini_stream_failed(error_message or "Gemini GT could not merge results.")
                     return
         except Exception as exc:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
@@ -8158,28 +8353,49 @@ class AnnotationWindow(QMainWindow):
         provider = self._gemini_stream_provider_name()
         title = "Gemini Auto Complete failed" if self._gemini_stream_mode == "autocomplete" else "Gemini GT failed"
         self._set_gt_activity(provider, f"Error: {message}", fact_count=self._gemini_stream_fact_count, running=False)
+        if self._gemini_stream_mode == "gt" and self._gemini_gt_live_applied:
+            detail = f"{message}\n\nSome streamed facts were rendered live and remain on the page."
+        elif self._gemini_stream_mode in {"autocomplete", "gt"}:
+            detail = f"{message}\n\nNo changes were applied."
+        else:
+            detail = f"{message}\n\nAny facts already streamed remain on the page."
         QMessageBox.warning(
             self,
             title,
-            (
-                f"{message}\n\nNo changes were applied."
-                if self._gemini_stream_mode == "autocomplete"
-                else f"{message}\n\nAny facts already streamed remain on the page."
-            ),
+            detail,
         )
 
     def _on_gemini_stream_finished(self) -> None:
         if self._gemini_stream_cancel_requested and not self._gemini_stream_limit_reached:
+            stopped_status = (
+                (
+                    "Gemini GT stopped before finalize. "
+                    f"Parsed {self._gemini_stream_fact_count} fact(s); live-streamed facts remain on the page."
+                )
+                if self._gemini_gt_live_applied
+                else (
+                    "Gemini GT stopped before finalize. "
+                    f"Parsed {self._gemini_stream_fact_count} fact(s); no changes were applied."
+                )
+                if self._gemini_stream_mode == "gt"
+                else f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped. Parsed {self._gemini_stream_fact_count} fact(s) before stop."
+            )
+            stopped_message = (
+                (
+                    f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed, live-streamed facts kept)."
+                )
+                if self._gemini_gt_live_applied
+                else f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed, no changes applied)."
+                if self._gemini_stream_mode == "gt"
+                else f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped ({self._gemini_stream_fact_count} fact(s) parsed)."
+            )
             self._set_gt_activity(
                 self._gemini_stream_provider_name(),
-                f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped. Parsed {self._gemini_stream_fact_count} fact(s) before stop.",
+                stopped_status,
                 fact_count=self._gemini_stream_fact_count,
                 running=False,
             )
-            self.statusBar().showMessage(
-                f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped ({self._gemini_stream_fact_count} fact(s) parsed).",
-                5000,
-            )
+            self.statusBar().showMessage(stopped_message, 5000)
         self._gemini_stream_thread = None
         self._gemini_stream_worker = None
         self._gemini_stream_target_page = None
@@ -8192,6 +8408,12 @@ class AnnotationWindow(QMainWindow):
         self._gemini_autocomplete_buffered_facts = []
         self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self._gemini_autocomplete_last_bbox_scores = {}
+        self._gemini_gt_buffered_facts = []
+        self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_last_bbox_scores = {}
+        self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_gt_live_bbox_mode_locked = False
+        self._gemini_gt_live_applied = False
         if self._qwen_stream_thread is None and self._gemini_fill_thread is None:
             self._set_gt_buttons_enabled(True)
 
@@ -8402,7 +8624,12 @@ class AnnotationWindow(QMainWindow):
         page_name = self._qwen_stream_target_page
         if page_name is None:
             return
-        added = self._apply_stream_fact(page_name, fact_payload, seen_facts=self._qwen_stream_seen_facts)
+        added = self._apply_stream_fact(
+            page_name,
+            fact_payload,
+            seen_facts=self._qwen_stream_seen_facts,
+            stream_source="qwen",
+        )
         if added:
             self._qwen_stream_fact_count += 1
             self._set_gt_activity(
@@ -8424,6 +8651,7 @@ class AnnotationWindow(QMainWindow):
                     page_name,
                     fact.model_dump(mode="json"),
                     seen_facts=self._qwen_stream_seen_facts,
+                    stream_source="qwen",
                 )
                 if added:
                     self._qwen_stream_fact_count += 1
@@ -9079,11 +9307,15 @@ class AnnotationWindow(QMainWindow):
             active_index=0,
         )
         if updated == current:
+            self.view.disable_calculate_drag_mode()
+            self.scene.reset_equation_reference_session()
             self._clear_equation_candidate()
             self.statusBar().showMessage("Equation is already applied to the selected fact.", 2500)
             return
 
         target_item.fact_data = updated
+        self.view.disable_calculate_drag_mode()
+        self.scene.reset_equation_reference_session()
         self.refresh_facts_list()
         self._record_history_snapshot()
         self._clear_equation_candidate()
@@ -9412,6 +9644,9 @@ class AnnotationWindow(QMainWindow):
         except ValidationError as exc:
             QMessageBox.warning(self, "Validation error", str(exc))
             return False
+        except EquationIntegrityError as exc:
+            QMessageBox.warning(self, "Equation integrity error", str(exc))
+            return False
         _normalized_payload, format_findings = normalize_annotation_payload(payload)
         warning_findings = [
             finding
@@ -9513,6 +9748,9 @@ class AnnotationWindow(QMainWindow):
             )
         except ValidationError as exc:
             QMessageBox.warning(self, "Validation error", str(exc))
+            return
+        except EquationIntegrityError as exc:
+            QMessageBox.warning(self, "Equation integrity error", str(exc))
             return
 
         page_payload = payload["pages"][self.current_index]

@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "images_dir": "data/pdf_images/pdf_6",
   "metadata": {
     "language": "he",
@@ -13,13 +13,13 @@
     {
       "image": "page_0001.png",
       "meta": {
-        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
         "page_num": null,
         "page_type": "contents",
         "statement_type": null,
-        "title": "דוחות כספיים",
+        "title": "תוכן",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -29,10 +29,10 @@
         "entity_name": "אגודת ״מכבי רמת יצחק״",
         "page_num": "1",
         "page_type": "declaration",
-        "statement_type": null,
+        "statement_type": "auditors_report",
         "title": "דוח רואה החשבון המבקר לחברי העמותה",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -45,16 +45,15 @@
         "statement_type": "balance_sheet",
         "title": "מאזנים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
           "value": "135493",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -77,19 +76,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            383.19,
-            604.84,
+            384.44,
+            626.12,
             99.18,
-            46.78
+            26.75
           ]
         },
         {
           "value": "116887",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -112,19 +110,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            201.36,
-            604.84,
+            197.6,
+            623.62,
             99.18,
-            46.78
+            29.25
           ]
         },
         {
           "value": "255",
-          "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 3,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -148,18 +145,17 @@
           "value_context": "tabular",
           "bbox": [
             430.67,
-            660.63,
+            665.64,
             51.7,
-            37.77
+            26.5
           ]
         },
         {
           "value": "-",
-          "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 4,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -182,19 +178,23 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            234.42,
-            651.62,
-            33.06,
-            46.78
+            239.43,
+            669.15,
+            20.54,
+            16.73
           ]
         },
         {
           "value": "135748",
-          "fact_num": 6,
-          "equation": "135493 + 255",
-          "fact_equation": "f1 + f3",
-          "balance_type": null,
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "135493 + 255",
+              "fact_equation": "f1 + f3"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -218,18 +218,22 @@
           "value_context": "tabular",
           "bbox": [
             383.19,
-            698.39,
+            702.9,
             99.18,
-            44.98
+            27.45
           ]
         },
         {
           "value": "116887",
-          "fact_num": 7,
-          "equation": "116887 + 0",
-          "fact_equation": "f2 + f5",
-          "balance_type": null,
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "116887 + 0",
+              "fact_equation": "f2 + f4"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -253,18 +257,17 @@
           "value_context": "tabular",
           "bbox": [
             201.36,
-            698.39,
+            703.4,
             99.18,
-            46.78
+            31.76
           ]
         },
         {
           "value": "502745",
-          "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 7,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -287,18 +290,17 @@
           "value_context": "tabular",
           "bbox": [
             383.19,
-            768.57,
+            779.84,
             99.18,
-            46.78
+            29.25
           ]
         },
         {
           "value": "509563",
-          "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 8,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -321,18 +323,22 @@
           "value_context": "tabular",
           "bbox": [
             199.3,
-            768.57,
+            779.84,
             99.18,
-            46.78
+            29.25
           ]
         },
         {
           "value": "638493",
-          "fact_num": 10,
-          "equation": "135748 + 502745",
-          "fact_equation": "f6 + f8",
-          "balance_type": null,
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "135748 + 502745",
+              "fact_equation": "f5 + f7"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -355,18 +361,22 @@
           "value_context": "tabular",
           "bbox": [
             385.25,
-            838.74,
+            850.01,
             99.18,
-            46.78
+            29.25
           ]
         },
         {
           "value": "626450",
-          "fact_num": 11,
-          "equation": "116887 + 509563",
-          "fact_equation": "f7 + f9",
-          "balance_type": null,
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "116887 + 509563",
+              "fact_equation": "f6 + f8"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -389,18 +399,17 @@
           "value_context": "tabular",
           "bbox": [
             201.36,
-            838.74,
+            850.01,
             99.18,
-            46.78
+            29.25
           ]
         },
         {
           "value": "62929",
-          "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 11,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -423,19 +432,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            380.19,
-            1075.94,
-            99.18,
-            46.78
+            396.47,
+            1080.95,
+            82.9,
+            30.5
           ]
         },
         {
           "value": "62715",
-          "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 12,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -458,19 +466,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            198.36,
-            1075.94,
-            99.18,
-            46.78
+            213.38,
+            1082.2,
+            84.16,
+            31.76
           ]
         },
         {
           "value": "72819",
-          "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 13,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -493,19 +500,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            380.19,
-            1249.06,
-            99.18,
-            46.78
+            401.31,
+            1268.98,
+            80.05,
+            26.92
           ]
         },
         {
           "value": "54172",
-          "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 14,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -528,19 +534,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            198.36,
-            1249.06,
-            99.18,
-            46.78
+            215.75,
+            1265.44,
+            81.79,
+            30.4
           ]
         },
         {
           "value": "502745",
-          "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 15,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -563,19 +568,18 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            380.19,
-            1295.84,
+            386.28,
+            1306.13,
             99.18,
-            46.78
+            28.66
           ]
         },
         {
           "value": "509563",
-          "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "fact_num": 16,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -599,18 +603,22 @@
           "value_context": "tabular",
           "bbox": [
             198.36,
-            1295.84,
+            1309.61,
             99.18,
-            46.78
+            26.92
           ]
         },
         {
           "value": "575564",
-          "fact_num": 18,
-          "equation": "72819 + 502745",
-          "fact_equation": "f14 + f16",
-          "balance_type": null,
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "72819 + 502745",
+              "fact_equation": "f13 + f15"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -627,25 +635,29 @@
             "נכסים נטו שלא קיימת לגביהם הגבלה",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            380.19,
-            1342.62,
+            383.95,
+            1343.87,
             99.18,
-            46.78
+            26.75
           ]
         },
         {
           "value": "563735",
-          "fact_num": 19,
-          "equation": "54172 + 509563",
-          "fact_equation": "f15 + f17",
-          "balance_type": null,
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "54172 + 509563",
+              "fact_equation": "f14 + f16"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -662,25 +674,29 @@
             "נכסים נטו שלא קיימת לגביהם הגבלה",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            198.36,
-            1342.62,
+            202.12,
+            1343.87,
             99.18,
-            46.78
+            26.75
           ]
         },
         {
           "value": "638493",
-          "fact_num": 20,
-          "equation": "62929 + 575564",
-          "fact_equation": "f12 + f18",
-          "balance_type": null,
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "62929 + 575564",
+              "fact_equation": "f11 + f17"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -703,18 +719,22 @@
           "value_context": "tabular",
           "bbox": [
             384.32,
-            1410.73,
+            1424.5,
             99.18,
-            46.78
+            24.25
           ]
         },
         {
           "value": "626450",
-          "fact_num": 21,
-          "equation": "62715 + 563735",
-          "fact_equation": "f13 + f19",
-          "balance_type": null,
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "62715 + 563735",
+              "fact_equation": "f12 + f18"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -736,10 +756,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            196.56,
-            1410.99,
+            199.06,
+            1424.76,
             99.18,
-            46.78
+            28.0
           ]
         }
       ]
@@ -747,22 +767,21 @@
     {
       "image": "page_0004.png",
       "meta": {
-        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
         "page_num": "3",
         "page_type": "statements",
         "statement_type": "income_statement",
         "title": "דוחות על הפעילויות",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
           "value": "111161",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "credit",
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -772,7 +791,7 @@
           "period_type": "duration",
           "period_start": "2008-01-01",
           "period_end": "2008-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות מהשכרת אולמות"
@@ -792,10 +811,9 @@
         {
           "value": "132083",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "credit",
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -805,7 +823,7 @@
           "period_type": "duration",
           "period_start": "2007-01-01",
           "period_end": "2007-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות מהשכרת אולמות"
@@ -824,11 +842,10 @@
         },
         {
           "value": "100605",
-          "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "debit",
+          "fact_num": 3,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -838,7 +855,7 @@
           "period_type": "duration",
           "period_start": "2008-01-01",
           "period_end": "2008-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "עלות הפעילויות"
@@ -857,11 +874,10 @@
         },
         {
           "value": "32742",
-          "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "debit",
+          "fact_num": 4,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -871,7 +887,7 @@
           "period_type": "duration",
           "period_start": "2007-01-01",
           "period_end": "2007-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "עלות הפעילויות"
@@ -890,11 +906,15 @@
         },
         {
           "value": "10556",
-          "fact_num": 7,
-          "equation": "111161 - 100605",
-          "fact_equation": "f1 - f4",
-          "balance_type": "credit",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "111161 - 100605",
+              "fact_equation": "f1 - f3"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -904,7 +924,7 @@
           "period_type": "duration",
           "period_start": "2008-01-01",
           "period_end": "2008-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות לפני הכנסות מימון, נטו"
@@ -923,11 +943,15 @@
         },
         {
           "value": "99341",
-          "fact_num": 8,
-          "equation": "132083 - 32742",
-          "fact_equation": "f2 - f6",
-          "balance_type": "credit",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "132083 - 32742",
+              "fact_equation": "f2 - f4"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -937,7 +961,7 @@
           "period_type": "duration",
           "period_start": "2007-01-01",
           "period_end": "2007-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות לפני הכנסות מימון, נטו"
@@ -956,11 +980,10 @@
         },
         {
           "value": "1273",
-          "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "credit",
+          "fact_num": 7,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -970,7 +993,7 @@
           "period_type": "duration",
           "period_start": "2008-01-01",
           "period_end": "2008-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות מימון, נטו"
@@ -989,11 +1012,10 @@
         },
         {
           "value": "-",
-          "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": "credit",
+          "fact_num": 8,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1003,7 +1025,7 @@
           "period_type": "duration",
           "period_start": "2007-01-01",
           "period_end": "2007-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות מימון, נטו"
@@ -1022,11 +1044,15 @@
         },
         {
           "value": "11829",
-          "fact_num": 11,
-          "equation": "10556 + 1273",
-          "fact_equation": "f7 + f9",
-          "balance_type": "credit",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "10556 + 1273",
+              "fact_equation": "f5 + f7"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1036,7 +1062,7 @@
           "period_type": "duration",
           "period_start": "2008-01-01",
           "period_end": "2008-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות נטו מפעולות רגילות לשנה"
@@ -1047,19 +1073,23 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            398.23,
-            1122.72,
+            399.48,
+            1128.98,
             79.34,
-            28.07
+            26.82
           ]
         },
         {
           "value": "99341",
-          "fact_num": 12,
-          "equation": "99341 + 0",
-          "fact_equation": "f8 + f10",
-          "balance_type": "credit",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "99341 + 0",
+              "fact_equation": "f6 + f8"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1069,7 +1099,7 @@
           "period_type": "duration",
           "period_start": "2007-01-01",
           "period_end": "2007-12-31",
-          "duration_type": "recurring",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות נטו מפעולות רגילות לשנה"
@@ -1081,9 +1111,9 @@
           "value_context": "tabular",
           "bbox": [
             216.54,
-            1122.72,
+            1125.22,
             82.65,
-            28.07
+            25.57
           ]
         }
       ]
@@ -1103,10 +1133,9 @@
         {
           "value": "(66406)",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "negative",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1138,10 +1167,9 @@
         {
           "value": "530800",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1173,10 +1201,9 @@
         {
           "value": "464394",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1207,10 +1234,9 @@
         {
           "value": "99341",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1242,10 +1268,9 @@
         {
           "value": "-",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1277,10 +1302,9 @@
         {
           "value": "99341",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1311,10 +1335,9 @@
         {
           "value": "21237",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1348,10 +1371,9 @@
         {
           "value": "(21237)",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "negative",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1385,10 +1407,9 @@
         {
           "value": "-",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1421,10 +1442,9 @@
         {
           "value": "54172",
           "fact_num": 10,
-          "equation": "- 66406 + 99341 + 21237",
-          "fact_equation": "- f1 + f4 + f7",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1456,10 +1476,9 @@
         {
           "value": "509563",
           "fact_num": 11,
-          "equation": "530800 + 0 - 21237",
-          "fact_equation": "f2 + f5 - f8",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1491,10 +1510,9 @@
         {
           "value": "563735",
           "fact_num": 12,
-          "equation": "464394 + 99341 + 0",
-          "fact_equation": "f3 + f6 + f9",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1525,10 +1543,9 @@
         {
           "value": "11829",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1560,10 +1577,9 @@
         {
           "value": "-",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1595,10 +1611,9 @@
         {
           "value": "11829",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1629,10 +1644,9 @@
         {
           "value": "(13420)",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "negative",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1665,10 +1679,9 @@
         {
           "value": "13420",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1701,10 +1714,9 @@
         {
           "value": "-",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1736,10 +1748,9 @@
         {
           "value": "20238",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1772,10 +1783,9 @@
         {
           "value": "(20238)",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "negative",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1808,10 +1818,9 @@
         {
           "value": "-",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1843,10 +1852,9 @@
         {
           "value": "72819",
           "fact_num": 22,
-          "equation": "54172 + 11829 - 13420 + 20238",
-          "fact_equation": "f10 + f13 - f16 + f19",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1878,10 +1886,9 @@
         {
           "value": "502745",
           "fact_num": 23,
-          "equation": "509563 + 0 + 13420 - 20238",
-          "fact_equation": "f11 + f14 + f17 - f20",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1913,10 +1920,9 @@
         {
           "value": "575564",
           "fact_num": 24,
-          "equation": "563735 + 11829 + 0 + 0",
-          "fact_equation": "f12 + f15 + f18 + f21",
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1961,10 +1967,9 @@
         {
           "value": "3.8%",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "בשנת הדוח",
           "note_flag": true,
           "note_name": "עיקרי המדיניות החשבונאית",
@@ -1984,7 +1989,7 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "textual",
           "bbox": [
             1197.83,
             762.03,
@@ -1995,10 +2000,9 @@
         {
           "value": "3.4%",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "אשתקד",
           "note_flag": true,
           "note_name": "עיקרי המדיניות החשבונאית",
@@ -2018,7 +2022,7 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "textual",
           "bbox": [
             796.75,
             763.75,
@@ -2029,10 +2033,9 @@
         {
           "value": "743166",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2053,21 +2056,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             846.95,
             1373.33,
-            105.53,
+            99.52,
             37.09
           ]
         },
         {
           "value": "265746",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2088,7 +2090,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             598.73,
             1375.33,
@@ -2099,10 +2101,9 @@
         {
           "value": "477420",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2123,7 +2124,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             367.05,
             1375.33,
@@ -2134,10 +2135,9 @@
         {
           "value": "492391",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2158,7 +2158,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             158.69,
             1375.33,
@@ -2169,10 +2169,9 @@
         {
           "value": "74901",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2193,21 +2192,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             855.21,
-            1403.74,
-            97.26,
-            37.09
+            1412.75,
+            95.76,
+            25.07
           ]
         },
         {
           "value": "58619",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2228,7 +2226,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             615.2,
             1405.74,
@@ -2239,10 +2237,9 @@
         {
           "value": "16282",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2263,7 +2260,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             385.23,
             1405.74,
@@ -2274,10 +2271,9 @@
         {
           "value": "4700",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2298,7 +2294,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             181.83,
             1405.74,
@@ -2309,10 +2305,9 @@
         {
           "value": "90244",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2333,21 +2328,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             855.21,
-            1434.15,
-            97.26,
-            37.09
+            1443.16,
+            95.76,
+            25.07
           ]
         },
         {
           "value": "81201",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2368,7 +2362,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             618.57,
             1436.15,
@@ -2379,10 +2373,9 @@
         {
           "value": "9043",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2403,7 +2396,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             401.69,
             1437.87,
@@ -2414,10 +2407,9 @@
         {
           "value": "12472",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2438,7 +2430,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             175.22,
             1436.15,
@@ -2449,10 +2441,9 @@
         {
           "value": "49149",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2473,21 +2464,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             853.56,
-            1464.55,
-            98.92,
-            37.09
+            1473.56,
+            97.42,
+            25.07
           ]
         },
         {
           "value": "49149",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2508,7 +2498,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             616.92,
             1466.55,
@@ -2519,10 +2509,9 @@
         {
           "value": "-",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2543,7 +2532,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             432.25,
             1478.74,
@@ -2554,10 +2543,9 @@
         {
           "value": "-",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2578,7 +2566,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             196.07,
             1476.14,
@@ -2589,10 +2577,9 @@
         {
           "value": "957460",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2612,21 +2599,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             846.95,
-            1497.3,
-            107.18,
-            37.09
+            1506.31,
+            96.66,
+            28.08
           ]
         },
         {
           "value": "454715",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2646,7 +2632,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             598.73,
             1499.3,
@@ -2657,10 +2643,9 @@
         {
           "value": "502745",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2680,7 +2665,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             369.52,
             1501.22,
@@ -2691,10 +2676,9 @@
         {
           "value": "509563",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2714,7 +2698,7 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             157.03,
             1499.3,
@@ -2725,10 +2709,9 @@
         {
           "value": "2% - 10%",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2748,21 +2731,20 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            760.34,
+            778.08,
             1631.62,
-            137.28,
-            38.75
+            119.54,
+            27.27
           ]
         },
         {
           "value": "7%",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2782,21 +2764,20 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            844.64,
-            1662.03,
-            52.98,
-            38.75
+            858.2,
+            1668.29,
+            38.37,
+            25.19
           ]
         },
         {
           "value": "7% - 15%",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2816,21 +2797,20 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            760.34,
-            1692.44,
-            137.28,
-            38.75
+            777.03,
+            1698.7,
+            117.46,
+            28.32
           ]
         },
         {
           "value": "25% - 33%",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2850,12 +2830,12 @@
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            750.42,
-            1722.84,
-            147.2,
-            38.75
+            763.98,
+            1736.4,
+            130.51,
+            26.23
           ]
         }
       ]
@@ -2875,10 +2855,9 @@
         {
           "value": "6041",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -2898,21 +2877,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            380.11,
-            550.34,
-            88.04,
-            46.1
+            396.39,
+            556.6,
+            68.01,
+            27.32
           ]
         },
         {
           "value": "-",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -2932,21 +2910,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             219.77,
-            557.36,
-            28.53,
-            15.7
+            563.04,
+            21.02,
+            14.02
           ]
         },
         {
           "value": "51818",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -2966,21 +2943,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            366.88,
-            583.09,
-            101.26,
-            48.44
+            383.16,
+            591.85,
+            84.98,
+            32.16
           ]
         },
         {
           "value": "50350",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3000,21 +2976,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            161.91,
-            583.09,
-            106.22,
-            48.44
+            178.19,
+            596.04,
+            78.68,
+            26.72
           ]
         },
         {
           "value": "1070",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3034,21 +3009,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            378.45,
-            615.84,
-            89.69,
-            46.1
+            394.73,
+            632.12,
+            73.41,
+            26.07
           ]
         },
         {
           "value": "9365",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3068,21 +3042,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            178.44,
-            615.84,
-            89.69,
-            46.1
+            190.96,
+            635.05,
+            69.66,
+            24.38
           ]
         },
         {
           "value": "4000",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3102,21 +3075,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            380.11,
-            650.92,
-            88.04,
-            48.44
+            396.39,
+            670.95,
+            71.76,
+            24.65
           ]
         },
         {
           "value": "3000",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3136,21 +3108,25 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            180.09,
-            650.92,
-            88.04,
-            48.44
+            190.11,
+            673.89,
+            68.01,
+            26.72
           ]
         },
         {
           "value": "62929",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": [
+            {
+              "equation": "6041 + 51818 + 1070 + 4000",
+              "fact_equation": "f1 + f3 + f5 + f7"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3170,21 +3146,25 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            366.88,
-            697.7,
-            102.92,
-            53.12
+            383.16,
+            710.22,
+            82.89,
+            26.83
           ]
         },
         {
           "value": "62715",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": [
+            {
+              "equation": "50350 + 0 + 9365 + 3000",
+              "fact_equation": "f4 + f2 + f6 + f8"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": "4",
           "note_flag": true,
           "note_name": "זכאים ויתרות זכות",
@@ -3204,21 +3184,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            160.26,
-            697.7,
-            109.53,
-            53.12
+            175.28,
+            710.65,
+            84.49,
+            31.4
           ]
         },
         {
           "value": "66000",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3237,21 +3216,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            366.88,
-            889.5,
-            107.87,
-            48.44
+            388.16,
+            890.75,
+            82.83,
+            29.66
           ]
         },
         {
           "value": "5000",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3270,21 +3248,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            180.09,
+            190.11,
             889.5,
-            88.04,
-            48.44
+            68.01,
+            29.66
           ]
         },
         {
           "value": "7500",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3303,21 +3280,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            380.11,
+            400.14,
             924.58,
-            88.04,
-            46.1
+            68.01,
+            27.32
           ]
         },
         {
           "value": "3000",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3336,21 +3312,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            181.75,
+            191.77,
             924.58,
-            86.39,
-            46.1
+            71.37,
+            26.07
           ]
         },
         {
           "value": "-",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3369,21 +3344,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            431.35,
-            957.28,
-            34.5,
-            26.44
+            439.87,
+            964.04,
+            18.22,
+            13.92
           ]
         },
         {
           "value": "1700",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3402,21 +3376,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            181.75,
-            950.31,
-            86.39,
-            48.44
+            193.02,
+            956.57,
+            67.61,
+            27.16
           ]
         },
         {
           "value": "2503",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3435,21 +3408,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            387.73,
-            979.48,
-            86.39,
-            46.1
+            399.0,
+            986.99,
+            68.86,
+            29.82
           ]
         },
         {
           "value": "-",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3468,21 +3440,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            219.77,
-            992.41,
-            28.53,
-            15.7
+            222.77,
+            994.41,
+            17.26,
+            14.45
           ]
         },
         {
           "value": "4081",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3501,21 +3472,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            381.76,
-            1018.14,
-            86.39,
-            46.1
+            399.29,
+            1023.15,
+            68.86,
+            24.82
           ]
         },
         {
           "value": "-",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": null,
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3534,21 +3504,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            219.77,
-            1027.5,
-            28.53,
-            15.7
+            222.77,
+            1029.5,
+            17.26,
+            14.45
           ]
         },
         {
           "value": "20238",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3567,21 +3536,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            368.54,
-            1048.55,
-            102.92,
-            48.44
+            387.32,
+            1056.06,
+            81.64,
+            27.16
           ]
         },
         {
           "value": "21237",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3600,21 +3568,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            165.22,
-            1048.55,
-            102.92,
-            48.44
+            175.24,
+            1056.06,
+            81.64,
+            23.4
           ]
         },
         {
           "value": "283",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3633,21 +3600,20 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            409.67,
-            1081.2,
-            64.9,
-            46.1
+            428.45,
+            1087.46,
+            39.86,
+            28.57
           ]
         },
         {
           "value": "1805",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": null,
           "natural_sign": "positive",
+          "row_role": "detail",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3666,21 +3632,25 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            181.75,
-            1085.97,
-            86.39,
-            46.1
+            194.27,
+            1087.22,
+            62.6,
+            27.32
           ]
         },
         {
           "value": "100605",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": [
+            {
+              "equation": "66000 + 7500 + 0 + 2503 + 4081 + 20238 + 283",
+              "fact_equation": "f11 + f13 + f15 + f17 + f19 + f21 + f23"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3699,21 +3669,25 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            358.62,
-            1116.38,
-            117.79,
-            55.46
+            373.64,
+            1118.88,
+            96.51,
+            32.93
           ]
         },
         {
           "value": "32742",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "balance_type": null,
+          "equations": [
+            {
+              "equation": "5000 + 3000 + 1700 + 0 + 0 + 21237 + 1805",
+              "fact_equation": "f12 + f14 + f16 + f18 + f20 + f22 + f24"
+            }
+          ],
           "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": "5",
           "note_flag": true,
           "note_name": "עלות הפעילויות",
@@ -3732,12 +3706,12 @@
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            160.48,
-            1116.38,
-            117.79,
-            55.46
+            176.76,
+            1121.39,
+            83.99,
+            26.67
           ]
         }
       ]
