@@ -42,9 +42,7 @@ def ui_descriptors() -> dict[str, UiFieldDescriptor]:
         ("fact", "recurring_period"),
         ("fact", "value_type"),
         ("fact", "value_context"),
-        ("fact", "balance_type"),
         ("fact", "row_role"),
-        ("fact", "aggregation_role"),
         ("fact", "path_source"),
     ]
     out: dict[str, UiFieldDescriptor] = {}

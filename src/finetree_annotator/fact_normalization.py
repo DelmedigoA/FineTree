@@ -9,7 +9,6 @@ from typing import Any, Mapping
 from .date_normalization import normalize_date
 from .schema_contract import CANONICAL_FACT_KEYS as _CANONICAL_FACT_KEY_TUPLE
 from .schema_contract import (
-    BALANCE_TYPE_VALUES,
     CURRENCY_VALUES,
     LEGACY_FACT_KEYS as _LEGACY_FACT_KEY_TUPLE,
     SCALE_VALUES,
@@ -18,12 +17,11 @@ from .schema_contract import (
 from .schemas import is_legacy_page_type_value, split_legacy_page_type
 
 CANONICAL_FACT_KEYS = set(_CANONICAL_FACT_KEY_TUPLE)
-LEGACY_FACT_KEYS = set(_LEGACY_FACT_KEY_TUPLE)
+LEGACY_FACT_KEYS = set(_LEGACY_FACT_KEY_TUPLE) | {"balance_type", "aggregation_role"}
 CANONICAL_AND_META_KEYS = CANONICAL_FACT_KEYS | {"bbox"}
 _VALID_CURRENCIES = set(CURRENCY_VALUES)
 _VALID_SCALES = set(SCALE_VALUES)
 _VALID_VALUE_TYPES = set(VALUE_TYPE_VALUES)
-_VALID_BALANCE_TYPES = set(BALANCE_TYPE_VALUES)
 _DATE_YMD_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _DATE_YEAR_RE = re.compile(r"^\d{4}$")
 _SINGLE_ALLOWED_DASH = "-"
@@ -39,16 +37,6 @@ _ROW_TOTAL_MARKERS: tuple[str, ...] = (
     "net subtotal",
     "net total",
     "net",
-)
-_AGGREGATION_SUBTRACTIVE_MARKERS: tuple[str, ...] = (
-    "בניכוי",
-    "פחות",
-    "less",
-    "minus",
-    "net of",
-    "contra",
-    "accumulated depreciation",
-    "פחת שנצבר",
 )
 DEFAULT_ANNOTATIONS_GLOB = "data/annotations/*.json"
 
@@ -114,36 +102,6 @@ def _normalize_value_context(value: Any) -> str | None:
     return lowered if lowered in {"textual", "tabular", "mixed"} else None
 
 
-def _normalize_balance_type(value: Any) -> str | None:
-    text = _to_optional_text(value)
-    if text is None:
-        return None
-    lowered = text.lower()
-    return lowered if lowered in _VALID_BALANCE_TYPES else None
-
-
-def _normalize_aggregation_role(value: Any) -> str | None:
-    text = _to_optional_text(value)
-    if text is None:
-        return None
-    lowered = text.lower()
-    aliases = {
-        "+": "additive",
-        "plus": "additive",
-        "additive": "additive",
-        "-": "subtractive",
-        "minus": "subtractive",
-        "subtractive": "subtractive",
-        # Legacy aggregation buckets collapse to additive contribution.
-        "total": "additive",
-        "unknown": "additive",
-    }
-    normalized = aliases.get(lowered)
-    if normalized is not None:
-        return normalized
-    return None
-
-
 def _normalize_row_role(value: Any) -> str | None:
     text = _to_optional_text(value)
     if text is None:
@@ -176,31 +134,6 @@ def _normalize_text_for_role_inference(value: Any) -> str:
         .replace("—", "-")
     )
     return re.sub(r"\s+", " ", text)
-
-
-def _infer_aggregation_role(
-    *,
-    path: list[str],
-    comment_ref: Any,
-    note_name: Any,
-    note_ref: Any,
-) -> str:
-    contexts: list[str] = []
-    for candidate in (comment_ref, note_name, note_ref):
-        normalized = _normalize_text_for_role_inference(candidate)
-        if normalized:
-            contexts.append(normalized)
-    for level in path:
-        normalized = _normalize_text_for_role_inference(level)
-        if normalized:
-            contexts.append(normalized)
-
-    for text in contexts:
-        if any(marker in text for marker in _AGGREGATION_SUBTRACTIVE_MARKERS):
-            return "subtractive"
-    return "additive"
-
-
 def _infer_row_role(
     *,
     path: list[str],
@@ -234,6 +167,77 @@ def _derive_natural_sign_from_value(value: str) -> str | None:
 
 def _normalize_equation(value: Any) -> str | None:
     return _to_optional_text(value)
+
+
+def _normalize_equation_children(value: Any) -> list[dict[str, Any]] | None:
+    if value in ("", None):
+        return None
+    if not isinstance(value, list):
+        return None
+    out: list[dict[str, Any]] = []
+    for entry in value:
+        if not isinstance(entry, Mapping):
+            continue
+        fact_num = _normalize_fact_num(entry.get("fact_num"))
+        operator = str(entry.get("operator") or "").strip()
+        if fact_num is None or operator not in {"+", "-"}:
+            continue
+        out.append({"fact_num": fact_num, "operator": operator})
+    return out or None
+
+
+def _equation_signature(entry: Mapping[str, Any]) -> tuple[Any, ...]:
+    equation = str(entry.get("equation") or "")
+    fact_equation = str(entry.get("fact_equation") or "")
+    children = tuple(
+        (int(child.get("fact_num")), str(child.get("operator") or "+"))
+        for child in (entry.get("equation_children") or [])
+        if isinstance(child, Mapping) and isinstance(child.get("fact_num"), int)
+    )
+    return equation, fact_equation, children
+
+
+def _normalize_equation_entry(
+    value: Any,
+    *,
+    allow_equation_only_string: bool = True,
+) -> dict[str, Any] | None:
+    if isinstance(value, str):
+        if not allow_equation_only_string:
+            return None
+        equation = _normalize_equation(value)
+        if equation is None:
+            return None
+        return {"equation": equation, "fact_equation": None, "equation_children": None}
+    if not isinstance(value, Mapping):
+        return None
+    equation = _normalize_equation(value.get("equation"))
+    if equation is None:
+        return None
+    return {
+        "equation": equation,
+        "fact_equation": _normalize_equation(value.get("fact_equation")),
+        "equation_children": _normalize_equation_children(value.get("equation_children")),
+    }
+
+
+def _normalize_equations(value: Any) -> list[dict[str, Any]] | None:
+    if value in ("", None):
+        return None
+    if not isinstance(value, list):
+        return None
+    out: list[dict[str, Any]] = []
+    seen: set[tuple[Any, ...]] = set()
+    for entry in value:
+        normalized_entry = _normalize_equation_entry(entry)
+        if normalized_entry is None:
+            continue
+        signature = _equation_signature(normalized_entry)
+        if signature in seen:
+            continue
+        seen.add(signature)
+        out.append(normalized_entry)
+    return out or None
 
 
 def _normalize_fact_num(value: Any) -> int | None:
@@ -379,6 +383,8 @@ def _has_canonical_markers(raw_fact: Mapping[str, Any]) -> bool:
             "note_num",
             "fact_num",
             "fact_equation",
+            "equations",
+            "equation_children",
             "balance_type",
             "natural_sign",
             "row_role",
@@ -460,9 +466,8 @@ def normalize_fact_payload(
     duration_type = _normalize_duration_type(payload.get("duration_type"))
     recurring_period = _normalize_recurring_period(payload.get("recurring_period"))
     value_context = _normalize_value_context(payload.get("value_context"))
-    raw_aggregation_role = payload.get("aggregation_role")
     row_role = _normalize_row_role(payload.get("row_role"))
-    raw_aggregation_role_text = str(raw_aggregation_role or "").strip().lower()
+    raw_aggregation_role_text = str(payload.get("aggregation_role") or "").strip().lower()
     if row_role is None and raw_aggregation_role_text == "total":
         row_role = "total"
     if row_role is None:
@@ -473,24 +478,46 @@ def normalize_fact_payload(
             note_ref=note_ref,
         )
 
-    aggregation_role = _normalize_aggregation_role(raw_aggregation_role)
-    if aggregation_role is None:
-        aggregation_role = _infer_aggregation_role(
-            path=path_value,
-            comment_ref=comment_raw,
-            note_name=note_name_raw,
-            note_ref=note_ref,
-        )
+    normalized_equation = _normalize_equation(payload.get("equation"))
+    normalized_fact_equation = _normalize_equation(payload.get("fact_equation"))
+    normalized_equation_children = _normalize_equation_children(payload.get("equation_children"))
+    active_equation = _normalize_equation_entry(
+        {
+            "equation": normalized_equation,
+            "fact_equation": normalized_fact_equation,
+            "equation_children": normalized_equation_children,
+        },
+        allow_equation_only_string=False,
+    )
+    equations = _normalize_equations(payload.get("equations"))
+    if active_equation is not None:
+        if equations is None:
+            equations = [active_equation]
+        else:
+            active_signature = _equation_signature(active_equation)
+            matching_index = next(
+                (idx for idx, entry in enumerate(equations) if _equation_signature(entry) == active_signature),
+                None,
+            )
+            if matching_index is None:
+                equations = [active_equation, *equations]
+            elif matching_index != 0:
+                equations = [equations[matching_index], *equations[:matching_index], *equations[matching_index + 1 :]]
+    elif equations:
+        active_equation = equations[0]
+        normalized_equation = active_equation.get("equation")
+        normalized_fact_equation = active_equation.get("fact_equation")
+        normalized_equation_children = active_equation.get("equation_children")
 
     normalized: dict[str, Any] = {
         "value": value,
         "fact_num": _normalize_fact_num(payload.get("fact_num")),
-        "equation": _normalize_equation(payload.get("equation")),
-        "fact_equation": _normalize_equation(payload.get("fact_equation")),
-        "balance_type": _normalize_balance_type(payload.get("balance_type")),
+        "equation": normalized_equation,
+        "fact_equation": normalized_fact_equation,
+        "equation_children": normalized_equation_children,
+        "equations": equations,
         "natural_sign": natural_sign,
         "row_role": row_role,
-        "aggregation_role": aggregation_role,
         "comment_ref": _to_optional_text(comment_raw),
         "note_flag": note_flag,
         "note_name": _to_optional_text(note_name_raw),

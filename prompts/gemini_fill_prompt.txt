@@ -24,14 +24,12 @@ Input snapshot JSON:
 
 Output schema (exact keys only):
 {
-  "meta_updates": {
-    "statement_type": "balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration|null"
-  },
+  "meta_updates": {{META_UPDATES_SCHEMA}},
   "fact_updates": [
     {
       "fact_num": <integer >= 1>,
       "updates": {
-        "equation": "<string|null>",
+        "equation_children": [{"fact_num": <integer >= 1>, "operator": "+|-"}] | null,
         "period_type": "instant|duration|expected|null",
         "period_start": "<YYYY-MM-DD|null>",
         "period_end": "<YYYY-MM-DD|null>",
@@ -42,10 +40,8 @@ Output schema (exact keys only):
         "value_type": "amount|percent|ratio|count|points|null",
         "currency": "ILS|USD|EUR|GBP|null",
         "scale": 1|1000|1000000|null,
-        "balance_type": "debit|credit|null",
         "natural_sign": "positive|negative|null",
         "row_role": "detail|total",
-        "aggregation_role": "additive|subtractive",
         "path_source": "observed|inferred|null",
         "comment_ref": "<string|null>",
         "note_ref": "<string|null>",
@@ -58,12 +54,12 @@ Output schema (exact keys only):
 Rules:
 1. Return patch-only JSON. Never return full page annotations.
 2. Update only requested fields. Do not add non-requested fields.
+2a. If no meta fields were requested, return `"meta_updates": {}`.
 3. `fact_num` must match the provided snapshot identity.
 4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
 5. Use JSON null (not string "null") for unknowns.
 6. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
 7. `row_role` must be `detail` or `total`.
-8. `aggregation_role` must be `additive` or `subtractive`, including when `row_role="total"`.
-   `בניכוי` / contra-items => `subtractive`, otherwise use `additive`. Do not infer from `balance_type`.
-9. If `equation` is requested, keep it as a non-empty equation string or omit it when unknown.
+8. `equation_children` is authoritative for total arithmetic. Detail rows must omit it; total rows must use an ordered non-empty list when arithmetic is requested.
+9. `equation` and `fact_equation` are derived by runtime from `equation_children`; do not treat them as authoritative.
 10. If no confident update for a requested field, omit that field from `updates`.

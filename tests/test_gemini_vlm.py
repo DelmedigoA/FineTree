@@ -625,11 +625,10 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
             {
                 "fact_num": 2,
                 "updates": {
-                    "equation": "100 + 20",
+                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 3, "operator": "+"}],
                     "period_type": "duration",
                     "period_start": "2024-01-01",
                     "period_end": "2024-12-31",
-                    "balance_type": "credit",
                     "path_source": "observed",
                 },
             }
@@ -637,14 +636,13 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
     }
     parsed = gemini_vlm.parse_selected_field_patch_text(
         json.dumps(payload),
-        allowed_fact_fields={"equation", "period_type", "period_start", "period_end", "balance_type", "path_source"},
+        allowed_fact_fields={"equation_children", "period_type", "period_start", "period_end", "path_source"},
         allow_statement_type=True,
     )
     assert parsed["meta_updates"]["statement_type"] == "income_statement"
     assert parsed["fact_updates"][0]["fact_num"] == 2
-    assert parsed["fact_updates"][0]["updates"]["equation"] == "100 + 20"
+    assert parsed["fact_updates"][0]["updates"]["equation_children"] == [{"fact_num": 1, "operator": "+"}, {"fact_num": 3, "operator": "+"}]
     assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
-    assert parsed["fact_updates"][0]["updates"]["balance_type"] == "credit"
 
 
 def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None:
@@ -660,6 +658,22 @@ def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None
             allowed_fact_fields={"period_type"},
             allow_statement_type=False,
         )
+
+
+def test_parse_selected_field_patch_text_ignores_unrequested_statement_type() -> None:
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(
+            {
+                "meta_updates": {"statement_type": "income_statement"},
+                "fact_updates": [{"fact_num": 1, "updates": {"period_type": "instant"}}],
+            }
+        ),
+        allowed_fact_fields={"period_type"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["meta_updates"] == {}
+    assert parsed["fact_updates"] == [{"fact_num": 1, "updates": {"period_type": "instant"}}]
 
 
 def test_parse_selected_field_patch_text_rejects_duplicate_or_invalid_fact_num() -> None:

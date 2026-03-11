@@ -10,7 +10,7 @@ from pydantic.fields import FieldInfo
 
 from .schemas import CURRENT_SCHEMA_VERSION, Document, Fact, Metadata, PageMeta
 LEGACY_COMPAT_MIN_VERSION = 1
-LEGACY_COMPAT_MAX_VERSION = 2
+LEGACY_COMPAT_MAX_VERSION = CURRENT_SCHEMA_VERSION
 SCHEMA_MODEL_MAP: dict[str, type[BaseModel]] = {
     "metadata": Metadata,
     "page_meta": PageMeta,
@@ -19,13 +19,12 @@ SCHEMA_MODEL_MAP: dict[str, type[BaseModel]] = {
 }
 PROMPT_RUNTIME_OWNED_KEYS: tuple[str, ...] = ("schema_version",)
 PROMPT_RUNTIME_OWNED_PAGE_META_KEYS: tuple[str, ...] = ("annotation_note", "annotation_status")
-PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num", "fact_equation")
+PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num", "fact_equation", "equations")
 PROMPT_REQUIRED_FACT_KEYS: tuple[str, ...] = (
     "equation",
-    "balance_type",
+    "equation_children",
     "natural_sign",
     "row_role",
-    "aggregation_role",
     "comment_ref",
     "note_flag",
     "note_name",
@@ -56,10 +55,10 @@ _FIELD_DESCRIPTIONS: dict[tuple[str, str], str] = {
     ("fact", "fact_num"): "Stable persisted fact order number",
     ("fact", "equation"): "Optional arithmetic expression tied to the fact",
     ("fact", "fact_equation"): "Optional arithmetic expression referencing fact numbers",
-    ("fact", "balance_type"): "Accounting balance side (debit/credit)",
+    ("fact", "equation_children"): "Ordered child fact references and +/- operators for total rows",
+    ("fact", "equations"): "Optional list of saved equation variants for a fact",
     ("fact", "natural_sign"): "Sign implied by the value text",
     ("fact", "row_role"): "Whether row is a detail line or a subtotal/total line",
-    ("fact", "aggregation_role"): "Aggregation role for equation polarity",
     ("fact", "value_type"): "Value semantic type",
     ("fact", "currency"): "Currency code",
     ("fact", "scale"): "Scale multiplier",
@@ -259,10 +258,9 @@ class SchemaRegistry:
                 "statement_types": list(enum_lookup.get("statement_type", ())),
                 "value_types": list(enum_lookup.get("value_type", ())),
                 "value_contexts": list(enum_lookup.get("value_context", ())),
-                "balance_types": list(enum_lookup.get("balance_type", ())),
                 "natural_signs": list(enum_lookup.get("natural_sign", ())),
                 "row_roles": list(enum_lookup.get("row_role", ())),
-                "aggregation_roles": list(enum_lookup.get("aggregation_role", ())),
+                "equation_child_operators": ["+", "-"],
                 "currencies": list(enum_lookup.get("currency", ())),
                 "scales": list(enum_lookup.get("scale", ())),
                 "entity_types": list(enum_lookup.get("entity_type", ())),
@@ -278,17 +276,15 @@ class SchemaRegistry:
                 "schema_version": SchemaRegistry.current_version(),
                 "statement_types": list(enum_lookup.get("statement_type", ())),
                 "fact_patch_fields": [
-                    "equation",
+                    "equation_children",
                     "period_type",
                     "period_start",
                     "period_end",
                     "duration_type",
                     "recurring_period",
                     "value_context",
-                    "balance_type",
                     "natural_sign",
                     "row_role",
-                    "aggregation_role",
                     "path_source",
                     "value_type",
                     "currency",

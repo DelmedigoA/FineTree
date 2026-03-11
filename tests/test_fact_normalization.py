@@ -121,7 +121,35 @@ def test_normalize_fact_payload_preserves_equation() -> None:
     assert warnings == []
 
 
-def test_normalize_fact_payload_sets_balance_type_and_deterministic_natural_sign() -> None:
+def test_normalize_fact_payload_preserves_multiple_equations_and_keeps_active_first() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {
+                    "equation": "90 + 30",
+                    "fact_equation": "f4 + f5",
+                },
+                {
+                    "equation": "100 + 20",
+                    "fact_equation": "f1 + f2",
+                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
+                },
+            ],
+            "path": [],
+        }
+    )
+    assert warnings == []
+    assert normalized["equation"] == "100 + 20"
+    assert normalized["fact_equation"] == "f1 + f2"
+    assert isinstance(normalized["equations"], list)
+    assert normalized["equations"][0]["equation"] == "100 + 20"
+    assert normalized["equations"][1]["equation"] == "90 + 30"
+
+
+def test_normalize_fact_payload_ignores_deprecated_balance_type_and_sets_deterministic_natural_sign() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "(200)",
@@ -130,12 +158,12 @@ def test_normalize_fact_payload_sets_balance_type_and_deterministic_natural_sign
             "path": [],
         }
     )
-    assert normalized["balance_type"] == "debit"
+    assert "balance_type" not in normalized
     assert normalized["natural_sign"] == "negative"
     assert warnings == []
 
 
-def test_normalize_fact_payload_accepts_aggregation_role() -> None:
+def test_normalize_fact_payload_ignores_deprecated_aggregation_role() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "10",
@@ -143,7 +171,7 @@ def test_normalize_fact_payload_accepts_aggregation_role() -> None:
             "path": [],
         }
     )
-    assert normalized["aggregation_role"] == "subtractive"
+    assert "aggregation_role" not in normalized
     assert warnings == []
 
 
@@ -159,14 +187,14 @@ def test_normalize_fact_payload_accepts_row_role() -> None:
     assert warnings == []
 
 
-def test_normalize_fact_payload_infers_subtractive_aggregation_role_from_benikuy_path() -> None:
+def test_normalize_fact_payload_does_not_infer_aggregation_role_from_path() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "209255",
             "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"],
         }
     )
-    assert normalized["aggregation_role"] == "subtractive"
+    assert "aggregation_role" not in normalized
     assert warnings == []
 
 
@@ -178,11 +206,10 @@ def test_normalize_fact_payload_infers_total_row_role_from_subtotal_path() -> No
         }
     )
     assert normalized["row_role"] == "total"
-    assert normalized["aggregation_role"] == "additive"
     assert warnings == []
 
 
-def test_normalize_fact_payload_defaults_aggregation_role_to_additive_for_numeric_fact() -> None:
+def test_normalize_fact_payload_defaults_numeric_fact_without_aggregation_role() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "269968",
@@ -190,7 +217,7 @@ def test_normalize_fact_payload_defaults_aggregation_role_to_additive_for_numeri
         }
     )
     assert normalized["row_role"] == "detail"
-    assert normalized["aggregation_role"] == "additive"
+    assert "aggregation_role" not in normalized
     assert warnings == []
 
 
@@ -203,7 +230,20 @@ def test_normalize_fact_payload_maps_legacy_total_aggregation_role_to_row_role_t
         }
     )
     assert normalized["row_role"] == "total"
-    assert normalized["aggregation_role"] == "additive"
+    assert "aggregation_role" not in normalized
+    assert warnings == []
+
+
+def test_normalize_fact_payload_accepts_equation_children() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "120",
+            "row_role": "total",
+            "equation_children": [{"fact_num": "1", "operator": "+"}, {"fact_num": 2, "operator": "-"}],
+            "path": [],
+        }
+    )
+    assert normalized["equation_children"] == [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "-"}]
     assert warnings == []
 
 

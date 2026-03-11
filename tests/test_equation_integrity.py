@@ -7,21 +7,19 @@ from finetree_annotator.equation_integrity import (
 )
 
 
-def test_audit_and_rebuild_financial_facts_repairs_roles_and_equation_from_references() -> None:
+def test_audit_and_rebuild_financial_facts_builds_equation_children_from_legacy_fact_equation() -> None:
     facts = [
-        {"fact_num": 10, "value": "269968", "natural_sign": "positive", "aggregation_role": None, "path": ["רכוש קבוע", "עלות"]},
+        {"fact_num": 10, "value": "269968", "natural_sign": "positive", "path": ["רכוש קבוע", "עלות"]},
         {
             "fact_num": 12,
             "value": "209255",
             "natural_sign": "positive",
-            "aggregation_role": None,
             "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"],
         },
         {
             "fact_num": 14,
             "value": "60713",
             "natural_sign": "positive",
-            "aggregation_role": None,
             "path": ["רכוש קבוע", 'סה"כ רכוש קבוע'],
             "equation": "- 269968 + 209255",
             "fact_equation": "- f10 + f12",
@@ -36,25 +34,23 @@ def test_audit_and_rebuild_financial_facts_repairs_roles_and_equation_from_refer
 
     by_num = {fact["fact_num"]: fact for fact in rebuilt}
     assert by_num[10]["row_role"] == "detail"
-    assert by_num[10]["aggregation_role"] == "additive"
     assert by_num[12]["row_role"] == "detail"
-    assert by_num[12]["aggregation_role"] == "subtractive"
     assert by_num[14]["row_role"] == "total"
-    assert by_num[14]["aggregation_role"] == "additive"
-    assert by_num[14]["equation"] == "269968 - 209255"
-    assert by_num[14]["fact_equation"] == "f10 - f12"
-    assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
+    assert by_num[14]["equation_children"] == [{"fact_num": 10, "operator": "-"}, {"fact_num": 12, "operator": "+"}]
+    assert by_num[14]["equation"] == "- 269968 + 209255"
+    assert by_num[14]["fact_equation"] == "- f10 + f12"
+    assert any(finding.get("code") == "equation_arithmetic_mismatch" for finding in findings)
 
 
 def test_audit_and_rebuild_financial_facts_treats_dash_as_zero_in_equation() -> None:
     facts = [
-        {"fact_num": 1, "value": "-", "aggregation_role": "additive", "path": ["A"]},
-        {"fact_num": 2, "value": "5", "aggregation_role": "additive", "path": ["A"]},
+        {"fact_num": 1, "value": "-", "path": ["A"]},
+        {"fact_num": 2, "value": "5", "path": ["A"]},
         {
             "fact_num": 3,
             "value": "5",
             "row_role": "total",
-            "aggregation_role": "additive",
+            "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
             "path": ["A", "total"],
             "equation": "5",
             "fact_equation": "f1 + f2",
@@ -68,31 +64,31 @@ def test_audit_and_rebuild_financial_facts_treats_dash_as_zero_in_equation() -> 
     assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
 
 
-def test_audit_and_rebuild_financial_facts_preserves_explicit_aggregation_role() -> None:
+def test_audit_and_rebuild_financial_facts_supports_same_child_in_multiple_parents() -> None:
     facts = [
+        {"fact_num": 1, "value": "100", "path": ["A"]},
         {
-            "fact_num": 12,
-            "value": "209255",
-            "natural_sign": "positive",
-            "aggregation_role": "additive",
-            "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"],
+            "fact_num": 2,
+            "value": "95",
+            "row_role": "total",
+            "equation_children": [{"fact_num": 1, "operator": "-"}],
+            "path": ["A", "total"],
+        },
+        {
+            "fact_num": 3,
+            "value": "100",
+            "row_role": "total",
+            "equation_children": [{"fact_num": 1, "operator": "+"}],
+            "path": ["A", "reconciliation"],
         },
     ]
 
-    rebuilt, findings = audit_and_rebuild_financial_facts(
-        facts,
-        statement_type="balance_sheet",
-        apply_repairs=True,
-    )
+    rebuilt, findings = audit_and_rebuild_financial_facts(facts, apply_repairs=True)
 
-    assert rebuilt[0]["aggregation_role"] == "additive"
-    assert all(
-        not (
-            finding.get("code") == "aggregation_role_corrected"
-            and finding.get("fact_num") == 12
-        )
-        for finding in findings
-    )
+    by_num = {fact["fact_num"]: fact for fact in rebuilt}
+    assert by_num[2]["fact_equation"] == "- f1"
+    assert by_num[3]["fact_equation"] == "f1"
+    assert all(finding.get("code") != "equation_graph_cycle" for finding in findings)
 
 
 def test_audit_and_rebuild_financial_facts_flags_missing_refs_mismatch_and_period_issues() -> None:
@@ -100,7 +96,6 @@ def test_audit_and_rebuild_financial_facts_flags_missing_refs_mismatch_and_perio
         {
             "fact_num": 1,
             "value": "10",
-            "aggregation_role": "additive",
             "period_type": "instant",
             "period_start": "2024-01-01",
             "path": ["A"],
@@ -109,7 +104,7 @@ def test_audit_and_rebuild_financial_facts_flags_missing_refs_mismatch_and_perio
             "fact_num": 2,
             "value": "9",
             "row_role": "total",
-            "aggregation_role": "additive",
+            "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 99, "operator": "+"}],
             "period_type": "duration",
             "period_start": "2023-01-01",
             "period_end": "2023-12-31",
@@ -141,10 +136,52 @@ def test_resequence_fact_numbers_and_remap_fact_equations_updates_references() -
         {"fact_num": 4, "value": "900", "path": ["A"]},
         {"fact_num": 1, "value": "100", "path": ["A"]},
         {"fact_num": 2, "value": "20", "path": ["A"]},
-        {"fact_num": 3, "value": "120", "equation": "100 + 20", "fact_equation": "f1 + f2", "path": ["A", "total"]},
+        {
+            "fact_num": 3,
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
+            "path": ["A", "total"],
+        },
     ]
 
     resequenced = resequence_fact_numbers_and_remap_fact_equations(facts)
     assert [fact["fact_num"] for fact in resequenced] == [1, 2, 3, 4]
     assert resequenced[3]["fact_equation"] == "f2 + f3"
     assert resequenced[3]["equation"] == "100 + 20"
+    assert resequenced[3]["equation_children"] == [{"fact_num": 2, "operator": "+"}, {"fact_num": 3, "operator": "+"}]
+
+
+def test_resequence_fact_numbers_remaps_saved_equation_variants() -> None:
+    facts = [
+        {"fact_num": 4, "value": "900", "path": ["A"]},
+        {"fact_num": 1, "value": "100", "path": ["A"]},
+        {"fact_num": 2, "value": "20", "path": ["A"]},
+        {
+            "fact_num": 3,
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
+            "equations": [
+                {
+                    "equation": "100 + 20",
+                    "fact_equation": "f1 + f2",
+                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
+                },
+                {
+                    "equation": "900 - 20",
+                    "fact_equation": "f4 - f2",
+                    "equation_children": [{"fact_num": 4, "operator": "+"}, {"fact_num": 2, "operator": "-"}],
+                },
+            ],
+            "path": ["A", "total"],
+        },
+    ]
+
+    resequenced = resequence_fact_numbers_and_remap_fact_equations(facts)
+    active_total = resequenced[3]
+    assert active_total["fact_equation"] == "f2 + f3"
+    assert active_total["equations"][0]["fact_equation"] == "f2 + f3"
+    assert active_total["equations"][1]["fact_equation"] == "f1 - f3"

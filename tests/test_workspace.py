@@ -75,7 +75,11 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
             },
             {
                 "image": "page_0002.png",
-                "meta": {**default_page_meta(1), "title": "Income Statement"},
+                "meta": {
+                    **default_page_meta(1),
+                    "title": "Income Statement",
+                    "annotation_status": "approved",
+                },
                 "facts": [{"bbox": [1, 2, 3, 4], "value": "42"}],
             },
         ]
@@ -85,6 +89,7 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
     summary = workspace.build_document_summary("doc_a", data_root=data_root)
     assert summary.page_count == 2
     assert summary.annotated_page_count == 1
+    assert summary.approved_page_count == 1
     assert summary.fact_count == 1
     assert summary.annotated_token_count > 0
     assert summary.progress_pct == 50
@@ -118,6 +123,31 @@ def test_import_pdf_to_workspace_reuses_existing_doc(tmp_path: Path, monkeypatch
     assert result.document.doc_id == "doc_a"
     assert result.document.page_count == 2
     assert calls == [(1, 2)]
+
+
+def test_discover_workspace_documents_merges_legacy_sanitized_images_with_original_pdf_name(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    raw_root = data_root / "raw_pdfs"
+    images_root = data_root / "pdf_images"
+    ann_root = data_root / "annotations"
+    raw_root.mkdir(parents=True)
+    images_root.mkdir(parents=True)
+    ann_root.mkdir(parents=True)
+
+    original_pdf = raw_root / "דוח כספי 2014 - אגודת הסטודנטים.pdf"
+    original_pdf.write_bytes(b"%PDF-1.4")
+    legacy_doc_id = workspace.sanitize_doc_id(original_pdf.stem)
+    legacy_images_dir = images_root / legacy_doc_id
+    legacy_images_dir.mkdir()
+    (legacy_images_dir / "page_0001.png").write_bytes(b"png")
+
+    summaries = workspace.discover_workspace_documents(data_root=data_root)
+
+    assert len(summaries) == 1
+    assert summaries[0].doc_id == legacy_doc_id
+    assert summaries[0].source_pdf == original_pdf
+    assert summaries[0].images_dir == legacy_images_dir
+    assert summaries[0].status == "Ready"
 
 
 def test_reviewed_document_state_persists_in_workspace_summary(tmp_path: Path) -> None:

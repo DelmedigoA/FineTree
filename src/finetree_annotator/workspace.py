@@ -29,6 +29,7 @@ class WorkspaceDocumentSummary:
     progress_pct: int
     status: str
     updated_at: Optional[float]
+    approved_page_count: int = 0
     annotated_token_count: int = 0
     fact_count: int = 0
     reg_flag_count: int = 0
@@ -294,6 +295,12 @@ def page_has_annotation(state: PageState, index: int) -> bool:
     return False
 
 
+def page_is_approved(state: PageState) -> bool:
+    meta = state.meta or {}
+    status = meta.get("annotation_status")
+    return isinstance(status, str) and status.strip().lower() == "approved"
+
+
 def _state_map_for_document(images_dir: Path, annotations_path: Path) -> tuple[list[Path], dict[str, PageState]]:
     pages = page_image_paths(images_dir)
     payload = load_annotation_payload(annotations_path)
@@ -321,19 +328,30 @@ def _estimate_annotation_tokens(payload: dict[str, Any]) -> int:
     return len(_TOKEN_PATTERN.findall(text))
 
 
-def compute_document_annotation_stats(images_dir: Path, annotations_path: Path) -> tuple[int, int, int]:
+def compute_document_page_stats(images_dir: Path, annotations_path: Path) -> tuple[int, int, int, int]:
     pages, states = _state_map_for_document(images_dir, annotations_path)
     if not pages:
-        return 0, 0, 0
+        return 0, 0, 0, 0
     annotated_pages = 0
+    approved_pages = 0
     annotated_tokens = 0
     for idx, page in enumerate(pages):
         state = states.get(page.name, PageState(meta=default_page_meta(idx), facts=[]))
+        if page_is_approved(state):
+            approved_pages += 1
         if not page_has_annotation(state, idx):
             continue
         annotated_pages += 1
         annotated_tokens += _estimate_annotation_tokens(_page_annotation_payload(state, idx))
-    return annotated_pages, len(pages), annotated_tokens
+    return annotated_pages, approved_pages, len(pages), annotated_tokens
+
+
+def compute_document_annotation_stats(images_dir: Path, annotations_path: Path) -> tuple[int, int, int]:
+    annotated_pages, _approved_pages, page_count, annotated_tokens = compute_document_page_stats(
+        images_dir,
+        annotations_path,
+    )
+    return annotated_pages, page_count, annotated_tokens
 
 
 def compute_document_progress(images_dir: Path, annotations_path: Path) -> tuple[int, int]:
@@ -373,6 +391,48 @@ def _latest_mtime(*paths: Optional[Path]) -> Optional[float]:
     return max(mtimes) if mtimes else None
 
 
+def _resolve_doc_path_aliases(root: Path, *, doc_id: str, suffix: Optional[str] = None, directories_only: bool = False) -> list[Path]:
+    root = Path(root)
+    if not root.is_dir():
+        return []
+
+    candidates: list[Path] = []
+    if directories_only:
+        candidates = [path for path in root.iterdir() if path.is_dir()]
+        exact_matches = [path for path in candidates if path.name == doc_id]
+        alias_matches = [path for path in candidates if path.name != doc_id and sanitize_doc_id(path.name) == doc_id]
+    else:
+        normalized_suffix = str(suffix or "").lower()
+        candidates = [path for path in root.iterdir() if path.is_file() and (not normalized_suffix or path.suffix.lower() == normalized_suffix)]
+        exact_matches = [path for path in candidates if path.stem == doc_id]
+        alias_matches = [path for path in candidates if path.stem != doc_id and sanitize_doc_id(path.stem) == doc_id]
+
+    if exact_matches:
+        return sorted(exact_matches)
+    return sorted(alias_matches)
+
+
+def _resolve_images_dir(doc_id: str, data_root: Path = DEFAULT_DATA_ROOT) -> Path:
+    matches = _resolve_doc_path_aliases(pdf_images_root(data_root), doc_id=doc_id, directories_only=True)
+    if matches:
+        return matches[0]
+    return pdf_images_root(data_root) / doc_id
+
+
+def _resolve_annotations_path(doc_id: str, data_root: Path = DEFAULT_DATA_ROOT) -> Path:
+    matches = _resolve_doc_path_aliases(annotations_root(data_root), doc_id=doc_id, suffix=".json")
+    if matches:
+        return matches[0]
+    return annotations_root(data_root) / f"{doc_id}.json"
+
+
+def _resolve_source_pdf(doc_id: str, data_root: Path = DEFAULT_DATA_ROOT) -> Path:
+    matches = _resolve_doc_path_aliases(raw_pdfs_dir(data_root), doc_id=doc_id, suffix=".pdf")
+    if matches:
+        return matches[0]
+    return raw_pdfs_dir(data_root) / f"{doc_id}.pdf"
+
+
 def build_document_summary(
     doc_id: str,
     data_root: Path = DEFAULT_DATA_ROOT,
@@ -381,9 +441,9 @@ def build_document_summary(
     reviewed_doc_ids: Optional[set[str]] = None,
 ) -> WorkspaceDocumentSummary:
     data_root = Path(data_root)
-    images_dir = pdf_images_root(data_root) / doc_id
-    annotations_path = annotations_root(data_root) / f"{doc_id}.json"
-    source_pdf = raw_pdfs_dir(data_root) / f"{doc_id}.pdf"
+    images_dir = _resolve_images_dir(doc_id, data_root=data_root)
+    annotations_path = _resolve_annotations_path(doc_id, data_root=data_root)
+    source_pdf = _resolve_source_pdf(doc_id, data_root=data_root)
     if checked_doc_ids is None or reviewed_doc_ids is None:
         loaded_checked_ids, loaded_reviewed_ids = load_workspace_check_state(data_root)
         checked_ids = checked_doc_ids if checked_doc_ids is not None else loaded_checked_ids
@@ -392,7 +452,10 @@ def build_document_summary(
         checked_ids = checked_doc_ids
         reviewed_ids = reviewed_doc_ids
     page_paths = page_image_paths(images_dir)
-    annotated_pages, page_count, annotated_tokens = compute_document_annotation_stats(images_dir, annotations_path)
+    annotated_pages, approved_pages, page_count, annotated_tokens = compute_document_page_stats(
+        images_dir,
+        annotations_path,
+    )
     fact_count = compute_document_fact_count(images_dir, annotations_path)
     issue_summary = compute_document_issue_summary(images_dir, annotations_path)
     can_be_checked = page_count > 0 and annotated_pages >= page_count
@@ -417,6 +480,7 @@ def build_document_summary(
         thumbnail_path=thumbnail_path,
         page_count=page_count,
         annotated_page_count=annotated_pages,
+        approved_page_count=approved_pages,
         annotated_token_count=annotated_tokens,
         fact_count=fact_count,
         progress_pct=progress_pct,
@@ -438,15 +502,15 @@ def discover_workspace_documents(data_root: Path = DEFAULT_DATA_ROOT) -> list[Wo
 
     raw_root = raw_pdfs_dir(data_root)
     if raw_root.is_dir():
-        doc_ids.update(path.stem for path in raw_root.glob("*.pdf"))
+        doc_ids.update(sanitize_doc_id(path.stem) for path in raw_root.glob("*.pdf"))
 
     images_root = pdf_images_root(data_root)
     if images_root.is_dir():
-        doc_ids.update(path.name for path in images_root.iterdir() if path.is_dir())
+        doc_ids.update(sanitize_doc_id(path.name) for path in images_root.iterdir() if path.is_dir())
 
     ann_root = annotations_root(data_root)
     if ann_root.is_dir():
-        doc_ids.update(path.stem for path in ann_root.glob("*.json"))
+        doc_ids.update(sanitize_doc_id(path.stem) for path in ann_root.glob("*.json"))
 
     documents = [
         build_document_summary(

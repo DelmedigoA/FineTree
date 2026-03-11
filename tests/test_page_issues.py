@@ -301,7 +301,7 @@ def test_validate_page_issues_flags_equation_and_period_integrity_findings() -> 
                     fact_num=2,
                     value="9",
                     row_role="total",
-                    aggregation_role="additive",
+                    equation_children=[{"fact_num": 1, "operator": "+"}, {"fact_num": 99, "operator": "+"}],
                     equation="10 + 1",
                     fact_equation="f1 + f99",
                     period_type="duration",

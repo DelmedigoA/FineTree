@@ -276,6 +276,34 @@ def test_home_document_card_shows_prepare_for_unprepared_pdf(tmp_path: Path) -> 
     card.close()
 
 
+def test_home_document_card_prefers_source_pdf_stem_as_title(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "דוח כספי 2014 - אגודת הסטודנטים.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "2014"
+    annotations_path = tmp_path / "2014.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="2014",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+
+    card = dashboard.HomeDocumentCard(summary)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.title_label.text() == source_pdf.stem
+    assert card.meta_label.text().startswith(source_pdf.name)
+    card.close()
+
+
 def test_home_document_card_emits_review_toggle_for_prepared_doc(tmp_path: Path) -> None:
     _qt_app()
     source_pdf = tmp_path / "doc.pdf"
@@ -373,6 +401,7 @@ def test_home_document_card_disables_review_when_reg_flags_exist(tmp_path: Path)
     card.show()
     _qt_app().processEvents()
 
+    assert card.pages_label.text() == "Approved 0/2 pages"
     assert card.reg_flags_label.isVisible()
     assert card.reg_flags_label.text() == "⚑ 2 Reg Flags"
     assert card.reg_flags_label.property("tone") == "danger"
@@ -452,6 +481,83 @@ def test_home_view_sorts_documents_by_checked_then_reg_flags_then_warnings(tmp_p
         if isinstance(view.cards_layout.itemAt(index).widget(), dashboard.HomeDocumentCard)
     ]
     assert rendered_doc_ids == ["red_more_warn", "warn_only", "red_first"]
+    view.close()
+
+
+def test_home_view_sorts_documents_by_approved_pages_ascending(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+
+    view = dashboard.HomeView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="three",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=5,
+                annotated_page_count=5,
+                approved_page_count=3,
+                progress_pct=100,
+                status="Complete",
+                updated_at=10.0,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="zero_b",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=4,
+                annotated_page_count=2,
+                approved_page_count=0,
+                progress_pct=50,
+                status="In progress",
+                updated_at=20.0,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="zero_a",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=2,
+                annotated_page_count=1,
+                approved_page_count=0,
+                progress_pct=50,
+                status="In progress",
+                updated_at=30.0,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="one",
+                source_pdf=source_pdf,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=3,
+                annotated_page_count=3,
+                approved_page_count=1,
+                progress_pct=100,
+                status="Complete",
+                updated_at=40.0,
+            ),
+        ]
+    )
+    view.sort_filter.setCurrentText("Approved Asc")
+    _qt_app().processEvents()
+
+    rendered_doc_ids = [
+        view.cards_layout.itemAt(index).widget().summary.doc_id
+        for index in range(view.cards_layout.count())
+        if isinstance(view.cards_layout.itemAt(index).widget(), dashboard.HomeDocumentCard)
+    ]
+    assert rendered_doc_ids == ["zero_a", "zero_b", "one", "three"]
     view.close()
 
 

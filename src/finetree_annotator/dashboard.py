@@ -123,6 +123,10 @@ class DocumentContext:
 
     @property
     def title(self) -> str:
+        if self.pdf_path is not None:
+            pdf_stem = str(self.pdf_path.stem or "").strip()
+            if pdf_stem:
+                return pdf_stem
         return self.doc_id or self.images_dir.name
 
     @classmethod
@@ -305,7 +309,8 @@ class HomeDocumentCard(QFrame):
         self.setProperty("statusTone", _status_tone(summary.status))
         self.style().unpolish(self)
         self.style().polish(self)
-        self.title_label.setText(summary.doc_id)
+        display_title = summary.source_pdf.stem if summary.source_pdf is not None else summary.doc_id
+        self.title_label.setText(display_title)
         pdf_label = summary.source_pdf.name if summary.source_pdf else "No managed PDF"
         self.meta_label.setText(f"{pdf_label}  |  {summary.annotations_path.name}")
         reg_flag_count = int(summary.reg_flag_count or 0)
@@ -324,7 +329,7 @@ class HomeDocumentCard(QFrame):
         else:
             self.warnings_label.setText("")
         self.pages_label.setText(
-            f"Pages {summary.annotated_page_count}/{summary.page_count or 0} annotated"
+            f"Approved {summary.approved_page_count}/{summary.page_count or 0} pages"
         )
         self.facts_label.setText(f"Facts {_format_metric_int(int(summary.fact_count or 0))}")
         self.updated_label.setText(f"Updated {_format_timestamp(summary.updated_at)}")
@@ -470,7 +475,7 @@ class HomeView(QWidget):
         self.status_filter = QComboBox()
         self.status_filter.addItems(["All", "Ready", "In progress", "Complete", "Needs extraction", "Missing pages"])
         self.sort_filter = QComboBox()
-        self.sort_filter.addItems(["Recent", "Issues Desc"])
+        self.sort_filter.addItems(["Recent", "Issues Desc", "Approved Asc"])
         filter_row.addWidget(self.search_edit, 1)
         filter_row.addWidget(self.status_filter)
         filter_row.addWidget(self.sort_filter)
@@ -576,7 +581,17 @@ class HomeView(QWidget):
         self,
         documents: list[WorkspaceDocumentSummary],
     ) -> list[WorkspaceDocumentSummary]:
-        if self.sort_filter.currentText() != "Issues Desc":
+        sort_mode = self.sort_filter.currentText()
+        if sort_mode == "Approved Asc":
+            return sorted(
+                documents,
+                key=lambda doc: (
+                    int(doc.approved_page_count or 0),
+                    int(doc.page_count or 0),
+                    str(doc.doc_id or "").lower(),
+                ),
+            )
+        if sort_mode != "Issues Desc":
             return list(documents)
         return sorted(
             documents,

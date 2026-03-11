@@ -1,0 +1,461 @@
+{
+  "meta_updates": {
+    "statement_type": "statement_of_changes_in_equity"
+  },
+  "fact_updates": [
+    {
+      "fact_num": 1,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2019-10-01"
+      }
+    },
+    {
+      "fact_num": 2,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2019-10-01"
+      }
+    },
+    {
+      "fact_num": 3,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2019-10-01"
+      }
+    },
+    {
+      "fact_num": 4,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2019-10-01"
+      }
+    },
+    {
+      "fact_num": 5,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 1,
+            "operator": "+"
+          },
+          {
+            "fact_num": 2,
+            "operator": "+"
+          },
+          {
+            "fact_num": 3,
+            "operator": "+"
+          },
+          {
+            "fact_num": 4,
+            "operator": "+"
+          }
+        ],
+        "period_type": "instant",
+        "period_end": "2019-10-01"
+      }
+    },
+    {
+      "fact_num": 6,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 7,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 8,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 9,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 10,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 6,
+            "operator": "+"
+          },
+          {
+            "fact_num": 7,
+            "operator": "+"
+          },
+          {
+            "fact_num": 8,
+            "operator": "+"
+          },
+          {
+            "fact_num": 9,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 11,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 12,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 13,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 14,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 15,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 11,
+            "operator": "+"
+          },
+          {
+            "fact_num": 12,
+            "operator": "+"
+          },
+          {
+            "fact_num": 13,
+            "operator": "+"
+          },
+          {
+            "fact_num": 14,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 16,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 17,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 18,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 19,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 20,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 16,
+            "operator": "+"
+          },
+          {
+            "fact_num": 17,
+            "operator": "+"
+          },
+          {
+            "fact_num": 18,
+            "operator": "+"
+          },
+          {
+            "fact_num": 19,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 21,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 22,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 23,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 24,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 25,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 21,
+            "operator": "+"
+          },
+          {
+            "fact_num": 22,
+            "operator": "+"
+          },
+          {
+            "fact_num": 23,
+            "operator": "+"
+          },
+          {
+            "fact_num": 24,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 26,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 27,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 28,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 29,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 30,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 26,
+            "operator": "+"
+          },
+          {
+            "fact_num": 27,
+            "operator": "+"
+          },
+          {
+            "fact_num": 28,
+            "operator": "+"
+          },
+          {
+            "fact_num": 29,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 31,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 32,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 33,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 34,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 35,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 31,
+            "operator": "+"
+          },
+          {
+            "fact_num": 32,
+            "operator": "+"
+          },
+          {
+            "fact_num": 33,
+            "operator": "+"
+          },
+          {
+            "fact_num": 34,
+            "operator": "+"
+          }
+        ],
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 36,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 37,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 38,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 39,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2020-09-30"
+      }
+    },
+    {
+      "fact_num": 40,
+      "updates": {
+        "equation_children": [
+          {
+            "fact_num": 36,
+            "operator": "+"
+          },
+          {
+            "fact_num": 37,
+            "operator": "+"
+          },
+          {
+            "fact_num": 38,
+            "operator": "+"
+          },
+          {
+            "fact_num": 39,
+            "operator": "+"
+          }
+        ],
+        "period_type": "instant",
+        "period_end": "2020-09-30"
+      }
+    }
+  ]
+}
