@@ -1228,7 +1228,7 @@
         "entity_name": "Fold of Honor Foundation",
         "page_num": "3",
         "page_type": "statements",
-        "statement_type": "income_statement",
+        "statement_type": "statement_of_activities",
         "title": "Consolidated Statement of Activities",
         "annotation_note": null,
         "annotation_status": "flagged"
@@ -1251,8 +1251,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1269,7 +1269,7 @@
           "bbox": [
             982.44,
             434.58,
-            141.26,
+            136.17,
             30.43
           ]
         },
@@ -1285,8 +1285,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1319,8 +1319,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1346,8 +1346,8 @@
           "fact_num": 4,
           "equations": [
             {
-              "equation": "135297 + 0",
-              "fact_equation": "f6 + f5"
+              "equation": "135297 - 0",
+              "fact_equation": "f6 - f5"
             }
           ],
           "natural_sign": "positive",
@@ -1358,8 +1358,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1374,9 +1374,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            991.1,
+            1006.36,
             468.6,
-            129.2,
+            108.85,
             35.2
           ]
         },
@@ -1392,8 +1392,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1426,8 +1426,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1453,8 +1453,8 @@
           "fact_num": 7,
           "equations": [
             {
-              "equation": "189593 + 0",
-              "fact_equation": "f9 + f8"
+              "equation": "189593 - 0",
+              "fact_equation": "f9 - f8"
             }
           ],
           "natural_sign": "positive",
@@ -1465,8 +1465,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1481,9 +1481,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            991.1,
+            1006.36,
             534.6,
-            129.2,
+            108.85,
             35.2
           ]
         },
@@ -1499,8 +1499,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1533,8 +1533,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1560,8 +1560,8 @@
           "fact_num": 10,
           "equations": [
             {
-              "equation": "- 142085 + 0",
-              "fact_equation": "- f12 + f11"
+              "equation": "- 142085 - 0",
+              "fact_equation": "f12 - f11"
             }
           ],
           "natural_sign": "negative",
@@ -1572,8 +1572,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1588,9 +1588,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            984.3,
+            999.56,
             567.6,
-            136.0,
+            124.13,
             35.2
           ]
         },
@@ -1606,8 +1606,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1640,8 +1640,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1668,7 +1668,7 @@
           "equations": [
             {
               "equation": "189593 - 142085",
-              "fact_equation": "f7 - f10"
+              "fact_equation": "f7 + f10"
             },
             {
               "equation": "47508 - 0",
@@ -1683,8 +1683,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1692,16 +1692,16 @@
             "Revenue, Support, and Gains",
             "Unrestricted"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1006.61,
-            632.16,
-            115.6,
-            39.6
+            1021.87,
+            640.64,
+            95.25,
+            31.12
           ]
         },
         {
@@ -1721,8 +1721,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1730,7 +1730,7 @@
             "Revenue, Support, and Gains",
             "Temporarily Restricted"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
@@ -1748,7 +1748,7 @@
           "equations": [
             {
               "equation": "189593 - 142085",
-              "fact_equation": "f9 - f12"
+              "fact_equation": "f9 + f12"
             }
           ],
           "natural_sign": "positive",
@@ -1759,8 +1759,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1768,7 +1768,7 @@
             "Revenue, Support, and Gains",
             "Total"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
@@ -1785,8 +1785,8 @@
           "fact_num": 16,
           "equations": [
             {
-              "equation": "18063204 + 0",
-              "fact_equation": "f18 + f17"
+              "equation": "18063204 - 0",
+              "fact_equation": "f18 - f17"
             }
           ],
           "natural_sign": "positive",
@@ -1797,8 +1797,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1813,10 +1813,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            952.0,
-            708.4,
-            168.3,
-            35.2
+            967.26,
+            713.49,
+            153.04,
+            23.33
           ]
         },
         {
@@ -1831,8 +1831,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1865,8 +1865,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1892,8 +1892,8 @@
           "fact_num": 19,
           "equations": [
             {
-              "equation": "- 228894 + 0",
-              "fact_equation": "- f21 + f20"
+              "equation": "- 228894 - 0",
+              "fact_equation": "f21 - f20"
             }
           ],
           "natural_sign": "negative",
@@ -1904,8 +1904,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1920,10 +1920,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            984.3,
-            743.6,
-            136.0,
-            35.2
+            999.56,
+            748.69,
+            120.74,
+            30.11
           ]
         },
         {
@@ -1938,8 +1938,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -1972,8 +1972,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2001,26 +2001,18 @@
             {
               "equation": "17834310 - 0",
               "fact_equation": "f24 - f23"
-            },
-            {
-              "equation": "17834310 + 0",
-              "fact_equation": "f24 - f23"
-            },
-            {
-              "equation": "18063204 - 228894",
-              "fact_equation": "f16 - f19"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
-          "note_flag": true,
+          "note_flag": false,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2028,16 +2020,16 @@
             "Revenue, Support, and Gains",
             "Unrestricted"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            952.0,
+            974.04,
             811.8,
-            168.3,
-            39.6
+            146.26,
+            34.51
           ]
         },
         {
@@ -2057,8 +2049,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2066,7 +2058,7 @@
             "Revenue, Support, and Gains",
             "Temporarily Restricted"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
@@ -2084,7 +2076,7 @@
           "equations": [
             {
               "equation": "18063204 - 228894",
-              "fact_equation": "f18 - f21"
+              "fact_equation": "f18 + f21"
             }
           ],
           "natural_sign": "positive",
@@ -2095,8 +2087,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2104,7 +2096,7 @@
             "Revenue, Support, and Gains",
             "Total"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
@@ -2121,8 +2113,8 @@
           "fact_num": 25,
           "equations": [
             {
-              "equation": "348995 + 0",
-              "fact_equation": "f27 + f26"
+              "equation": "348995 - 0",
+              "fact_equation": "f27 - f26"
             }
           ],
           "natural_sign": "positive",
@@ -2133,8 +2125,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2150,7 +2142,7 @@
           "value_context": "tabular",
           "bbox": [
             991.1,
-            882.2,
+            880.5,
             129.2,
             35.2
           ]
@@ -2167,8 +2159,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2201,8 +2193,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2228,8 +2220,8 @@
           "fact_num": 28,
           "equations": [
             {
-              "equation": "- 16118 + 0",
-              "fact_equation": "- f30 + f29"
+              "equation": "- 16118 - 0",
+              "fact_equation": "f30 - f29"
             }
           ],
           "natural_sign": "negative",
@@ -2240,8 +2232,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2274,8 +2266,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2308,8 +2300,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2347,8 +2339,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2381,8 +2373,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2415,8 +2407,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2442,8 +2434,8 @@
           "fact_num": 34,
           "equations": [
             {
-              "equation": "- 126309 + 0",
-              "fact_equation": "- f36 + f35"
+              "equation": "- 126309 - 0",
+              "fact_equation": "f36 - f35"
             }
           ],
           "natural_sign": "negative",
@@ -2454,8 +2446,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2470,9 +2462,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            984.3,
+            1002.95,
             1020.8,
-            136.0,
+            117.35,
             35.2
           ]
         },
@@ -2488,8 +2480,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2522,8 +2514,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2550,7 +2542,7 @@
           "equations": [
             {
               "equation": "0 + 3783102",
-              "fact_equation": "f39 + f38"
+              "fact_equation": "f39 - f38"
             }
           ],
           "natural_sign": "positive",
@@ -2561,8 +2553,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2577,9 +2569,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            970.7,
+            989.35,
             1056.0,
-            149.6,
+            130.95,
             35.2
           ]
         },
@@ -2595,8 +2587,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2629,8 +2621,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2656,8 +2648,8 @@
           "fact_num": 40,
           "equations": [
             {
-              "equation": "25805247 - 34861",
-              "fact_equation": "f42 - f41"
+              "equation": "135297 + 3763601 - 142085 + 189593 + 18063204 - 228894 + 3783102 - 126309 + 0 - 16118 + 348995",
+              "fact_equation": "f4 + f1 + f10 + f7 + f16 + f19 + f37 + f34 + f31 + f28 + f25"
             }
           ],
           "natural_sign": "positive",
@@ -2668,12 +2660,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Revenue, Support, and Gains",
             "Total revenue, support, and gains",
             "Unrestricted"
           ],
@@ -2683,9 +2676,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            950.01,
+            968.66,
             1122.21,
-            168.3,
+            149.65,
             39.6
           ]
         },
@@ -2695,7 +2688,7 @@
           "equations": [
             {
               "equation": "645955 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 3172008 + 0 - 3783102",
-              "fact_equation": "f2 + f5 + f8 + f11 + f14 + f17 + f20 + f23 + f26 + f29 + f32 + f35 - f38"
+              "fact_equation": "f2 + f5 + f8 + f11 + f14 + f17 + f20 + f23 + f26 + f29 + f32 + f35 + f38"
             }
           ],
           "natural_sign": "positive",
@@ -2706,12 +2699,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Revenue, Support, and Gains",
             "Total revenue, support, and gains",
             "Temporarily Restricted"
           ],
@@ -2733,7 +2727,7 @@
           "equations": [
             {
               "equation": "4409556 + 135297 + 189593 - 142085 + 18063204 - 228894 + 348995 - 16118 + 3172008 - 126309 + 0",
-              "fact_equation": "f3 + f6 + f9 - f12 + f18 - f21 + f27 - f30 + f33 - f36 + f39"
+              "fact_equation": "f3 + f6 + f9 + f12 + f18 + f21 + f27 + f30 + f33 + f36 + f39"
             }
           ],
           "natural_sign": "positive",
@@ -2744,12 +2738,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Revenue, Support, and Gains",
             "Total revenue, support, and gains",
             "Total"
           ],
@@ -2759,7 +2754,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1436.5,
+            1434.8,
             1124.2,
             168.3,
             39.6
@@ -2768,17 +2763,22 @@
         {
           "value": "17900636",
           "fact_num": 43,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "17900636 - 0",
+              "fact_equation": "f45 - f44"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2793,9 +2793,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            952.0,
+            970.65,
             1232.0,
-            168.3,
+            149.65,
             35.2
           ]
         },
@@ -2811,8 +2811,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2845,8 +2845,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2870,17 +2870,22 @@
         {
           "value": "836760",
           "fact_num": 46,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "836760 - 0",
+              "fact_equation": "f48 - f47"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2896,9 +2901,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            991.1,
+            1008.06,
             1300.2,
-            129.2,
+            110.55,
             35.2
           ]
         },
@@ -2914,8 +2919,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2949,8 +2954,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -2975,17 +2980,22 @@
         {
           "value": "1550014",
           "fact_num": 49,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1550014 - 0",
+              "fact_equation": "f51 - f50"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3001,9 +3011,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            970.7,
+            989.35,
             1333.2,
-            149.6,
+            130.95,
             35.2
           ]
         },
@@ -3019,8 +3029,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3054,8 +3064,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3086,10 +3096,6 @@
               "fact_equation": "f54 - f53"
             },
             {
-              "equation": "20287410 + 0",
-              "fact_equation": "f54 - f53"
-            },
-            {
               "equation": "17900636 + 836760 + 1550014",
               "fact_equation": "f43 + f46 + f49"
             }
@@ -3102,12 +3108,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Expenses and Losses",
             "Total expenses",
             "Unrestricted"
           ],
@@ -3117,9 +3124,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            949.97,
+            977.1,
             1401.4,
-            168.3,
+            141.17,
             39.6
           ]
         },
@@ -3140,12 +3147,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Expenses and Losses",
             "Total expenses",
             "Temporarily Restricted"
           ],
@@ -3178,12 +3186,13 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
+            "Expenses and Losses",
             "Total expenses",
             "Total"
           ],
@@ -3202,17 +3211,22 @@
         {
           "value": "5482976",
           "fact_num": 55,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5517837 - 34861",
+              "fact_equation": "f57 - f56"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3244,8 +3258,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3277,8 +3291,8 @@
           "note_num": null,
           "note_ref": null,
           "date": "2017-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
@@ -3301,9 +3315,14 @@
         {
           "value": "7343105",
           "fact_num": 58,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "11050488 - 3707383",
+              "fact_equation": "f60 - f59"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3404,6 +3423,10 @@
             {
               "equation": "16568325 - 3742244",
               "fact_equation": "f63 - f62"
+            },
+            {
+              "equation": "7343105 + 5482976",
+              "fact_equation": "f58 + f55"
             }
           ],
           "natural_sign": "positive",
@@ -3440,12 +3463,12 @@
           "fact_num": 62,
           "equations": [
             {
-              "equation": "34861 + 3707383",
-              "fact_equation": "f56 + f59"
+              "equation": "3707383 + 34861",
+              "fact_equation": "f59 + f56"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3467,7 +3490,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1220.46,
+            1218.35,
             1610.4,
             137.84,
             35.52
@@ -3478,12 +3501,12 @@
           "fact_num": 63,
           "equations": [
             {
-              "equation": "5517837 + 11050488",
-              "fact_equation": "f57 + f60"
+              "equation": "11050488 + 5517837",
+              "fact_equation": "f60 + f57"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3519,7 +3542,7 @@
         "entity_name": "Fold of Honor Foundation",
         "page_num": "4",
         "page_type": "statements",
-        "statement_type": "income_statement",
+        "statement_type": "statement_of_activities",
         "title": "Consolidated Statement of Activities Year Ended December 31, 2016",
         "annotation_note": null,
         "annotation_status": null
@@ -3530,7 +3553,7 @@
           "fact_num": 1,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3553,10 +3576,10 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            917.7,
-            436.0,
-            210.5,
-            36.8
+            992.31,
+            439.39,
+            127.41,
+            26.63
           ]
         },
         {
@@ -3587,9 +3610,9 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            1169.6,
+            1244.21,
             440.0,
-            187.45,
+            112.84,
             29.18
           ]
         },
@@ -3621,9 +3644,9 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            1389.6,
+            1464.21,
             440.0,
-            212.5,
+            137.89,
             30.8
           ]
         },
@@ -3632,7 +3655,7 @@
           "fact_num": 4,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3655,10 +3678,10 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            994.2,
-            471.2,
-            134.0,
-            36.8
+            1009.46,
+            476.29,
+            103.48,
+            24.93
           ]
         },
         {
@@ -3734,7 +3757,7 @@
           "fact_num": 7,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3836,7 +3859,7 @@
           "fact_num": 10,
           "equations": null,
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3938,7 +3961,7 @@
           "fact_num": 13,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3972,7 +3995,7 @@
           "fact_num": 14,
           "equations": null,
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4006,7 +4029,7 @@
           "fact_num": 15,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4040,7 +4063,7 @@
           "fact_num": 16,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4142,7 +4165,7 @@
           "fact_num": 19,
           "equations": null,
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4244,7 +4267,7 @@
           "fact_num": 22,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4278,7 +4301,7 @@
           "fact_num": 23,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -4302,7 +4325,7 @@
           "value_context": null,
           "bbox": [
             1225.78,
-            819.43,
+            817.73,
             132.88,
             30.8
           ]
@@ -4312,7 +4335,7 @@
           "fact_num": 24,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -5592,9 +5615,9 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            917.7,
+            980.44,
             1635.0,
-            210.5,
+            147.76,
             36.8
           ]
         },
@@ -5625,9 +5648,9 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            1169.6,
+            1232.34,
             1639.0,
-            187.2,
+            124.46,
             32.8
           ]
         },
@@ -5658,9 +5681,9 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            1389.6,
+            1452.34,
             1639.0,
-            212.5,
+            149.76,
             30.8
           ]
         }

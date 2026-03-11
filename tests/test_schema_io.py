@@ -1,6 +1,13 @@
 from __future__ import annotations
 
-from finetree_annotator.schema_io import load_any_schema, payload_requires_migration, save_canonical
+import pytest
+
+from finetree_annotator.schema_io import (
+    EquationIntegrityError,
+    load_any_schema,
+    payload_requires_migration,
+    save_canonical,
+)
 from finetree_annotator.schema_registry import CURRENT_SCHEMA_VERSION
 
 
@@ -113,3 +120,60 @@ def test_load_any_schema_remaps_fact_equation_refs_when_fact_nums_shift() -> Non
     facts = out["pages"][0]["facts"]
     assert [fact["fact_num"] for fact in facts] == [1, 2, 3, 4]
     assert facts[3]["equations"][0]["fact_equation"] == "f2 + f3"
+
+
+def test_save_canonical_raises_when_equation_arithmetic_mismatch_exists() -> None:
+    payload = {
+        "images_dir": "data/pdf_images/test",
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"page_type": "other", "statement_type": None},
+                "facts": [
+                    {"bbox": [1, 2, 3, 4], "value": "10", "fact_num": 1, "path": []},
+                    {"bbox": [5, 6, 7, 8], "value": "5", "fact_num": 2, "path": []},
+                    {
+                        "bbox": [9, 10, 11, 12],
+                        "value": "20",
+                        "fact_num": 3,
+                        "equation": "10 + 5",
+                        "fact_equation": "f1 + f2",
+                        "path": [],
+                    },
+                ],
+            }
+        ],
+    }
+
+    with pytest.raises(EquationIntegrityError) as exc_info:
+        save_canonical(payload)
+    assert "equation_arithmetic_mismatch" in str(exc_info.value)
+
+
+def test_load_any_schema_does_not_raise_on_equation_mismatch() -> None:
+    payload = {
+        "images_dir": "data/pdf_images/test",
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"page_type": "other", "statement_type": None},
+                "facts": [
+                    {"bbox": [1, 2, 3, 4], "value": "10", "fact_num": 1, "path": []},
+                    {"bbox": [5, 6, 7, 8], "value": "5", "fact_num": 2, "path": []},
+                    {
+                        "bbox": [9, 10, 11, 12],
+                        "value": "20",
+                        "fact_num": 3,
+                        "equation": "10 + 5",
+                        "fact_equation": "f1 + f2",
+                        "path": [],
+                    },
+                ],
+            }
+        ],
+    }
+
+    out = load_any_schema(payload)
+    assert out["schema_version"] == CURRENT_SCHEMA_VERSION

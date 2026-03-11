@@ -3,11 +3,17 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from .equation_integrity import resequence_fact_numbers_and_remap_fact_equations
+from .equation_integrity import equation_integrity_reg_flags, resequence_fact_numbers_and_remap_fact_equations
 from .fact_normalization import LEGACY_FACT_KEYS, normalize_annotation_payload, normalize_fact_payload
 from .fact_ordering import compact_document_meta
 from .schema_registry import CURRENT_SCHEMA_VERSION
 from .schemas import PageMeta
+
+
+class EquationIntegrityError(ValueError):
+    def __init__(self, message: str, *, findings: list[dict[str, Any]] | None = None) -> None:
+        super().__init__(message)
+        self.findings: list[dict[str, Any]] = list(findings or [])
 
 
 def _assign_missing_fact_numbers(facts: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -158,11 +164,59 @@ def load_any_schema(
     return normalize_payload(payload, from_version=from_version, to_version=to_version)
 
 
+def _equation_guard_findings(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    findings: list[dict[str, Any]] = []
+    pages = payload.get("pages")
+    if not isinstance(pages, list):
+        return findings
+    for page in pages:
+        if not isinstance(page, dict):
+            continue
+        page_image = str(page.get("image") or "").strip() or "<unknown_page>"
+        meta = page.get("meta") if isinstance(page.get("meta"), dict) else {}
+        statement_type = str(meta.get("statement_type") or "").strip() or None
+        facts = [fact for fact in page.get("facts", []) if isinstance(fact, dict)]
+        for finding in equation_integrity_reg_flags(facts, statement_type=statement_type):
+            findings.append({**finding, "page_image": page_image})
+    return findings
+
+
+def _equation_guard_message(findings: list[dict[str, Any]]) -> str:
+    ordered = sorted(
+        findings,
+        key=lambda finding: (
+            str(finding.get("page_image") or ""),
+            int(finding.get("fact_num")) if isinstance(finding.get("fact_num"), int) else 0,
+            str(finding.get("code") or ""),
+        ),
+    )
+    lines: list[str] = []
+    for finding in ordered[:8]:
+        page_image = str(finding.get("page_image") or "<unknown_page>")
+        fact_num = finding.get("fact_num")
+        fact_label = f"f{fact_num}" if isinstance(fact_num, int) else "f?"
+        code = str(finding.get("code") or "equation_integrity_error")
+        message = str(finding.get("message") or "").strip()
+        if message:
+            lines.append(f"{page_image} {fact_label} [{code}] {message}")
+        else:
+            lines.append(f"{page_image} {fact_label} [{code}]")
+    remaining = len(ordered) - len(lines)
+    if remaining > 0:
+        lines.append(f"...and {remaining} more integrity issue(s).")
+    return "Equation integrity check failed; save aborted.\n" + "\n".join(lines)
+
+
 def save_canonical(payload: Any, *, to_version: int = CURRENT_SCHEMA_VERSION) -> dict[str, Any]:
-    return normalize_payload(payload, from_version="auto", to_version=to_version)
+    canonical = normalize_payload(payload, from_version="auto", to_version=to_version)
+    equation_findings = _equation_guard_findings(canonical)
+    if equation_findings:
+        raise EquationIntegrityError(_equation_guard_message(equation_findings), findings=equation_findings)
+    return canonical
 
 
 __all__ = [
+    "EquationIntegrityError",
     "detect_payload_schema_version",
     "load_any_schema",
     "normalize_payload",

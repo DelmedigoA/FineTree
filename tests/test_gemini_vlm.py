@@ -321,6 +321,142 @@ def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, 
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 part-2"
 
 
+def test_stream_content_from_image_writes_partial_output_when_consumer_closes(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    target_image.write_bytes(b"target")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeTypes:
+        Part = _FakePart
+        GenerateContentConfig = _FakeGenerateContentConfig
+
+    class _FakeChunk:
+        def __init__(self, text: str):
+            self.text = text
+
+        def model_dump(self, mode="json"):
+            _ = mode
+            return {"text": self.text}
+
+    class _FakeModels:
+        def generate_content_stream(self, **_kwargs):
+            return iter([_FakeChunk("part-1 "), _FakeChunk("part-2")])
+
+    class _FakeClient:
+        def __init__(self, api_key=None):
+            self.api_key = api_key
+            self.models = _FakeModels()
+
+    class _FakeGenAI:
+        Client = _FakeClient
+
+    monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    stream = gemini_vlm.stream_content_from_image(
+        image_path=target_image,
+        prompt="extract stream",
+        model="Gemini Pro",
+        api_key="k",
+    )
+    assert next(stream) == "part-1 "
+    stream.close()
+
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    event_payloads = [
+        json.loads(line)
+        for line in (log_dir / "events.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    ]
+    aborted_events = [payload for payload in event_payloads if payload["event"] == "stream_aborted"]
+
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 "
+    response_payload = json.loads((log_dir / "response.json").read_text(encoding="utf-8"))
+    assert response_payload["status"] == "aborted"
+    assert aborted_events
+
+
+def test_stream_content_from_image_writes_partial_output_when_stream_errors(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    target_image.write_bytes(b"target")
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeTypes:
+        Part = _FakePart
+        GenerateContentConfig = _FakeGenerateContentConfig
+
+    class _FakeChunk:
+        def __init__(self, text: str):
+            self.text = text
+
+        def model_dump(self, mode="json"):
+            _ = mode
+            return {"text": self.text}
+
+    class _FakeModels:
+        def generate_content_stream(self, **_kwargs):
+            def _gen():
+                yield _FakeChunk("part-1 ")
+                raise RuntimeError("stream boom")
+
+            return _gen()
+
+    class _FakeClient:
+        def __init__(self, api_key=None):
+            self.api_key = api_key
+            self.models = _FakeModels()
+
+    class _FakeGenAI:
+        Client = _FakeClient
+
+    monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    with pytest.raises(RuntimeError, match="stream boom"):
+        list(
+            gemini_vlm.stream_content_from_image(
+                image_path=target_image,
+                prompt="extract stream",
+                model="Gemini Pro",
+                api_key="k",
+            )
+        )
+
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    event_payloads = [
+        json.loads(line)
+        for line in (log_dir / "events.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    ]
+    error_events = [payload for payload in event_payloads if payload["event"] == "stream_error"]
+
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 "
+    response_payload = json.loads((log_dir / "response.json").read_text(encoding="utf-8"))
+    assert response_payload["status"] == "error"
+    assert response_payload["error"] == "stream boom"
+    assert error_events
+
+
 def test_generation_config_uses_high_thinking_for_gemini_3(monkeypatch) -> None:
     class _FakeThinkingConfig:
         def __init__(self, **kwargs):

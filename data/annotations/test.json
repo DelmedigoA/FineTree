@@ -1240,7 +1240,7 @@
           "equations": [
             {
               "equation": "- 16939 + 844368",
-              "fact_equation": "- f30 + f32"
+              "fact_equation": "f30 + f32"
             }
           ],
           "natural_sign": "positive",
@@ -2134,9 +2134,9 @@
           "value_context": null,
           "bbox": [
             476.71,
-            1084.28,
+            1093.29,
             105.16,
-            44.4
+            35.39
           ]
         },
         {
@@ -2166,9 +2166,9 @@
           "value_context": null,
           "bbox": [
             295.61,
-            1085.45,
+            1094.46,
             105.16,
-            44.4
+            35.39
           ]
         },
         {
@@ -2198,9 +2198,9 @@
           "value_context": null,
           "bbox": [
             444.44,
-            1155.62,
+            1164.63,
             117.47,
-            56.56
+            47.55
           ]
         },
         {
@@ -2230,9 +2230,9 @@
           "value_context": null,
           "bbox": [
             279.33,
-            1158.02,
+            1167.03,
             133.27,
-            49.98
+            40.97
           ]
         },
         {
@@ -2262,9 +2262,9 @@
           "value_context": null,
           "bbox": [
             444.99,
-            1209.18,
+            1218.19,
             133.27,
-            49.98
+            40.97
           ]
         },
         {
@@ -2294,17 +2294,22 @@
           "value_context": null,
           "bbox": [
             276.08,
-            1209.43,
+            1218.44,
             133.27,
-            49.98
+            40.97
           ]
         },
         {
           "value": "328968",
           "fact_num": 29,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "345907 - 16939",
+              "fact_equation": "f25 + f27"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2326,17 +2331,22 @@
           "value_context": null,
           "bbox": [
             440.64,
-            1278.76,
+            1286.58,
             124.05,
-            42.08
+            33.07
           ]
         },
         {
           "value": "(16939)",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "132894 - 149833",
+              "fact_equation": "f26 + f28"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2357,10 +2367,10 @@
           "value_type": "amount",
           "value_context": null,
           "bbox": [
-            280.64,
-            1277.87,
+            280.03,
+            1286.88,
             124.05,
-            42.08
+            33.07
           ]
         }
       ]

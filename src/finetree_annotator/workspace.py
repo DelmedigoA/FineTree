@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import unicodedata
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
@@ -49,6 +51,14 @@ class WorkspaceImportResult:
 
 
 def sanitize_doc_id(raw_name: str) -> str:
+    text = unicodedata.normalize("NFC", str(raw_name or "").strip())
+    cleaned = re.sub(r"[^\w.-]+", "_", text, flags=re.UNICODE)
+    cleaned = re.sub(r"_+", "_", cleaned)
+    cleaned = cleaned.strip("._-")
+    return cleaned or "document"
+
+
+def _legacy_sanitize_doc_id(raw_name: str) -> str:
     cleaned = re.sub(r"[^A-Za-z0-9._-]+", "_", str(raw_name or "").strip())
     cleaned = cleaned.strip("._-")
     return cleaned or "document"
@@ -396,16 +406,39 @@ def _resolve_doc_path_aliases(root: Path, *, doc_id: str, suffix: Optional[str] 
     if not root.is_dir():
         return []
 
+    legacy_doc_id = _legacy_sanitize_doc_id(doc_id)
     candidates: list[Path] = []
     if directories_only:
         candidates = [path for path in root.iterdir() if path.is_dir()]
         exact_matches = [path for path in candidates if path.name == doc_id]
-        alias_matches = [path for path in candidates if path.name != doc_id and sanitize_doc_id(path.name) == doc_id]
+        alias_matches = [
+            path
+            for path in candidates
+            if path.name != doc_id
+            and (
+                sanitize_doc_id(path.name) == doc_id
+                or (
+                    doc_id == legacy_doc_id
+                    and _legacy_sanitize_doc_id(path.name) == legacy_doc_id
+                )
+            )
+        ]
     else:
         normalized_suffix = str(suffix or "").lower()
         candidates = [path for path in root.iterdir() if path.is_file() and (not normalized_suffix or path.suffix.lower() == normalized_suffix)]
         exact_matches = [path for path in candidates if path.stem == doc_id]
-        alias_matches = [path for path in candidates if path.stem != doc_id and sanitize_doc_id(path.stem) == doc_id]
+        alias_matches = [
+            path
+            for path in candidates
+            if path.stem != doc_id
+            and (
+                sanitize_doc_id(path.stem) == doc_id
+                or (
+                    doc_id == legacy_doc_id
+                    and _legacy_sanitize_doc_id(path.stem) == legacy_doc_id
+                )
+            )
+        ]
 
     if exact_matches:
         return sorted(exact_matches)
@@ -500,17 +533,37 @@ def discover_workspace_documents(data_root: Path = DEFAULT_DATA_ROOT) -> list[Wo
     doc_ids: set[str] = set()
     checked_doc_ids, reviewed_doc_ids = load_workspace_check_state(data_root)
 
-    raw_root = raw_pdfs_dir(data_root)
-    if raw_root.is_dir():
-        doc_ids.update(sanitize_doc_id(path.stem) for path in raw_root.glob("*.pdf"))
-
     images_root = pdf_images_root(data_root)
+    image_doc_ids: set[str] = set()
     if images_root.is_dir():
-        doc_ids.update(sanitize_doc_id(path.name) for path in images_root.iterdir() if path.is_dir())
+        image_doc_ids = {sanitize_doc_id(path.name) for path in images_root.iterdir() if path.is_dir()}
+        doc_ids.update(image_doc_ids)
 
     ann_root = annotations_root(data_root)
+    annotation_doc_ids: set[str] = set()
     if ann_root.is_dir():
-        doc_ids.update(sanitize_doc_id(path.stem) for path in ann_root.glob("*.json"))
+        annotation_doc_ids = {sanitize_doc_id(path.stem) for path in ann_root.iterdir() if path.is_file() and path.suffix.lower() == ".json"}
+        doc_ids.update(annotation_doc_ids)
+
+    raw_root = raw_pdfs_dir(data_root)
+    if raw_root.is_dir():
+        raw_pdfs = [path for path in raw_root.iterdir() if path.is_file() and path.suffix.lower() == ".pdf"]
+        raw_legacy_counts = Counter(_legacy_sanitize_doc_id(path.stem) for path in raw_pdfs)
+        known_legacy_doc_ids = {_legacy_sanitize_doc_id(doc_id) for doc_id in (image_doc_ids | annotation_doc_ids)}
+        for path in raw_pdfs:
+            new_doc_id = sanitize_doc_id(path.stem)
+            legacy_doc_id = _legacy_sanitize_doc_id(path.stem)
+            # Backward compatibility: keep legacy ASCII id only when unambiguous.
+            if (
+                new_doc_id != legacy_doc_id
+                and raw_legacy_counts[legacy_doc_id] == 1
+                and legacy_doc_id in known_legacy_doc_ids
+                and new_doc_id not in image_doc_ids
+                and new_doc_id not in annotation_doc_ids
+            ):
+                doc_ids.add(legacy_doc_id)
+            else:
+                doc_ids.add(new_doc_id)
 
     documents = [
         build_document_summary(

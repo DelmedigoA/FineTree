@@ -26,6 +26,7 @@ dependencies = [
   "qwen-vl-utils",
   "gradio",
   "pytest>=8,<9",
+  "pytest-qt>=4.4,<5",
 ]
 
 [project.optional-dependencies]

@@ -1112,6 +1112,8 @@ def stream_content_from_image(
     stream_fn = getattr(client.models, "generate_content_stream", None)
     if callable(stream_fn):
         collected_text: list[str] = []
+        stream_status = "completed"
+        stream_error: str | None = None
         request_kwargs: dict[str, Any] = {
             "model": resolved_model,
             "contents": contents,
@@ -1130,21 +1132,48 @@ def stream_content_from_image(
             },
         )
         stream = stream_fn(**request_kwargs)
-        for index, chunk in enumerate(stream):
-            text = getattr(chunk, "text", None)
+        try:
+            for index, chunk in enumerate(stream):
+                text = getattr(chunk, "text", None)
+                _append_gemini_log_event(
+                    session_dir,
+                    "stream_chunk",
+                    {
+                        "index": index,
+                        "text": text or "",
+                        "raw": _serialize_gemini_log_value(chunk),
+                    },
+                )
+                if text:
+                    collected_text.append(text)
+                    yield text
+        except GeneratorExit:
+            stream_status = "aborted"
             _append_gemini_log_event(
                 session_dir,
-                "stream_chunk",
-                {
-                    "index": index,
-                    "text": text or "",
-                    "raw": _serialize_gemini_log_value(chunk),
+                "stream_aborted",
+                {"reason": "consumer_closed", "collected_text_chars": len("".join(collected_text))},
+            )
+            raise
+        except Exception as exc:
+            stream_status = "error"
+            stream_error = str(exc)
+            _append_gemini_log_event(
+                session_dir,
+                "stream_error",
+                {"error": stream_error, "collected_text_chars": len("".join(collected_text))},
+            )
+            raise
+        finally:
+            _write_gemini_log_output(
+                session_dir,
+                text="".join(collected_text),
+                raw={
+                    "streamed": True,
+                    "status": stream_status,
+                    "error": stream_error,
                 },
             )
-            if text:
-                collected_text.append(text)
-                yield text
-        _write_gemini_log_output(session_dir, text="".join(collected_text), raw={"streamed": True})
         return
 
     _append_gemini_log_event(session_dir, "stream_fallback", {"reason": "generate_content_stream unavailable"})
