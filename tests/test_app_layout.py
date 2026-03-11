@@ -2543,6 +2543,51 @@ def test_delete_saved_equation_works_with_current_row_even_without_explicit_sele
     window.close()
 
 
+def test_delete_key_in_equation_variants_list_deletes_selected_variant(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_equation_variants_list.clearSelection()
+    row_1 = window.fact_equation_variants_list.item(1)
+    assert row_1 is not None
+    row_1.setSelected(True)
+    window.fact_equation_variants_list.setCurrentRow(1)
+    window.fact_equation_variants_list.setFocus()
+    _qt_app().processEvents()
+
+    window._delete_selected_fact_shortcut()
+    _qt_app().processEvents()
+
+    assert len(window._fact_items) == 1
+    assert item.scene() is window.scene
+    assert len(item.fact_data["equations"]) == 1
+    assert item.fact_data["equations"][0] == {"equation": "100 + 20", "fact_equation": "f1 + f2"}
+    window.close()
+
+
 def test_equation_variant_order_buttons_reorder_saved_equations(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"

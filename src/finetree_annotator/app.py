@@ -150,6 +150,7 @@ PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
 EQUATION_TERM_INDEX_ROLE = Qt.UserRole + 18
 PATH_OPERATION_INDEX_ROLE = Qt.UserRole + 19
 EQUATION_VARIANT_INDEX_ROLE = Qt.UserRole + 20
+EQUATION_VARIANT_SIGNATURE_ROLE = Qt.UserRole + 21
 VALUE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "value_type")
 VALUE_CONTEXT_OPTIONS: tuple[str, ...] = enum_options("fact", "value_context")
 BALANCE_TYPE_OPTIONS: tuple[str, ...] = ("",)
@@ -885,6 +886,17 @@ class AnnotationView(QGraphicsView):
         painter.drawLine(center.x() - 8, center.y(), center.x() + 8, center.y())
         painter.drawLine(center.x(), center.y() - 8, center.x(), center.y() + 8)
         painter.end()
+
+
+class EquationVariantsListWidget(QListWidget):
+    delete_requested = pyqtSignal()
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() in {Qt.Key_Delete, Qt.Key_Backspace}:
+            self.delete_requested.emit()
+            event.accept()
+            return
+        super().keyPressEvent(event)
 
 
 class AnnotRectItem(QGraphicsRectItem):
@@ -3057,9 +3069,10 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_status_label = QLabel("")
         self.fact_equation_status_label.setObjectName("hintText")
         self.fact_equation_status_label.setWordWrap(True)
-        self.fact_equation_variants_list = QListWidget()
+        self.fact_equation_variants_list = EquationVariantsListWidget()
         self.fact_equation_variants_list.setObjectName("equationVariantsList")
         self.fact_equation_variants_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.fact_equation_variants_list.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.fact_equation_variants_list.setMinimumHeight(66)
         self.fact_equation_variants_list.setMaximumHeight(108)
         self.equation_add_variant_btn = QPushButton("+")
@@ -3587,8 +3600,21 @@ class AnnotationWindow(QMainWindow):
         self.equation_delete_variant_btn.clicked.connect(self.delete_selected_equation_variants_from_selected_fact)
         self.equation_variant_up_btn.clicked.connect(lambda: self.move_selected_equation_variant(-1))
         self.equation_variant_down_btn.clicked.connect(lambda: self.move_selected_equation_variant(1))
+        self.fact_equation_variants_list.delete_requested.connect(self.delete_selected_equation_variants_from_selected_fact)
         self.fact_equation_variants_list.itemSelectionChanged.connect(self._update_equation_variant_controls)
         self.fact_equation_variants_list.itemClicked.connect(self._on_equation_variant_item_clicked)
+        self._equation_variant_delete_shortcut = QShortcut(
+            QKeySequence(Qt.Key_Delete),
+            self.fact_equation_variants_list,
+            activated=self.delete_selected_equation_variants_from_selected_fact,
+        )
+        self._equation_variant_delete_shortcut.setContext(Qt.WidgetShortcut)
+        self._equation_variant_backspace_shortcut = QShortcut(
+            QKeySequence(Qt.Key_Backspace),
+            self.fact_equation_variants_list,
+            activated=self.delete_selected_equation_variants_from_selected_fact,
+        )
+        self._equation_variant_backspace_shortcut.setContext(Qt.WidgetShortcut)
         self.fact_equation_terms_list.itemSelectionChanged.connect(self._update_equation_term_controls)
         self.fact_equation_terms_list.itemDoubleClicked.connect(self._on_equation_term_item_double_clicked)
         self.equation_mark_add_btn.clicked.connect(lambda: self._apply_operator_to_selected_equation_terms("+"))
@@ -4820,6 +4846,7 @@ class AnnotationWindow(QMainWindow):
                 item = QListWidgetItem(f"{index + 1}. {preview}")
                 item.setToolTip(equation_text)
                 item.setData(EQUATION_VARIANT_INDEX_ROLE, index)
+                item.setData(EQUATION_VARIANT_SIGNATURE_ROLE, _equation_bundle_signature(bundle))
                 self.fact_equation_variants_list.addItem(item)
             if self.fact_equation_variants_list.count() > 0:
                 self.fact_equation_variants_list.setCurrentRow(0)
@@ -4855,6 +4882,24 @@ class AnnotationWindow(QMainWindow):
             if current_index is not None:
                 indices.append(current_index)
         return sorted(set(indices))
+
+    def _selected_equation_variant_signatures(self) -> set[tuple[str, str]]:
+        if not hasattr(self, "fact_equation_variants_list"):
+            return set()
+        signatures: set[tuple[str, str]] = set()
+        for item in self.fact_equation_variants_list.selectedItems():
+            raw_signature = item.data(EQUATION_VARIANT_SIGNATURE_ROLE)
+            if isinstance(raw_signature, tuple) and len(raw_signature) == 2:
+                signatures.add((str(raw_signature[0] or ""), str(raw_signature[1] or "")))
+        if signatures:
+            return signatures
+        current_item = self.fact_equation_variants_list.currentItem()
+        if current_item is None:
+            return set()
+        raw_signature = current_item.data(EQUATION_VARIANT_SIGNATURE_ROLE)
+        if isinstance(raw_signature, tuple) and len(raw_signature) == 2:
+            return {(str(raw_signature[0] or ""), str(raw_signature[1] or ""))}
+        return set()
 
     def _update_equation_variant_controls(self) -> None:
         if not hasattr(self, "fact_equation_variants_list"):
@@ -4915,8 +4960,8 @@ class AnnotationWindow(QMainWindow):
         target_item = selected_items[0]
         if not self._is_alive_fact_item(target_item):
             return
-        selected_indices = self._selected_equation_variant_indices()
-        if not selected_indices:
+        selected_signatures = self._selected_equation_variant_signatures()
+        if not selected_signatures:
             self.statusBar().showMessage("Select saved equation(s) to delete.", 2200)
             return
         current = normalize_fact_data(target_item.fact_data)
@@ -4924,11 +4969,11 @@ class AnnotationWindow(QMainWindow):
         if not equation_bundles:
             self.statusBar().showMessage("No saved equations to delete.", 2200)
             return
-        selected_set = {idx for idx in selected_indices if 0 <= idx < len(equation_bundles)}
-        if not selected_set:
+        remaining = [bundle for bundle in equation_bundles if _equation_bundle_signature(bundle) not in selected_signatures]
+        deleted_count = len(equation_bundles) - len(remaining)
+        if deleted_count <= 0:
             self.statusBar().showMessage("No saved equations to delete.", 2200)
             return
-        remaining = [bundle for idx, bundle in enumerate(equation_bundles) if idx not in selected_set]
         if remaining:
             updated = _fact_payload_with_active_equation_bundle(current, remaining, active_index=0)
         else:
@@ -4946,7 +4991,6 @@ class AnnotationWindow(QMainWindow):
         self.refresh_facts_list()
         self._record_history_snapshot()
         self._focus_equation_panel()
-        deleted_count = len(selected_set)
         if deleted_count == 1:
             self.statusBar().showMessage("Deleted 1 selected saved equation.", 2400)
         else:
@@ -9300,6 +9344,10 @@ class AnnotationWindow(QMainWindow):
         return False
 
     def _delete_selected_fact_shortcut(self) -> None:
+        focus_widget = QApplication.focusWidget()
+        if focus_widget in {self.fact_equation_variants_list, self.fact_equation_variants_list.viewport()}:
+            self.delete_selected_equation_variants_from_selected_fact()
+            return
         if self._delete_shortcut_blocked_by_focus():
             self.statusBar().showMessage("Delete shortcut is disabled while editing fields.", 2200)
             return
