@@ -344,11 +344,19 @@ def _build_equation_from_fact_equation_terms(
             invalid_refs.append(ref)
             continue
 
+        raw_child_value = str(fact.get("value") or "").strip()
+        force_operator_sign = raw_child_value == "-"
+        contribution_sign = -1 if operator == "-" else 1
         contribution = parsed * Decimal(_natural_sign_multiplier(fact.get("natural_sign"))) * Decimal(-1 if operator == "-" else 1)
         rendered_sign = -1 if contribution < 0 else 1
         prefix = ""
         if valid_count > 0:
-            prefix = "- " if rendered_sign < 0 else "+ "
+            if force_operator_sign:
+                prefix = "- " if contribution_sign < 0 else "+ "
+            else:
+                prefix = "- " if rendered_sign < 0 else "+ "
+        elif force_operator_sign and contribution_sign < 0:
+            prefix = "- "
         elif rendered_sign < 0:
             prefix = "- "
         numeric_terms.append(f"{prefix}{display}" if prefix else display)

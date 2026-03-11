@@ -1667,8 +1667,8 @@
           "fact_num": 13,
           "equations": [
             {
-              "equation": "47508 + 0",
-              "fact_equation": "f15 - f14"
+              "equation": "189593 - 142085",
+              "fact_equation": "f7 - f10"
             },
             {
               "equation": "47508 - 0",
@@ -1698,7 +1698,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1004.7,
+            1006.61,
             632.16,
             115.6,
             39.6
@@ -1999,18 +1999,22 @@
           "fact_num": 22,
           "equations": [
             {
+              "equation": "17834310 - 0",
+              "fact_equation": "f24 - f23"
+            },
+            {
               "equation": "17834310 + 0",
               "fact_equation": "f24 - f23"
             },
             {
-              "equation": "17834310 - 0",
-              "fact_equation": "f24 - f23"
+              "equation": "18063204 - 228894",
+              "fact_equation": "f16 - f19"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
-          "note_flag": false,
+          "note_flag": true,
           "note_name": null,
           "note_num": null,
           "note_ref": null,
@@ -3078,12 +3082,20 @@
           "fact_num": 52,
           "equations": [
             {
+              "equation": "20287410 - 0",
+              "fact_equation": "f54 - f53"
+            },
+            {
+              "equation": "20287410 + 0",
+              "fact_equation": "f54 - f53"
+            },
+            {
               "equation": "17900636 + 836760 + 1550014",
               "fact_equation": "f43 + f46 + f49"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -3390,12 +3402,12 @@
           "fact_num": 61,
           "equations": [
             {
-              "equation": "5482976 + 7343105",
-              "fact_equation": "f55 + f58"
+              "equation": "16568325 - 3742244",
+              "fact_equation": "f63 - f62"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,

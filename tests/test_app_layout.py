@@ -2717,6 +2717,64 @@ def test_readding_dash_subtractive_equation_does_not_restore_deleted_additive_va
     window.close()
 
 
+def test_deleting_dash_additive_variant_does_not_return_after_refresh(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "fact_num": 1,
+            "value": "100",
+            "equation": "100 + 0",
+            "fact_equation": "f2 + f3",
+            "equations": [
+                {"equation": "100 + 0", "fact_equation": "f2 + f3"},
+                {"equation": "100 - 0", "fact_equation": "f2 - f3"},
+            ],
+        },
+    )
+    child_amount = AnnotRectItem(QRectF(40, 10, 20, 20), {"fact_num": 2, "value": "100"})
+    child_dash = AnnotRectItem(QRectF(70, 10, 20, 20), {"fact_num": 3, "value": "-"})
+    window.scene.addItem(target)
+    window.scene.addItem(child_amount)
+    window.scene.addItem(child_dash)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_variants_list.count() == 2
+    first_row = window.fact_equation_variants_list.item(0)
+    assert first_row is not None
+    first_row.setSelected(True)
+    window.fact_equation_variants_list.setCurrentItem(first_row)
+    _qt_app().processEvents()
+
+    window.equation_delete_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert target.fact_data["equations"] == [{"equation": "100 - 0", "fact_equation": "f2 - f3"}]
+
+    # Force multiple refresh cycles (same path used during normal UI interactions).
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+    target.setSelected(True)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    assert target.fact_data["equations"] == [{"equation": "100 - 0", "fact_equation": "f2 - f3"}]
+    assert window.fact_equation_variants_list.count() == 1
+    assert window.fact_equation_variants_list.item(0).text().endswith("100 - 0")
+    window.close()
+
+
 def test_delete_shortcut_ignored_while_equation_field_focused(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
