@@ -4,6 +4,7 @@ import pytest
 
 from finetree_annotator.schema_io import (
     EquationIntegrityError,
+    canonicalize_with_findings,
     load_any_schema,
     payload_requires_migration,
     save_canonical,
@@ -177,3 +178,33 @@ def test_load_any_schema_does_not_raise_on_equation_mismatch() -> None:
 
     out = load_any_schema(payload)
     assert out["schema_version"] == CURRENT_SCHEMA_VERSION
+
+
+def test_canonicalize_with_findings_allows_equation_warnings_without_raising() -> None:
+    payload = {
+        "images_dir": "data/pdf_images/test",
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"page_type": "other", "statement_type": None},
+                "facts": [
+                    {"bbox": [1, 2, 3, 4], "value": "10", "fact_num": 1, "path": []},
+                    {"bbox": [5, 6, 7, 8], "value": "5", "fact_num": 2, "path": []},
+                    {
+                        "bbox": [9, 10, 11, 12],
+                        "value": "20",
+                        "fact_num": 3,
+                        "equation": "10 + 5",
+                        "fact_equation": "f1 + f2",
+                        "path": [],
+                    },
+                ],
+            }
+        ],
+    }
+
+    canonical, findings = canonicalize_with_findings(payload, strict_equation_guards=False)
+
+    assert canonical["schema_version"] == CURRENT_SCHEMA_VERSION
+    assert any(finding.get("code") == "equation_arithmetic_mismatch" for finding in findings)

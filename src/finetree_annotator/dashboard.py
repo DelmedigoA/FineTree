@@ -51,6 +51,7 @@ from .workspace import (
     build_document_summary,
     discover_workspace_documents,
     import_pdf_to_workspace,
+    reset_document_approved_pages,
     set_document_checked as set_workspace_document_checked,
     set_document_reviewed as set_workspace_document_reviewed,
 )
@@ -424,6 +425,7 @@ class HomeDocumentCard(QFrame):
 
 class HomeView(QWidget):
     import_pdf_requested = pyqtSignal()
+    reset_approved_requested = pyqtSignal()
     open_document_requested = pyqtSignal(str)
     prepare_document_requested = pyqtSignal(str)
     checked_document_requested = pyqtSignal(str, bool)
@@ -458,8 +460,14 @@ class HomeView(QWidget):
         header_text.addWidget(self.title_label)
         header_text.addWidget(self.subtitle_label)
         title_row.addLayout(header_text, 1)
+        actions = QHBoxLayout()
+        actions.setSpacing(8)
+        self.reset_approved_btn = _set_button_variant(QPushButton("Reset all approved"), "ghost")
+        self.reset_approved_btn.setEnabled(False)
         self.import_btn = _set_button_variant(QPushButton("Import PDF"), "primary")
-        title_row.addWidget(self.import_btn, 0, Qt.AlignTop)
+        actions.addWidget(self.reset_approved_btn, 0, Qt.AlignTop)
+        actions.addWidget(self.import_btn, 0, Qt.AlignTop)
+        title_row.addLayout(actions, 0)
         header_layout.addLayout(title_row)
         root.addWidget(header_card)
 
@@ -494,6 +502,7 @@ class HomeView(QWidget):
         root.addWidget(self.scroll, 1)
 
         self.import_btn.clicked.connect(self.import_pdf_requested.emit)
+        self.reset_approved_btn.clicked.connect(self.reset_approved_requested.emit)
         self.search_edit.textChanged.connect(self._render_documents)
         self.status_filter.currentTextChanged.connect(self._render_documents)
         self.sort_filter.currentTextChanged.connect(self._render_documents)
@@ -533,6 +542,8 @@ class HomeView(QWidget):
             if widget is not None:
                 widget.setParent(None)
         total_docs = len(self._documents)
+        total_pages = sum(doc.page_count for doc in self._documents)
+        total_approved_pages = sum(int(doc.approved_page_count or 0) for doc in self._documents)
         visible_pages = sum(doc.page_count for doc in visible_docs)
         annotated_pages = sum(doc.annotated_page_count for doc in visible_docs)
         complete_docs = sum(1 for doc in visible_docs if doc.progress_pct >= 100 and doc.page_count > 0)
@@ -543,9 +554,12 @@ class HomeView(QWidget):
         total_annotated_tokens = sum(int(doc.annotated_token_count or 0) for doc in self._documents)
         token_progress_pct = int(round((total_annotated_tokens / TOKEN_TARGET) * 100)) if total_annotated_tokens else 0
         avg_progress = int(round((annotated_pages / visible_pages) * 100)) if visible_pages else 0
+        approved_pct = int(round((total_approved_pages / total_pages) * 100)) if total_pages else 0
+        self.reset_approved_btn.setEnabled(total_approved_pages > 0)
         cards = (
             self._stat_card("Documents", str(total_docs), f"{len(visible_docs)} visible"),
             self._stat_card("Coverage", f"{avg_progress}%", f"{annotated_pages}/{visible_pages or 0} visible pages annotated"),
+            self._stat_card("% Approved Pages", f"{approved_pct}%", f"{total_approved_pages}/{total_pages or 0} across workspace"),
             self._stat_card("Completed", str(complete_docs), "Fully annotated document sets"),
             self._stat_card(
                 "Annotated Images",
@@ -730,6 +744,15 @@ class AnnotatorHost(QWidget):
                 except Exception:
                     continue
         return summaries
+
+    def managed_windows(self) -> list[tuple[DocumentContext, app_mod.AnnotationWindow]]:
+        managed: list[tuple[DocumentContext, app_mod.AnnotationWindow]] = []
+        for key, window in self._windows.items():
+            context = self._contexts.get(key)
+            if context is None or not context.managed:
+                continue
+            managed.append((context, window))
+        return managed
 
     def confirm_close_all_documents(self) -> bool:
         confirmed_windows: list[app_mod.AnnotationWindow] = []
@@ -1385,6 +1408,7 @@ class DashboardWindow(QMainWindow):
         self.hide_nav_btn.clicked.connect(lambda: self.set_nav_visible(False))
         self.show_nav_btn.clicked.connect(lambda: self.set_nav_visible(True))
         self.home_view.import_pdf_requested.connect(self._choose_pdf_for_import)
+        self.home_view.reset_approved_requested.connect(self.reset_all_approved_pages)
         self.home_view.open_document_requested.connect(self.open_workspace_document)
         self.home_view.prepare_document_requested.connect(self.prepare_workspace_document)
         self.home_view.checked_document_requested.connect(self.set_document_checked)
@@ -1622,6 +1646,50 @@ class DashboardWindow(QMainWindow):
         state_text = "reviewed" if reviewed else "not reviewed"
         self.statusBar().showMessage(f"{doc_id} marked as {state_text}.", 3000)
 
+    def reset_all_approved_pages(self) -> None:
+        total_approved = sum(int(doc.approved_page_count or 0) for doc in self._documents_by_id.values())
+        if total_approved <= 0:
+            self.statusBar().showMessage("No approved pages to reset.", 2500)
+            return
+        for context, window in self.annotator_host.managed_windows():
+            has_unsaved_changes = getattr(window, "has_unsaved_changes", None)
+            if callable(has_unsaved_changes) and has_unsaved_changes():
+                QMessageBox.warning(
+                    self,
+                    "Reset all approved",
+                    (
+                        "Save or discard changes in open annotator windows before resetting approved pages. "
+                        f"Blocked by {context.doc_id}."
+                    ),
+                )
+                return
+        answer = QMessageBox.question(
+            self,
+            "Reset all approved",
+            f"Are you sure you want to disapprove {total_approved} pages?",
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return
+
+        changed_pages = 0
+        open_windows_by_doc_id = {
+            context.doc_id: window
+            for context, window in self.annotator_host.managed_windows()
+        }
+        for summary in self._documents_by_id.values():
+            window = open_windows_by_doc_id.get(summary.doc_id)
+            live_changed = 0
+            if window is not None:
+                reset_live = getattr(window, "reset_all_approved_pages", None)
+                if callable(reset_live):
+                    live_changed = int(reset_live(mark_saved_state=True))
+            disk_changed = int(reset_document_approved_pages(summary.annotations_path))
+            changed_pages += max(live_changed, disk_changed)
+        self.reload_workspace()
+        self.statusBar().showMessage(f"Disapproved {changed_pages} page(s).", 5000)
+
     def _on_document_issues_changed(self, context: Optional[DocumentContext], summary: Any) -> None:
         if context is None or not context.managed:
             return
@@ -1730,10 +1798,7 @@ class DashboardWindow(QMainWindow):
             if no_changes:
                 message = "Workspace document saved (no changes)."
             if warning_count > 0:
-                message = (
-                    f"{message.rstrip('.')} with {warning_count} format warning(s). "
-                    "Run scripts/check_fact_schema_format.py for details."
-                )
+                message = f"{message.rstrip('.')} with {warning_count} warning(s)."
                 duration_ms = 7000
             if backup_path:
                 message = f"{message.rstrip('.')} Legacy backup created."

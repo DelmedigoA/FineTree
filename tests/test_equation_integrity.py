@@ -163,6 +163,43 @@ def test_audit_and_rebuild_financial_facts_flags_missing_refs_mismatch_and_perio
     assert "duration_date_year_mismatch" in codes
 
 
+def test_audit_and_rebuild_financial_facts_warns_on_nonascending_fact_equation_order() -> None:
+    facts = [
+        {"fact_num": 1, "value": "10", "path": ["A"]},
+        {"fact_num": 2, "value": "5", "path": ["A"]},
+        {
+            "fact_num": 3,
+            "value": "15",
+            "row_role": "total",
+            "fact_equation": "f2 + f1",
+            "path": ["A", "total"],
+        },
+    ]
+
+    _rebuilt, findings = audit_and_rebuild_financial_facts(facts, apply_repairs=True)
+
+    warning = next(finding for finding in findings if finding.get("code") == "fact_equation_non_ascending_reference_order")
+    assert warning["severity"] == "warning"
+    assert warning["fact_num"] == 3
+
+
+def test_audit_and_rebuild_financial_facts_allows_duration_without_range() -> None:
+    facts = [
+        {
+            "fact_num": 1,
+            "value": "10",
+            "period_type": "duration",
+            "period_start": None,
+            "period_end": None,
+            "path": ["A"],
+        }
+    ]
+
+    _rebuilt, findings = audit_and_rebuild_financial_facts(facts, apply_repairs=False)
+
+    assert all(finding.get("code") != "duration_missing_period_bounds" for finding in findings)
+
+
 def test_remap_fact_equation_references_maps_resequenced_fact_nums() -> None:
     remapped = remap_fact_equation_references("f1 + f2 - f7", {1: 2, 2: 3, 7: 8})
     assert remapped == "f2 + f3 - f8"

@@ -207,15 +207,30 @@ def _equation_guard_message(findings: list[dict[str, Any]]) -> str:
     return "Equation integrity check failed; save aborted.\n" + "\n".join(lines)
 
 
-def save_canonical(payload: Any, *, to_version: int = CURRENT_SCHEMA_VERSION) -> dict[str, Any]:
+def canonicalize_with_findings(
+    payload: Any,
+    *,
+    to_version: int = CURRENT_SCHEMA_VERSION,
+    strict_equation_guards: bool = True,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     canonical = normalize_payload(payload, from_version="auto", to_version=to_version)
     equation_findings = _equation_guard_findings(canonical)
-    if equation_findings:
+    if strict_equation_guards and equation_findings:
         raise EquationIntegrityError(_equation_guard_message(equation_findings), findings=equation_findings)
+    return canonical, equation_findings
+
+
+def save_canonical(payload: Any, *, to_version: int = CURRENT_SCHEMA_VERSION) -> dict[str, Any]:
+    canonical, _equation_findings = canonicalize_with_findings(
+        payload,
+        to_version=to_version,
+        strict_equation_guards=True,
+    )
     return canonical
 
 
 __all__ = [
+    "canonicalize_with_findings",
     "EquationIntegrityError",
     "detect_payload_schema_version",
     "load_any_schema",

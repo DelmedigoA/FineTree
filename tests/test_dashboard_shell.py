@@ -623,6 +623,28 @@ def test_home_view_stats_include_annotated_image_and_token_totals(tmp_path: Path
     view.close()
 
 
+def test_home_view_initializes_approved_metric_at_zero() -> None:
+    _qt_app()
+    view = dashboard.HomeView()
+    view.set_documents([])
+    _qt_app().processEvents()
+
+    stats: dict[str, tuple[str, str]] = {}
+    for index in range(view.stats_grid.count()):
+        card = view.stats_grid.itemAt(index).widget()
+        if card is None or card.layout() is None:
+            continue
+        layout = card.layout()
+        title = layout.itemAt(0).widget().text()
+        value = layout.itemAt(1).widget().text()
+        caption = layout.itemAt(2).widget().text()
+        stats[title] = (value, caption)
+
+    assert stats["% Approved Pages"] == ("0%", "0/0 across workspace")
+    assert view.reset_approved_btn.isEnabled() is False
+    view.close()
+
+
 def test_home_document_card_uses_state_based_open_label(tmp_path: Path) -> None:
     _qt_app()
     source_pdf = tmp_path / "doc.pdf"
@@ -865,8 +887,62 @@ def test_dashboard_shows_save_warnings_in_status_pane(tmp_path: Path) -> None:
     assert reloads == ["reload"]
     message = window.statusBar().currentMessage()
     assert "Workspace document saved" in message
-    assert "with 3 format warning(s)" in message
+    assert "with 3 warning(s)" in message
     assert "Legacy backup created." in message
+    window.close()
+
+
+def test_dashboard_resets_all_approved_pages_workspace_wide(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    summary_a = WorkspaceDocumentSummary(
+        doc_id="doc_a",
+        source_pdf=tmp_path / "doc_a.pdf",
+        images_dir=tmp_path / "doc_a",
+        annotations_path=tmp_path / "doc_a.json",
+        thumbnail_path=None,
+        page_count=3,
+        annotated_page_count=3,
+        approved_page_count=2,
+        progress_pct=100,
+        status="Complete",
+        updated_at=None,
+    )
+    summary_b = WorkspaceDocumentSummary(
+        doc_id="doc_b",
+        source_pdf=tmp_path / "doc_b.pdf",
+        images_dir=tmp_path / "doc_b",
+        annotations_path=tmp_path / "doc_b.json",
+        thumbnail_path=None,
+        page_count=2,
+        annotated_page_count=1,
+        approved_page_count=1,
+        progress_pct=50,
+        status="In progress",
+        updated_at=None,
+    )
+    window._documents_by_id = {summary_a.doc_id: summary_a, summary_b.doc_id: summary_b}
+    window.home_view.set_documents([summary_a, summary_b])
+
+    confirmations: list[str] = []
+    resets: list[Path] = []
+    reloads: list[str] = []
+    monkeypatch.setattr(
+        dashboard.QMessageBox,
+        "question",
+        lambda _parent, _title, message, *_args: (confirmations.append(message), dashboard.QMessageBox.Yes)[1],
+    )
+    monkeypatch.setattr(window.annotator_host, "managed_windows", lambda: [])
+    monkeypatch.setattr(dashboard, "reset_document_approved_pages", lambda path: resets.append(path) or (2 if path == summary_a.annotations_path else 1))
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window.reset_all_approved_pages()
+
+    assert confirmations == ["Are you sure you want to disapprove 3 pages?"]
+    assert resets == [summary_a.annotations_path, summary_b.annotations_path]
+    assert reloads == ["reload"]
+    assert window.statusBar().currentMessage() == "Disapproved 3 page(s)."
     window.close()
 
 

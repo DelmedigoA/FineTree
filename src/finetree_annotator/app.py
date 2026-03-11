@@ -18,7 +18,7 @@ from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
 from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, pyqtSignal, QRegularExpression
-from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTransform, QRegularExpressionValidator
+from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform, QRegularExpressionValidator
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -61,7 +61,7 @@ from .annotation_core import (
     SCALE_OPTIONS,
     apply_entity_name_to_pages,
     bbox_to_list,
-    build_annotations_payload,
+    build_annotations_payload_with_findings,
     denormalize_bbox_from_1000,
     default_page_meta,
     extract_document_meta,
@@ -92,7 +92,7 @@ from .schema_contract import (
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
-from .schema_io import EquationIntegrityError, load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
+from .schema_io import load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
 from .schema_ui import enum_options
 from .schemas import PageExtraction, PageMeta, PageType
 from .workspace import page_has_annotation
@@ -165,17 +165,6 @@ DURATION_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "duration_type")
 RECURRING_PERIOD_OPTIONS: tuple[str, ...] = enum_options("fact", "recurring_period")
 REPORT_SCOPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "report_scope")
 GEMINI_THINKING_LEVEL_OPTIONS: tuple[str, ...] = ("minimal", "low", "medium", "high")
-PAGE_STATUS_FILTER_OPTIONS: tuple[tuple[str, str], ...] = (
-    ("All Pages", "all"),
-    ("Approved", "approved"),
-    ("Flagged", "flagged"),
-    ("Unclassified", "none"),
-)
-PAGE_STATUS_SORT_OPTIONS: tuple[tuple[str, str], ...] = (
-    ("Page Order", "page"),
-    ("Approved First", "approved_first"),
-    ("Flagged First", "flagged_first"),
-)
 GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
     ("period_type", True),
     ("period_start", True),
@@ -623,6 +612,8 @@ def _fact_payload_with_active_equation_bundle(
     return normalize_fact_data(
         {
             **base_fact,
+            "equation": active_bundle.get("equation"),
+            "fact_equation": active_bundle.get("fact_equation"),
             "equations": ordered_bundles,
         }
     )
@@ -2039,6 +2030,83 @@ class GeminiStreamDialog(QDialog):
         self.stop_btn.setEnabled(False)
 
 
+class PageJsonDialog(QDialog):
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self._current_text = ""
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.resize(920, 640)
+
+        root = QVBoxLayout(self)
+        hint = QLabel("Current page representation in the annotations JSON schema.")
+        hint.setWordWrap(True)
+        root.addWidget(hint)
+
+        search_row = QHBoxLayout()
+        self.search_edit = QLineEdit()
+        self.search_edit.setPlaceholderText("Search JSON")
+        self.search_prev_btn = QPushButton("Previous")
+        self.search_next_btn = QPushButton("Next")
+        search_row.addWidget(self.search_edit, 1)
+        search_row.addWidget(self.search_prev_btn)
+        search_row.addWidget(self.search_next_btn)
+        root.addLayout(search_row)
+
+        self.text_view = QPlainTextEdit()
+        self.text_view.setReadOnly(True)
+        root.addWidget(self.text_view, 1)
+
+        actions = QHBoxLayout()
+        self.copy_btn = QPushButton("Copy JSON")
+        self.close_btn = QPushButton("Close")
+        actions.addWidget(self.copy_btn)
+        actions.addStretch(1)
+        actions.addWidget(self.close_btn)
+        root.addLayout(actions)
+
+        self.search_edit.returnPressed.connect(self.find_next)
+        self.search_next_btn.clicked.connect(self.find_next)
+        self.search_prev_btn.clicked.connect(self.find_previous)
+        self.close_btn.clicked.connect(self.close)
+        self._find_shortcut = QShortcut(QKeySequence.Find, self, activated=self.focus_search)
+        self._find_shortcut.setContext(Qt.WindowShortcut)
+
+    def set_page_json(self, *, title: str, page_text: str, fact_start_pos: Optional[int] = None) -> None:
+        self.setWindowTitle(title)
+        if page_text != self._current_text:
+            self._current_text = page_text
+            self.text_view.setPlainText(page_text)
+        if fact_start_pos is not None and fact_start_pos >= 0:
+            cursor = self.text_view.textCursor()
+            cursor.setPosition(int(fact_start_pos))
+            self.text_view.setTextCursor(cursor)
+            self.text_view.centerCursor()
+
+    def focus_search(self) -> None:
+        self.search_edit.setFocus(Qt.ShortcutFocusReason)
+        self.search_edit.selectAll()
+
+    def find_next(self) -> bool:
+        return self._find_text(backward=False)
+
+    def find_previous(self) -> bool:
+        return self._find_text(backward=True)
+
+    def _find_text(self, *, backward: bool) -> bool:
+        needle = self.search_edit.text().strip()
+        if not needle:
+            self.focus_search()
+            return False
+        flags = QTextDocument.FindBackward if backward else QTextDocument.FindFlags()
+        if self.text_view.find(needle, flags):
+            return True
+        cursor = self.text_view.textCursor()
+        cursor.movePosition(QTextCursor.End if backward else QTextCursor.Start)
+        self.text_view.setTextCursor(cursor)
+        return self.text_view.find(needle, flags)
+
+
 class GeminiStreamWorker(QObject):
     chunk_received = pyqtSignal(str)
     meta_received = pyqtSignal(dict)
@@ -2384,6 +2452,8 @@ class AnnotationWindow(QMainWindow):
         self._history_limit = 200
         self._history: List[Dict[str, Any]] = []
         self._history_index = -1
+        self._page_json_dialog: Optional[PageJsonDialog] = None
+        self._save_shortcut_in_flight = False
         self._gemini_stream_thread: Optional[QThread] = None
         self._gemini_stream_worker: Optional[GeminiStreamWorker] = None
         self._gemini_stream_target_page: Optional[str] = None
@@ -2829,19 +2899,7 @@ class AnnotationWindow(QMainWindow):
         thumb_layout.setSpacing(4)
         thumb_title = QLabel("Pages")
         thumb_title.setObjectName("hintText")
-        self.page_thumb_filter_combo = QComboBox()
-        for label, value in PAGE_STATUS_FILTER_OPTIONS:
-            self.page_thumb_filter_combo.addItem(label, value)
-        self.page_thumb_filter_combo.setCurrentIndex(0)
-        self.page_thumb_sort_combo = QComboBox()
-        for label, value in PAGE_STATUS_SORT_OPTIONS:
-            self.page_thumb_sort_combo.addItem(label, value)
-        self.page_thumb_sort_combo.setCurrentIndex(0)
-        self.page_thumb_filter_combo.setMinimumWidth(120)
-        self.page_thumb_sort_combo.setMinimumWidth(120)
         thumb_layout.addWidget(thumb_title)
-        thumb_layout.addWidget(self.page_thumb_filter_combo)
-        thumb_layout.addWidget(self.page_thumb_sort_combo)
         thumb_layout.addWidget(self.page_thumb_list, 1)
 
         splitter.addWidget(thumb_panel)
@@ -2947,9 +3005,6 @@ class AnnotationWindow(QMainWindow):
         fact_layout = QVBoxLayout(fact_box)
         fact_layout.setContentsMargins(14, 14, 14, 12)
         fact_layout.setSpacing(8)
-        self.show_order_labels_check = QCheckBox("Show order labels on bboxes")
-        self.show_order_labels_check.setObjectName("inspectorOption")
-        self.show_order_labels_check.setChecked(False)
         self.facts_count_label = QLabel("No facts")
         self.facts_count_label.setObjectName("statusPill")
         self.facts_count_label.setProperty("tone", "accent")
@@ -3260,8 +3315,6 @@ class AnnotationWindow(QMainWindow):
         self.del_fact_btn.setProperty("variant", "danger")
         facts_header = QHBoxLayout()
         facts_header.setSpacing(10)
-        facts_header.addWidget(self.show_order_labels_check)
-        facts_header.addStretch(1)
         facts_header.addWidget(self.facts_count_label, 0, Qt.AlignRight)
         fact_layout.addLayout(facts_header)
         fact_layout.addWidget(self.facts_list, 1)
@@ -3598,8 +3651,6 @@ class AnnotationWindow(QMainWindow):
         self.page_jump_spin.valueChanged.connect(self._on_page_jump_requested)
         self.page_jump_btn.clicked.connect(lambda: self._on_page_jump_requested(self.page_jump_spin.value()))
         self.page_thumb_list.currentRowChanged.connect(self._on_thumbnail_row_changed)
-        self.page_thumb_filter_combo.activated.connect(lambda _: self._on_page_thumbnail_filter_or_sort_changed())
-        self.page_thumb_sort_combo.activated.connect(lambda _: self._on_page_thumbnail_filter_or_sort_changed())
         self.undo_btn.clicked.connect(self.undo)
         self.redo_btn.clicked.connect(self.redo)
         self.zoom_out_btn.clicked.connect(self.zoom_out)
@@ -3611,7 +3662,7 @@ class AnnotationWindow(QMainWindow):
         self.apply_entity_all_btn.clicked.connect(self.apply_entity_name_to_all_missing_pages)
         self.help_btn.clicked.connect(self.show_help_dialog)
         self.exit_btn.clicked.connect(self.request_application_exit)
-        self.save_btn.clicked.connect(self.save_annotations)
+        self.save_btn.clicked.connect(self._trigger_save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.gemini_gt_btn.clicked.connect(self.generate_gemini_ground_truth)
         self.gemini_complete_btn.clicked.connect(self.generate_gemini_auto_complete)
@@ -3649,7 +3700,6 @@ class AnnotationWindow(QMainWindow):
         self.gt_activity_stop_btn.clicked.connect(self._stop_active_generation)
         self.page_issues_list.itemClicked.connect(self._on_page_issue_clicked)
         self.facts_list.itemSelectionChanged.connect(self._on_fact_list_selection_changed)
-        self.show_order_labels_check.toggled.connect(self._on_show_order_labels_toggled)
         self.entity_name_edit.editingFinished.connect(self._on_meta_edited)
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
@@ -3763,10 +3813,14 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Meta+Shift+G"), self, activated=self.generate_qwen_ground_truth)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
         QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
-        delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self._delete_selected_fact_shortcut)
-        delete_shortcut.setContext(Qt.ApplicationShortcut)
-        backspace_shortcut = QShortcut(QKeySequence(Qt.Key_Backspace), self, activated=self._delete_selected_fact_shortcut)
-        backspace_shortcut.setContext(Qt.ApplicationShortcut)
+        self._delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self._delete_selected_fact_shortcut)
+        self._delete_shortcut.setContext(Qt.ApplicationShortcut)
+        self._delete_backspace_shortcut = QShortcut(
+            QKeySequence(Qt.Key_Backspace),
+            self,
+            activated=self._delete_selected_fact_shortcut,
+        )
+        self._delete_backspace_shortcut.setContext(Qt.ApplicationShortcut)
         QShortcut(QKeySequence("Ctrl+="), self, activated=self.zoom_in)
         QShortcut(QKeySequence("Ctrl+-"), self, activated=self.zoom_out)
         QShortcut(QKeySequence("Ctrl+0"), self, activated=self._fit_view_height)
@@ -3774,9 +3828,10 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("F1"), self, activated=self.show_help_dialog)
 
         save_action = QAction("Save", self)
-        save_action.setShortcut(QKeySequence.Save)
-        save_action.triggered.connect(self.save_annotations)
+        save_action.triggered.connect(self._trigger_save_annotations)
         self.addAction(save_action)
+        self._save_shortcut = QShortcut(QKeySequence.Save, self, activated=self._trigger_save_annotations)
+        self._save_shortcut.setContext(Qt.ApplicationShortcut)
         self.page_label.setObjectName("monoLabel")
         self._populate_page_thumbnails()
         self._configure_hidden_status_bar()
@@ -6353,38 +6408,8 @@ class AnnotationWindow(QMainWindow):
         self.page_annotation_status_label.style().unpolish(self.page_annotation_status_label)
         self.page_annotation_status_label.style().polish(self.page_annotation_status_label)
 
-    def _thumbnail_filter_mode(self) -> str:
-        return str(self.page_thumb_filter_combo.currentData() or "all")
-
-    def _thumbnail_sort_mode(self) -> str:
-        return str(self.page_thumb_sort_combo.currentData() or "page")
-
-    def _is_page_visible_for_filter(self, index: int, filter_mode: str) -> bool:
-        status = self._page_annotation_status_for_index(index)
-        if filter_mode == "approved":
-            return status == "approved"
-        if filter_mode == "flagged":
-            return status == "flagged"
-        if filter_mode == "none":
-            return status is None
-        return True
-
     def _visible_thumbnail_page_indices(self) -> list[int]:
-        filter_mode = self._thumbnail_filter_mode()
-        visible_indices = [
-            index for index in range(len(self.page_images))
-            if self._is_page_visible_for_filter(index, filter_mode)
-        ]
-        sort_mode = self._thumbnail_sort_mode()
-        if sort_mode == "approved_first":
-            rank = {"approved": 0, None: 1, "flagged": 2}
-            visible_indices.sort(key=lambda idx: (rank.get(self._page_annotation_status_for_index(idx), 1), idx))
-            return visible_indices
-        if sort_mode == "flagged_first":
-            rank = {"flagged": 0, None: 1, "approved": 2}
-            visible_indices.sort(key=lambda idx: (rank.get(self._page_annotation_status_for_index(idx), 1), idx))
-            return visible_indices
-        return visible_indices
+        return list(range(len(self.page_images)))
 
     def _thumbnail_row_for_page_index(self, page_index: int) -> int:
         return int(self._thumbnail_row_lookup.get(page_index, -1))
@@ -6395,9 +6420,6 @@ class AnnotationWindow(QMainWindow):
         return int(self._thumbnail_page_indices[row])
 
     def _next_page_index_in_thumbnail_order(self) -> int | None:
-        row = self._thumbnail_row_for_page_index(self.current_index)
-        if row >= 0 and row + 1 < len(self._thumbnail_page_indices):
-            return self._page_index_for_thumbnail_row(row + 1)
         if 0 <= self.current_index + 1 < len(self.page_images):
             return self.current_index + 1
         return None
@@ -8014,7 +8036,7 @@ class AnnotationWindow(QMainWindow):
             thinking_level_default=self._gemini_thinking_level,
             thinking_tooltip="Checked uses Gemini thinking mode. Unchecked requests minimal/non-thinking mode.",
             few_shot_enabled_default=True,
-            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
+            few_shot_preset_default=FEW_SHOT_PRESET_2015_TWO_SHOT,
             few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
             show_max_facts_control=True,
             max_facts_default=0,
@@ -8885,17 +8907,6 @@ class AnnotationWindow(QMainWindow):
             return
         self.show_page(index)
 
-    def _on_page_thumbnail_filter_or_sort_changed(self) -> None:
-        self._populate_page_thumbnails()
-        current_row = self._thumbnail_row_for_page_index(self.current_index)
-        if current_row >= 0:
-            self.page_thumb_list.blockSignals(True)
-            self.page_thumb_list.setCurrentRow(current_row)
-            self.page_thumb_list.blockSignals(False)
-            return
-        if self._thumbnail_page_indices:
-            self.show_page(self._thumbnail_page_indices[0])
-
     def _on_thumbnail_row_changed(self, row: int) -> None:
         index = self._page_index_for_thumbnail_row(row)
         if index < 0 or index >= len(self.page_images):
@@ -8970,6 +8981,7 @@ class AnnotationWindow(QMainWindow):
             self.page_thumb_list.scrollToItem(current_thumb, QAbstractItemView.PositionAtCenter)
         self.page_thumb_list.blockSignals(False)
         self.refresh_facts_list()
+        self._refresh_page_json_dialog()
         self.schedule_auto_fit_current_page()
 
     def showEvent(self, event: QShowEvent) -> None:
@@ -9034,11 +9046,10 @@ class AnnotationWindow(QMainWindow):
         return ordered_items
 
     def _apply_fact_order_labels(self) -> None:
-        show_labels = self.show_order_labels_check.isChecked()
         indexed_item_ids = {id(item) for item in self._fact_items}
         for item in self._fact_items:
             if self._is_alive_fact_item(item):
-                item.set_order_label(self._fact_num_for_item(item), visible=show_labels)
+                item.set_order_label(None, visible=False)
         for scene_item in self.scene.items():
             if (
                 isinstance(scene_item, AnnotRectItem)
@@ -9322,9 +9333,6 @@ class AnnotationWindow(QMainWindow):
         self._focus_equation_panel()
         self.statusBar().showMessage("Applied equation to selected fact.", 2500)
 
-    def _on_show_order_labels_toggled(self, _checked: bool) -> None:
-        self._apply_fact_order_labels()
-
     def _selected_fact_item(self) -> Optional[AnnotRectItem]:
         for item in self.scene.selectedItems():
             if isinstance(item, AnnotRectItem) and self._is_alive_fact_item(item):
@@ -9432,6 +9440,7 @@ class AnnotationWindow(QMainWindow):
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
         self._update_gemini_complete_button_state()
+        self._refresh_page_json_dialog()
 
     def _on_fact_list_selection_changed(self) -> None:
         if self._syncing_selection:
@@ -9453,6 +9462,7 @@ class AnnotationWindow(QMainWindow):
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
         self._update_gemini_complete_button_state()
+        self._refresh_page_json_dialog()
 
     def _selected_fact_items(self) -> List[AnnotRectItem]:
         return [
@@ -9632,28 +9642,73 @@ class AnnotationWindow(QMainWindow):
             direction_source=str(direction_info.get("source") or "annotator_save"),
         )
 
-    def save_annotations(self) -> bool:
+    def _build_live_annotations_payload(
+        self,
+    ) -> tuple[dict[str, Any], list[dict[str, Any]], list[dict[str, Any]]]:
         self._capture_current_state()
-        try:
-            payload = build_annotations_payload(
-                self.images_dir,
-                self.page_images,
-                self.page_states,
-                document_meta=self.document_meta,
-            )
-        except ValidationError as exc:
-            QMessageBox.warning(self, "Validation error", str(exc))
-            return False
-        except EquationIntegrityError as exc:
-            QMessageBox.warning(self, "Equation integrity error", str(exc))
-            return False
+        payload, equation_findings = build_annotations_payload_with_findings(
+            self.images_dir,
+            self.page_images,
+            self.page_states,
+            document_meta=self.document_meta,
+        )
         _normalized_payload, format_findings = normalize_annotation_payload(payload)
-        warning_findings = [
+        format_warning_findings = [
             finding
             for finding in format_findings
             if any(code in {"noncanonical_date", "placeholder_value", "noncanonical_value"} for code in finding.get("issue_codes", []))
         ]
-        warning_count = len(warning_findings)
+        return payload, equation_findings, format_warning_findings
+
+    def _page_json_title_and_text(self) -> tuple[str, str, dict[int, int]]:
+        payload, _equation_findings, _format_warning_findings = self._build_live_annotations_payload()
+        page_payload = payload["pages"][self.current_index]
+        page_text = json.dumps(page_payload, indent=2, ensure_ascii=False)
+        fact_start_positions: dict[int, int] = {}
+        for match in re.finditer(r'"fact_num":\s*(\d+)', page_text):
+            fact_num = int(match.group(1))
+            start_pos = match.start()
+            while start_pos > 0 and page_text[start_pos] != "{":
+                start_pos -= 1
+            fact_start_positions[fact_num] = start_pos
+        return f"Page JSON - {page_payload.get('image', '')}", page_text, fact_start_positions
+
+    def _refresh_page_json_dialog(self) -> None:
+        dialog = self._page_json_dialog
+        if dialog is None or not dialog.isVisible():
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            return
+        try:
+            title, page_text, fact_start_positions = self._page_json_title_and_text()
+        except ValidationError as exc:
+            QMessageBox.warning(self, "Validation error", str(exc))
+            dialog.close()
+            return
+        selected = self._selected_fact_item()
+        fact_start_pos: Optional[int] = None
+        if selected is not None:
+            fact_num = normalize_fact_data(selected.fact_data).get("fact_num")
+            if isinstance(fact_num, int):
+                fact_start_pos = fact_start_positions.get(fact_num)
+        dialog.set_page_json(title=title, page_text=page_text, fact_start_pos=fact_start_pos)
+
+    def _trigger_save_annotations(self) -> bool:
+        if self._save_shortcut_in_flight:
+            return False
+        self._save_shortcut_in_flight = True
+        try:
+            return self.save_annotations()
+        finally:
+            QTimer.singleShot(0, lambda: setattr(self, "_save_shortcut_in_flight", False))
+
+    def save_annotations(self) -> bool:
+        try:
+            payload, equation_findings, format_warning_findings = self._build_live_annotations_payload()
+        except ValidationError as exc:
+            QMessageBox.warning(self, "Validation error", str(exc))
+            return False
+        warning_count = len(format_warning_findings) + len(equation_findings)
         serialized = serialize_annotations_json(payload)
         no_changes = False
         if self.annotations_path.exists():
@@ -9671,7 +9726,7 @@ class AnnotationWindow(QMainWindow):
             QMessageBox.warning(self, "Save failed", str(exc))
             return False
         if no_changes:
-            warning_suffix = f" | format_warnings={warning_count}" if warning_count else ""
+            warning_suffix = f" | warnings={warning_count}" if warning_count else ""
             self.statusBar().showMessage(
                 f"No changes detected. File is up to date: {self.annotations_path}{warning_suffix}",
                 6000,
@@ -9682,27 +9737,63 @@ class AnnotationWindow(QMainWindow):
                     "annotations_path": self.annotations_path,
                     "no_changes": True,
                     "warning_count": warning_count,
+                    "format_warning_count": len(format_warning_findings),
+                    "equation_warning_count": len(equation_findings),
+                    "equation_findings": equation_findings,
                     "backup_path": None,
                 }
             )
             self._mark_saved_content()
             return True
-        warning_suffix = f" | format_warnings={warning_count}" if warning_count else ""
+        warning_suffix = f" | warnings={warning_count}" if warning_count else ""
         backup_path: Optional[Path] = None
         if backup_info is not None:
             backup_path = Path(str(backup_info["backup_path"]))
         self.statusBar().showMessage(f"Saved: {self.annotations_path}{warning_suffix}", 6000)
         self.annotations_saved.emit(self.annotations_path)
         self.annotations_save_status.emit(
-            {
-                "annotations_path": self.annotations_path,
-                "no_changes": False,
-                "warning_count": warning_count,
-                "backup_path": backup_path,
-            }
-        )
+                {
+                    "annotations_path": self.annotations_path,
+                    "no_changes": False,
+                    "warning_count": warning_count,
+                    "format_warning_count": len(format_warning_findings),
+                    "equation_warning_count": len(equation_findings),
+                    "equation_findings": equation_findings,
+                    "backup_path": backup_path,
+                }
+            )
         self._mark_saved_content()
+        self._refresh_page_json_dialog()
         return True
+
+    def has_unsaved_changes(self) -> bool:
+        return self._has_unsaved_changes()
+
+    def reset_all_approved_pages(self, *, mark_saved_state: bool = False) -> int:
+        self._capture_current_state()
+        changed = 0
+        for idx, page_path in enumerate(self.page_images):
+            page_name = page_path.name
+            state = self.page_states.get(page_name, self._default_state(idx))
+            meta = {**default_page_meta(idx), **(state.meta or {})}
+            if _normalize_page_annotation_status(meta.get("annotation_status")) != "approved":
+                self.page_states[page_name] = PageState(meta=meta, facts=list(state.facts))
+                continue
+            meta["annotation_status"] = None
+            self.page_states[page_name] = PageState(meta=meta, facts=list(state.facts))
+            changed += 1
+        if changed and 0 <= self.current_index < len(self.page_images):
+            current_name = self.page_images[self.current_index].name
+            current_state = self.page_states.get(current_name, self._default_state(self.current_index))
+            self._page_annotation_status = _normalize_page_annotation_status((current_state.meta or {}).get("annotation_status"))
+            self._refresh_page_annotation_status_ui()
+        if changed:
+            self._populate_page_thumbnails()
+            self._refresh_current_page_issues(use_current_fact_items=True)
+            self._refresh_page_json_dialog()
+        if mark_saved_state:
+            self._mark_saved_content()
+        return changed
 
     def closeEvent(self, event: QCloseEvent) -> None:
         if self._pending_close_approved:
@@ -9737,54 +9828,30 @@ class AnnotationWindow(QMainWindow):
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             QMessageBox.warning(self, "Page JSON", "No current page is loaded.")
             return
-
-        self._capture_current_state()
         try:
-            payload = build_annotations_payload(
-                self.images_dir,
-                self.page_images,
-                self.page_states,
-                document_meta=self.document_meta,
-            )
+            title, page_text, fact_start_positions = self._page_json_title_and_text()
         except ValidationError as exc:
             QMessageBox.warning(self, "Validation error", str(exc))
             return
-        except EquationIntegrityError as exc:
-            QMessageBox.warning(self, "Equation integrity error", str(exc))
-            return
-
-        page_payload = payload["pages"][self.current_index]
-        page_text = json.dumps(page_payload, indent=2, ensure_ascii=False)
-
-        dialog = QDialog(self)
-        dialog.setWindowTitle(f"Page JSON - {page_payload.get('image', '')}")
-        dialog.resize(920, 640)
-        root = QVBoxLayout(dialog)
-
-        hint = QLabel("Current page representation in the annotations JSON schema.")
-        hint.setWordWrap(True)
-        root.addWidget(hint)
-
-        text_view = QPlainTextEdit()
-        text_view.setReadOnly(True)
-        text_view.setPlainText(page_text)
-        root.addWidget(text_view, 1)
-
-        actions = QHBoxLayout()
-        copy_btn = QPushButton("Copy JSON")
-        close_btn = QPushButton("Close")
-        actions.addWidget(copy_btn)
-        actions.addStretch(1)
-        actions.addWidget(close_btn)
-        root.addLayout(actions)
-
-        def _copy_json() -> None:
-            QApplication.clipboard().setText(page_text)
-            self.statusBar().showMessage("Copied current page JSON.", 2500)
-
-        copy_btn.clicked.connect(_copy_json)
-        close_btn.clicked.connect(dialog.accept)
-        dialog.exec_()
+        if self._page_json_dialog is None:
+            dialog = PageJsonDialog(self)
+            dialog.copy_btn.clicked.connect(
+                lambda: (
+                    QApplication.clipboard().setText(dialog.text_view.toPlainText()),
+                    self.statusBar().showMessage("Copied current page JSON.", 2500),
+                )
+            )
+            self._page_json_dialog = dialog
+        selected = self._selected_fact_item()
+        fact_start_pos: Optional[int] = None
+        if selected is not None:
+            fact_num = normalize_fact_data(selected.fact_data).get("fact_num")
+            if isinstance(fact_num, int):
+                fact_start_pos = fact_start_positions.get(fact_num)
+        self._page_json_dialog.set_page_json(title=title, page_text=page_text, fact_start_pos=fact_start_pos)
+        self._page_json_dialog.show()
+        self._page_json_dialog.raise_()
+        self._page_json_dialog.activateWindow()
 
     def show_help_dialog(self) -> None:
         help_text = (

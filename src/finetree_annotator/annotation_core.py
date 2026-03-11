@@ -15,7 +15,7 @@ from .equation_integrity import audit_and_rebuild_financial_facts
 from .equation_integrity import resequence_fact_numbers_and_remap_fact_equations
 from .fact_ordering import compact_document_meta, normalize_document_meta
 from .fact_normalization import normalize_fact_payload
-from .schema_io import save_canonical
+from .schema_io import canonicalize_with_findings, save_canonical
 from .schema_contract import CANONICAL_FACT_KEYS, CURRENCY_VALUES, SCALE_VALUES
 from .schemas import Fact, PageMeta, PageType
 
@@ -210,6 +210,22 @@ def build_annotations_payload(
     *,
     document_meta: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
+    payload, _equation_findings = build_annotations_payload_with_findings(
+        images_dir,
+        page_images,
+        page_states,
+        document_meta=document_meta,
+    )
+    return save_canonical(payload)
+
+
+def build_annotations_payload_with_findings(
+    images_dir: Path,
+    page_images: Sequence[Path],
+    page_states: Dict[str, PageState],
+    *,
+    document_meta: Optional[Dict[str, Any]] = None,
+) -> tuple[Dict[str, Any], list[dict[str, Any]]]:
     pages_out = []
     for idx, page_path in enumerate(page_images):
         page_name = page_path.name
@@ -238,7 +254,7 @@ def build_annotations_payload(
     payload: Dict[str, Any] = {"images_dir": str(images_dir), "pages": pages_out}
     compact_meta = compact_document_meta(document_meta)
     payload["metadata"] = compact_meta
-    return save_canonical(payload)
+    return canonicalize_with_findings(payload, strict_equation_guards=False)
 
 
 def apply_entity_name_to_pages(

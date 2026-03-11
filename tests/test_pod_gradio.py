@@ -56,6 +56,29 @@ def test_build_openai_chat_payload_includes_system_and_sampling() -> None:
     assert payload["messages"][1]["role"] == "user"
 
 
+def test_resolve_qwen_model_name_maps_aliases_to_default(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_QWEN_MODEL", "served-qwen")
+    assert pod_gradio._resolve_qwen_model_name("qwen-gt") == "served-qwen"
+    assert pod_gradio._resolve_qwen_model_name("qwen-flash-gt") == "served-qwen"
+    assert pod_gradio._resolve_qwen_model_name("") == "served-qwen"
+
+
+def test_build_openai_chat_payload_normalizes_qwen_aliases(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_PLAYGROUND_QWEN_MODEL", "served-qwen")
+    payload = pod_gradio._build_openai_chat_payload(
+        {
+            "system_prompt": "",
+            "user_prompt": "hello",
+            "model": "qwen-flash-gt",
+            "temperature": 0.4,
+            "top_p": 0.8,
+            "max_tokens": 33,
+            "image_data_url": "data:image/png;base64,AAAA",
+        }
+    )
+    assert payload["model"] == "served-qwen"
+
+
 def test_build_openai_chat_payload_includes_recent_history_context() -> None:
     payload = pod_gradio._build_openai_chat_payload(
         {

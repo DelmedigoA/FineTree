@@ -834,6 +834,13 @@ class Fact(BaseModel):
     def _validate_note_num_requires_note_flag(self) -> "Fact":
         if self.note_num is not None and not self.note_flag:
             raise ValueError("note_num requires note_flag=true.")
+        if self.period_type == PeriodType.duration:
+            has_period_start = self.period_start is not None
+            has_period_end = self.period_end is not None
+            if has_period_start != has_period_end:
+                raise ValueError(
+                    "duration facts require both period_start and period_end, or neither."
+                )
         derived_sign = _derive_natural_sign_from_value(self.value)
         self.natural_sign = NaturalSign(derived_sign) if derived_sign is not None else None
         return self
