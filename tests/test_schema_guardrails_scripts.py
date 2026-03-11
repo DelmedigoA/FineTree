@@ -4,7 +4,11 @@ import subprocess
 import sys
 from pathlib import Path
 
-from finetree_annotator.schema_contract import default_extraction_prompt_template, default_gemini_fill_prompt_template
+from finetree_annotator.schema_contract import (
+    default_extraction_prompt_template,
+    default_gemini_autocomplete_prompt_template,
+    default_gemini_fill_prompt_template,
+)
 
 
 def _script_path(name: str) -> Path:
@@ -42,8 +46,10 @@ def test_sync_schema_prompts_script_check_mode(tmp_path: Path) -> None:
     prompts_dir.mkdir(parents=True, exist_ok=True)
     extraction_path = prompts_dir / "extraction_prompt.txt"
     fill_path = prompts_dir / "gemini_fill_prompt.txt"
+    autocomplete_path = prompts_dir / "gemini_autocomplete_prompt.txt"
     extraction_path.write_text(default_extraction_prompt_template().strip() + "\n", encoding="utf-8")
     fill_path.write_text(default_gemini_fill_prompt_template().strip() + "\n", encoding="utf-8")
+    autocomplete_path.write_text(default_gemini_autocomplete_prompt_template().strip() + "\n", encoding="utf-8")
 
     ok_proc = subprocess.run(
         [sys.executable, str(_script_path("sync_schema_prompts.py")), "--root", str(tmp_path), "--check"],

@@ -1,0 +1,195 @@
+```json
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+    "company_id": null,
+    "report_year": null,
+    "report_scope": null,
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+        "page_num": "7",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים\nבאור 2 - עיקרי המדיניות החשבונאית (המשך)"
+      },
+      "facts": [
+        {
+          "bbox": [
+            312,
+            290,
+            28,
+            16
+          ],
+          "value": "6-7",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 2,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "path": [
+            "רכוש קבוע",
+            "פחת",
+            "רהיט וציוד משרדי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            305,
+            304,
+            42,
+            14
+          ],
+          "value": "15-33",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 2,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "path": [
+            "רכוש קבוע",
+            "פחת",
+            "מחשבים וציוד היקפי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            318,
+            319,
+            11,
+            12
+          ],
+          "value": "4",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 2,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "path": [
+            "רכוש קבוע",
+            "פחת",
+            "שיפורים במושכר"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            380,
+            693,
+            36,
+            15
+          ],
+          "value": "2013",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "count",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": "2013",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 2,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "path": [
+            "התחייבויות בגין סיום יחסי עובד מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            455,
+            693,
+            15,
+            13
+          ],
+          "value": "14",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "count",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 2,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "path": [
+            "התחייבויות בגין סיום יחסי עובד מעביד",
+            "סעיף 14 לחוק פיצויי פיטורין"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

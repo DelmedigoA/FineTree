@@ -1,0 +1,203 @@
+{
+  "meta_updates": {},
+  "fact_updates": [
+    {
+      "fact_num": 1,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 2,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 3,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 4,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 5,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 6,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 7,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 8,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 9,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 10,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 11,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 12,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 13,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 14,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 15,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 16,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 17,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 18,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30",
+        "duration_type": "recurrent"
+      }
+    },
+    {
+      "fact_num": 19,
+      "updates": {
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-09-30",
+        "duration_type": null
+      }
+    },
+    {
+      "fact_num": 20,
+      "updates": {
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-09-30",
+        "duration_type": null
+      }
+    },
+    {
+      "fact_num": 21,
+      "updates": {
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-09-30",
+        "duration_type": null
+      }
+    },
+    {
+      "fact_num": 22,
+      "updates": {
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-09-30",
+        "duration_type": null
+      }
+    }
+  ]
+}

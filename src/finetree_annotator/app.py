@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
@@ -10,13 +11,14 @@ from copy import deepcopy
 from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional
 
 from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
 from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, pyqtSignal, QRegularExpression
-from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTransform, QRegularExpressionValidator
+from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTransform, QRegularExpressionValidator
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -86,12 +88,13 @@ from .gemini_few_shot import (
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
 from .schema_contract import (
+    default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
 from .schema_io import load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
 from .schema_ui import enum_options
-from .schemas import PageMeta, PageType
+from .schemas import PageExtraction, PageMeta, PageType
 from .workspace import page_has_annotation
 
 FEW_SHOT_PRESET_ONE_SHOT = "test_1"
@@ -125,6 +128,11 @@ QWEN_GT_MODEL_CHOICES: tuple[str, ...] = (
     "Qwen/Qwen3.5-27B",
 )
 GEMINI_MODEL_CHOICES: tuple[str, ...] = SUPPORTED_GEMINI_MODELS
+BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
+BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
+BBOX_MODE_SWITCH_MARGIN = 0.08
+BBOX_DARK_LUMA_THRESHOLD = 220.0
+BBOX_INK_TARGET_RATIO = 0.12
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_ROOT.parents[1]
@@ -133,16 +141,20 @@ ICONS_ROOT = ASSETS_ROOT / "icons"
 PROMPTS_ROOT = REPO_ROOT / "prompts"
 DEFAULT_EXTRACTION_PROMPT_PATH = PROMPTS_ROOT / "extraction_prompt.txt"
 DEFAULT_GEMINI_FILL_PROMPT_PATH = PROMPTS_ROOT / "gemini_fill_prompt.txt"
+DEFAULT_GEMINI_AUTOCOMPLETE_PROMPT_PATH = PROMPTS_ROOT / "gemini_autocomplete_prompt.txt"
 LEGACY_EXTRACTION_PROMPT_PATH = REPO_ROOT / "prompt.txt"
 GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
 QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
 MULTI_VALUE_PLACEHOLDER = "Multiple values"
 PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
+EQUATION_TERM_INDEX_ROLE = Qt.UserRole + 18
+PATH_OPERATION_INDEX_ROLE = Qt.UserRole + 19
+EQUATION_VARIANT_INDEX_ROLE = Qt.UserRole + 20
 VALUE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "value_type")
 VALUE_CONTEXT_OPTIONS: tuple[str, ...] = enum_options("fact", "value_context")
-BALANCE_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "balance_type")
+BALANCE_TYPE_OPTIONS: tuple[str, ...] = ("",)
 ROW_ROLE_OPTIONS: tuple[str, ...] = enum_options("fact", "row_role")
-AGGREGATION_ROLE_OPTIONS: tuple[str, ...] = enum_options("fact", "aggregation_role")
+AGGREGATION_ROLE_OPTIONS: tuple[str, ...] = ("",)
 STATEMENT_TYPE_OPTIONS: tuple[str, ...] = enum_options("page_meta", "statement_type")
 ENTITY_TYPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "entity_type")
 PERIOD_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "period_type")
@@ -163,16 +175,14 @@ PAGE_STATUS_SORT_OPTIONS: tuple[tuple[str, str], ...] = (
     ("Flagged First", "flagged_first"),
 )
 GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
-    ("equation", False),
+    ("equation_children", False),
     ("period_type", True),
     ("period_start", True),
     ("period_end", True),
-    ("duration_type", True),
-    ("recurring_period", True),
-    ("balance_type", True),
-    ("row_role", True),
-    ("aggregation_role", True),
-    ("value_context", True),
+    ("duration_type", False),
+    ("recurring_period", False),
+    ("row_role", False),
+    ("value_context", False),
     ("path_source", False),
     ("value_type", False),
     ("currency", False),
@@ -183,16 +193,14 @@ GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
     ("note_name", False),
 )
 GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
-    "equation",
+    "equation_children",
     "period_type",
     "period_start",
     "period_end",
     "duration_type",
     "recurring_period",
     "value_context",
-    "balance_type",
     "row_role",
-    "aggregation_role",
     "path_source",
     "value_type",
     "currency",
@@ -336,32 +344,25 @@ def _normalize_natural_sign_for_equation(value: Any) -> str | None:
     return aliases.get(text)
 
 
-def _normalize_aggregation_role_for_equation(value: Any) -> str | None:
+def _normalize_equation_operator(value: Any) -> str:
     text = str(value or "").strip().lower()
     aliases = {
-        "+": "additive",
-        "plus": "additive",
-        "additive": "additive",
-        "-": "subtractive",
-        "minus": "subtractive",
-        "subtractive": "subtractive",
-        # Backward compatibility with pre-row_role payloads.
-        "total": "additive",
-        "unknown": "additive",
+        "+": "+",
+        "plus": "+",
+        "additive": "+",
+        "-": "-",
+        "minus": "-",
+        "subtractive": "-",
     }
-    return aliases.get(text)
+    return aliases.get(text, "+")
 
 
 def _natural_sign_multiplier(value: Any) -> int:
     return -1 if _normalize_natural_sign_for_equation(value) == "negative" else 1
 
 
-def _aggregation_role_multiplier(value: Any) -> int:
-    return -1 if _normalize_aggregation_role_for_equation(value) == "subtractive" else 1
-
-
-def _contribution_multiplier(natural_sign: Any, aggregation_role: Any) -> int:
-    return _natural_sign_multiplier(natural_sign) * _aggregation_role_multiplier(aggregation_role)
+def _operator_multiplier(value: Any) -> int:
+    return -1 if _normalize_equation_operator(value) == "-" else 1
 
 
 def _normalize_page_annotation_status(value: Any) -> str | None:
@@ -419,19 +420,20 @@ def _build_equation_candidate_from_facts(
         fact_num = _coerce_positive_int(fact.get("fact_num"))
         raw_value = fact.get("value")
         natural_sign = _normalize_natural_sign_for_equation(fact.get("natural_sign"))
-        aggregation_role = _normalize_aggregation_role_for_equation(fact.get("aggregation_role"))
+        operator = _normalize_equation_operator(fact.get("operator"))
         parsed, display, term_meta = _parse_fact_value_for_equation(raw_value)
         magnitude = parsed.copy_abs() if parsed is not None else None
-        contribution_sign = _contribution_multiplier(natural_sign, aggregation_role)
+        contribution_sign = _natural_sign_multiplier(natural_sign) * _operator_multiplier(operator)
         effective_value = magnitude * Decimal(contribution_sign) if magnitude is not None else None
         term_meta = {
             **term_meta,
             "fact_num": fact_num,
             "fact_reference": f"f{fact_num}" if fact_num is not None else None,
             "natural_sign": natural_sign,
-            "aggregation_role": aggregation_role,
+            "operator": operator,
             "contribution_sign": contribution_sign,
             "effective_normalized_value": _decimal_to_number(effective_value) if effective_value is not None else None,
+            "equation_child": {"fact_num": fact_num, "operator": operator} if fact_num is not None else None,
         }
         if parsed is None or display is None or fact_num is None:
             rendered = str(raw_value or "").strip() or "<empty>"
@@ -465,14 +467,11 @@ def _build_equation_candidate_from_facts(
 def _effective_target_value_for_equation(
     target_value: Any,
     target_natural_sign: Any,
-    target_aggregation_role: Any,
 ) -> tuple[Decimal | None, str | None]:
     target_value_decimal, _target_display, _meta = _parse_fact_value_for_equation(target_value)
     if target_value_decimal is None:
         return None, None
-    target_value_decimal = target_value_decimal.copy_abs() * Decimal(
-        _contribution_multiplier(target_natural_sign, target_aggregation_role)
-    )
+    target_value_decimal = target_value_decimal.copy_abs() * Decimal(_natural_sign_multiplier(target_natural_sign))
     return target_value_decimal, _format_decimal_plain(target_value_decimal)
 
 
@@ -480,7 +479,6 @@ def _equation_result_match_state(
     result_text: str | None,
     target_value: Any,
     target_natural_sign: Any = None,
-    target_aggregation_role: Any = None,
 ) -> tuple[str, str]:
     if result_text is None:
         return "danger", "Cannot calculate preview."
@@ -492,7 +490,6 @@ def _equation_result_match_state(
     target_value_decimal, target_display = _effective_target_value_for_equation(
         target_value,
         target_natural_sign,
-        target_aggregation_role,
     )
     if target_value_decimal is None or target_display is None:
         return "neutral", "Preview only; target value is non-numeric."
@@ -521,6 +518,132 @@ def _evaluate_equation_string(equation: Any) -> str | None:
         except InvalidOperation:
             return None
     return _format_decimal_plain(total)
+
+
+def _normalize_equation_bundle_payload(value: Any) -> dict[str, Any] | None:
+    if isinstance(value, str):
+        text = str(value).strip()
+        if not text:
+            return None
+        return {"equation": text, "fact_equation": None, "equation_children": None}
+    if not isinstance(value, dict):
+        return None
+    equation = str(value.get("equation") or "").strip()
+    if not equation:
+        return None
+    fact_equation = str(value.get("fact_equation") or "").strip() or None
+    equation_children_raw = value.get("equation_children")
+    equation_children: list[dict[str, Any]] = []
+    if isinstance(equation_children_raw, list):
+        for entry in equation_children_raw:
+            if not isinstance(entry, dict):
+                continue
+            fact_num = _coerce_positive_int(entry.get("fact_num"))
+            operator = _normalize_equation_operator(entry.get("operator"))
+            if fact_num is None:
+                continue
+            equation_children.append({"fact_num": fact_num, "operator": operator})
+    return {
+        "equation": equation,
+        "fact_equation": fact_equation,
+        "equation_children": equation_children or None,
+    }
+
+
+def _equation_bundle_signature(entry: dict[str, Any]) -> tuple[Any, ...]:
+    equation = str(entry.get("equation") or "")
+    fact_equation = str(entry.get("fact_equation") or "")
+    children = tuple(
+        (int(child.get("fact_num")), _normalize_equation_operator(child.get("operator")))
+        for child in (entry.get("equation_children") or [])
+        if isinstance(child, dict) and isinstance(child.get("fact_num"), int)
+    )
+    return equation, fact_equation, children
+
+
+def _equation_bundles_from_fact_payload(fact_payload: dict[str, Any]) -> list[dict[str, Any]]:
+    normalized_fact = normalize_fact_data(fact_payload)
+    bundles: list[dict[str, Any]] = []
+    seen: set[tuple[Any, ...]] = set()
+
+    raw_equations = normalized_fact.get("equations")
+    if isinstance(raw_equations, list):
+        for raw_entry in raw_equations:
+            normalized_entry = _normalize_equation_bundle_payload(raw_entry)
+            if normalized_entry is None:
+                continue
+            signature = _equation_bundle_signature(normalized_entry)
+            if signature in seen:
+                continue
+            seen.add(signature)
+            bundles.append(normalized_entry)
+
+    active_bundle = _normalize_equation_bundle_payload(
+        {
+            "equation": normalized_fact.get("equation"),
+            "fact_equation": normalized_fact.get("fact_equation"),
+            "equation_children": normalized_fact.get("equation_children"),
+        }
+    )
+    if active_bundle is not None:
+        active_signature = _equation_bundle_signature(active_bundle)
+        matching_index = next(
+            (idx for idx, entry in enumerate(bundles) if _equation_bundle_signature(entry) == active_signature),
+            None,
+        )
+        if matching_index is None:
+            bundles = [active_bundle, *bundles]
+        elif matching_index != 0:
+            bundles = [bundles[matching_index], *bundles[:matching_index], *bundles[matching_index + 1 :]]
+
+    return bundles
+
+
+def _fact_payload_with_active_equation_bundle(
+    fact_payload: dict[str, Any],
+    equation_bundles: list[dict[str, Any]],
+    *,
+    active_index: int = 0,
+) -> dict[str, Any]:
+    base_fact = normalize_fact_data(fact_payload)
+    normalized_bundles: list[dict[str, Any]] = []
+    seen: set[tuple[Any, ...]] = set()
+    for entry in equation_bundles:
+        normalized_entry = _normalize_equation_bundle_payload(entry)
+        if normalized_entry is None:
+            continue
+        signature = _equation_bundle_signature(normalized_entry)
+        if signature in seen:
+            continue
+        seen.add(signature)
+        normalized_bundles.append(normalized_entry)
+
+    if not normalized_bundles:
+        return normalize_fact_data(
+            {
+                **base_fact,
+                "equation": None,
+                "fact_equation": None,
+                "equation_children": None,
+                "equations": None,
+            }
+        )
+
+    clamped_index = max(0, min(active_index, len(normalized_bundles) - 1))
+    active_bundle = normalized_bundles[clamped_index]
+    ordered_bundles = [
+        active_bundle,
+        *[entry for idx, entry in enumerate(normalized_bundles) if idx != clamped_index],
+    ]
+    return normalize_fact_data(
+        {
+            **base_fact,
+            "equation": active_bundle.get("equation"),
+            "fact_equation": active_bundle.get("fact_equation"),
+            "equation_children": active_bundle.get("equation_children"),
+            "equations": ordered_bundles,
+        }
+    )
 
 
 class AnnotationView(QGraphicsView):
@@ -1121,6 +1244,8 @@ class AnnotationScene(QGraphicsScene):
         self._calculate_drag_active = False
         self._equation_session_active = False
         self._equation_reference_items: list[AnnotRectItem] = []
+        self._equation_drag_reference_items: list[AnnotRectItem] = []
+        self._equation_drag_reference_item_ids: set[int] = set()
         self._equation_selecting = False
         self._equation_click_candidate: Optional[AnnotRectItem] = None
         self._equation_interaction_start: Optional[QPointF] = None
@@ -1145,6 +1270,8 @@ class AnnotationScene(QGraphicsScene):
             self._temp_equation_select_item = None
         self._equation_session_active = False
         self._equation_reference_items = []
+        self._equation_drag_reference_items = []
+        self._equation_drag_reference_item_ids = set()
         self._equation_selecting = False
         self._equation_click_candidate = None
         self._equation_interaction_start = None
@@ -1236,8 +1363,54 @@ class AnnotationScene(QGraphicsScene):
             return
         self._equation_session_active = True
         self._equation_reference_items = []
+        self._equation_drag_reference_items = []
+        self._equation_drag_reference_item_ids = set()
         self.equation_reference_selection_started.emit()
         self.equation_reference_selection_changed.emit([])
+
+    def _equation_order_items_by_drag_vector(
+        self,
+        items: list[AnnotRectItem],
+        *,
+        current_pos: QPointF | None,
+    ) -> list[AnnotRectItem]:
+        deduped = self._dedupe_equation_items(items)
+        start = self._equation_select_start or self._equation_interaction_start
+        if start is None or current_pos is None:
+            return sorted(
+                deduped,
+                key=lambda item: (
+                    round(item_scene_rect(item).center().y(), 2),
+                    round(item_scene_rect(item).center().x(), 2),
+                    id(item),
+                ),
+            )
+
+        dx = float(current_pos.x() - start.x())
+        dy = float(current_pos.y() - start.y())
+        norm = math.hypot(dx, dy)
+        if norm <= 1e-6:
+            return sorted(
+                deduped,
+                key=lambda item: (
+                    round(item_scene_rect(item).center().y(), 2),
+                    round(item_scene_rect(item).center().x(), 2),
+                    id(item),
+                ),
+            )
+
+        ux = dx / norm
+        uy = dy / norm
+
+        def _projection_key(item: AnnotRectItem) -> tuple[float, float, float, int]:
+            center = item_scene_rect(item).center()
+            rel_x = float(center.x() - start.x())
+            rel_y = float(center.y() - start.y())
+            along = rel_x * ux + rel_y * uy
+            lateral = rel_x * (-uy) + rel_y * ux
+            return (round(along, 4), round(abs(lateral), 4), round(lateral, 4), id(item))
+
+        return sorted(deduped, key=_projection_key)
 
     def _dedupe_equation_items(self, items: list[AnnotRectItem]) -> list[AnnotRectItem]:
         unique_items: list[AnnotRectItem] = []
@@ -1283,6 +1456,8 @@ class AnnotationScene(QGraphicsScene):
             modifiers = event.modifiers()
             if self._calculate_drag_active:
                 self._begin_equation_selection_session()
+                self._equation_drag_reference_items = []
+                self._equation_drag_reference_item_ids = set()
                 item = self.itemAt(event.scenePos(), QTransform())
                 self._equation_selecting = False
                 self._equation_interaction_start = event.scenePos()
@@ -1353,8 +1528,20 @@ class AnnotationScene(QGraphicsScene):
             if self._equation_selecting and self._temp_equation_select_item:
                 rect = QRectF(self._equation_select_start, event.scenePos()).normalized().intersected(self.image_rect)
                 self._temp_equation_select_item.setRect(rect)
+                frame_items = self._equation_order_items_by_drag_vector(
+                    self._equation_selection_items(rect),
+                    current_pos=event.scenePos(),
+                )
+                for item in frame_items:
+                    item_id = id(item)
+                    if item_id in self._equation_drag_reference_item_ids:
+                        continue
+                    if any(item is existing for existing in self._equation_reference_items):
+                        continue
+                    self._equation_drag_reference_item_ids.add(item_id)
+                    self._equation_drag_reference_items.append(item)
                 self.equation_reference_selection_changed.emit(
-                    self._dedupe_equation_items([*self._equation_reference_items, *self._equation_selection_items(rect)])
+                    self._dedupe_equation_items([*self._equation_reference_items, *self._equation_drag_reference_items])
                 )
                 event.accept()
                 return
@@ -1381,7 +1568,9 @@ class AnnotationScene(QGraphicsScene):
                 self._equation_select_start = None
                 self._equation_click_candidate = None
                 self._equation_interaction_start = None
-                self._set_equation_reference_items([*self._equation_reference_items, *self._equation_selection_items(rect)])
+                self._set_equation_reference_items([*self._equation_reference_items, *self._equation_drag_reference_items])
+                self._equation_drag_reference_items = []
+                self._equation_drag_reference_item_ids = set()
                 if event.modifiers() & Qt.ShiftModifier:
                     self.equation_reference_approval_requested.emit()
                 event.accept()
@@ -1391,6 +1580,8 @@ class AnnotationScene(QGraphicsScene):
                 self._equation_click_candidate = None
                 self._equation_interaction_start = None
                 self._equation_select_start = None
+                self._equation_drag_reference_items = []
+                self._equation_drag_reference_item_ids = set()
                 self._toggle_equation_reference_item(click_item)
                 if event.modifiers() & Qt.ShiftModifier:
                     self.equation_reference_approval_requested.emit()
@@ -1398,6 +1589,8 @@ class AnnotationScene(QGraphicsScene):
                 return
             self._equation_interaction_start = None
             self._equation_select_start = None
+            self._equation_drag_reference_items = []
+            self._equation_drag_reference_item_ids = set()
             event.accept()
             return
         if self._pending_toggle_selection is not None:
@@ -1528,16 +1721,21 @@ class GeminiPromptDialog(QDialog):
         thinking_enabled_default: bool = True,
         thinking_level_default: str = "high",
         thinking_tooltip: str = "",
+        window_title: str = "Gemini Prompt",
+        hint_text: str = (
+            "Edit the prompt before sending to Gemini.\n"
+            "This prompt is used for the initial extraction run."
+        ),
+        ok_button_text: str = "Start Gemini GT",
+        show_max_facts_control: bool = False,
+        max_facts_default: int = 0,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("Gemini Prompt")
+        self.setWindowTitle(window_title)
         self.resize(980, 760)
 
         root = QVBoxLayout(self)
-        hint = QLabel(
-            "Edit the prompt before sending to Gemini.\n"
-            "This prompt is used for the initial extraction run."
-        )
+        hint = QLabel(hint_text)
         hint.setWordWrap(True)
         root.addWidget(hint)
 
@@ -1570,6 +1768,13 @@ class GeminiPromptDialog(QDialog):
             self.thinking_level_combo.setVisible(False)
         self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
         self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
+        self.max_facts_spin = QSpinBox()
+        self.max_facts_spin.setRange(0, 999)
+        self.max_facts_spin.setValue(max(0, int(max_facts_default)))
+        if show_max_facts_control:
+            form.addRow("max_facts", self.max_facts_spin)
+        else:
+            self.max_facts_spin.setVisible(False)
         self.few_shot_check = QCheckBox("Use few-shot examples")
         self.few_shot_check.setChecked(bool(few_shot_enabled_default))
         self.few_shot_preset_combo = QComboBox()
@@ -1598,7 +1803,7 @@ class GeminiPromptDialog(QDialog):
         self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
-            ok_btn.setText("Start Gemini GT")
+            ok_btn.setText(ok_button_text)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
         root.addWidget(self.button_box)
@@ -1632,6 +1837,9 @@ class GeminiPromptDialog(QDialog):
         if isinstance(value, str) and value.strip():
             return value.strip()
         return FEW_SHOT_PRESET_CLASSIC
+
+    def max_facts(self) -> int:
+        return int(self.max_facts_spin.value()) if self.max_facts_spin.isVisible() else 0
 
 
 class GeminiFillDialog(QDialog):
@@ -1682,6 +1890,17 @@ class GeminiFillDialog(QDialog):
 
         fields_box = QGroupBox("Fields To Auto-Fix")
         fields_layout = QVBoxLayout(fields_box)
+        field_actions = QHBoxLayout()
+        field_actions.setContentsMargins(0, 0, 0, 0)
+        field_actions.setSpacing(6)
+        self.select_all_fields_btn = QPushButton("Select All")
+        self.clear_all_fields_btn = QPushButton("Clear All")
+        self.select_all_fields_btn.setObjectName("smallActionBtn")
+        self.clear_all_fields_btn.setObjectName("smallActionBtn")
+        field_actions.addWidget(self.select_all_fields_btn)
+        field_actions.addWidget(self.clear_all_fields_btn)
+        field_actions.addStretch(1)
+        fields_layout.addLayout(field_actions)
         self._fact_field_checks: dict[str, QCheckBox] = {}
         for field_name, checked_default in GEMINI_AUTO_FIX_FIELD_CHOICES:
             checkbox = QCheckBox(field_name)
@@ -1689,6 +1908,8 @@ class GeminiFillDialog(QDialog):
             fields_layout.addWidget(checkbox)
             checkbox.toggled.connect(self._refresh_prompt_preview)
             self._fact_field_checks[field_name] = checkbox
+        self.select_all_fields_btn.clicked.connect(self._select_all_fact_fields)
+        self.clear_all_fields_btn.clicked.connect(self._clear_all_fact_fields)
         self.statement_type_check = QCheckBox("meta.statement_type")
         self.statement_type_check.setChecked(False)
         fields_layout.addWidget(self.statement_type_check)
@@ -1717,6 +1938,17 @@ class GeminiFillDialog(QDialog):
             for field_name, checkbox in self._fact_field_checks.items()
             if checkbox.isChecked()
         }
+
+    def _set_all_fact_fields_checked(self, checked: bool) -> None:
+        for checkbox in self._fact_field_checks.values():
+            checkbox.setChecked(checked)
+        self._refresh_prompt_preview()
+
+    def _select_all_fact_fields(self) -> None:
+        self._set_all_fact_fields_checked(True)
+
+    def _clear_all_fact_fields(self) -> None:
+        self._set_all_fact_fields_checked(False)
 
     def include_statement_type(self) -> bool:
         return self.statement_type_check.isChecked()
@@ -1802,6 +2034,7 @@ class GeminiStreamWorker(QObject):
     chunk_received = pyqtSignal(str)
     meta_received = pyqtSignal(dict)
     fact_received = pyqtSignal(dict)
+    limit_reached = pyqtSignal()
     completed = pyqtSignal(object)
     failed = pyqtSignal(str)
     finished = pyqtSignal()
@@ -1815,6 +2048,8 @@ class GeminiStreamWorker(QObject):
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
         enable_thinking: bool = True,
         thinking_level: Optional[str] = None,
+        max_facts: int = 0,
+        allow_partial_finalize_error: bool = False,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -1825,10 +2060,55 @@ class GeminiStreamWorker(QObject):
         self.few_shot_examples = few_shot_examples
         self.enable_thinking = bool(enable_thinking)
         self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
+        self.max_facts = max(0, int(max_facts))
+        self.allow_partial_finalize_error = bool(allow_partial_finalize_error)
         self._cancel_requested = False
+        self._limit_reached = False
+        self._latest_meta_payload: Optional[dict[str, Any]] = None
+        self._emitted_facts: list[dict[str, Any]] = []
 
     def request_cancel(self) -> None:
         self._cancel_requested = True
+
+    def _build_lenient_stream_result(self) -> Any:
+        meta_payload = self._latest_meta_payload or {
+            "entity_name": None,
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": None,
+        }
+        meta_obj = SimpleNamespace(model_dump=lambda mode="json", _meta=deepcopy(meta_payload): deepcopy(_meta))
+        fact_objs = [
+            SimpleNamespace(model_dump=lambda mode="json", _fact=deepcopy(fact): deepcopy(_fact))
+            for fact in self._emitted_facts
+        ]
+        return SimpleNamespace(meta=meta_obj, facts=fact_objs)
+
+    def _build_partial_extraction(self) -> Any:
+        meta_payload = self._latest_meta_payload or {
+            "entity_name": None,
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": None,
+        }
+        try:
+            return PageExtraction.model_validate(
+                {
+                    "images_dir": str(self.image_path.parent),
+                    "metadata": normalize_document_meta({}),
+                    "pages": [
+                        {
+                            "image": self.image_path.name,
+                            "meta": meta_payload,
+                            "facts": self._emitted_facts,
+                        }
+                    ],
+                }
+            )
+        except Exception:
+            return self._build_lenient_stream_result()
 
     def run(self) -> None:
         try:
@@ -1851,13 +2131,31 @@ class GeminiStreamWorker(QObject):
                 self.chunk_received.emit(chunk)
                 meta, facts = parser.feed(chunk)
                 if meta is not None:
+                    self._latest_meta_payload = meta
                     self.meta_received.emit(meta)
                 for fact in facts:
+                    if self._cancel_requested:
+                        break
                     self.fact_received.emit(fact)
+                    self._emitted_facts.append(fact)
+                    if self.max_facts > 0 and len(self._emitted_facts) >= self.max_facts:
+                        self._limit_reached = True
+                        self.limit_reached.emit()
+                        self._cancel_requested = True
+                        break
 
-            if not self._cancel_requested:
-                extraction = parser.finalize()
-                self.completed.emit(extraction)
+            if self._limit_reached:
+                self.completed.emit(self._build_partial_extraction())
+            elif not self._cancel_requested:
+                try:
+                    extraction = parser.finalize()
+                except Exception:
+                    if self.allow_partial_finalize_error and (self._latest_meta_payload is not None or self._emitted_facts):
+                        self.completed.emit(self._build_lenient_stream_result())
+                    else:
+                        raise
+                else:
+                    self.completed.emit(extraction)
         except Exception as exc:
             self.failed.emit(str(exc))
         finally:
@@ -2083,6 +2381,14 @@ class AnnotationWindow(QMainWindow):
         self._gemini_stream_seen_facts: set[tuple[Any, ...]] = set()
         self._gemini_stream_fact_count = 0
         self._gemini_stream_cancel_requested = False
+        self._gemini_stream_mode = "gt"
+        self._gemini_stream_apply_meta = True
+        self._gemini_stream_max_facts = 0
+        self._gemini_stream_limit_reached = False
+        self._gemini_autocomplete_snapshot: Optional[dict[str, Any]] = None
+        self._gemini_autocomplete_buffered_facts: list[dict[str, Any]] = []
+        self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_autocomplete_last_bbox_scores: dict[str, float] = {}
         self._gemini_fill_thread: Optional[QThread] = None
         self._gemini_fill_worker: Optional[GeminiFillWorker] = None
         self._gemini_fill_cancel_requested = False
@@ -2114,6 +2420,8 @@ class AnnotationWindow(QMainWindow):
         self._equation_candidate_invalid_values: list[str] = []
         self._equation_candidate_terms: list[dict[str, Any]] = []
         self._equation_reference_preview_items: list[AnnotRectItem] = []
+        self._is_loading_equation_terms = False
+        self._is_loading_equation_variants = False
         self._page_annotation_status: str | None = None
         self._thumbnail_page_indices: list[int] = []
         self._thumbnail_row_lookup: dict[int, int] = {}
@@ -2272,6 +2580,7 @@ class AnnotationWindow(QMainWindow):
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
             (self.gemini_gt_btn, "Gemini", "Gemini GT", self._load_repo_icon(GEMINI_BUTTON_ICON)),
+            (self.gemini_complete_btn, "Auto Complete", "Gemini auto complete missing facts", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.gemini_fill_btn, "Auto-Fix", "Gemini auto-fix selected fields", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.qwen_gt_btn, "Qwen", "Qwen GT", self._load_repo_icon(QWEN_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
@@ -2341,6 +2650,7 @@ class AnnotationWindow(QMainWindow):
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
         self.gemini_gt_btn = QPushButton("Gemini GT")
+        self.gemini_complete_btn = QPushButton("Gemini Auto Complete")
         self.gemini_fill_btn = QPushButton("Gemini Auto-Fix")
         self.qwen_gt_btn = QPushButton("Qwen GT")
         self.delete_nav_btn = QPushButton("Delete BBox")
@@ -2365,6 +2675,7 @@ class AnnotationWindow(QMainWindow):
             self.redo_btn,
             self.import_btn,
             self.gemini_gt_btn,
+            self.gemini_complete_btn,
             self.gemini_fill_btn,
             self.qwen_gt_btn,
             self.delete_nav_btn,
@@ -2384,6 +2695,7 @@ class AnnotationWindow(QMainWindow):
             btn.setObjectName("toolbarActionBtn")
         self._apply_top_nav_icons()
         self.gemini_gt_btn.setProperty("variant", "primary")
+        self.gemini_complete_btn.setProperty("variant", "primary")
         self.gemini_fill_btn.setProperty("variant", "primary")
         self.qwen_gt_btn.setProperty("variant", "primary")
         self.save_btn.setProperty("variant", "primary")
@@ -2419,6 +2731,7 @@ class AnnotationWindow(QMainWindow):
         gt_layout = QHBoxLayout()
         gt_layout.setSpacing(4)
         gt_layout.addWidget(self.gemini_gt_btn)
+        gt_layout.addWidget(self.gemini_complete_btn)
         gt_layout.addWidget(self.gemini_fill_btn)
         gt_layout.addWidget(self.qwen_gt_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
@@ -2762,11 +3075,44 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_status_label = QLabel("")
         self.fact_equation_status_label.setObjectName("hintText")
         self.fact_equation_status_label.setWordWrap(True)
+        self.fact_equation_variants_list = QListWidget()
+        self.fact_equation_variants_list.setObjectName("equationVariantsList")
+        self.fact_equation_variants_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.fact_equation_variants_list.setMinimumHeight(66)
+        self.fact_equation_variants_list.setMaximumHeight(108)
+        self.equation_add_variant_btn = QPushButton("+")
+        self.equation_add_variant_btn.setObjectName("smallActionBtn")
+        self.equation_add_variant_btn.setMaximumWidth(30)
+        self.equation_add_variant_btn.setToolTip("Add current preview as an additional saved equation")
+        self.fact_equation_terms_list = QListWidget()
+        self.fact_equation_terms_list.setObjectName("equationTermsList")
+        self.fact_equation_terms_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.fact_equation_terms_list.setMinimumHeight(80)
+        self.fact_equation_terms_list.setMaximumHeight(116)
+        self.fact_equation_terms_list.setVisible(False)
+        self.equation_mark_add_btn = QPushButton("Mark +")
+        self.equation_mark_add_btn.setObjectName("smallActionBtn")
+        self.equation_mark_subtract_btn = QPushButton("Mark -")
+        self.equation_mark_subtract_btn.setObjectName("smallActionBtn")
+        self.equation_mark_add_btn.setVisible(False)
+        self.equation_mark_subtract_btn.setVisible(False)
         self.apply_equation_btn = QPushButton("Apply Equation")
         self.apply_equation_btn.setObjectName("smallActionBtn")
         self.clear_equation_btn = QPushButton("Clear")
         self.clear_equation_btn.setObjectName("smallActionBtn")
         self.clear_equation_btn.setProperty("variant", "ghost")
+
+        equation_editor_panel = QWidget()
+        equation_editor_layout = QVBoxLayout(equation_editor_panel)
+        equation_editor_layout.setContentsMargins(0, 0, 0, 0)
+        equation_editor_layout.setSpacing(5)
+        equation_editor_layout.addWidget(self.fact_equation_edit)
+        equation_variants_row = QHBoxLayout()
+        equation_variants_row.setContentsMargins(0, 0, 0, 0)
+        equation_variants_row.setSpacing(6)
+        equation_variants_row.addWidget(self.fact_equation_variants_list, 1)
+        equation_variants_row.addWidget(self.equation_add_variant_btn, 0, Qt.AlignTop)
+        equation_editor_layout.addLayout(equation_variants_row)
 
         equation_preview_panel = QWidget()
         equation_preview_layout = QVBoxLayout(equation_preview_panel)
@@ -2781,6 +3127,14 @@ class AnnotationWindow(QMainWindow):
         equation_preview_header.addStretch(1)
         equation_preview_layout.addLayout(equation_preview_header)
         equation_preview_layout.addWidget(self.fact_equation_status_label)
+        equation_terms_actions = QHBoxLayout()
+        equation_terms_actions.setContentsMargins(0, 0, 0, 0)
+        equation_terms_actions.setSpacing(6)
+        equation_terms_actions.addWidget(self.equation_mark_add_btn, 0, Qt.AlignVCenter)
+        equation_terms_actions.addWidget(self.equation_mark_subtract_btn, 0, Qt.AlignVCenter)
+        equation_terms_actions.addStretch(1)
+        equation_preview_layout.addWidget(self.fact_equation_terms_list)
+        equation_preview_layout.addLayout(equation_terms_actions)
 
         bbox_block = self._inspector_field_block("BBox", self.fact_bbox_label)
         bbox_block.setMaximumWidth(132)
@@ -2792,6 +3146,8 @@ class AnnotationWindow(QMainWindow):
         balance_type_block = self._inspector_field_block("Balance Type", self.fact_balance_type_combo)
         row_role_block = self._inspector_field_block("Row Role", self.fact_row_role_combo)
         aggregation_role_block = self._inspector_field_block("Aggregation Role", self.fact_aggregation_role_combo)
+        balance_type_block.setVisible(False)
+        aggregation_role_block.setVisible(False)
         natural_sign_block = self._inspector_field_block("Natural Sign", self.fact_natural_sign_label)
         period_type_block = self._inspector_field_block("Period Type", self.fact_period_type_combo)
         duration_type_block = self._inspector_field_block("Duration Type", self.fact_duration_type_combo)
@@ -2824,7 +3180,7 @@ class AnnotationWindow(QMainWindow):
             right_stretch=1,
         )
         add_fact_editor_row(
-            self._inspector_field_block("Equation", self.fact_equation_edit),
+            self._inspector_field_block("Equations", equation_editor_panel),
             self._inspector_field_block("Result Preview", equation_preview_panel),
         )
         add_fact_editor_row(
@@ -3122,7 +3478,6 @@ class AnnotationWindow(QMainWindow):
         batch_layout.addLayout(batch_scale_row)
         batch_layout.addLayout(batch_value_type_row)
         batch_layout.addLayout(batch_value_context_row)
-        batch_layout.addLayout(batch_balance_type_row)
         batch_layout.addLayout(batch_path_source_row)
         batch_layout.addLayout(batch_resize_head)
         batch_layout.addLayout(batch_row_3)
@@ -3154,7 +3509,7 @@ class AnnotationWindow(QMainWindow):
             "Click a box to select it, drag on empty page area for rectangle select, and hold Shift to add to selection. "
             "Use Alt+drag on the page to preview an equation for the selected box, then press Shift (Alt+Shift) or click Apply Equation to save it. "
             "Use Approve + Next or \u2691 Flag from the top toolbar for internal page decisions, then filter/sort from the Pages panel. "
-            "Use Batch Edit to change value/note_ref/comment_ref/note_name/period/duration_type/recurring_period fields/note_flag/note_num/currency/scale/value_type/value_context/balance_type/path_source and path levels across selected boxes. "
+            "Use Batch Edit to change value/note_ref/comment_ref/note_name/period/duration_type/recurring_period fields/note_flag/note_num/currency/scale/value_type/value_context/path_source and path levels across selected boxes. "
             "Use Batch Grow or Alt+Arrow to expand selected boxes in one direction. "
             "Use Arrow keys to move selected box(es), Shift+Arrow for faster nudge. "
             "Use +/Remove and Move Up/Move Down to manage path hierarchy. "
@@ -3211,6 +3566,7 @@ class AnnotationWindow(QMainWindow):
         self.save_btn.clicked.connect(self.save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.gemini_gt_btn.clicked.connect(self.generate_gemini_ground_truth)
+        self.gemini_complete_btn.clicked.connect(self.generate_gemini_auto_complete)
         self.gemini_fill_btn.clicked.connect(self.generate_gemini_fill_selected_fields)
         self.qwen_gt_btn.clicked.connect(self.generate_qwen_ground_truth)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
@@ -3218,6 +3574,12 @@ class AnnotationWindow(QMainWindow):
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
         self.apply_equation_btn.clicked.connect(self.apply_equation_to_selected_fact)
         self.clear_equation_btn.clicked.connect(self.clear_equation_from_selected_fact)
+        self.equation_add_variant_btn.clicked.connect(self.add_equation_variant_to_selected_fact)
+        self.fact_equation_variants_list.itemClicked.connect(self._on_equation_variant_item_clicked)
+        self.fact_equation_terms_list.itemSelectionChanged.connect(self._update_equation_term_controls)
+        self.fact_equation_terms_list.itemDoubleClicked.connect(self._on_equation_term_item_double_clicked)
+        self.equation_mark_add_btn.clicked.connect(lambda: self._apply_operator_to_selected_equation_terms("+"))
+        self.equation_mark_subtract_btn.clicked.connect(lambda: self._apply_operator_to_selected_equation_terms("-"))
         self.batch_toggle_btn.clicked.connect(self.toggle_batch_panel)
         self.gt_activity_stop_btn.clicked.connect(self._stop_active_generation)
         self.page_issues_list.itemClicked.connect(self._on_page_issue_clicked)
@@ -3253,9 +3615,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_scale_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("scale"))
         self.fact_value_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_type"))
         self.fact_value_context_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("value_context"))
-        self.fact_balance_type_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("balance_type"))
         self.fact_row_role_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("row_role"))
-        self.fact_aggregation_role_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("aggregation_role"))
         self.fact_path_source_combo.activated.connect(lambda _: self._on_fact_editor_field_edited("path_source"))
         self.fact_path_list.itemChanged.connect(lambda _: self._on_fact_editor_field_edited("path"))
         self.fact_path_list.itemSelectionChanged.connect(self._update_path_controls)
@@ -3282,7 +3642,6 @@ class AnnotationWindow(QMainWindow):
         self.batch_scale_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_value_type_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_value_context_combo.activated.connect(lambda _: self._update_batch_controls())
-        self.batch_balance_type_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_path_source_combo.activated.connect(lambda _: self._update_batch_controls())
         self.batch_prepend_path_btn.clicked.connect(self.batch_prepend_path_level)
         self.batch_append_path_btn.clicked.connect(self.batch_append_path_level)
@@ -3321,8 +3680,6 @@ class AnnotationWindow(QMainWindow):
         self.batch_clear_value_type_btn.clicked.connect(self.batch_clear_value_type)
         self.batch_set_value_context_btn.clicked.connect(self.batch_set_value_context)
         self.batch_clear_value_context_btn.clicked.connect(self.batch_clear_value_context)
-        self.batch_set_balance_type_btn.clicked.connect(self.batch_set_balance_type)
-        self.batch_clear_balance_type_btn.clicked.connect(self.batch_clear_balance_type)
         self.batch_set_path_source_btn.clicked.connect(self.batch_set_path_source)
         self.batch_clear_path_source_btn.clicked.connect(self.batch_clear_path_source)
         self.batch_expand_left_btn.clicked.connect(lambda: self.batch_expand_selected("left"))
@@ -3365,6 +3722,7 @@ class AnnotationWindow(QMainWindow):
         self._update_path_controls()
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
+        self._update_gemini_complete_button_state()
         self._update_history_controls()
 
     def _configure_hidden_status_bar(self) -> None:
@@ -3404,6 +3762,7 @@ class AnnotationWindow(QMainWindow):
         editable: bool = True,
         tooltip: Optional[str] = None,
         path_index: Optional[int] = None,
+        path_operation_index: Optional[int] = None,
     ) -> QListWidgetItem:
         item = QListWidgetItem(text)
         flags = item.flags() | Qt.ItemIsSelectable | Qt.ItemIsEnabled
@@ -3414,12 +3773,33 @@ class AnnotationWindow(QMainWindow):
             item.setToolTip(tooltip)
         if path_index is not None:
             item.setData(PATH_LEVEL_INDEX_ROLE, int(path_index))
+        if path_operation_index is not None:
+            item.setData(PATH_OPERATION_INDEX_ROLE, int(path_operation_index))
+        elif path_index is not None:
+            item.setData(PATH_OPERATION_INDEX_ROLE, int(path_index))
         brushes = self._path_tone_brushes(tone)
         if brushes is not None:
             bg, fg = brushes
             item.setBackground(bg)
             item.setForeground(fg)
         return item
+
+    def _path_operation_index(self, item: Optional[QListWidgetItem]) -> Optional[int]:
+        if item is None:
+            return None
+        value = item.data(PATH_OPERATION_INDEX_ROLE)
+        if value in (None, ""):
+            return None
+        return int(value)
+
+    def _neighbor_path_operation(self, row: int, step: int) -> tuple[Optional[int], Optional[int]]:
+        idx = row + step
+        while 0 <= idx < self.fact_path_list.count():
+            operation_index = self._path_operation_index(self.fact_path_list.item(idx))
+            if operation_index is not None:
+                return idx, operation_index
+            idx += step
+        return None, None
 
     def _set_path_list_editable(self, editable: bool, *, structural: bool = True) -> None:
         self._path_list_editable = editable
@@ -3454,13 +3834,29 @@ class AnnotationWindow(QMainWindow):
         count = self.fact_path_list.count()
         current_item = self.fact_path_list.item(row) if row >= 0 else None
         removable_shared_level = False
+        movable_shared_up = False
+        movable_shared_down = False
         if list_enabled and row >= 0 and not self._path_list_structure_editable and current_item is not None:
-            removable_shared_level = current_item.data(PATH_LEVEL_INDEX_ROLE) not in (None, "")
+            current_index_raw = current_item.data(PATH_LEVEL_INDEX_ROLE)
+            removable_shared_level = current_index_raw not in (None, "")
+            current_operation_index = self._path_operation_index(current_item)
+            _prev_row, prev_operation_index = self._neighbor_path_operation(row, -1)
+            _next_row, next_operation_index = self._neighbor_path_operation(row, 1)
+            movable_shared_up = (
+                current_operation_index is not None
+                and prev_operation_index is not None
+                and prev_operation_index == current_operation_index - 1
+            )
+            movable_shared_down = (
+                current_operation_index is not None
+                and next_operation_index is not None
+                and next_operation_index == current_operation_index + 1
+            )
         structural_enabled = list_enabled and self._path_list_structure_editable
         self.path_add_btn.setEnabled(structural_enabled)
         self.path_remove_btn.setEnabled((structural_enabled and row >= 0) or removable_shared_level)
-        self.path_up_btn.setEnabled(structural_enabled and row > 0)
-        self.path_down_btn.setEnabled(structural_enabled and 0 <= row < count - 1)
+        self.path_up_btn.setEnabled((structural_enabled and row > 0) or movable_shared_up)
+        self.path_down_btn.setEnabled((structural_enabled and 0 <= row < count - 1) or movable_shared_down)
         self.path_invert_btn.setEnabled(list_enabled and bool(self._selected_fact_items()))
 
     def add_path_level(self) -> None:
@@ -3528,9 +3924,46 @@ class AnnotationWindow(QMainWindow):
         self._on_fact_editor_field_edited("path")
 
     def move_selected_path_up(self) -> None:
-        if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
+        if not self.fact_path_list.isEnabled() or not self._path_list_editable:
             return
         row = self.fact_path_list.currentRow()
+        if row < 0:
+            return
+        if not self._path_list_structure_editable:
+            item = self.fact_path_list.item(row)
+            prev_row, prev_index = self._neighbor_path_operation(row, -1)
+            prev_item = self.fact_path_list.item(prev_row) if prev_row is not None else None
+            if item is None or prev_item is None:
+                return
+            path_index = self._path_operation_index(item)
+            if path_index is None or prev_index is None:
+                return
+            if prev_index != path_index - 1:
+                return
+            selected_items = self._selected_fact_items()
+            if not selected_items:
+                return
+            changed = False
+            for selected_item in selected_items:
+                current = normalize_fact_data(selected_item.fact_data)
+                path_value = [str(part).strip() for part in (current.get("path") or []) if str(part).strip()]
+                if not (0 <= prev_index < len(path_value) and 0 <= path_index < len(path_value)):
+                    continue
+                path_value[prev_index], path_value[path_index] = path_value[path_index], path_value[prev_index]
+                updated = normalize_fact_data({**current, "path": path_value})
+                if updated == current:
+                    continue
+                selected_item.fact_data = updated
+                changed = True
+            if not changed:
+                return
+            self.refresh_facts_list()
+            self._record_history_snapshot()
+            self._sync_fact_editor_from_selection()
+            if prev_row is not None and 0 <= prev_row < self.fact_path_list.count():
+                self.fact_path_list.setCurrentRow(prev_row)
+            self.statusBar().showMessage("Moved path level up across selected bboxes.", 3000)
+            return
         if row <= 0:
             return
         item = self.fact_path_list.takeItem(row)
@@ -3540,10 +3973,47 @@ class AnnotationWindow(QMainWindow):
         self._on_fact_editor_field_edited("path")
 
     def move_selected_path_down(self) -> None:
-        if not self.fact_path_list.isEnabled() or not self._path_list_structure_editable:
+        if not self.fact_path_list.isEnabled() or not self._path_list_editable:
             return
         row = self.fact_path_list.currentRow()
-        if row < 0 or row >= (self.fact_path_list.count() - 1):
+        if row < 0:
+            return
+        if not self._path_list_structure_editable:
+            item = self.fact_path_list.item(row)
+            next_row, next_index = self._neighbor_path_operation(row, 1)
+            next_item = self.fact_path_list.item(next_row) if next_row is not None else None
+            if item is None or next_item is None:
+                return
+            path_index = self._path_operation_index(item)
+            if path_index is None or next_index is None:
+                return
+            if next_index != path_index + 1:
+                return
+            selected_items = self._selected_fact_items()
+            if not selected_items:
+                return
+            changed = False
+            for selected_item in selected_items:
+                current = normalize_fact_data(selected_item.fact_data)
+                path_value = [str(part).strip() for part in (current.get("path") or []) if str(part).strip()]
+                if not (0 <= path_index < len(path_value) and 0 <= next_index < len(path_value)):
+                    continue
+                path_value[path_index], path_value[next_index] = path_value[next_index], path_value[path_index]
+                updated = normalize_fact_data({**current, "path": path_value})
+                if updated == current:
+                    continue
+                selected_item.fact_data = updated
+                changed = True
+            if not changed:
+                return
+            self.refresh_facts_list()
+            self._record_history_snapshot()
+            self._sync_fact_editor_from_selection()
+            if next_row is not None and 0 <= next_row < self.fact_path_list.count():
+                self.fact_path_list.setCurrentRow(next_row)
+            self.statusBar().showMessage("Moved path level down across selected bboxes.", 3000)
+            return
+        if row >= (self.fact_path_list.count() - 1):
             return
         item = self.fact_path_list.takeItem(row)
         self.fact_path_list.insertItem(row + 1, item)
@@ -3601,7 +4071,6 @@ class AnnotationWindow(QMainWindow):
         has_scale_choice = bool(self.batch_scale_combo.currentText().strip()) if hasattr(self, "batch_scale_combo") else False
         has_value_type_choice = bool(self.batch_value_type_combo.currentText().strip()) if hasattr(self, "batch_value_type_combo") else False
         has_value_context_choice = bool(self.batch_value_context_combo.currentText().strip()) if hasattr(self, "batch_value_context_combo") else False
-        has_balance_type_choice = bool(self.batch_balance_type_combo.currentText().strip()) if hasattr(self, "batch_balance_type_combo") else False
         has_path_source_choice = bool(self.batch_path_source_combo.currentText().strip()) if hasattr(self, "batch_path_source_combo") else False
         if hasattr(self, "batch_selected_label"):
             self.batch_selected_label.setText(f"Selected: {selected_count}")
@@ -3713,12 +4182,6 @@ class AnnotationWindow(QMainWindow):
             self.batch_set_value_context_btn.setEnabled(has_selection and has_value_context_choice)
         if hasattr(self, "batch_clear_value_context_btn"):
             self.batch_clear_value_context_btn.setEnabled(has_selection)
-        if hasattr(self, "batch_balance_type_combo"):
-            self.batch_balance_type_combo.setEnabled(has_selection)
-        if hasattr(self, "batch_set_balance_type_btn"):
-            self.batch_set_balance_type_btn.setEnabled(has_selection and has_balance_type_choice)
-        if hasattr(self, "batch_clear_balance_type_btn"):
-            self.batch_clear_balance_type_btn.setEnabled(has_selection)
         if hasattr(self, "batch_path_source_combo"):
             self.batch_path_source_combo.setEnabled(has_selection)
         if hasattr(self, "batch_set_path_source_btn"):
@@ -4176,25 +4639,6 @@ class AnnotationWindow(QMainWindow):
 
         self._batch_update_selected_facts(_transform, "Cleared value_context")
 
-    def batch_set_balance_type(self) -> None:
-        balance_type = self.batch_balance_type_combo.currentText().strip()
-        if not balance_type:
-            self.statusBar().showMessage("Choose balance_type first.", 2500)
-            return
-
-        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["balance_type"] = balance_type
-            return fact
-
-        self._batch_update_selected_facts(_transform, f"Updated balance_type to {balance_type}")
-
-    def batch_clear_balance_type(self) -> None:
-        def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["balance_type"] = None
-            return fact
-
-        self._batch_update_selected_facts(_transform, "Cleared balance_type")
-
     def batch_set_path_source(self) -> None:
         path_source = self.batch_path_source_combo.currentText().strip()
         if not path_source:
@@ -4322,6 +4766,214 @@ class AnnotationWindow(QMainWindow):
         if hasattr(self, "fact_equation_edit"):
             self._refresh_equation_panel()
 
+    def _rebuild_equation_candidate_from_terms(self) -> None:
+        candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = _build_equation_candidate_from_facts(
+            [
+                {
+                    "fact_num": term.get("fact_num"),
+                    "value": term.get("raw_value"),
+                    "natural_sign": term.get("natural_sign"),
+                    "operator": term.get("operator"),
+                }
+                for term in self._equation_candidate_terms
+                if isinstance(term, dict)
+            ]
+        )
+        self._equation_candidate_text = candidate_text
+        self._equation_candidate_fact_text = fact_candidate_text
+        self._equation_candidate_result_text = result_text
+        self._equation_candidate_invalid_values = invalid_values
+        self._equation_candidate_terms = structured_terms
+
+    def _update_equation_term_controls(self) -> None:
+        if not hasattr(self, "fact_equation_terms_list"):
+            return
+        has_selection = bool(self.fact_equation_terms_list.selectedItems())
+        visible = self.fact_equation_terms_list.isVisible()
+        self.equation_mark_add_btn.setEnabled(visible and has_selection)
+        self.equation_mark_subtract_btn.setEnabled(visible and has_selection)
+
+    def _refresh_equation_variants_list(self, equation_bundles: list[dict[str, Any]], *, enabled: bool) -> None:
+        if not hasattr(self, "fact_equation_variants_list"):
+            return
+        self._is_loading_equation_variants = True
+        try:
+            self.fact_equation_variants_list.clear()
+            for index, bundle in enumerate(equation_bundles):
+                equation_text = str(bundle.get("equation") or "").strip()
+                if not equation_text:
+                    continue
+                preview = (equation_text[:46] + "...") if len(equation_text) > 49 else equation_text
+                item = QListWidgetItem(f"{index + 1}. {preview}")
+                item.setToolTip(equation_text)
+                item.setData(EQUATION_VARIANT_INDEX_ROLE, index)
+                self.fact_equation_variants_list.addItem(item)
+            if self.fact_equation_variants_list.count() > 0:
+                self.fact_equation_variants_list.setCurrentRow(0)
+        finally:
+            self._is_loading_equation_variants = False
+        self.fact_equation_variants_list.setEnabled(enabled and self.fact_equation_variants_list.count() > 0)
+
+    def _on_equation_variant_item_clicked(self, item: QListWidgetItem) -> None:
+        if self._is_loading_equation_variants or item is None:
+            return
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1:
+            return
+        target_item = selected_items[0]
+        if not self._is_alive_fact_item(target_item):
+            return
+        target_index = item.data(EQUATION_VARIANT_INDEX_ROLE)
+        if not isinstance(target_index, int):
+            return
+        current = normalize_fact_data(target_item.fact_data)
+        equation_bundles = _equation_bundles_from_fact_payload(current)
+        if not equation_bundles:
+            return
+        updated = _fact_payload_with_active_equation_bundle(current, equation_bundles, active_index=target_index)
+        if updated == current:
+            return
+        target_item.fact_data = updated
+        self._clear_equation_candidate()
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self.statusBar().showMessage("Switched active saved equation for selected fact.", 2500)
+
+    def _refresh_equation_term_list(self) -> None:
+        if not hasattr(self, "fact_equation_terms_list"):
+            return
+        pending = self._equation_target_item is not None and bool(self._equation_candidate_terms)
+        show_controls = pending and any(
+            isinstance(term, dict) and term.get("fact_num") is not None
+            for term in self._equation_candidate_terms
+        )
+        self._is_loading_equation_terms = True
+        try:
+            self.fact_equation_terms_list.clear()
+            for index, term in enumerate(self._equation_candidate_terms):
+                if not isinstance(term, dict):
+                    continue
+                fact_num = term.get("fact_num")
+                if fact_num is None:
+                    continue
+                operator = _normalize_equation_operator(term.get("operator"))
+                raw_value = str(term.get("raw_value") or "").strip() or "<empty>"
+                status = str(term.get("status") or "")
+                if status == "invalid":
+                    label = f"{operator} f{fact_num} = {raw_value} (ignored)"
+                elif status == "normalized_dash":
+                    label = f"{operator} f{fact_num} = {raw_value} (as 0)"
+                else:
+                    label = f"{operator} f{fact_num} = {raw_value}"
+                item = QListWidgetItem(label)
+                item.setData(EQUATION_TERM_INDEX_ROLE, index)
+                self.fact_equation_terms_list.addItem(item)
+        finally:
+            self._is_loading_equation_terms = False
+        self.fact_equation_terms_list.setVisible(show_controls)
+        self.equation_mark_add_btn.setVisible(show_controls)
+        self.equation_mark_subtract_btn.setVisible(show_controls)
+        self._update_equation_term_controls()
+
+    def add_equation_variant_to_selected_fact(self) -> None:
+        target_item = self._equation_target_item
+        if not self._is_alive_fact_item(target_item):
+            self._clear_equation_candidate()
+            self.statusBar().showMessage("Select one target bbox before adding an equation.", 2500)
+            return
+        if self._equation_candidate_text is None or self._equation_candidate_result_text is None:
+            self.statusBar().showMessage("No calculable equation preview to add.", 2500)
+            return
+
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1 or selected_items[0] is not target_item:
+            self._clear_equation_candidate()
+            self.statusBar().showMessage("Re-select the target bbox before adding the equation.", 3000)
+            return
+
+        current = normalize_fact_data(target_item.fact_data)
+        equation_children = [
+            dict(term["equation_child"])
+            for term in self._equation_candidate_terms
+            if isinstance(term, dict) and isinstance(term.get("equation_child"), dict)
+        ]
+        new_bundle = _normalize_equation_bundle_payload(
+            {
+                "equation": self._equation_candidate_text,
+                "fact_equation": self._equation_candidate_fact_text,
+                "equation_children": equation_children or None,
+            }
+        )
+        if new_bundle is None:
+            self.statusBar().showMessage("Equation preview is empty and was not added.", 2500)
+            return
+        existing_bundles = _equation_bundles_from_fact_payload(current)
+        existing_index = next(
+            (
+                idx
+                for idx, bundle in enumerate(existing_bundles)
+                if _equation_bundle_signature(bundle) == _equation_bundle_signature(new_bundle)
+            ),
+            None,
+        )
+        if existing_index is not None:
+            updated = _fact_payload_with_active_equation_bundle(current, existing_bundles, active_index=existing_index)
+            message = "Equation already exists; switched to it."
+        else:
+            updated = _fact_payload_with_active_equation_bundle(
+                {**current, "row_role": "total" if equation_children else current.get("row_role")},
+                [new_bundle, *existing_bundles],
+                active_index=0,
+            )
+            message = "Added equation and set it as active."
+        if updated == current:
+            self.statusBar().showMessage("Equation is already active for the selected fact.", 2500)
+            return
+
+        target_item.fact_data = updated
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self._clear_equation_candidate()
+        self.statusBar().showMessage(message, 2600)
+
+    def _apply_operator_to_selected_equation_terms(self, operator: str) -> None:
+        if self._is_loading_equation_terms:
+            return
+        normalized_operator = _normalize_equation_operator(operator)
+        selected_items = self.fact_equation_terms_list.selectedItems() if hasattr(self, "fact_equation_terms_list") else []
+        if not selected_items:
+            return
+        changed = False
+        for item in selected_items:
+            index_raw = item.data(EQUATION_TERM_INDEX_ROLE)
+            if not isinstance(index_raw, int) or not (0 <= index_raw < len(self._equation_candidate_terms)):
+                continue
+            term = self._equation_candidate_terms[index_raw]
+            if not isinstance(term, dict):
+                continue
+            if _normalize_equation_operator(term.get("operator")) == normalized_operator:
+                continue
+            term["operator"] = normalized_operator
+            changed = True
+        if not changed:
+            return
+        self._rebuild_equation_candidate_from_terms()
+        self._refresh_equation_panel()
+
+    def _on_equation_term_item_double_clicked(self, item: QListWidgetItem) -> None:
+        if self._is_loading_equation_terms or item is None:
+            return
+        index_raw = item.data(EQUATION_TERM_INDEX_ROLE)
+        if not isinstance(index_raw, int) or not (0 <= index_raw < len(self._equation_candidate_terms)):
+            return
+        term = self._equation_candidate_terms[index_raw]
+        if not isinstance(term, dict):
+            return
+        next_operator = "-" if _normalize_equation_operator(term.get("operator")) == "+" else "+"
+        term["operator"] = next_operator
+        self._rebuild_equation_candidate_from_terms()
+        self._refresh_equation_panel()
+
     def _set_equation_result_display(self, text: str, *, tone: str = "neutral") -> None:
         self.fact_equation_result_label.setText(text)
         if tone == "danger":
@@ -4354,30 +5006,39 @@ class AnnotationWindow(QMainWindow):
 
         selected_items = self._selected_fact_items()
         selection_has_saved_equation = any(
-            bool(normalize_fact_data(item.fact_data).get("equation") or normalize_fact_data(item.fact_data).get("fact_equation"))
+            bool(
+                normalize_fact_data(item.fact_data).get("equation")
+                or normalize_fact_data(item.fact_data).get("fact_equation")
+                or normalize_fact_data(item.fact_data).get("equation_children")
+                or normalize_fact_data(item.fact_data).get("equations")
+            )
             for item in selected_items
             if self._is_alive_fact_item(item)
         )
         single_item = selected_items[0] if len(selected_items) == 1 else None
         saved_equation = ""
         saved_fact_equation = ""
+        equation_bundles: list[dict[str, Any]] = []
         if single_item is not None:
             saved_fact = normalize_fact_data(single_item.fact_data)
             saved_equation = str(saved_fact.get("equation") or "")
             saved_fact_equation = str(saved_fact.get("fact_equation") or "")
+            equation_bundles = _equation_bundles_from_fact_payload(saved_fact)
             target_value = saved_fact.get("value")
             target_natural_sign = saved_fact.get("natural_sign")
-            target_aggregation_role = saved_fact.get("aggregation_role")
         else:
             target_value = None
             target_natural_sign = None
-            target_aggregation_role = None
 
         self.fact_equation_edit.setEnabled(single_item is not None)
         self.fact_equation_result_label.setEnabled(single_item is not None)
         self.fact_equation_status_label.setEnabled(single_item is not None)
+        self.fact_equation_variants_list.setEnabled(single_item is not None)
+        self.equation_add_variant_btn.setEnabled(False)
         self.apply_equation_btn.setEnabled(False)
         self.clear_equation_btn.setEnabled(False)
+        self._refresh_equation_variants_list(equation_bundles, enabled=(single_item is not None))
+        self._refresh_equation_term_list()
 
         if single_item is None:
             self.fact_equation_edit.setText("")
@@ -4387,7 +5048,7 @@ class AnnotationWindow(QMainWindow):
             return
 
         pending_for_selection = self._equation_target_item is single_item and self._equation_candidate_text is not None
-        has_saved_equation = bool(saved_equation or saved_fact_equation)
+        has_saved_equation = bool(saved_equation or saved_fact_equation or equation_bundles)
         if pending_for_selection:
             self.fact_equation_edit.setText(str(self._equation_candidate_text or "").strip())
             if self._equation_candidate_result_text is not None:
@@ -4395,7 +5056,6 @@ class AnnotationWindow(QMainWindow):
                     self._equation_candidate_result_text,
                     target_value,
                     target_natural_sign,
-                    target_aggregation_role,
                 )
                 self._set_equation_result_display(self._equation_candidate_result_text, tone=result_tone)
             else:
@@ -4411,7 +5071,8 @@ class AnnotationWindow(QMainWindow):
                 )
             else:
                 self.fact_equation_status_label.setText(
-                    f"Candidate equation preview. {comparison_message} Press Shift (Alt+Shift) or click Apply Equation to save it."
+                    "Candidate equation preview. "
+                    f"{comparison_message} Selected children default to additive; use Mark - only for exceptional subtractive cases, then click + to add a new equation variant or Apply Equation to overwrite the active one."
                 )
 
             self.apply_equation_btn.setEnabled(
@@ -4422,29 +5083,32 @@ class AnnotationWindow(QMainWindow):
                     or (self._equation_candidate_fact_text or "") != saved_fact_equation
                 )
             )
+            self.equation_add_variant_btn.setEnabled(
+                self._equation_candidate_result_text is not None and bool(self._equation_candidate_text)
+            )
             self.clear_equation_btn.setEnabled(has_saved_equation)
             return
 
         self.fact_equation_edit.setText(saved_equation)
         if not saved_equation:
             self.fact_equation_status_label.setText(
-                "Hold Alt and drag on the page to build an equation preview, then press Shift to approve."
+                "Hold Alt and drag on the page to build an equation preview. Click + to add another equation or Apply Equation to overwrite the active one."
             )
             self._set_equation_result_display("-", tone="neutral")
-            self.clear_equation_btn.setEnabled(False)
+            self.clear_equation_btn.setEnabled(bool(equation_bundles))
             return
 
         preview = _evaluate_equation_string(saved_equation)
         if preview is None:
             self.fact_equation_status_label.setText("Saved equation cannot be calculated.")
             self._set_equation_result_display("cannot calculate", tone="danger")
+            self.clear_equation_btn.setEnabled(bool(equation_bundles))
             return
 
         result_tone, comparison_message = _equation_result_match_state(
             preview,
             target_value,
             target_natural_sign,
-            target_aggregation_role,
         )
         self.fact_equation_status_label.setText(f"Saved equation preview. {comparison_message}")
         self._set_equation_result_display(preview, tone=result_tone)
@@ -4468,14 +5132,14 @@ class AnnotationWindow(QMainWindow):
         self.fact_scale_combo.setEnabled(enabled)
         self.fact_value_type_combo.setEnabled(enabled)
         self.fact_value_context_combo.setEnabled(enabled)
-        self.fact_balance_type_combo.setEnabled(enabled)
         self.fact_row_role_combo.setEnabled(enabled)
-        self.fact_aggregation_role_combo.setEnabled(enabled)
         self.fact_path_source_combo.setEnabled(enabled)
         self.fact_path_list.setEnabled(enabled)
         self.fact_natural_sign_label.setEnabled(enabled)
         self.fact_equation_result_label.setEnabled(enabled and not multi_select)
         self.fact_equation_status_label.setEnabled(enabled and not multi_select)
+        self.fact_equation_variants_list.setEnabled(enabled and not multi_select)
+        self.equation_add_variant_btn.setEnabled(False)
         self.apply_equation_btn.setEnabled(False)
         self.clear_equation_btn.setEnabled(False)
         self._set_path_list_editable(enabled and not multi_select)
@@ -4484,6 +5148,7 @@ class AnnotationWindow(QMainWindow):
         if not enabled or multi_select:
             self._set_equation_result_display("-", tone="neutral")
             self.fact_equation_status_label.setText("" if not enabled else "Equation preview is available for a single selected fact.")
+            self._refresh_equation_variants_list([], enabled=False)
         self._refresh_recurring_period_visibility()
         self._update_path_controls()
 
@@ -4510,9 +5175,7 @@ class AnnotationWindow(QMainWindow):
             self.fact_scale_combo,
             self.fact_value_type_combo,
             self.fact_value_context_combo,
-            self.fact_balance_type_combo,
             self.fact_row_role_combo,
-            self.fact_aggregation_role_combo,
             self.fact_path_source_combo,
         ):
             if hasattr(combo, "setPlaceholderText"):
@@ -4542,14 +5205,14 @@ class AnnotationWindow(QMainWindow):
             self.fact_scale_combo.setCurrentIndex(0)
             self.fact_value_type_combo.setCurrentIndex(0)
             self.fact_value_context_combo.setCurrentIndex(0)
-            self.fact_balance_type_combo.setCurrentIndex(0)
             self.fact_row_role_combo.setCurrentIndex(0)
-            self.fact_aggregation_role_combo.setCurrentIndex(0)
             self.fact_path_source_combo.setCurrentIndex(0)
             self.fact_path_list.clear()
             self.fact_natural_sign_label.setText("-")
             self.fact_equation_status_label.setText("")
             self._set_equation_result_display("-", tone="neutral")
+            self._refresh_equation_variants_list([], enabled=False)
+            self.equation_add_variant_btn.setEnabled(False)
         finally:
             self._is_loading_fact_editor = False
         self._update_path_controls()
@@ -4609,15 +5272,9 @@ class AnnotationWindow(QMainWindow):
             value_context = str(fact.get("value_context") or "")
             idx_value_context = self.fact_value_context_combo.findText(value_context)
             self.fact_value_context_combo.setCurrentIndex(max(0, idx_value_context))
-            balance_type = str(fact.get("balance_type") or "")
-            idx_balance_type = self.fact_balance_type_combo.findText(balance_type)
-            self.fact_balance_type_combo.setCurrentIndex(max(0, idx_balance_type))
             row_role = str(fact.get("row_role") or "")
             idx_row_role = self.fact_row_role_combo.findText(row_role)
             self.fact_row_role_combo.setCurrentIndex(max(0, idx_row_role))
-            aggregation_role = str(fact.get("aggregation_role") or "")
-            idx_aggregation_role = self.fact_aggregation_role_combo.findText(aggregation_role)
-            self.fact_aggregation_role_combo.setCurrentIndex(max(0, idx_aggregation_role))
             self.fact_natural_sign_label.setText(str(fact.get("natural_sign") or "-"))
 
             path_source = str(fact.get("path_source") or "")
@@ -4702,9 +5359,7 @@ class AnnotationWindow(QMainWindow):
             )
             self._set_multi_combo_value(self.fact_value_type_combo, "value_type", items)
             self._set_multi_combo_value(self.fact_value_context_combo, "value_context", items)
-            self._set_multi_combo_value(self.fact_balance_type_combo, "balance_type", items)
             self._set_multi_combo_value(self.fact_row_role_combo, "row_role", items)
-            self._set_multi_combo_value(self.fact_aggregation_role_combo, "aggregation_role", items)
             self._set_multi_combo_value(self.fact_path_source_combo, "path_source", items)
             natural_sign_value, natural_sign_mixed = self._shared_fact_value(items, "natural_sign")
             self.fact_natural_sign_label.setText(
@@ -4723,6 +5378,7 @@ class AnnotationWindow(QMainWindow):
                 path_signatures = self._selected_path_signatures(items)
                 prefix = _shared_path_prefix(path_signatures)
                 shared_elements = _shared_path_elements(path_signatures)
+                variant_operation_index = len(prefix) if path_signatures and any(len(path) > len(prefix) for path in path_signatures) else None
 
                 if prefix:
                     for level_index, level in enumerate(prefix):
@@ -4763,6 +5419,7 @@ class AnnotationWindow(QMainWindow):
                                 tone="variant",
                                 editable=False,
                                 tooltip="Differing final path node values:\n" + "\n".join(leaf_values),
+                                path_operation_index=variant_operation_index,
                             )
                         )
                     else:
@@ -4774,6 +5431,7 @@ class AnnotationWindow(QMainWindow):
                                 tone="variant",
                                 editable=False,
                                 tooltip="Selected bboxes have different path tails:\n" + "\n".join(rendered_paths),
+                                path_operation_index=variant_operation_index,
                             )
                         )
                 self._set_path_list_editable(bool(prefix), structural=False)
@@ -4827,9 +5485,7 @@ class AnnotationWindow(QMainWindow):
             "scale": int(scale_text) if scale_text else None,
             "value_type": self.fact_value_type_combo.currentText().strip() or None,
             "value_context": self.fact_value_context_combo.currentText().strip() or None,
-            "balance_type": self.fact_balance_type_combo.currentText().strip() or None,
             "row_role": self.fact_row_role_combo.currentText().strip() or None,
-            "aggregation_role": self.fact_aggregation_role_combo.currentText().strip() or None,
         }
         return normalize_fact_data(payload)
 
@@ -5025,21 +5681,10 @@ class AnnotationWindow(QMainWindow):
         if field_name == "value_context":
             self._apply_fact_field_to_selected_items("value_context", self.fact_value_context_combo.currentText().strip() or None)
             return
-        if field_name == "balance_type":
-            self._apply_fact_field_to_selected_items("balance_type", self.fact_balance_type_combo.currentText().strip() or None)
-            self._sync_fact_editor_from_selection()
-            return
         if field_name == "row_role":
             self._apply_fact_field_to_selected_items(
                 "row_role",
                 self.fact_row_role_combo.currentText().strip() or None,
-            )
-            self._sync_fact_editor_from_selection()
-            return
-        if field_name == "aggregation_role":
-            self._apply_fact_field_to_selected_items(
-                "aggregation_role",
-                self.fact_aggregation_role_combo.currentText().strip() or None,
             )
             self._sync_fact_editor_from_selection()
             return
@@ -5150,9 +5795,12 @@ class AnnotationWindow(QMainWindow):
     def _set_gt_buttons_enabled(self, enabled: bool) -> None:
         if hasattr(self, "gemini_gt_btn"):
             self.gemini_gt_btn.setEnabled(enabled)
+        if hasattr(self, "gemini_complete_btn"):
+            self.gemini_complete_btn.setEnabled(enabled)
         if hasattr(self, "qwen_gt_btn"):
             self.qwen_gt_btn.setEnabled(enabled)
         self._update_gemini_fill_button_state(force_disable=not enabled)
+        self._update_gemini_complete_button_state(force_disable=not enabled)
 
     def _update_gemini_fill_button_state(self, *, force_disable: bool = False) -> None:
         if not hasattr(self, "gemini_fill_btn"):
@@ -5165,6 +5813,17 @@ class AnnotationWindow(QMainWindow):
         )
         enabled = has_selection and no_active_generation and not force_disable
         self.gemini_fill_btn.setEnabled(enabled)
+
+    def _update_gemini_complete_button_state(self, *, force_disable: bool = False) -> None:
+        if not hasattr(self, "gemini_complete_btn"):
+            return
+        has_current_page_facts = bool(getattr(self, "_fact_items", [])) if not force_disable else False
+        no_active_generation = (
+            self._gemini_stream_thread is None
+            and self._qwen_stream_thread is None
+            and self._gemini_fill_thread is None
+        )
+        self.gemini_complete_btn.setEnabled(has_current_page_facts and no_active_generation and not force_disable)
 
     def toggle_batch_panel(self) -> None:
         visible = not self.batch_box.isVisible()
@@ -5640,9 +6299,7 @@ class AnnotationWindow(QMainWindow):
                 "recurring_period": self.fact_recurring_period_combo,
                 "value_type": self.fact_value_type_combo,
                 "value_context": self.fact_value_context_combo,
-                "balance_type": self.fact_balance_type_combo,
                 "row_role": self.fact_row_role_combo,
-                "aggregation_role": self.fact_aggregation_role_combo,
                 "path_source": self.fact_path_source_combo,
             }
         else:
@@ -5812,6 +6469,27 @@ class AnnotationWindow(QMainWindow):
                 return resolved
         return None
 
+    def _resolve_gemini_autocomplete_prompt_txt_path(self) -> Optional[Path]:
+        candidates: List[Path] = []
+        env_path = os.getenv("FINETREE_GEMINI_AUTOCOMPLETE_PROMPT_PATH")
+        if env_path:
+            candidates.append(Path(env_path).expanduser())
+
+        candidates.append(Path.cwd() / "prompts" / "gemini_autocomplete_prompt.txt")
+        candidates.append(DEFAULT_GEMINI_AUTOCOMPLETE_PROMPT_PATH)
+        for parent in Path(__file__).resolve().parents:
+            candidates.append(parent / "prompts" / "gemini_autocomplete_prompt.txt")
+
+        seen: set[Path] = set()
+        for path in candidates:
+            resolved = path.resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            if resolved.is_file():
+                return resolved
+        return None
+
     def _load_gemini_few_shot_examples(
         self,
         *,
@@ -5907,11 +6585,44 @@ class AnnotationWindow(QMainWindow):
     ) -> str:
         fact_fields = ", ".join(sorted(selected_fact_fields)) if selected_fact_fields else "none"
         meta_fields = "statement_type" if include_statement_type else "none"
+        if include_statement_type:
+            meta_updates_schema = (
+                '{\n'
+                '    "statement_type": '
+                '"balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|'
+                'notes_to_financial_statements|board_of_directors_report|auditors_report|'
+                'statement_of_activities|other_declaration|null"\n'
+                "  }"
+            )
+        else:
+            meta_updates_schema = "{}"
         request_json = json.dumps(request_payload, ensure_ascii=False, indent=2)
         prompt = template.replace("{{FACT_FIELDS}}", fact_fields)
         prompt = prompt.replace("{{META_FIELDS}}", meta_fields)
+        prompt = prompt.replace("{{META_UPDATES_SCHEMA}}", meta_updates_schema)
         prompt = prompt.replace("{{REQUEST_JSON}}", request_json)
         return prompt
+
+    def _build_gemini_autocomplete_prompt_from_template(
+        self,
+        template: str,
+        *,
+        request_payload: Dict[str, Any],
+    ) -> str:
+        request_json = json.dumps(request_payload, ensure_ascii=False, indent=2)
+        first_page = {}
+        pages = request_payload.get("pages")
+        if isinstance(pages, list) and pages and isinstance(pages[0], dict):
+            first_page = {
+                "image": pages[0].get("image"),
+                "meta": pages[0].get("meta"),
+                "facts": pages[0].get("facts"),
+            }
+        seed_page_json = json.dumps(first_page, ensure_ascii=False, indent=2)
+        return (
+            template.replace("{{REQUEST_JSON}}", request_json)
+            .replace("{{SEED_PAGE_JSON}}", seed_page_json)
+        )
 
     def _fact_payload_from_item(self, item: AnnotRectItem) -> Dict[str, Any]:
         return {
@@ -5945,10 +6656,8 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("scale") if normalized_fact.get("scale") is not None else ""),
             str(normalized_fact.get("value_type") or ""),
             str(normalized_fact.get("value_context") or ""),
-            str(normalized_fact.get("balance_type") or ""),
             str(normalized_fact.get("natural_sign") or ""),
             str(normalized_fact.get("row_role") or ""),
-            str(normalized_fact.get("aggregation_role") or ""),
             str(normalized_fact.get("path_source") or ""),
             path,
         )
@@ -5961,6 +6670,247 @@ class AnnotationWindow(QMainWindow):
         for item in ordered_items:
             signature.append(self._fact_uniqueness_key(self._fact_payload_from_item(item)))
         return signature
+
+    def _normalized_stream_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
+        raw_bbox = fact_payload.get("bbox")
+        if not isinstance(raw_bbox, dict) and not (isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4):
+            return None
+        bbox = normalize_bbox_data(raw_bbox)
+        fact_data = normalize_fact_data(fact_payload)
+        return {"bbox": bbox_to_list(bbox), **fact_data}
+
+    def _normalized_autocomplete_generated_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
+        normalized_payload = self._normalized_stream_fact_payload(fact_payload)
+        if normalized_payload is None:
+            return None
+        normalized_fact = normalize_fact_data(
+            {
+                **normalized_payload,
+                "fact_num": None,
+                "fact_equation": None,
+                "equation_children": None,
+                "equations": None,
+            }
+        )
+        return {
+            "bbox": bbox_to_list(normalized_payload.get("bbox")),
+            **normalized_fact,
+        }
+
+    def _autocomplete_candidate_payloads_for_bbox_mode(
+        self,
+        *,
+        fact_payloads: List[Dict[str, Any]],
+        mode: str,
+        image_width: float,
+        image_height: float,
+    ) -> List[Dict[str, Any]]:
+        out: list[dict[str, Any]] = []
+        for payload in fact_payloads:
+            normalized_payload = self._normalized_stream_fact_payload(payload)
+            if normalized_payload is None:
+                continue
+            bbox = normalize_bbox_data(normalized_payload.get("bbox"))
+            if mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL:
+                bbox = denormalize_bbox_from_1000(bbox, image_width, image_height)
+            out.append({"bbox": bbox_to_list(bbox), **normalize_fact_data(normalized_payload)})
+        return out
+
+    @staticmethod
+    def _score_bbox_payload_ink(image: QImage, bbox_payload: Dict[str, Any]) -> tuple[float, float]:
+        image_width = image.width()
+        image_height = image.height()
+        if image_width <= 0 or image_height <= 0:
+            return 0.0, 0.0
+        bbox = normalize_bbox_data(bbox_payload.get("bbox"))
+        area = max(float(bbox["w"]) * float(bbox["h"]), 1.0)
+        left = float(bbox["x"])
+        top = float(bbox["y"])
+        right = left + float(bbox["w"])
+        bottom = top + float(bbox["h"])
+
+        sample_left = max(0, min(image_width - 1, int(math.floor(left))))
+        sample_top = max(0, min(image_height - 1, int(math.floor(top))))
+        sample_right = max(0, min(image_width, int(math.ceil(right))))
+        sample_bottom = max(0, min(image_height, int(math.ceil(bottom))))
+        if sample_right <= sample_left or sample_bottom <= sample_top:
+            return 0.0, 0.0
+
+        clipped_area = float((sample_right - sample_left) * (sample_bottom - sample_top))
+        coverage = max(0.0, min(1.0, clipped_area / area))
+        span_w = sample_right - sample_left
+        span_h = sample_bottom - sample_top
+        step = max(1, int(max(span_w / 32.0, span_h / 32.0)))
+
+        dark_pixels = 0
+        sampled_pixels = 0
+        for py in range(sample_top, sample_bottom, step):
+            for px in range(sample_left, sample_right, step):
+                color = image.pixelColor(px, py)
+                luma = 0.299 * float(color.red()) + 0.587 * float(color.green()) + 0.114 * float(color.blue())
+                if luma <= BBOX_DARK_LUMA_THRESHOLD:
+                    dark_pixels += 1
+                sampled_pixels += 1
+        if sampled_pixels <= 0:
+            return 0.0, coverage
+
+        ink_ratio = dark_pixels / sampled_pixels
+        ink_score = max(0.0, min(1.0, ink_ratio / BBOX_INK_TARGET_RATIO))
+        score = (0.75 * ink_score) + (0.25 * coverage)
+        if coverage < 0.35:
+            score *= coverage / 0.35
+        return score, coverage
+
+    def _score_autocomplete_bbox_candidate_payloads(self, page_name: str, fact_payloads: List[Dict[str, Any]]) -> float:
+        image_path = self.images_dir / page_name
+        image = QImage(str(image_path))
+        if image.isNull():
+            return 0.0
+        if not fact_payloads:
+            return 0.0
+
+        total_score = 0.0
+        total_coverage = 0.0
+        scored_count = 0
+        for payload in fact_payloads:
+            score, coverage = self._score_bbox_payload_ink(image, payload)
+            total_score += score
+            total_coverage += coverage
+            scored_count += 1
+        if scored_count <= 0:
+            return 0.0
+        avg_score = total_score / float(scored_count)
+        avg_coverage = total_coverage / float(scored_count)
+        # Coverage penalty helps reject candidates that mostly fall outside image bounds.
+        return max(0.0, avg_score - ((1.0 - avg_coverage) * 0.35))
+
+    def _resolve_autocomplete_bbox_mode(
+        self,
+        page_name: str,
+        fact_payloads: List[Dict[str, Any]],
+    ) -> tuple[List[Dict[str, Any]], str]:
+        if not fact_payloads:
+            self._gemini_autocomplete_last_bbox_scores = {
+                BBOX_MODE_PIXEL_AS_IS: 0.0,
+                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+            }
+            return [], BBOX_MODE_PIXEL_AS_IS
+
+        image_dims = self._image_dimensions_for_page(page_name)
+        if image_dims is None:
+            self._gemini_autocomplete_last_bbox_scores = {
+                BBOX_MODE_PIXEL_AS_IS: 0.0,
+                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+            }
+            return [deepcopy(payload) for payload in fact_payloads], BBOX_MODE_PIXEL_AS_IS
+
+        image_width, image_height = image_dims
+        pixel_payloads = self._autocomplete_candidate_payloads_for_bbox_mode(
+            fact_payloads=fact_payloads,
+            mode=BBOX_MODE_PIXEL_AS_IS,
+            image_width=image_width,
+            image_height=image_height,
+        )
+        normalized_payloads = self._autocomplete_candidate_payloads_for_bbox_mode(
+            fact_payloads=fact_payloads,
+            mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+            image_width=image_width,
+            image_height=image_height,
+        )
+        pixel_score = self._score_autocomplete_bbox_candidate_payloads(page_name, pixel_payloads)
+        normalized_score = self._score_autocomplete_bbox_candidate_payloads(page_name, normalized_payloads)
+        self._gemini_autocomplete_last_bbox_scores = {
+            BBOX_MODE_PIXEL_AS_IS: pixel_score,
+            BBOX_MODE_NORMALIZED_1000_TO_PIXEL: normalized_score,
+        }
+        if normalized_score > (pixel_score + BBOX_MODE_SWITCH_MARGIN):
+            return normalized_payloads, BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+        return pixel_payloads, BBOX_MODE_PIXEL_AS_IS
+
+    def _ordered_fact_payloads_by_geometry(self, fact_payloads: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        if len(fact_payloads) <= 1:
+            return [deepcopy(payload) for payload in fact_payloads]
+        facts_for_order = [{"bbox": normalize_bbox_data(payload.get("bbox"))} for payload in fact_payloads]
+        direction = self._active_reading_direction()
+        ordered_indices = canonical_fact_order_indices(
+            facts_for_order,
+            direction="rtl" if direction == "rtl" else "ltr",
+            row_tolerance_ratio=0.35,
+            row_tolerance_min_px=6.0,
+        )
+        return [deepcopy(fact_payloads[idx]) for idx in ordered_indices if 0 <= idx < len(fact_payloads)]
+
+    def _apply_page_state_to_scene(self, page_name: str) -> None:
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return
+        if self.current_index >= 0 and self.page_images[self.current_index].name == page_name:
+            was_restoring = self._is_restoring_history
+            self._is_restoring_history = True
+            try:
+                self.show_page(page_idx)
+            finally:
+                self._is_restoring_history = was_restoring
+        else:
+            self._recompute_all_page_issues()
+            self._refresh_thumbnail_for_index(page_idx)
+
+    def _merge_autocomplete_buffered_facts(self, page_name: str) -> tuple[bool, str | None]:
+        snapshot = self._gemini_autocomplete_snapshot or {}
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            return False, "Current page is unavailable."
+        if self.page_images[self.current_index].name != page_name:
+            return False, "Current page changed during Gemini Auto Complete. Please rerun."
+
+        ordered_items = self._sorted_fact_items()
+        current_signature = self._current_page_fact_snapshot_signature(ordered_items)
+        expected_signature = list(snapshot.get("ordered_fact_signature") or [])
+        if current_signature != expected_signature:
+            return False, "Current page facts changed during Gemini Auto Complete. Please rerun."
+
+        locked_fact_payloads = [deepcopy(payload) for payload in (snapshot.get("locked_fact_payloads") or [])]
+        if not self._gemini_autocomplete_buffered_facts:
+            self._gemini_stream_fact_count = 0
+            self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+            return True, None
+
+        resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
+            page_name,
+            self._gemini_autocomplete_buffered_facts,
+        )
+        self._gemini_autocomplete_last_bbox_mode = bbox_mode
+        locked_keys = {self._fact_uniqueness_key(payload) for payload in locked_fact_payloads}
+        deduped_new_payloads: list[dict[str, Any]] = []
+        seen_new_keys: set[tuple[Any, ...]] = set()
+        for payload in resolved_payloads:
+            payload_key = self._fact_uniqueness_key(payload)
+            if payload_key in locked_keys or payload_key in seen_new_keys:
+                continue
+            seen_new_keys.add(payload_key)
+            deduped_new_payloads.append(deepcopy(payload))
+        self._gemini_stream_fact_count = len(deduped_new_payloads)
+        if not deduped_new_payloads:
+            return True, None
+
+        merged_payloads = self._ordered_fact_payloads_by_geometry(
+            locked_fact_payloads + deduped_new_payloads
+        )
+        resequenced_facts = resequence_fact_numbers_and_remap_fact_equations(
+            [normalize_fact_data(payload) for payload in merged_payloads]
+        )
+        merged_records = [
+            BoxRecord(
+                bbox=normalize_bbox_data(payload.get("bbox")),
+                fact=resequenced_fact,
+            )
+            for payload, resequenced_fact in zip(merged_payloads, resequenced_facts)
+        ]
+
+        page_idx = self._page_index_by_name(page_name)
+        state = self.page_states.get(page_name, self._default_state(page_idx))
+        self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+        self._apply_page_state_to_scene(page_name)
+        return True, None
 
     def _build_gemini_fill_request_payload(
         self,
@@ -6014,6 +6964,50 @@ class AnnotationWindow(QMainWindow):
             },
         }
 
+    def _build_gemini_autocomplete_request_payload(
+        self,
+        *,
+        page_name: str,
+        ordered_items: List[AnnotRectItem],
+    ) -> Dict[str, Any]:
+        page_idx = self._page_index_by_name(page_name)
+        state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
+        page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
+
+        facts_out: list[dict[str, Any]] = []
+        for item in ordered_items:
+            payload = self._fact_payload_from_item(item)
+            facts_out.append(
+                {
+                    "fact_num": self._fact_num_for_item(item),
+                    "bbox": bbox_to_list(payload.get("bbox")),
+                    **normalize_fact_data(payload),
+                }
+            )
+        image_dims = self._image_dimensions_for_page(page_name)
+        image_width = float(image_dims[0]) if image_dims is not None else None
+        image_height = float(image_dims[1]) if image_dims is not None else None
+
+        return {
+            "images_dir": str(self.images_dir),
+            "metadata": normalize_document_meta(self.document_meta),
+            "pages": [
+                {
+                    "image": page_name,
+                    "meta": page_meta,
+                    "facts": facts_out,
+                }
+            ],
+            "request": {
+                "mode": "anchored_geometry_merge",
+                "preserve_existing_facts": True,
+                "allow_meta_updates": False,
+                "locked_fact_count": len(facts_out),
+                "image_width": image_width,
+                "image_height": image_height,
+            },
+        }
+
     def _apply_stream_meta(self, page_name: str, meta_payload: Dict[str, Any]) -> None:
         page_idx = self._page_index_by_name(page_name)
         if page_idx < 0:
@@ -6062,14 +7056,18 @@ class AnnotationWindow(QMainWindow):
         if page_idx < 0:
             return False
 
-        raw_bbox = fact_payload.get("bbox")
-        if not isinstance(raw_bbox, dict) and not (isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4):
+        if self._gemini_stream_mode == "autocomplete":
+            normalized_payload = self._normalized_autocomplete_generated_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._gemini_autocomplete_buffered_facts.append(normalized_payload)
+            return True
+
+        normalized_payload = self._normalized_stream_fact_payload(fact_payload)
+        if normalized_payload is None:
             return False
-        bbox = normalize_bbox_data(raw_bbox)
-        image_dims = self._image_dimensions_for_page(page_name)
-        if image_dims and self._bbox_looks_normalized_1000(bbox):
-            bbox = denormalize_bbox_from_1000(bbox, image_dims[0], image_dims[1])
-        fact_data = normalize_fact_data(fact_payload)
+        bbox = normalize_bbox_data(normalized_payload.get("bbox"))
+        fact_data = normalize_fact_data(normalized_payload)
 
         state = self.page_states.get(page_name, self._default_state(page_idx))
         state_facts = list(state.facts)
@@ -6479,6 +7477,118 @@ class AnnotationWindow(QMainWindow):
         if self._gemini_stream_thread is None and self._qwen_stream_thread is None:
             self._set_gt_buttons_enabled(True)
 
+    def _gemini_stream_provider_name(self) -> str:
+        return "Gemini Auto Complete" if self._gemini_stream_mode == "autocomplete" else "Gemini"
+
+    def _gemini_stream_completion_text(self) -> tuple[str, str]:
+        if self._gemini_stream_mode == "autocomplete":
+            bbox_mode_label = (
+                "normalized_1000→pixel"
+                if self._gemini_autocomplete_last_bbox_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+                else "pixel"
+            )
+            return (
+                (
+                    "Gemini Auto Complete complete. "
+                    f"Merged {self._gemini_stream_fact_count} new fact(s) "
+                    f"(bbox mode: {bbox_mode_label})."
+                ),
+                (
+                    "Gemini Auto Complete complete "
+                    f"({self._gemini_stream_fact_count} new fact(s) merged, bbox mode: {bbox_mode_label})."
+                ),
+            )
+        return (
+            f"Gemini GT complete. Parsed {self._gemini_stream_fact_count} fact(s).",
+            f"Gemini GT complete ({self._gemini_stream_fact_count} fact(s)).",
+        )
+
+    def _start_gemini_stream(
+        self,
+        *,
+        page_path: Path,
+        page_name: str,
+        prompt_text: str,
+        model_name: str,
+        gemini_api_key: str,
+        enable_thinking: bool,
+        thinking_level: str,
+        few_shot_examples: Optional[list[dict[str, Any]]],
+        mode: str,
+        max_facts: int = 0,
+        apply_meta: bool = True,
+        initial_seen_facts: Optional[set[tuple[Any, ...]]] = None,
+    ) -> None:
+        self._gemini_stream_target_page = page_name
+        self._gemini_stream_seen_facts = set(initial_seen_facts or set())
+        self._gemini_stream_fact_count = 0
+        self._gemini_autocomplete_buffered_facts = []
+        self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_autocomplete_last_bbox_scores = {}
+        self._gemini_stream_cancel_requested = False
+        self._gemini_stream_mode = mode
+        self._gemini_stream_apply_meta = bool(apply_meta)
+        self._gemini_stream_max_facts = max(0, int(max_facts))
+        self._gemini_stream_limit_reached = False
+
+        provider = self._gemini_stream_provider_name()
+        thinking_mode = f"thinking={thinking_level}"
+        if mode == "autocomplete":
+            self._set_gt_activity(
+                provider,
+                f"Completing from {model_name} ({thinking_mode}) ...",
+                fact_count=0,
+                running=True,
+            )
+        elif few_shot_examples:
+            self._set_gt_activity(
+                provider,
+                f"Streaming from {model_name} ({thinking_mode}) with few-shot ({len(few_shot_examples)} examples) ...",
+                fact_count=0,
+                running=True,
+            )
+        else:
+            self._set_gt_activity(
+                provider,
+                f"Streaming from {model_name} ({thinking_mode}) ...",
+                fact_count=0,
+                running=True,
+            )
+
+        worker = GeminiStreamWorker(
+            image_path=page_path,
+            prompt=prompt_text,
+            model=model_name,
+            api_key=gemini_api_key,
+            few_shot_examples=few_shot_examples,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            max_facts=self._gemini_stream_max_facts,
+            allow_partial_finalize_error=(mode == "autocomplete"),
+        )
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.chunk_received.connect(self._on_gemini_stream_chunk)
+        worker.meta_received.connect(self._on_gemini_stream_meta)
+        worker.fact_received.connect(self._on_gemini_stream_fact)
+        worker.limit_reached.connect(self._on_gemini_stream_limit_reached)
+        worker.completed.connect(self._on_gemini_stream_completed)
+        worker.failed.connect(self._on_gemini_stream_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_gemini_stream_finished)
+
+        self._gemini_stream_worker = worker
+        self._gemini_stream_thread = thread
+        self._set_gt_buttons_enabled(False)
+        if mode == "autocomplete":
+            self.statusBar().showMessage(f"Running Gemini Auto Complete for {page_name}...", 3000)
+        else:
+            self.statusBar().showMessage(f"Streaming Gemini GT for {page_name}...", 3000)
+        thread.start()
+
     def generate_gemini_ground_truth(self) -> None:
         if self._qwen_stream_thread is not None:
             QMessageBox.information(self, "Gemini GT", "A Qwen stream is already running.")
@@ -6535,6 +7645,8 @@ class AnnotationWindow(QMainWindow):
             few_shot_enabled_default=True,
             few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
             few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            show_max_facts_control=True,
+            max_facts_default=0,
         )
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
@@ -6544,6 +7656,7 @@ class AnnotationWindow(QMainWindow):
         thinking_level = prompt_dialog.thinking_level()
         use_few_shot = prompt_dialog.use_few_shot()
         few_shot_preset = prompt_dialog.few_shot_preset()
+        max_facts = prompt_dialog.max_facts()
         if not prompt_text:
             QMessageBox.warning(self, "Gemini GT", "Prompt cannot be empty.")
             return
@@ -6600,71 +7713,187 @@ class AnnotationWindow(QMainWindow):
             self.show_page(page_idx)
         finally:
             self._is_restoring_history = was_restoring
-
-        self._gemini_stream_target_page = page_name
-        self._gemini_stream_seen_facts = set()
-        self._gemini_stream_fact_count = 0
-        self._gemini_stream_cancel_requested = False
-
-        thinking_mode = f"thinking={thinking_level}"
-        if few_shot_examples:
-            self._set_gt_activity(
-                "Gemini",
-                f"Streaming from {model_name} ({thinking_mode}) with few-shot ({len(few_shot_examples)} examples) ...",
-                fact_count=0,
-                running=True,
-            )
-        else:
-            self._set_gt_activity(
-                "Gemini",
-                f"Streaming from {model_name} ({thinking_mode}) ...",
-                fact_count=0,
-                running=True,
-            )
-
-        worker = GeminiStreamWorker(
-            image_path=page_path,
-            prompt=prompt_text,
-            model=model_name,
-            api_key=gemini_api_key,
-            few_shot_examples=few_shot_examples,
+        self._start_gemini_stream(
+            page_path=page_path,
+            page_name=page_name,
+            prompt_text=prompt_text,
+            model_name=model_name,
+            gemini_api_key=gemini_api_key,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
+            few_shot_examples=few_shot_examples,
+            mode="gt",
+            max_facts=max_facts,
+            apply_meta=True,
+            initial_seen_facts=set(),
         )
-        thread = QThread(self)
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run)
-        worker.chunk_received.connect(self._on_gemini_stream_chunk)
-        worker.meta_received.connect(self._on_gemini_stream_meta)
-        worker.fact_received.connect(self._on_gemini_stream_fact)
-        worker.completed.connect(self._on_gemini_stream_completed)
-        worker.failed.connect(self._on_gemini_stream_failed)
-        worker.finished.connect(thread.quit)
-        worker.finished.connect(worker.deleteLater)
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(self._on_gemini_stream_finished)
 
-        self._gemini_stream_worker = worker
-        self._gemini_stream_thread = thread
-        self._set_gt_buttons_enabled(False)
-        self.statusBar().showMessage(f"Streaming Gemini GT for {page_name}...", 3000)
-        thread.start()
+    def generate_gemini_auto_complete(self) -> None:
+        if self._qwen_stream_thread is not None:
+            QMessageBox.information(self, "Gemini Auto Complete", "A Qwen stream is already running.")
+            return
+        if self._gemini_stream_thread is not None:
+            QMessageBox.information(self, "Gemini Auto Complete", "A Gemini stream is already running.")
+            return
+        if self._gemini_fill_thread is not None:
+            QMessageBox.information(self, "Gemini Auto Complete", "A Gemini auto-fix task is already running.")
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            QMessageBox.warning(self, "Gemini Auto Complete", "No current page is loaded.")
+            return
+
+        page_path = self.page_images[self.current_index]
+        page_name = page_path.name
+        self._capture_current_state()
+        current_state = self.page_states.get(page_name, self._default_state(self.current_index))
+        if not current_state.facts:
+            QMessageBox.information(
+                self,
+                "Gemini Auto Complete",
+                "Auto Complete requires at least one existing fact on the current page.",
+            )
+            return
+
+        prompt_path = self._resolve_gemini_autocomplete_prompt_txt_path()
+        if prompt_path is None:
+            prompt_template = default_gemini_autocomplete_prompt_template()
+        else:
+            try:
+                prompt_template = prompt_path.read_text(encoding="utf-8")
+            except Exception as exc:
+                QMessageBox.warning(self, "Gemini Auto Complete", f"Failed to read prompt template:\n{exc}")
+                return
+
+        ordered_items = self._sorted_fact_items()
+        request_payload = self._build_gemini_autocomplete_request_payload(page_name=page_name, ordered_items=ordered_items)
+        prompt_text = self._build_gemini_autocomplete_prompt_from_template(
+            prompt_template,
+            request_payload=request_payload,
+        )
+        prompt_dialog = GeminiPromptDialog(
+            prompt_text=prompt_text,
+            model_name=self._gemini_model_name,
+            parent=self,
+            show_few_shot_controls=True,
+            few_shot_enabled_default=False,
+            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
+            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            show_thinking_control=True,
+            thinking_enabled_default=self._gemini_enable_thinking,
+            thinking_level_default=self._gemini_thinking_level,
+            thinking_tooltip="Checked uses Gemini thinking mode. Unchecked requests minimal/non-thinking mode.",
+            window_title="Gemini Auto Complete",
+            hint_text=(
+                "Review the prompt before asking Gemini to complete the remaining facts.\n"
+                "Existing page facts are sent as locked context and will not be modified."
+            ),
+            ok_button_text="Start Auto Complete",
+        )
+        if prompt_dialog.exec_() != QDialog.Accepted:
+            return
+        prompt_text = prompt_dialog.prompt().strip()
+        model_name = resolve_supported_gemini_model_name(prompt_dialog.model().strip() or self._gemini_model_name)
+        enable_thinking = prompt_dialog.enable_thinking()
+        thinking_level = prompt_dialog.thinking_level()
+        use_few_shot = prompt_dialog.use_few_shot()
+        few_shot_preset = prompt_dialog.few_shot_preset()
+        if not prompt_text:
+            QMessageBox.warning(self, "Gemini Auto Complete", "Prompt cannot be empty.")
+            return
+
+        try:
+            from .gemini_vlm import resolve_api_key
+        except Exception as exc:
+            QMessageBox.warning(self, "Gemini Auto Complete", f"Gemini backend is unavailable:\n{exc}")
+            return
+
+        gemini_api_key = resolve_api_key()
+        if not gemini_api_key:
+            QMessageBox.warning(
+                self,
+                "Gemini Auto Complete",
+                (
+                    "Gemini API key not found.\n\n"
+                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
+                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
+                ),
+            )
+            return
+
+        self._gemini_model_name = model_name
+        self._gemini_enable_thinking = enable_thinking
+        self._gemini_thinking_level = thinking_level
+        few_shot_examples: Optional[list[dict[str, Any]]] = None
+        if use_few_shot:
+            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
+            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
+            if loaded_examples:
+                few_shot_examples = loaded_examples
+                if warnings:
+                    self.statusBar().showMessage(
+                        f"Gemini Auto Complete few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
+                        6500,
+                    )
+            else:
+                warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
+                self.statusBar().showMessage(
+                    f"Gemini Auto Complete few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
+                    7000,
+                )
+        initial_seen_facts = {
+            self._fact_uniqueness_key(self._fact_payload_from_item(item))
+            for item in ordered_items
+        }
+        self._gemini_autocomplete_snapshot = {
+            "page_name": page_name,
+            "ordered_fact_signature": self._current_page_fact_snapshot_signature(ordered_items),
+            "locked_fact_payloads": [deepcopy(self._fact_payload_from_item(item)) for item in ordered_items],
+        }
+        self._start_gemini_stream(
+            page_path=page_path,
+            page_name=page_name,
+            prompt_text=prompt_text,
+            model_name=model_name,
+            gemini_api_key=gemini_api_key,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            few_shot_examples=few_shot_examples,
+            mode="autocomplete",
+            max_facts=0,
+            apply_meta=False,
+            initial_seen_facts=initial_seen_facts,
+        )
 
     def _cancel_gemini_stream(self) -> None:
         if self._gemini_stream_worker is not None:
             self._gemini_stream_cancel_requested = True
             self._gemini_stream_worker.request_cancel()
-            self._set_gt_activity("Gemini", "Stopping stream...", fact_count=self._gemini_stream_fact_count, running=True)
+            self._set_gt_activity(
+                self._gemini_stream_provider_name(),
+                "Stopping stream...",
+                fact_count=self._gemini_stream_fact_count,
+                running=True,
+            )
 
     def _on_gemini_stream_chunk(self, text: str) -> None:
         _ = text
+
+    def _on_gemini_stream_limit_reached(self) -> None:
+        self._gemini_stream_limit_reached = True
 
     def _on_gemini_stream_meta(self, meta_payload: Dict[str, Any]) -> None:
         page_name = self._gemini_stream_target_page
         if page_name is None:
             return
-        self._apply_stream_meta(page_name, meta_payload)
-        self._set_gt_activity("Gemini", "Meta received. Streaming facts...", fact_count=self._gemini_stream_fact_count, running=True)
+        if self._gemini_stream_apply_meta:
+            self._apply_stream_meta(page_name, meta_payload)
+        status = "Meta received. Streaming facts..." if self._gemini_stream_apply_meta else "Locked context loaded. Streaming missing facts..."
+        self._set_gt_activity(
+            self._gemini_stream_provider_name(),
+            status,
+            fact_count=self._gemini_stream_fact_count,
+            running=True,
+        )
 
     def _on_gemini_stream_fact(self, fact_payload: Dict[str, Any]) -> None:
         page_name = self._gemini_stream_target_page
@@ -6673,9 +7902,14 @@ class AnnotationWindow(QMainWindow):
         added = self._apply_stream_fact(page_name, fact_payload, seen_facts=self._gemini_stream_seen_facts)
         if added:
             self._gemini_stream_fact_count += 1
+            progress_text = (
+                f"Streaming missing facts... {self._gemini_stream_fact_count} parsed"
+                if self._gemini_stream_mode == "autocomplete"
+                else f"Streaming facts... {self._gemini_stream_fact_count} parsed"
+            )
             self._set_gt_activity(
-                "Gemini",
-                f"Streaming facts... {self._gemini_stream_fact_count} parsed",
+                self._gemini_stream_provider_name(),
+                progress_text,
                 fact_count=self._gemini_stream_fact_count,
                 running=True,
             )
@@ -6685,52 +7919,90 @@ class AnnotationWindow(QMainWindow):
         if page_name is None:
             return
         try:
-            meta_payload = extraction_obj.meta.model_dump(mode="json")
-            self._apply_stream_meta(page_name, meta_payload)
-            for fact in extraction_obj.facts:
+            extraction_meta = getattr(extraction_obj, "meta", None)
+            if hasattr(extraction_meta, "model_dump"):
+                meta_payload = extraction_meta.model_dump(mode="json")
+            elif isinstance(extraction_meta, dict):
+                meta_payload = extraction_meta
+            else:
+                meta_payload = {}
+            if self._gemini_stream_apply_meta:
+                self._apply_stream_meta(page_name, meta_payload)
+            extraction_facts = getattr(extraction_obj, "facts", [])
+            if not isinstance(extraction_facts, list):
+                extraction_facts = []
+            for fact in extraction_facts:
+                if hasattr(fact, "model_dump"):
+                    fact_payload = fact.model_dump(mode="json")
+                elif isinstance(fact, dict):
+                    fact_payload = fact
+                else:
+                    continue
                 added = self._apply_stream_fact(
                     page_name,
-                    fact.model_dump(mode="json"),
+                    fact_payload,
                     seen_facts=self._gemini_stream_seen_facts,
                 )
                 if added:
                     self._gemini_stream_fact_count += 1
+            if self._gemini_stream_mode == "autocomplete":
+                merged, error_message = self._merge_autocomplete_buffered_facts(page_name)
+                if not merged:
+                    self._on_gemini_stream_failed(error_message or "Gemini Auto Complete could not merge results.")
+                    return
         except Exception as exc:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
             return
 
-        self._record_history_snapshot()
+        if self._gemini_stream_mode != "autocomplete" or self._gemini_stream_fact_count > 0:
+            self._record_history_snapshot()
+        completion_status, completion_message = self._gemini_stream_completion_text()
         self._set_gt_activity(
-            "Gemini",
-            f"Gemini GT complete. Parsed {self._gemini_stream_fact_count} fact(s).",
+            self._gemini_stream_provider_name(),
+            completion_status,
             fact_count=self._gemini_stream_fact_count,
             running=False,
         )
-        self.statusBar().showMessage(f"Gemini GT complete ({self._gemini_stream_fact_count} fact(s)).", 6000)
+        self.statusBar().showMessage(completion_message, 6000)
 
     def _on_gemini_stream_failed(self, message: str) -> None:
-        self._set_gt_activity("Gemini", f"Error: {message}", fact_count=self._gemini_stream_fact_count, running=False)
+        provider = self._gemini_stream_provider_name()
+        title = "Gemini Auto Complete failed" if self._gemini_stream_mode == "autocomplete" else "Gemini GT failed"
+        self._set_gt_activity(provider, f"Error: {message}", fact_count=self._gemini_stream_fact_count, running=False)
         QMessageBox.warning(
             self,
-            "Gemini GT failed",
-            f"{message}\n\nAny facts already streamed remain on the page.",
+            title,
+            (
+                f"{message}\n\nNo changes were applied."
+                if self._gemini_stream_mode == "autocomplete"
+                else f"{message}\n\nAny facts already streamed remain on the page."
+            ),
         )
 
     def _on_gemini_stream_finished(self) -> None:
-        if self._gemini_stream_cancel_requested:
+        if self._gemini_stream_cancel_requested and not self._gemini_stream_limit_reached:
             self._set_gt_activity(
-                "Gemini",
-                f"Gemini GT stopped. Parsed {self._gemini_stream_fact_count} fact(s) before stop.",
+                self._gemini_stream_provider_name(),
+                f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped. Parsed {self._gemini_stream_fact_count} fact(s) before stop.",
                 fact_count=self._gemini_stream_fact_count,
                 running=False,
             )
             self.statusBar().showMessage(
-                f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed).",
+                f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped ({self._gemini_stream_fact_count} fact(s) parsed).",
                 5000,
             )
         self._gemini_stream_thread = None
         self._gemini_stream_worker = None
         self._gemini_stream_target_page = None
+        self._gemini_stream_cancel_requested = False
+        self._gemini_stream_limit_reached = False
+        self._gemini_stream_max_facts = 0
+        self._gemini_stream_apply_meta = True
+        self._gemini_stream_mode = "gt"
+        self._gemini_autocomplete_snapshot = None
+        self._gemini_autocomplete_buffered_facts = []
+        self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self._gemini_autocomplete_last_bbox_scores = {}
         if self._qwen_stream_thread is None and self._gemini_fill_thread is None:
             self._set_gt_buttons_enabled(True)
 
@@ -7304,7 +8576,23 @@ class AnnotationWindow(QMainWindow):
         if not alive_items:
             return
         current_facts = [normalize_fact_data(item.fact_data) for item in alive_items]
-        resequenced_facts = resequence_fact_numbers_and_remap_fact_equations(current_facts)
+        current_fact_nums = [_coerce_positive_int(fact.get("fact_num")) for fact in current_facts]
+        assigned_fact_nums = [int(fact_num) for fact_num in current_fact_nums if fact_num is not None]
+
+        if (
+            len(set(assigned_fact_nums)) == len(assigned_fact_nums)
+            and assigned_fact_nums == list(range(1, len(assigned_fact_nums) + 1))
+        ):
+            next_fact_num = len(assigned_fact_nums) + 1
+            resequenced_facts = []
+            for current_fact, fact_num in zip(current_facts, current_fact_nums):
+                if fact_num is None:
+                    resequenced_facts.append(normalize_fact_data({**current_fact, "fact_num": next_fact_num}))
+                    next_fact_num += 1
+                else:
+                    resequenced_facts.append(current_fact)
+        else:
+            resequenced_facts = resequence_fact_numbers_and_remap_fact_equations(current_facts)
         for item, current_fact, resequenced_fact in zip(alive_items, current_facts, resequenced_facts):
             if resequenced_fact != current_fact:
                 item.fact_data = resequenced_fact
@@ -7354,7 +8642,6 @@ class AnnotationWindow(QMainWindow):
             preview,
             fact.get("value"),
             fact.get("natural_sign"),
-            fact.get("aggregation_role"),
         )
         return tone == "ok"
 
@@ -7432,14 +8719,10 @@ class AnnotationWindow(QMainWindow):
                 summary = f"{summary} | recurring_period: {item.fact_data.get('recurring_period')}"
             if item.fact_data.get("value_context"):
                 summary = f"{summary} | value_context: {item.fact_data.get('value_context')}"
-            if item.fact_data.get("balance_type"):
-                summary = f"{summary} | balance_type: {item.fact_data.get('balance_type')}"
             if item.fact_data.get("natural_sign"):
                 summary = f"{summary} | natural_sign: {item.fact_data.get('natural_sign')}"
             if item.fact_data.get("row_role"):
                 summary = f"{summary} | row_role: {item.fact_data.get('row_role')}"
-            if item.fact_data.get("aggregation_role"):
-                summary = f"{summary} | aggregation_role: {item.fact_data.get('aggregation_role')}"
             if item.fact_data.get("path_source"):
                 summary = f"{summary} | path_source: {item.fact_data.get('path_source')}"
             if item.fact_data.get("equation"):
@@ -7465,6 +8748,7 @@ class AnnotationWindow(QMainWindow):
             self._refresh_current_page_issues(use_current_fact_items=True)
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
+        self._update_gemini_complete_button_state()
 
     def _on_equation_reference_selection_started(self) -> None:
         selected_items = self._selected_fact_items()
@@ -7476,13 +8760,17 @@ class AnnotationWindow(QMainWindow):
         self._refresh_equation_panel()
 
     def _sort_items_for_equation(self, items: List[AnnotRectItem]) -> List[AnnotRectItem]:
-        return sorted(
-            [item for item in items if self._is_alive_fact_item(item)],
-            key=lambda item: (
-                self._fact_num_for_item(item) or sys.maxsize,
-                self._fact_items.index(item) if item in self._fact_items else sys.maxsize,
-            ),
-        )
+        ordered: list[AnnotRectItem] = []
+        seen_ids: set[int] = set()
+        for item in items:
+            if not self._is_alive_fact_item(item):
+                continue
+            item_id = id(item)
+            if item_id in seen_ids:
+                continue
+            seen_ids.add(item_id)
+            ordered.append(item)
+        return ordered
 
     def _on_equation_reference_selection_changed(self, items: object) -> None:
         if not self._is_alive_fact_item(self._equation_target_item):
@@ -7504,6 +8792,13 @@ class AnnotationWindow(QMainWindow):
         ]
         ordered_reference_items = self._sort_items_for_equation(reference_items)
         self._set_equation_reference_preview_items(ordered_reference_items)
+        saved_target_fact = normalize_fact_data(target_item.fact_data)
+        saved_children = saved_target_fact.get("equation_children") if isinstance(saved_target_fact.get("equation_children"), list) else []
+        operator_by_fact_num = {
+            int(entry["fact_num"]): str(entry.get("operator") or "+")
+            for entry in saved_children
+            if isinstance(entry, dict) and isinstance(entry.get("fact_num"), int)
+        }
 
         candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = _build_equation_candidate_from_facts(
             [
@@ -7511,7 +8806,7 @@ class AnnotationWindow(QMainWindow):
                     "fact_num": self._fact_num_for_item(item),
                     "value": normalize_fact_data(item.fact_data).get("value"),
                     "natural_sign": normalize_fact_data(item.fact_data).get("natural_sign"),
-                    "aggregation_role": normalize_fact_data(item.fact_data).get("aggregation_role"),
+                    "operator": operator_by_fact_num.get(self._fact_num_for_item(item), "+"),
                 }
                 for item in ordered_reference_items
             ]
@@ -7538,9 +8833,21 @@ class AnnotationWindow(QMainWindow):
         cleared_count = 0
         for item in selected_items:
             current = normalize_fact_data(item.fact_data)
-            if not current.get("equation") and not current.get("fact_equation"):
+            equation_bundles = _equation_bundles_from_fact_payload(current)
+            if equation_bundles:
+                updated = _fact_payload_with_active_equation_bundle(current, equation_bundles[1:], active_index=0)
+            elif not current.get("equation") and not current.get("fact_equation") and not current.get("equation_children"):
                 continue
-            updated = normalize_fact_data({**current, "equation": None, "fact_equation": None})
+            else:
+                updated = normalize_fact_data(
+                    {
+                        **current,
+                        "equation": None,
+                        "fact_equation": None,
+                        "equation_children": None,
+                        "equations": None,
+                    }
+                )
             if updated == current:
                 continue
             item.fact_data = updated
@@ -7573,12 +8880,26 @@ class AnnotationWindow(QMainWindow):
             return
 
         current = normalize_fact_data(target_item.fact_data)
-        updated = normalize_fact_data(
+        equation_children = [
+            dict(term["equation_child"])
+            for term in self._equation_candidate_terms
+            if isinstance(term, dict) and isinstance(term.get("equation_child"), dict)
+        ]
+        new_bundle = _normalize_equation_bundle_payload(
             {
-                **current,
                 "equation": self._equation_candidate_text,
                 "fact_equation": self._equation_candidate_fact_text,
+                "equation_children": equation_children or None,
             }
+        )
+        if new_bundle is None:
+            self.statusBar().showMessage("No valid equation preview to apply.", 2500)
+            return
+        existing_bundles = _equation_bundles_from_fact_payload(current)
+        updated = _fact_payload_with_active_equation_bundle(
+            {**current, "row_role": "total" if equation_children else current.get("row_role")},
+            [new_bundle, *existing_bundles[1:]] if existing_bundles else [new_bundle],
+            active_index=0,
         )
         if updated == current:
             self._clear_equation_candidate()
@@ -7700,6 +9021,7 @@ class AnnotationWindow(QMainWindow):
         self._sync_fact_editor_from_selection()
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
+        self._update_gemini_complete_button_state()
 
     def _on_fact_list_selection_changed(self) -> None:
         if self._syncing_selection:
@@ -7720,6 +9042,7 @@ class AnnotationWindow(QMainWindow):
         self._sync_fact_editor_from_selection()
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
+        self._update_gemini_complete_button_state()
 
     def _selected_fact_items(self) -> List[AnnotRectItem]:
         return [

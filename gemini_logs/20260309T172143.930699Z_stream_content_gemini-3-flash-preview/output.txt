@@ -1,0 +1,528 @@
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+    "company_id": null,
+    "report_year": 2014,
+    "report_scope": null,
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+        "page_num": "4",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
+        "title": "דוחות על הפעילויות"
+      },
+      "facts": [
+        {
+          "bbox": [
+            250,
+            206,
+            47,
+            15
+          ],
+          "value": "952,249",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 8,
+          "note_name": null,
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "8",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            206,
+            55,
+            16
+          ],
+          "value": "948,278",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 8,
+          "note_name": null,
+          "path": [
+            "מחזור הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "8",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            250,
+            236,
+            47,
+            16
+          ],
+          "value": "768,697",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 9,
+          "note_name": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "9",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            119,
+            236,
+            72,
+            16
+          ],
+          "value": "* 690,550",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 9,
+          "note_name": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": "9",
+          "comment_ref": "מוין מחדש"
+        },
+        {
+          "bbox": [
+            252,
+            266,
+            47,
+            15
+          ],
+          "value": "183,552",
+          "equation": "952,249 - 768,697",
+          "equation_children": [
+            {
+              "fact_num": 1,
+              "operator": "+"
+            },
+            {
+              "fact_num": 3,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            266,
+            55,
+            16
+          ],
+          "value": "257,728",
+          "equation": "948,278 - 690,550",
+          "equation_children": [
+            {
+              "fact_num": 2,
+              "operator": "+"
+            },
+            {
+              "fact_num": 4,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות נטו מפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            250,
+            295,
+            49,
+            16
+          ],
+          "value": "203,469",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 10,
+          "note_name": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": "10",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            119,
+            295,
+            72,
+            16
+          ],
+          "value": "* 195,241",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": 10,
+          "note_name": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": "10",
+          "comment_ref": "מוין מחדש"
+        },
+        {
+          "bbox": [
+            252,
+            324,
+            48,
+            16
+          ],
+          "value": "(19,917)",
+          "equation": "183,552 - 203,469",
+          "equation_children": [
+            {
+              "fact_num": 5,
+              "operator": "+"
+            },
+            {
+              "fact_num": 7,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות נטו לפני מימון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            143,
+            325,
+            47,
+            15
+          ],
+          "value": "62,487",
+          "equation": "257,728 - 195,241",
+          "equation_children": [
+            {
+              "fact_num": 6,
+              "operator": "+"
+            },
+            {
+              "fact_num": 8,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות נטו לפני מימון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            354,
+            38,
+            15
+          ],
+          "value": "1,458",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות מימון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            151,
+            354,
+            39,
+            16
+          ],
+          "value": "1,868",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הוצאות מימון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            252,
+            382,
+            49,
+            16
+          ],
+          "value": "(21,375)",
+          "equation": "(-19,917) - 1,458",
+          "equation_children": [
+            {
+              "fact_num": 9,
+              "operator": "+"
+            },
+            {
+              "fact_num": 11,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות (גרעון) נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            143,
+            382,
+            48,
+            16
+          ],
+          "value": "60,619",
+          "equation": "62,487 - 1,868",
+          "equation_children": [
+            {
+              "fact_num": 10,
+              "operator": "+"
+            },
+            {
+              "fact_num": 12,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות (גרעון) נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

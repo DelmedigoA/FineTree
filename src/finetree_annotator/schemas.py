@@ -7,7 +7,7 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 
 from .date_normalization import normalize_date
 
-CURRENT_SCHEMA_VERSION = 2
+CURRENT_SCHEMA_VERSION = 3
 
 
 def _normalize_note_reference_value(value: Any) -> str | None:
@@ -304,15 +304,6 @@ def _normalize_value_context_value(value: Any) -> str | None:
     raise ValueError("value_context must be 'textual', 'tabular', 'mixed', or null.")
 
 
-def _normalize_balance_type_value(value: Any) -> str | None:
-    if value in ("", None):
-        return None
-    text = str(value).strip().lower()
-    if text in {"debit", "credit"}:
-        return text
-    raise ValueError("balance_type must be 'debit', 'credit', or null.")
-
-
 def _normalize_natural_sign_value(value: Any) -> str | None:
     if value in ("", None):
         return None
@@ -329,27 +320,6 @@ def _normalize_natural_sign_value(value: Any) -> str | None:
     if normalized is not None:
         return normalized
     raise ValueError("natural_sign must be 'positive', 'negative', or null.")
-
-
-def _normalize_aggregation_role_value(value: Any) -> str | None:
-    if value in ("", None):
-        return "additive"
-    text = str(value).strip().lower()
-    aliases = {
-        "+": "additive",
-        "plus": "additive",
-        "additive": "additive",
-        "-": "subtractive",
-        "minus": "subtractive",
-        "subtractive": "subtractive",
-        # Backward compatibility with legacy polarity buckets.
-        "total": "additive",
-        "unknown": "additive",
-    }
-    normalized = aliases.get(text)
-    if normalized is not None:
-        return normalized
-    raise ValueError("aggregation_role must be 'additive' or 'subtractive'.")
 
 
 def _normalize_row_role_value(value: Any) -> str | None:
@@ -505,9 +475,9 @@ class NaturalSign(str, Enum):
     negative = "negative"
 
 
-class AggregationRole(str, Enum):
-    additive = "additive"
-    subtractive = "subtractive"
+class EquationOperator(str, Enum):
+    additive = "+"
+    subtractive = "-"
 
 
 class RowRole(str, Enum):
@@ -557,6 +527,48 @@ class ReportScope(str, Enum):
     combined = "combined"
     pro_forma = "pro_forma"
     other = "other"
+
+
+class EquationChild(BaseModel):
+    fact_num: int
+    operator: EquationOperator
+    model_config = ConfigDict(extra="forbid")
+
+    @field_validator("fact_num", mode="before")
+    @classmethod
+    def _normalize_fact_num(cls, value: Any) -> int:
+        normalized = _normalize_fact_num_value(value)
+        if normalized is None:
+            raise ValueError("equation_children.fact_num must be an integer >= 1.")
+        return normalized
+
+    @field_validator("operator", mode="before")
+    @classmethod
+    def _normalize_operator(cls, value: Any) -> str:
+        text = str(value or "").strip()
+        if text in {"+", "-"}:
+            return text
+        raise ValueError("equation_children.operator must be '+' or '-'.")
+
+
+class EquationVariant(BaseModel):
+    equation: str
+    fact_equation: Optional[str] = None
+    equation_children: Optional[List[EquationChild]] = None
+    model_config = ConfigDict(extra="forbid")
+
+    @field_validator("equation", mode="before")
+    @classmethod
+    def _normalize_equation(cls, value: Any) -> str:
+        normalized = _normalize_equation_value(value)
+        if normalized is None:
+            raise ValueError("equations[].equation must be a non-empty string.")
+        return normalized
+
+    @field_validator("fact_equation", mode="before")
+    @classmethod
+    def _normalize_fact_equation(cls, value: Any) -> str | None:
+        return _normalize_equation_value(value)
 
 
 class PeriodType(str, Enum):
@@ -671,10 +683,10 @@ class Fact(BaseModel):
     fact_num: Optional[int] = None
     equation: Optional[str] = None
     fact_equation: Optional[str] = None
-    balance_type: Optional[BalanceType] = None
+    equation_children: Optional[List[EquationChild]] = None
+    equations: Optional[List[EquationVariant]] = None
     natural_sign: Optional[NaturalSign] = None
     row_role: RowRole = RowRole.detail
-    aggregation_role: AggregationRole = AggregationRole.additive
     comment_ref: Optional[str] = Field(default=None, validation_alias=AliasChoices("comment_ref", "ref_comment", "comment"))
     note_flag: bool = Field(
         default=False,
@@ -700,18 +712,6 @@ class Fact(BaseModel):
     value_context: Optional[ValueContext] = None
     model_config = ConfigDict(extra="forbid")
 
-    @model_validator(mode="before")
-    @classmethod
-    def _coerce_legacy_row_and_aggregation_roles(cls, value: Any) -> Any:
-        if not isinstance(value, dict):
-            return value
-        data = dict(value)
-        raw_aggregation_role = str(data.get("aggregation_role") or "").strip().lower()
-        raw_row_role = str(data.get("row_role") or "").strip()
-        if not raw_row_role and raw_aggregation_role == "total":
-            data["row_role"] = "total"
-        return data
-
     @field_validator("value", mode="before")
     @classmethod
     def _validate_value(cls, value: Any) -> str:
@@ -731,6 +731,52 @@ class Fact(BaseModel):
     @classmethod
     def _normalize_fact_equation(cls, value: Any) -> str | None:
         return _normalize_equation_value(value)
+
+    @field_validator("equations", mode="before")
+    @classmethod
+    def _normalize_equations(cls, value: Any) -> list[dict[str, Any]] | None:
+        if value in ("", None):
+            return None
+        if not isinstance(value, list):
+            raise ValueError("equations must be a list or null.")
+
+        out: list[dict[str, Any]] = []
+        seen: set[tuple[Any, ...]] = set()
+        for raw_entry in value:
+            if isinstance(raw_entry, str):
+                equation_text = _normalize_equation_value(raw_entry)
+                if equation_text is None:
+                    continue
+                entry = {
+                    "equation": equation_text,
+                    "fact_equation": None,
+                    "equation_children": None,
+                }
+            elif isinstance(raw_entry, dict):
+                equation_text = _normalize_equation_value(raw_entry.get("equation"))
+                if equation_text is None:
+                    continue
+                entry = {
+                    "equation": equation_text,
+                    "fact_equation": _normalize_equation_value(raw_entry.get("fact_equation")),
+                    "equation_children": raw_entry.get("equation_children"),
+                }
+            else:
+                continue
+            signature = (
+                entry["equation"],
+                entry["fact_equation"] or "",
+                tuple(
+                    (int(child.get("fact_num")), str(child.get("operator") or "+"))
+                    for child in (entry.get("equation_children") or [])
+                    if isinstance(child, dict) and isinstance(child.get("fact_num"), int)
+                ),
+            )
+            if signature in seen:
+                continue
+            seen.add(signature)
+            out.append(entry)
+        return out or None
 
     @field_validator("fact_num", mode="before")
     @classmethod
@@ -802,20 +848,10 @@ class Fact(BaseModel):
     def _validate_value_context(cls, value: Any) -> str | None:
         return _normalize_value_context_value(value)
 
-    @field_validator("balance_type", mode="before")
-    @classmethod
-    def _validate_balance_type(cls, value: Any) -> str | None:
-        return _normalize_balance_type_value(value)
-
     @field_validator("natural_sign", mode="before")
     @classmethod
     def _validate_natural_sign(cls, value: Any) -> str | None:
         return _normalize_natural_sign_value(value)
-
-    @field_validator("aggregation_role", mode="before")
-    @classmethod
-    def _validate_aggregation_role(cls, value: Any) -> str | None:
-        return _normalize_aggregation_role_value(value)
 
     @field_validator("row_role", mode="before")
     @classmethod
@@ -824,8 +860,64 @@ class Fact(BaseModel):
 
     @model_validator(mode="after")
     def _validate_note_num_requires_note_flag(self) -> "Fact":
+        variants = list(self.equations or [])
+
+        active_variant = (
+            EquationVariant(
+                equation=self.equation,
+                fact_equation=self.fact_equation,
+                equation_children=self.equation_children,
+            )
+            if self.equation is not None
+            else None
+        )
+        if active_variant is not None:
+            active_signature = (
+                active_variant.equation,
+                active_variant.fact_equation or "",
+                tuple(
+                    (child.fact_num, child.operator.value if isinstance(child.operator, Enum) else str(child.operator))
+                    for child in (active_variant.equation_children or [])
+                ),
+            )
+            matching_index = next(
+                (
+                    idx
+                    for idx, variant in enumerate(variants)
+                    if (
+                        variant.equation,
+                        variant.fact_equation or "",
+                        tuple(
+                            (
+                                child.fact_num,
+                                child.operator.value if isinstance(child.operator, Enum) else str(child.operator),
+                            )
+                            for child in (variant.equation_children or [])
+                        ),
+                    )
+                    == active_signature
+                ),
+                None,
+            )
+            if matching_index is None:
+                variants = [active_variant, *variants]
+            elif matching_index != 0:
+                variants = [variants[matching_index], *variants[:matching_index], *variants[matching_index + 1 :]]
+        elif variants:
+            active_variant = variants[0]
+            self.equation = active_variant.equation
+            self.fact_equation = active_variant.fact_equation
+            self.equation_children = active_variant.equation_children
+
+        self.equations = variants or None
+
         if self.note_num is not None and not self.note_flag:
             raise ValueError("note_num requires note_flag=true.")
+        if self.row_role == RowRole.detail and self.equation_children is not None:
+            raise ValueError("detail rows must not contain equation_children.")
+        if self.row_role == RowRole.total:
+            if not self.equation_children:
+                raise ValueError("total rows must contain at least one equation_children entry.")
         derived_sign = _derive_natural_sign_from_value(self.value)
         self.natural_sign = NaturalSign(derived_sign) if derived_sign is not None else None
         return self

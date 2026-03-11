@@ -1,0 +1,458 @@
+{
+  "images_dir": "data/pdf_images/2014",
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע״ר)",
+    "company_id": null,
+    "report_year": 2014,
+    "entity_type": "registered_nonprofit",
+    "report_scope": "consolidated"
+  },
+  "pages": [
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע״ר)",
+        "page_num": "5",
+        "page_type": "statements",
+        "statement_type": "statement_of_changes_in_equity",
+        "title": "דוחת על השינויים בנכסים נטו"
+      },
+      "facts": [
+        {
+          "bbox": [
+            316.61,
+            800.32,
+            16.88,
+            21.86
+          ],
+          "value": "-",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013",
+          "period_type": "duration",
+          "period_start": "2013-01-01",
+          "period_end": "2013-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            625.3,
+            864.8,
+            86.3,
+            28.32
+          ],
+          "value": "85,865",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2013",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילויות"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            430.91,
+            864.8,
+            89.66,
+            26.97
+          ],
+          "value": "119,251",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2013",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שימשו לרכוש קבוע"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            237.32,
+            864.8,
+            96.17,
+            25.55
+          ],
+          "value": "205,116",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2013",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            625.3,
+            930.3,
+            86.3,
+            28.32
+          ],
+          "value": "(21,375)",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "הכנסות נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילויות"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            507.6,
+            930.3,
+            15.75,
+            15.48
+          ],
+          "value": "-",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "הכנסות נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שימשו לרכוש קבוע"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            237.32,
+            930.3,
+            96.17,
+            25.55
+          ],
+          "value": "(21,375)",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "הכנסות נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            630.2,
+            1065.2,
+            84.51,
+            29.38
+          ],
+          "value": "(3,954)",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "לשימוש לפעילויות"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            462.47,
+            1065.2,
+            62.97,
+            26.33
+          ],
+          "value": "3,954",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שימשו לרכוש קבוע"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            316.61,
+            1065.2,
+            16.88,
+            21.86
+          ],
+          "value": "-",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            625.3,
+            1130.3,
+            86.3,
+            28.32
+          ],
+          "value": "18,763",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "לשימוש לפעילויות"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            430.91,
+            1130.3,
+            89.66,
+            26.97
+          ],
+          "value": "(18,763)",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שימשו לרכוש קבוע"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            316.61,
+            1130.3,
+            16.88,
+            21.86
+          ],
+          "value": "-",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014",
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            625.3,
+            1195.8,
+            86.3,
+            28.32
+          ],
+          "value": "79,299",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2014",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילויות"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            430.91,
+            1195.8,
+            89.66,
+            26.97
+          ],
+          "value": "104,442",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2014",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "שימשו לרכוש קבוע"
+          ],
+          "path_source": "observed"
+        },
+        {
+          "bbox": [
+            237.32,
+            1195.8,
+            96.17,
+            25.55
+          ],
+          "value": "183,741",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "path": [
+            "יתרה ליום 31 בדצמבר, 2014",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "סה\"כ"
+          ],
+          "path_source": "observed"
+        }
+      ]
+    }
+  ]
+}

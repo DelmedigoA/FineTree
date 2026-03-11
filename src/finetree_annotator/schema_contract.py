@@ -22,10 +22,9 @@ PAGE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["page_types
 STATEMENT_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["statement_types"])
 VALUE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["value_types"])
 VALUE_CONTEXT_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["value_contexts"])
-BALANCE_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["balance_types"])
 NATURAL_SIGN_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["natural_signs"])
 ROW_ROLE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["row_roles"])
-AGGREGATION_ROLE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["aggregation_roles"])
+EQUATION_CHILD_OPERATOR_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["equation_child_operators"])
 CURRENCY_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["currencies"])
 SCALE_VALUES: tuple[int, ...] = tuple(_EXTRACT_CONTRACT["enums"]["scales"])
 ENTITY_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["entity_types"])
@@ -50,10 +49,9 @@ def schema_snapshot() -> dict[str, Any]:
         "statement_types": list(STATEMENT_TYPE_VALUES),
         "value_types": list(VALUE_TYPE_VALUES),
         "value_contexts": list(VALUE_CONTEXT_VALUES),
-        "balance_types": list(BALANCE_TYPE_VALUES),
         "natural_signs": list(NATURAL_SIGN_VALUES),
         "row_role_values": list(ROW_ROLE_VALUES),
-        "aggregation_role_values": list(AGGREGATION_ROLE_VALUES),
+        "equation_child_operators": list(EQUATION_CHILD_OPERATOR_VALUES),
         "currencies": list(CURRENCY_VALUES),
         "scales": list(SCALE_VALUES),
         "entity_types": list(ENTITY_TYPE_VALUES),
@@ -70,10 +68,9 @@ def default_extraction_prompt_template() -> str:
     scales = "|".join(str(value) for value in SCALE_VALUES)
     value_types = "|".join(VALUE_TYPE_VALUES)
     value_contexts = "|".join(VALUE_CONTEXT_VALUES)
-    balance_types = "|".join(BALANCE_TYPE_VALUES)
     natural_signs = "|".join(NATURAL_SIGN_VALUES)
     row_roles = "|".join(ROW_ROLE_VALUES)
-    aggregation_roles = "|".join(AGGREGATION_ROLE_VALUES)
+    equation_child_operators = "|".join(EQUATION_CHILD_OPERATOR_VALUES)
     entity_types = "|".join(ENTITY_TYPE_VALUES)
     period_types = "|".join(PERIOD_TYPE_VALUES)
     report_scope_values = "|".join(REPORT_SCOPE_VALUES)
@@ -117,12 +114,11 @@ def default_extraction_prompt_template() -> str:
                   "bbox": [<x>, <y>, <w>, <h>],
                   "value": "<string>",
                   "equation": "<string|null>",
+                  "equation_children": [{{"fact_num": <integer >= 1>, "operator": "{equation_child_operators}"}}] | null,
                   "value_type": "{value_types}|null",
                   "value_context": "{value_contexts}|null",
-                  "balance_type": "{balance_types}|null",
                   "natural_sign": "{natural_signs}|null",
                   "row_role": "{row_roles}",
-                  "aggregation_role": "{aggregation_roles}",
                   "currency": "{currencies}|null",
                   "scale": {scales}|null,
                   "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
@@ -161,27 +157,22 @@ def default_extraction_prompt_template() -> str:
         14. Non-statement structural pages use `statement_type=null`.
         15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
         16. `equation` must be a non-empty string or null. Use null unless the source explicitly shows an equation worth preserving.
-        17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
-        18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-        19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
-        20. `balance_type` must be `debit`, `credit`, or null.
+        17. `equation_children` must be null for detail rows. Total rows must include a non-empty ordered list of child fact references with explicit `+` / `-` operators.
+        18. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+        19. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+        20. `value_context` must be `textual`, `tabular`, `mixed`, or null.
         21. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
             - if `value` contains both `(` and `)`, set `natural_sign="negative"`
             - if `value` is exactly `"-"`, set `natural_sign=null`
             - otherwise set `natural_sign="positive"`
         22. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
-        23. `aggregation_role` must be `additive` or `subtractive` and indicates how the row contributes to its parent total.
-            - rows starting with `בניכוי` or contra lines (for example accumulated depreciation) => `subtractive`
-            - otherwise => `additive`
-            - do not set `aggregation_role` from `balance_type`
-            - do not ignore `aggregation_role` when `row_role="total"`
-        24. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-        25. `path_source` is only `observed`, `inferred`, or null.
-        26. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-        27. If `note_num` is present, `note_flag` must be `true`.
-        28. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-        29. Use JSON `null` literal for missing optional values (never `"null"` string).
-        30. Do not include any keys not listed above.
+        23. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+        24. `path_source` is only `observed`, `inferred`, or null.
+        25. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+        26. If `note_num` is present, `note_flag` must be `true`.
+        27. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+        28. Use JSON `null` literal for missing optional values (never `"null"` string).
+        29. Do not include any keys not listed above.
 
         Extraction rules:
         1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
@@ -204,16 +195,12 @@ def default_extraction_prompt_template() -> str:
         18. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
         19. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
         20. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-        21. `balance_type` reflects accounting meaning (not visual sign): assets/expenses are typically `debit`; liabilities/equity/revenues are typically `credit`.
-        22. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
-        23. `row_role` and `aggregation_role` are independent:
-            - `row_role`: `detail|total`
-            - `aggregation_role`: `additive|subtractive`
-            A total row can still be `additive` or `subtractive` when it contributes to a higher-level total.
-        24. Do not use `balance_type` to choose equation operators.
-        25. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-        26. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-        27. Do not emit empty-value facts.
+        21. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+        22. `equation_children` is the arithmetic source of truth for totals. Store children in the intended left-to-right equation order, defaulting operators to `+` unless the child is explicitly subtractive for that parent total.
+        23. `equation` and `fact_equation` are derived display fields. If you provide them, they must match `equation_children`; otherwise use null and let runtime rebuild them.
+        24. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+        25. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+        26. Do not emit empty-value facts.
         Page classification rules:
         1. Use `page_type="title"` for cover/title pages.
         2. Use `page_type="contents"` for table-of-contents pages.
@@ -247,10 +234,9 @@ def default_gemini_fill_prompt_template() -> str:
     value_types = "|".join(_PATCH_CONTRACT["value_types"])
     currencies = "|".join(_PATCH_CONTRACT["currencies"])
     scales = "|".join(str(value) for value in _PATCH_CONTRACT["scales"])
-    balance_types = "|".join(BALANCE_TYPE_VALUES)
     natural_signs = "|".join(NATURAL_SIGN_VALUES)
     row_roles = "|".join(ROW_ROLE_VALUES)
-    aggregation_roles = "|".join(AGGREGATION_ROLE_VALUES)
+    equation_child_operators = "|".join(EQUATION_CHILD_OPERATOR_VALUES)
 
     return dedent(
         f"""
@@ -280,14 +266,12 @@ def default_gemini_fill_prompt_template() -> str:
 
         Output schema (exact keys only):
         {{
-          "meta_updates": {{
-            "statement_type": "{statement_types}|null"
-          }},
+          "meta_updates": {{{{META_UPDATES_SCHEMA}}}},
           "fact_updates": [
             {{
               "fact_num": <integer >= 1>,
               "updates": {{
-                "equation": "<string|null>",
+                "equation_children": [{{"fact_num": <integer >= 1>, "operator": "{equation_child_operators}"}}] | null,
                 "period_type": "{period_types}|null",
                 "period_start": "<YYYY-MM-DD|null>",
                 "period_end": "<YYYY-MM-DD|null>",
@@ -298,10 +282,8 @@ def default_gemini_fill_prompt_template() -> str:
                 "value_type": "{value_types}|null",
                 "currency": "{currencies}|null",
                 "scale": {scales}|null,
-                "balance_type": "{balance_types}|null",
                 "natural_sign": "{natural_signs}|null",
                 "row_role": "{row_roles}",
-                "aggregation_role": "{aggregation_roles}",
                 "path_source": "{path_sources}|null",
                 "comment_ref": "<string|null>",
                 "note_ref": "<string|null>",
@@ -314,25 +296,66 @@ def default_gemini_fill_prompt_template() -> str:
         Rules:
         1. Return patch-only JSON. Never return full page annotations.
         2. Update only requested fields. Do not add non-requested fields.
+        2a. If no meta fields were requested, return `"meta_updates": {{}}`.
         3. `fact_num` must match the provided snapshot identity.
         4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
         5. Use JSON null (not string "null") for unknowns.
         6. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
         7. `row_role` must be `detail` or `total`.
-        8. `aggregation_role` must be `additive` or `subtractive`, including when `row_role="total"`.
-           `בניכוי` / contra-items => `subtractive`, otherwise use `additive`. Do not infer from `balance_type`.
-        9. If `equation` is requested, keep it as a non-empty equation string or omit it when unknown.
+        8. `equation_children` is authoritative for total arithmetic. Detail rows must omit it; total rows must use an ordered non-empty list when arithmetic is requested.
+        9. `equation` and `fact_equation` are derived by runtime from `equation_children`; do not treat them as authoritative.
         10. If no confident update for a requested field, omit that field from `updates`.
         """
     ).strip()
 
 
+def default_gemini_autocomplete_prompt_template() -> str:
+    extraction_contract = default_extraction_prompt_template()
+    return dedent(
+        f"""
+        You are completing missing financial-statement annotations for a single page.
+
+        You receive:
+        1. The page image.
+        2. A JSON snapshot of the current page annotations.
+        3. Existing page facts that are already reviewed and must stay locked.
+
+        Return ONLY valid JSON.
+        Do NOT return markdown, code fences, comments, prose, or extra keys.
+
+        Existing facts in the input snapshot are authoritative locked facts.
+        Never modify, replace, remove, rename, or re-output locked facts from the snapshot.
+        Return only NEW missing facts for the same page.
+        Do not emit page-level meta changes in this mode; keep page meta aligned with the locked snapshot.
+        New facts will be merged into the page by runtime using bbox geometry and then renumbered by runtime.
+
+        Locked snapshot JSON:
+        {{{{REQUEST_JSON}}}}
+
+        start with this
+
+        {{{{SEED_PAGE_JSON}}}}
+
+        Auto Complete constraints:
+        1. Use the exact extraction schema contract below for output shape and field validation.
+        2. Return the same full wrapper shape as extraction (`images_dir`, `metadata`, `pages` with one page).
+        3. Include only new missing facts in `pages[0].facts`; never include locked facts from the snapshot in output.
+        4. Keep `metadata` and `pages[0].meta` aligned with the locked snapshot.
+        5. `bbox` values must be in original image pixel coordinates.
+        6. Do not rely on locked `fact_num` values while generating; runtime rebuilds final contiguous numbering after merge.
+        7. If there are no confidently missing facts, return an empty `facts` array.
+
+        Extraction contract:
+        {extraction_contract}
+        """
+    ).strip()
+
+
 __all__ = [
-    "BALANCE_TYPE_VALUES",
-    "AGGREGATION_ROLE_VALUES",
     "CANONICAL_FACT_KEYS",
     "CURRENCY_VALUES",
     "ENTITY_TYPE_VALUES",
+    "EQUATION_CHILD_OPERATOR_VALUES",
     "EXTRACTED_FACT_KEYS",
     "LEGACY_FACT_KEYS",
     "METADATA_KEYS",
@@ -350,6 +373,7 @@ __all__ = [
     "ROW_ROLE_VALUES",
     "VALUE_TYPE_VALUES",
     "VALUE_CONTEXT_VALUES",
+    "default_gemini_autocomplete_prompt_template",
     "default_gemini_fill_prompt_template",
     "default_extraction_prompt_template",
     "schema_snapshot",

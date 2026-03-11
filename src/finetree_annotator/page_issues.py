@@ -392,7 +392,6 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
         )
         suppressed_codes = {
             "row_role_corrected",
-            "aggregation_role_corrected",
             "equation_rebuilt",
             "fact_equation_rebuilt",
         }

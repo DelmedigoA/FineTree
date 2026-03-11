@@ -13,15 +13,12 @@ def test_schema_ui_enum_options_derive_from_registry() -> None:
     row_role_opts = enum_options("fact", "row_role")
     assert "detail" in row_role_opts
     assert "total" in row_role_opts
-    aggregation_role_opts = enum_options("fact", "aggregation_role")
-    assert "subtractive" in aggregation_role_opts
+    assert enum_options("fact", "aggregation_role") == ("",)
 
 
 def test_schema_ui_descriptors_include_expected_fields() -> None:
     descriptors = ui_descriptors()
     assert "page_meta.statement_type" in descriptors
     assert "metadata.entity_type" in descriptors
-    assert "fact.balance_type" in descriptors
     assert "fact.row_role" in descriptors
-    assert "fact.aggregation_role" in descriptors
     assert "fact.path_source" in descriptors

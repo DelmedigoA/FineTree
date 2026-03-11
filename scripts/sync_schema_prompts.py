@@ -10,7 +10,11 @@ SRC_ROOT = REPO_ROOT / "src"
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-from finetree_annotator.schema_contract import default_extraction_prompt_template, default_gemini_fill_prompt_template  # noqa: E402
+from finetree_annotator.schema_contract import (  # noqa: E402
+    default_extraction_prompt_template,
+    default_gemini_autocomplete_prompt_template,
+    default_gemini_fill_prompt_template,
+)
 
 
 def _targets(root: Path) -> list[tuple[Path, str]]:
@@ -18,6 +22,7 @@ def _targets(root: Path) -> list[tuple[Path, str]]:
     return [
         (prompts_root / "extraction_prompt.txt", default_extraction_prompt_template().strip() + "\n"),
         (prompts_root / "gemini_fill_prompt.txt", default_gemini_fill_prompt_template().strip() + "\n"),
+        (prompts_root / "gemini_autocomplete_prompt.txt", default_gemini_autocomplete_prompt_template().strip() + "\n"),
     ]
 
 

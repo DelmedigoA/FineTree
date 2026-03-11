@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QImage, QKeyEvent
+from PyQt5.QtGui import QColor, QImage, QKeyEvent, QPainter
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
@@ -24,9 +25,21 @@ def _qt_app() -> QApplication:
     return app
 
 
-def _write_test_png(path: Path, *, width: int = 32, height: int = 32) -> None:
+def _write_test_png(
+    path: Path,
+    *,
+    width: int = 32,
+    height: int = 32,
+    dark_rects: list[tuple[int, int, int, int]] | None = None,
+) -> None:
     image = QImage(width, height, QImage.Format_RGB32)
     image.fill(QColor("#ffffff"))
+    if dark_rects:
+        painter = QPainter(image)
+        painter.fillRect(0, 0, width, height, QColor("#ffffff"))
+        for x, y, w, h in dark_rects:
+            painter.fillRect(x, y, w, h, QColor("#101010"))
+        painter.end()
     assert image.save(str(path), "PNG")
 
 
@@ -90,7 +103,7 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
-    _write_test_png(images_dir / "page_0001.png")
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
@@ -101,12 +114,14 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.save_btn.text() == "Save"
     assert window.gemini_gt_btn.text() == "Gemini"
+    assert window.gemini_complete_btn.text() == "Auto Complete"
     assert window.gemini_fill_btn.text() == "Auto-Fix"
     assert window.copy_image_btn.text() == "Copy Image"
     assert window.page_json_btn.text() == "JSON"
     assert window.exit_btn.text() == "Exit"
     assert window.page_jump_spin.minimumWidth() == 58
     assert not window.gemini_gt_btn.icon().isNull()
+    assert not window.gemini_complete_btn.icon().isNull()
     assert not window.gemini_fill_btn.icon().isNull()
     assert not window.qwen_gt_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
@@ -120,6 +135,7 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.apply_equation_btn.parentWidget() is not window.fact_editor_box
     assert window.show_order_labels_check.isChecked() is False
     assert window.gemini_fill_btn.isEnabled() is False
+    assert window.gemini_complete_btn.isEnabled() is False
     assert window.fact_is_beur_combo.maximumWidth() > 500
     assert window.page_annotation_status_label.text() == "Unclassified"
     assert window.page_flag_btn.text().endswith("Flag")
@@ -174,13 +190,6 @@ def test_multi_selection_scalar_edits_apply_to_all_selected_bboxes(tmp_path: Pat
 
     assert item_a.fact_data["currency"] == "USD"
     assert item_b.fact_data["currency"] == "USD"
-
-    idx = window.fact_aggregation_role_combo.findText("subtractive")
-    window.fact_aggregation_role_combo.setCurrentIndex(idx)
-    window._on_fact_editor_field_edited("aggregation_role")
-
-    assert item_a.fact_data["aggregation_role"] == "subtractive"
-    assert item_b.fact_data["aggregation_role"] == "subtractive"
 
     window.close()
 
@@ -237,6 +246,766 @@ def test_gemini_fill_dialog_uses_supported_model_dropdown() -> None:
     assert "gemini-2.5-pro" in options
     assert dialog.model() == "gemini-3.1-flash-lite"
     dialog.close()
+
+
+def test_gemini_prompt_dialog_defaults_max_facts_to_zero() -> None:
+    _qt_app()
+    dialog = app_mod.GeminiPromptDialog(
+        prompt_text="extract",
+        model_name="gemini-3.1-flash-lite",
+        show_max_facts_control=True,
+        max_facts_default=0,
+    )
+
+    assert dialog.max_facts_spin.isHidden() is False
+    assert dialog.max_facts() == 0
+
+    dialog.close()
+
+
+def test_gemini_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant"})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    captured_kwargs: dict[str, object] = {}
+
+    class _RejectedDialog:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args
+            captured_kwargs.update(kwargs)
+
+        def exec_(self) -> int:
+            return app_mod.QDialog.Rejected
+
+    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _RejectedDialog)
+
+    window.generate_gemini_auto_complete()
+
+    assert captured_kwargs["show_few_shot_controls"] is True
+    assert captured_kwargs["few_shot_enabled_default"] is False
+    assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_CLASSIC
+
+    window.close()
+
+
+def test_gemini_fill_dialog_defaults_only_period_fields_checked() -> None:
+    _qt_app()
+    dialog = app_mod.GeminiFillDialog(
+        model_name="gemini-3.1-flash-lite",
+        thinking_enabled_default=True,
+        thinking_level_default="high",
+        prompt_builder=lambda *_args: "preview",
+    )
+
+    assert dialog.selected_fact_fields() == {"period_type", "period_start", "period_end"}
+
+    dialog.close()
+
+
+def test_gemini_fill_dialog_clear_all_unchecks_every_fact_field() -> None:
+    _qt_app()
+    dialog = app_mod.GeminiFillDialog(
+        model_name="gemini-3.1-flash-lite",
+        thinking_enabled_default=True,
+        thinking_level_default="high",
+        prompt_builder=lambda *_args: "preview",
+    )
+
+    dialog._fact_field_checks["currency"].setChecked(True)
+    dialog._fact_field_checks["date"].setChecked(True)
+    dialog.clear_all_fields_btn.click()
+
+    assert dialog.selected_fact_fields() == set()
+
+    dialog.close()
+
+
+def test_gemini_autocomplete_request_payload_includes_locked_page_state(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.statement_type_combo.setCurrentText("income_statement")
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant", "path": ["Assets"]})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window._capture_current_state()
+    _qt_app().processEvents()
+
+    payload = window._build_gemini_autocomplete_request_payload(
+        page_name=window.page_images[window.current_index].name,
+        ordered_items=window._sorted_fact_items(),
+    )
+
+    assert payload["pages"][0]["meta"]["statement_type"] == "income_statement"
+    assert len(payload["pages"][0]["facts"]) == 1
+    assert payload["pages"][0]["facts"][0]["fact_num"] == 1
+    assert payload["request"]["mode"] == "anchored_geometry_merge"
+    assert payload["request"]["preserve_existing_facts"] is True
+    assert payload["request"]["allow_meta_updates"] is False
+    assert payload["request"]["image_width"] == pytest.approx(32.0)
+    assert payload["request"]["image_height"] == pytest.approx(32.0)
+
+    window.close()
+
+
+def test_gemini_autocomplete_prompt_mentions_locked_facts(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    prompt = window._build_gemini_autocomplete_prompt_from_template(
+        app_mod.default_gemini_autocomplete_prompt_template(),
+        request_payload={
+            "images_dir": "x",
+            "metadata": {},
+            "pages": [{"image": "page_0001.png", "meta": {}, "facts": []}],
+            "request": {"mode": "append_only"},
+        },
+    )
+
+    assert "must stay locked" in prompt
+    assert "return only new missing facts" in prompt.lower()
+    assert "original image pixel coordinates" in prompt.lower()
+    assert "start with this" in prompt.lower()
+    assert '"image": "page_0001.png"' in prompt
+    assert "runtime rebuilds final contiguous numbering" in prompt.lower()
+
+    window.close()
+
+
+def test_gemini_autocomplete_refuses_empty_page(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    info_messages: list[str] = []
+    monkeypatch.setattr(
+        app_mod.QMessageBox,
+        "information",
+        lambda *_args: info_messages.append(str(_args[2]) if len(_args) > 2 else "info"),
+    )
+
+    window.generate_gemini_auto_complete()
+
+    assert info_messages == ["Auto Complete requires at least one existing fact on the current page."]
+
+    window.close()
+
+
+def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant", "path": ["Assets"]})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    class _AcceptedDialog:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args
+            _ = kwargs
+
+        def exec_(self) -> int:
+            return app_mod.QDialog.Accepted
+
+        def prompt(self) -> str:
+            return "autocomplete prompt"
+
+        def model(self) -> str:
+            return "gemini-3-flash-preview"
+
+        def enable_thinking(self) -> bool:
+            return True
+
+        def thinking_level(self) -> str:
+            return "high"
+
+        def use_few_shot(self) -> bool:
+            return True
+
+        def few_shot_preset(self) -> str:
+            return app_mod.FEW_SHOT_PRESET_ONE_SHOT
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.resolve_api_key",
+        lambda: "test-key",
+    )
+    monkeypatch.setattr(
+        window,
+        "_load_gemini_few_shot_examples",
+        lambda *, preset: ([{"role": "user", "parts": ["example"]}], []),
+    )
+    monkeypatch.setattr(
+        window,
+        "_start_gemini_stream",
+        lambda **kwargs: captured_stream_kwargs.update(kwargs),
+    )
+
+    window.generate_gemini_auto_complete()
+
+    assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
+    assert captured_stream_kwargs["mode"] == "autocomplete"
+
+    window.close()
+
+
+def test_gemini_autocomplete_ignores_meta_and_merges_only_missing_facts(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.statement_type_combo.setCurrentText("income_statement")
+    locked_item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant", "path": ["Assets"]})
+    window.scene.addItem(locked_item)
+    window.refresh_facts_list()
+    window._capture_current_state()
+    _qt_app().processEvents()
+
+    page_name = window.page_images[window.current_index].name
+    ordered_items = window._sorted_fact_items()
+    locked_payload = window._fact_payload_from_item(locked_item)
+    locked_before = dict(locked_item.fact_data)
+    window._gemini_autocomplete_snapshot = {
+        "page_name": page_name,
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+        "locked_fact_payloads": [app_mod.deepcopy(window._fact_payload_from_item(item)) for item in ordered_items],
+    }
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "autocomplete"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = {window._fact_uniqueness_key(locked_payload)}
+    window._gemini_stream_fact_count = 0
+    window._gemini_autocomplete_buffered_facts = []
+
+    window._on_gemini_stream_meta({"statement_type": "balance_sheet"})
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "balance_sheet",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(model_dump=lambda mode="json", payload=locked_payload: payload),
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [40, 10, 20, 20],
+                    "value": "200",
+                    "equation": None,
+                    "equation_children": None,
+                    "value_type": None,
+                    "value_context": None,
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": None,
+                    "scale": None,
+                    "date": None,
+                    "period_type": "duration",
+                    "period_start": "2024-01-01",
+                    "period_end": "2024-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["Revenue"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            ),
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert locked_item.fact_data == locked_before
+    assert window.statement_type_combo.currentText() == "income_statement"
+    assert window._gemini_stream_fact_count == 1
+    assert len(window._fact_items) == 2
+    assert window._fact_items[1].fact_data["value"] == "200"
+    assert window._fact_items[1].fact_data["period_type"] == "duration"
+
+    window.close()
+
+
+def test_gemini_stream_fact_keeps_pixel_bbox_without_1000_denormalization(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=1617, height=2384)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+
+    added = window._apply_stream_fact(
+        page_name,
+        {
+            "bbox": [474, 731, 58, 30],
+            "value": "18,763",
+            "equation": None,
+            "equation_children": None,
+            "value_type": "amount",
+            "value_context": "tabular",
+            "natural_sign": "positive",
+            "row_role": "detail",
+            "currency": "ILS",
+            "scale": 1,
+            "date": "2014",
+            "period_type": "duration",
+            "period_start": "2014-01-01",
+            "period_end": "2014-12-31",
+            "duration_type": None,
+            "recurring_period": None,
+            "note_flag": False,
+            "note_num": None,
+            "note_name": None,
+            "path": ["A"],
+            "path_source": "observed",
+            "note_ref": None,
+            "comment_ref": None,
+        },
+    )
+
+    rect = item_scene_rect(window._fact_items[0])
+    assert added is True
+    assert rect.x() == pytest.approx(474.0)
+    assert rect.y() == pytest.approx(731.0)
+    assert rect.width() == pytest.approx(58.0)
+    assert rect.height() == pytest.approx(30.0)
+
+    window.close()
+
+
+def test_autocomplete_bbox_mode_converts_normalized_1000_when_ink_score_is_better(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=200,
+        height=200,
+        dark_rects=[(100, 100, 40, 20)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+
+    resolved_payloads, bbox_mode = window._resolve_autocomplete_bbox_mode(
+        page_name,
+        [
+            {
+                "bbox": [500, 500, 200, 100],
+                "value": "12",
+                "row_role": "detail",
+                "equation_children": None,
+                "path": ["A"],
+            }
+        ],
+    )
+
+    assert bbox_mode == app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+    resolved_bbox = resolved_payloads[0]["bbox"]
+    assert resolved_bbox[0] == pytest.approx(100.0)
+    assert resolved_bbox[1] == pytest.approx(100.0)
+    assert resolved_bbox[2] == pytest.approx(40.0)
+    assert resolved_bbox[3] == pytest.approx(20.0)
+    assert window._gemini_autocomplete_last_bbox_scores[app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL] > window._gemini_autocomplete_last_bbox_scores[app_mod.BBOX_MODE_PIXEL_AS_IS]
+
+    window.close()
+
+
+def test_autocomplete_bbox_mode_keeps_pixel_when_pixel_score_is_better(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=200,
+        height=200,
+        dark_rects=[(120, 110, 30, 20)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+
+    resolved_payloads, bbox_mode = window._resolve_autocomplete_bbox_mode(
+        page_name,
+        [
+            {
+                "bbox": [120, 110, 30, 20],
+                "value": "55",
+                "row_role": "detail",
+                "equation_children": None,
+                "path": ["A"],
+            }
+        ],
+    )
+
+    assert bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
+    assert resolved_payloads[0]["bbox"][0] == pytest.approx(120.0)
+    assert resolved_payloads[0]["bbox"][1] == pytest.approx(110.0)
+
+    window.close()
+
+
+def test_autocomplete_bbox_mode_defaults_to_pixel_when_scores_are_ambiguous(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+
+    resolved_payloads, bbox_mode = window._resolve_autocomplete_bbox_mode(
+        page_name,
+        [
+            {
+                "bbox": [120, 110, 30, 20],
+                "value": "55",
+                "row_role": "detail",
+                "equation_children": None,
+                "path": ["A"],
+            }
+        ],
+    )
+
+    assert bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
+    assert resolved_payloads[0]["bbox"][0] == pytest.approx(120.0)
+    assert resolved_payloads[0]["bbox"][1] == pytest.approx(110.0)
+
+    window.close()
+
+
+def test_gemini_autocomplete_merges_buffered_facts_between_locked_prefix_and_suffix(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=400, height=400)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    locked_values = ["A", "B", "X", "Y", "Z"]
+    locked_ys = [10, 40, 220, 260, 300]
+    for value, y in zip(locked_values, locked_ys):
+        window.scene.addItem(AnnotRectItem(QRectF(20, y, 40, 20), {"value": value, "path": [value]}))
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    page_name = window.page_images[window.current_index].name
+    ordered_items = window._sorted_fact_items()
+    window._gemini_autocomplete_snapshot = {
+        "page_name": page_name,
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+        "locked_fact_payloads": [app_mod.deepcopy(window._fact_payload_from_item(item)) for item in ordered_items],
+    }
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "autocomplete"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = {
+        window._fact_uniqueness_key(window._fact_payload_from_item(item)) for item in ordered_items
+    }
+    window._gemini_stream_fact_count = 0
+    window._gemini_autocomplete_buffered_facts = []
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "other",
+                "statement_type": None,
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [20, 120, 40, 20],
+                    "value": "M1",
+                    "equation": "A + B",
+                    "fact_equation": "f1 + f2",
+                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "total",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["M1"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            ),
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [20, 170, 40, 20],
+                    "value": "M2",
+                    "equation": None,
+                    "fact_equation": None,
+                    "equation_children": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": "ILS",
+                    "scale": 1,
+                    "date": "2014",
+                    "period_type": "duration",
+                    "period_start": "2014-01-01",
+                    "period_end": "2014-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["M2"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            ),
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert [item.fact_data["value"] for item in window._fact_items] == ["A", "B", "M1", "M2", "X", "Y", "Z"]
+    assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4, 5, 6, 7]
+    assert window._fact_items[2].fact_data["fact_equation"] is None
+    assert window._fact_items[2].fact_data["equation_children"] is None
+
+    window.close()
+
+
+def test_gemini_autocomplete_rejects_stale_snapshot_without_changes(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    locked_item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "path": ["A"]})
+    window.scene.addItem(locked_item)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    page_name = window.page_images[window.current_index].name
+    ordered_items = window._sorted_fact_items()
+    window._gemini_autocomplete_snapshot = {
+        "page_name": page_name,
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+        "locked_fact_payloads": [app_mod.deepcopy(window._fact_payload_from_item(item)) for item in ordered_items],
+    }
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "autocomplete"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = {
+        window._fact_uniqueness_key(window._fact_payload_from_item(item)) for item in ordered_items
+    }
+    window._gemini_stream_fact_count = 0
+    window._gemini_autocomplete_buffered_facts = []
+
+    warnings: list[str] = []
+    monkeypatch.setattr(
+        app_mod.QMessageBox,
+        "warning",
+        lambda *_args: warnings.append(str(_args[2]) if len(_args) > 2 else "warning"),
+    )
+
+    locked_item.fact_data = {**locked_item.fact_data, "value": "changed"}
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "other",
+                "statement_type": None,
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [40, 10, 20, 20],
+                    "value": "200",
+                    "equation": None,
+                    "equation_children": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": None,
+                    "scale": None,
+                    "date": None,
+                    "period_type": "duration",
+                    "period_start": "2024-01-01",
+                    "period_end": "2024-12-31",
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["Revenue"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert [item.fact_data["value"] for item in window._fact_items] == ["changed"]
+    assert warnings
+    assert "Current page facts changed during Gemini Auto Complete" in warnings[0]
+
+    window.close()
+
+
+def test_gemini_autocomplete_remaps_locked_equation_refs_after_geometry_resequence(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=400, height=400)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    child = AnnotRectItem(QRectF(20, 80, 40, 20), {"value": "100", "path": ["child"], "fact_num": 1})
+    total = AnnotRectItem(
+        QRectF(20, 140, 40, 20),
+        {
+            "value": "100",
+            "path": ["total"],
+            "fact_num": 2,
+            "equation": "100",
+            "fact_equation": "f1",
+            "equation_children": [{"fact_num": 1, "operator": "+"}],
+            "row_role": "total",
+        },
+    )
+    window.scene.addItem(child)
+    window.scene.addItem(total)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    page_name = window.page_images[window.current_index].name
+    ordered_items = window._sorted_fact_items()
+    window._gemini_autocomplete_snapshot = {
+        "page_name": page_name,
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+        "locked_fact_payloads": [app_mod.deepcopy(window._fact_payload_from_item(item)) for item in ordered_items],
+    }
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "autocomplete"
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_seen_facts = {
+        window._fact_uniqueness_key(window._fact_payload_from_item(item)) for item in ordered_items
+    }
+    window._gemini_stream_fact_count = 0
+    window._gemini_autocomplete_buffered_facts = []
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "other",
+                "statement_type": None,
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [20, 20, 40, 20],
+                    "value": "50",
+                    "equation": None,
+                    "equation_children": None,
+                    "value_type": "amount",
+                    "value_context": "tabular",
+                    "natural_sign": "positive",
+                    "row_role": "detail",
+                    "currency": None,
+                    "scale": None,
+                    "date": None,
+                    "period_type": None,
+                    "period_start": None,
+                    "period_end": None,
+                    "duration_type": None,
+                    "recurring_period": None,
+                    "note_flag": False,
+                    "note_num": None,
+                    "note_name": None,
+                    "path": ["new"],
+                    "path_source": "observed",
+                    "note_ref": None,
+                    "comment_ref": None,
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert [item.fact_data["value"] for item in window._fact_items] == ["50", "100", "100"]
+    assert window._fact_items[2].fact_data["fact_equation"] == "f2"
+    assert window._fact_items[2].fact_data["equation_children"] == [{"fact_num": 2, "operator": "+"}]
+
+    window.close()
 
 
 def test_qwen_prompt_dialog_accepts_thinking_controls() -> None:
@@ -385,10 +1154,11 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         {
             "value": "100",
             "equation": "40 + 60",
+            "row_role": "total",
+            "equation_children": [{"fact_num": 3, "operator": "+"}, {"fact_num": 4, "operator": "+"}],
             "period_type": "instant",
             "period_start": None,
             "period_end": "2024-12-31",
-            "balance_type": "debit",
             "path_source": "observed",
         },
     )
@@ -397,10 +1167,11 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
         {
             "value": "200",
             "equation": "120 + 80",
+            "row_role": "total",
+            "equation_children": [{"fact_num": 5, "operator": "+"}, {"fact_num": 6, "operator": "+"}],
             "period_type": "duration",
             "period_start": "2024-01-01",
             "period_end": "2024-12-31",
-            "balance_type": "credit",
             "path_source": "inferred",
         },
     )
@@ -416,7 +1187,7 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     payload = window._build_gemini_fill_request_payload(
         page_name=window.page_images[window.current_index].name,
         selected_fact_nums=selected_fact_nums,
-        selected_fact_fields={"equation", "period_type", "period_start", "period_end", "balance_type"},
+        selected_fact_fields={"equation_children", "period_type", "period_start", "period_end"},
         include_statement_type=True,
         ordered_items=ordered_items,
     )
@@ -424,23 +1195,20 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     facts = payload["pages"][0]["facts"]
     assert len(facts) == 2
     assert payload["pages"][0]["meta"]["statement_type"] is None
-    assert all(fact["equation"] is None for fact in facts)
+    assert all(fact["equation_children"] is None for fact in facts)
     assert all(fact["period_type"] is None for fact in facts)
     assert all(fact["period_start"] is None for fact in facts)
     assert all(fact["period_end"] is None for fact in facts)
-    assert all(fact["balance_type"] is None for fact in facts)
     assert {fact["path_source"] for fact in facts} == {"observed", "inferred"}
-    assert item_a.fact_data["equation"] == "40 + 60"
+    assert item_a.fact_data["equation_children"] == [{"fact_num": 3, "operator": "+"}, {"fact_num": 4, "operator": "+"}]
     assert item_a.fact_data["period_type"] == "instant"
-    assert item_a.fact_data["balance_type"] == "debit"
-    assert item_b.fact_data["equation"] == "120 + 80"
+    assert item_b.fact_data["equation_children"] == [{"fact_num": 5, "operator": "+"}, {"fact_num": 6, "operator": "+"}]
     assert item_b.fact_data["period_type"] == "duration"
-    assert item_b.fact_data["balance_type"] == "credit"
 
     window.close()
 
 
-def test_fact_editor_shows_balance_row_role_aggregation_role_and_deterministic_natural_sign(tmp_path: Path) -> None:
+def test_fact_editor_shows_row_role_and_deterministic_natural_sign(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -450,7 +1218,7 @@ def test_fact_editor_shows_balance_row_role_aggregation_role_and_deterministic_n
     window = AnnotationWindow(images_dir, annotations_path)
     item = AnnotRectItem(
         QRectF(10, 10, 20, 20),
-        {"value": "(120)", "balance_type": "credit", "aggregation_role": "subtractive", "path": []},
+        {"value": "(120)", "path": []},
     )
     window.scene.addItem(item)
     window.refresh_facts_list()
@@ -458,21 +1226,8 @@ def test_fact_editor_shows_balance_row_role_aggregation_role_and_deterministic_n
     item.setSelected(True)
     _qt_app().processEvents()
 
-    assert window.fact_balance_type_combo.currentText() == "credit"
     assert window.fact_row_role_combo.currentText() == "detail"
-    assert window.fact_aggregation_role_combo.currentText() == "subtractive"
     assert window.fact_natural_sign_label.text() == "negative"
-
-    idx = window.fact_balance_type_combo.findText("debit")
-    window.fact_balance_type_combo.setCurrentIndex(idx)
-    window._on_fact_editor_field_edited("balance_type")
-    assert item.fact_data["balance_type"] == "debit"
-    assert item.fact_data["aggregation_role"] == "subtractive"
-
-    idx = window.fact_aggregation_role_combo.findText("additive")
-    window.fact_aggregation_role_combo.setCurrentIndex(idx)
-    window._on_fact_editor_field_edited("aggregation_role")
-    assert item.fact_data["aggregation_role"] == "additive"
 
     idx = window.fact_row_role_combo.findText("total")
     window.fact_row_role_combo.setCurrentIndex(idx)
@@ -486,6 +1241,28 @@ def test_fact_editor_shows_balance_row_role_aggregation_role_and_deterministic_n
 
     assert item.fact_data["natural_sign"] is None
     assert window.fact_natural_sign_label.text() == "-"
+    window.close()
+
+
+def test_gemini_fill_prompt_omits_statement_type_schema_when_not_requested(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    prompt = window._build_gemini_fill_prompt_from_template(
+        "Requested meta fields:\n{{META_FIELDS}}\nSchema:\n{{META_UPDATES_SCHEMA}}\n{{REQUEST_JSON}}",
+        request_payload={"request": {"meta_fields": []}},
+        selected_fact_fields={"period_type"},
+        include_statement_type=False,
+    )
+
+    assert "Requested meta fields:\nnone" in prompt
+    assert "Schema:\n{}" in prompt
+    assert '"statement_type"' not in prompt
+
     window.close()
 
 
@@ -768,6 +1545,114 @@ def test_multi_selection_shared_prefix_allows_direct_path_removal(tmp_path: Path
 
     assert item_a.fact_data["path"] == ["מאזן", "מזומנים"]
     assert item_b.fact_data["path"] == ["מאזן", "לקוחות"]
+
+    window.close()
+
+
+def test_multi_selection_shared_prefix_allows_move_up(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "100", "path": ["מאזן", "רכוש שוטף", "מזומנים"]},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "200", "path": ["מאזן", "רכוש שוטף", "לקוחות"]},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_path_list.setCurrentRow(1)
+    assert window.path_up_btn.isEnabled() is True
+
+    window.move_selected_path_up()
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["רכוש שוטף", "מאזן", "מזומנים"]
+    assert item_b.fact_data["path"] == ["רכוש שוטף", "מאזן", "לקוחות"]
+
+    window.close()
+
+
+def test_multi_selection_variant_leaf_allows_move_up(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "100", "path": ["מאזן", "רכוש שוטף", "מזומנים"]},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "200", "path": ["מאזן", "רכוש שוטף", "לקוחות"]},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_path_list.setCurrentRow(2)
+    assert window.path_up_btn.isEnabled() is True
+
+    window.move_selected_path_up()
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["מאזן", "מזומנים", "רכוש שוטף"]
+    assert item_b.fact_data["path"] == ["מאזן", "לקוחות", "רכוש שוטף"]
+
+    window.close()
+
+
+def test_multi_selection_variant_middle_allows_move_up_past_shared_suffix_hint(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item_a = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {"value": "100", "path": ["מאזן", "רכוש שוטף", "מזומנים", "2024"]},
+    )
+    item_b = AnnotRectItem(
+        QRectF(40, 10, 20, 20),
+        {"value": "200", "path": ["מאזן", "רכוש שוטף", "לקוחות", "2024"]},
+    )
+    window.scene.addItem(item_a)
+    window.scene.addItem(item_b)
+    window.refresh_facts_list()
+    item_a.setSelected(True)
+    item_b.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_path_list.item(2).text() == "2024"
+    assert window.fact_path_list.item(3).text() == "Different path tails"
+
+    window.fact_path_list.setCurrentRow(3)
+    assert window.path_up_btn.isEnabled() is True
+
+    window.move_selected_path_up()
+    _qt_app().processEvents()
+
+    assert item_a.fact_data["path"] == ["מאזן", "מזומנים", "רכוש שוטף", "2024"]
+    assert item_b.fact_data["path"] == ["מאזן", "לקוחות", "רכוש שוטף", "2024"]
 
     window.close()
 
@@ -1220,14 +2105,14 @@ def test_command_drag_creates_one_bbox(tmp_path: Path) -> None:
     window.close()
 
 
-def test_equation_builder_uses_natural_sign_and_aggregation_role_for_polarity() -> None:
+def test_equation_builder_uses_natural_sign_and_operator_for_polarity() -> None:
     candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = app_mod._build_equation_candidate_from_facts(
         [
-            {"fact_num": 1, "value": "100", "natural_sign": "positive", "aggregation_role": "additive"},
-            {"fact_num": 2, "value": "30", "natural_sign": "positive", "aggregation_role": "additive"},
-            {"fact_num": 3, "value": "5", "natural_sign": "positive", "aggregation_role": "subtractive"},
-            {"fact_num": 4, "value": "(7)", "natural_sign": "negative", "aggregation_role": "subtractive"},
-            {"fact_num": 5, "value": "-", "natural_sign": None, "aggregation_role": "additive"},
+            {"fact_num": 1, "value": "100", "natural_sign": "positive", "operator": "+"},
+            {"fact_num": 2, "value": "30", "natural_sign": "positive", "operator": "+"},
+            {"fact_num": 3, "value": "5", "natural_sign": "positive", "operator": "-"},
+            {"fact_num": 4, "value": "(7)", "natural_sign": "negative", "operator": "-"},
+            {"fact_num": 5, "value": "-", "natural_sign": None, "operator": "+"},
         ]
     )
 
@@ -1239,16 +2124,12 @@ def test_equation_builder_uses_natural_sign_and_aggregation_role_for_polarity() 
     assert [term.get("contribution_sign") for term in structured_terms] == [1, 1, -1, 1, 1]
 
 
-def test_equation_result_match_state_applies_target_contribution_sign() -> None:
-    tone, message = app_mod._equation_result_match_state("-100", "100", "negative", "additive")
+def test_equation_result_match_state_applies_target_natural_sign() -> None:
+    tone, message = app_mod._equation_result_match_state("-100", "100", "negative")
     assert tone == "ok"
     assert message == "Matches target value."
 
-    tone, message = app_mod._equation_result_match_state("100", "100", "positive", "subtractive")
-    assert tone == "danger"
-    assert "(-100)" in message
-
-    tone, message = app_mod._equation_result_match_state("100", "100", "positive", "additive")
+    tone, message = app_mod._equation_result_match_state("100", "100", "positive")
     assert tone == "ok"
     assert message == "Matches target value."
 
@@ -1257,7 +2138,7 @@ def test_evaluate_equation_string_uses_left_side_when_equals_present() -> None:
     assert app_mod._evaluate_equation_string("971771 + 599659 = 599659") == "1571430"
 
 
-def test_equation_builder_uses_inferred_aggregation_roles_when_missing() -> None:
+def test_equation_builder_defaults_to_additive_when_operator_missing() -> None:
     facts = [
         app_mod.normalize_fact_data({"fact_num": 10, "value": "269968", "path": ["רכוש קבוע", "עלות"]}),
         app_mod.normalize_fact_data({"fact_num": 12, "value": "209255", "path": ["רכוש קבוע", "בניכוי - פחת שנצבר"]}),
@@ -1267,11 +2148,11 @@ def test_equation_builder_uses_inferred_aggregation_roles_when_missing() -> None
         facts
     )
 
-    assert candidate_text == "269968 - 209255"
-    assert result_text == "60713"
-    assert fact_candidate_text == "f10 - f12"
+    assert candidate_text == "269968 + 209255"
+    assert result_text == "479223"
+    assert fact_candidate_text == "f10 + f12"
     assert invalid_values == []
-    assert [term.get("aggregation_role") for term in structured_terms] == ["additive", "subtractive"]
+    assert [term.get("operator") for term in structured_terms] == ["+", "+"]
 
 
 def test_c_drag_builds_equation_preview_and_apply_persists_it(tmp_path: Path, monkeypatch) -> None:
@@ -1462,6 +2343,90 @@ def test_clear_equation_button_clears_for_multi_selection(tmp_path: Path) -> Non
     assert item_c.fact_data.get("equation") is None
     assert item_c.fact_data.get("fact_equation") is None
     assert window.clear_equation_btn.isEnabled() is False
+    window.close()
+
+
+def test_equation_variants_list_switches_active_equation(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f1 + f2",
+            "equations": [
+                {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                {"equation": "80 + 40", "fact_equation": "f3 + f4"},
+            ],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_equation_variants_list.count() == 2
+    variant_item = window.fact_equation_variants_list.item(1)
+    window._on_equation_variant_item_clicked(variant_item)
+    _qt_app().processEvents()
+
+    assert item.fact_data["equation"] == "80 + 40"
+    assert item.fact_data["fact_equation"] == "f3 + f4"
+    assert item.fact_data["equations"][0]["equation"] == "80 + 40"
+    assert item.fact_data["equations"][1]["equation"] == "100 + 20"
+    window.close()
+
+
+def test_add_equation_variant_button_appends_candidate_and_sets_active(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "120",
+            "equation": "100 + 20",
+            "fact_equation": "f2 + f3",
+            "equation_children": [{"fact_num": 2, "operator": "+"}, {"fact_num": 3, "operator": "+"}],
+            "fact_num": 1,
+        },
+    )
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    window._equation_target_item = item
+    window._equation_candidate_text = "90 + 30"
+    window._equation_candidate_fact_text = "f4 + f5"
+    window._equation_candidate_result_text = "120"
+    window._equation_candidate_terms = [
+        {"equation_child": {"fact_num": 4, "operator": "+"}},
+        {"equation_child": {"fact_num": 5, "operator": "+"}},
+    ]
+    window._refresh_equation_panel()
+    assert window.equation_add_variant_btn.isEnabled() is True
+
+    window.equation_add_variant_btn.click()
+    _qt_app().processEvents()
+
+    assert item.fact_data["equation"] == "90 + 30"
+    assert item.fact_data["fact_equation"] == "f4 + f5"
+    assert item.fact_data["equations"][0]["equation"] == "90 + 30"
+    assert item.fact_data["equations"][1]["equation"] == "100 + 20"
     window.close()
 
 
@@ -1723,6 +2688,187 @@ def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp
     assert window._equation_candidate_fact_text == "f2 - f3 + f4"
     assert target.fact_data.get("equation") is None
     assert target.fact_data.get("fact_equation") is None
+    window.close()
+
+
+def test_equation_click_selection_preserves_chronological_order(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=260, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "30", "fact_num": 9})
+    left_ref = AnnotRectItem(QRectF(20, 70, 20, 20), {"value": "10", "fact_num": 8})
+    right_ref = AnnotRectItem(QRectF(160, 70, 20, 20), {"value": "20", "fact_num": 2})
+    window.scene.addItem(target)
+    window.scene.addItem(left_ref)
+    window.scene.addItem(right_ref)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window._equation_target_item = target
+    window._on_equation_reference_selection_changed([left_ref, right_ref])
+
+    left_num = window._fact_num_for_item(left_ref)
+    right_num = window._fact_num_for_item(right_ref)
+    ordered_fact_nums = [
+        int(term["fact_num"])
+        for term in window._equation_candidate_terms
+        if isinstance(term, dict) and isinstance(term.get("equation_child"), dict) and isinstance(term.get("fact_num"), int)
+    ]
+    assert ordered_fact_nums == [left_num, right_num]
+    window.close()
+
+
+def test_equation_drag_selection_preserves_first_enter_order(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=260, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "30", "fact_num": 9})
+    left_ref = AnnotRectItem(QRectF(20, 70, 20, 20), {"value": "10", "fact_num": 8})
+    right_ref = AnnotRectItem(QRectF(160, 70, 20, 20), {"value": "20", "fact_num": 2})
+    window.scene.addItem(target)
+    window.scene.addItem(left_ref)
+    window.scene.addItem(right_ref)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(15, 65)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(205, 110)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(205, 110)))
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    _qt_app().processEvents()
+
+    left_num = window._fact_num_for_item(left_ref)
+    right_num = window._fact_num_for_item(right_ref)
+    ordered_fact_nums = [
+        int(term["fact_num"])
+        for term in window._equation_candidate_terms
+        if isinstance(term, dict) and isinstance(term.get("equation_child"), dict) and isinstance(term.get("fact_num"), int)
+    ]
+    assert ordered_fact_nums == [left_num, right_num]
+    window.close()
+
+
+def test_equation_operator_override_updates_preview_and_saved_children(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=240, height=240)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "95", "fact_num": 9})
+    ref_a = AnnotRectItem(QRectF(30, 60, 20, 20), {"value": "100", "fact_num": 1})
+    ref_b = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "5", "fact_num": 2})
+    window.scene.addItem(target)
+    window.scene.addItem(ref_a)
+    window.scene.addItem(ref_b)
+    window.refresh_facts_list()
+    window.show()
+    target.setSelected(True)
+    _qt_app().processEvents()
+
+    window.view.keyPressEvent(QKeyEvent(QKeyEvent.KeyPress, Qt.Key_Alt, Qt.NoModifier, ""))
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(20, 50)))
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.scene.mouseReleaseEvent(_SceneMouseEvent(QPointF(80, 120)))
+    window.view.keyReleaseEvent(QKeyEvent(QKeyEvent.KeyRelease, Qt.Key_Alt, Qt.NoModifier, ""))
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "100 + 5"
+    assert window.fact_equation_terms_list.isVisible() is True
+    assert window.fact_equation_terms_list.count() == 2
+
+    second_term = window.fact_equation_terms_list.item(1)
+    assert second_term is not None
+    second_term.setSelected(True)
+    _qt_app().processEvents()
+    assert window.equation_mark_subtract_btn.isEnabled() is True
+
+    window.equation_mark_subtract_btn.click()
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "100 - 5"
+    assert window.fact_equation_result_label.text() == "95"
+    assert "Matches target value." in window.fact_equation_status_label.text()
+    assert window._equation_candidate_fact_text == "f2 - f3"
+
+    window.apply_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert target.fact_data["equation"] == "100 - 5"
+    assert target.fact_data["fact_equation"] == "f2 - f3"
+    assert target.fact_data["equation_children"] == [
+        {"fact_num": 2, "operator": "+"},
+        {"fact_num": 3, "operator": "-"},
+    ]
+    window.close()
+
+
+def test_same_child_can_use_different_operators_under_different_targets(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=260, height=260)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    target_a = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "95", "fact_num": 11})
+    target_b = AnnotRectItem(QRectF(10, 40, 20, 20), {"value": "105", "fact_num": 12})
+    shared = AnnotRectItem(QRectF(30, 90, 20, 20), {"value": "100", "fact_num": 1})
+    adjustment = AnnotRectItem(QRectF(30, 120, 20, 20), {"value": "5", "fact_num": 2})
+    window.scene.addItem(target_a)
+    window.scene.addItem(target_b)
+    window.scene.addItem(shared)
+    window.scene.addItem(adjustment)
+    window.refresh_facts_list()
+    window.show()
+
+    window.scene.clearSelection()
+    target_a.setSelected(True)
+    window._equation_target_item = target_a
+    window._on_equation_reference_selection_changed([shared, adjustment])
+    _qt_app().processEvents()
+
+    target_a_adjustment = window.fact_equation_terms_list.item(1)
+    assert target_a_adjustment is not None
+    target_a_adjustment.setSelected(True)
+    _qt_app().processEvents()
+    window.equation_mark_subtract_btn.click()
+    _qt_app().processEvents()
+    window.apply_equation_btn.click()
+    _qt_app().processEvents()
+
+    window.scene.clearSelection()
+    target_b.setSelected(True)
+    window._equation_target_item = target_b
+    window._on_equation_reference_selection_changed([shared, adjustment])
+    _qt_app().processEvents()
+
+    assert window.fact_equation_edit.text() == "100 + 5"
+    window.apply_equation_btn.click()
+    _qt_app().processEvents()
+
+    assert target_a.fact_data["equation_children"] == [
+        {"fact_num": 3, "operator": "+"},
+        {"fact_num": 4, "operator": "-"},
+    ]
+    assert target_b.fact_data["equation_children"] == [
+        {"fact_num": 3, "operator": "+"},
+        {"fact_num": 4, "operator": "+"},
+    ]
     window.close()
 
 

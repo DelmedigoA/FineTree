@@ -1307,6 +1307,7 @@ def _validate_patch_fact_updates(
             f"Patch updates contain non-requested keys: {', '.join(unknown_update_keys)}."
         )
 
+    baseline_row_role = "total" if "equation_children" in updates_payload else "detail"
     baseline = {
         "value": "0",
         "equation": None,
@@ -1327,10 +1328,9 @@ def _validate_patch_fact_updates(
         "scale": None,
         "value_type": None,
         "value_context": None,
-        "balance_type": None,
+        "equation_children": None,
         "natural_sign": None,
-        "row_role": "detail",
-        "aggregation_role": "additive",
+        "row_role": baseline_row_role,
     }
     validated = Fact.model_validate({**baseline, **updates_payload}).model_dump(mode="json")
     return {key: validated[key] for key in updates_payload.keys()}
@@ -1368,9 +1368,7 @@ def parse_selected_field_patch_text(
         unknown_meta_keys = sorted(str(key) for key in raw_meta_updates.keys() if str(key) != "statement_type")
         if unknown_meta_keys:
             raise ValueError(f"meta_updates contains unknown keys: {', '.join(unknown_meta_keys)}.")
-        if raw_meta_updates and not allow_statement_type:
-            raise ValueError("meta_updates.statement_type is not allowed for this request.")
-        if "statement_type" in raw_meta_updates:
+        if allow_statement_type and "statement_type" in raw_meta_updates:
             normalized_meta = PageMeta.model_validate(
                 {
                     "entity_name": None,

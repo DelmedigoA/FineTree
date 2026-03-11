@@ -1,0 +1,21 @@
+{
+  "meta_updates": {},
+  "fact_updates": [
+    {
+      "fact_num": 39,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2020-10-01",
+        "period_end": "2021-09-30"
+      }
+    },
+    {
+      "fact_num": 40,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2019-10-01",
+        "period_end": "2020-09-30"
+      }
+    }
+  ]
+}

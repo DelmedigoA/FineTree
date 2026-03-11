@@ -10,6 +10,7 @@ from finetree_annotator.schema_contract import (
     PROMPT_PAGE_META_KEYS,
     PROMPT_FACT_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
+    default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
@@ -41,6 +42,11 @@ def test_gemini_fill_prompt_file_is_in_sync_with_schema_contract() -> None:
     assert prompt_path.read_text(encoding="utf-8").strip() == default_gemini_fill_prompt_template()
 
 
+def test_gemini_autocomplete_prompt_file_is_in_sync_with_schema_contract() -> None:
+    prompt_path = Path("prompts/gemini_autocomplete_prompt.txt")
+    assert prompt_path.read_text(encoding="utf-8").strip() == default_gemini_autocomplete_prompt_template()
+
+
 def test_finetune_config_default_fallback_template_comes_from_schema_contract() -> None:
     cfg = FinetuneConfig()
     assert cfg.prompt.fallback_template == default_extraction_prompt_template()
@@ -55,15 +61,19 @@ def test_metadata_fields_are_in_model_prompt() -> None:
     assert "נכסים שוטפים" in prompt
 
 
-def test_balance_semantics_fields_are_in_prompts() -> None:
+def test_structural_equation_fields_are_in_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
     fill_prompt = default_gemini_fill_prompt_template()
-    assert "balance_type" in extraction_prompt
+    autocomplete_prompt = default_gemini_autocomplete_prompt_template()
+    assert "equation_children" in extraction_prompt
     assert "natural_sign" in extraction_prompt
     assert "row_role" in extraction_prompt
-    assert "aggregation_role" in extraction_prompt
-    assert "equation" in fill_prompt
-    assert "balance_type" in fill_prompt
+    assert "equation_children" in fill_prompt
     assert "natural_sign" in fill_prompt
     assert "row_role" in fill_prompt
-    assert "aggregation_role" in fill_prompt
+    assert "locked facts" in autocomplete_prompt.lower()
+    assert "return only new missing facts" in autocomplete_prompt.lower()
+    assert "original image pixel coordinates" in autocomplete_prompt.lower()
+    assert "runtime rebuilds final contiguous numbering" in autocomplete_prompt.lower()
+    assert "balance_type" not in extraction_prompt
+    assert "aggregation_role" not in extraction_prompt

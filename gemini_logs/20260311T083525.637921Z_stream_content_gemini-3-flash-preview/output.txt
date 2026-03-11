@@ -1,0 +1,830 @@
+```json
+{
+  "images_dir": null,
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+    "company_id": null,
+    "report_year": 2014,
+    "report_scope": "separate",
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "אגודת הסטודנטים אורנים - בחטיבה האוניברסיטאית ובמכללה (ע\"ר)",
+        "page_num": "9",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            290,
+            216,
+            33,
+            12
+          ],
+          "value": "156",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "חובות פתוחים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            153,
+            218,
+            38,
+            11
+          ],
+          "value": "1,268",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "חובות פתוחים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            289,
+            233,
+            34,
+            11
+          ],
+          "value": "536",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "המחאות לפרעון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            154,
+            233,
+            38,
+            12
+          ],
+          "value": "2,300",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "המחאות לפרעון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            290,
+            260,
+            33,
+            12
+          ],
+          "value": "692",
+          "equation": "156 + 536",
+          "equation_children": [
+            {
+              "fact_num": 1,
+              "operator": "+"
+            },
+            {
+              "fact_num": 3,
+              "operator": "+"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            154,
+            259,
+            38,
+            13
+          ],
+          "value": "3,568",
+          "equation": "1268 + 2300",
+          "equation_children": [
+            {
+              "fact_num": 2,
+              "operator": "+"
+            },
+            {
+              "fact_num": 4,
+              "operator": "+"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "התחייבויות לספקים ולנותני שירות",
+          "path": [
+            "התחייבויות לספקים ולנותני שירות",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            267,
+            366,
+            56,
+            13
+          ],
+          "value": "33,446",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "התחייבויות לעובדים (כולל הפרשה לחופשה)"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            134,
+            365,
+            58,
+            14
+          ],
+          "value": "33,288",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "התחייבויות לעובדים (כולל הפרשה לחופשה)"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            283,
+            382,
+            40,
+            12
+          ],
+          "value": "8,161",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "מוסדות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            152,
+            382,
+            40,
+            12
+          ],
+          "value": "9,176",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "מוסדות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            258,
+            396,
+            65,
+            13
+          ],
+          "value": "450,123",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הכנסות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            127,
+            396,
+            65,
+            13
+          ],
+          "value": "461,990",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הכנסות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            275,
+            409,
+            48,
+            14
+          ],
+          "value": "20,060",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הוצאות לשלם"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            146,
+            409,
+            46,
+            14
+          ],
+          "value": "14,160",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הוצאות לשלם"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            427,
+            63,
+            14
+          ],
+          "value": "511,790",
+          "equation": "33446 + 8161 + 450123 + 20060",
+          "equation_children": [
+            {
+              "fact_num": 7,
+              "operator": "+"
+            },
+            {
+              "fact_num": 9,
+              "operator": "+"
+            },
+            {
+              "fact_num": 11,
+              "operator": "+"
+            },
+            {
+              "fact_num": 13,
+              "operator": "+"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            128,
+            427,
+            64,
+            14
+          ],
+          "value": "518,614",
+          "equation": "33288 + 9176 + 461990 + 14160",
+          "equation_children": [
+            {
+              "fact_num": 8,
+              "operator": "+"
+            },
+            {
+              "fact_num": 10,
+              "operator": "+"
+            },
+            {
+              "fact_num": 12,
+              "operator": "+"
+            },
+            {
+              "fact_num": 14,
+              "operator": "+"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            272,
+            588,
+            49,
+            14
+          ],
+          "value": "96,672",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "התחייבויות בשל סיום יחסי עובד-מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            142,
+            588,
+            49,
+            14
+          ],
+          "value": "96,672",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "התחייבויות בשל סיום יחסי עובד-מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            272,
+            602,
+            49,
+            15
+          ],
+          "value": "90,722",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "בניכוי - יעודה שהופקדה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            143,
+            602,
+            49,
+            15
+          ],
+          "value": "90,722",
+          "equation": null,
+          "equation_children": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "בניכוי - יעודה שהופקדה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            281,
+            630,
+            40,
+            13
+          ],
+          "value": "5,950",
+          "equation": "96672 - 90722",
+          "equation_children": [
+            {
+              "fact_num": 17,
+              "operator": "+"
+            },
+            {
+              "fact_num": 19,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2014-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            151,
+            630,
+            40,
+            14
+          ],
+          "value": "5,950",
+          "equation": "96672 - 90722",
+          "equation_children": [
+            {
+              "fact_num": 18,
+              "operator": "+"
+            },
+            {
+              "fact_num": 20,
+              "operator": "-"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2013-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+          "path": [
+            "התחייבויות בשל סיום יחסי עובד-מעביד, נטו",
+            "א. ההרכב:",
+            "סך הכל"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```
