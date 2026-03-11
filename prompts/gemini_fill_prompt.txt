@@ -29,7 +29,6 @@ Output schema (exact keys only):
     {
       "fact_num": <integer >= 1>,
       "updates": {
-        "equation_children": [{"fact_num": <integer >= 1>, "operator": "+|-"}] | null,
         "period_type": "instant|duration|expected|null",
         "period_start": "<YYYY-MM-DD|null>",
         "period_end": "<YYYY-MM-DD|null>",
@@ -60,6 +59,4 @@ Rules:
 5. Use JSON null (not string "null") for unknowns.
 6. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
 7. `row_role` must be `detail` or `total`.
-8. `equation_children` is authoritative for total arithmetic. Detail rows must omit it; total rows must use an ordered non-empty list when arithmetic is requested.
-9. `equation` and `fact_equation` are derived by runtime from `equation_children`; do not treat them as authoritative.
-10. If no confident update for a requested field, omit that field from `updates`.
+8. If no confident update for a requested field, omit that field from `updates`.

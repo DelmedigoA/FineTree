@@ -52,18 +52,15 @@ def test_extracted_fact_rejects_deprecated_aggregation_role() -> None:
 
 
 def test_extracted_fact_accepts_row_role() -> None:
-    fact = ExtractedFact.model_validate(
-        _fact_payload(row_role="total", equation_children=[{"fact_num": 1, "operator": "+"}])
-    )
+    fact = ExtractedFact.model_validate(_fact_payload(row_role="total"))
     assert fact.row_role is not None
     assert fact.row_role.value == "total"
 
 
-def test_extracted_fact_rejects_detail_equation_children_and_total_without_them() -> None:
-    with pytest.raises(ValidationError):
-        ExtractedFact.model_validate(_fact_payload(row_role="detail", equation_children=[{"fact_num": 1, "operator": "+"}]))
-    with pytest.raises(ValidationError):
-        ExtractedFact.model_validate(_fact_payload(row_role="total"))
+def test_extracted_fact_accepts_total_without_fact_equation() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(row_role="total"))
+    assert fact.row_role is not None
+    assert fact.row_role.value == "total"
 
 
 def test_extracted_fact_accepts_recurrent_duration_type() -> None:
@@ -96,7 +93,8 @@ def test_extracted_fact_accepts_symbol_rich_value_text() -> None:
 
 def test_extracted_fact_accepts_equation() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(equation="100 - 20 + 5"))
-    assert fact.equation == "100 - 20 + 5"
+    assert fact.equations is not None
+    assert fact.equations[0].equation == "100 - 20 + 5"
 
 
 def test_extracted_fact_accepts_equations_list_and_syncs_active_equation() -> None:
@@ -110,17 +108,17 @@ def test_extracted_fact_accepts_equations_list_and_syncs_active_equation() -> No
             ],
         )
     )
-    assert fact.equation == "80 + 40"
-    assert fact.fact_equation == "f1 + f2"
     assert fact.equations is not None
     assert fact.equations[0].equation == "80 + 40"
+    assert fact.equations[0].fact_equation == "f1 + f2"
     assert fact.equations[1].equation == "100 + 20"
 
 
 def test_extracted_fact_accepts_fact_num_and_fact_equation() -> None:
-    fact = ExtractedFact.model_validate(_fact_payload(fact_num="7", fact_equation="f1 + f4 - f6"))
+    fact = ExtractedFact.model_validate(_fact_payload(fact_num="7", equation="10", fact_equation="f1 + f4 - f6"))
     assert fact.fact_num == 7
-    assert fact.fact_equation == "f1 + f4 - f6"
+    assert fact.equations is not None
+    assert fact.equations[0].fact_equation == "f1 + f4 - f6"
 
 
 def test_extracted_fact_rejects_empty_or_null_value() -> None:

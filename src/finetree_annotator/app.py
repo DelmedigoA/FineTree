@@ -175,7 +175,6 @@ PAGE_STATUS_SORT_OPTIONS: tuple[tuple[str, str], ...] = (
     ("Flagged First", "flagged_first"),
 )
 GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
-    ("equation_children", False),
     ("period_type", True),
     ("period_start", True),
     ("period_end", True),
@@ -193,7 +192,6 @@ GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
     ("note_name", False),
 )
 GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
-    "equation_children",
     "period_type",
     "period_start",
     "period_end",
@@ -213,6 +211,8 @@ GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
 _EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
 _SAFE_EQUATION_CHARS_RE = re.compile(r"^[\d,\.\+\-\s]+$")
 _SAFE_EQUATION_TERM_RE = re.compile(r"[+-]?\d[\d,]*(?:\.\d+)?")
+_FACT_EQUATION_RE = re.compile(r"^\s*[+-]?\s*f\d+(?:\s*[+-]\s*f\d+)*\s*$", flags=re.IGNORECASE)
+_FACT_EQUATION_TOKEN_RE = re.compile(r"([+-]?)\s*f(\d+)", flags=re.IGNORECASE)
 
 
 def _shared_path_prefix(path_signatures: List[tuple[str, ...]]) -> list[str]:
@@ -441,9 +441,16 @@ def _build_equation_candidate_from_facts(
             structured_terms.append(term_meta)
             continue
 
+        status = str(term_meta.get("status") or "")
+        force_operator_sign = status == "normalized_dash"
         prefix = ""
         if valid_count > 0:
-            prefix = "- " if effective_value < 0 else "+ "
+            if force_operator_sign:
+                prefix = "- " if contribution_sign < 0 else "+ "
+            else:
+                prefix = "- " if effective_value < 0 else "+ "
+        elif force_operator_sign:
+            prefix = "- " if contribution_sign < 0 else ""
         elif effective_value < 0:
             prefix = "- "
 
@@ -462,6 +469,16 @@ def _build_equation_candidate_from_facts(
         invalid_values,
         structured_terms,
     )
+
+
+def _fact_equation_operator_map(value: Any) -> dict[int, str]:
+    text = str(value or "").strip()
+    if not text or not _FACT_EQUATION_RE.fullmatch(text):
+        return {}
+    out: dict[int, str] = {}
+    for sign_text, fact_num_text in _FACT_EQUATION_TOKEN_RE.findall(text):
+        out[int(fact_num_text)] = "-" if sign_text.strip() == "-" else "+"
+    return out
 
 
 def _effective_target_value_for_equation(
@@ -525,40 +542,23 @@ def _normalize_equation_bundle_payload(value: Any) -> dict[str, Any] | None:
         text = str(value).strip()
         if not text:
             return None
-        return {"equation": text, "fact_equation": None, "equation_children": None}
+        return {"equation": text, "fact_equation": None}
     if not isinstance(value, dict):
         return None
     equation = str(value.get("equation") or "").strip()
     if not equation:
         return None
     fact_equation = str(value.get("fact_equation") or "").strip() or None
-    equation_children_raw = value.get("equation_children")
-    equation_children: list[dict[str, Any]] = []
-    if isinstance(equation_children_raw, list):
-        for entry in equation_children_raw:
-            if not isinstance(entry, dict):
-                continue
-            fact_num = _coerce_positive_int(entry.get("fact_num"))
-            operator = _normalize_equation_operator(entry.get("operator"))
-            if fact_num is None:
-                continue
-            equation_children.append({"fact_num": fact_num, "operator": operator})
     return {
         "equation": equation,
         "fact_equation": fact_equation,
-        "equation_children": equation_children or None,
     }
 
 
 def _equation_bundle_signature(entry: dict[str, Any]) -> tuple[Any, ...]:
     equation = str(entry.get("equation") or "")
     fact_equation = str(entry.get("fact_equation") or "")
-    children = tuple(
-        (int(child.get("fact_num")), _normalize_equation_operator(child.get("operator")))
-        for child in (entry.get("equation_children") or [])
-        if isinstance(child, dict) and isinstance(child.get("fact_num"), int)
-    )
-    return equation, fact_equation, children
+    return equation, fact_equation
 
 
 def _equation_bundles_from_fact_payload(fact_payload: dict[str, Any]) -> list[dict[str, Any]]:
@@ -577,25 +577,6 @@ def _equation_bundles_from_fact_payload(fact_payload: dict[str, Any]) -> list[di
                 continue
             seen.add(signature)
             bundles.append(normalized_entry)
-
-    active_bundle = _normalize_equation_bundle_payload(
-        {
-            "equation": normalized_fact.get("equation"),
-            "fact_equation": normalized_fact.get("fact_equation"),
-            "equation_children": normalized_fact.get("equation_children"),
-        }
-    )
-    if active_bundle is not None:
-        active_signature = _equation_bundle_signature(active_bundle)
-        matching_index = next(
-            (idx for idx, entry in enumerate(bundles) if _equation_bundle_signature(entry) == active_signature),
-            None,
-        )
-        if matching_index is None:
-            bundles = [active_bundle, *bundles]
-        elif matching_index != 0:
-            bundles = [bundles[matching_index], *bundles[:matching_index], *bundles[matching_index + 1 :]]
-
     return bundles
 
 
@@ -622,9 +603,6 @@ def _fact_payload_with_active_equation_bundle(
         return normalize_fact_data(
             {
                 **base_fact,
-                "equation": None,
-                "fact_equation": None,
-                "equation_children": None,
                 "equations": None,
             }
         )
@@ -638,12 +616,16 @@ def _fact_payload_with_active_equation_bundle(
     return normalize_fact_data(
         {
             **base_fact,
-            "equation": active_bundle.get("equation"),
-            "fact_equation": active_bundle.get("fact_equation"),
-            "equation_children": active_bundle.get("equation_children"),
             "equations": ordered_bundles,
         }
     )
+
+
+def _active_equation_bundle_from_fact_payload(fact_payload: dict[str, Any]) -> dict[str, Any] | None:
+    bundles = _equation_bundles_from_fact_payload(fact_payload)
+    if not bundles:
+        return None
+    return bundles[0]
 
 
 class AnnotationView(QGraphicsView):
@@ -3077,13 +3059,28 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_status_label.setWordWrap(True)
         self.fact_equation_variants_list = QListWidget()
         self.fact_equation_variants_list.setObjectName("equationVariantsList")
-        self.fact_equation_variants_list.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.fact_equation_variants_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.fact_equation_variants_list.setMinimumHeight(66)
         self.fact_equation_variants_list.setMaximumHeight(108)
         self.equation_add_variant_btn = QPushButton("+")
         self.equation_add_variant_btn.setObjectName("smallActionBtn")
         self.equation_add_variant_btn.setMaximumWidth(30)
         self.equation_add_variant_btn.setToolTip("Add current preview as an additional saved equation")
+        self.equation_add_variant_btn.setFocusPolicy(Qt.NoFocus)
+        self.equation_delete_variant_btn = QPushButton("Delete")
+        self.equation_delete_variant_btn.setObjectName("smallActionBtn")
+        self.equation_delete_variant_btn.setToolTip("Delete selected saved equation")
+        self.equation_delete_variant_btn.setFocusPolicy(Qt.NoFocus)
+        self.equation_variant_up_btn = QPushButton("↑")
+        self.equation_variant_up_btn.setObjectName("smallActionBtn")
+        self.equation_variant_up_btn.setMaximumWidth(30)
+        self.equation_variant_up_btn.setToolTip("Move selected equation up")
+        self.equation_variant_up_btn.setFocusPolicy(Qt.NoFocus)
+        self.equation_variant_down_btn = QPushButton("↓")
+        self.equation_variant_down_btn.setObjectName("smallActionBtn")
+        self.equation_variant_down_btn.setMaximumWidth(30)
+        self.equation_variant_down_btn.setToolTip("Move selected equation down")
+        self.equation_variant_down_btn.setFocusPolicy(Qt.NoFocus)
         self.fact_equation_terms_list = QListWidget()
         self.fact_equation_terms_list.setObjectName("equationTermsList")
         self.fact_equation_terms_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -3092,15 +3089,19 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_terms_list.setVisible(False)
         self.equation_mark_add_btn = QPushButton("Mark +")
         self.equation_mark_add_btn.setObjectName("smallActionBtn")
+        self.equation_mark_add_btn.setFocusPolicy(Qt.NoFocus)
         self.equation_mark_subtract_btn = QPushButton("Mark -")
         self.equation_mark_subtract_btn.setObjectName("smallActionBtn")
+        self.equation_mark_subtract_btn.setFocusPolicy(Qt.NoFocus)
         self.equation_mark_add_btn.setVisible(False)
         self.equation_mark_subtract_btn.setVisible(False)
         self.apply_equation_btn = QPushButton("Apply Equation")
         self.apply_equation_btn.setObjectName("smallActionBtn")
+        self.apply_equation_btn.setFocusPolicy(Qt.NoFocus)
         self.clear_equation_btn = QPushButton("Clear")
         self.clear_equation_btn.setObjectName("smallActionBtn")
         self.clear_equation_btn.setProperty("variant", "ghost")
+        self.clear_equation_btn.setFocusPolicy(Qt.NoFocus)
 
         equation_editor_panel = QWidget()
         equation_editor_layout = QVBoxLayout(equation_editor_panel)
@@ -3111,7 +3112,15 @@ class AnnotationWindow(QMainWindow):
         equation_variants_row.setContentsMargins(0, 0, 0, 0)
         equation_variants_row.setSpacing(6)
         equation_variants_row.addWidget(self.fact_equation_variants_list, 1)
-        equation_variants_row.addWidget(self.equation_add_variant_btn, 0, Qt.AlignTop)
+        equation_variants_actions = QVBoxLayout()
+        equation_variants_actions.setContentsMargins(0, 0, 0, 0)
+        equation_variants_actions.setSpacing(4)
+        equation_variants_actions.addWidget(self.equation_add_variant_btn)
+        equation_variants_actions.addWidget(self.equation_delete_variant_btn)
+        equation_variants_actions.addWidget(self.equation_variant_up_btn)
+        equation_variants_actions.addWidget(self.equation_variant_down_btn)
+        equation_variants_actions.addStretch(1)
+        equation_variants_row.addLayout(equation_variants_actions)
         equation_editor_layout.addLayout(equation_variants_row)
 
         equation_preview_panel = QWidget()
@@ -3575,6 +3584,10 @@ class AnnotationWindow(QMainWindow):
         self.apply_equation_btn.clicked.connect(self.apply_equation_to_selected_fact)
         self.clear_equation_btn.clicked.connect(self.clear_equation_from_selected_fact)
         self.equation_add_variant_btn.clicked.connect(self.add_equation_variant_to_selected_fact)
+        self.equation_delete_variant_btn.clicked.connect(self.delete_selected_equation_variants_from_selected_fact)
+        self.equation_variant_up_btn.clicked.connect(lambda: self.move_selected_equation_variant(-1))
+        self.equation_variant_down_btn.clicked.connect(lambda: self.move_selected_equation_variant(1))
+        self.fact_equation_variants_list.itemSelectionChanged.connect(self._update_equation_variant_controls)
         self.fact_equation_variants_list.itemClicked.connect(self._on_equation_variant_item_clicked)
         self.fact_equation_terms_list.itemSelectionChanged.connect(self._update_equation_term_controls)
         self.fact_equation_terms_list.itemDoubleClicked.connect(self._on_equation_term_item_double_clicked)
@@ -4810,12 +4823,141 @@ class AnnotationWindow(QMainWindow):
                 self.fact_equation_variants_list.addItem(item)
             if self.fact_equation_variants_list.count() > 0:
                 self.fact_equation_variants_list.setCurrentRow(0)
+                current_item = self.fact_equation_variants_list.item(0)
+                if current_item is not None:
+                    current_item.setSelected(True)
         finally:
             self._is_loading_equation_variants = False
         self.fact_equation_variants_list.setEnabled(enabled and self.fact_equation_variants_list.count() > 0)
+        self._update_equation_variant_controls()
+
+    def _selected_equation_variant_index(self) -> int | None:
+        if not hasattr(self, "fact_equation_variants_list"):
+            return None
+        item = self.fact_equation_variants_list.currentItem()
+        if item is None:
+            return None
+        index_raw = item.data(EQUATION_VARIANT_INDEX_ROLE)
+        if not isinstance(index_raw, int):
+            return None
+        return index_raw
+
+    def _selected_equation_variant_indices(self) -> list[int]:
+        if not hasattr(self, "fact_equation_variants_list"):
+            return []
+        indices: list[int] = []
+        for item in self.fact_equation_variants_list.selectedItems():
+            index_raw = item.data(EQUATION_VARIANT_INDEX_ROLE)
+            if isinstance(index_raw, int):
+                indices.append(index_raw)
+        if not indices:
+            current_index = self._selected_equation_variant_index()
+            if current_index is not None:
+                indices.append(current_index)
+        return sorted(set(indices))
+
+    def _update_equation_variant_controls(self) -> None:
+        if not hasattr(self, "fact_equation_variants_list"):
+            return
+        selected_indices = self._selected_equation_variant_indices()
+        has_selection = bool(selected_indices)
+        has_single_selection = len(selected_indices) == 1
+        count = self.fact_equation_variants_list.count()
+        self.equation_delete_variant_btn.setEnabled(has_selection)
+        selected_row = self.fact_equation_variants_list.currentRow()
+        self.equation_variant_up_btn.setEnabled(has_single_selection and selected_row > 0)
+        self.equation_variant_down_btn.setEnabled(has_single_selection and 0 <= selected_row < count - 1)
+
+    def _focus_equation_panel(self) -> None:
+        if hasattr(self, "fact_equation_variants_list") and self.fact_equation_variants_list.isEnabled():
+            self.fact_equation_variants_list.setFocus(Qt.ShortcutFocusReason)
+            return
+        if hasattr(self, "fact_equation_edit") and self.fact_equation_edit.isEnabled():
+            self.fact_equation_edit.setFocus(Qt.ShortcutFocusReason)
+
+    def move_selected_equation_variant(self, direction: int) -> None:
+        if direction not in {-1, 1}:
+            return
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1:
+            return
+        target_item = selected_items[0]
+        if not self._is_alive_fact_item(target_item):
+            return
+        selected_index = self._selected_equation_variant_index()
+        if selected_index is None:
+            return
+
+        current = normalize_fact_data(target_item.fact_data)
+        equation_bundles = _equation_bundles_from_fact_payload(current)
+        if not equation_bundles:
+            return
+        next_index = selected_index + direction
+        if not (0 <= next_index < len(equation_bundles)):
+            return
+        reordered = list(equation_bundles)
+        reordered[selected_index], reordered[next_index] = reordered[next_index], reordered[selected_index]
+        updated = _fact_payload_with_active_equation_bundle(current, reordered, active_index=0)
+        if updated == current:
+            return
+        target_item.fact_data = updated
+        self._clear_equation_candidate()
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self._focus_equation_panel()
+        self.statusBar().showMessage("Reordered saved equations.", 2300)
+
+    def delete_selected_equation_variants_from_selected_fact(self) -> None:
+        selected_items = self._selected_fact_items()
+        if len(selected_items) != 1:
+            self.statusBar().showMessage("Select one fact to delete saved equations.", 2200)
+            return
+        target_item = selected_items[0]
+        if not self._is_alive_fact_item(target_item):
+            return
+        selected_indices = self._selected_equation_variant_indices()
+        if not selected_indices:
+            self.statusBar().showMessage("Select saved equation(s) to delete.", 2200)
+            return
+        current = normalize_fact_data(target_item.fact_data)
+        equation_bundles = _equation_bundles_from_fact_payload(current)
+        if not equation_bundles:
+            self.statusBar().showMessage("No saved equations to delete.", 2200)
+            return
+        selected_set = {idx for idx in selected_indices if 0 <= idx < len(equation_bundles)}
+        if not selected_set:
+            self.statusBar().showMessage("No saved equations to delete.", 2200)
+            return
+        remaining = [bundle for idx, bundle in enumerate(equation_bundles) if idx not in selected_set]
+        if remaining:
+            updated = _fact_payload_with_active_equation_bundle(current, remaining, active_index=0)
+        else:
+            updated = normalize_fact_data(
+                {
+                    **current,
+                    "equations": None,
+                }
+            )
+        if updated == current:
+            self.statusBar().showMessage("Selected equation was not deleted.", 2200)
+            return
+        target_item.fact_data = updated
+        self._clear_equation_candidate()
+        self.refresh_facts_list()
+        self._record_history_snapshot()
+        self._focus_equation_panel()
+        deleted_count = len(selected_set)
+        if deleted_count == 1:
+            self.statusBar().showMessage("Deleted 1 selected saved equation.", 2400)
+        else:
+            self.statusBar().showMessage(f"Deleted {deleted_count} selected saved equations.", 2400)
 
     def _on_equation_variant_item_clicked(self, item: QListWidgetItem) -> None:
         if self._is_loading_equation_variants or item is None:
+            return
+        modifiers = QApplication.keyboardModifiers()
+        if modifiers & (Qt.ControlModifier | Qt.ShiftModifier):
+            self._update_equation_variant_controls()
             return
         selected_items = self._selected_fact_items()
         if len(selected_items) != 1:
@@ -4837,6 +4979,7 @@ class AnnotationWindow(QMainWindow):
         self._clear_equation_candidate()
         self.refresh_facts_list()
         self._record_history_snapshot()
+        self._focus_equation_panel()
         self.statusBar().showMessage("Switched active saved equation for selected fact.", 2500)
 
     def _refresh_equation_term_list(self) -> None:
@@ -4892,16 +5035,11 @@ class AnnotationWindow(QMainWindow):
             return
 
         current = normalize_fact_data(target_item.fact_data)
-        equation_children = [
-            dict(term["equation_child"])
-            for term in self._equation_candidate_terms
-            if isinstance(term, dict) and isinstance(term.get("equation_child"), dict)
-        ]
+        has_fact_references = bool(str(self._equation_candidate_fact_text or "").strip())
         new_bundle = _normalize_equation_bundle_payload(
             {
                 "equation": self._equation_candidate_text,
                 "fact_equation": self._equation_candidate_fact_text,
-                "equation_children": equation_children or None,
             }
         )
         if new_bundle is None:
@@ -4921,7 +5059,7 @@ class AnnotationWindow(QMainWindow):
             message = "Equation already exists; switched to it."
         else:
             updated = _fact_payload_with_active_equation_bundle(
-                {**current, "row_role": "total" if equation_children else current.get("row_role")},
+                {**current, "row_role": "total" if has_fact_references else current.get("row_role")},
                 [new_bundle, *existing_bundles],
                 active_index=0,
             )
@@ -4934,6 +5072,7 @@ class AnnotationWindow(QMainWindow):
         self.refresh_facts_list()
         self._record_history_snapshot()
         self._clear_equation_candidate()
+        self._focus_equation_panel()
         self.statusBar().showMessage(message, 2600)
 
     def _apply_operator_to_selected_equation_terms(self, operator: str) -> None:
@@ -5006,12 +5145,7 @@ class AnnotationWindow(QMainWindow):
 
         selected_items = self._selected_fact_items()
         selection_has_saved_equation = any(
-            bool(
-                normalize_fact_data(item.fact_data).get("equation")
-                or normalize_fact_data(item.fact_data).get("fact_equation")
-                or normalize_fact_data(item.fact_data).get("equation_children")
-                or normalize_fact_data(item.fact_data).get("equations")
-            )
+            bool(_equation_bundles_from_fact_payload(normalize_fact_data(item.fact_data)))
             for item in selected_items
             if self._is_alive_fact_item(item)
         )
@@ -5021,9 +5155,10 @@ class AnnotationWindow(QMainWindow):
         equation_bundles: list[dict[str, Any]] = []
         if single_item is not None:
             saved_fact = normalize_fact_data(single_item.fact_data)
-            saved_equation = str(saved_fact.get("equation") or "")
-            saved_fact_equation = str(saved_fact.get("fact_equation") or "")
             equation_bundles = _equation_bundles_from_fact_payload(saved_fact)
+            active_bundle = equation_bundles[0] if equation_bundles else None
+            saved_equation = str((active_bundle or {}).get("equation") or "")
+            saved_fact_equation = str((active_bundle or {}).get("fact_equation") or "")
             target_value = saved_fact.get("value")
             target_natural_sign = saved_fact.get("natural_sign")
         else:
@@ -5035,6 +5170,9 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_status_label.setEnabled(single_item is not None)
         self.fact_equation_variants_list.setEnabled(single_item is not None)
         self.equation_add_variant_btn.setEnabled(False)
+        self.equation_delete_variant_btn.setEnabled(False)
+        self.equation_variant_up_btn.setEnabled(False)
+        self.equation_variant_down_btn.setEnabled(False)
         self.apply_equation_btn.setEnabled(False)
         self.clear_equation_btn.setEnabled(False)
         self._refresh_equation_variants_list(equation_bundles, enabled=(single_item is not None))
@@ -5140,6 +5278,9 @@ class AnnotationWindow(QMainWindow):
         self.fact_equation_status_label.setEnabled(enabled and not multi_select)
         self.fact_equation_variants_list.setEnabled(enabled and not multi_select)
         self.equation_add_variant_btn.setEnabled(False)
+        self.equation_delete_variant_btn.setEnabled(False)
+        self.equation_variant_up_btn.setEnabled(False)
+        self.equation_variant_down_btn.setEnabled(False)
         self.apply_equation_btn.setEnabled(False)
         self.clear_equation_btn.setEnabled(False)
         self._set_path_list_editable(enabled and not multi_select)
@@ -5213,6 +5354,9 @@ class AnnotationWindow(QMainWindow):
             self._set_equation_result_display("-", tone="neutral")
             self._refresh_equation_variants_list([], enabled=False)
             self.equation_add_variant_btn.setEnabled(False)
+            self.equation_delete_variant_btn.setEnabled(False)
+            self.equation_variant_up_btn.setEnabled(False)
+            self.equation_variant_down_btn.setEnabled(False)
         finally:
             self._is_loading_fact_editor = False
         self._update_path_controls()
@@ -5231,7 +5375,8 @@ class AnnotationWindow(QMainWindow):
                 f"{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}"
             )
             self.fact_value_edit.setText(str(fact.get("value", "")))
-            self.fact_equation_edit.setText(str(fact.get("equation") or ""))
+            active_bundle = _active_equation_bundle_from_fact_payload(fact) or {}
+            self.fact_equation_edit.setText(str(active_bundle.get("equation") or ""))
             self.fact_note_edit.setText(str(fact.get("comment_ref") or ""))
             self.fact_note_name_edit.setText(str(fact.get("note_name") or ""))
             is_beur = bool(fact.get("note_flag"))
@@ -6634,6 +6779,7 @@ class AnnotationWindow(QMainWindow):
         normalized_fact = normalize_fact_data(fact_payload)
         bbox = normalize_bbox_data(fact_payload.get("bbox"))
         path = tuple(str(p) for p in (normalized_fact.get("path") or []))
+        active_bundle = _active_equation_bundle_from_fact_payload(normalized_fact) or {}
         return (
             round(float(bbox["x"]), 2),
             round(float(bbox["y"]), 2),
@@ -6646,7 +6792,8 @@ class AnnotationWindow(QMainWindow):
             str(normalized_fact.get("note_num") if normalized_fact.get("note_num") is not None else ""),
             str(normalized_fact.get("note_ref") or ""),
             str(normalized_fact.get("date") or ""),
-            str(normalized_fact.get("equation") or ""),
+            str(active_bundle.get("equation") or ""),
+            str(active_bundle.get("fact_equation") or ""),
             str(normalized_fact.get("period_type") or ""),
             str(normalized_fact.get("period_start") or ""),
             str(normalized_fact.get("period_end") or ""),
@@ -6687,8 +6834,6 @@ class AnnotationWindow(QMainWindow):
             {
                 **normalized_payload,
                 "fact_num": None,
-                "fact_equation": None,
-                "equation_children": None,
                 "equations": None,
             }
         )
@@ -8632,7 +8777,8 @@ class AnnotationWindow(QMainWindow):
 
     @staticmethod
     def _fact_has_matching_saved_equation(fact: Dict[str, Any]) -> bool:
-        saved_equation = str(fact.get("equation") or "").strip()
+        active_bundle = _active_equation_bundle_from_fact_payload(fact) or {}
+        saved_equation = str(active_bundle.get("equation") or "").strip()
         if not saved_equation:
             return False
         preview = _evaluate_equation_string(saved_equation)
@@ -8690,11 +8836,12 @@ class AnnotationWindow(QMainWindow):
         selected_row = -1
         for idx, item in enumerate(self._fact_items, start=1):
             rect = item_scene_rect(item)
-            value = str(item.fact_data.get("value") or "")
-            path = " > ".join(item.fact_data.get("path") or [])
-            comment_ref = str(item.fact_data.get("comment_ref") or "")
-            note_num = "" if item.fact_data.get("note_num") is None else str(item.fact_data.get("note_num"))
-            note_name = str(item.fact_data.get("note_name") or "")
+            normalized_fact = normalize_fact_data(item.fact_data)
+            value = str(normalized_fact.get("value") or "")
+            path = " > ".join(normalized_fact.get("path") or [])
+            comment_ref = str(normalized_fact.get("comment_ref") or "")
+            note_num = "" if normalized_fact.get("note_num") is None else str(normalized_fact.get("note_num"))
+            note_name = str(normalized_fact.get("note_name") or "")
             fact_num = self._fact_num_for_item(item) or idx
             summary = f"#{fact_num} [{int(rect.x())},{int(rect.y())},{int(rect.width())},{int(rect.height())}] {value}"
             if path:
@@ -8708,29 +8855,30 @@ class AnnotationWindow(QMainWindow):
             if note_name:
                 trimmed_note_name = (note_name[:32] + "...") if len(note_name) > 35 else note_name
                 summary = f"{summary} | note_name: {trimmed_note_name}"
-            summary = f"{summary} | note_flag: {bool(item.fact_data.get('note_flag'))}"
-            if item.fact_data.get("note_ref"):
-                summary = f"{summary} | note_ref: {item.fact_data.get('note_ref')}"
-            if item.fact_data.get("period_type"):
-                summary = f"{summary} | period_type: {item.fact_data.get('period_type')}"
-            if item.fact_data.get("duration_type"):
-                summary = f"{summary} | duration_type: {item.fact_data.get('duration_type')}"
-            if item.fact_data.get("recurring_period"):
-                summary = f"{summary} | recurring_period: {item.fact_data.get('recurring_period')}"
-            if item.fact_data.get("value_context"):
-                summary = f"{summary} | value_context: {item.fact_data.get('value_context')}"
-            if item.fact_data.get("natural_sign"):
-                summary = f"{summary} | natural_sign: {item.fact_data.get('natural_sign')}"
-            if item.fact_data.get("row_role"):
-                summary = f"{summary} | row_role: {item.fact_data.get('row_role')}"
-            if item.fact_data.get("path_source"):
-                summary = f"{summary} | path_source: {item.fact_data.get('path_source')}"
-            if item.fact_data.get("equation"):
-                equation = str(item.fact_data.get("equation") or "")
+            summary = f"{summary} | note_flag: {bool(normalized_fact.get('note_flag'))}"
+            if normalized_fact.get("note_ref"):
+                summary = f"{summary} | note_ref: {normalized_fact.get('note_ref')}"
+            if normalized_fact.get("period_type"):
+                summary = f"{summary} | period_type: {normalized_fact.get('period_type')}"
+            if normalized_fact.get("duration_type"):
+                summary = f"{summary} | duration_type: {normalized_fact.get('duration_type')}"
+            if normalized_fact.get("recurring_period"):
+                summary = f"{summary} | recurring_period: {normalized_fact.get('recurring_period')}"
+            if normalized_fact.get("value_context"):
+                summary = f"{summary} | value_context: {normalized_fact.get('value_context')}"
+            if normalized_fact.get("natural_sign"):
+                summary = f"{summary} | natural_sign: {normalized_fact.get('natural_sign')}"
+            if normalized_fact.get("row_role"):
+                summary = f"{summary} | row_role: {normalized_fact.get('row_role')}"
+            if normalized_fact.get("path_source"):
+                summary = f"{summary} | path_source: {normalized_fact.get('path_source')}"
+            active_bundle = _active_equation_bundle_from_fact_payload(normalized_fact) or {}
+            if active_bundle.get("equation"):
+                equation = str(active_bundle.get("equation") or "")
                 trimmed_equation = (equation[:40] + "...") if len(equation) > 43 else equation
                 summary = f"{summary} | equation: {trimmed_equation}"
-            if item.fact_data.get("fact_equation"):
-                fact_equation = str(item.fact_data.get("fact_equation") or "")
+            if active_bundle.get("fact_equation"):
+                fact_equation = str(active_bundle.get("fact_equation") or "")
                 trimmed_fact_equation = (fact_equation[:40] + "...") if len(fact_equation) > 43 else fact_equation
                 summary = f"{summary} | fact_equation: {trimmed_fact_equation}"
             self.facts_list.addItem(QListWidgetItem(summary))
@@ -8793,12 +8941,8 @@ class AnnotationWindow(QMainWindow):
         ordered_reference_items = self._sort_items_for_equation(reference_items)
         self._set_equation_reference_preview_items(ordered_reference_items)
         saved_target_fact = normalize_fact_data(target_item.fact_data)
-        saved_children = saved_target_fact.get("equation_children") if isinstance(saved_target_fact.get("equation_children"), list) else []
-        operator_by_fact_num = {
-            int(entry["fact_num"]): str(entry.get("operator") or "+")
-            for entry in saved_children
-            if isinstance(entry, dict) and isinstance(entry.get("fact_num"), int)
-        }
+        active_bundle = _active_equation_bundle_from_fact_payload(saved_target_fact) or {}
+        operator_by_fact_num = _fact_equation_operator_map(active_bundle.get("fact_equation"))
 
         candidate_text, result_text, fact_candidate_text, invalid_values, structured_terms = _build_equation_candidate_from_facts(
             [
@@ -8833,21 +8977,14 @@ class AnnotationWindow(QMainWindow):
         cleared_count = 0
         for item in selected_items:
             current = normalize_fact_data(item.fact_data)
-            equation_bundles = _equation_bundles_from_fact_payload(current)
-            if equation_bundles:
-                updated = _fact_payload_with_active_equation_bundle(current, equation_bundles[1:], active_index=0)
-            elif not current.get("equation") and not current.get("fact_equation") and not current.get("equation_children"):
+            if not _equation_bundles_from_fact_payload(current):
                 continue
-            else:
-                updated = normalize_fact_data(
-                    {
-                        **current,
-                        "equation": None,
-                        "fact_equation": None,
-                        "equation_children": None,
-                        "equations": None,
-                    }
-                )
+            updated = normalize_fact_data(
+                {
+                    **current,
+                    "equations": None,
+                }
+            )
             if updated == current:
                 continue
             item.fact_data = updated
@@ -8859,6 +8996,7 @@ class AnnotationWindow(QMainWindow):
         self._clear_equation_candidate()
         self.refresh_facts_list()
         self._record_history_snapshot()
+        self._focus_equation_panel()
         if cleared_count == 1:
             self.statusBar().showMessage("Cleared equation from 1 selected fact.", 2500)
         else:
@@ -8880,16 +9018,11 @@ class AnnotationWindow(QMainWindow):
             return
 
         current = normalize_fact_data(target_item.fact_data)
-        equation_children = [
-            dict(term["equation_child"])
-            for term in self._equation_candidate_terms
-            if isinstance(term, dict) and isinstance(term.get("equation_child"), dict)
-        ]
+        has_fact_references = bool(str(self._equation_candidate_fact_text or "").strip())
         new_bundle = _normalize_equation_bundle_payload(
             {
                 "equation": self._equation_candidate_text,
                 "fact_equation": self._equation_candidate_fact_text,
-                "equation_children": equation_children or None,
             }
         )
         if new_bundle is None:
@@ -8897,7 +9030,7 @@ class AnnotationWindow(QMainWindow):
             return
         existing_bundles = _equation_bundles_from_fact_payload(current)
         updated = _fact_payload_with_active_equation_bundle(
-            {**current, "row_role": "total" if equation_children else current.get("row_role")},
+            {**current, "row_role": "total" if has_fact_references else current.get("row_role")},
             [new_bundle, *existing_bundles[1:]] if existing_bundles else [new_bundle],
             active_index=0,
         )
@@ -8910,6 +9043,7 @@ class AnnotationWindow(QMainWindow):
         self.refresh_facts_list()
         self._record_history_snapshot()
         self._clear_equation_candidate()
+        self._focus_equation_panel()
         self.statusBar().showMessage("Applied equation to selected fact.", 2500)
 
     def _on_show_order_labels_toggled(self, _checked: bool) -> None:
@@ -9160,7 +9294,10 @@ class AnnotationWindow(QMainWindow):
             return False
         if isinstance(focus_widget, (QLineEdit, QPlainTextEdit, QComboBox, QSpinBox)):
             return True
-        return isinstance(focus_widget, QListWidget) and focus_widget is self.fact_path_list
+        if isinstance(focus_widget, QListWidget):
+            if focus_widget in {self.fact_path_list, self.fact_equation_variants_list, self.fact_equation_terms_list}:
+                return True
+        return False
 
     def _delete_selected_fact_shortcut(self) -> None:
         if self._delete_shortcut_blocked_by_focus():

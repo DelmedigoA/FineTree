@@ -116,8 +116,7 @@ def test_normalize_fact_payload_preserves_equation() -> None:
         }
     )
     assert normalized["fact_num"] == 7
-    assert normalized["equation"] == "80 + 20"
-    assert normalized["fact_equation"] == "f1 + f3"
+    assert normalized["equations"] == [{"equation": "80 + 20", "fact_equation": "f1 + f3"}]
     assert warnings == []
 
 
@@ -135,17 +134,15 @@ def test_normalize_fact_payload_preserves_multiple_equations_and_keeps_active_fi
                 {
                     "equation": "100 + 20",
                     "fact_equation": "f1 + f2",
-                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "+"}],
                 },
             ],
             "path": [],
         }
     )
     assert warnings == []
-    assert normalized["equation"] == "100 + 20"
-    assert normalized["fact_equation"] == "f1 + f2"
     assert isinstance(normalized["equations"], list)
     assert normalized["equations"][0]["equation"] == "100 + 20"
+    assert normalized["equations"][0]["fact_equation"] == "f1 + f2"
     assert normalized["equations"][1]["equation"] == "90 + 30"
 
 
@@ -234,7 +231,7 @@ def test_normalize_fact_payload_maps_legacy_total_aggregation_role_to_row_role_t
     assert warnings == []
 
 
-def test_normalize_fact_payload_accepts_equation_children() -> None:
+def test_normalize_fact_payload_converts_legacy_equation_children_to_fact_equation() -> None:
     normalized, warnings = normalize_fact_payload(
         {
             "value": "120",
@@ -243,7 +240,8 @@ def test_normalize_fact_payload_accepts_equation_children() -> None:
             "path": [],
         }
     )
-    assert normalized["equation_children"] == [{"fact_num": 1, "operator": "+"}, {"fact_num": 2, "operator": "-"}]
+    assert normalized["equations"] is None
+    assert "equation_children" not in normalized
     assert warnings == []
 
 

@@ -1,0 +1,9 @@
+{"ts": "2026-03-11T13:19:45.516512+00:00", "event": "session_started", "operation": "stream_content", "model": "", "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-218/test_stream_content_from_image6/page.png", "enable_thinking": null}
+{"ts": "2026-03-11T13:19:45.516596+00:00", "event": "request", "prompt": "test prompt", "model": "", "few_shot_count": 0}
+{"ts": "2026-03-11T13:19:45.516630+00:00", "event": "backend_selected", "backend": "runpod_queue"}
+{"ts": "2026-03-11T13:19:45.516836+00:00", "event": "backend_request", "backend": "runpod_queue", "run_url": "https://api.runpod.ai/v2/queue123/run", "payload": {"input": {"image_base64": "aW1n", "image_mime_type": "image/png", "response_mode": "text", "prompt": "test prompt", "model": "qwenasaf", "temperature": 0.7, "top_p": 0.8, "chat_template_kwargs": {"enable_thinking": false}}}}
+{"ts": "2026-03-11T13:19:45.516878+00:00", "event": "backend_job_created", "backend": "runpod_queue", "job_payload": {"id": "job-2", "status": "IN_QUEUE"}}
+{"ts": "2026-03-11T13:19:45.516911+00:00", "event": "backend_stream_event", "backend": "runpod_queue", "event_payload": [{"output": {"text": ["hello "]}}]}
+{"ts": "2026-03-11T13:19:45.516940+00:00", "event": "output_chunk", "index": 0, "text": "hello "}
+{"ts": "2026-03-11T13:19:45.516968+00:00", "event": "backend_stream_event", "backend": "runpod_queue", "event_payload": [{"output": {"text": ["world"]}}]}
+{"ts": "2026-03-11T13:19:45.516996+00:00", "event": "output_chunk", "index": 1, "text": "world"}

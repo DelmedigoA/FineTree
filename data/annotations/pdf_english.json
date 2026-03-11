@@ -63,9 +63,7 @@
         {
           "value": "10331020",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -98,9 +96,7 @@
         {
           "value": "4791344",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -133,9 +129,7 @@
         {
           "value": "440965",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -168,9 +162,7 @@
         {
           "value": "171510",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -203,9 +195,7 @@
         {
           "value": "21237",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -238,9 +228,7 @@
         {
           "value": "75895",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -273,9 +261,7 @@
         {
           "value": "675955",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -308,9 +294,7 @@
         {
           "value": "1670571",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -343,9 +327,7 @@
         {
           "value": "310369",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -378,9 +360,7 @@
         {
           "value": "111404",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -413,9 +393,7 @@
         {
           "value": "2916923",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -448,9 +426,7 @@
         {
           "value": "2983248",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -483,9 +459,7 @@
         {
           "value": "1882081",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -518,9 +492,7 @@
         {
           "value": "881453",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -553,9 +525,7 @@
         {
           "value": "1139424",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -588,9 +558,7 @@
         {
           "value": "1265733",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -623,9 +591,12 @@
         {
           "value": "17717974",
           "fact_num": 17,
-          "equation": "10331020 + 440965 + 21237 + 675955 + 310369 + 2916923 + 1882081 + 1139424",
-          "fact_equation": "f1 + f3 + f5 + f7 + f9 + f11 + f13 + f15",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "10331020 + 440965 + 21237 + 675955 + 310369 + 2916923 + 1882081 + 1139424",
+              "fact_equation": "f1 + f3 + f5 + f7 + f9 + f11 + f13 + f15"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -658,9 +629,12 @@
         {
           "value": "11951158",
           "fact_num": 18,
-          "equation": "4791344 + 171510 + 75895 + 1670571 + 111404 + 2983248 + 881453 + 1265733",
-          "fact_equation": "f2 + f4 + f6 + f8 + f10 + f12 + f14 + f16",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "4791344 + 171510 + 75895 + 1670571 + 111404 + 2983248 + 881453 + 1265733",
+              "fact_equation": "f2 + f4 + f6 + f8 + f10 + f12 + f14 + f16"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -693,9 +667,7 @@
         {
           "value": "617768",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -728,9 +700,7 @@
         {
           "value": "110205",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -763,9 +733,7 @@
         {
           "value": "527185",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -798,9 +766,7 @@
         {
           "value": "774076",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -833,9 +799,7 @@
         {
           "value": "4696",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -868,9 +832,7 @@
         {
           "value": "16389",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -903,9 +865,12 @@
         {
           "value": "1149649",
           "fact_num": 25,
-          "equation": "617768 + 527185 + 4696",
-          "fact_equation": "f19 + f21 + f23",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "617768 + 527185 + 4696",
+              "fact_equation": "f19 + f21 + f23"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -938,9 +903,12 @@
         {
           "value": "900670",
           "fact_num": 26,
-          "equation": "110205 + 774076 + 16389",
-          "fact_equation": "f20 + f22 + f24",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "110205 + 774076 + 16389",
+              "fact_equation": "f20 + f22 + f24"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -973,9 +941,7 @@
         {
           "value": "12826081",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1008,9 +974,7 @@
         {
           "value": "7343105",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1043,9 +1007,7 @@
         {
           "value": "3742244",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1078,9 +1040,7 @@
         {
           "value": "3707383",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1113,9 +1073,12 @@
         {
           "value": "16568325",
           "fact_num": 31,
-          "equation": "12826081 + 3742244",
-          "fact_equation": "f27 + f29",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "12826081 + 3742244",
+              "fact_equation": "f27 + f29"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1148,9 +1111,12 @@
         {
           "value": "11050488",
           "fact_num": 32,
-          "equation": "7343105 + 3707383",
-          "fact_equation": "f28 + f30",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "7343105 + 3707383",
+              "fact_equation": "f28 + f30"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1183,9 +1149,12 @@
         {
           "value": "17717974",
           "fact_num": 33,
-          "equation": "1149649 + 16568325",
-          "fact_equation": "f25 + f31",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "1149649 + 16568325",
+              "fact_equation": "f25 + f31"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1217,9 +1186,12 @@
         {
           "value": "11951158",
           "fact_num": 34,
-          "equation": "900670 + 11050488",
-          "fact_equation": "f26 + f32",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "900670 + 11050488",
+              "fact_equation": "f26 + f32"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1265,11 +1237,14 @@
         {
           "value": "3763601",
           "fact_num": 1,
-          "equation": "- 645955 + 4409556",
-          "fact_equation": "- f2 + f3",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "4409556 - 645955",
+              "fact_equation": "f3 - f2"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1293,7 +1268,7 @@
           "value_context": "tabular",
           "bbox": [
             982.44,
-            433.58,
+            434.58,
             141.26,
             30.43
           ]
@@ -1301,9 +1276,7 @@
         {
           "value": "645955",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1337,9 +1310,7 @@
         {
           "value": "4409556",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1373,11 +1344,14 @@
         {
           "value": "135297",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "135297 + 0",
+              "fact_equation": "f6 + f5"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1409,9 +1383,7 @@
         {
           "value": "-",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1445,9 +1417,7 @@
         {
           "value": "135297",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1481,11 +1451,14 @@
         {
           "value": "189593",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "189593 + 0",
+              "fact_equation": "f9 + f8"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1517,9 +1490,7 @@
         {
           "value": "-",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1553,9 +1524,7 @@
         {
           "value": "189593",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1589,11 +1558,14 @@
         {
           "value": "(142085)",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "- 142085 + 0",
+              "fact_equation": "- f12 + f11"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1625,9 +1597,7 @@
         {
           "value": "-",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1661,9 +1631,7 @@
         {
           "value": "(142085)",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -1697,11 +1665,18 @@
         {
           "value": "47508",
           "fact_num": 13,
-          "equation": "189593 - 142085",
-          "fact_equation": "f7 - f10",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "47508 + 0",
+              "fact_equation": "f15 - f14"
+            },
+            {
+              "equation": "47508 - 0",
+              "fact_equation": "f15 - f14"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1724,7 +1699,7 @@
           "value_context": "tabular",
           "bbox": [
             1004.7,
-            635.8,
+            632.16,
             115.6,
             39.6
           ]
@@ -1732,9 +1707,12 @@
         {
           "value": "-",
           "fact_num": 14,
-          "equation": "0 + 0",
-          "fact_equation": "f8 + f11",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f8 + f11"
+            }
+          ],
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1767,9 +1745,12 @@
         {
           "value": "47508",
           "fact_num": 15,
-          "equation": "189593 - 142085",
-          "fact_equation": "f9 - f12",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "189593 - 142085",
+              "fact_equation": "f9 - f12"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1802,11 +1783,14 @@
         {
           "value": "18063204",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "18063204 + 0",
+              "fact_equation": "f18 + f17"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1838,9 +1822,7 @@
         {
           "value": "-",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1874,9 +1856,7 @@
         {
           "value": "18063204",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -1910,11 +1890,14 @@
         {
           "value": "(228894)",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "- 228894 + 0",
+              "fact_equation": "- f21 + f20"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1946,9 +1929,7 @@
         {
           "value": "-",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1982,9 +1963,7 @@
         {
           "value": "(228894)",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -2018,11 +1997,18 @@
         {
           "value": "17834310",
           "fact_num": 22,
-          "equation": "18063204 - 228894",
-          "fact_equation": "f16 - f19",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "17834310 + 0",
+              "fact_equation": "f24 - f23"
+            },
+            {
+              "equation": "17834310 - 0",
+              "fact_equation": "f24 - f23"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2053,9 +2039,12 @@
         {
           "value": "-",
           "fact_num": 23,
-          "equation": "0 + 0",
-          "fact_equation": "f17 + f20",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f17 + f20"
+            }
+          ],
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2088,9 +2077,12 @@
         {
           "value": "17834310",
           "fact_num": 24,
-          "equation": "18063204 - 228894",
-          "fact_equation": "f18 - f21",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "18063204 - 228894",
+              "fact_equation": "f18 - f21"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2123,11 +2115,14 @@
         {
           "value": "348995",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "348995 + 0",
+              "fact_equation": "f27 + f26"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2159,9 +2154,7 @@
         {
           "value": "-",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2195,9 +2188,7 @@
         {
           "value": "348995",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2231,11 +2222,14 @@
         {
           "value": "(16118)",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "- 16118 + 0",
+              "fact_equation": "- f30 + f29"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2259,7 +2253,7 @@
           "value_context": "tabular",
           "bbox": [
             1004.7,
-            917.4,
+            915.17,
             115.6,
             35.2
           ]
@@ -2267,9 +2261,7 @@
         {
           "value": "-",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2303,9 +2295,7 @@
         {
           "value": "(16118)",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -2339,11 +2329,14 @@
         {
           "value": "-",
           "fact_num": 31,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "3172008 - 3172008",
+              "fact_equation": "f33 - f32"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2375,9 +2368,7 @@
         {
           "value": "3172008",
           "fact_num": 32,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2411,9 +2402,7 @@
         {
           "value": "3172008",
           "fact_num": 33,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2447,11 +2436,14 @@
         {
           "value": "(126309)",
           "fact_num": 34,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "- 126309 + 0",
+              "fact_equation": "- f36 + f35"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2483,9 +2475,7 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2519,9 +2509,7 @@
         {
           "value": "(126309)",
           "fact_num": 36,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -2555,11 +2543,14 @@
         {
           "value": "3783102",
           "fact_num": 37,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "0 + 3783102",
+              "fact_equation": "f39 + f38"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2591,9 +2582,7 @@
         {
           "value": "(3783102)",
           "fact_num": 38,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -2627,9 +2616,7 @@
         {
           "value": "-",
           "fact_num": 39,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2663,11 +2650,14 @@
         {
           "value": "25770386",
           "fact_num": 40,
-          "equation": "3763601 + 135297 + 189593 - 142085 + 18063204 - 228894 + 348995 - 16118 + 0 - 126309 + 3783102",
-          "fact_equation": "f1 + f4 + f7 - f10 + f16 - f19 + f25 - f28 + f31 - f34 + f37",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "25805247 - 34861",
+              "fact_equation": "f42 - f41"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2689,8 +2679,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            952.0,
-            1124.2,
+            950.01,
+            1122.21,
             168.3,
             39.6
           ]
@@ -2698,9 +2688,12 @@
         {
           "value": "34861",
           "fact_num": 41,
-          "equation": "645955 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 3172008 + 0 - 3783102",
-          "fact_equation": "f2 + f5 + f8 + f11 + f14 + f17 + f20 + f23 + f26 + f29 + f32 + f35 - f38",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "645955 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 3172008 + 0 - 3783102",
+              "fact_equation": "f2 + f5 + f8 + f11 + f14 + f17 + f20 + f23 + f26 + f29 + f32 + f35 - f38"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2733,9 +2726,12 @@
         {
           "value": "25805247",
           "fact_num": 42,
-          "equation": "4409556 + 135297 + 189593 - 142085 + 18063204 - 228894 + 348995 - 16118 + 3172008 - 126309 + 0",
-          "fact_equation": "f3 + f6 + f9 - f12 + f18 - f21 + f27 - f30 + f33 - f36 + f39",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "4409556 + 135297 + 189593 - 142085 + 18063204 - 228894 + 348995 - 16118 + 3172008 - 126309 + 0",
+              "fact_equation": "f3 + f6 + f9 - f12 + f18 - f21 + f27 - f30 + f33 - f36 + f39"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2768,9 +2764,7 @@
         {
           "value": "17900636",
           "fact_num": 43,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2804,9 +2798,7 @@
         {
           "value": "-",
           "fact_num": 44,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2840,9 +2832,7 @@
         {
           "value": "17900636",
           "fact_num": 45,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2876,9 +2866,7 @@
         {
           "value": "836760",
           "fact_num": 46,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2913,9 +2901,7 @@
         {
           "value": "-",
           "fact_num": 47,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2950,9 +2936,7 @@
         {
           "value": "836760",
           "fact_num": 48,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2987,9 +2971,7 @@
         {
           "value": "1550014",
           "fact_num": 49,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3024,9 +3006,7 @@
         {
           "value": "-",
           "fact_num": 50,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3061,9 +3041,7 @@
         {
           "value": "1550014",
           "fact_num": 51,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3098,9 +3076,12 @@
         {
           "value": "20287410",
           "fact_num": 52,
-          "equation": "17900636 + 836760 + 1550014",
-          "fact_equation": "f43 + f46 + f49",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "17900636 + 836760 + 1550014",
+              "fact_equation": "f43 + f46 + f49"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3133,9 +3114,12 @@
         {
           "value": "-",
           "fact_num": 53,
-          "equation": "0 + 0 + 0",
-          "fact_equation": "f44 + f47 + f50",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "0 + 0 + 0",
+              "fact_equation": "f44 + f47 + f50"
+            }
+          ],
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3168,9 +3152,12 @@
         {
           "value": "20287410",
           "fact_num": 54,
-          "equation": "17900636 + 836760 + 1550014",
-          "fact_equation": "f45 + f48 + f51",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "17900636 + 836760 + 1550014",
+              "fact_equation": "f45 + f48 + f51"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3203,9 +3190,7 @@
         {
           "value": "5482976",
           "fact_num": 55,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3238,9 +3223,7 @@
         {
           "value": "34861",
           "fact_num": 56,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3273,9 +3256,7 @@
         {
           "value": "5517837",
           "fact_num": 57,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3308,9 +3289,7 @@
         {
           "value": "7343105",
           "fact_num": 58,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3343,9 +3322,7 @@
         {
           "value": "3707383",
           "fact_num": 59,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3378,9 +3355,7 @@
         {
           "value": "11050488",
           "fact_num": 60,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3413,9 +3388,12 @@
         {
           "value": "12826081",
           "fact_num": 61,
-          "equation": "5482976 + 7343105",
-          "fact_equation": "f55 + f58",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "5482976 + 7343105",
+              "fact_equation": "f55 + f58"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3448,9 +3426,12 @@
         {
           "value": "3742244",
           "fact_num": 62,
-          "equation": "34861 + 3707383",
-          "fact_equation": "f56 + f59",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "34861 + 3707383",
+              "fact_equation": "f56 + f59"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3483,9 +3464,12 @@
         {
           "value": "16568325",
           "fact_num": 63,
-          "equation": "5517837 + 11050488",
-          "fact_equation": "f57 + f60",
-          "equation_children": null,
+          "equations": [
+            {
+              "equation": "5517837 + 11050488",
+              "fact_equation": "f57 + f60"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3532,9 +3516,7 @@
         {
           "value": "2905699",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3568,9 +3550,7 @@
         {
           "value": "542365",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3604,9 +3584,7 @@
         {
           "value": "3448064",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3640,9 +3618,7 @@
         {
           "value": "225049",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3676,9 +3652,7 @@
         {
           "value": "-",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3712,9 +3686,7 @@
         {
           "value": "225049",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3748,9 +3720,7 @@
         {
           "value": "119861",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3784,9 +3754,7 @@
         {
           "value": "-",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3820,9 +3788,7 @@
         {
           "value": "119861",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3856,9 +3822,7 @@
         {
           "value": "(97102)",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -3892,9 +3856,7 @@
         {
           "value": "-",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3928,9 +3890,7 @@
         {
           "value": "(97102)",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -3964,9 +3924,7 @@
         {
           "value": "22759",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4000,9 +3958,7 @@
         {
           "value": "-",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4036,9 +3992,7 @@
         {
           "value": "22759",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4072,9 +4026,7 @@
         {
           "value": "12483302",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4108,9 +4060,7 @@
         {
           "value": "1050000",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4144,9 +4094,7 @@
         {
           "value": "13533302",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4180,9 +4128,7 @@
         {
           "value": "(112750)",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -4216,9 +4162,7 @@
         {
           "value": "-",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4252,9 +4196,7 @@
         {
           "value": "(112750)",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -4288,9 +4230,7 @@
         {
           "value": "12370552",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4324,9 +4264,7 @@
         {
           "value": "1050000",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4360,9 +4298,7 @@
         {
           "value": "13420552",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4396,9 +4332,7 @@
         {
           "value": "(882743)",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -4432,9 +4366,7 @@
         {
           "value": "-",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4468,9 +4400,7 @@
         {
           "value": "(882743)",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -4504,9 +4434,7 @@
         {
           "value": "567",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4540,9 +4468,7 @@
         {
           "value": "-",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4576,9 +4502,7 @@
         {
           "value": "567",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4612,9 +4536,7 @@
         {
           "value": "-",
           "fact_num": 31,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4648,9 +4570,7 @@
         {
           "value": "2363864",
           "fact_num": 32,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4684,9 +4604,7 @@
         {
           "value": "2363864",
           "fact_num": 33,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4720,9 +4638,7 @@
         {
           "value": "983834",
           "fact_num": 34,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4756,9 +4672,7 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4792,9 +4706,7 @@
         {
           "value": "983834",
           "fact_num": 36,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4828,9 +4740,7 @@
         {
           "value": "2330046",
           "fact_num": 37,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4864,9 +4774,7 @@
         {
           "value": "(2330046)",
           "fact_num": 38,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -4900,9 +4808,7 @@
         {
           "value": "-",
           "fact_num": 39,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -4936,9 +4842,7 @@
         {
           "value": "17955763",
           "fact_num": 40,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -4972,9 +4876,7 @@
         {
           "value": "1626183",
           "fact_num": 41,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5008,9 +4910,7 @@
         {
           "value": "19581946",
           "fact_num": 42,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5044,9 +4944,7 @@
         {
           "value": "11536830",
           "fact_num": 43,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5080,9 +4978,7 @@
         {
           "value": "-",
           "fact_num": 44,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5116,9 +5012,7 @@
         {
           "value": "11536830",
           "fact_num": 45,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5152,9 +5046,7 @@
         {
           "value": "713373",
           "fact_num": 46,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5189,9 +5081,7 @@
         {
           "value": "-",
           "fact_num": 47,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5226,9 +5116,7 @@
         {
           "value": "713373",
           "fact_num": 48,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5263,9 +5151,7 @@
         {
           "value": "1643331",
           "fact_num": 49,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5300,9 +5186,7 @@
         {
           "value": "-",
           "fact_num": 50,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5337,9 +5221,7 @@
         {
           "value": "1643331",
           "fact_num": 51,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5374,9 +5256,7 @@
         {
           "value": "13893534",
           "fact_num": 52,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5410,9 +5290,7 @@
         {
           "value": "-",
           "fact_num": 53,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5446,9 +5324,7 @@
         {
           "value": "13893534",
           "fact_num": 54,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5482,9 +5358,7 @@
         {
           "value": "4062229",
           "fact_num": 55,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5517,9 +5391,7 @@
         {
           "value": "1626183",
           "fact_num": 56,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5552,9 +5424,7 @@
         {
           "value": "5688412",
           "fact_num": 57,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5587,9 +5457,7 @@
         {
           "value": "3280876",
           "fact_num": 58,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5622,9 +5490,7 @@
         {
           "value": "2081200",
           "fact_num": 59,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5657,9 +5523,7 @@
         {
           "value": "5362076",
           "fact_num": 60,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5692,9 +5556,7 @@
         {
           "value": "7343105",
           "fact_num": 61,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5727,9 +5589,7 @@
         {
           "value": "3707383",
           "fact_num": 62,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5762,9 +5622,7 @@
         {
           "value": "11050488",
           "fact_num": 63,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5811,9 +5669,7 @@
         {
           "value": "14260047",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5846,9 +5702,7 @@
         {
           "value": "-",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5881,9 +5735,7 @@
         {
           "value": "-",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -5916,9 +5768,7 @@
         {
           "value": "14260047",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5951,9 +5801,7 @@
         {
           "value": "2032780",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -5986,9 +5834,7 @@
         {
           "value": "406556",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6021,9 +5867,7 @@
         {
           "value": "271037",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6056,9 +5900,7 @@
         {
           "value": "2710373",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6091,9 +5933,7 @@
         {
           "value": "437306",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6126,9 +5966,7 @@
         {
           "value": "87461",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6161,9 +5999,7 @@
         {
           "value": "58307",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6196,9 +6032,7 @@
         {
           "value": "583074",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6231,9 +6065,7 @@
         {
           "value": "115676",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6266,9 +6098,7 @@
         {
           "value": "23135",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6301,9 +6131,7 @@
         {
           "value": "15423",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6336,9 +6164,7 @@
         {
           "value": "154234",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6371,9 +6197,7 @@
         {
           "value": "94484",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6406,9 +6230,7 @@
         {
           "value": "92777",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6441,9 +6263,7 @@
         {
           "value": "20807",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6476,9 +6296,7 @@
         {
           "value": "208068",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6511,9 +6329,7 @@
         {
           "value": "13106",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6546,9 +6362,7 @@
         {
           "value": "4033",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6581,9 +6395,7 @@
         {
           "value": "3024",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6616,9 +6428,7 @@
         {
           "value": "20163",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6651,9 +6461,7 @@
         {
           "value": "-",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -6686,9 +6494,7 @@
         {
           "value": "52673",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6721,9 +6527,7 @@
         {
           "value": "52673",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6756,9 +6560,7 @@
         {
           "value": "105346",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6791,9 +6593,7 @@
         {
           "value": "44374",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6826,9 +6626,7 @@
         {
           "value": "3218",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6861,9 +6659,7 @@
         {
           "value": "21002",
           "fact_num": 31,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6896,9 +6692,7 @@
         {
           "value": "68594",
           "fact_num": 32,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6931,9 +6725,7 @@
         {
           "value": "66500",
           "fact_num": 33,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -6966,9 +6758,7 @@
         {
           "value": "29013",
           "fact_num": 34,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7001,9 +6791,7 @@
         {
           "value": "17692",
           "fact_num": 35,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7036,9 +6824,7 @@
         {
           "value": "113205",
           "fact_num": 36,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7071,9 +6857,7 @@
         {
           "value": "84170",
           "fact_num": 37,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7106,9 +6890,7 @@
         {
           "value": "16834",
           "fact_num": 38,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7141,9 +6923,7 @@
         {
           "value": "11223",
           "fact_num": 39,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7176,9 +6956,7 @@
         {
           "value": "112227",
           "fact_num": 40,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7211,9 +6989,7 @@
         {
           "value": "5580",
           "fact_num": 41,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7246,9 +7022,7 @@
         {
           "value": "930",
           "fact_num": 42,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7281,9 +7055,7 @@
         {
           "value": "2790",
           "fact_num": 43,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7316,9 +7088,7 @@
         {
           "value": "9300",
           "fact_num": 44,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7351,9 +7121,7 @@
         {
           "value": "29380",
           "fact_num": 45,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7386,9 +7154,7 @@
         {
           "value": "7395",
           "fact_num": 46,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7421,9 +7187,7 @@
         {
           "value": "4930",
           "fact_num": 47,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7456,9 +7220,7 @@
         {
           "value": "41705",
           "fact_num": 48,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7491,9 +7253,7 @@
         {
           "value": "104666",
           "fact_num": 49,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7526,9 +7286,7 @@
         {
           "value": "-",
           "fact_num": 50,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -7561,9 +7319,7 @@
         {
           "value": "156999",
           "fact_num": 51,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7596,9 +7352,7 @@
         {
           "value": "261665",
           "fact_num": 52,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7631,9 +7385,7 @@
         {
           "value": "71417",
           "fact_num": 53,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7666,9 +7418,7 @@
         {
           "value": "42850",
           "fact_num": 54,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7701,9 +7451,7 @@
         {
           "value": "28567",
           "fact_num": 55,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7736,9 +7484,7 @@
         {
           "value": "142834",
           "fact_num": 56,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7771,9 +7517,7 @@
         {
           "value": "56760",
           "fact_num": 57,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7806,9 +7550,7 @@
         {
           "value": "11351",
           "fact_num": 58,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7841,9 +7583,7 @@
         {
           "value": "7567",
           "fact_num": 59,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7876,9 +7616,7 @@
         {
           "value": "75678",
           "fact_num": 60,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -7911,9 +7649,7 @@
         {
           "value": "-",
           "fact_num": 61,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -7946,9 +7682,7 @@
         {
           "value": "-",
           "fact_num": 62,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -7981,9 +7715,7 @@
         {
           "value": "783904",
           "fact_num": 63,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8016,9 +7748,7 @@
         {
           "value": "783904",
           "fact_num": 64,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8051,9 +7781,7 @@
         {
           "value": "254306",
           "fact_num": 65,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8086,9 +7814,7 @@
         {
           "value": "-",
           "fact_num": 66,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -8121,9 +7847,7 @@
         {
           "value": "169538",
           "fact_num": 67,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8156,9 +7880,7 @@
         {
           "value": "423844",
           "fact_num": 68,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8191,9 +7913,7 @@
         {
           "value": "-",
           "fact_num": 69,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -8226,9 +7946,7 @@
         {
           "value": "38202",
           "fact_num": 70,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8261,9 +7979,7 @@
         {
           "value": "-",
           "fact_num": 71,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -8296,9 +8012,7 @@
         {
           "value": "38202",
           "fact_num": 72,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8331,9 +8045,7 @@
         {
           "value": "64649",
           "fact_num": 73,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8366,9 +8078,7 @@
         {
           "value": "19892",
           "fact_num": 74,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8401,9 +8111,7 @@
         {
           "value": "14919",
           "fact_num": 75,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8436,9 +8144,7 @@
         {
           "value": "99460",
           "fact_num": 76,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8471,9 +8177,7 @@
         {
           "value": "165435",
           "fact_num": 77,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8506,9 +8210,7 @@
         {
           "value": "440",
           "fact_num": 78,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8541,9 +8243,7 @@
         {
           "value": "138506",
           "fact_num": 79,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8576,9 +8276,7 @@
         {
           "value": "304381",
           "fact_num": 80,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8611,9 +8309,7 @@
         {
           "value": "17900636",
           "fact_num": 81,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8646,9 +8342,7 @@
         {
           "value": "836760",
           "fact_num": 82,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8681,9 +8375,7 @@
         {
           "value": "1778908",
           "fact_num": 83,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8716,9 +8408,7 @@
         {
           "value": "20516304",
           "fact_num": 84,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8751,9 +8441,7 @@
         {
           "value": "-",
           "fact_num": 85,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -8787,9 +8475,7 @@
         {
           "value": "-",
           "fact_num": 86,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -8823,9 +8509,7 @@
         {
           "value": "(228894)",
           "fact_num": 87,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -8859,9 +8543,7 @@
         {
           "value": "(228894)",
           "fact_num": 88,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -8895,9 +8577,7 @@
         {
           "value": "17900636",
           "fact_num": 89,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8930,9 +8610,7 @@
         {
           "value": "836760",
           "fact_num": 90,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -8965,9 +8643,7 @@
         {
           "value": "1550014",
           "fact_num": 91,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9000,9 +8676,7 @@
         {
           "value": "20287410",
           "fact_num": 92,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9049,9 +8723,7 @@
         {
           "value": "8341932",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9084,9 +8756,7 @@
         {
           "value": "-",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -9119,9 +8789,7 @@
         {
           "value": "-",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -9154,9 +8822,7 @@
         {
           "value": "8341932",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9189,9 +8855,7 @@
         {
           "value": "1785979",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9224,9 +8888,7 @@
         {
           "value": "311955",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9259,9 +8921,7 @@
         {
           "value": "197199",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9294,9 +8954,7 @@
         {
           "value": "2295133",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9329,9 +8987,7 @@
         {
           "value": "336965",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9364,9 +9020,7 @@
         {
           "value": "61254",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9399,9 +9053,7 @@
         {
           "value": "39374",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9434,9 +9086,7 @@
         {
           "value": "437593",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9469,9 +9119,7 @@
         {
           "value": "119565",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9504,9 +9152,7 @@
         {
           "value": "23913",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9539,9 +9185,7 @@
         {
           "value": "15942",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9574,9 +9218,7 @@
         {
           "value": "159420",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9609,9 +9251,7 @@
         {
           "value": "48681",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9644,9 +9284,7 @@
         {
           "value": "49694",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9679,9 +9317,7 @@
         {
           "value": "10931",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9714,9 +9350,7 @@
         {
           "value": "109306",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9749,9 +9383,7 @@
         {
           "value": "1585",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9784,9 +9416,7 @@
         {
           "value": "488",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9819,9 +9449,7 @@
         {
           "value": "366",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9854,9 +9482,7 @@
         {
           "value": "2439",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9889,9 +9515,7 @@
         {
           "value": "-",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -9924,9 +9548,7 @@
         {
           "value": "27896",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9959,9 +9581,7 @@
         {
           "value": "27896",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -9994,9 +9614,7 @@
         {
           "value": "55792",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10029,9 +9647,7 @@
         {
           "value": "72023",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10064,9 +9680,7 @@
         {
           "value": "2724",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10099,9 +9713,7 @@
         {
           "value": "40750",
           "fact_num": 31,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10134,9 +9746,7 @@
         {
           "value": "115497",
           "fact_num": 32,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10169,9 +9779,7 @@
         {
           "value": "36993",
           "fact_num": 33,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10204,9 +9812,7 @@
         {
           "value": "13357",
           "fact_num": 34,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10239,9 +9845,7 @@
         {
           "value": "7566",
           "fact_num": 35,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10274,9 +9878,7 @@
         {
           "value": "57916",
           "fact_num": 36,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10309,9 +9911,7 @@
         {
           "value": "65813",
           "fact_num": 37,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10344,9 +9944,7 @@
         {
           "value": "13163",
           "fact_num": 38,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10379,9 +9977,7 @@
         {
           "value": "8775",
           "fact_num": 39,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10414,9 +10010,7 @@
         {
           "value": "87751",
           "fact_num": 40,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10449,9 +10043,7 @@
         {
           "value": "6045",
           "fact_num": 41,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10484,9 +10076,7 @@
         {
           "value": "1008",
           "fact_num": 42,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10519,9 +10109,7 @@
         {
           "value": "3023",
           "fact_num": 43,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10554,9 +10142,7 @@
         {
           "value": "10076",
           "fact_num": 44,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10589,9 +10175,7 @@
         {
           "value": "59067",
           "fact_num": 45,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10624,9 +10208,7 @@
         {
           "value": "13134",
           "fact_num": 46,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10659,9 +10241,7 @@
         {
           "value": "8756",
           "fact_num": 47,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10694,9 +10274,7 @@
         {
           "value": "80957",
           "fact_num": 48,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10729,9 +10307,7 @@
         {
           "value": "66601",
           "fact_num": 49,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10764,9 +10340,7 @@
         {
           "value": "-",
           "fact_num": 50,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -10799,9 +10373,7 @@
         {
           "value": "99901",
           "fact_num": 51,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10834,9 +10406,7 @@
         {
           "value": "166502",
           "fact_num": 52,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10869,9 +10439,7 @@
         {
           "value": "86845",
           "fact_num": 53,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10904,9 +10472,7 @@
         {
           "value": "52107",
           "fact_num": 54,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10939,9 +10505,7 @@
         {
           "value": "34738",
           "fact_num": 55,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -10974,9 +10538,7 @@
         {
           "value": "173690",
           "fact_num": 56,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11009,9 +10571,7 @@
         {
           "value": "39524",
           "fact_num": 57,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11044,9 +10604,7 @@
         {
           "value": "7905",
           "fact_num": 58,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11079,9 +10637,7 @@
         {
           "value": "5270",
           "fact_num": 59,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11114,9 +10670,7 @@
         {
           "value": "52699",
           "fact_num": 60,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11149,9 +10703,7 @@
         {
           "value": "-",
           "fact_num": 61,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -11184,9 +10736,7 @@
         {
           "value": "-",
           "fact_num": 62,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -11219,9 +10769,7 @@
         {
           "value": "1073218",
           "fact_num": 63,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11254,9 +10802,7 @@
         {
           "value": "1073218",
           "fact_num": 64,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11289,9 +10835,7 @@
         {
           "value": "132209",
           "fact_num": 65,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11324,9 +10868,7 @@
         {
           "value": "-",
           "fact_num": 66,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -11359,9 +10901,7 @@
         {
           "value": "88139",
           "fact_num": 67,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11394,9 +10934,7 @@
         {
           "value": "220348",
           "fact_num": 68,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11429,9 +10967,7 @@
         {
           "value": "-",
           "fact_num": 69,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -11464,9 +11000,7 @@
         {
           "value": "6451",
           "fact_num": 70,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11499,9 +11033,7 @@
         {
           "value": "-",
           "fact_num": 71,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -11534,9 +11066,7 @@
         {
           "value": "6451",
           "fact_num": 72,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11569,9 +11099,7 @@
         {
           "value": "61930",
           "fact_num": 73,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11604,9 +11132,7 @@
         {
           "value": "37158",
           "fact_num": 74,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11639,9 +11165,7 @@
         {
           "value": "24772",
           "fact_num": 75,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11674,9 +11198,7 @@
         {
           "value": "123860",
           "fact_num": 76,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11709,9 +11231,7 @@
         {
           "value": "275073",
           "fact_num": 77,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11744,9 +11264,7 @@
         {
           "value": "91166",
           "fact_num": 78,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11779,9 +11297,7 @@
         {
           "value": "69465",
           "fact_num": 79,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11814,9 +11330,7 @@
         {
           "value": "435704",
           "fact_num": 80,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11849,9 +11363,7 @@
         {
           "value": "11536830",
           "fact_num": 81,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11883,9 +11395,7 @@
         {
           "value": "713373",
           "fact_num": 82,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11917,9 +11427,7 @@
         {
           "value": "1756081",
           "fact_num": 83,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11951,9 +11459,7 @@
         {
           "value": "14006284",
           "fact_num": 84,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -11985,9 +11491,7 @@
         {
           "value": "-",
           "fact_num": 85,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -12021,9 +11525,7 @@
         {
           "value": "-",
           "fact_num": 86,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -12057,9 +11559,7 @@
         {
           "value": "(112750)",
           "fact_num": 87,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12093,9 +11593,7 @@
         {
           "value": "(112750)",
           "fact_num": 88,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12129,9 +11627,7 @@
         {
           "value": "11536830",
           "fact_num": 89,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12164,9 +11660,7 @@
         {
           "value": "713373",
           "fact_num": 90,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12199,9 +11693,7 @@
         {
           "value": "1643331",
           "fact_num": 91,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12234,9 +11726,7 @@
         {
           "value": "13893534",
           "fact_num": 92,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12283,9 +11773,7 @@
         {
           "value": "5517837",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12318,9 +11806,7 @@
         {
           "value": "5688412",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12353,9 +11839,7 @@
         {
           "value": "142834",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12389,9 +11873,7 @@
         {
           "value": "173690",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12425,9 +11907,7 @@
         {
           "value": "(66978)",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12461,9 +11941,7 @@
         {
           "value": "(11789)",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12497,9 +11975,7 @@
         {
           "value": "(3172008)",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12533,9 +12009,7 @@
         {
           "value": "(2363864)",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12569,9 +12043,7 @@
         {
           "value": "142616",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12605,9 +12077,7 @@
         {
           "value": "(68334)",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12641,9 +12111,7 @@
         {
           "value": "-",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -12677,9 +12145,7 @@
         {
           "value": "(42972)",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12713,9 +12179,7 @@
         {
           "value": "54658",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12749,9 +12213,7 @@
         {
           "value": "(50085)",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12785,9 +12247,7 @@
         {
           "value": "994616",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12821,9 +12281,7 @@
         {
           "value": "(1535998)",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12857,9 +12315,7 @@
         {
           "value": "(198965)",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12893,9 +12349,7 @@
         {
           "value": "(15720)",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -12929,9 +12383,7 @@
         {
           "value": "260672",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -12965,9 +12417,7 @@
         {
           "value": "(4651048)",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13001,9 +12451,7 @@
         {
           "value": "(11693)",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13037,9 +12485,7 @@
         {
           "value": "(4161)",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13073,9 +12519,7 @@
         {
           "value": "3663589",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13108,9 +12552,7 @@
         {
           "value": "(2881869)",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13143,9 +12585,7 @@
         {
           "value": "(202477)",
           "fact_num": 25,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13178,9 +12618,7 @@
         {
           "value": "(9446)",
           "fact_num": 26,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13213,9 +12651,7 @@
         {
           "value": "(16307)",
           "fact_num": 27,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13248,9 +12684,7 @@
         {
           "value": "(915500)",
           "fact_num": 28,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13283,9 +12717,7 @@
         {
           "value": "2171380",
           "fact_num": 29,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13318,9 +12750,7 @@
         {
           "value": "2222043",
           "fact_num": 30,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13353,9 +12783,7 @@
         {
           "value": "(76509)",
           "fact_num": 31,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13388,9 +12816,7 @@
         {
           "value": "(116318)",
           "fact_num": 32,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13423,9 +12849,7 @@
         {
           "value": "1876087",
           "fact_num": 33,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13458,9 +12882,7 @@
         {
           "value": "1180779",
           "fact_num": 34,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13493,9 +12915,7 @@
         {
           "value": "5539676",
           "fact_num": 35,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13527,9 +12947,7 @@
         {
           "value": "(1701090)",
           "fact_num": 36,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -13561,9 +12979,7 @@
         {
           "value": "4791344",
           "fact_num": 37,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13595,9 +13011,7 @@
         {
           "value": "6492434",
           "fact_num": 38,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13629,9 +13043,7 @@
         {
           "value": "10331020",
           "fact_num": 39,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13663,9 +13075,7 @@
         {
           "value": "4791344",
           "fact_num": 40,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -13737,9 +13147,7 @@
         {
           "value": "424000",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "approximated",
@@ -13771,9 +13179,7 @@
         {
           "value": "220000",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "approximated",
@@ -13805,9 +13211,7 @@
         {
           "value": "0",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "approximated",
@@ -13840,9 +13244,7 @@
         {
           "value": "167000",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "approximated",
@@ -13915,9 +13317,7 @@
         {
           "value": "440965",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -13952,9 +13352,7 @@
         {
           "value": "440965",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -13989,9 +13387,7 @@
         {
           "value": "-",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14026,9 +13422,7 @@
         {
           "value": "-",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14063,9 +13457,7 @@
         {
           "value": "1139424",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14099,9 +13491,7 @@
         {
           "value": "-",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14135,9 +13525,7 @@
         {
           "value": "-",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14171,9 +13559,7 @@
         {
           "value": "1139424",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14207,9 +13593,7 @@
         {
           "value": "171510",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14244,9 +13628,7 @@
         {
           "value": "171510",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14281,9 +13663,7 @@
         {
           "value": "-",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14318,9 +13698,7 @@
         {
           "value": "-",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14355,9 +13733,7 @@
         {
           "value": "1265733",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14391,9 +13767,7 @@
         {
           "value": "-",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14427,9 +13801,7 @@
         {
           "value": "-",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14463,9 +13835,7 @@
         {
           "value": "1265733",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "Fair Value Measurements",
@@ -14513,9 +13883,7 @@
         {
           "value": "281899",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14548,9 +13916,7 @@
         {
           "value": "915500",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14583,9 +13949,7 @@
         {
           "value": "58888",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14618,9 +13982,7 @@
         {
           "value": "20397",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14653,9 +14015,7 @@
         {
           "value": "(10951)",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -14688,9 +14048,7 @@
         {
           "value": "1265733",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14723,9 +14081,7 @@
         {
           "value": "(280345)",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -14758,9 +14114,7 @@
         {
           "value": "143643",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14793,9 +14147,7 @@
         {
           "value": "16307",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14828,9 +14180,7 @@
         {
           "value": "(5914)",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -14863,9 +14213,7 @@
         {
           "value": "1139424",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14898,9 +14246,7 @@
         {
           "value": "16307",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14933,9 +14279,7 @@
         {
           "value": "20397",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -14968,9 +14312,7 @@
         {
           "value": "338602",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15003,9 +14345,7 @@
         {
           "value": "(892189)",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15038,9 +14378,7 @@
         {
           "value": "(5914)",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15073,9 +14411,7 @@
         {
           "value": "(10951)",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15108,9 +14444,7 @@
         {
           "value": "348995",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15142,9 +14476,7 @@
         {
           "value": "(882743)",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15190,9 +14522,7 @@
         {
           "value": "655955",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15224,9 +14554,7 @@
         {
           "value": "1610571",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15258,9 +14586,7 @@
         {
           "value": "20000",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15292,9 +14618,7 @@
         {
           "value": "60000",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15326,9 +14650,7 @@
         {
           "value": "675955",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15360,9 +14682,7 @@
         {
           "value": "1670571",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15394,9 +14714,7 @@
         {
           "value": "10%",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15428,9 +14746,7 @@
         {
           "value": "52%",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15462,9 +14778,7 @@
         {
           "value": "390000",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15496,9 +14810,7 @@
         {
           "value": "390000",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15530,9 +14842,7 @@
         {
           "value": "176236",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15564,9 +14874,7 @@
         {
           "value": "176236",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15598,9 +14906,7 @@
         {
           "value": "2575288",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15632,9 +14938,7 @@
         {
           "value": "2575289",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15666,9 +14970,7 @@
         {
           "value": "113233",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15700,9 +15002,7 @@
         {
           "value": "47272",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15734,9 +15034,7 @@
         {
           "value": "791776",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15768,9 +15066,7 @@
         {
           "value": "781229",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15802,9 +15098,7 @@
         {
           "value": "4046533",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15834,9 +15128,7 @@
         {
           "value": "3970026",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15866,9 +15158,7 @@
         {
           "value": "(1129610)",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15900,9 +15190,7 @@
         {
           "value": "(986778)",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
           "comment_ref": null,
@@ -15934,9 +15222,7 @@
         {
           "value": "2916923",
           "fact_num": 23,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -15968,9 +15254,7 @@
         {
           "value": "2983248",
           "fact_num": 24,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -16016,9 +15300,7 @@
         {
           "value": "675955",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16052,9 +15334,7 @@
         {
           "value": "1608571",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16088,9 +15368,7 @@
         {
           "value": "1882081",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16124,9 +15402,7 @@
         {
           "value": "881453",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16160,9 +15436,7 @@
         {
           "value": "1176250",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16196,9 +15470,7 @@
         {
           "value": "1207323",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16232,9 +15504,7 @@
         {
           "value": "7958",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16268,9 +15538,7 @@
         {
           "value": "10036",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16304,9 +15572,7 @@
         {
           "value": "3742244",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16339,9 +15605,7 @@
         {
           "value": "3707383",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16374,9 +15638,7 @@
         {
           "value": "1578571",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16410,9 +15672,7 @@
         {
           "value": "74573",
           "fact_num": 12,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16446,9 +15706,7 @@
         {
           "value": "2171380",
           "fact_num": 13,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16482,9 +15740,7 @@
         {
           "value": "2222043",
           "fact_num": 14,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16518,9 +15774,7 @@
         {
           "value": "31073",
           "fact_num": 15,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16554,9 +15808,7 @@
         {
           "value": "31073",
           "fact_num": 16,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16590,9 +15842,7 @@
         {
           "value": "2078",
           "fact_num": 17,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16626,9 +15876,7 @@
         {
           "value": "2357",
           "fact_num": 18,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16662,9 +15910,7 @@
         {
           "value": "3783102",
           "fact_num": 19,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16697,9 +15943,7 @@
         {
           "value": "2330046",
           "fact_num": 20,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "6",
@@ -16732,9 +15976,7 @@
         {
           "value": "0",
           "fact_num": 21,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "7",
@@ -16767,9 +16009,7 @@
         {
           "value": "225049",
           "fact_num": 22,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "7",
@@ -16816,9 +16056,7 @@
         {
           "value": "126907",
           "fact_num": 1,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "8",
@@ -16852,9 +16090,7 @@
         {
           "value": "99609",
           "fact_num": 2,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "8",
@@ -16888,9 +16124,7 @@
         {
           "value": "80000",
           "fact_num": 3,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "annually for five years",
@@ -16924,9 +16158,7 @@
         {
           "value": "240000",
           "fact_num": 4,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "8",
@@ -16960,9 +16192,7 @@
         {
           "value": "160000",
           "fact_num": 5,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "8",
@@ -16996,9 +16226,7 @@
         {
           "value": "85000",
           "fact_num": 6,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "each year",
@@ -17032,9 +16260,7 @@
         {
           "value": "50775",
           "fact_num": 7,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "9",
@@ -17067,9 +16293,7 @@
         {
           "value": "34293",
           "fact_num": 8,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "9",
@@ -17102,9 +16326,7 @@
         {
           "value": "19955",
           "fact_num": 9,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "9",
@@ -17138,9 +16360,7 @@
         {
           "value": "22064",
           "fact_num": 10,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "9",
@@ -17174,9 +16394,7 @@
         {
           "value": "40000",
           "fact_num": 11,
-          "equation": null,
-          "fact_equation": null,
-          "equation_children": null,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": "per year",

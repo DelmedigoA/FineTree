@@ -1307,10 +1307,10 @@ def _validate_patch_fact_updates(
             f"Patch updates contain non-requested keys: {', '.join(unknown_update_keys)}."
         )
 
-    baseline_row_role = "total" if "equation_children" in updates_payload else "detail"
+    baseline_row_role = "total" if ("equations" in updates_payload or "fact_equation" in updates_payload or "equation" in updates_payload) else "detail"
     baseline = {
         "value": "0",
-        "equation": None,
+        "equations": None,
         "comment_ref": None,
         "note_flag": False,
         "note_name": None,
@@ -1328,7 +1328,6 @@ def _validate_patch_fact_updates(
         "scale": None,
         "value_type": None,
         "value_context": None,
-        "equation_children": None,
         "natural_sign": None,
         "row_role": baseline_row_role,
     }

@@ -625,7 +625,7 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
             {
                 "fact_num": 2,
                 "updates": {
-                    "equation_children": [{"fact_num": 1, "operator": "+"}, {"fact_num": 3, "operator": "+"}],
+                    "row_role": "total",
                     "period_type": "duration",
                     "period_start": "2024-01-01",
                     "period_end": "2024-12-31",
@@ -636,12 +636,12 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
     }
     parsed = gemini_vlm.parse_selected_field_patch_text(
         json.dumps(payload),
-        allowed_fact_fields={"equation_children", "period_type", "period_start", "period_end", "path_source"},
+        allowed_fact_fields={"row_role", "period_type", "period_start", "period_end", "path_source"},
         allow_statement_type=True,
     )
     assert parsed["meta_updates"]["statement_type"] == "income_statement"
     assert parsed["fact_updates"][0]["fact_num"] == 2
-    assert parsed["fact_updates"][0]["updates"]["equation_children"] == [{"fact_num": 1, "operator": "+"}, {"fact_num": 3, "operator": "+"}]
+    assert parsed["fact_updates"][0]["updates"]["row_role"] == "total"
     assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
 
 

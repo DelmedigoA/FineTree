@@ -474,12 +474,6 @@ class NaturalSign(str, Enum):
     positive = "positive"
     negative = "negative"
 
-
-class EquationOperator(str, Enum):
-    additive = "+"
-    subtractive = "-"
-
-
 class RowRole(str, Enum):
     detail = "detail"
     total = "total"
@@ -529,32 +523,9 @@ class ReportScope(str, Enum):
     other = "other"
 
 
-class EquationChild(BaseModel):
-    fact_num: int
-    operator: EquationOperator
-    model_config = ConfigDict(extra="forbid")
-
-    @field_validator("fact_num", mode="before")
-    @classmethod
-    def _normalize_fact_num(cls, value: Any) -> int:
-        normalized = _normalize_fact_num_value(value)
-        if normalized is None:
-            raise ValueError("equation_children.fact_num must be an integer >= 1.")
-        return normalized
-
-    @field_validator("operator", mode="before")
-    @classmethod
-    def _normalize_operator(cls, value: Any) -> str:
-        text = str(value or "").strip()
-        if text in {"+", "-"}:
-            return text
-        raise ValueError("equation_children.operator must be '+' or '-'.")
-
-
 class EquationVariant(BaseModel):
     equation: str
     fact_equation: Optional[str] = None
-    equation_children: Optional[List[EquationChild]] = None
     model_config = ConfigDict(extra="forbid")
 
     @field_validator("equation", mode="before")
@@ -681,9 +652,6 @@ class PageMeta(BaseModel):
 class Fact(BaseModel):
     value: str
     fact_num: Optional[int] = None
-    equation: Optional[str] = None
-    fact_equation: Optional[str] = None
-    equation_children: Optional[List[EquationChild]] = None
     equations: Optional[List[EquationVariant]] = None
     natural_sign: Optional[NaturalSign] = None
     row_role: RowRole = RowRole.detail
@@ -712,6 +680,27 @@ class Fact(BaseModel):
     value_context: Optional[ValueContext] = None
     model_config = ConfigDict(extra="forbid")
 
+    @model_validator(mode="before")
+    @classmethod
+    def _fold_legacy_equation_fields(cls, value: Any) -> Any:
+        if not isinstance(value, dict):
+            return value
+        data = dict(value)
+        legacy_equation = _normalize_equation_value(data.pop("equation", None))
+        legacy_fact_equation = _normalize_equation_value(data.pop("fact_equation", None))
+        if legacy_equation is None:
+            return data
+        legacy_entry = {
+            "equation": legacy_equation,
+            "fact_equation": legacy_fact_equation,
+        }
+        raw_equations = data.get("equations")
+        if isinstance(raw_equations, list):
+            data["equations"] = [legacy_entry, *raw_equations]
+        elif raw_equations in ("", None):
+            data["equations"] = [legacy_entry]
+        return data
+
     @field_validator("value", mode="before")
     @classmethod
     def _validate_value(cls, value: Any) -> str:
@@ -721,16 +710,6 @@ class Fact(BaseModel):
     @classmethod
     def _normalize_comment_ref(cls, value: Any) -> str | None:
         return _normalize_note_reference_value(value)
-
-    @field_validator("equation", mode="before")
-    @classmethod
-    def _normalize_equation(cls, value: Any) -> str | None:
-        return _normalize_equation_value(value)
-
-    @field_validator("fact_equation", mode="before")
-    @classmethod
-    def _normalize_fact_equation(cls, value: Any) -> str | None:
-        return _normalize_equation_value(value)
 
     @field_validator("equations", mode="before")
     @classmethod
@@ -750,7 +729,6 @@ class Fact(BaseModel):
                 entry = {
                     "equation": equation_text,
                     "fact_equation": None,
-                    "equation_children": None,
                 }
             elif isinstance(raw_entry, dict):
                 equation_text = _normalize_equation_value(raw_entry.get("equation"))
@@ -759,18 +737,12 @@ class Fact(BaseModel):
                 entry = {
                     "equation": equation_text,
                     "fact_equation": _normalize_equation_value(raw_entry.get("fact_equation")),
-                    "equation_children": raw_entry.get("equation_children"),
                 }
             else:
                 continue
             signature = (
                 entry["equation"],
                 entry["fact_equation"] or "",
-                tuple(
-                    (int(child.get("fact_num")), str(child.get("operator") or "+"))
-                    for child in (entry.get("equation_children") or [])
-                    if isinstance(child, dict) and isinstance(child.get("fact_num"), int)
-                ),
             )
             if signature in seen:
                 continue
@@ -860,64 +832,8 @@ class Fact(BaseModel):
 
     @model_validator(mode="after")
     def _validate_note_num_requires_note_flag(self) -> "Fact":
-        variants = list(self.equations or [])
-
-        active_variant = (
-            EquationVariant(
-                equation=self.equation,
-                fact_equation=self.fact_equation,
-                equation_children=self.equation_children,
-            )
-            if self.equation is not None
-            else None
-        )
-        if active_variant is not None:
-            active_signature = (
-                active_variant.equation,
-                active_variant.fact_equation or "",
-                tuple(
-                    (child.fact_num, child.operator.value if isinstance(child.operator, Enum) else str(child.operator))
-                    for child in (active_variant.equation_children or [])
-                ),
-            )
-            matching_index = next(
-                (
-                    idx
-                    for idx, variant in enumerate(variants)
-                    if (
-                        variant.equation,
-                        variant.fact_equation or "",
-                        tuple(
-                            (
-                                child.fact_num,
-                                child.operator.value if isinstance(child.operator, Enum) else str(child.operator),
-                            )
-                            for child in (variant.equation_children or [])
-                        ),
-                    )
-                    == active_signature
-                ),
-                None,
-            )
-            if matching_index is None:
-                variants = [active_variant, *variants]
-            elif matching_index != 0:
-                variants = [variants[matching_index], *variants[:matching_index], *variants[matching_index + 1 :]]
-        elif variants:
-            active_variant = variants[0]
-            self.equation = active_variant.equation
-            self.fact_equation = active_variant.fact_equation
-            self.equation_children = active_variant.equation_children
-
-        self.equations = variants or None
-
         if self.note_num is not None and not self.note_flag:
             raise ValueError("note_num requires note_flag=true.")
-        if self.row_role == RowRole.detail and self.equation_children is not None:
-            raise ValueError("detail rows must not contain equation_children.")
-        if self.row_role == RowRole.total:
-            if not self.equation_children:
-                raise ValueError("total rows must contain at least one equation_children entry.")
         derived_sign = _derive_natural_sign_from_value(self.value)
         self.natural_sign = NaturalSign(derived_sign) if derived_sign is not None else None
         return self

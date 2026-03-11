@@ -24,8 +24,6 @@ def test_schema_registry_prompt_contract_includes_schema_version_and_enums() -> 
     assert "other_declaration" in extraction["enums"]["statement_types"]
     assert extraction["enums"]["natural_signs"] == ["positive", "negative"]
     assert extraction["enums"]["row_roles"] == ["detail", "total"]
-    assert extraction["enums"]["equation_child_operators"] == ["+", "-"]
-    assert "equation_children" in patch["fact_patch_fields"]
     assert "natural_sign" in patch["fact_patch_fields"]
     assert "row_role" in patch["fact_patch_fields"]
     assert "value_type" in patch["fact_patch_fields"]
@@ -36,7 +34,9 @@ def test_schema_registry_prompt_contract_includes_schema_version_and_enums() -> 
     assert "annotation_note" not in extraction["page_meta_keys"]
     assert "annotation_status" not in extraction["page_meta_keys"]
     assert "fact_num" not in extraction["fact_keys"]
+    assert "equation" not in extraction["fact_keys"]
     assert "fact_equation" not in extraction["fact_keys"]
+    assert "equations" not in extraction["fact_keys"]
 
 
 def test_schema_registry_prompt_contract_is_stable() -> None:

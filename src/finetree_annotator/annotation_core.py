@@ -40,9 +40,6 @@ def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
         "fact_num": None,
-        "equation": None,
-        "fact_equation": None,
-        "equation_children": None,
         "equations": None,
         "natural_sign": None,
         "row_role": "detail",

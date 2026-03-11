@@ -1,0 +1,9 @@
+{"ts": "2026-03-11T13:47:02.227838+00:00", "event": "session_started", "operation": "stream_content", "model": "", "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-221/test_stream_content_from_image5/page.png", "enable_thinking": null}
+{"ts": "2026-03-11T13:47:02.227898+00:00", "event": "request", "prompt": "test prompt", "model": "", "few_shot_count": 0}
+{"ts": "2026-03-11T13:47:02.227926+00:00", "event": "backend_selected", "backend": "runpod_queue"}
+{"ts": "2026-03-11T13:47:02.228106+00:00", "event": "backend_request", "backend": "runpod_queue", "run_url": "https://api.runpod.ai/v2/queue123/run", "payload": {"input": {"image_base64": "aW1n", "image_mime_type": "image/png", "response_mode": "text", "prompt": "test prompt", "max_tokens": 17, "model": "qwenasaf", "temperature": 0.7, "top_p": 0.8, "chat_template_kwargs": {"enable_thinking": false}}}}
+{"ts": "2026-03-11T13:47:02.228154+00:00", "event": "backend_job_created", "backend": "runpod_queue", "job_payload": {"id": "job-1", "status": "IN_QUEUE"}}
+{"ts": "2026-03-11T13:47:02.228184+00:00", "event": "backend_status", "backend": "runpod_queue", "status": "IN_QUEUE", "job_payload": {"id": "job-1", "status": "IN_QUEUE"}}
+{"ts": "2026-03-11T13:47:02.228217+00:00", "event": "backend_status", "backend": "runpod_queue", "status": "IN_PROGRESS", "job_payload": {"id": "job-1", "status": "IN_PROGRESS"}}
+{"ts": "2026-03-11T13:47:02.228249+00:00", "event": "backend_status", "backend": "runpod_queue", "status": "COMPLETED", "job_payload": {"id": "job-1", "status": "COMPLETED", "output": {"ok": true, "mode": "text", "text": "queue hello"}}}
+{"ts": "2026-03-11T13:47:02.228274+00:00", "event": "output_chunk", "index": 0, "text": "queue hello"}
