@@ -6,8 +6,7 @@
     "reading_direction": "rtl",
     "company_name": "אורנים המכללה האקדמית לחינוך, התנועה הקיבוצית (ע״ר)",
     "report_year": 2021,
-    "entity_type": "limited_partnership",
-    "report_scope": "consolidated"
+    "entity_type": "registered_nonprofit"
   },
   "pages": [
     {
@@ -19,7 +18,7 @@
         "statement_type": null,
         "title": "דוחות כספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -32,7 +31,7 @@
         "statement_type": null,
         "title": "תוכן העניינים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -45,7 +44,7 @@
         "statement_type": "auditors_report",
         "title": "דוח רואה החשבון המבקר לחברי העמותה",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -58,7 +57,7 @@
         "statement_type": "balance_sheet",
         "title": "דוחות על המצב הכספי",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -348,7 +347,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "נכסים שוטפים"
+            "נכסים שוטפים",
+            "סה״כ"
           ],
           "path_source": "inferred",
           "currency": "ILS",
@@ -385,7 +385,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "נכסים שוטפים"
+            "נכסים שוטפים",
+            "סה״כ"
           ],
           "path_source": "inferred",
           "currency": "ILS",
@@ -892,7 +893,7 @@
         "statement_type": "balance_sheet",
         "title": "דוחות על המצב הכספי",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -2084,7 +2085,7 @@
         "statement_type": "statement_of_activities",
         "title": "דוחות על הפעילויות",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -3124,7 +3125,7 @@
         "statement_type": "statement_of_changes_in_equity",
         "title": "דוח על השינויים בנכסים נטו",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -3266,7 +3267,12 @@
         {
           "value": "44553",
           "fact_num": 5,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 4887 + 44141 + 5164 + 135",
+              "fact_equation": "f1 + f2 + f3 + f4"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3439,7 +3445,12 @@
         {
           "value": "5863",
           "fact_num": 10,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5863 + 0 + 0 + 0",
+              "fact_equation": "f6 + f7 + f8 + f9"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3613,7 +3624,12 @@
         {
           "value": "3129",
           "fact_num": 15,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "0 + 0 + 3129 + 0",
+              "fact_equation": "f11 + f12 + f13 + f14"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3787,7 +3803,12 @@
         {
           "value": "(3096)",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "0 + 0 - 2978 - 118",
+              "fact_equation": "f16 + f17 + f18 + f19"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -3961,7 +3982,12 @@
         {
           "value": "(1338)",
           "fact_num": 25,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 1338 + 0 + 0 + 0",
+              "fact_equation": "f21 + f22 + f23 + f24"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -4135,7 +4161,12 @@
         {
           "value": "-",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 4857 + 4857 + 0 + 0",
+              "fact_equation": "f26 + f27 + f28 + f29"
+            }
+          ],
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4309,7 +4340,12 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1198 - 1198 + 0 + 0",
+              "fact_equation": "f31 + f32 + f33 + f34"
+            }
+          ],
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4483,7 +4519,12 @@
         {
           "value": "-",
           "fact_num": 40,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5412 - 5412 + 0 + 0",
+              "fact_equation": "f36 + f37 + f38 + f39"
+            }
+          ],
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -4517,7 +4558,12 @@
         {
           "value": "1391",
           "fact_num": 41,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 4887 + 5863 + 0 + 0 - 1338 - 4857 + 1198 + 5412",
+              "fact_equation": "f1 + f6 + f11 + f16 + f21 + f26 + f31 + f36"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4551,7 +4597,12 @@
         {
           "value": "42388",
           "fact_num": 42,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "44141 + 0 + 0 + 0 + 0 + 4857 - 1198 - 5412",
+              "fact_equation": "f2 + f7 + f12 + f17 + f22 + f27 + f32 + f37"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4585,7 +4636,12 @@
         {
           "value": "5315",
           "fact_num": 43,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5164 + 0 + 3129 - 2978 + 0 + 0 + 0 + 0",
+              "fact_equation": "f3 + f8 + f13 + f18 + f23 + f28 + f33 + f38"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4619,7 +4675,12 @@
         {
           "value": "17",
           "fact_num": 44,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "135 + 0 + 0 - 118 + 0 + 0 + 0 + 0",
+              "fact_equation": "f4 + f9 + f14 + f19 + f24 + f29 + f34 + f39"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4653,7 +4714,16 @@
         {
           "value": "49111",
           "fact_num": 45,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "44553 + 5863 + 3129 - 3096 - 1338 + 0 + 0 + 0",
+              "fact_equation": "f5 + f10 + f15 + f20 + f25 + f30 + f35 + f40"
+            },
+            {
+              "equation": "1391 + 42388 + 5315 + 17",
+              "fact_equation": "f41 + f42 + f43 + f44"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -4694,7 +4764,7 @@
         "statement_type": "statement_of_changes_in_equity",
         "title": "דוח על השינויים בנכסים נטו",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -4836,7 +4906,12 @@
         {
           "value": "41240",
           "fact_num": 5,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 10152 + 45866 + 5381 + 145",
+              "fact_equation": "f1 + f2 + f3 + f4"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5009,7 +5084,12 @@
         {
           "value": "4175",
           "fact_num": 10,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4175 + 0 + 0 + 0",
+              "fact_equation": "f6 + f7 + f8 + f9"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5183,7 +5263,12 @@
         {
           "value": "3520",
           "fact_num": 15,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "0 + 0 + 3520 + 0",
+              "fact_equation": "f11 + f12 + f13 + f14"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5357,7 +5442,12 @@
         {
           "value": "(3747)",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "0 + 0 - 3737 - 10",
+              "fact_equation": "f16 + f17 + f18 + f19"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -5535,7 +5625,12 @@
         {
           "value": "(635)",
           "fact_num": 25,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 635 + 0 + 0 + 0",
+              "fact_equation": "f21 + f22 + f23 + f24"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -5714,7 +5809,12 @@
         {
           "value": "-",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 3815 + 3815 + 0 + 0",
+              "fact_equation": "f26 + f27 + f28 + f29"
+            }
+          ],
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -5893,7 +5993,12 @@
         {
           "value": "-",
           "fact_num": 35,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5540 - 5540 + 0 + 0",
+              "fact_equation": "f31 + f32 + f33 + f34"
+            }
+          ],
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -5928,7 +6033,12 @@
         {
           "value": "(4887)",
           "fact_num": 36,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 10152 + 4175 + 0 + 0 - 635 - 3815 + 5540",
+              "fact_equation": "f1 + f6 + f11 + f16 + f21 + f26 + f31"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -5962,7 +6072,12 @@
         {
           "value": "44141",
           "fact_num": 37,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "45866 + 0 + 0 + 0 + 0 + 3815 - 5540",
+              "fact_equation": "f2 + f7 + f12 + f17 + f22 + f27 + f32"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -5996,7 +6111,12 @@
         {
           "value": "5164",
           "fact_num": 38,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5381 + 0 + 3520 - 3737 + 0 + 0 + 0",
+              "fact_equation": "f3 + f8 + f13 + f18 + f23 + f28 + f33"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6030,7 +6150,12 @@
         {
           "value": "135",
           "fact_num": 39,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "145 + 0 + 0 - 10 + 0 + 0 + 0",
+              "fact_equation": "f4 + f9 + f14 + f19 + f24 + f29 + f34"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6064,7 +6189,16 @@
         {
           "value": "44553",
           "fact_num": 40,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "41240 + 4175 + 3520 - 3747 - 635 + 0 + 0",
+              "fact_equation": "f5 + f10 + f15 + f20 + f25 + f30 + f35"
+            },
+            {
+              "equation": "- 4887 + 44141 + 5164 + 135",
+              "fact_equation": "f36 + f37 + f38 + f39"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6105,7 +6239,7 @@
         "statement_type": "cash_flow_statement",
         "title": "דוחות על תזרימי המזומנים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -6243,7 +6377,12 @@
         {
           "value": "6002",
           "fact_num": 5,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5863 + 139",
+              "fact_equation": "f1 + f3"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6276,7 +6415,12 @@
         {
           "value": "5253",
           "fact_num": 6,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4175 + 1078",
+              "fact_equation": "f2 + f4"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -6705,7 +6849,12 @@
         {
           "value": "(3727)",
           "fact_num": 19,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 173 - 4764 + 1198 - 93 + 2105 - 2000",
+              "fact_equation": "f7 + f9 + f11 + f13 + f15 + f17"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -6738,7 +6887,12 @@
         {
           "value": "(4723)",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "91 - 3777 + 0 - 37 + 0 - 1000",
+              "fact_equation": "f8 + f10 + f12 + f14 + f16 + f18"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -7031,7 +7185,12 @@
         {
           "value": "10255",
           "fact_num": 29,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "5404 + 4851",
+              "fact_equation": "f25 + f27"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7063,7 +7222,12 @@
         {
           "value": "4851",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4050 + 801",
+              "fact_equation": "f26 + f28"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7103,7 +7267,7 @@
         "statement_type": "cash_flow_statement",
         "title": "דוחות על תזרימי המזומנים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -7124,8 +7288,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "סכומים ששוחררו מנכסים נטו שקיימת לגביהם הגבלה בעלת אופי זמני"
           ],
           "path_source": "observed",
@@ -7158,8 +7322,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "סכומים ששוחררו מנכסים נטו שקיימת לגביהם הגבלה בעלת אופי זמני"
           ],
           "path_source": "observed",
@@ -7192,8 +7356,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "סכומים ששוחררו מנכסים נטו שקיימת לגביהם הגבלה בעלת אופי קבוע"
           ],
           "path_source": "observed",
@@ -7226,8 +7390,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "סכומים ששוחררו מנכסים נטו שקיימת לגביהם הגבלה בעלת אופי קבוע"
           ],
           "path_source": "observed",
@@ -7260,8 +7424,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "שערוך השקעות בניירות ערך"
           ],
           "path_source": "observed",
@@ -7294,8 +7458,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "שערוך השקעות בניירות ערך"
           ],
           "path_source": "observed",
@@ -7328,8 +7492,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "עלייה בהתחייבויות בגין זכויות עובדים"
           ],
           "path_source": "observed",
@@ -7362,8 +7526,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "עלייה בהתחייבויות בגין זכויות עובדים"
           ],
           "path_source": "observed",
@@ -7396,8 +7560,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "פחת רכוש קבוע"
           ],
           "path_source": "observed",
@@ -7430,8 +7594,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "פחת רכוש קבוע"
           ],
           "path_source": "observed",
@@ -7464,8 +7628,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "פחת נכסים בלתי מוחשיים"
           ],
           "path_source": "observed",
@@ -7498,8 +7662,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "הוצאות (הכנסות) שאינן כרוכות בתזרימי מזומנים",
             "פחת נכסים בלתי מוחשיים"
           ],
           "path_source": "observed",
@@ -7517,7 +7681,12 @@
         {
           "value": "(8)",
           "fact_num": 13,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 2978 - 118 - 1686 - 638 + 5343 + 69",
+              "fact_equation": "f1 + f3 + f5 + f7 + f9 + f11"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -7551,7 +7720,12 @@
         {
           "value": "1940",
           "fact_num": 14,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 3737 - 10 + 285 - 137 + 5473 + 66",
+              "fact_equation": "f2 + f4 + f6 + f8 + f10 + f12"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -7600,8 +7774,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "ירידה בלקוחות"
           ],
           "path_source": "observed",
@@ -7634,8 +7808,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "ירידה בלקוחות"
           ],
           "path_source": "observed",
@@ -7668,8 +7842,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בחייבים ויתרות חובה והוצאות מראש לזמן ארוך"
           ],
           "path_source": "observed",
@@ -7702,8 +7876,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בחייבים ויתרות חובה והוצאות מראש לזמן ארוך"
           ],
           "path_source": "observed",
@@ -7736,8 +7910,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "ירידה (עלייה) במקדמות על חשבון שכר לימוד"
           ],
           "path_source": "observed",
@@ -7770,8 +7944,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "ירידה (עלייה) במקדמות על חשבון שכר לימוד"
           ],
           "path_source": "observed",
@@ -7804,8 +7978,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה (ירידה) בזכאים ויתרות זכות וזכאים לזמן ארוך"
           ],
           "path_source": "observed",
@@ -7838,8 +8012,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה (ירידה) בזכאים ויתרות זכות וזכאים לזמן ארוך"
           ],
           "path_source": "observed",
@@ -7872,8 +8046,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בספקים"
           ],
           "path_source": "observed",
@@ -7906,8 +8080,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בספקים"
           ],
           "path_source": "observed",
@@ -7927,7 +8101,7 @@
           "fact_num": 25,
           "equations": null,
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -7940,8 +8114,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בהתחייבויות לעובדים והתחייבויות אחרות בגין שכר ומשכורות"
           ],
           "path_source": "observed",
@@ -7974,8 +8148,8 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "עלייה בהתחייבויות לעובדים והתחייבויות אחרות בגין שכר ומשכורות"
           ],
           "path_source": "observed",
@@ -7993,7 +8167,12 @@
         {
           "value": "147",
           "fact_num": 27,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 679 + 398 + 2253 - 3439 + 470 + 1144",
+              "fact_equation": "f17 + f15 + f19 + f21 + f23 + f25"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8009,7 +8188,7 @@
           "recurring_period": null,
           "path": [
             "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "סה״כ"
           ],
           "path_source": "inferred",
@@ -8018,8 +8197,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            519.33,
-            1311.78,
+            517.53,
+            1313.58,
             45.38,
             30.42
           ]
@@ -8027,7 +8206,12 @@
         {
           "value": "(862)",
           "fact_num": 28,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 2846 - 1079 + 1180 + 243 + 777 + 863",
+              "fact_equation": "f18 + f20 + f16 + f22 + f24 + f26"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -8043,7 +8227,7 @@
           "recurring_period": null,
           "path": [
             "(א) התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת:",
-            "שינויים בסעיפי רכוש והתחייבויות:",
+            "שינויים בסעיפי רכוש והתחייבויות",
             "סה״כ"
           ],
           "path_source": "inferred",
@@ -8061,7 +8245,12 @@
         {
           "value": "139",
           "fact_num": 29,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 8 + 147",
+              "fact_equation": "f13 + f27"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8094,7 +8283,12 @@
         {
           "value": "1078",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1940 - 862",
+              "fact_equation": "f14 + f28"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -8135,7 +8329,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -8148,7 +8342,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -8161,7 +8355,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -8183,7 +8377,7 @@
           "recurring_period": null,
           "path": [
             "רכוש קבוע",
-            "2. הפחת מחושב בשיעורים שנתיים שווים על בסיס שיטת הקו הישר לאורך תקופת החיים השימושיים בנכס, כדלקמן:",
+            "פחת מחושב בשיוערים שנתיים על בסיס שיטת הקו הישר",
             "מבנים על קרקע חכורה"
           ],
           "path_source": null,
@@ -8217,7 +8411,7 @@
           "recurring_period": null,
           "path": [
             "רכוש קבוע",
-            "2. הפחת מחושב בשיעורים שנתיים שווים על בסיס שיטת הקו הישר לאורך תקופת החיים השימושיים בנכס, כדלקמן:",
+            "פחת מחושב בשיוערים שנתיים על בסיס שיטת הקו הישר",
             "ריהוט וציוד משרדי"
           ],
           "path_source": null,
@@ -8251,7 +8445,7 @@
           "recurring_period": null,
           "path": [
             "רכוש קבוע",
-            "2. הפחת מחושב בשיעורים שנתיים שווים על בסיס שיטת הקו הישר לאורך תקופת החיים השימושיים בנכס, כדלקמן:",
+            "פחת מחושב בשיוערים שנתיים על בסיס שיטת הקו הישר",
             "כלי רכב"
           ],
           "path_source": null,
@@ -8285,7 +8479,7 @@
           "recurring_period": null,
           "path": [
             "רכוש קבוע",
-            "2. הפחת מחושב בשיעורים שנתיים שווים על בסיס שיטת הקו הישר לאורך תקופת החיים השימושיים בנכס, כדלקמן:",
+            "פחת מחושב בשיוערים שנתיים על בסיס שיטת הקו הישר",
             "מחשבים"
           ],
           "path_source": null,
@@ -8319,7 +8513,7 @@
           "recurring_period": null,
           "path": [
             "נכסים בלתי מוחשיים",
-            "אורך החיים השימושיים של נכסים בלתי מוחשיים הינו כדלקמן:",
+            "אורך החיים השימושיים של נכסים בלתי מוחשיים",
             "תוכנות מחשב"
           ],
           "path_source": null,
@@ -8345,7 +8539,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -8358,7 +8552,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -8371,7 +8565,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -8384,7 +8578,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -9186,7 +9380,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -9195,7 +9389,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9230,7 +9424,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9265,7 +9459,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9300,7 +9494,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9340,7 +9534,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9375,7 +9569,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9410,7 +9604,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9445,7 +9639,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9480,7 +9674,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9520,7 +9714,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9555,7 +9749,7 @@
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9590,7 +9784,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9625,7 +9819,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9660,7 +9854,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9692,10 +9886,15 @@
         {
           "value": "(1198)",
           "fact_num": 15,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 1198 + 0 + 0 + 0",
+              "fact_equation": "f11 + f12 + f13 + f14"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9720,17 +9919,22 @@
           "bbox": [
             206.63,
             698.66,
-            92.47,
-            31.74
+            98.48,
+            28.73
           ]
         },
         {
           "value": "164820",
           "fact_num": 16,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "162883 + 3135 - 1198",
+              "fact_equation": "f1 + f6 + f11"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9770,7 +9974,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9793,8 +9997,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            724.84,
-            775.56,
+            723.34,
+            777.06,
             54.41,
             31.74
           ]
@@ -9810,7 +10014,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9850,7 +10054,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9882,10 +10086,19 @@
         {
           "value": "199887",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "164820 + 503 + 13527 + 21037",
+              "fact_equation": "f16 + f17 + f18 + f19"
+            },
+            {
+              "equation": "196321 + 4764 - 1198",
+              "fact_equation": "f5 + f10 + f15"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9920,7 +10133,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9955,7 +10168,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -9990,7 +10203,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10025,7 +10238,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10057,10 +10270,15 @@
         {
           "value": "152255",
           "fact_num": 25,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "124838 + 467 + 11800 + 15150",
+              "fact_equation": "f21 + f22 + f23 + f24"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "7",
+          "row_role": "total",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10095,7 +10313,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10130,7 +10348,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10165,7 +10383,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10200,7 +10418,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10232,10 +10450,15 @@
         {
           "value": "5343",
           "fact_num": 30,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "3902 + 11 + 562 + 868",
+              "fact_equation": "f26 + f27 + f28 + f29"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "7",
+          "row_role": "total",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10275,7 +10498,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10315,7 +10538,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10355,7 +10578,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10395,7 +10618,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10429,13 +10652,17 @@
           "fact_num": 35,
           "equations": [
             {
+              "equation": "128740 + 478 + 12362 + 16018",
+              "fact_equation": "f31 + f32 + f33 + f34"
+            },
+            {
               "equation": "152255 + 5343",
               "fact_equation": "f25 + f30"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10475,7 +10702,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10514,7 +10741,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10553,7 +10780,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10592,7 +10819,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10625,13 +10852,17 @@
           "fact_num": 40,
           "equations": [
             {
+              "equation": "36080 + 25 + 1165 + 5019",
+              "fact_equation": "f36 + f37 + f38 + f39"
+            },
+            {
               "equation": "199887 - 157598",
               "fact_equation": "f20 - f35"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10670,7 +10901,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10709,7 +10940,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10748,7 +10979,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10787,7 +11018,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -10820,13 +11051,17 @@
           "fact_num": 45,
           "equations": [
             {
+              "equation": "38045 + 36 + 775 + 5210",
+              "fact_equation": "f41 + f42 + f43 + f44"
+            },
+            {
               "equation": "196321 - 152255",
               "fact_equation": "f5 - f25"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": "כל הרכוש הקבוע משמש לפעילות הוראה ומחקר, מינהל ושירותים לסטודנטים.",
           "note_flag": true,
           "note_name": "רכוש קבוע, נטו",
           "note_num": 7,
@@ -11155,7 +11390,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -12177,7 +12412,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -12190,7 +12425,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -12199,7 +12434,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12232,7 +12467,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12265,7 +12500,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12295,10 +12530,15 @@
         {
           "value": "51860",
           "fact_num": 4,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "28473 + 10390 + 12997",
+              "fact_equation": "f1 + f2 + f3"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "15",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12331,7 +12571,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12366,7 +12606,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12402,7 +12642,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12435,10 +12675,15 @@
         {
           "value": "4181",
           "fact_num": 8,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4181 + 0 + 0",
+              "fact_equation": "f5 + f6 + f7"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "15",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12473,7 +12718,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12508,7 +12753,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12543,7 +12788,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12575,10 +12820,15 @@
         {
           "value": "280",
           "fact_num": 12,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "207 + 73 + 0",
+              "fact_equation": "f9 + f10 + f11"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "15",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12613,7 +12863,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12648,7 +12898,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12683,7 +12933,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12715,10 +12965,15 @@
         {
           "value": "278",
           "fact_num": 16,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "36 + 14 + 228",
+              "fact_equation": "f13 + f14 + f15"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "15",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12758,7 +13013,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12796,7 +13051,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12834,7 +13089,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12866,13 +13121,17 @@
           "fact_num": 20,
           "equations": [
             {
+              "equation": "24049 + 10303 + 12769",
+              "fact_equation": "f17 + f18 + f19"
+            },
+            {
               "equation": "51860 - 4181 - 280 - 278",
               "fact_equation": "f4 - f8 - f12 - f16"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "15",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
@@ -12910,7 +13169,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -12921,14 +13180,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -12954,14 +13213,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -12987,14 +13246,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13025,14 +13284,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13058,14 +13317,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13093,14 +13352,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13128,14 +13387,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13168,14 +13427,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13203,14 +13462,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13238,14 +13497,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13273,14 +13532,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13313,14 +13572,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13348,14 +13607,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13383,14 +13642,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13418,14 +13677,14 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13458,14 +13717,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר לימוד רגיל ברוטו",
@@ -13505,7 +13764,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות משכר לימוד רגיל",
@@ -13536,14 +13795,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות משכר לימוד רגיל",
@@ -13574,14 +13833,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות משכר לימוד רגיל",
@@ -13612,14 +13871,14 @@
           "row_role": "total",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": "הכנסות מסטודנטים - המשך",
+          "note_name": "הכנסות מסטודנטים",
           "note_num": 15,
           "note_ref": null,
           "date": "2020-09-30",
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הכנסות משכר לימוד רגיל",
@@ -13652,7 +13911,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שעות הוראה"
@@ -13684,7 +13943,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שעות הוראה"
@@ -13716,7 +13975,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר עבודה עובדי מדינה ישיר"
@@ -13748,7 +14007,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שכר עבודה עובדי מדינה ישיר"
@@ -13780,7 +14039,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שיפוי"
@@ -13812,7 +14071,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "שיפוי"
@@ -13844,7 +14103,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "אחרות"
@@ -13876,7 +14135,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "אחרות"
@@ -13913,7 +14172,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
@@ -13950,7 +14209,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
@@ -13982,7 +14241,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "תרומות לעמותה"
@@ -14014,7 +14273,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "תרומות לעמותה"
@@ -14046,7 +14305,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סכומים ששוחררו מהגבלות"
@@ -14078,7 +14337,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סכומים ששוחררו מהגבלות"
@@ -14110,7 +14369,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הקצבות אחרות"
@@ -14142,7 +14401,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "הקצבות אחרות"
@@ -14179,7 +14438,7 @@
           "period_type": "duration",
           "period_start": "2020-10-01",
           "period_end": "2021-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
@@ -14216,7 +14475,7 @@
           "period_type": "duration",
           "period_start": "2019-10-01",
           "period_end": "2020-09-30",
-          "duration_type": "recurrent",
+          "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
@@ -14244,7 +14503,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -15602,7 +15861,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -16926,7 +17185,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -17188,7 +17447,12 @@
         {
           "value": "1274",
           "fact_num": 9,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1666 - 331 + 102 - 163",
+              "fact_equation": "f1 + f3 + f5 + f7"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17202,7 +17466,9 @@
           "period_end": "2021-09-30",
           "duration_type": null,
           "recurring_period": null,
-          "path": [],
+          "path": [
+            "סה״כ"
+          ],
           "path_source": "inferred",
           "currency": "ILS",
           "scale": 1000,
@@ -17218,7 +17484,12 @@
         {
           "value": "(561)",
           "fact_num": 10,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 286 - 251 + 34 - 58",
+              "fact_equation": "f2 + f4 + f6 + f8"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -17232,7 +17503,9 @@
           "period_end": "2020-09-30",
           "duration_type": null,
           "recurring_period": null,
-          "path": [],
+          "path": [
+            "סה״כ"
+          ],
           "path_source": "inferred",
           "currency": "ILS",
           "scale": 1000,
@@ -17395,7 +17668,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "עסקאות:",
+            "עסקאות",
             "שירותים מקצועיים שניתנים ע\"י דרכים לאורנים"
           ],
           "path_source": "observed",
@@ -17428,7 +17701,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "עסקאות:",
+            "עסקאות",
             "שירותים מקצועיים שניתנים ע\"י דרכים לאורנים"
           ],
           "path_source": "observed",
@@ -17446,7 +17719,12 @@
         {
           "value": "183",
           "fact_num": 17,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "68 + 3 + 112",
+              "fact_equation": "f11 + f13 + f15"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17479,7 +17757,12 @@
         {
           "value": "286",
           "fact_num": 18,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "96 + 115 + 75",
+              "fact_equation": "f12 + f14 + f16"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17578,7 +17861,12 @@
         {
           "value": "34",
           "fact_num": 21,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "34",
+              "fact_equation": "f19"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17611,7 +17899,12 @@
         {
           "value": "59",
           "fact_num": 22,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "59",
+              "fact_equation": "f20"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -17652,7 +17945,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {

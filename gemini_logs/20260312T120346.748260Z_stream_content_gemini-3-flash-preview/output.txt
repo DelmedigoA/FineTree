@@ -1,0 +1,635 @@
+{
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "בצוותא חונכים דרך להצלחה (ע\"ר)",
+        "page_num": "8",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            286,
+            234,
+            60,
+            16
+          ],
+          "value": "227,207",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "הלוואה לזמן ארוך"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            207,
+            236,
+            10,
+            2
+          ],
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "הלוואה לזמן ארוך"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            286,
+            253,
+            61,
+            18
+          ],
+          "value": "(43,339)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "בניכוי - חלויות שוטפות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            207,
+            267,
+            10,
+            2
+          ],
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "בניכוי - חלויות שוטפות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            287,
+            272,
+            61,
+            18
+          ],
+          "value": "183,868",
+          "equations": [
+            {
+              "equation": "227,207 + (43,339)",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            589,
+            301,
+            28,
+            12
+          ],
+          "value": "250",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1000,
+          "date": "2024-05-02",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            119,
+            299,
+            41,
+            12
+          ],
+          "value": "3.5% +P",
+          "equations": null,
+          "value_type": "null",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": null,
+          "date": "2024-05-02",
+          "period_type": "duration",
+          "period_start": "2024-05-02",
+          "period_end": "2029-05-21",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "ריבית"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            827,
+            321,
+            16,
+            12
+          ],
+          "value": "60",
+          "equations": null,
+          "value_type": "count",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2024-05-02",
+          "period_end": "2029-05-21",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "אשראי מתאגידים בנקאיים",
+          "path": [
+            "אשראי מתאגידים בנקאיים",
+            "תשלומים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            284,
+            469,
+            61,
+            16
+          ],
+          "value": "153,400",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "משרד הרווחה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            148,
+            470,
+            62,
+            16
+          ],
+          "value": "145,942",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "משרד הרווחה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            293,
+            487,
+            52,
+            18
+          ],
+          "value": "78,729",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "משרד החינוך"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            148,
+            488,
+            61,
+            17
+          ],
+          "value": "100,800",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "משרד החינוך"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            335,
+            504,
+            10,
+            3
+          ],
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "מענק חרבות ברזל"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            156,
+            506,
+            53,
+            17
+          ],
+          "value": "94,783",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה",
+            "מענק חרבות ברזל"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            286,
+            525,
+            61,
+            17
+          ],
+          "value": "232,129",
+          "equations": [
+            {
+              "equation": "153,400 + 78,729",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            151,
+            524,
+            59,
+            17
+          ],
+          "value": "341,525",
+          "equations": [
+            {
+              "equation": "145,942 + 100,800 + 94,783",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 7,
+          "note_name": "הקצבות ותמיכות ממשרדי ממשלה",
+          "path": [
+            "הקצבות ותמיכות ממשרדי ממשלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            423,
+            606,
+            47,
+            13
+          ],
+          "value": "50,000",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "תרומות",
+          "path": [
+            "תרומות",
+            "נכסים שהתקבלו ללא תמורה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            216,
+            683,
+            40,
+            15
+          ],
+          "value": "6,000",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "שכר ונלוות",
+          "path": [
+            "שכר ונלוות",
+            "מענק עידוד התעסוקה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            114,
+            683,
+            49,
+            15
+          ],
+          "value": "14,500",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "שכר ונלוות",
+          "path": [
+            "שכר ונלוות",
+            "מענק עידוד התעסוקה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

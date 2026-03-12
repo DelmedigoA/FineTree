@@ -1,0 +1,37 @@
+{
+  "meta_updates": {
+    "statement_type": "notes_to_financial_statements"
+  },
+  "fact_updates": [
+    {
+      "fact_num": 1,
+      "updates": {
+        "period_type": "duration",
+        "duration_type": "recurrent",
+        "recurring_period": "yearly",
+        "date": "2021",
+        "value_context": "tabular",
+        "value_type": "percent",
+        "row_role": "detail",
+        "path_source": "observed",
+        "note_name": "באור 2 - עיקרי המדיניות החשבונאית",
+        "note_ref": "2"
+      }
+    },
+    {
+      "fact_num": 2,
+      "updates": {
+        "period_type": "duration",
+        "duration_type": "recurrent",
+        "recurring_period": "yearly",
+        "date": "2021",
+        "value_context": "tabular",
+        "value_type": "percent",
+        "row_role": "detail",
+        "path_source": "observed",
+        "note_name": "באור 2 - עיקרי המדיניות החשבונאית",
+        "note_ref": "2"
+      }
+    }
+  ]
+}

@@ -13,26 +13,26 @@
     {
       "image": "page_0001.png",
       "meta": {
-        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
         "page_num": null,
         "page_type": "contents",
         "statement_type": null,
         "title": "תוכן",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
     {
       "image": "page_0002.png",
       "meta": {
-        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
         "page_num": "1",
         "page_type": "declaration",
         "statement_type": "auditors_report",
         "title": "דוח רואה החשבון המבקר לחברי העמותה",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -45,7 +45,7 @@
         "statement_type": "balance_sheet",
         "title": "מאזנים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -770,10 +770,10 @@
         "entity_name": "אגודת ״מכבי רמת יצחק״",
         "page_num": "3",
         "page_type": "statements",
-        "statement_type": "income_statement",
+        "statement_type": "statement_of_activities",
         "title": "דוחות על הפעילויות",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -1127,7 +1127,7 @@
         "statement_type": "income_statement",
         "title": "דוחות על השינויים בנכסים נטו",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -1201,9 +1201,14 @@
         {
           "value": "464394",
           "fact_num": 3,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 66406 + 530800",
+              "fact_equation": "f1 + f2"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1302,9 +1307,14 @@
         {
           "value": "99341",
           "fact_num": 6,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "99341 + 0",
+              "fact_equation": "f4 + f5"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1351,7 +1361,6 @@
           "recurring_period": null,
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה :",
-            "ששימשו לרכישת רכוש קבוע",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "נכסים נטו שלא קיימת לגביהם הגבלה",
             "לשימוש לפעילות"
@@ -1387,7 +1396,6 @@
           "recurring_period": null,
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה :",
-            "ששימשו לרכישת רכוש קבוע",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "נכסים נטו שלא קיימת לגביהם הגבלה",
             "ששימשו לרכוש קבוע"
@@ -1407,9 +1415,14 @@
         {
           "value": "-",
           "fact_num": 9,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "21237 - 21237",
+              "fact_equation": "f7 + f8"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1423,7 +1436,6 @@
           "recurring_period": null,
           "path": [
             "העברת סכומים שלא קיימת לגביהם הגבלה :",
-            "ששימשו לרכישת רכוש קבוע",
             "סכומים שהועברו לכיסוי הוצאות פחת",
             "סה\"כ"
           ],
@@ -1442,9 +1454,14 @@
         {
           "value": "54172",
           "fact_num": 10,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 66406 + 99341 + 21237",
+              "fact_equation": "f1 + f4 + f7"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1476,9 +1493,14 @@
         {
           "value": "509563",
           "fact_num": 11,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "530800 + 0 - 21237",
+              "fact_equation": "f2 + f5 + f8"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1501,7 +1523,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            579.51,
+            581.01,
             1107.36,
             102.22,
             37.09
@@ -1510,9 +1532,14 @@
         {
           "value": "563735",
           "fact_num": 12,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "54172 + 509563",
+              "fact_equation": "f10 + f11"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1611,9 +1638,14 @@
         {
           "value": "11829",
           "fact_num": 15,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "11829 + 0",
+              "fact_equation": "f13 + f14"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1714,9 +1746,14 @@
         {
           "value": "-",
           "fact_num": 18,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "- 13420 + 13420",
+              "fact_equation": "f16 + f17"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1818,9 +1855,14 @@
         {
           "value": "-",
           "fact_num": 21,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "20238 - 20238",
+              "fact_equation": "f19 + f20"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1852,9 +1894,14 @@
         {
           "value": "72819",
           "fact_num": 22,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "54172 + 11829 - 13420 + 20238",
+              "fact_equation": "f10 + f13 + f16 + f19"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1877,18 +1924,23 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            853.8,
-            1482.28,
-            101.96,
-            45.09
+            864.32,
+            1495.8,
+            89.94,
+            30.07
           ]
         },
         {
           "value": "502745",
           "fact_num": 23,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "509563 + 0 + 13420 - 20238",
+              "fact_equation": "f11 + f14 + f17 + f20"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1920,9 +1972,18 @@
         {
           "value": "575564",
           "fact_num": 24,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "563735 + 11829 + 0 + 0",
+              "fact_equation": "f12 + f15 + f18 + f21"
+            },
+            {
+              "equation": "72819 + 502745",
+              "fact_equation": "f22 + f23"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1961,7 +2022,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -2048,7 +2109,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "בניינים",
             "עלות"
           ],
@@ -2082,7 +2143,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "בניינים",
             "פחת שנצבר"
           ],
@@ -2101,9 +2162,14 @@
         {
           "value": "477420",
           "fact_num": 5,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "743166 - 265746",
+              "fact_equation": "f3 - f4"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2116,7 +2182,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "בניינים",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2150,7 +2216,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "בניינים",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2184,7 +2250,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מתקני ספורט",
             "עלות"
           ],
@@ -2218,7 +2284,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מתקני ספורט",
             "פחת שנצבר"
           ],
@@ -2237,9 +2303,14 @@
         {
           "value": "16282",
           "fact_num": 9,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "74901 - 58619",
+              "fact_equation": "f7 - f8"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2252,7 +2323,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מתקני ספורט",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2286,7 +2357,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מתקני ספורט",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2320,7 +2391,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "ריהוט וציוד",
             "עלות"
           ],
@@ -2354,7 +2425,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "ריהוט וציוד",
             "פחת שנצבר"
           ],
@@ -2373,9 +2444,14 @@
         {
           "value": "9043",
           "fact_num": 13,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "90244 - 81201",
+              "fact_equation": "f11 - f12"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2388,7 +2464,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "ריהוט וציוד",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2398,7 +2474,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            401.69,
+            399.89,
             1437.87,
             67.16,
             35.09
@@ -2422,7 +2498,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "ריהוט וציוד",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2456,7 +2532,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מחשבים",
             "עלות"
           ],
@@ -2490,7 +2566,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מחשבים",
             "פחת שנצבר"
           ],
@@ -2509,9 +2585,14 @@
         {
           "value": "-",
           "fact_num": 17,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "49149 - 49149",
+              "fact_equation": "f15 - f16"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2524,7 +2605,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מחשבים",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2558,7 +2639,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "מחשבים",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
@@ -2577,9 +2658,14 @@
         {
           "value": "957460",
           "fact_num": 19,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "743166 + 74901 + 90244 + 49149",
+              "fact_equation": "f3 + f7 + f11 + f15"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2592,7 +2678,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "עלות"
           ],
           "path_source": null,
@@ -2610,9 +2696,14 @@
         {
           "value": "454715",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "265746 + 58619 + 81201 + 49149",
+              "fact_equation": "f4 + f8 + f12 + f16"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2625,7 +2716,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "פחת שנצבר"
           ],
           "path_source": null,
@@ -2643,9 +2734,14 @@
         {
           "value": "502745",
           "fact_num": 21,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "477420 + 16282 + 9043 + 0",
+              "fact_equation": "f5 + f9 + f13 + f17"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2658,7 +2754,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
           "path_source": null,
@@ -2676,9 +2772,14 @@
         {
           "value": "509563",
           "fact_num": 22,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "492391 + 4700 + 12472 + 0",
+              "fact_equation": "f6 + f10 + f14 + f18"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": "3",
           "note_flag": true,
           "note_name": "רכוש קבוע",
@@ -2691,7 +2792,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "א. ההרכב:",
+            "ההרכב",
             "יתרה להפחתה ליום 31 בדצמבר"
           ],
           "path_source": null,
@@ -2724,7 +2825,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ב. שעורי פחת:",
+            "שעורי פחת",
             "בניינים"
           ],
           "path_source": null,
@@ -2733,8 +2834,8 @@
           "value_type": "percent",
           "value_context": "tabular",
           "bbox": [
-            778.08,
-            1631.62,
+            774.6,
+            1633.36,
             119.54,
             27.27
           ]
@@ -2757,7 +2858,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ב. שעורי פחת:",
+            "שעורי פחת",
             "מתקני ספורט"
           ],
           "path_source": null,
@@ -2790,7 +2891,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ב. שעורי פחת:",
+            "שעורי פחת",
             "ריהוט וציוד"
           ],
           "path_source": null,
@@ -2800,9 +2901,9 @@
           "value_context": "tabular",
           "bbox": [
             777.03,
-            1698.7,
+            1703.05,
             117.46,
-            28.32
+            23.97
           ]
         },
         {
@@ -2823,7 +2924,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ב. שעורי פחת:",
+            "שעורי פחת",
             "מחשבים"
           ],
           "path_source": null,
@@ -2833,9 +2934,9 @@
           "value_context": "tabular",
           "bbox": [
             763.98,
-            1736.4,
+            1734.66,
             130.51,
-            26.23
+            27.97
           ]
         }
       ]
@@ -2849,7 +2950,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "באורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -3159,8 +3260,8 @@
           "fact_num": 10,
           "equations": [
             {
-              "equation": "50350 + 0 + 9365 + 3000",
-              "fact_equation": "f4 + f2 + f6 + f8"
+              "equation": "0 + 50350 + 9365 + 3000",
+              "fact_equation": "f2 + f4 + f6 + f8"
             }
           ],
           "natural_sign": "positive",

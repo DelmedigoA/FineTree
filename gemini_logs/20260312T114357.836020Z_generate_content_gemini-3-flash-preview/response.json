@@ -1,0 +1,78 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Thu, 12 Mar 2026 11:44:01 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=3479",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"meta_updates\": {\n    \"statement_type\": \"notes_to_financial_statements\"\n  },\n  \"fact_updates\": [\n    {\n      \"fact_num\": 1,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"duration_type\": \"recurrent\",\n        \"recurring_period\": \"yearly\",\n        \"date\": \"2021\",\n        \"value_context\": \"tabular\",\n        \"value_type\": \"percent\",\n        \"row_role\": \"detail\",\n        \"path_source\": \"observed\",\n        \"note_name\": \"באור 2 - עיקרי המדיניות החשבונאית\",\n        \"note_ref\": \"2\"\n      }\n    },\n    {\n      \"fact_num\": 2,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"duration_type\": \"recurrent\",\n        \"recurring_period\": \"yearly\",\n        \"date\": \"2021\",\n        \"value_context\": \"tabular\",\n        \"value_type\": \"percent\",\n        \"row_role\": \"detail\",\n        \"path_source\": \"observed\",\n        \"note_name\": \"באור 2 - עיקרי המדיניות החשבונאית\",\n        \"note_ref\": \"2\"\n      }\n    }\n  ]\n}",
+            "thought": null,
+            "thought_signature": "EjQKMgG-Pvb7IxmDFh8RQGgwtjlgdYP6VbdpeF8bFRA2bn2Gmemh4Rvea13bqGATaaKx3dkc",
+            "video_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3-flash-preview",
+  "prompt_feedback": null,
+  "response_id": "AaeyafyqFZ-tkdUP0suuiQo",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 327,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 2587,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 1495
+      },
+      {
+        "modality": "IMAGE",
+        "token_count": 1092
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 2914,
+    "traffic_type": null
+  },
+  "automatic_function_calling_history": [],
+  "parsed": null
+}
