@@ -65,6 +65,22 @@ def test_prompt_contract_is_page_only() -> None:
     assert "נכסים שוטפים" in prompt
 
 
+def test_custom_schema_preview_is_page_only() -> None:
+    from finetree_annotator.schema_contract import build_custom_extraction_prompt_template, build_custom_extraction_schema_preview
+
+    preview = build_custom_extraction_schema_preview(
+        page_meta_keys=("page_type", "title"),
+        fact_keys=("value", "currency"),
+    )
+    prompt = build_custom_extraction_prompt_template(
+        page_meta_keys=("page_type", "title"),
+        fact_keys=("value", "currency"),
+    )
+    assert '"images_dir"' not in preview
+    assert '"metadata"' not in preview
+    assert "page-only wrapper" in prompt
+
+
 def test_equation_schema_is_present_in_model_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
     fill_prompt = default_gemini_fill_prompt_template()

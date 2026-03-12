@@ -421,6 +421,21 @@ def test_smart_resize_dimensions_supports_required_factor_signature(monkeypatch)
     assert (h, w) == (120, 240)
 
 
+def test_smart_resize_dimensions_falls_back_when_qwen_import_fails(monkeypatch) -> None:
+    original_import = __import__
+
+    def _raising_import(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "qwen_vl_utils.vision_process":
+            raise ModuleNotFoundError("No module named 'torchvision'")
+        return original_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr("builtins.__import__", _raising_import)
+    h, w = push_mod._smart_resize_dimensions(2301, 1657, min_pixels=None, max_pixels=1_200_000)
+    assert h % 28 == 0
+    assert w % 28 == 0
+    assert h * w <= 1_200_000
+
+
 def test_resolve_resize_bounds_validation() -> None:
     assert push_mod._resolve_resize_bounds(None, None) is None
     assert push_mod._resolve_resize_bounds(100, 200) == (100, 200)
@@ -696,6 +711,37 @@ def test_push_train_validation_separately_uses_train_split_for_both_repos(monkey
     ]
 
 
+def test_repo_id_with_scope_suffix_appends_and_deduplicates() -> None:
+    assert (
+        push_mod._repo_id_with_scope_suffix(
+            "asafd60/FineTree-annotated-pages",
+            approved_pages_only=True,
+        )
+        == "asafd60/FineTree-annotated-pages-approved"
+    )
+    assert (
+        push_mod._repo_id_with_scope_suffix(
+            "asafd60/FineTree-annotated-pages-approved",
+            approved_pages_only=True,
+        )
+        == "asafd60/FineTree-annotated-pages-approved"
+    )
+    assert (
+        push_mod._repo_id_with_scope_suffix(
+            "asafd60/FineTree-annotated-pages-approved-minimal-instruction",
+            approved_pages_only=True,
+        )
+        == "asafd60/FineTree-annotated-pages-approved-minimal-instruction"
+    )
+    assert (
+        push_mod._repo_id_with_scope_suffix(
+            "asafd60/FineTree-annotated-pages",
+            approved_pages_only=False,
+        )
+        == "asafd60/FineTree-annotated-pages-reviewed"
+    )
+
+
 def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     captured: dict[str, object] = {}
 
@@ -707,6 +753,10 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         validation_doc_ids: set[str] | None = None,
         approved_pages_only: bool = False,
         drop_date: bool = False,
+        prompt_template_override: str | None = None,
+        selected_page_meta_keys: tuple[str, ...] | None = None,
+        selected_fact_keys: tuple[str, ...] | None = None,
+        page_only_wrapper: bool = False,
     ) -> None:
         captured["config"] = str(config_path)
         captured["allow_format_issues"] = allow_format_issues
@@ -714,6 +764,10 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         captured["validation_doc_ids"] = validation_doc_ids
         captured["approved_pages_only"] = approved_pages_only
         captured["drop_date"] = drop_date
+        captured["prompt_template_override"] = prompt_template_override
+        captured["selected_page_meta_keys"] = selected_page_meta_keys
+        captured["selected_fact_keys"] = selected_fact_keys
+        captured["page_only_wrapper"] = page_only_wrapper
 
     def _fake_export(
         root: Path,
@@ -787,8 +841,21 @@ def test_main_forwards_reviewed_and_validation_doc_ids(monkeypatch, tmp_path: Pa
         validation_doc_ids: set[str] | None = None,
         approved_pages_only: bool = False,
         drop_date: bool = False,
+        prompt_template_override: str | None = None,
+        selected_page_meta_keys: tuple[str, ...] | None = None,
+        selected_fact_keys: tuple[str, ...] | None = None,
+        page_only_wrapper: bool = False,
     ) -> None:
-        _ = config_path, allow_format_issues, approved_pages_only, drop_date
+        _ = (
+            config_path,
+            allow_format_issues,
+            approved_pages_only,
+            drop_date,
+            prompt_template_override,
+            selected_page_meta_keys,
+            selected_fact_keys,
+            page_only_wrapper,
+        )
         captured["include_doc_ids"] = include_doc_ids
         captured["validation_doc_ids"] = validation_doc_ids
 
@@ -825,6 +892,72 @@ def test_main_forwards_reviewed_and_validation_doc_ids(monkeypatch, tmp_path: Pa
     assert rc == 0
     assert captured["include_doc_ids"] == {"pdf_7", "pdf_9"}
     assert captured["validation_doc_ids"] == {"pdf_9"}
+
+
+def test_main_forwards_custom_schema_key_selection(monkeypatch, tmp_path: Path) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_build_dataset(
+        config_path: Path,
+        *,
+        allow_format_issues: bool = False,
+        include_doc_ids: set[str] | None = None,
+        validation_doc_ids: set[str] | None = None,
+        approved_pages_only: bool = False,
+        drop_date: bool = False,
+        prompt_template_override: str | None = None,
+        selected_page_meta_keys: tuple[str, ...] | None = None,
+        selected_fact_keys: tuple[str, ...] | None = None,
+        page_only_wrapper: bool = False,
+    ) -> None:
+        _ = (
+            config_path,
+            allow_format_issues,
+            include_doc_ids,
+            validation_doc_ids,
+            approved_pages_only,
+            drop_date,
+            page_only_wrapper,
+        )
+        captured["prompt_template_override"] = prompt_template_override
+        captured["selected_page_meta_keys"] = selected_page_meta_keys
+        captured["selected_fact_keys"] = selected_fact_keys
+        captured["page_only_wrapper"] = page_only_wrapper
+
+    monkeypatch.setattr(push_mod, "build_dataset", _fake_build_dataset)
+    monkeypatch.setattr(push_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(push_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 0})
+    monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+    monkeypatch.setattr(push_mod, "push_to_hf", lambda *_args, **_kwargs: "asafd60/FineTree-annotated-pages")
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = push_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages",
+                "--page-meta-keys",
+                "page_type,title",
+                "--fact-keys",
+                "value,currency",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert captured["selected_page_meta_keys"] == ("page_type", "title")
+    assert captured["selected_fact_keys"] == ("value", "currency")
+    assert isinstance(captured["prompt_template_override"], str)
 
 
 def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path: Path) -> None:
@@ -895,9 +1028,10 @@ def test_push_all_variants_runs_no_bbox_source_and_minimal(monkeypatch, tmp_path
     assert rc == 0
     assert ("export", "source") in calls
     assert ("export", "minimal") in calls
-    assert ("push_main", "asafd60/FineTree-annotated-pages-minimal-instruction") in calls
-    assert ("push", "source:asafd60/FineTree-annotated-pages-no-bbox") in calls
-    assert ("push", "minimal:asafd60/FineTree-annotated-pages-no-bbox-minimal-instruction") in calls
+    assert ("push_main", "asafd60/FineTree-annotated-pages-reviewed") in calls
+    assert ("push_main", "asafd60/FineTree-annotated-pages-reviewed-minimal-instruction") in calls
+    assert ("push", "source:asafd60/FineTree-annotated-pages-reviewed-no-bbox") in calls
+    assert ("push", "minimal:asafd60/FineTree-annotated-pages-reviewed-no-bbox-minimal-instruction") in calls
 
 
 def test_push_all_variants_uses_main_repo_base_for_derived_variant_ids(monkeypatch, tmp_path: Path) -> None:
@@ -944,10 +1078,50 @@ def test_push_all_variants_uses_main_repo_base_for_derived_variant_ids(monkeypat
         monkeypatch.chdir(cwd)
 
     assert rc == 0
-    assert ("push_main", "asafd60/FineTree-annotated-pages-v2") in calls
-    assert ("push_main", "asafd60/FineTree-annotated-pages-v2-minimal-instruction") in calls
-    assert ("push", "source:asafd60/FineTree-annotated-pages-v2-no-bbox") in calls
-    assert ("push", "minimal:asafd60/FineTree-annotated-pages-v2-no-bbox-minimal-instruction") in calls
+    assert ("push_main", "asafd60/FineTree-annotated-pages-v2-reviewed") in calls
+    assert ("push_main", "asafd60/FineTree-annotated-pages-v2-reviewed-minimal-instruction") in calls
+    assert ("push", "source:asafd60/FineTree-annotated-pages-v2-reviewed-no-bbox") in calls
+    assert ("push", "minimal:asafd60/FineTree-annotated-pages-v2-reviewed-no-bbox-minimal-instruction") in calls
+
+
+def test_main_appends_approved_suffix_to_push_repo_ids(monkeypatch, tmp_path: Path) -> None:
+    captured: list[str] = []
+
+    monkeypatch.setattr(push_mod, "build_dataset", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(push_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(push_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(push_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 0})
+    monkeypatch.setattr(push_mod, "export_for_hf", lambda *_args, **_kwargs: (1, 0))
+    monkeypatch.setattr(push_mod, "build_hf_dataset_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 0))
+
+    def _fake_push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True):
+        _ = dataset, token, private
+        captured.append(str(repo_id))
+        return str(repo_id)
+
+    monkeypatch.setattr(push_mod, "push_to_hf", _fake_push_to_hf)
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = push_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-annotated-pages",
+                "--approved-pages-only",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert captured == ["asafd60/FineTree-annotated-pages-approved"]
 
 
 def test_main_blocks_on_format_issues_by_default(monkeypatch, tmp_path: Path) -> None:

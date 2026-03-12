@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from textwrap import dedent
-from typing import Any
+from typing import Any, Sequence
 
 from .schema_registry import SchemaRegistry
 
@@ -30,6 +30,143 @@ ENTITY_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["entity_t
 PERIOD_TYPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["period_types"])
 PATH_SOURCE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["path_sources"])
 REPORT_SCOPE_VALUES: tuple[str, ...] = tuple(_EXTRACT_CONTRACT["enums"]["report_scope"])
+
+_PAGE_META_SCHEMA_LINES: dict[str, str] = {
+    "entity_name": '"entity_name": "<string or null>"',
+    "page_num": '"page_num": "<string or null>"',
+    "page_type": f'"page_type": "{"|".join(PAGE_TYPE_VALUES)}"',
+    "statement_type": f'"statement_type": "{"|".join(STATEMENT_TYPE_VALUES)}|null"',
+    "title": '"title": "<string or null>"',
+}
+
+_FACT_SCHEMA_LINES: dict[str, str] = {
+    "value": '"value": "<string>"',
+    "equations": dedent(
+        """
+        "equations": [
+          {
+            "equation": "<string>",
+            "fact_equation": "<string or null>"
+          }
+        ]|null
+        """
+    ).strip(),
+    "value_type": f'"value_type": "{"|".join(VALUE_TYPE_VALUES)}|null"',
+    "value_context": f'"value_context": "{"|".join(VALUE_CONTEXT_VALUES)}|null"',
+    "natural_sign": f'"natural_sign": "{"|".join(NATURAL_SIGN_VALUES)}|null"',
+    "row_role": f'"row_role": "{"|".join(ROW_ROLE_VALUES)}"',
+    "currency": f'"currency": "{"|".join(CURRENCY_VALUES)}|null"',
+    "scale": f'"scale": {"|".join(str(value) for value in SCALE_VALUES)}|null',
+    "date": '"date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>"',
+    "period_type": f'"period_type": "{"|".join(PERIOD_TYPE_VALUES)}|null"',
+    "period_start": '"period_start": "<YYYY-MM-DD|null>"',
+    "period_end": '"period_end": "<YYYY-MM-DD|null>"',
+    "duration_type": '"duration_type": "recurrent|null"',
+    "recurring_period": '"recurring_period": "daily|quarterly|monthly|yearly|null"',
+    "note_flag": '"note_flag": <true|false>',
+    "note_num": '"note_num": "<integer or null>"',
+    "note_name": '"note_name": "<string or null>"',
+    "path": '"path": ["<string>", "..."]',
+    "path_source": f'"path_source": "{"|".join(PATH_SOURCE_VALUES)}|null"',
+    "note_ref": '"note_ref": "<string or null>"',
+    "comment_ref": '"comment_ref": "<string or null>"',
+}
+
+
+def _selected_keys(keys: Sequence[str] | None, allowed: Sequence[str]) -> list[str]:
+    allowed_set = {str(key) for key in allowed}
+    if keys is None:
+        return [str(key) for key in allowed]
+    selected: list[str] = []
+    for key in keys:
+        normalized = str(key or "").strip()
+        if not normalized or normalized not in allowed_set or normalized in selected:
+            continue
+        selected.append(normalized)
+    return selected
+
+
+def build_custom_extraction_schema_preview(
+    *,
+    page_meta_keys: Sequence[str] | None = None,
+    fact_keys: Sequence[str] | None = None,
+) -> str:
+    selected_page_meta_keys = _selected_keys(page_meta_keys, PROMPT_PAGE_META_KEYS)
+    selected_fact_keys = _selected_keys(fact_keys, PROMPT_FACT_KEYS)
+
+    meta_lines = [_PAGE_META_SCHEMA_LINES[key] for key in selected_page_meta_keys]
+    fact_lines = ['"bbox": [<x>, <y>, <w>, <h>]']
+    fact_lines.extend(_FACT_SCHEMA_LINES[key] for key in selected_fact_keys)
+    meta_body = ",\n        ".join(meta_lines)
+    fact_body = ",\n          ".join(fact_lines)
+    return dedent(
+        f"""
+        {{
+          "pages": [
+            {{
+              "image": "<string or null>",
+              "meta": {{
+                {meta_body}
+              }},
+              "facts": [
+                {{
+                  {fact_body}
+                }}
+              ]
+            }}
+          ]
+        }}
+        """
+    ).strip()
+
+
+def build_custom_extraction_prompt_template(
+    *,
+    page_meta_keys: Sequence[str] | None = None,
+    fact_keys: Sequence[str] | None = None,
+) -> str:
+    selected_page_meta_keys = _selected_keys(page_meta_keys, PROMPT_PAGE_META_KEYS)
+    selected_fact_keys = _selected_keys(fact_keys, PROMPT_FACT_KEYS)
+    schema_preview = build_custom_extraction_schema_preview(
+        page_meta_keys=selected_page_meta_keys,
+        fact_keys=selected_fact_keys,
+    )
+    selected_page_meta = ", ".join(selected_page_meta_keys) if selected_page_meta_keys else "(none)"
+    selected_fact = ", ".join(["bbox", *selected_fact_keys]) if selected_fact_keys else "bbox"
+    lines = [
+        "You are extracting financial-statement annotations from a single page image.",
+        "",
+        "Return ONLY valid JSON.",
+        "Do NOT return markdown, code fences, comments, prose, or extra keys.",
+        "",
+        "Return the exact page-only wrapper shown below. Include only the selected page-meta and fact keys.",
+        "Runtime owns page image values and may overwrite them during export.",
+        "",
+        "Selected page meta keys:",
+        f"- {selected_page_meta}",
+        "",
+        "Selected fact keys:",
+        f"- {selected_fact}",
+        "",
+        "Exact schema:",
+        schema_preview,
+        "",
+        "Rules:",
+        "1. Emit exactly one page inside `pages`.",
+        "2. Extract only visible numeric/table facts. Do not emit standalone labels or headings as facts.",
+        "3. `bbox` must use original-image pixel coordinates `[x, y, w, h]` and tightly cover the value text.",
+        "4. Preserve value text exactly as printed, including `%`, commas, parentheses, and dash placeholders.",
+        "5. Use JSON `null` for missing optional values. Do not emit the string `\"null\"`.",
+        "6. Keep UTF-8 Hebrew directly; do not escape it to unicode sequences.",
+        "7. Order facts top-to-bottom; within each row use right-to-left for Hebrew pages and left-to-right for English pages.",
+    ]
+    if "equations" in selected_fact_keys:
+        lines.append("8. Use `equations=null` unless the source explicitly shows a reliable arithmetic relation.")
+    if "path" in selected_fact_keys:
+        lines.append("9. Keep `path` as a list of visible hierarchy labels; use `[]` when unknown.")
+    if "page_type" in selected_page_meta_keys or "statement_type" in selected_page_meta_keys:
+        lines.append("10. Classify page type and statement type from visible page context only.")
+    return "\n".join(lines).strip()
 
 
 def schema_snapshot() -> dict[str, Any]:

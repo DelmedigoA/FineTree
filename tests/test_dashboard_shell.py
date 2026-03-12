@@ -184,6 +184,7 @@ def test_push_view_builds_cli_args() -> None:
                 progress_pct=100,
                 status="Complete",
                 updated_at=None,
+                approved_page_count=5,
                 checked=True,
                 reviewed=True,
             ),
@@ -198,14 +199,20 @@ def test_push_view_builds_cli_args() -> None:
                 progress_pct=75,
                 status="In progress",
                 updated_at=None,
+                approved_page_count=3,
                 checked=True,
                 reviewed=True,
             ),
         ]
     )
+    assert view.train_docs_list.count() == 2
+    assert view.validation_docs_list.count() == 2
     first_item = view.validation_docs_list.item(0)
     assert first_item is not None
     first_item.setCheckState(2)
+    train_first_item = view.train_docs_list.item(0)
+    assert train_first_item is not None
+    assert train_first_item.checkState() == 0
 
     argv = view._build_argv()
     assert argv[:6] == ["--config", "configs/custom.yaml", "--export-dir", "artifacts/custom_export", "--instruction-mode", "minimal"]
@@ -216,6 +223,9 @@ def test_push_view_builds_cli_args() -> None:
     assert "--repo-id" in argv
     assert "--token" in argv
     assert "--public" in argv
+    assert "--approved-pages-only" in argv
+    assert "--page-meta-keys" in argv
+    assert "--fact-keys" in argv
     assert "--compact_tokens" in argv
     assert "--aggressive-compact-tokens" in argv
     assert "--push-all-variants" in argv
@@ -227,9 +237,146 @@ def test_push_view_builds_cli_args() -> None:
     assert "--repo-id-validation" in argv
     assert view.form_scroll.objectName() == "pushFormScroll"
     assert view.form_content.maximumWidth() == 720
-    assert view.form_scroll.maximumWidth() == 760
+    assert view.form_scroll.maximumWidth() == 1100
     assert view.basics_card.objectName() == "surfaceCard"
-    assert view.results_card.minimumWidth() == 400
+    assert view.content_splitter.objectName() == "pushContentSplitter"
+    assert view.results_card.minimumWidth() == 320
+    assert view.results_card.maximumWidth() == 560
+    assert '"date"' not in view.schema_preview_view.toPlainText()
+    assert "Selected fact keys" in view.prompt_preview_view.toPlainText()
+    assert "Skipped non-approved pages: 1" in view.preview_summary_label.text()
+    view.close()
+
+
+def test_push_view_allows_approved_pdf_without_review_flag() -> None:
+    _qt_app()
+    view = dashboard.PushView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_approved_only",
+                source_pdf=Path("/tmp/doc_approved_only.pdf"),
+                images_dir=Path("/tmp/doc_approved_only"),
+                annotations_path=Path("/tmp/doc_approved_only.json"),
+                thumbnail_path=None,
+                page_count=3,
+                annotated_page_count=3,
+                progress_pct=100,
+                status="Complete",
+                updated_at=None,
+                approved_page_count=2,
+                checked=True,
+                reviewed=False,
+            ),
+        ]
+    )
+    assert view.train_docs_list.count() == 1
+    assert view.validation_docs_list.count() == 1
+    argv = view._build_argv()
+    assert "--include-doc-ids" in argv
+    assert "doc_approved_only" in argv
+    assert "1 eligible PDF" in view.reviewed_docs_summary.text()
+    assert "Approved pages to push: 2" in view.preview_summary_label.text()
+    view.close()
+
+
+def test_push_view_allows_approved_pdf_without_checked_or_complete_status() -> None:
+    _qt_app()
+    view = dashboard.PushView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_partial_approved",
+                source_pdf=Path("/tmp/doc_partial_approved.pdf"),
+                images_dir=Path("/tmp/doc_partial_approved"),
+                annotations_path=Path("/tmp/doc_partial_approved.json"),
+                thumbnail_path=None,
+                page_count=6,
+                annotated_page_count=2,
+                progress_pct=33,
+                status="In progress",
+                updated_at=None,
+                approved_page_count=2,
+                checked=False,
+                reviewed=False,
+            ),
+        ]
+    )
+    assert view.train_docs_list.count() == 1
+    assert view.validation_docs_list.count() == 1
+    assert view.selected_train_doc_ids() == ["doc_partial_approved"]
+    argv = view._build_argv()
+    assert "--include-doc-ids" in argv
+    assert "doc_partial_approved" in argv
+    assert "Approved pages to push: 2" in view.preview_summary_label.text()
+    assert "Skipped non-approved pages: 4" in view.preview_summary_label.text()
+    assert "1 eligible PDF" in view.reviewed_docs_summary.text()
+    view.close()
+
+
+def test_push_view_train_and_validation_lists_are_mutually_exclusive() -> None:
+    _qt_app()
+    view = dashboard.PushView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_a",
+                source_pdf=Path("/tmp/doc_a.pdf"),
+                images_dir=Path("/tmp/doc_a"),
+                annotations_path=Path("/tmp/doc_a.json"),
+                thumbnail_path=None,
+                page_count=3,
+                annotated_page_count=3,
+                progress_pct=100,
+                status="Complete",
+                updated_at=None,
+                approved_page_count=2,
+                checked=True,
+                reviewed=False,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="doc_b",
+                source_pdf=Path("/tmp/doc_b.pdf"),
+                images_dir=Path("/tmp/doc_b"),
+                annotations_path=Path("/tmp/doc_b.json"),
+                thumbnail_path=None,
+                page_count=2,
+                annotated_page_count=2,
+                progress_pct=100,
+                status="Complete",
+                updated_at=None,
+                approved_page_count=1,
+                checked=True,
+                reviewed=False,
+            ),
+        ]
+    )
+    assert view.train_docs_list.count() == 2
+    assert view.validation_docs_list.count() == 2
+    assert view.selected_train_doc_ids() == ["doc_a", "doc_b"]
+    assert view.selected_validation_doc_ids() == []
+
+    first_validation_item = view.validation_docs_list.item(0)
+    assert first_validation_item is not None
+    first_validation_item.setCheckState(2)
+    assert view.selected_validation_doc_ids() == ["doc_a"]
+    assert view.selected_train_doc_ids() == ["doc_b"]
+
+    view.select_all_train_btn.click()
+    assert view.selected_train_doc_ids() == ["doc_a", "doc_b"]
+    assert view.selected_validation_doc_ids() == []
+
+    view.select_all_validation_btn.click()
+    assert view.selected_train_doc_ids() == []
+    assert view.selected_validation_doc_ids() == ["doc_a", "doc_b"]
+
+    view.clear_all_validation_btn.click()
+    assert view.selected_validation_doc_ids() == []
+    assert view.selected_train_doc_ids() == []
+
+    view.select_all_train_btn.click()
+    assert view.selected_included_doc_ids() == ["doc_a", "doc_b"]
+    assert "Approved pages to push: 3" in view.preview_summary_label.text()
     view.close()
 
 
