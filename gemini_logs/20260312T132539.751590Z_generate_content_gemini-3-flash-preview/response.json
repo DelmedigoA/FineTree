@@ -1,0 +1,78 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Thu, 12 Mar 2026 13:26:04 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=24548",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "```json\n{\n  \"meta_updates\": {},\n  \"fact_updates\": [\n    {\n      \"fact_num\": 1,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 2,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 3,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 4,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 5,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 6,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 7,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 8,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 9,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 10,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 11,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 12,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 13,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 14,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 15,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 16,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 17,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 18,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 19,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 20,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 21,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 22,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 23,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 24,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 25,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 26,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 27,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 28,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 29,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 30,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 31,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 32,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 33,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 34,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 35,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2022-01-01\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 36,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2021-01-01\",\n        \"period_end\": \"2021-12-31\"\n      }\n    }\n  ]\n}\n```",
+            "thought": null,
+            "thought_signature": "EpkgCpYgAb4-9vukqTADMnoQdIUQNi0HrXGBpBZ8-hpS64NO_U_rJSmfvfCKAIw8-e1S0udiLBg5IW0U4Z0KGGuz8e_VvKN7UqO6ec6PJO6iVnE9mEFY_7bA6GytSP4J0YASCk5Au7DvNL8HNYoJqfBEmiWRjLc5oMRvDbHRCjHHDI67gov2iTtYJEiRy1g3Utl3HoSp-s7trLc6kuXnp5x5GaLgDikfZfjEft_oKb2udHdSmGVLHiceh8awGSGR2omwe4jAKosVykegZBUVf6sItjlfIKu8NzyZZCXnceNjZL1yKhz5vD7b2f6pwyrCd7vwOfkihhuG9OfsBTw6rLgEZy0maUeNEfX3GoA2nTbfzCC46TmAaE4-uT162YB_yXqxgPtVfcISYn-NxxytAD4pF1P2VJfF2y-4VpqrbDk3oL6Yw-HXibGZDG26xuzY7CF9fuDSOXIWzYnaY14ZZhOehx4B1uH_kr-3udHcH4p5uJzeqGnSOADvzMGJzIj7g0ZNrTjwqkWkrGK0pz8b9F2MXw0dlxitk8MSs_4OFZ8qUyIffZ5tu5A0DPS9Wo7uybm649VdXDvyplat5MF_Ad0A2zOVh7pjHECqKTgDuHc24xtBBfsTqEOt_PJO3grR40W8Dg92RI1mlPZ5bTF3maFjSKCfdfkyLfhRuR_CVErqD6C4XJpLKFM53uOaWlw7TybJQF2AnPGm7g9yaGIWBSNeCQPsO0ozln-yVgNr_fDAh62mVr0gFL2xEUkfiaqKLHLmIyxyR9GjdFbnhoMaFvAsiGqI7oMLk3dD5PTwDbZt3Hgo1zsX562yDhertXdusrph9X3W2VMQfjGThS6gLTHK4ifewgb53iXx1NQOMq6oL0CWsWWc5V2jvZz4zkTdFUMqsHihG2RCdAQ0uNGiFGB1iv2D9j7xRvr8Cxxx2yvALo8kxvgccNYzoNW1Teke12ZxxEjeuo5tpdSNweCFO6aFBEU-g8Ny_ZoZzT-at4XBrwXekTTJmBzHlFRcSZTcHS0Qxof1uQFIg3ruEn47M9xcwmER83BDWjI-sxo_AdsW3586rWNHldt4ZGaNPmA1z1lKEg8doPXe0-ykpKsOtPjW8v5kySWWR3xsKdfEjk4ugWpWxIE39FG-hVD_vaXR-DWXMa-lvye9pujX91bh8gqeuFVRYlfeTu2Oel0mJ2hhlc1t7zu18SHvHpwqM0XZZMdcLjUgg2PAUSBkAQKNDlc7nA3q2O7s08nva4NsJodbY9cYQqJ8PcYyMWCWrRIy1Rl9qCXYB6ch3jJgwvyPKKuJ1TdHmJO2u8Fib6P8zYU3VMGpI6ePNQ56YE3wtZWfVfjwuv36F9PIe_NtAQGwX40LjaT0ep65O55b0BAf1qeo8QBsoEBjde5YhI0dhBWP2P1z9gXFVqgkuxnppT0p4E2ozZZyE5BhsFJmYLomGLd3ET5Ii7zRW6_2tMnHgSIC0lRC-OhHd5I0dRDocmjHINbxavjt3a6aGx8xCpu2V5cMzrA0eaGB9KMeXDT74mULZcnJbMIzPHSORUMAo8Loz0jrRHweCTy4hPNN-0FvnfaROe1VMPbqWQX2cFHGCeTqwDQtJnFVu2-OP--Qo_7mwaGXe0dDPZRwBqU-8cWhGcZkmv9MePrFpg-mR2MH4Uf5EczucyPlwN_8u-z0nmRgHWDq43u8k1iQIidScnL8wjRFf6SvwyQ1Pa00dd6rLxp2hHPp1489urtb6mJBEd3Pm64MPc5i6PGubFrAguSzaYENO51pCjEdGox70y1G8bCcn91ovNvwj1OmLHO8IDuURVggS24AGV7JVzFuonrOR3GU5D1jBJTX1K6m_l9GmHTGWaeYKaKinFbbu0fNs6zgVpkfjJe0rO5x7Y4C7ziulNyaH1XGVi3J0cRMnMu-_i34ZWg7fgaiNZIARRJvlxwQsgKVcDQwgLVLQjF1lxkbG3s4wdiIW1jTEyXbhHpPKh-4eNyyZALC2XMoVCslsOeWqoJw_DXQpF-HgcjD77_frko48hKznN9BATrwAypJUFgn_Hx5wxGCjqSUekbgHOuqgCrFyVF5BUiwIc0hK3XEKJOexTePM0BlMiXrf34qgQHifjhXzwJC-6WxR5MgcXyHum2P1-sNZ4GZNsX2J6FuBaIDhoSVqfRLL4wi8v2CunUnyZq2vpFE7gqrxXvAKiSLO-Gm4Esqdulu6iGdlflOGXLbaR_7aNSkPvJMo-KPblvI92-yuvmaUnxqGkUHMDInmttVgvVkX2fUcEdhH5TUmhDHWO7Hmk4mMksOGpXWL8GFj6L8EOhJudA2mhsfQC7HvXL4X9ZJsrAmszbMFUMPdxpaSwfBvDcpSsxH1pY9YzzLBSAWpyovDe7Ob7a247QBR3A15dkM9FpzZgF7yZDU5bE12EUoVwMTRnyG8FnmXIgaJlflyqUoZXIc_sAfTeFdd8adUKo1plcxkIhaWF6HeLF-fNywb9hp6HS62YLhrtugUZTjKUEXfr5c_YeOKjAmW6szXk94Jva7iV9NG-3NWJbQnqXfNqWoqLBXewON45SHoLSo6qmdG4h7yzaAwwkqlhz337lMgsaIMw5NsAeizVKfMcroKpZXR3j1y-WUw790ckPH2ULoLWGzOoHuyOND-u8x5hV_-9Vi3hCkCGHLjePI4TawHzB6QCkXuVByHpu0hlLb3sV86Z1HKjvJC_HYQti-Q5-pwqb76DVkBjtb8gZFpoNbFtsoj3idyT5asIDs7q-CwK3iAtuZX0QFcp7O0PfVlRvXIYQMjT0rCfjDWxAY3tLdV_-VpenF14X7F3AZ7u_4b-I0XGNa0AwSd_jydlo-6tWOOsGKXWphFENg-lVfb1UCWthI2EVxSL1-o_6bydMiz-8J9Y_BTWfiZhfJlZkmSKNLsnAOhKCDZvd4ahhqnceBlWtpynA1D9hpi_10RMC4bO9xfB0MS5HDnouimxHt9nHzZ_ZwEIEVkwlqPQXgoaxAaO5WJMPgfrCTxSAanRj-BdbRu79b9MzcaW4l5udOcuUYbTB_nNzwOCrMrbAzIBy43V6rEEsP_bxcVQ5NPaF9nccSG_ueurVw5oxrYKqeEOGn8aKkyhjW-XRNYAW4tStk5diA931yfyJKj6QTGDz4GWyAzVHK0_sQzQH2XkdJS8A-AGcQn5Hs03l4LOYe5rSrQ-l4rS3cMq9Y7kz406ss3FbQ03RIxbRN9nfgs-Rt2pnMCCBbqAmN7Z8KK016uK7JOzOvU9u7zwdwCn9MyItvZLQGGyqITjR5q_7pM5ilAcnp_MhcAGWDRw46iDO_1tJbIB4suZU1FuuONpkPGiBc7p-cre8PelSd6AQParh--PWXwxaUwtc-8AhN02mjrf_WBmrsMTAfurmKO3qGeMkMig-bqI3JdDXQWywBFIfhtvZeS7RxKybp-5UL0gkYJVpW_0gdSzucqC0_pzurM7J0mqxdF4BRnuPOQB7oveSvK5h7n5QnsVly26bNC7SdZo2gXCMmJOVM-kxggmkcTrTz358BWGVxgr3ovDOhIUrtWWE8lhFEbl5jCDRMWYvgtvnNyUApYHoZ0whts-8d0ThptAYpCSMOa2xonc1MBeUQTdBEzKzOU3wYcZtXTJWzqsaMsFshXNwh_A9HhI_kj9rz7egJR3783bPAkngige0Etp1mjSyxtJlHoEA3S_fcThN1v3bfIqMkTcNwNhczoYPeQ8mFTAbI-RkP0KIL8e2ow4KvA7lucjZEo5JWy4myEhpAkGfnGMk3rYlnQfuVozpRKI7amZ4N158Nj4G5-zppTJPkRfCqGvUvKtYpWbrBTJsPbO5pbsibpaBNySx2I5vCRZQk-2RXWb1ATP5C8-Np0ceDOjgfL9OfTO5Myq-hy5ybGow7qzoEc9lgLRKB8AEtl6LAFT9uS0hiw60g0a-ific0PG-vKzbQxAUdDk2MQgKGqw2Xbram8HHHmRI1eHf6BVFjGEXGCobS7Qe3kgybFRarrHaF0_vI8dYnbvKvUaLR92iQkMQ3HStfBhyLBoC0UAnPCx8zebQSFh12DJHTNIdMsiO_dS4bcgS8UAzSCltZi0SZmrjcDI02BG88m4ztVpbKpX5PFD_4jC718z81psU4HdXnwmArtArl0stSNAqMUg88o63Gs1ygOeqcaP0WcMN-6OhFIO2s61MhjBcqN2JEshnfhZ1l1b4gE72TFk9lACbKAHfVnXMgNTNzI0lRSgRe8guMfQIQI96jaNnxNtxMGs9EI_qjPSNneMs6C2gGrWMNqyDGigNhlZEMfalUdCtNur5tnTeJiaRAs3Hx6oTzGgSJYrtsuqpZn8Y5x8JiC0bqIOGjMwBuLESzlC4tso8YgCsdvw66rn9b93gkGI-6nrrjryKB9-KnUWaKIfFuOGus2PHoaNS66yRLqYuSQX5QRwPRHHWQJJm3v5trIkrEam3f7Dczqw5i1hPVYnPD0f50fUWTH1humTT2WDfnzxc9PDFmihXRLcPO9496Kzegy_jZbBCSTgzCHg3cmcNVQ6oWuKrIg_PD9by9p_--LdsmOQXaJ9gBt0twWPNxUP5eyD2VuaHoFTmOH_NvUmgb0m9tFmFJFsNiVgqdSqYWmZCaDGUPMJ9iaAzBw9lH8MiPstI9ts8W226InyyqB85xLYHTJUiWY5lfsq_S0hWSNWYwtuUOS3wMmRUw78e_PiV1vMANdzbbiXRt2QxbIQKKRB21TISf3AiwzbAS7KJn_x8FAEqZEt2qsHUco6faCC9Q9esVNj-zu9UuNvvmv0b32FP-ycrtzZyl0kdKbBniMxFjVgS20SUUL6LJSbDXWvP2s_OD5V4s3H3lXmnyVDm29UW9uRRUiZtQ9HbA4ryU1iZ5RsJ4dY-MB3qi81if5WncZPPg5Rd_TuavxV1n4LBzlXbia2w9ezLlcjk0tct9vIiACMH80ktVV2FIdaBMbcxq9b1xpHZDfqkvPctJ1py3tikpimsr2B5vo0miuAK-jmIDZzOapy53jXhFStVYYD38g9NkQ3RBvwLI4WQvRjQdxdmn_oWr_kgrfsFd6-qkoyoAYiKJCOhSGYgZoH1gTSRHVq4Dle6B0L14FOnuhZMzuiR1ALa6I_jBjvkql3KF33WAg3W23bVQs8LmyG2IIJve7gCS4RsGzzkW-1hl8AamV7i7sUK4Q8-ftQA6l_pvdmkp29YFquLbz7s-x7LN3G8Q75gDk2ZIi8qIUjOAu2rt4lCdjn6UoqQHBt52tENe-RYnUb92b0e85SpD2lP5kdD2vpLQWO8PRzXVtJNfb50OUA7TbeYJLtmhk7eHXWcgLQOh_evI_gpwlU0jwCeHtlk88IXRTiBd1jV7TMx4k9PxnDrZaPLFRzT67lMsq8RfwdaI5NVZsJNXI2R-935r6HeNdUL6NuhWnRChe_zezFg9M4HQGoi63j_ij_Z9PZkz9wA9dalP5V8rofStr_jJl6trx7_x0vV0cz42I0dmSm-5kp0ISaHR1L4=",
+            "video_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3-flash-preview",
+  "prompt_feedback": null,
+  "response_id": "7L6yaa-qGMS5nsEPnJ-l6As",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 2682,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 12565,
+    "prompt_tokens_details": [
+      {
+        "modality": "IMAGE",
+        "token_count": 1092
+      },
+      {
+        "modality": "TEXT",
+        "token_count": 11473
+      }
+    ],
+    "thoughts_token_count": 1446,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 16693,
+    "traffic_type": null
+  },
+  "automatic_function_calling_history": [],
+  "parsed": null
+}

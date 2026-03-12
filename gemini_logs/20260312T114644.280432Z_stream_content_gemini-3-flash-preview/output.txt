@@ -1,0 +1,1080 @@
+```json
+{
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "בצוותא חונכים דרך להצלחה (ע\"ר)",
+        "page_num": "7",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            295,
+            234,
+            41,
+            14
+          ],
+          "value": "9,945",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "קופות",
+          "path": [
+            "באור 3 - קופות",
+            "קופת אשראי",
+            "2024"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            234,
+            41,
+            14
+          ],
+          "value": "5,611",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "קופות",
+          "path": [
+            "באור 3 - קופות",
+            "קופת אשראי",
+            "2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            281,
+            250,
+            55,
+            14
+          ],
+          "value": "162,120",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "קופות",
+          "path": [
+            "באור 3 - קופות",
+            "קופת שיקים",
+            "2024"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            281,
+            270,
+            55,
+            14
+          ],
+          "value": "172,065",
+          "equations": [
+            {
+              "equation": "9,945 + 162,120",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "קופות",
+          "path": [
+            "באור 3 - קופות",
+            "סה\"כ",
+            "2024"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            270,
+            41,
+            14
+          ],
+          "value": "5,611",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "קופות",
+          "path": [
+            "באור 3 - קופות",
+            "סה\"כ",
+            "2023"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            363,
+            418,
+            56,
+            14
+          ],
+          "value": "287,912",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 1 בינואר 2024",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            418,
+            41,
+            14
+          ],
+          "value": "32,167",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 1 בינואר 2024",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            124,
+            418,
+            56,
+            14
+          ],
+          "value": "320,079",
+          "equations": [
+            {
+              "equation": "287,912 + 32,167",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 1 בינואר 2024",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            409,
+            435,
+            10,
+            14
+          ],
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "תוספות במשך השנה",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            268,
+            435,
+            33,
+            14
+          ],
+          "value": "8,200",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "תוספות במשך השנה",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            147,
+            435,
+            33,
+            14
+          ],
+          "value": "8,200",
+          "equations": [
+            {
+              "equation": "0 + 8,200",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "תוספות במשך השנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            363,
+            455,
+            56,
+            14
+          ],
+          "value": "287,912",
+          "equations": [
+            {
+              "equation": "287,912 + 0",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2024",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            455,
+            41,
+            14
+          ],
+          "value": "40,367",
+          "equations": [
+            {
+              "equation": "32,167 + 8,200",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2024",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            124,
+            455,
+            56,
+            14
+          ],
+          "value": "328,279",
+          "equations": [
+            {
+              "equation": "287,912 + 40,367",
+              "fact_equation": null
+            },
+            {
+              "equation": "320,079 + 8,200",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות",
+            "יתרה ליום 31 בדצמבר 2024",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            374,
+            497,
+            41,
+            14
+          ],
+          "value": "12,085",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2024",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            497,
+            41,
+            14
+          ],
+          "value": "28,119",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2024",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            497,
+            41,
+            14
+          ],
+          "value": "40,204",
+          "equations": [
+            {
+              "equation": "12,085 + 28,119",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 1 בינואר 2024",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            409,
+            513,
+            10,
+            14
+          ],
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            272,
+            513,
+            33,
+            14
+          ],
+          "value": "1,505",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            147,
+            513,
+            33,
+            14
+          ],
+          "value": "1,505",
+          "equations": [
+            {
+              "equation": "0 + 1,505",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            374,
+            534,
+            41,
+            14
+          ],
+          "value": "12,085",
+          "equations": [
+            {
+              "equation": "12,085 + 0",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2024",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            534,
+            41,
+            14
+          ],
+          "value": "29,624",
+          "equations": [
+            {
+              "equation": "28,119 + 1,505",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2024",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            135,
+            534,
+            41,
+            14
+          ],
+          "value": "41,709",
+          "equations": [
+            {
+              "equation": "12,085 + 29,624",
+              "fact_equation": null
+            },
+            {
+              "equation": "40,204 + 1,505",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "פחת שנצבר",
+            "יתרה ליום 31 בדצמבר 2024",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            363,
+            554,
+            56,
+            14
+          ],
+          "value": "275,827",
+          "equations": [
+            {
+              "equation": "287,912 - 12,085",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2024",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            260,
+            554,
+            41,
+            14
+          ],
+          "value": "10,743",
+          "equations": [
+            {
+              "equation": "40,367 - 29,624",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2024",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            124,
+            554,
+            56,
+            14
+          ],
+          "value": "286,570",
+          "equations": [
+            {
+              "equation": "275,827 + 10,743",
+              "fact_equation": null
+            },
+            {
+              "equation": "328,279 - 41,709",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2024",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            363,
+            593,
+            56,
+            14
+          ],
+          "value": "275,827",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2023",
+            "שיפורים במבנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            268,
+            593,
+            33,
+            14
+          ],
+          "value": "4,048",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2023",
+            "רהיט וציוד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            124,
+            593,
+            56,
+            14
+          ],
+          "value": "279,875",
+          "equations": [
+            {
+              "equation": "275,827 + 4,048",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "רכוש קבוע, נטו",
+          "path": [
+            "באור 4 - רכוש קבוע, נטו",
+            "עלות מופחתת ליום 31 בדצמבר 2023",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

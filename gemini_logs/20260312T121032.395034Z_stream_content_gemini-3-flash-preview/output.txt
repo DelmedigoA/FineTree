@@ -1,0 +1,410 @@
+```json
+{
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "בצוותא חונכים דרך להצלחה (ע\"ר)",
+        "page_num": "9",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            287,
+            234,
+            64,
+            12
+          ],
+          "value": "101,248",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משכורות ושכר עבודה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            167,
+            234,
+            49,
+            11
+          ],
+          "value": "40,543",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "משכורות ושכר עבודה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            301,
+            251,
+            50,
+            11
+          ],
+          "value": "44,378",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "צרכי משרד ודפוס"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            168,
+            251,
+            48,
+            11
+          ],
+          "value": "35,968",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "צרכי משרד ודפוס"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            289,
+            268,
+            62,
+            12
+          ],
+          "value": "176,561",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "פרסום וגיוס תרומות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            179,
+            268,
+            37,
+            12
+          ],
+          "value": "6,435",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "פרסום וגיוס תרומות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            301,
+            286,
+            50,
+            11
+          ],
+          "value": "12,652",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "שירותים מקצועיים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            168,
+            286,
+            48,
+            11
+          ],
+          "value": "20,696",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "שירותים מקצועיים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            303,
+            39,
+            12
+          ],
+          "value": "1,230",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            179,
+            303,
+            37,
+            12
+          ],
+          "value": "1,229",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות",
+            "הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            288,
+            326,
+            63,
+            13
+          ],
+          "value": "336,069",
+          "equations": [
+            {
+              "equation": "101,248 + 44,378 + 176,561 + 12,652 + 1,230",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2024",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            154,
+            326,
+            62,
+            13
+          ],
+          "value": "104,871",
+          "equations": [
+            {
+              "equation": "40,543 + 35,968 + 6,435 + 20,696 + 1,229",
+              "fact_equation": null
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "date": "2023",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": "recurrent",
+          "recurring_period": "yearly",
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```
