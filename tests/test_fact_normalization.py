@@ -275,6 +275,25 @@ def test_normalize_fact_payload_maps_recurring_duration_type_to_recurrent() -> N
     assert warnings == []
 
 
+def test_normalize_fact_payload_keeps_explicit_null_period_range_without_date_inference() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "date": "2024",
+            "period_type": None,
+            "period_start": None,
+            "period_end": None,
+            "duration_type": None,
+            "path": [],
+        }
+    )
+    assert normalized["date"] == "2024"
+    assert normalized["period_type"] is None
+    assert normalized["period_start"] is None
+    assert normalized["period_end"] is None
+    assert warnings == []
+
+
 def test_normalize_fact_payload_coerces_empty_note_reference_to_null() -> None:
     normalized, warnings = normalize_fact_payload(
         {

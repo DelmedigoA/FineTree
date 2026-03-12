@@ -2183,6 +2183,41 @@ def test_fact_editor_shows_recurring_period_only_for_recurrent_duration_type(tmp
     window.close()
 
 
+def test_clearing_duration_type_does_not_backfill_period_end_from_date(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "path": []})
+    item.fact_data = {
+        **item.fact_data,
+        "date": "2024",
+        "period_type": None,
+        "period_start": None,
+        "period_end": None,
+        "duration_type": "recurrent",
+        "recurring_period": "monthly",
+    }
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    window.fact_duration_type_combo.setCurrentIndex(0)
+    window._on_fact_editor_field_edited("duration_type")
+    _qt_app().processEvents()
+
+    assert item.fact_data["duration_type"] is None
+    assert item.fact_data["period_end"] is None
+    assert item.fact_data["period_start"] is None
+    assert item.fact_data["period_type"] is None
+    window.close()
+
+
 def test_date_field_hidden_in_ui_but_kept_in_fact_payload(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"

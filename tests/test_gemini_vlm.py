@@ -829,6 +829,39 @@ def test_parse_selected_field_patch_text_accepts_canonical_equations_updates() -
     ]
 
 
+def test_parse_selected_field_patch_text_accepts_legacy_equation_keys_when_equations_requested() -> None:
+    payload = {
+        "meta_updates": {},
+        "fact_updates": [
+            {
+                "fact_num": 3,
+                "updates": {
+                    "row_role": "total",
+                    "equation": "100 + 20",
+                    "fact_equation": "f1 + f2",
+                },
+            }
+        ],
+    }
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(payload),
+        allowed_fact_fields={"row_role", "equations"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["fact_updates"] == [
+        {
+            "fact_num": 3,
+            "updates": {
+                "row_role": "total",
+                "equations": [
+                    {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                ],
+            },
+        }
+    ]
+
+
 def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None:
     with pytest.raises(ValueError, match="unknown top-level keys"):
         gemini_vlm.parse_selected_field_patch_text(
