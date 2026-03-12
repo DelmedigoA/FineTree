@@ -1,0 +1,11 @@
+{"ts": "2026-03-12T09:01:45.792658+00:00", "event": "session_started", "operation": "stream_content", "model": "", "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-304/test_stream_content_from_image9/page.png", "enable_thinking": null}
+{"ts": "2026-03-12T09:01:45.792722+00:00", "event": "request", "prompt": "test prompt", "model": "", "few_shot_count": 0}
+{"ts": "2026-03-12T09:01:45.792751+00:00", "event": "backend_selected", "backend": "runpod_queue"}
+{"ts": "2026-03-12T09:01:45.792869+00:00", "event": "thinking_request_summary", "resolved_model": "qwenasaf", "backend": "runpod_queue", "requested_enable_thinking": false, "effective_enable_thinking": false, "requested_mode": "non-thinking", "thinking_transport": "chat_template_kwargs.enable_thinking", "resolved_request": {"backend": "runpod_queue", "payload": {"input": {"image_file": "input_target.png", "image_mime_type": "image/png", "response_mode": "text", "prompt": "test prompt", "chat_template_kwargs": {"enable_thinking": false}, "model": "qwenasaf", "temperature": 0.7, "top_p": 0.8}}}}
+{"ts": "2026-03-12T09:01:45.792927+00:00", "event": "backend_request", "backend": "runpod_queue", "run_url": "https://api.runpod.ai/v2/queue123/run", "payload": {"input": {"image_base64": "aW1n", "image_mime_type": "image/png", "response_mode": "text", "prompt": "test prompt", "model": "qwenasaf", "temperature": 0.7, "top_p": 0.8, "chat_template_kwargs": {"enable_thinking": false}}}}
+{"ts": "2026-03-12T09:01:45.792962+00:00", "event": "backend_job_created", "backend": "runpod_queue", "job_payload": {"id": "job-2", "status": "IN_QUEUE"}}
+{"ts": "2026-03-12T09:01:45.792993+00:00", "event": "backend_stream_event", "backend": "runpod_queue", "event_payload": [{"output": {"text": ["hello "]}}]}
+{"ts": "2026-03-12T09:01:45.793021+00:00", "event": "output_chunk", "index": 0, "text": "hello "}
+{"ts": "2026-03-12T09:01:45.793058+00:00", "event": "backend_stream_event", "backend": "runpod_queue", "event_payload": [{"output": {"text": ["world"]}}]}
+{"ts": "2026-03-12T09:01:45.793086+00:00", "event": "output_chunk", "index": 1, "text": "world"}
+{"ts": "2026-03-12T09:01:45.793109+00:00", "event": "thinking_response_summary", "backend": "runpod_queue", "observed_thinking_signal": false, "observed_thinking_signal_path": null, "streamed": true}

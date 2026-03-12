@@ -29,14 +29,17 @@ def test_schema_registry_prompt_contract_includes_schema_version_and_enums() -> 
     assert "value_type" in patch["fact_patch_fields"]
     assert "currency" in patch["fact_patch_fields"]
     assert "scale" in patch["fact_patch_fields"]
+    assert "equations" in patch["fact_patch_fields"]
     assert "comment_ref" in patch["fact_patch_fields"]
     assert "schema_version" not in extraction["top_level_keys"]
+    assert "metadata" not in extraction["top_level_keys"]
+    assert extraction["top_level_keys"] == ["pages"]
     assert "annotation_note" not in extraction["page_meta_keys"]
     assert "annotation_status" not in extraction["page_meta_keys"]
     assert "fact_num" not in extraction["fact_keys"]
+    assert "equations" in extraction["fact_keys"]
     assert "equation" not in extraction["fact_keys"]
     assert "fact_equation" not in extraction["fact_keys"]
-    assert "equations" not in extraction["fact_keys"]
 
 
 def test_schema_registry_prompt_contract_is_stable() -> None:

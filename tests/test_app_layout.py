@@ -66,6 +66,8 @@ class _SceneMouseEvent:
 class _FakePainter:
     def __init__(self) -> None:
         self.pen_colors: list[str] = []
+        self.pen_styles: list[int | None] = []
+        self.pen_widths: list[int | None] = []
         self.draw_text_calls: list[tuple[object, object, object]] = []
 
     def save(self) -> None:
@@ -76,6 +78,8 @@ class _FakePainter:
 
     def setPen(self, pen) -> None:
         color = pen.color() if hasattr(pen, "color") else pen
+        self.pen_styles.append(pen.style() if hasattr(pen, "style") else None)
+        self.pen_widths.append(pen.width() if hasattr(pen, "width") else None)
         if hasattr(color, "name"):
             self.pen_colors.append(color.name())
         else:
@@ -290,6 +294,8 @@ def test_gemini_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(
     assert captured_kwargs["show_few_shot_controls"] is True
     assert captured_kwargs["few_shot_enabled_default"] is False
     assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_CLASSIC
+    assert captured_kwargs["show_max_facts_control"] is True
+    assert captured_kwargs["max_facts_default"] == 0
 
     window.close()
 
@@ -330,6 +336,7 @@ def test_gemini_fill_dialog_defaults_only_period_fields_checked() -> None:
     )
 
     assert dialog.selected_fact_fields() == {"period_type", "period_start", "period_end"}
+    assert "equations" in dialog._fact_field_checks
 
     dialog.close()
 
@@ -361,7 +368,15 @@ def test_gemini_autocomplete_request_payload_includes_locked_page_state(tmp_path
 
     window = AnnotationWindow(images_dir, annotations_path)
     window.statement_type_combo.setCurrentText("income_statement")
-    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant", "path": ["Assets"]})
+    item = AnnotRectItem(
+        QRectF(10, 10, 20, 20),
+        {
+            "value": "100",
+            "period_type": "instant",
+            "path": ["Assets"],
+            "equations": [{"equation": "70 + 30", "fact_equation": "f2 + f3"}],
+        },
+    )
     window.scene.addItem(item)
     window.refresh_facts_list()
     window._capture_current_state()
@@ -375,11 +390,10 @@ def test_gemini_autocomplete_request_payload_includes_locked_page_state(tmp_path
     assert payload["pages"][0]["meta"]["statement_type"] == "income_statement"
     assert len(payload["pages"][0]["facts"]) == 1
     assert payload["pages"][0]["facts"][0]["fact_num"] == 1
-    assert payload["request"]["mode"] == "anchored_geometry_merge"
-    assert payload["request"]["preserve_existing_facts"] is True
-    assert payload["request"]["allow_meta_updates"] is False
-    assert payload["request"]["image_width"] == pytest.approx(32.0)
-    assert payload["request"]["image_height"] == pytest.approx(32.0)
+    assert payload["pages"][0]["facts"][0]["equations"] == [{"equation": "70 + 30", "fact_equation": "f2 + f3"}]
+    assert "metadata" not in payload
+    assert "images_dir" not in payload
+    assert "request" not in payload
 
     window.close()
 
@@ -395,19 +409,18 @@ def test_gemini_autocomplete_prompt_mentions_locked_facts(tmp_path: Path) -> Non
     prompt = window._build_gemini_autocomplete_prompt_from_template(
         app_mod.default_gemini_autocomplete_prompt_template(),
         request_payload={
-            "images_dir": "x",
-            "metadata": {},
             "pages": [{"image": "page_0001.png", "meta": {}, "facts": []}],
-            "request": {"mode": "append_only"},
         },
     )
 
     assert "must stay locked" in prompt
     assert "return only new missing facts" in prompt.lower()
     assert "original image pixel coordinates" in prompt.lower()
+    assert "current image size: 32 x 32 pixels." in prompt.lower()
     assert "start with this" in prompt.lower()
     assert '"image": "page_0001.png"' in prompt
     assert "runtime rebuilds final contiguous numbering" in prompt.lower()
+    assert '"metadata"' not in prompt
 
     window.close()
 
@@ -473,6 +486,9 @@ def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Pat
         def few_shot_preset(self) -> str:
             return app_mod.FEW_SHOT_PRESET_ONE_SHOT
 
+        def max_facts(self) -> int:
+            return 0
+
     captured_stream_kwargs: dict[str, object] = {}
     monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
     monkeypatch.setattr(
@@ -493,6 +509,60 @@ def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Pat
     window.generate_gemini_auto_complete()
 
     assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
+    assert captured_stream_kwargs["mode"] == "autocomplete"
+
+    window.close()
+
+
+def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "period_type": "instant", "path": ["Assets"]})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    _qt_app().processEvents()
+
+    class _AcceptedDialog:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
+        def exec_(self) -> int:
+            return app_mod.QDialog.Accepted
+
+        def prompt(self) -> str:
+            return "autocomplete prompt"
+
+        def model(self) -> str:
+            return "gemini-3-flash-preview"
+
+        def enable_thinking(self) -> bool:
+            return True
+
+        def thinking_level(self) -> str:
+            return "high"
+
+        def use_few_shot(self) -> bool:
+            return False
+
+        def few_shot_preset(self) -> str:
+            return app_mod.FEW_SHOT_PRESET_ONE_SHOT
+
+        def max_facts(self) -> int:
+            return 2
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
+    monkeypatch.setattr("finetree_annotator.gemini_vlm.resolve_api_key", lambda: "test-key")
+    monkeypatch.setattr(window, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.generate_gemini_auto_complete()
+
+    assert captured_stream_kwargs["max_facts"] == 2
     assert captured_stream_kwargs["mode"] == "autocomplete"
 
     window.close()
@@ -1473,7 +1543,7 @@ def test_gemini_autocomplete_merges_buffered_facts_between_locked_prefix_and_suf
 
     assert [item.fact_data["value"] for item in window._fact_items] == ["A", "B", "M1", "M2", "X", "Y", "Z"]
     assert [item.fact_data["fact_num"] for item in window._fact_items] == [1, 2, 3, 4, 5, 6, 7]
-    assert window._fact_items[2].fact_data.get("equations") is None
+    assert window._fact_items[2].fact_data["equations"] == [{"equation": "A + B", "fact_equation": "f1 + f2"}]
 
     window.close()
 
@@ -1665,10 +1735,80 @@ def test_qwen_prompt_dialog_accepts_thinking_controls() -> None:
     )
     options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
     assert "qwen-flash-gt" in options
+    assert "qwen3.5-flash" in options
+    assert "qwen3.5-plus" in options
     assert dialog.model() == "qwen-flash-gt"
     assert dialog.thinking_check.isChecked() is True
-    assert dialog.thinking_level_combo.currentText().strip().lower() == "high"
+    assert dialog.thinking_level_combo.isVisible() is False
+    assert dialog.thinking_level() == "high"
     dialog.close()
+
+
+def test_gemini_fill_completed_applies_equations_patch(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "120", "fact_num": 1, "path": ["Total"]})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    ordered_items = window._sorted_fact_items()
+    window._gemini_fill_target_page = window.page_images[window.current_index].name
+    window._gemini_fill_snapshot = {
+        "page_name": window._gemini_fill_target_page,
+        "selected_fact_nums": [1],
+        "ordered_fact_signature": window._current_page_fact_snapshot_signature(ordered_items),
+    }
+    window._gemini_fill_include_statement_type = False
+    monkeypatch.setattr(app_mod.QMessageBox, "information", lambda *_args, **_kwargs: None)
+
+    window._on_gemini_fill_completed(
+        {
+            "meta_updates": {},
+            "fact_updates": [
+                {
+                    "fact_num": 1,
+                    "updates": {
+                        "row_role": "total",
+                        "equations": [{"equation": "100 + 20", "fact_equation": "f2 + f3"}],
+                    },
+                }
+            ],
+        }
+    )
+
+    assert item.fact_data["row_role"] == "total"
+    assert item.fact_data["equations"] == [{"equation": "100 + 20", "fact_equation": "f2 + f3"}]
+    window.close()
+
+
+def test_gemini_autocomplete_generated_fact_payload_preserves_equations(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    payload = window._normalized_autocomplete_generated_fact_payload(
+        {
+            "bbox": [10, 10, 20, 20],
+            "value": "120",
+            "row_role": "total",
+            "equations": [{"equation": "100 + 20", "fact_equation": "f1 + f2"}],
+            "path": ["Total"],
+        }
+    )
+
+    assert payload is not None
+    assert payload["equations"] == [{"equation": "100 + 20", "fact_equation": "f1 + f2"}]
+    window.close()
 
 
 def test_note_num_clear_sets_null(tmp_path: Path) -> None:
@@ -1823,6 +1963,9 @@ def test_gemini_fill_request_payload_redacts_only_requested_fields(tmp_path: Pat
     facts = payload["pages"][0]["facts"]
     assert len(facts) == 2
     assert payload["pages"][0]["meta"]["statement_type"] is None
+    assert "metadata" not in payload
+    assert "images_dir" not in payload
+    assert "request" not in payload
     assert all(fact["period_type"] is None for fact in facts)
     assert all(fact["period_start"] is None for fact in facts)
     assert all(fact["period_end"] is None for fact in facts)
@@ -1881,7 +2024,7 @@ def test_gemini_fill_prompt_omits_statement_type_schema_when_not_requested(tmp_p
     window = AnnotationWindow(images_dir, annotations_path)
     prompt = window._build_gemini_fill_prompt_from_template(
         "Requested meta fields:\n{{META_FIELDS}}\nSchema:\n{{META_UPDATES_SCHEMA}}\n{{REQUEST_JSON}}",
-        request_payload={"request": {"meta_fields": []}},
+        request_payload={"pages": [{"image": "page_0001.png", "meta": {}, "facts": []}]},
         selected_fact_fields={"period_type"},
         include_statement_type=False,
     )
@@ -1890,6 +2033,114 @@ def test_gemini_fill_prompt_omits_statement_type_schema_when_not_requested(tmp_p
     assert "Schema:\n{}" in prompt
     assert '"statement_type"' not in prompt
 
+    window.close()
+
+
+def test_arrow_keys_nudge_selected_fact_by_one_pixel(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    item = AnnotRectItem(QRectF(80, 80, 20, 20), {"value": "100", "path": []})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    window.view.setFocus()
+    _qt_app().processEvents()
+
+    original = item_scene_rect(item)
+    QTest.keyClick(window.view.viewport(), Qt.Key_Right)
+    _qt_app().processEvents()
+    moved = item_scene_rect(item)
+    assert moved.x() == pytest.approx(original.x() + 1.0)
+    assert moved.y() == pytest.approx(original.y())
+
+    QTest.keyClick(window.view.viewport(), Qt.Key_Left)
+    _qt_app().processEvents()
+    moved = item_scene_rect(item)
+    assert moved.x() == pytest.approx(original.x())
+    assert moved.y() == pytest.approx(original.y())
+
+    QTest.keyClick(window.view.viewport(), Qt.Key_Up)
+    _qt_app().processEvents()
+    moved = item_scene_rect(item)
+    assert moved.x() == pytest.approx(original.x())
+    assert moved.y() == pytest.approx(original.y() - 1.0)
+
+    QTest.keyClick(window.view.viewport(), Qt.Key_Down)
+    _qt_app().processEvents()
+    moved = item_scene_rect(item)
+    assert moved.x() == pytest.approx(original.x())
+    assert moved.y() == pytest.approx(original.y())
+    window.close()
+
+
+def test_fact_list_arrow_navigation_still_works_and_shift_arrow_nudges(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    top = AnnotRectItem(QRectF(40, 30, 20, 20), {"value": "100", "path": []})
+    bottom = AnnotRectItem(QRectF(42, 100, 20, 20), {"value": "200", "path": []})
+    window.scene.addItem(top)
+    window.scene.addItem(bottom)
+    window.refresh_facts_list()
+    window.show()
+    top.setSelected(True)
+    _qt_app().processEvents()
+
+    initial_rect = item_scene_rect(top)
+    window.facts_list.setFocus()
+    QTest.keyClick(window.facts_list, Qt.Key_Down)
+    _qt_app().processEvents()
+    assert bottom.isSelected() is True
+
+    QTest.keyClick(window.view.viewport(), Qt.Key_Right, Qt.ShiftModifier)
+    _qt_app().processEvents()
+    nudged_rect = item_scene_rect(bottom)
+    assert nudged_rect.x() == pytest.approx(52.0)
+    assert nudged_rect.y() == pytest.approx(100.0)
+    assert item_scene_rect(top) == initial_rect
+    window.close()
+
+
+def test_shift_left_and_right_nudge_keep_same_selected_item(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    left_item = AnnotRectItem(QRectF(20, 40, 20, 20), {"value": "10", "path": []})
+    right_item = AnnotRectItem(QRectF(70, 40, 20, 20), {"value": "20", "path": []})
+    window.scene.addItem(left_item)
+    window.scene.addItem(right_item)
+    window.refresh_facts_list()
+    window.show()
+    right_item.setSelected(True)
+    window.view.setFocus()
+    _qt_app().processEvents()
+
+    original = item_scene_rect(right_item)
+    QTest.keyClick(window.view.viewport(), Qt.Key_Left, Qt.ShiftModifier)
+    _qt_app().processEvents()
+    moved_left = item_scene_rect(right_item)
+    assert right_item.isSelected() is True
+    assert moved_left.x() == pytest.approx(original.x() - 10.0)
+
+    QTest.keyClick(window.view.viewport(), Qt.Key_Right, Qt.ShiftModifier)
+    _qt_app().processEvents()
+    moved_right = item_scene_rect(right_item)
+    assert right_item.isSelected() is True
+    assert moved_right.x() == pytest.approx(original.x())
     window.close()
 
 
@@ -3749,7 +4000,8 @@ def test_selected_equation_match_bbox_uses_standard_blue_outline() -> None:
 
     item.paint(painter, None)
 
-    assert painter.pen_colors[0] == "#175cd3"
+    assert painter.pen_colors.count("#175cd3") == 1
+    assert Qt.DashLine in painter.pen_styles
 
 
 def test_c_mode_accumulates_clicks_and_multiple_rectangles_until_key_release(tmp_path: Path) -> None:
@@ -4060,7 +4312,7 @@ def test_page_issue_warning_points_to_outlier_fact(tmp_path: Path) -> None:
     window.close()
 
 
-def test_fact_list_selection_zooms_to_bbox(tmp_path: Path) -> None:
+def test_fact_list_selection_keeps_current_view_while_selecting_bbox(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -4078,16 +4330,17 @@ def test_fact_list_selection_zooms_to_bbox(tmp_path: Path) -> None:
     _qt_app().processEvents()
 
     zoom_before = window.view.transform().m11()
+    view_center_before = window.view.mapToScene(window.view.viewport().rect().center())
     assert window.facts_list.item(0) is not None
     window.facts_list.item(0).setSelected(True)
     window.facts_list.setCurrentRow(0)
     _qt_app().processEvents()
 
     zoom_after = window.view.transform().m11()
-    view_center = window.view.mapToScene(window.view.viewport().rect().center())
-    bbox_center = item_scene_rect(item).center()
+    view_center_after = window.view.mapToScene(window.view.viewport().rect().center())
 
-    assert zoom_after > zoom_before
-    assert abs(view_center.x() - bbox_center.x()) < 40.0
-    assert abs(view_center.y() - bbox_center.y()) < 40.0
+    assert zoom_after == pytest.approx(zoom_before)
+    assert abs(view_center_after.x() - view_center_before.x()) < 0.5
+    assert abs(view_center_after.y() - view_center_before.y()) < 0.5
+    assert item.isSelected() is True
     window.close()

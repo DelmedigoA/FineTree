@@ -4,6 +4,8 @@ import json
 from pathlib import Path
 from typing import Any, Iterable, Optional, Sequence
 
+from .model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload
+
 DEFAULT_TEST_FEW_SHOT_PAGES: tuple[str, ...] = (
     "page_0001.png",
     "page_0004.png",
@@ -68,23 +70,12 @@ def _page_payload_map(pages: Iterable[Any]) -> dict[str, dict[str, Any]]:
 
 
 def _expected_payload_from_page(page_payload: dict[str, Any]) -> dict[str, Any]:
-    metadata = page_payload.get("__metadata__")
-    if not isinstance(metadata, dict):
-        metadata = {}
-    images_dir = page_payload.get("__images_dir__")
-    if not isinstance(images_dir, str):
-        images_dir = ""
-    return {
-        "images_dir": images_dir or None,
-        "metadata": metadata,
-        "pages": [
-            {
-                "image": page_payload.get("image") if isinstance(page_payload.get("image"), str) else None,
-                "meta": page_payload.get("meta") if isinstance(page_payload.get("meta"), dict) else {},
-                "facts": page_payload.get("facts") if isinstance(page_payload.get("facts"), list) else [],
-            }
-        ],
-    }
+    return build_single_page_payload(
+        page_name=str(page_payload.get("image") or ""),
+        page_meta=page_payload.get("meta") if isinstance(page_payload.get("meta"), dict) else {},
+        facts=page_payload.get("facts") if isinstance(page_payload.get("facts"), list) else [],
+        mode=MODEL_PROMPT_MODE,
+    )
 
 
 def _load_annotations_payload(
@@ -129,10 +120,6 @@ def load_test_pdf_few_shot_examples(
         warnings.append("Few-shot annotations JSON has no valid pages list.")
         return examples, warnings
     page_map = _page_payload_map(pages)
-    metadata = payload.get("metadata", payload.get("document_meta"))
-    if not isinstance(metadata, dict):
-        metadata = {}
-    images_dir = str(payload.get("images_dir") or "").strip()
 
     for page_name in page_names:
         image_path = resolve_repo_relative_path(
@@ -147,14 +134,11 @@ def load_test_pdf_few_shot_examples(
         if page_payload is None:
             warnings.append(f"Few-shot annotation page missing in test.json: {page_name}")
             continue
-        wrapped_payload = dict(page_payload)
-        wrapped_payload["__metadata__"] = metadata
-        wrapped_payload["__images_dir__"] = images_dir
 
         examples.append(
             {
                 "image_path": image_path,
-                "expected_json": json.dumps(_expected_payload_from_page(wrapped_payload), ensure_ascii=False, separators=(",", ":")),
+                "expected_json": json.dumps(_expected_payload_from_page(page_payload), ensure_ascii=False, separators=(",", ":")),
             }
         )
 
@@ -168,7 +152,7 @@ def load_complex_few_shot_examples(
 ) -> tuple[list[dict[str, Any]], list[str]]:
     warnings: list[str] = []
     examples: list[dict[str, Any]] = []
-    dataset_cache: dict[str, tuple[dict[str, dict[str, Any]], str, dict[str, Any]]] = {}
+    dataset_cache: dict[str, tuple[dict[str, dict[str, Any]], str]] = {}
 
     for raw_dataset_name, raw_page_name in selections:
         dataset_name = str(raw_dataset_name or "").strip()
@@ -197,13 +181,10 @@ def load_complex_few_shot_examples(
                 continue
 
             image_dir = str(payload.get("images_dir") or "").strip() or f"data/pdf_images/{dataset_name}"
-            metadata = payload.get("metadata", payload.get("document_meta"))
-            if not isinstance(metadata, dict):
-                metadata = {}
-            cached = (page_map, image_dir, metadata)
+            cached = (page_map, image_dir)
             dataset_cache[dataset_name] = cached
 
-        page_map, image_dir, metadata = cached
+        page_map, image_dir = cached
         image_rel = image_dir.rstrip("/") + "/" + page_name
         image_path = resolve_repo_relative_path(image_rel, repo_roots=repo_roots)
         if image_path is None or not image_path.is_file():
@@ -214,14 +195,11 @@ def load_complex_few_shot_examples(
         if page_payload is None:
             warnings.append(f"Few-shot annotation page missing in {dataset_name}.json: {page_name}")
             continue
-        wrapped_payload = dict(page_payload)
-        wrapped_payload["__metadata__"] = metadata
-        wrapped_payload["__images_dir__"] = image_dir
 
         examples.append(
             {
                 "image_path": image_path,
-                "expected_json": json.dumps(_expected_payload_from_page(wrapped_payload), ensure_ascii=False, separators=(",", ":")),
+                "expected_json": json.dumps(_expected_payload_from_page(page_payload), ensure_ascii=False, separators=(",", ":")),
             }
         )
 

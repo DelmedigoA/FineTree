@@ -224,9 +224,13 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     log_dir = log_dirs[0]
     request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
     response_payload = json.loads((log_dir / "response.json").read_text(encoding="utf-8"))
+    events = [json.loads(line) for line in (log_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()]
 
     assert request_payload["model"] == "gemini-3.1-pro-preview"
     assert request_payload["prompt"] == "extract now"
+    assert request_payload["request_summary"]["model_family"] == "gemini_3"
+    assert request_payload["request_summary"]["thinking_semantics"] == "thinking_level"
+    assert request_payload["request_summary"]["effective_thinking_value"] == "HIGH"
     assert request_payload["exact_request"]["contents"][0]["role"] == "user"
     assert request_payload["exact_request"]["contents"][0]["parts"][0] == {"type": "image_file", "file": "few_shot_01_example.png"}
     assert request_payload["exact_request"]["contents"][-1]["parts"][0] == {"type": "image_file", "file": "input_target.png"}
@@ -235,6 +239,9 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     assert (log_dir / request_payload["few_shot_examples"][0]["logged_image_path"]).read_bytes() == b"example"
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == '{"ok":true}'
     assert response_payload["thinking"] == "hidden-thought"
+    assert any(event["event"] == "thinking_request_summary" for event in events)
+    thinking_response = next(event for event in events if event["event"] == "thinking_response_summary")
+    assert thinking_response["observed_thinking_signal"] is True
 
 
 def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, monkeypatch) -> None:
@@ -315,9 +322,14 @@ def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, 
     request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
 
     assert len(chunk_events) == 2
+    assert request_payload["request_summary"]["thinking_semantics"] == "thinking_level"
+    assert request_payload["request_summary"]["effective_thinking_value"] == "HIGH"
     assert request_payload["exact_request"]["contents"] == [{"type": "image_file", "file": "input_target.png"}, "extract stream"]
     assert chunk_events[0]["raw"]["thought"] == "think-1"
     assert chunk_events[1]["raw"]["thought"] == "think-2"
+    assert chunk_events[0]["observed_thinking_signal"] is True
+    thinking_summary = next(payload for payload in event_payloads if payload["event"] == "thinking_response_summary")
+    assert thinking_summary["observed_thinking_signal"] is True
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 part-2"
 
 
@@ -779,6 +791,42 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
     assert parsed["fact_updates"][0]["fact_num"] == 2
     assert parsed["fact_updates"][0]["updates"]["row_role"] == "total"
     assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
+
+
+def test_parse_selected_field_patch_text_accepts_canonical_equations_updates() -> None:
+    payload = {
+        "meta_updates": {},
+        "fact_updates": [
+            {
+                "fact_num": 3,
+                "updates": {
+                    "row_role": "total",
+                    "equations": [
+                        {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                        {"equation": "120", "fact_equation": None},
+                    ],
+                },
+            }
+        ],
+    }
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(payload),
+        allowed_fact_fields={"row_role", "equations"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["fact_updates"] == [
+        {
+            "fact_num": 3,
+            "updates": {
+                "row_role": "total",
+                "equations": [
+                    {"equation": "100 + 20", "fact_equation": "f1 + f2"},
+                    {"equation": "120", "fact_equation": None},
+                ],
+            },
+        }
+    ]
 
 
 def test_parse_selected_field_patch_text_rejects_unknown_top_level_key() -> None:

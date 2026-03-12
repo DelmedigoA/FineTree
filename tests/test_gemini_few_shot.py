@@ -59,7 +59,8 @@ def test_load_test_pdf_few_shot_examples_reads_all_fixed_pages(tmp_path: Path) -
     assert [Path(ex["image_path"]).name for ex in examples] == list(DEFAULT_TEST_FEW_SHOT_PAGES)
     for ex in examples:
         parsed = json.loads(ex["expected_json"])
-        assert "metadata" in parsed
+        assert "metadata" not in parsed
+        assert "images_dir" not in parsed
         assert isinstance(parsed.get("pages"), list)
         assert len(parsed["pages"]) == 1
         assert isinstance(parsed["pages"][0].get("facts"), list)
