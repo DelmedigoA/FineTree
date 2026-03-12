@@ -397,6 +397,94 @@ def _update_gemini_log_request(session_dir: Path, updates: dict[str, Any]) -> No
     )
 
 
+def _model_family_label(model_name: Optional[str]) -> str:
+    return "gemini_3" if _is_gemini_3_model(model_name) else "gemini_legacy"
+
+
+def _extract_serialized_thinking_config(config_payload: Any) -> dict[str, Any] | None:
+    if isinstance(config_payload, dict):
+        direct = config_payload.get("thinking_config")
+        if isinstance(direct, dict):
+            return direct
+        kwargs = config_payload.get("kwargs")
+        if isinstance(kwargs, dict):
+            return _extract_serialized_thinking_config(kwargs)
+    return None
+
+
+def _thinking_request_summary(
+    model_name: Optional[str],
+    *,
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+    config: Any,
+) -> dict[str, Any]:
+    config_payload = _serialize_gemini_log_value(config)
+    thinking_config = _extract_serialized_thinking_config(config_payload)
+    normalized_level = _normalize_thinking_level(thinking_level)
+    if normalized_level is None and enable_thinking is not None:
+        normalized_level = "high" if enable_thinking else "minimal"
+    semantics = "none"
+    effective_value: Any = None
+    if isinstance(thinking_config, dict):
+        if "thinking_level" in thinking_config:
+            semantics = "thinking_level"
+            effective_value = thinking_config.get("thinking_level")
+        elif "thinking_budget" in thinking_config:
+            semantics = "thinking_budget"
+            effective_value = thinking_config.get("thinking_budget")
+        else:
+            kwargs = thinking_config.get("kwargs")
+            if isinstance(kwargs, dict):
+                if "thinking_level" in kwargs:
+                    semantics = "thinking_level"
+                    effective_value = kwargs.get("thinking_level")
+                elif "thinking_budget" in kwargs:
+                    semantics = "thinking_budget"
+                    effective_value = kwargs.get("thinking_budget")
+    return {
+        "resolved_model": str(model_name or ""),
+        "model_family": _model_family_label(model_name),
+        "requested_enable_thinking": enable_thinking,
+        "requested_thinking_level": thinking_level,
+        "normalized_requested_thinking_level": normalized_level,
+        "requested_mode": (
+            "default"
+            if enable_thinking is None and thinking_level is None
+            else ("thinking" if enable_thinking is not False else "non-thinking")
+        ),
+        "thinking_semantics": semantics,
+        "effective_thinking_value": effective_value,
+        "resolved_generation_config": config_payload,
+    }
+
+
+def _find_thinking_signal(payload: Any, *, _path: str = "") -> Optional[str]:
+    if isinstance(payload, dict):
+        for key, value in payload.items():
+            key_text = str(key).strip().lower()
+            next_path = f"{_path}.{key}" if _path else str(key)
+            if key_text in {"thinking", "thought", "thoughts", "thought_signature", "thought_summary"} and value not in ("", None, [], {}):
+                return next_path
+            found = _find_thinking_signal(value, _path=next_path)
+            if found:
+                return found
+    elif isinstance(payload, list):
+        for index, value in enumerate(payload):
+            found = _find_thinking_signal(value, _path=f"{_path}[{index}]")
+            if found:
+                return found
+    return None
+
+
+def _response_thinking_summary(raw_payload: Any) -> dict[str, Any]:
+    signal_path = _find_thinking_signal(_serialize_gemini_log_value(raw_payload))
+    return {
+        "observed_thinking_signal": signal_path is not None,
+        "observed_thinking_signal_path": signal_path,
+    }
+
+
 def _build_logged_gemini_contents(session_dir: Path, prompt: str) -> list[Any]:
     request_payload = _read_gemini_log_request(session_dir)
     target_ref = {"type": "image_file", "file": request_payload["logged_image_path"]}
@@ -1045,9 +1133,16 @@ def generate_content_from_image(
     config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
     if config is not None:
         request_kwargs["config"] = config
+    request_summary = _thinking_request_summary(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        config=config,
+    )
     _update_gemini_log_request(
         session_dir,
         {
+            "request_summary": request_summary,
             "exact_request": {
                 "model": resolved_model,
                 "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -1055,8 +1150,10 @@ def generate_content_from_image(
             }
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
     response = client.models.generate_content(**request_kwargs)
     text = response.text or ""
+    response_summary = _response_thinking_summary(response)
     _append_gemini_log_event(
         session_dir,
         "response",
@@ -1065,6 +1162,7 @@ def generate_content_from_image(
             "raw": _serialize_gemini_log_value(response),
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
     return text
 
@@ -1121,9 +1219,16 @@ def stream_content_from_image(
         config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
         if config is not None:
             request_kwargs["config"] = config
+        request_summary = _thinking_request_summary(
+            resolved_model,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            config=config,
+        )
         _update_gemini_log_request(
             session_dir,
             {
+                "request_summary": request_summary,
                 "exact_request": {
                     "model": resolved_model,
                     "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -1131,10 +1236,15 @@ def stream_content_from_image(
                 }
             },
         )
+        _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
         stream = stream_fn(**request_kwargs)
+        observed_thinking_signal_path: Optional[str] = None
         try:
             for index, chunk in enumerate(stream):
                 text = getattr(chunk, "text", None)
+                chunk_summary = _response_thinking_summary(chunk)
+                if observed_thinking_signal_path is None and chunk_summary["observed_thinking_signal"]:
+                    observed_thinking_signal_path = str(chunk_summary["observed_thinking_signal_path"])
                 _append_gemini_log_event(
                     session_dir,
                     "stream_chunk",
@@ -1142,6 +1252,7 @@ def stream_content_from_image(
                         "index": index,
                         "text": text or "",
                         "raw": _serialize_gemini_log_value(chunk),
+                        **chunk_summary,
                     },
                 )
                 if text:
@@ -1165,6 +1276,16 @@ def stream_content_from_image(
             )
             raise
         finally:
+            _append_gemini_log_event(
+                session_dir,
+                "thinking_response_summary",
+                {
+                    "observed_thinking_signal": observed_thinking_signal_path is not None,
+                    "observed_thinking_signal_path": observed_thinking_signal_path,
+                    "streamed": True,
+                    "status": stream_status,
+                },
+            )
             _write_gemini_log_output(
                 session_dir,
                 text="".join(collected_text),
@@ -1184,9 +1305,16 @@ def stream_content_from_image(
     config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
     if config is not None:
         request_kwargs["config"] = config
+    request_summary = _thinking_request_summary(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        config=config,
+    )
     _update_gemini_log_request(
         session_dir,
         {
+            "request_summary": request_summary,
             "exact_request": {
                 "model": resolved_model,
                 "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -1194,8 +1322,10 @@ def stream_content_from_image(
             }
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
     response = client.models.generate_content(**request_kwargs)
     text = response.text or ""
+    response_summary = _response_thinking_summary(response)
     _append_gemini_log_event(
         session_dir,
         "response",
@@ -1204,6 +1334,7 @@ def stream_content_from_image(
             "raw": _serialize_gemini_log_value(response),
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
     if text:
         yield text
@@ -1261,9 +1392,16 @@ def generate_structured_json_from_image(
         response_mime_type="application/json",
         response_json_schema=schema,
     )
+    request_summary = _thinking_request_summary(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        config=config,
+    )
     _update_gemini_log_request(
         session_dir,
         {
+            "request_summary": request_summary,
             "exact_request": {
                 "model": resolved_model,
                 "contents": [{"type": "image_file", "file": _read_gemini_log_request(session_dir)["logged_image_path"]}, prompt],
@@ -1271,12 +1409,14 @@ def generate_structured_json_from_image(
             }
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
     response = client.models.generate_content(
         model=resolved_model,
         contents=contents,
         config=config,
     )
     text = response.text or ""
+    response_summary = _response_thinking_summary(response)
     _append_gemini_log_event(
         session_dir,
         "response",
@@ -1285,6 +1425,7 @@ def generate_structured_json_from_image(
             "raw": _serialize_gemini_log_value(response),
         },
     )
+    _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
     if not text.strip():
         raise ValueError("Gemini returned an empty response.")

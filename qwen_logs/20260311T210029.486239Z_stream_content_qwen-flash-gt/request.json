@@ -1,0 +1,112 @@
+{
+  "operation": "stream_content",
+  "model": "qwen-flash-gt",
+  "prompt": "extract",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-292/test_stream_content_from_image0/page.png",
+  "logged_image_path": "input_target.png",
+  "enable_thinking": null,
+  "few_shot_examples": [
+    {
+      "source_image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-292/test_stream_content_from_image0/example.png",
+      "logged_image_path": "few_shot_01_example.png",
+      "expected_json": "{\"meta\":{},\"facts\":[]}"
+    }
+  ],
+  "config_path": null,
+  "max_new_tokens": null,
+  "do_sample": null,
+  "temperature": null,
+  "top_p": null,
+  "exact_request": {
+    "backend": "qwen_flash",
+    "endpoint": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+    "payload": {
+      "model": "qwen3.5-flash",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_file",
+              "file": "few_shot_01_example.png"
+            },
+            {
+              "type": "text",
+              "text": "Example input page."
+            }
+          ]
+        },
+        {
+          "role": "assistant",
+          "content": "{\"meta\":{},\"facts\":[]}"
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "image_file",
+              "file": "input_target.png"
+            },
+            {
+              "type": "text",
+              "text": "extract"
+            }
+          ]
+        }
+      ],
+      "max_tokens": 10000,
+      "stream": true,
+      "temperature": 0.7,
+      "top_p": 0.8
+    }
+  },
+  "request_summary": {
+    "resolved_model": "qwen3.5-flash",
+    "backend": "qwen_flash",
+    "requested_enable_thinking": null,
+    "requested_mode": "non-thinking",
+    "resolved_request": {
+      "backend": "qwen_flash",
+      "endpoint": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions",
+      "payload": {
+        "model": "qwen3.5-flash",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_file",
+                "file": "few_shot_01_example.png"
+              },
+              {
+                "type": "text",
+                "text": "Example input page."
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": "{\"meta\":{},\"facts\":[]}"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "image_file",
+                "file": "input_target.png"
+              },
+              {
+                "type": "text",
+                "text": "extract"
+              }
+            ]
+          }
+        ],
+        "max_tokens": 10000,
+        "stream": true,
+        "temperature": 0.7,
+        "top_p": 0.8
+      }
+    }
+  }
+}

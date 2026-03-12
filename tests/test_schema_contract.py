@@ -29,9 +29,9 @@ def test_schema_contract_required_prompt_keys_are_canonical() -> None:
     assert "annotation_note" not in PROMPT_PAGE_META_KEYS
     assert "annotation_status" not in PROMPT_PAGE_META_KEYS
     assert "fact_num" not in PROMPT_FACT_KEYS
+    assert "equations" in PROMPT_FACT_KEYS
     assert "equation" not in PROMPT_FACT_KEYS
     assert "fact_equation" not in PROMPT_FACT_KEYS
-    assert "equations" not in PROMPT_FACT_KEYS
 
 
 def test_extraction_prompt_file_is_in_sync_with_schema_contract() -> None:
@@ -54,29 +54,36 @@ def test_finetune_config_default_fallback_template_comes_from_schema_contract() 
     assert cfg.prompt.fallback_template == default_extraction_prompt_template()
 
 
-def test_metadata_fields_are_in_model_prompt() -> None:
+def test_prompt_contract_is_page_only() -> None:
     prompt = default_extraction_prompt_template()
-    assert "company_name" in prompt
-    assert "company_id" in prompt
-    assert "report_year" in prompt
+    assert '"metadata"' not in prompt
+    assert "company_name" not in prompt
+    assert "report_year" not in prompt
+    assert "Only return `pages` with page `image`, page `meta`, and page `facts`." in prompt
     assert "Only emit facts anchored on a visible numeric value" in prompt
     assert "נכסים שוטפים" in prompt
 
 
-def test_structural_equation_fields_are_in_prompts() -> None:
+def test_equation_schema_is_present_in_model_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
     fill_prompt = default_gemini_fill_prompt_template()
     autocomplete_prompt = default_gemini_autocomplete_prompt_template()
-    assert "equation" not in extraction_prompt
+    assert '"equations"' in extraction_prompt
+    assert '"equation"' in extraction_prompt
+    assert '"fact_equation"' in extraction_prompt
     assert "natural_sign" in extraction_prompt
     assert "row_role" in extraction_prompt
-    assert "equation_children" not in extraction_prompt
-    assert "fact_equation" not in fill_prompt
+    assert "Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts." in extraction_prompt
+    assert '"equations"' in fill_prompt
+    assert '"equation"' in fill_prompt
+    assert '"fact_equation"' in fill_prompt
     assert "natural_sign" in fill_prompt
     assert "row_role" in fill_prompt
     assert "locked facts" in autocomplete_prompt.lower()
     assert "return only new missing facts" in autocomplete_prompt.lower()
     assert "original image pixel coordinates" in autocomplete_prompt.lower()
     assert "runtime rebuilds final contiguous numbering" in autocomplete_prompt.lower()
+    assert '"equations"' in autocomplete_prompt
+    assert '"metadata"' not in autocomplete_prompt
     assert "balance_type" not in extraction_prompt
     assert "aggregation_role" not in extraction_prompt

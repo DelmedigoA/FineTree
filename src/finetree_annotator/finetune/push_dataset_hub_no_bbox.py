@@ -12,6 +12,7 @@ from huggingface_hub import HfApi
 
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
+from ..model_prompt_serialization import MODEL_PROMPT_MODE, coerce_payload_for_schema_mode
 from .config import load_finetune_config
 from .duplicate_facts import assert_no_duplicate_facts
 from .push_dataset_hub import (
@@ -31,9 +32,18 @@ from .push_dataset_hub import (
 
 InstructionMode = Literal["source", "minimal"]
 
-_NO_BBOX_FALLBACK_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts. Do not include bbox fields."
-_MINIMAL_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts from the provided image."
+_NO_BBOX_FALLBACK_INSTRUCTION = "Extract the FineTree page-only JSON with one page, page meta, and page facts. Do not include bbox fields."
+_MINIMAL_INSTRUCTION = "Extract the FineTree page-only JSON with one page, page meta, and page facts from the provided image."
 _BBOX_WORD_RE = re.compile(r"\bbbox\b", flags=re.IGNORECASE)
+
+
+def _normalize_model_prompt_text(text: str) -> str:
+    try:
+        payload = json.loads(text)
+        normalized = coerce_payload_for_schema_mode(payload, mode=MODEL_PROMPT_MODE)
+    except Exception:
+        return text
+    return json.dumps(normalized, ensure_ascii=False)
 
 
 def _normalize_instruction_mode(value: str) -> InstructionMode:
@@ -107,6 +117,8 @@ def _rows_from_chat_jsonl_no_bbox(
             text_val = assistant_content[0].get("text")
             if isinstance(text_val, str):
                 text = _strip_bbox_from_text_payload(text_val)
+                if instruction_mode == "minimal":
+                    text = _normalize_model_prompt_text(text)
 
         if not image_path or not text:
             continue

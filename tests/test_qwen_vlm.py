@@ -50,6 +50,35 @@ def test_is_qwen_flash_model_requested_accepts_aliases() -> None:
     assert not qwen_vlm.is_qwen_flash_model_requested("qwen-gt")
 
 
+def test_current_qwen_gt_model_choices_include_hosted_and_configured_models(monkeypatch) -> None:
+    monkeypatch.setenv("FINETREE_QWEN_FLASH_MODEL", "qwen3.5-flash-2026-02-23")
+    monkeypatch.setenv("FINETREE_QWEN_MODEL", "Qwen/Qwen3.5-35B-A3B")
+
+    class _Inference:
+        endpoint_model = "Qwen/Qwen3.5-27B"
+        model_path = "unsloth/Qwen3.5-35B-A3B"
+        fallback_model_path = "Qwen/Qwen3.5-32B"
+
+    class _Model:
+        base_model = "Qwen/Qwen3.5-72B"
+
+    class _Config:
+        inference = _Inference()
+        model = _Model()
+
+    monkeypatch.setattr(qwen_vlm, "load_finetune_config", lambda _path: _Config())
+    monkeypatch.setattr(qwen_vlm, "_resolve_config_path", lambda _path: Path("/tmp/fake.yaml"))
+
+    choices = qwen_vlm.current_qwen_gt_model_choices()
+
+    assert "qwen-flash-gt" in choices
+    assert "qwen3.5-flash-2026-02-23" in choices
+    assert "qwen3.5-plus" in choices
+    assert "Qwen/Qwen3.5-27B" in choices
+    assert "unsloth/Qwen3.5-35B-A3B" in choices
+    assert "Qwen/Qwen3.5-72B" in choices
+
+
 def test_resolve_qwen_flash_api_key_uses_doppler_fallback(monkeypatch) -> None:
     monkeypatch.setattr(qwen_vlm, "_qwen_flash_api_key_from_doppler", lambda: "doppler-secret")
     assert qwen_vlm.resolve_qwen_flash_api_key() == "doppler-secret"
@@ -142,6 +171,83 @@ def test_stream_content_from_image_uses_qwen_flash_alias_with_few_shot(tmp_path:
     assert payload["messages"][2]["role"] == "user"
     assert payload["messages"][0]["content"][0]["type"] == "image_url"
     assert payload["messages"][2]["content"][1]["text"] == "extract"
+
+
+def test_stream_content_from_image_forwards_qwen_flash_enable_thinking(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img-target")
+
+    monkeypatch.setenv("FINETREE_QWEN_FLASH_API_KEY", "qwen-key")
+    monkeypatch.setenv("FINETREE_QWEN_FLASH_MODEL", "qwen3.5-flash")
+
+    seen: dict[str, object] = {}
+
+    class _Response:
+        status_code = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def iter_lines(self):
+            return iter(['data: {"choices":[{"delta":{"content":"ok"}}]}', "data: [DONE]"])
+
+        def read(self):
+            return b""
+
+    class _Client:
+        def __init__(self, timeout):
+            _ = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            return False
+
+        def stream(self, method, endpoint, headers=None, json=None):
+            _ = method
+            _ = endpoint
+            _ = headers
+            seen["json"] = json
+            return _Response()
+
+    fake_httpx = types.ModuleType("httpx")
+    fake_httpx.Client = _Client
+    monkeypatch.setitem(sys.modules, "httpx", fake_httpx)
+
+    output = "".join(
+        qwen_vlm.stream_content_from_image(
+            image_path=image_path,
+            prompt="extract",
+            model="qwen-flash-gt",
+            enable_thinking=True,
+        )
+    )
+
+    assert output == "ok"
+    payload = seen["json"]  # type: ignore[assignment]
+    assert payload["enable_thinking"] is True
+
+
+def test_qwen_request_summary_detects_effective_thinking_transport() -> None:
+    summary = qwen_vlm._qwen_request_summary(
+        model="qwen3.5-plus",
+        backend="qwen_flash",
+        enable_thinking=None,
+        exact_request={
+            "payload": {
+                "enable_thinking": True,
+            }
+        },
+    )
+
+    assert summary["requested_enable_thinking"] is None
+    assert summary["effective_enable_thinking"] is True
+    assert summary["requested_mode"] == "default"
+    assert summary["thinking_transport"] == "enable_thinking"
 
 
 def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> None:
@@ -242,6 +348,8 @@ def test_stream_content_from_image_writes_timestamped_log_folder(tmp_path: Path,
 
     assert request_payload["prompt"] == "extract"
     assert request_payload["exact_request"]["backend"] == "qwen_flash"
+    assert request_payload["request_summary"]["backend"] == "qwen_flash"
+    assert request_payload["request_summary"]["requested_enable_thinking"] is True
     assert request_payload["exact_request"]["payload"]["messages"][0]["content"][0] == {"type": "image_file", "file": "few_shot_01_example.png"}
     assert request_payload["exact_request"]["payload"]["messages"][-1]["content"][0] == {"type": "image_file", "file": "input_target.png"}
     assert (log_dir / request_payload["logged_image_path"]).read_bytes() == b"img-target"
@@ -249,6 +357,8 @@ def test_stream_content_from_image_writes_timestamped_log_folder(tmp_path: Path,
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == "flash ok"
     assert response_payload["text"] == "flash ok"
     assert any(event["event"] == "backend_stream_event" for event in events)
+    assert any(event["event"] == "thinking_request_summary" for event in events)
+    assert any(event["event"] == "thinking_response_summary" for event in events)
     assert any(event["event"] == "output_chunk" and event["text"] == "flash " for event in events)
 
 

@@ -439,13 +439,14 @@ class HomeView(QWidget):
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
-        root.setSpacing(16)
+        root.setSpacing(10)
 
         header_card = QFrame()
         header_card.setObjectName("surfaceCard")
+        header_card.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         header_layout = QVBoxLayout(header_card)
-        header_layout.setContentsMargins(24, 24, 24, 24)
-        header_layout.setSpacing(12)
+        header_layout.setContentsMargins(18, 18, 18, 18)
+        header_layout.setSpacing(8)
         eyebrow = QLabel("Workspace")
         eyebrow.setObjectName("eyebrowLabel")
         header_layout.addWidget(eyebrow)
@@ -472,8 +473,8 @@ class HomeView(QWidget):
         root.addWidget(header_card)
 
         self.stats_grid = QGridLayout()
-        self.stats_grid.setHorizontalSpacing(12)
-        self.stats_grid.setVerticalSpacing(12)
+        self.stats_grid.setHorizontalSpacing(8)
+        self.stats_grid.setVerticalSpacing(8)
         root.addLayout(self.stats_grid)
 
         filter_row = QHBoxLayout()
@@ -499,7 +500,7 @@ class HomeView(QWidget):
         self.cards_layout.setSpacing(12)
         self.cards_layout.addStretch(1)
         self.scroll.setWidget(scroll_body)
-        root.addWidget(self.scroll, 1)
+        root.addWidget(self.scroll, 3)
 
         self.import_btn.clicked.connect(self.import_pdf_requested.emit)
         self.reset_approved_btn.clicked.connect(self.reset_approved_requested.emit)
@@ -521,15 +522,21 @@ class HomeView(QWidget):
     def _stat_card(self, title: str, value: str, caption: str) -> QFrame:
         card = QFrame()
         card.setObjectName("statCard")
+        card.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         layout = QVBoxLayout(card)
-        layout.setContentsMargins(18, 18, 18, 18)
-        layout.setSpacing(4)
+        layout.setContentsMargins(12, 10, 12, 10)
+        layout.setSpacing(2)
         title_label = QLabel(title)
         title_label.setObjectName("eyebrowLabel")
         value_label = QLabel(value)
-        value_label.setObjectName("sectionTitle")
+        value_label.setObjectName("subtitleLabel")
+        value_font = QFont(value_label.font())
+        value_font.setBold(True)
+        value_font.setPointSize(max(12, value_font.pointSize()))
+        value_label.setFont(value_font)
         caption_label = QLabel(caption)
         caption_label.setObjectName("subtitleLabel")
+        caption_label.setWordWrap(True)
         layout.addWidget(title_label)
         layout.addWidget(value_label)
         layout.addWidget(caption_label)
@@ -585,10 +592,11 @@ class HomeView(QWidget):
                 f"{token_progress_pct}% of {_format_metric_int(TOKEN_TARGET)} target",
             ),
         )
+        column_count = 4
         for index, card in enumerate(cards):
-            row, col = divmod(index, 3)
+            row, col = divmod(index, column_count)
             self.stats_grid.addWidget(card, row, col)
-        for col in range(3):
+        for col in range(column_count):
             self.stats_grid.setColumnStretch(col, 1)
 
     def _sorted_visible_documents(

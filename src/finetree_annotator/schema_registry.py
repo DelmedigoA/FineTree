@@ -19,7 +19,7 @@ SCHEMA_MODEL_MAP: dict[str, type[BaseModel]] = {
 }
 PROMPT_RUNTIME_OWNED_KEYS: tuple[str, ...] = ("schema_version",)
 PROMPT_RUNTIME_OWNED_PAGE_META_KEYS: tuple[str, ...] = ("annotation_note", "annotation_status")
-PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num", "equations")
+PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("fact_num",)
 PROMPT_REQUIRED_FACT_KEYS: tuple[str, ...] = (
     "natural_sign",
     "row_role",
@@ -236,7 +236,7 @@ class SchemaRegistry:
         }
         extraction_contract = {
             "schema_version": SchemaRegistry.current_version(),
-            "top_level_keys": [key for key in document_spec.canonical_write_keys if key not in PROMPT_RUNTIME_OWNED_KEYS],
+            "top_level_keys": ["pages"],
             "metadata_keys": list(metadata_spec.canonical_write_keys),
             "page_meta_keys": [
                 key for key in page_meta_spec.canonical_write_keys
@@ -278,6 +278,7 @@ class SchemaRegistry:
                     "value_context",
                     "natural_sign",
                     "row_role",
+                    "equations",
                     "path_source",
                     "value_type",
                     "currency",

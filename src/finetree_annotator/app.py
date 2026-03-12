@@ -17,8 +17,8 @@ from typing import Any, Callable, Dict, List, Optional
 from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, pyqtSignal, QRegularExpression
-from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform, QRegularExpressionValidator
+from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QRegularExpression
+from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeyEvent, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform, QRegularExpressionValidator
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -87,12 +87,16 @@ from .gemini_few_shot import (
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
+from .model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload, serialize_schema_mode_payload
+from .provider_workers import DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS, GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
+from .qwen_vlm import current_qwen_gt_model_choices
 from .schema_contract import (
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
 )
 from .schema_io import load_any_schema, payload_requires_migration, payload_uses_legacy_aliases
+from .schema_registry import SchemaRegistry
 from .schema_ui import enum_options
 from .schemas import PageExtraction, PageMeta, PageType
 from .workspace import page_has_annotation
@@ -119,14 +123,8 @@ FEW_SHOT_PRESET_HELP_TEXT = " | ".join(
     FEW_SHOT_PRESET_SUMMARY.get(preset_id, preset_id)
     for preset_id, _ in FEW_SHOT_PRESET_CHOICES
 )
-QWEN_GT_MAX_NEW_TOKENS = 10_000
+QWEN_GT_MAX_NEW_TOKENS = DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS
 
-QWEN_GT_MODEL_CHOICES: tuple[str, ...] = (
-    "qwen-flash-gt",
-    "qwen3.5-plus-2026-02-15",
-    "qwen3.5-27b",
-    "Qwen/Qwen3.5-27B",
-)
 GEMINI_MODEL_CHOICES: tuple[str, ...] = SUPPORTED_GEMINI_MODELS
 BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
 BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
@@ -165,39 +163,13 @@ DURATION_TYPE_OPTIONS: tuple[str, ...] = enum_options("fact", "duration_type")
 RECURRING_PERIOD_OPTIONS: tuple[str, ...] = enum_options("fact", "recurring_period")
 REPORT_SCOPE_OPTIONS: tuple[str, ...] = enum_options("metadata", "report_scope")
 GEMINI_THINKING_LEVEL_OPTIONS: tuple[str, ...] = ("minimal", "low", "medium", "high")
-GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = (
-    ("period_type", True),
-    ("period_start", True),
-    ("period_end", True),
-    ("duration_type", False),
-    ("recurring_period", False),
-    ("row_role", False),
-    ("value_context", False),
-    ("path_source", False),
-    ("value_type", False),
-    ("currency", False),
-    ("scale", False),
-    ("date", False),
-    ("comment_ref", False),
-    ("note_ref", False),
-    ("note_name", False),
+GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = tuple(
+    SchemaRegistry.get_prompt_contract("gemini_fill")["fact_patch_fields"]
 )
-GEMINI_FILL_FACT_FIELDS: tuple[str, ...] = (
-    "period_type",
-    "period_start",
-    "period_end",
-    "duration_type",
-    "recurring_period",
-    "value_context",
-    "row_role",
-    "path_source",
-    "value_type",
-    "currency",
-    "scale",
-    "date",
-    "comment_ref",
-    "note_ref",
-    "note_name",
+_GEMINI_AUTO_FIX_DEFAULT_FIELDS = {"period_type", "period_start", "period_end"}
+GEMINI_AUTO_FIX_FIELD_CHOICES: tuple[tuple[str, bool], ...] = tuple(
+    (field_name, field_name in _GEMINI_AUTO_FIX_DEFAULT_FIELDS)
+    for field_name in GEMINI_FILL_FACT_FIELDS
 )
 _EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
 _SAFE_EQUATION_CHARS_RE = re.compile(r"^[\d,\.\+\-\s]+$")
@@ -789,19 +761,20 @@ class AnnotationView(QGraphicsView):
                     self.pan_by_view_pixels(0, -step)
                 elif key == Qt.Key_Down:
                     self.pan_by_view_pixels(0, step)
-            else:
-                step = 10 if event.modifiers() & Qt.ShiftModifier else 1
-                dx = 0
-                dy = 0
-                if key == Qt.Key_Left:
-                    dx = -step
-                elif key == Qt.Key_Right:
-                    dx = step
-                elif key == Qt.Key_Up:
-                    dy = -step
-                elif key == Qt.Key_Down:
-                    dy = step
-                self.nudge_selected_requested.emit(dx, dy)
+                event.accept()
+                return
+            step = 10 if event.modifiers() & Qt.ShiftModifier else 1
+            dx = 0
+            dy = 0
+            if key == Qt.Key_Left:
+                dx = -step
+            elif key == Qt.Key_Right:
+                dx = step
+            elif key == Qt.Key_Up:
+                dy = -step
+            elif key == Qt.Key_Down:
+                dy = step
+            self.nudge_selected_requested.emit(dx, dy)
             event.accept()
             return
         super().keyPressEvent(event)
@@ -960,9 +933,11 @@ class AnnotRectItem(QGraphicsRectItem):
         painter.save()
         pen_color = QColor("#d92d20")
         pen_width = 1
+        pen_style = Qt.SolidLine
         if self.isSelected():
             pen_color = QColor("#175cd3")
             pen_width = 2
+            pen_style = Qt.DashLine
         elif self._equation_reference_preview:
             pen_color = QColor("#14804a")
             pen_width = 2
@@ -971,6 +946,7 @@ class AnnotRectItem(QGraphicsRectItem):
             pen_width = 2
         pen = QPen(pen_color)
         pen.setWidth(pen_width)
+        pen.setStyle(pen_style)
         pen.setCosmetic(True)
         painter.setPen(pen)
         painter.setBrush(Qt.transparent)
@@ -1654,7 +1630,8 @@ class JsonImportDialog(QDialog):
         hint = QLabel(
             "Paste JSON to import.\n"
             "Supported shapes: "
-            '{"images_dir":"...","metadata":{...},"pages":[{"image":"...","meta":{...},"facts":[...]}]} '
+            '{"pages":[{"image":"...","meta":{...},"facts":[...]}]} '
+            'or legacy full-document {"images_dir":"...","metadata":{...},"pages":[...]} '
             'or legacy {"meta": {...}, "facts": [...]} / {"image": "...", "meta": {...}, "facts": [...]}.\n'
             f'If "image" is omitted, current page "{default_page_name}" is used.\n'
             'Use the checkbox below for Gemini-style normalized coordinates (0..1000).'
@@ -2107,198 +2084,6 @@ class PageJsonDialog(QDialog):
         return self.text_view.find(needle, flags)
 
 
-class GeminiStreamWorker(QObject):
-    chunk_received = pyqtSignal(str)
-    meta_received = pyqtSignal(dict)
-    fact_received = pyqtSignal(dict)
-    limit_reached = pyqtSignal()
-    completed = pyqtSignal(object)
-    failed = pyqtSignal(str)
-    finished = pyqtSignal()
-
-    def __init__(
-        self,
-        image_path: Path,
-        prompt: str,
-        model: str,
-        api_key: Optional[str] = None,
-        few_shot_examples: Optional[list[dict[str, Any]]] = None,
-        enable_thinking: bool = True,
-        thinking_level: Optional[str] = None,
-        max_facts: int = 0,
-        allow_partial_finalize_error: bool = False,
-        parent: Optional[QObject] = None,
-    ) -> None:
-        super().__init__(parent)
-        self.image_path = image_path
-        self.prompt = prompt
-        self.model = model
-        self.api_key = api_key
-        self.few_shot_examples = few_shot_examples
-        self.enable_thinking = bool(enable_thinking)
-        self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
-        self.max_facts = max(0, int(max_facts))
-        self.allow_partial_finalize_error = bool(allow_partial_finalize_error)
-        self._cancel_requested = False
-        self._limit_reached = False
-        self._latest_meta_payload: Optional[dict[str, Any]] = None
-        self._emitted_facts: list[dict[str, Any]] = []
-
-    def request_cancel(self) -> None:
-        self._cancel_requested = True
-
-    def _build_lenient_stream_result(self) -> Any:
-        meta_payload = self._latest_meta_payload or {
-            "entity_name": None,
-            "page_num": None,
-            "page_type": "other",
-            "statement_type": None,
-            "title": None,
-        }
-        meta_obj = SimpleNamespace(model_dump=lambda mode="json", _meta=deepcopy(meta_payload): deepcopy(_meta))
-        fact_objs = [
-            SimpleNamespace(model_dump=lambda mode="json", _fact=deepcopy(fact): deepcopy(_fact))
-            for fact in self._emitted_facts
-        ]
-        return SimpleNamespace(meta=meta_obj, facts=fact_objs)
-
-    def _build_partial_extraction(self) -> Any:
-        meta_payload = self._latest_meta_payload or {
-            "entity_name": None,
-            "page_num": None,
-            "page_type": "other",
-            "statement_type": None,
-            "title": None,
-        }
-        try:
-            return PageExtraction.model_validate(
-                {
-                    "images_dir": str(self.image_path.parent),
-                    "metadata": normalize_document_meta({}),
-                    "pages": [
-                        {
-                            "image": self.image_path.name,
-                            "meta": meta_payload,
-                            "facts": self._emitted_facts,
-                        }
-                    ],
-                }
-            )
-        except Exception:
-            return self._build_lenient_stream_result()
-
-    def run(self) -> None:
-        try:
-            from .gemini_vlm import StreamingPageExtractionParser, stream_content_from_image
-
-            parser = StreamingPageExtractionParser()
-            for chunk in stream_content_from_image(
-                image_path=self.image_path,
-                prompt=self.prompt,
-                model=self.model,
-                api_key=self.api_key,
-                few_shot_examples=self.few_shot_examples,
-                enable_thinking=self.enable_thinking,
-                thinking_level=self.thinking_level,
-            ):
-                if self._cancel_requested:
-                    break
-                if not chunk:
-                    continue
-                self.chunk_received.emit(chunk)
-                meta, facts = parser.feed(chunk)
-                if meta is not None:
-                    self._latest_meta_payload = meta
-                    self.meta_received.emit(meta)
-                for fact in facts:
-                    if self._cancel_requested:
-                        break
-                    self.fact_received.emit(fact)
-                    self._emitted_facts.append(fact)
-                    if self.max_facts > 0 and len(self._emitted_facts) >= self.max_facts:
-                        self._limit_reached = True
-                        self.limit_reached.emit()
-                        self._cancel_requested = True
-                        break
-
-            if self._limit_reached:
-                self.completed.emit(self._build_partial_extraction())
-            elif not self._cancel_requested:
-                try:
-                    extraction = parser.finalize()
-                except Exception:
-                    if self.allow_partial_finalize_error and (self._latest_meta_payload is not None or self._emitted_facts):
-                        self.completed.emit(self._build_lenient_stream_result())
-                    else:
-                        raise
-                else:
-                    self.completed.emit(extraction)
-        except Exception as exc:
-            self.failed.emit(str(exc))
-        finally:
-            self.finished.emit()
-
-
-class GeminiFillWorker(QObject):
-    completed = pyqtSignal(dict)
-    failed = pyqtSignal(str)
-    finished = pyqtSignal()
-
-    def __init__(
-        self,
-        *,
-        image_path: Path,
-        prompt: str,
-        model: str,
-        api_key: Optional[str],
-        allowed_fact_fields: set[str],
-        allow_statement_type: bool,
-        enable_thinking: bool,
-        thinking_level: Optional[str] = None,
-        parent: Optional[QObject] = None,
-    ) -> None:
-        super().__init__(parent)
-        self.image_path = image_path
-        self.prompt = prompt
-        self.model = model
-        self.api_key = api_key
-        self.allowed_fact_fields = set(allowed_fact_fields)
-        self.allow_statement_type = bool(allow_statement_type)
-        self.enable_thinking = bool(enable_thinking)
-        self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
-        self._cancel_requested = False
-
-    def request_cancel(self) -> None:
-        self._cancel_requested = True
-
-    def run(self) -> None:
-        try:
-            from .gemini_vlm import generate_content_from_image, parse_selected_field_patch_text
-
-            raw_text = generate_content_from_image(
-                image_path=self.image_path,
-                prompt=self.prompt,
-                model=self.model,
-                api_key=self.api_key,
-                enable_thinking=self.enable_thinking,
-                thinking_level=self.thinking_level,
-            )
-            if self._cancel_requested:
-                return
-            parsed = parse_selected_field_patch_text(
-                raw_text,
-                allowed_fact_fields=self.allowed_fact_fields,
-                allow_statement_type=self.allow_statement_type,
-            )
-            if self._cancel_requested:
-                return
-            self.completed.emit(parsed)
-        except Exception as exc:
-            self.failed.emit(str(exc))
-        finally:
-            self.finished.emit()
-
-
 class QwenPromptDialog(GeminiPromptDialog):
     def __init__(
         self,
@@ -2315,6 +2100,7 @@ class QwenPromptDialog(GeminiPromptDialog):
         thinking_enabled_default: bool = False,
         thinking_level_default: str = "minimal",
         thinking_tooltip: str = "",
+        config_path: Optional[str] = None,
     ) -> None:
         super().__init__(
             prompt_text=prompt_text,
@@ -2332,9 +2118,14 @@ class QwenPromptDialog(GeminiPromptDialog):
         )
         self.setWindowTitle("Qwen Prompt")
         self.model_combo.clear()
-        for option in QWEN_GT_MODEL_CHOICES:
+        for option in current_qwen_gt_model_choices(config_path):
             self.model_combo.addItem(option)
         self.model_combo.setCurrentText(model_name)
+        self.thinking_level_combo.setVisible(False)
+        thinking_level_label = self.form_layout.labelForField(self.thinking_level_combo)
+        if thinking_level_label is not None:
+            thinking_level_label.setVisible(False)
+        self.thinking_level_combo.setEnabled(False)
         ok_btn = self.button_box.button(QDialogButtonBox.Ok)
         if ok_btn is not None:
             ok_btn.setText("Start Qwen GT")
@@ -2342,79 +2133,15 @@ class QwenPromptDialog(GeminiPromptDialog):
     def model(self) -> str:
         return self.model_combo.currentText().strip()
 
+    def thinking_level(self) -> str:
+        return "high" if self.thinking_check.isChecked() else "minimal"
+
 
 class QwenStreamDialog(GeminiStreamDialog):
     def __init__(self, page_name: str, parent: Optional[QWidget] = None) -> None:
         super().__init__(page_name=page_name, parent=parent)
         self.setWindowTitle(f"Qwen GT Stream - {page_name}")
         self.set_status("Connecting to Qwen...")
-
-
-class QwenStreamWorker(QObject):
-    chunk_received = pyqtSignal(str)
-    meta_received = pyqtSignal(dict)
-    fact_received = pyqtSignal(dict)
-    completed = pyqtSignal(object)
-    failed = pyqtSignal(str)
-    finished = pyqtSignal()
-
-    def __init__(
-        self,
-        image_path: Path,
-        prompt: str,
-        model: str,
-        config_path: Optional[str] = None,
-        max_new_tokens: int = QWEN_GT_MAX_NEW_TOKENS,
-        few_shot_examples: Optional[list[dict[str, Any]]] = None,
-        enable_thinking: bool = False,
-        parent: Optional[QObject] = None,
-    ) -> None:
-        super().__init__(parent)
-        self.image_path = image_path
-        self.prompt = prompt
-        self.model = model
-        self.config_path = config_path
-        self.max_new_tokens = int(max_new_tokens)
-        self.few_shot_examples = few_shot_examples
-        self.enable_thinking = bool(enable_thinking)
-        self._cancel_requested = False
-
-    def request_cancel(self) -> None:
-        self._cancel_requested = True
-
-    def run(self) -> None:
-        try:
-            from .gemini_vlm import StreamingPageExtractionParser
-            from .qwen_vlm import stream_content_from_image
-
-            parser = StreamingPageExtractionParser()
-            for chunk in stream_content_from_image(
-                image_path=self.image_path,
-                prompt=self.prompt,
-                model=self.model,
-                config_path=self.config_path,
-                max_new_tokens=self.max_new_tokens,
-                few_shot_examples=self.few_shot_examples,
-                enable_thinking=self.enable_thinking,
-            ):
-                if self._cancel_requested:
-                    break
-                if not chunk:
-                    continue
-                self.chunk_received.emit(chunk)
-                meta, facts = parser.feed(chunk)
-                if meta is not None:
-                    self.meta_received.emit(meta)
-                for fact in facts:
-                    self.fact_received.emit(fact)
-
-            if not self._cancel_requested:
-                extraction = parser.finalize()
-                self.completed.emit(extraction)
-        except Exception as exc:
-            self.failed.emit(str(exc))
-        finally:
-            self.finished.emit()
 
 
 class AnnotationWindow(QMainWindow):
@@ -3700,6 +3427,8 @@ class AnnotationWindow(QMainWindow):
         self.gt_activity_stop_btn.clicked.connect(self._stop_active_generation)
         self.page_issues_list.itemClicked.connect(self._on_page_issue_clicked)
         self.facts_list.itemSelectionChanged.connect(self._on_fact_list_selection_changed)
+        self.facts_list.installEventFilter(self)
+        self.facts_list.viewport().installEventFilter(self)
         self.entity_name_edit.editingFinished.connect(self._on_meta_edited)
         self.page_num_edit.editingFinished.connect(self._on_meta_edited)
         self.title_edit.editingFinished.connect(self._on_meta_edited)
@@ -3827,9 +3556,9 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Alt+F"), self, activated=self.focus_fact_annotation_panel)
         QShortcut(QKeySequence("F1"), self, activated=self.show_help_dialog)
 
-        save_action = QAction("Save", self)
-        save_action.triggered.connect(self._trigger_save_annotations)
-        self.addAction(save_action)
+        self._save_action = QAction("Save", self)
+        self._save_action.triggered.connect(self._trigger_save_annotations)
+        self.addAction(self._save_action)
         self._save_shortcut = QShortcut(QKeySequence.Save, self, activated=self._trigger_save_annotations)
         self._save_shortcut.setContext(Qt.ApplicationShortcut)
         self.page_label.setObjectName("monoLabel")
@@ -6009,51 +5738,9 @@ class AnnotationWindow(QMainWindow):
         QTimer.singleShot(0, self._apply_pending_auto_fit)
 
     def _focus_fact_items_in_view(self, items: List[AnnotRectItem]) -> None:
-        alive_items = [item for item in items if self._is_alive_fact_item(item)]
-        if not alive_items:
-            return
-        rects = [item_scene_rect(item) for item in alive_items]
-        rects = [rect for rect in rects if not rect.isNull()]
-        if not rects:
-            return
-
-        target_rect = QRectF(rects[0])
-        for rect in rects[1:]:
-            target_rect = target_rect.united(rect)
-
-        image_rect = self.scene.image_rect
-        if not image_rect.isNull():
-            target_rect = target_rect.intersected(image_rect)
-        if target_rect.isNull():
-            return
-
-        pad_x = max(44.0, target_rect.width() * 1.35)
-        pad_y = max(44.0, target_rect.height() * 1.35)
-        focus_rect = target_rect.adjusted(-pad_x, -pad_y, pad_x, pad_y)
-        if not image_rect.isNull():
-            focus_rect = focus_rect.intersected(image_rect)
-        if focus_rect.isNull():
-            focus_rect = target_rect
-
-        viewport = self.view.viewport().rect()
-        if viewport.width() <= 2 or viewport.height() <= 2:
-            self.view.centerOn(target_rect.center())
-            return
-
-        self._fitting_view = True
-        try:
-            self.view.resetTransform()
-            self.view.fitInView(focus_rect, Qt.KeepAspectRatio)
-            current_zoom = self.view.transform().m11()
-            if current_zoom < 0.05:
-                self.view.resetTransform()
-                self.view.scale(0.05, 0.05)
-            elif current_zoom > 2.4:
-                self.view.resetTransform()
-                self.view.scale(2.4, 2.4)
-            self.view.centerOn(target_rect.center())
-        finally:
-            self._fitting_view = False
+        _ = items
+        # Selection should remain visually explicit, but it should not auto-pan/zoom the page.
+        return
 
     def _on_lens_toggled(self, enabled: bool) -> None:
         self.view.set_lens_enabled(enabled)
@@ -6812,6 +6499,20 @@ class AnnotationWindow(QMainWindow):
         prompt = prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
         return prompt
 
+    def _build_page_prompt_payload(
+        self,
+        *,
+        page_name: str,
+        page_meta: Dict[str, Any],
+        facts: list[dict[str, Any]],
+    ) -> Dict[str, Any]:
+        return build_single_page_payload(
+            page_name=page_name,
+            page_meta=page_meta,
+            facts=facts,
+            mode=MODEL_PROMPT_MODE,
+        )
+
     def _build_gemini_fill_prompt_from_template(
         self,
         template: str,
@@ -6833,7 +6534,7 @@ class AnnotationWindow(QMainWindow):
             )
         else:
             meta_updates_schema = "{}"
-        request_json = json.dumps(request_payload, ensure_ascii=False, indent=2)
+        request_json = serialize_schema_mode_payload(request_payload)
         prompt = template.replace("{{FACT_FIELDS}}", fact_fields)
         prompt = prompt.replace("{{META_FIELDS}}", meta_fields)
         prompt = prompt.replace("{{META_UPDATES_SCHEMA}}", meta_updates_schema)
@@ -6846,7 +6547,7 @@ class AnnotationWindow(QMainWindow):
         *,
         request_payload: Dict[str, Any],
     ) -> str:
-        request_json = json.dumps(request_payload, ensure_ascii=False, indent=2)
+        request_json = serialize_schema_mode_payload(request_payload)
         first_page = {}
         pages = request_payload.get("pages")
         if isinstance(pages, list) and pages and isinstance(pages[0], dict):
@@ -6856,9 +6557,17 @@ class AnnotationWindow(QMainWindow):
                 "facts": pages[0].get("facts"),
             }
         seed_page_json = json.dumps(first_page, ensure_ascii=False, indent=2)
+        page_name = str(first_page.get("image") or "")
+        image_dims = self._image_dimensions_for_page(page_name) if page_name else None
+        image_dimensions = (
+            f"{int(image_dims[0])} x {int(image_dims[1])} pixels"
+            if image_dims is not None
+            else "unknown"
+        )
         return (
             template.replace("{{REQUEST_JSON}}", request_json)
             .replace("{{SEED_PAGE_JSON}}", seed_page_json)
+            .replace("{{IMAGE_DIMENSIONS}}", image_dimensions)
         )
 
     def _fact_payload_from_item(self, item: AnnotRectItem) -> Dict[str, Any]:
@@ -6926,7 +6635,6 @@ class AnnotationWindow(QMainWindow):
             {
                 **normalized_payload,
                 "fact_num": None,
-                "equations": None,
             }
         )
         return {
@@ -7311,21 +7019,11 @@ class AnnotationWindow(QMainWindow):
                 }
             )
 
-        return {
-            "images_dir": str(self.images_dir),
-            "metadata": normalize_document_meta(self.document_meta),
-            "pages": [
-                {
-                    "image": page_name,
-                    "meta": page_meta,
-                    "facts": facts_out,
-                }
-            ],
-            "request": {
-                "fact_fields": sorted(selected_fact_fields),
-                "meta_fields": ["statement_type"] if include_statement_type else [],
-            },
-        }
+        return self._build_page_prompt_payload(
+            page_name=page_name,
+            page_meta=page_meta,
+            facts=facts_out,
+        )
 
     def _build_gemini_autocomplete_request_payload(
         self,
@@ -7347,29 +7045,11 @@ class AnnotationWindow(QMainWindow):
                     **normalize_fact_data(payload),
                 }
             )
-        image_dims = self._image_dimensions_for_page(page_name)
-        image_width = float(image_dims[0]) if image_dims is not None else None
-        image_height = float(image_dims[1]) if image_dims is not None else None
-
-        return {
-            "images_dir": str(self.images_dir),
-            "metadata": normalize_document_meta(self.document_meta),
-            "pages": [
-                {
-                    "image": page_name,
-                    "meta": page_meta,
-                    "facts": facts_out,
-                }
-            ],
-            "request": {
-                "mode": "anchored_geometry_merge",
-                "preserve_existing_facts": True,
-                "allow_meta_updates": False,
-                "locked_fact_count": len(facts_out),
-                "image_width": image_width,
-                "image_height": image_height,
-            },
-        }
+        return self._build_page_prompt_payload(
+            page_name=page_name,
+            page_meta=page_meta,
+            facts=facts_out,
+        )
 
     def _apply_stream_meta(self, page_name: str, meta_payload: Dict[str, Any]) -> None:
         page_idx = self._page_index_by_name(page_name)
@@ -8171,6 +7851,8 @@ class AnnotationWindow(QMainWindow):
             few_shot_enabled_default=False,
             few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
             few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            show_max_facts_control=True,
+            max_facts_default=0,
             show_thinking_control=True,
             thinking_enabled_default=self._gemini_enable_thinking,
             thinking_level_default=self._gemini_thinking_level,
@@ -8190,6 +7872,7 @@ class AnnotationWindow(QMainWindow):
         thinking_level = prompt_dialog.thinking_level()
         use_few_shot = prompt_dialog.use_few_shot()
         few_shot_preset = prompt_dialog.few_shot_preset()
+        max_facts = prompt_dialog.max_facts()
         if not prompt_text:
             QMessageBox.warning(self, "Gemini Auto Complete", "Prompt cannot be empty.")
             return
@@ -8252,7 +7935,7 @@ class AnnotationWindow(QMainWindow):
             thinking_level=thinking_level,
             few_shot_examples=few_shot_examples,
             mode="autocomplete",
-            max_facts=0,
+            max_facts=max_facts,
             apply_meta=False,
             initial_seen_facts=initial_seen_facts,
         )
@@ -8483,6 +8166,7 @@ class AnnotationWindow(QMainWindow):
                 return
 
         prompt_text = self._build_prompt_from_template(prompt_template, page_path)
+        qwen_config_path = self._resolve_qwen_config_path()
         prompt_dialog = QwenPromptDialog(
             prompt_text=prompt_text,
             model_name=self._qwen_model_name,
@@ -8494,6 +8178,7 @@ class AnnotationWindow(QMainWindow):
             few_shot_enabled_default=True,
             few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
             few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
+            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
         )
         if prompt_dialog.exec_() != QDialog.Accepted:
             return
@@ -8513,7 +8198,6 @@ class AnnotationWindow(QMainWindow):
             return
 
         is_qwen_flash = is_qwen_flash_model_requested(model_name)
-        qwen_config_path: Optional[Path] = None
         if is_qwen_flash:
             if not resolve_qwen_flash_api_key():
                 QMessageBox.warning(
@@ -8527,7 +8211,6 @@ class AnnotationWindow(QMainWindow):
                 )
                 return
         else:
-            qwen_config_path = self._resolve_qwen_config_path()
             if qwen_config_path is None:
                 QMessageBox.warning(
                     self,
@@ -8561,7 +8244,7 @@ class AnnotationWindow(QMainWindow):
                 )
         elif use_few_shot:
             self.statusBar().showMessage(
-                "Qwen few-shot is currently enabled for qwen-flash-gt only; running standard mode.",
+                "Qwen few-shot is currently enabled only for hosted Qwen 3.5 DashScope models; running standard mode.",
                 7000,
             )
 
@@ -9089,10 +8772,10 @@ class AnnotationWindow(QMainWindow):
             ):
                 scene_item.set_equation_match_ok(False)
 
-    def refresh_facts_list(self, *, refresh_issues: bool = True) -> None:
+    def refresh_facts_list(self, *, refresh_issues: bool = True, preserve_sequence: bool = False) -> None:
         selected = self._selected_fact_item()
         selected_items = set(self._selected_fact_items())
-        self._fact_items = self._sorted_fact_items()
+        self._fact_items = self._sorted_fact_items() if not preserve_sequence else self._fact_items_in_display_sequence()
         if self.current_index >= 0 and self.current_index < len(self.page_images):
             current_page_name = self.page_images[self.current_index].name
             current_state = self.page_states.get(current_page_name)
@@ -9180,6 +8863,23 @@ class AnnotationWindow(QMainWindow):
         self._update_batch_controls()
         self._update_gemini_fill_button_state()
         self._update_gemini_complete_button_state()
+
+    def _fact_items_in_display_sequence(self) -> List[AnnotRectItem]:
+        ordered: list[AnnotRectItem] = []
+        seen_ids: set[int] = set()
+        for item in self._fact_items:
+            if not self._is_alive_fact_item(item):
+                continue
+            ordered.append(item)
+            seen_ids.add(id(item))
+        for item in self.scene.items():
+            if not isinstance(item, AnnotRectItem) or not self._is_alive_fact_item(item):
+                continue
+            if id(item) in seen_ids:
+                continue
+            ordered.append(item)
+            seen_ids.add(id(item))
+        return ordered
 
     def _on_equation_reference_selection_started(self) -> None:
         selected_items = self._selected_fact_items()
@@ -9369,7 +9069,7 @@ class AnnotationWindow(QMainWindow):
         self.fact_value_edit.selectAll()
 
     def _on_box_geometry_changed(self, _item: AnnotRectItem) -> None:
-        self.refresh_facts_list(refresh_issues=False)
+        self.refresh_facts_list(refresh_issues=False, preserve_sequence=True)
         self._record_history_snapshot()
 
     def _on_meta_edited(self) -> None:
@@ -9464,6 +9164,9 @@ class AnnotationWindow(QMainWindow):
         self._update_gemini_complete_button_state()
         self._refresh_page_json_dialog()
 
+    def eventFilter(self, watched: QObject, event: QObject) -> bool:
+        return super().eventFilter(watched, event)
+
     def _selected_fact_items(self) -> List[AnnotRectItem]:
         return [
             item
@@ -9498,7 +9201,8 @@ class AnnotationWindow(QMainWindow):
             pos = item.pos()
             item.setPos(QPointF(pos.x() + bounded_dx, pos.y() + bounded_dy))
 
-        self.refresh_facts_list()
+        self.refresh_facts_list(refresh_issues=False, preserve_sequence=True)
+        self._refresh_current_page_issues(use_current_fact_items=True)
         self._record_history_snapshot()
 
     def select_all_bboxes(self) -> None:
@@ -9701,6 +9405,20 @@ class AnnotationWindow(QMainWindow):
             return self.save_annotations()
         finally:
             QTimer.singleShot(0, lambda: setattr(self, "_save_shortcut_in_flight", False))
+
+    def keyPressEvent(self, event) -> None:
+        if event.matches(QKeySequence.Save):
+            if self._trigger_save_annotations():
+                event.accept()
+                return
+        super().keyPressEvent(event)
+
+    def event(self, event: QObject) -> bool:
+        if isinstance(event, QKeyEvent) and event.type() == QEvent.KeyPress and event.matches(QKeySequence.Save):
+            if self._trigger_save_annotations():
+                event.accept()
+                return True
+        return super().event(event)
 
     def save_annotations(self) -> bool:
         try:

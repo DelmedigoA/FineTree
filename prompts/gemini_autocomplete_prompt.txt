@@ -13,6 +13,7 @@ You are completing missing financial-statement annotations for a single page.
         Return only NEW missing facts for the same page.
         Do not emit page-level meta changes in this mode; keep page meta aligned with the locked snapshot.
         New facts will be merged into the page by runtime using bbox geometry and then renumbered by runtime.
+        Current image size: {{IMAGE_DIMENSIONS}}.
 
         Locked snapshot JSON:
         {{REQUEST_JSON}}
@@ -23,9 +24,9 @@ You are completing missing financial-statement annotations for a single page.
 
         Auto Complete constraints:
         1. Use the exact extraction schema contract below for output shape and field validation.
-        2. Return the same full wrapper shape as extraction (`images_dir`, `metadata`, `pages` with one page).
+        2. Return the same page-only wrapper shape as extraction (`pages` with one page).
         3. Include only new missing facts in `pages[0].facts`; never include locked facts from the snapshot in output.
-        4. Keep `metadata` and `pages[0].meta` aligned with the locked snapshot.
+        4. Keep `pages[0].image` and `pages[0].meta` aligned with the locked snapshot.
         5. `bbox` values must be in original image pixel coordinates.
         6. Do not rely on locked `fact_num` values while generating; runtime rebuilds final contiguous numbering after merge.
         7. If there are no confidently missing facts, return an empty `facts` array.
@@ -36,22 +37,12 @@ You are completing missing financial-statement annotations for a single page.
 Return ONLY valid JSON.
 Do NOT return markdown, code fences, comments, prose, or extra keys.
 
-Return a full document wrapper with exactly one page.
-Runtime owns `schema_version`, and overwrites `images_dir` and `pages[0].image`.
-You must still include `images_dir` and `pages[0].image`.
+Return a page-only wrapper with exactly one page.
+Runtime owns document-level metadata, `schema_version`, and `images_dir`.
+Only return `pages` with page `image`, page `meta`, and page `facts`.
 
 Top-level schema (exact keys only):
 {
-  "images_dir": "<string or null>",
-  "metadata": {
-    "language": "he|en|null",
-    "reading_direction": "rtl|ltr|null",
-    "company_name": "<string or null>",
-    "company_id": "<string or null>",
-    "report_year": "<integer or null>",
-    "report_scope": "separate|consolidated|combined|pro_forma|other|null",
-    "entity_type": "state_owned_enterprise|public_company|private_company|registered_nonprofit|nonprofit_npo|public_benefit_company|partnership|limited_partnership|limited_liability_company|other|null"
-  },
   "pages": [
     {
       "image": "<string or null>",
@@ -66,6 +57,12 @@ Top-level schema (exact keys only):
         {
           "bbox": [<x>, <y>, <w>, <h>],
           "value": "<string>",
+          "equations": [
+            {
+              "equation": "<string>",
+              "fact_equation": "<string or null>"
+            }
+          ]|null,
           "value_type": "amount|percent|ratio|count|points|null",
           "value_context": "textual|tabular|mixed|null",
           "natural_sign": "positive|negative|null",
@@ -92,36 +89,37 @@ Top-level schema (exact keys only):
 }
 
 Type/validation rules (must match schema):
-1. `images_dir`, `metadata`, and `pages` are required. Emit exactly one page inside `pages`.
-2. All listed `metadata` keys are required; nullable fields must still be present with JSON null.
-3. All listed page `meta` keys are required.
-4. All listed fact keys are required in every fact object, including `bbox`; nullable fields must still be present with JSON null.
-5. `path` is a required list of strings (use `[]` when unknown, never `null`).
-6. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
-7. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
-8. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
-9. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
-10. `report_scope` must be separate|consolidated|combined|pro_forma|other or null.
-11. `page_type` must be one of: `title|contents|declaration|statements|other`.
-12. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
-13. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
-14. Non-statement structural pages use `statement_type=null`.
-15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
-16. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
-17. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-18. `value_context` must be `textual`, `tabular`, `mixed`, or null.
-19. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+1. `pages` is required. Emit exactly one page inside `pages`.
+2. All listed page `meta` keys are required.
+3. All listed fact keys are required in every fact object, including `bbox`; nullable fields must still be present with JSON null.
+4. `equations` must be a JSON list or null. Use `null` when the fact has no equation.
+5. Each `equations[]` entry must include non-empty `equation`; `fact_equation` may be null.
+6. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
+7. `path` is a required list of strings (use `[]` when unknown, never `null`).
+8. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
+9. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
+10. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
+11. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
+12. `page_type` must be one of: `title|contents|declaration|statements|other`.
+13. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
+14. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
+15. Non-statement structural pages use `statement_type=null`.
+16. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
+17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
+20. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
     - if `value` contains both `(` and `)`, set `natural_sign="negative"`
     - if `value` is exactly `"-"`, set `natural_sign=null`
     - otherwise set `natural_sign="positive"`
-20. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
-21. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-22. `path_source` is only `observed`, `inferred`, or null.
-23. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-24. If `note_num` is present, `note_flag` must be `true`.
-25. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-26. Use JSON `null` literal for missing optional values (never `"null"` string).
-27. Do not include any keys not listed above.
+21. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
+22. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+23. `path_source` is only `observed`, `inferred`, or null.
+24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+25. If `note_num` is present, `note_flag` must be `true`.
+26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+27. Use JSON `null` literal for missing optional values (never `"null"` string).
+28. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
@@ -143,10 +141,12 @@ Extraction rules:
 17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
 18. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
 19. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-20. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
-21. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-22. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-23. Do not emit empty-value facts.
+20. When a total/subtotal has a clearly supported arithmetic expression, populate `equations` with one or more variants. Use `null` when no reliable equation is available.
+21. In each `equations[]` entry, `equation` is the visible arithmetic text and `fact_equation` is the optional fact-reference form like `f2 + f3`.
+22. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+23. Order `facts` top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
+24. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
+25. Do not emit empty-value facts.
 Page classification rules:
 1. Use `page_type="title"` for cover/title pages.
 2. Use `page_type="contents"` for table-of-contents pages.

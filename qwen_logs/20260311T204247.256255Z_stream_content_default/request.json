@@ -1,0 +1,43 @@
+{
+  "operation": "stream_content",
+  "model": "",
+  "prompt": "test prompt",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-291/test_stream_content_from_image2/page.png",
+  "logged_image_path": "input_target.png",
+  "enable_thinking": null,
+  "few_shot_examples": [],
+  "config_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-291/test_stream_content_from_image2/cfg.yaml",
+  "max_new_tokens": null,
+  "do_sample": null,
+  "temperature": null,
+  "top_p": null,
+  "exact_request": {
+    "backend": "runpod_openai",
+    "endpoint": "https://api.runpod.ai/v2/abc/openai/v1/chat/completions",
+    "payload": {
+      "model": "qwenasaf",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "test prompt"
+            },
+            {
+              "type": "image_file",
+              "file": "input_target.png"
+            }
+          ]
+        }
+      ],
+      "max_tokens": 120,
+      "stream": true,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "temperature": 0.7,
+      "top_p": 0.8
+    }
+  }
+}

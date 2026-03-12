@@ -25,6 +25,12 @@ _DEFAULT_QWEN_FLASH_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-m
 _DEFAULT_QWEN_FLASH_MODEL = "qwen3.5-flash"
 _DEFAULT_QWEN_MAX_NEW_TOKENS = 10_000
 _DEFAULT_EXTRACTION_PROMPT_PATH = Path("prompts/extraction_prompt.txt")
+_HOSTED_QWEN_GT_MODELS: tuple[str, ...] = (
+    "qwen3.5-flash",
+    "qwen3.5-flash-2026-02-23",
+    "qwen3.5-plus",
+    "qwen3.5-plus-2026-02-15",
+)
 
 _MODEL_CACHE: dict[str, Any] = {}
 
@@ -93,6 +99,71 @@ def _update_qwen_log_request(session_dir: Path, updates: dict[str, Any]) -> None
         json.dumps(payload, ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
+
+
+def _find_qwen_thinking_signal(payload: Any, *, _path: str = "") -> Optional[str]:
+    if isinstance(payload, dict):
+        for key, value in payload.items():
+            key_text = str(key).strip().lower()
+            next_path = f"{_path}.{key}" if _path else str(key)
+            if key_text in {"thinking", "thought", "thoughts", "reasoning"} and value not in ("", None, [], {}):
+                return next_path
+            found = _find_qwen_thinking_signal(value, _path=next_path)
+            if found:
+                return found
+    elif isinstance(payload, list):
+        for index, item in enumerate(payload):
+            found = _find_qwen_thinking_signal(item, _path=f"{_path}[{index}]" if _path else f"[{index}]")
+            if found:
+                return found
+    return None
+
+
+def _qwen_request_summary(
+    *,
+    model: Optional[str],
+    backend: str,
+    enable_thinking: Optional[bool],
+    exact_request: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+    thinking_transport = None
+    effective_enable_thinking = enable_thinking
+    if isinstance(exact_request, dict):
+        payload = exact_request.get("payload")
+        if isinstance(payload, dict):
+            if "enable_thinking" in payload:
+                thinking_transport = "enable_thinking"
+                effective_enable_thinking = bool(payload.get("enable_thinking"))
+            else:
+                nested_payload = payload.get("input")
+                if isinstance(nested_payload, dict):
+                    payload = nested_payload
+                chat_template_kwargs = payload.get("chat_template_kwargs")
+                if isinstance(chat_template_kwargs, dict) and "enable_thinking" in chat_template_kwargs:
+                    thinking_transport = "chat_template_kwargs.enable_thinking"
+                    effective_enable_thinking = bool(chat_template_kwargs.get("enable_thinking"))
+    if enable_thinking is None:
+        requested_mode = "default"
+    else:
+        requested_mode = "thinking" if bool(enable_thinking) else "non-thinking"
+    return {
+        "resolved_model": str(model or ""),
+        "backend": backend,
+        "requested_enable_thinking": enable_thinking,
+        "effective_enable_thinking": effective_enable_thinking,
+        "requested_mode": requested_mode,
+        "thinking_transport": thinking_transport,
+        "resolved_request": _serialize_qwen_log_value(exact_request),
+    }
+
+
+def _qwen_response_summary(*, observed_thinking_signal_path: Optional[str], backend: str) -> dict[str, Any]:
+    return {
+        "backend": backend,
+        "observed_thinking_signal": observed_thinking_signal_path is not None,
+        "observed_thinking_signal_path": observed_thinking_signal_path,
+        "streamed": True,
+    }
 
 
 def _build_logged_qwen_messages(session_dir: Path, prompt: str, *, preserve_legacy_single_turn: bool) -> list[dict[str, Any]]:
@@ -375,6 +446,42 @@ def _resolve_qwen_flash_model_name(model_name: Optional[str]) -> str:
     if not resolved:
         return alias_default
     return resolved
+
+
+def current_qwen_gt_model_choices(config_path: Optional[str] = None) -> tuple[str, ...]:
+    choices: list[str] = ["qwen-flash-gt", *_HOSTED_QWEN_GT_MODELS]
+    configured_values: list[str] = [
+        str(os.getenv("FINETREE_QWEN_FLASH_MODEL") or "").strip(),
+        str(os.getenv("FINETREE_QWEN_MODEL") or "").strip(),
+    ]
+
+    try:
+        cfg = load_finetune_config(_resolve_config_path(config_path))
+    except Exception:
+        cfg = None
+
+    if cfg is not None:
+        configured_values.extend(
+            [
+                str(cfg.inference.endpoint_model or "").strip(),
+                str(cfg.inference.model_path or "").strip(),
+                str(cfg.inference.fallback_model_path or "").strip(),
+                str(cfg.model.base_model or "").strip(),
+            ]
+        )
+
+    seen: set[str] = set()
+    out: list[str] = []
+    for raw_value in [*choices, *configured_values]:
+        value = str(raw_value or "").strip()
+        if not value:
+            continue
+        key = value.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(value)
+    return tuple(out)
 
 
 def _resolve_qwen_flash_api_key(explicit_api_key: Optional[str] = None) -> Optional[str]:
@@ -1061,7 +1168,6 @@ def _stream_content_from_qwen_flash_endpoint(
     enable_thinking: Optional[bool] = None,
     log_event: Optional[Callable[[str, dict[str, Any]], None]] = None,
 ) -> Iterator[str]:
-    _ = enable_thinking
     resolved_api_key = _resolve_qwen_flash_api_key(api_key)
     if not resolved_api_key:
         raise RuntimeError(
@@ -1092,6 +1198,8 @@ def _stream_content_from_qwen_flash_endpoint(
         "max_tokens": resolved_max_new_tokens,
         "stream": True,
     }
+    if enable_thinking is not None:
+        payload["enable_thinking"] = bool(enable_thinking)
     if effective_do_sample:
         payload["temperature"] = effective_temperature
         payload["top_p"] = effective_top_p
@@ -1539,8 +1647,17 @@ def stream_content_from_image(
             "top_p": top_p,
         },
     )
+    observed_thinking_signal_path: Optional[str] = None
+    active_backend = "unknown"
 
     def _log_event(event: str, payload: dict[str, Any]) -> None:
+        nonlocal observed_thinking_signal_path, active_backend
+        signal_path = _find_qwen_thinking_signal(payload)
+        if observed_thinking_signal_path is None and signal_path is not None:
+            observed_thinking_signal_path = signal_path
+        backend_value = payload.get("backend")
+        if isinstance(backend_value, str) and backend_value.strip():
+            active_backend = backend_value.strip()
         _append_qwen_log_event(session_dir, event, payload)
 
     _append_qwen_log_event(
@@ -1557,6 +1674,7 @@ def stream_content_from_image(
     try:
         if is_qwen_flash_model_requested(model):
             resolved_model_name = _resolve_qwen_flash_model_name(model)
+            active_backend = "qwen_flash"
             effective_do_sample = True if do_sample is None else bool(do_sample)
             exact_request = {
                 "backend": "qwen_flash",
@@ -1568,10 +1686,19 @@ def stream_content_from_image(
                     "stream": True,
                 },
             }
+            if enable_thinking is not None:
+                exact_request["payload"]["enable_thinking"] = bool(enable_thinking)
             if effective_do_sample:
                 exact_request["payload"]["temperature"] = 0.7 if temperature is None else float(temperature)
                 exact_request["payload"]["top_p"] = 0.8 if top_p is None else float(top_p)
-            _update_qwen_log_request(session_dir, {"exact_request": exact_request})
+            request_summary = _qwen_request_summary(
+                model=resolved_model_name,
+                backend=active_backend,
+                enable_thinking=enable_thinking,
+                exact_request=exact_request,
+            )
+            _update_qwen_log_request(session_dir, {"exact_request": exact_request, "request_summary": request_summary})
+            _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
             generator = _stream_content_from_qwen_flash_endpoint(
                 image_path=image_path,
                 prompt=prompt,
@@ -1588,6 +1715,7 @@ def stream_content_from_image(
             cfg = load_finetune_config(_resolve_config_path(config_path))
             _append_qwen_log_event(session_dir, "backend_selected", {"backend": cfg.inference.backend})
             if cfg.inference.backend == "runpod_openai":
+                active_backend = "runpod_openai"
                 effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
                 effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
                 effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
@@ -1606,7 +1734,14 @@ def stream_content_from_image(
                 if effective_do_sample:
                     exact_request["payload"]["temperature"] = effective_temperature
                     exact_request["payload"]["top_p"] = effective_top_p
-                _update_qwen_log_request(session_dir, {"exact_request": exact_request})
+                request_summary = _qwen_request_summary(
+                    model=_resolve_endpoint_model(cfg, model),
+                    backend=active_backend,
+                    enable_thinking=effective_enable_thinking,
+                    exact_request=exact_request,
+                )
+                _update_qwen_log_request(session_dir, {"exact_request": exact_request, "request_summary": request_summary})
+                _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_from_runpod_endpoint(
                     cfg=cfg,
                     image_path=image_path,
@@ -1621,6 +1756,7 @@ def stream_content_from_image(
                     log_event=_log_event,
                 )
             elif cfg.inference.backend == "runpod_queue":
+                active_backend = "runpod_queue"
                 effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
                 effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
                 effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
@@ -1641,15 +1777,18 @@ def stream_content_from_image(
                 if effective_do_sample:
                     queue_input["temperature"] = effective_temperature
                     queue_input["top_p"] = effective_top_p
-                _update_qwen_log_request(
-                    session_dir,
-                    {
-                        "exact_request": {
-                            "backend": "runpod_queue",
-                            "payload": {"input": queue_input},
-                        }
-                    },
+                exact_request = {
+                    "backend": "runpod_queue",
+                    "payload": {"input": queue_input},
+                }
+                request_summary = _qwen_request_summary(
+                    model=model_name,
+                    backend=active_backend,
+                    enable_thinking=effective_enable_thinking,
+                    exact_request=exact_request,
                 )
+                _update_qwen_log_request(session_dir, {"exact_request": exact_request, "request_summary": request_summary})
+                _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_from_runpod_queue(
                     cfg=cfg,
                     image_path=image_path,
@@ -1663,6 +1802,7 @@ def stream_content_from_image(
                     log_event=_log_event,
                 )
             else:
+                active_backend = "local"
                 effective_do_sample = bool(cfg.inference.do_sample) if do_sample is None else bool(do_sample)
                 effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
                 effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
@@ -1683,7 +1823,14 @@ def stream_content_from_image(
                         "enable_thinking": effective_enable_thinking,
                     },
                 }
-                _update_qwen_log_request(session_dir, {"exact_request": exact_request})
+                request_summary = _qwen_request_summary(
+                    model=_effective_model_name(cfg, model),
+                    backend=active_backend,
+                    enable_thinking=effective_enable_thinking,
+                    exact_request=exact_request,
+                )
+                _update_qwen_log_request(session_dir, {"exact_request": exact_request, "request_summary": request_summary})
+                _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_local(
                     cfg=cfg,
                     image_path=image_path,
@@ -1707,6 +1854,14 @@ def stream_content_from_image(
         _append_qwen_log_event(session_dir, "error", {"error": str(exc)})
         _write_qwen_log_output(session_dir, text="".join(collected_text), raw={"error": str(exc), "text": "".join(collected_text)})
         raise
+    _append_qwen_log_event(
+        session_dir,
+        "thinking_response_summary",
+        _qwen_response_summary(
+            observed_thinking_signal_path=observed_thinking_signal_path,
+            backend=active_backend,
+        ),
+    )
     _write_qwen_log_output(session_dir, text="".join(collected_text), raw={"streamed": True, "text": "".join(collected_text)})
 
 
@@ -1824,6 +1979,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
 
 __all__ = [
+    "current_qwen_gt_model_choices",
     "generate_content_from_image",
     "generate_page_extraction_from_image",
     "is_qwen_flash_model_requested",

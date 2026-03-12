@@ -1,0 +1,80 @@
+{
+  "operation": "stream_content",
+  "model": "",
+  "prompt": "test prompt",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-303/test_stream_content_from_image7/page.png",
+  "logged_image_path": "input_target.png",
+  "enable_thinking": null,
+  "few_shot_examples": [],
+  "config_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-303/test_stream_content_from_image7/cfg.yaml",
+  "max_new_tokens": null,
+  "do_sample": null,
+  "temperature": null,
+  "top_p": null,
+  "exact_request": {
+    "backend": "runpod_openai",
+    "endpoint": "https://api.runpod.ai/v2/abc/openai/v1/chat/completions",
+    "payload": {
+      "model": "qwenasaf",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "test prompt"
+            },
+            {
+              "type": "image_file",
+              "file": "input_target.png"
+            }
+          ]
+        }
+      ],
+      "max_tokens": 10000,
+      "stream": true,
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      },
+      "temperature": 0.2,
+      "top_p": 0.8
+    }
+  },
+  "request_summary": {
+    "resolved_model": "qwenasaf",
+    "backend": "runpod_openai",
+    "requested_enable_thinking": false,
+    "effective_enable_thinking": false,
+    "requested_mode": "non-thinking",
+    "thinking_transport": "chat_template_kwargs.enable_thinking",
+    "resolved_request": {
+      "backend": "runpod_openai",
+      "endpoint": "https://api.runpod.ai/v2/abc/openai/v1/chat/completions",
+      "payload": {
+        "model": "qwenasaf",
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "test prompt"
+              },
+              {
+                "type": "image_file",
+                "file": "input_target.png"
+              }
+            ]
+          }
+        ],
+        "max_tokens": 10000,
+        "stream": true,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "temperature": 0.2,
+        "top_p": 0.8
+      }
+    }
+  }
+}

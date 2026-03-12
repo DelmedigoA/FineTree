@@ -18,6 +18,7 @@ from PIL import Image as PILImage
 
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
+from ..model_prompt_serialization import MODEL_PROMPT_MODE, coerce_payload_for_schema_mode
 from ..schema_contract import REQUIRED_PROMPT_CANONICAL_KEYS
 from .config import load_finetune_config
 from .dataset_builder import build_unsloth_chat_datasets
@@ -25,7 +26,7 @@ from .duplicate_facts import assert_no_duplicate_facts
 
 _MIN_BBOX_SIZE = 1.0
 InstructionMode = Literal["source", "minimal"]
-_MINIMAL_INSTRUCTION = "Extract the FineTree document wrapper with metadata, one page, and page facts from the provided image."
+_MINIMAL_INSTRUCTION = "Extract the FineTree page-only JSON with one page, page meta, and page facts from the provided image."
 _DEFAULT_SYSTEM_PROMPT = (
     "You are a precise financial statement extraction system. "
     "Return only valid JSON that matches the required schema."
@@ -71,6 +72,15 @@ _COMPACT_KEY_MAP: dict[str, str] = {
     "reference": "ref",
     "refference": "ref",
 }
+
+
+def _normalize_model_prompt_text(text: str) -> str:
+    try:
+        payload = json.loads(text)
+        normalized = coerce_payload_for_schema_mode(payload, mode=MODEL_PROMPT_MODE)
+    except Exception:
+        return text
+    return json.dumps(normalized, ensure_ascii=False)
 
 
 def _iter_fact_dicts(payload: Any) -> list[dict[str, Any]]:
@@ -785,6 +795,8 @@ def export_for_hf(
                 new_w=int(resize_stats["new_w"]),
                 new_h=int(resize_stats["new_h"]),
             )
+            if instruction_mode == "minimal":
+                text_out = _normalize_model_prompt_text(text_out)
             if compact_tokens or aggressive_compact_tokens:
                 text_out = _compact_token_text_payload(
                     text_out,
