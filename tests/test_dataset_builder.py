@@ -419,3 +419,42 @@ def test_dataset_builder_can_drop_date_from_target_payload(tmp_path: Path, monke
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
     assert "date" not in out_obj["pages"][0]["facts"][0]
+
+
+def test_dataset_builder_can_filter_selected_schema_fields(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_fields"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    image_name = "page_0001.png"
+    (img_dir / image_name).write_bytes(b"fake")
+    _write_annotation(ann_dir / "doc_fields.json", image_dir=img_dir, image_name=image_name)
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    build_unsloth_chat_datasets(
+        cfg,
+        selected_page_meta_keys=("page_type", "title"),
+        selected_fact_keys=("value", "currency"),
+        page_only_wrapper=True,
+    )
+    line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
+    sample = json.loads(line)
+    out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
+    assert set(out_obj.keys()) == {"pages"}
+    assert set(out_obj["pages"][0]["meta"].keys()) == {"page_type", "title"}
+    assert set(out_obj["pages"][0]["facts"][0].keys()) == {"bbox", "value", "currency"}

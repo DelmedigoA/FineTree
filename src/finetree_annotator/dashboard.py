@@ -42,6 +42,12 @@ from PyQt5.QtWidgets import (
 
 from . import app as app_mod
 from .finetune import push_dataset_hub
+from .schema_contract import (
+    PROMPT_FACT_KEYS,
+    PROMPT_PAGE_META_KEYS,
+    build_custom_extraction_prompt_template,
+    build_custom_extraction_schema_preview,
+)
 from .ui_theme import app_settings, apply_theme, load_theme_choice, save_theme_choice
 from .workspace import (
     DEFAULT_DATA_ROOT,
@@ -780,12 +786,16 @@ class AnnotatorHost(QWidget):
 
 
 class PushView(QWidget):
+    _DEFAULT_FACT_KEYS: tuple[str, ...] = tuple(key for key in PROMPT_FACT_KEYS if key != "date")
+
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setObjectName("pushView")
         self._worker_thread: Optional[QThread] = None
         self._worker: Optional[PushPipelineWorker] = None
         self._documents: list[WorkspaceDocumentSummary] = []
+        self._selected_train_doc_ids: set[str] = set()
+        self._split_selection_initialized = False
         self._selected_validation_doc_ids: set[str] = set()
 
         root = QVBoxLayout(self)
@@ -808,11 +818,11 @@ class PushView(QWidget):
         header_layout.addWidget(self.subtitle_label)
         root.addWidget(header)
 
-        content = QWidget()
-        content_layout = QHBoxLayout(content)
-        content_layout.setContentsMargins(0, 0, 0, 0)
-        content_layout.setSpacing(16)
-        root.addWidget(content, 1)
+        self.content_splitter = QSplitter(Qt.Horizontal)
+        self.content_splitter.setObjectName("pushContentSplitter")
+        self.content_splitter.setChildrenCollapsible(False)
+        self.content_splitter.setHandleWidth(10)
+        root.addWidget(self.content_splitter, 1)
 
         form_scroll = QScrollArea()
         self.form_scroll = form_scroll
@@ -820,7 +830,7 @@ class PushView(QWidget):
         form_scroll.setWidgetResizable(True)
         form_scroll.setFrameShape(QFrame.NoFrame)
         form_scroll.setMinimumWidth(560)
-        form_scroll.setMaximumWidth(760)
+        form_scroll.setMaximumWidth(1100)
         form_scroll.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         form_shell = QWidget()
         form_shell_layout = QHBoxLayout(form_shell)
@@ -859,6 +869,9 @@ class PushView(QWidget):
         self.allow_duplicate_check = QCheckBox("Allow duplicate facts")
         self.allow_ordering_check = QCheckBox("Allow ordering issues")
         self.allow_format_check = QCheckBox("Allow format issues")
+        self.approved_only_check = QCheckBox("Push approved pages only")
+        self.approved_only_check.setChecked(True)
+        self.approved_only_check.setEnabled(False)
         self.token_status_label = QLabel()
         self.token_status_label.setObjectName("statusPill")
         self.instruction_mode_combo.setMaximumWidth(260)
@@ -883,21 +896,45 @@ class PushView(QWidget):
         export_row_layout.addWidget(self.export_browse_btn)
 
         self.review_scope_card, review_scope_layout = self._push_section_card(
-            "Reviewed PDFs",
-            "Only checked and reviewed PDFs are pushed. Choose which reviewed PDFs belong in validation.",
+            "Eligible PDFs",
+            "Any PDF with approved pages and no regulation flags is pushable. Choose which eligible PDFs belong in training and which belong in validation.",
         )
         self.reviewed_docs_summary = QLabel(
-            "No reviewed PDFs yet. Mark PDFs as checked, then reviewed, from Home first."
+            "No eligible PDFs yet. Approve pages and clear regulation flags first."
         )
         self.reviewed_docs_summary.setObjectName("subtitleLabel")
         self.reviewed_docs_summary.setWordWrap(True)
+        self.train_docs_list = QListWidget()
+        self.train_docs_list.setObjectName("pushTrainDocList")
+        self.train_docs_list.setAlternatingRowColors(False)
+        self.train_docs_list.setMinimumHeight(180)
+        self.train_docs_list.itemChanged.connect(self._remember_train_selection)
         self.validation_docs_list = QListWidget()
         self.validation_docs_list.setObjectName("pushValidationDocList")
         self.validation_docs_list.setAlternatingRowColors(False)
         self.validation_docs_list.setMinimumHeight(168)
         self.validation_docs_list.itemChanged.connect(self._remember_validation_selection)
+        self.select_all_train_btn = _set_button_variant(QPushButton("Train all"), "ghost")
+        self.clear_all_train_btn = _set_button_variant(QPushButton("Clear train"), "ghost")
+        self.select_all_validation_btn = _set_button_variant(QPushButton("Validate all"), "ghost")
+        self.clear_all_validation_btn = _set_button_variant(QPushButton("Clear validation"), "ghost")
+        split_actions = QHBoxLayout()
+        split_actions.setContentsMargins(0, 0, 0, 0)
+        split_actions.setSpacing(8)
+        split_actions.addWidget(self.select_all_train_btn)
+        split_actions.addWidget(self.clear_all_train_btn)
+        split_actions.addWidget(self.select_all_validation_btn)
+        split_actions.addWidget(self.clear_all_validation_btn)
+        split_actions.addStretch(1)
         review_scope_layout.addWidget(self.reviewed_docs_summary)
-        review_scope_layout.addWidget(self.validation_docs_list)
+        split_lists = QWidget()
+        split_lists_layout = QHBoxLayout(split_lists)
+        split_lists_layout.setContentsMargins(0, 0, 0, 0)
+        split_lists_layout.setSpacing(12)
+        split_lists_layout.addWidget(self._labeled_panel("Training PDFs", self.train_docs_list), 1)
+        split_lists_layout.addWidget(self._labeled_panel("Validation PDFs", self.validation_docs_list), 1)
+        review_scope_layout.addWidget(split_lists)
+        review_scope_layout.addLayout(split_actions)
         form_layout.addWidget(self.review_scope_card)
 
         self.basics_card, basics_layout = self._push_section_card(
@@ -942,6 +979,7 @@ class PushView(QWidget):
         options_layout.addLayout(options_form)
         options_checks = self._checkbox_grid(
             self.public_check,
+            self.approved_only_check,
             self.compact_tokens_check,
             self.aggressive_compact_check,
             self.allow_duplicate_check,
@@ -950,6 +988,33 @@ class PushView(QWidget):
         )
         options_layout.addWidget(options_checks)
         form_layout.addWidget(self.options_card)
+
+        self.schema_card, schema_layout = self._push_section_card(
+            "Schema",
+            "Choose exported page-meta and fact fields. `bbox` is always included; `value` stays required.",
+        )
+        schema_intro = QLabel("The live preview on the right updates immediately and uses the same selection that will be pushed.")
+        schema_intro.setObjectName("subtitleLabel")
+        schema_intro.setWordWrap(True)
+        schema_layout.addWidget(schema_intro)
+        self.schema_selection_summary = QLabel()
+        self.schema_selection_summary.setObjectName("monoLabel")
+        self.schema_selection_summary.setWordWrap(True)
+        schema_layout.addWidget(self.schema_selection_summary)
+        schema_lists = QWidget()
+        schema_lists_layout = QHBoxLayout(schema_lists)
+        schema_lists_layout.setContentsMargins(0, 0, 0, 0)
+        schema_lists_layout.setSpacing(12)
+        self.page_meta_keys_list = QListWidget()
+        self.page_meta_keys_list.setObjectName("pushPageMetaKeyList")
+        self.page_meta_keys_list.setMinimumHeight(150)
+        self.fact_keys_list = QListWidget()
+        self.fact_keys_list.setObjectName("pushFactKeyList")
+        self.fact_keys_list.setMinimumHeight(240)
+        schema_lists_layout.addWidget(self._labeled_panel("Page Meta Fields", self.page_meta_keys_list), 1)
+        schema_lists_layout.addWidget(self._labeled_panel("Fact Fields", self.fact_keys_list), 1)
+        schema_layout.addWidget(schema_lists)
+        form_layout.addWidget(self.schema_card)
 
         controls_card = QFrame()
         controls_card.setObjectName("surfaceCard")
@@ -979,14 +1044,15 @@ class PushView(QWidget):
         form_shell_layout.addWidget(form_widget, 0, Qt.AlignTop)
         form_shell_layout.addStretch(1)
         form_scroll.setWidget(form_shell)
-        content_layout.addWidget(form_scroll, 0)
+        self.content_splitter.addWidget(form_scroll)
 
         log_card = QFrame()
         self.results_card = log_card
         self.log_card = log_card
         log_card.setObjectName("surfaceCard")
-        log_card.setMinimumWidth(400)
-        log_card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        log_card.setMinimumWidth(320)
+        log_card.setMaximumWidth(560)
+        log_card.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         log_layout = QVBoxLayout(log_card)
         log_layout.setContentsMargins(20, 20, 20, 20)
         log_layout.setSpacing(10)
@@ -1001,22 +1067,63 @@ class PushView(QWidget):
         results_title_row.addWidget(results_title)
         results_title_row.addStretch(1)
         results_title_row.addWidget(self.stage_label, 0, Qt.AlignRight)
+        log_layout.addLayout(results_title_row)
+        self.preview_splitter = QSplitter(Qt.Vertical)
+        self.preview_splitter.setChildrenCollapsible(False)
+        preview_widget = QWidget()
+        preview_layout = QVBoxLayout(preview_widget)
+        preview_layout.setContentsMargins(0, 0, 0, 0)
+        preview_layout.setSpacing(8)
+        self.preview_summary_label = QLabel("Preview updates when you change eligible PDFs or schema fields.")
+        self.preview_summary_label.setObjectName("subtitleLabel")
+        self.preview_summary_label.setWordWrap(True)
+        self.schema_preview_label = QLabel("Schema Preview")
+        self.schema_preview_label.setObjectName("sectionTitle")
+        self.schema_preview_view = QPlainTextEdit()
+        self.schema_preview_view.setReadOnly(True)
+        self.prompt_preview_label = QLabel("Instruction Preview")
+        self.prompt_preview_label.setObjectName("sectionTitle")
+        self.prompt_preview_view = QPlainTextEdit()
+        self.prompt_preview_view.setReadOnly(True)
+        preview_layout.addWidget(self.preview_summary_label)
+        preview_layout.addWidget(self.schema_preview_label)
+        preview_layout.addWidget(self.schema_preview_view, 1)
+        preview_layout.addWidget(self.prompt_preview_label)
+        preview_layout.addWidget(self.prompt_preview_view, 1)
+        results_widget = QWidget()
+        results_layout = QVBoxLayout(results_widget)
+        results_layout.setContentsMargins(0, 0, 0, 0)
+        results_layout.setSpacing(8)
         self.results_label = QLabel("No push results yet.")
         self.results_label.setObjectName("subtitleLabel")
         self.results_label.setWordWrap(True)
         self.log_view = QPlainTextEdit()
         self.log_view.setReadOnly(True)
-        log_layout.addLayout(results_title_row)
-        log_layout.addWidget(self.results_label)
-        log_layout.addWidget(self.log_view, 1)
-        content_layout.addWidget(log_card, 1)
+        results_layout.addWidget(self.results_label)
+        results_layout.addWidget(self.log_view, 1)
+        self.preview_splitter.addWidget(preview_widget)
+        self.preview_splitter.addWidget(results_widget)
+        self.preview_splitter.setStretchFactor(0, 3)
+        self.preview_splitter.setStretchFactor(1, 2)
+        log_layout.addWidget(self.preview_splitter, 1)
+        self.content_splitter.addWidget(log_card)
+        self.content_splitter.setStretchFactor(0, 5)
+        self.content_splitter.setStretchFactor(1, 2)
+        self.content_splitter.setSizes([920, 380])
 
         self.config_browse_btn.clicked.connect(self._choose_config)
         self.export_browse_btn.clicked.connect(self._choose_export_dir)
         self.run_btn.clicked.connect(self.run_pipeline)
         self.clear_log_btn.clicked.connect(self.log_view.clear)
         self.open_export_btn.clicked.connect(self._show_export_dir)
+        self.select_all_train_btn.clicked.connect(self._select_all_train_docs)
+        self.clear_all_train_btn.clicked.connect(self._clear_all_train_docs)
+        self.select_all_validation_btn.clicked.connect(self._select_all_validation_docs)
+        self.clear_all_validation_btn.clicked.connect(self._clear_all_validation_docs)
         self.token_edit.textChanged.connect(self._refresh_token_status)
+        self.page_meta_keys_list.itemChanged.connect(self._update_preview)
+        self.fact_keys_list.itemChanged.connect(self._update_preview)
+        self._populate_schema_lists()
         self._refresh_token_status()
         self.set_documents([])
 
@@ -1067,6 +1174,77 @@ class PushView(QWidget):
         layout.setColumnStretch(1, 1)
         return widget
 
+    def _labeled_panel(self, title: str, widget: QWidget) -> QWidget:
+        shell = QWidget()
+        layout = QVBoxLayout(shell)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
+        title_label = QLabel(title)
+        title_label.setObjectName("subtitleLabel")
+        layout.addWidget(title_label)
+        layout.addWidget(widget, 1)
+        return shell
+
+    def _set_check_list_items(
+        self,
+        list_widget: QListWidget,
+        *,
+        keys: tuple[str, ...],
+        selected: set[str],
+        locked: set[str] | None = None,
+    ) -> None:
+        locked_keys = set(locked or set())
+        list_widget.blockSignals(True)
+        list_widget.clear()
+        for key in keys:
+            item = QListWidgetItem(key)
+            item.setData(Qt.UserRole, key)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setCheckState(Qt.Checked if key in selected else Qt.Unchecked)
+            if key in locked_keys:
+                item.setFlags(item.flags() & ~Qt.ItemIsUserCheckable)
+                item.setText(f"{key} (required)")
+            list_widget.addItem(item)
+        list_widget.blockSignals(False)
+
+    def _populate_schema_lists(self) -> None:
+        self._set_check_list_items(
+            self.page_meta_keys_list,
+            keys=tuple(PROMPT_PAGE_META_KEYS),
+            selected=set(PROMPT_PAGE_META_KEYS),
+        )
+        self._set_check_list_items(
+            self.fact_keys_list,
+            keys=tuple(PROMPT_FACT_KEYS),
+            selected=set(self._DEFAULT_FACT_KEYS),
+            locked={"value"},
+        )
+        self._update_preview()
+
+    def selected_page_meta_keys(self) -> list[str]:
+        selected: list[str] = []
+        for index in range(self.page_meta_keys_list.count()):
+            item = self.page_meta_keys_list.item(index)
+            if item is None or item.checkState() != Qt.Checked:
+                continue
+            key = str(item.data(Qt.UserRole) or "").strip()
+            if key:
+                selected.append(key)
+        return selected
+
+    def selected_fact_keys(self) -> list[str]:
+        selected: list[str] = []
+        for index in range(self.fact_keys_list.count()):
+            item = self.fact_keys_list.item(index)
+            if item is None:
+                continue
+            key = str(item.data(Qt.UserRole) or "").strip()
+            if not key:
+                continue
+            if item.checkState() == Qt.Checked or key == "value":
+                selected.append(key)
+        return selected
+
     def _choose_config(self) -> None:
         path, _ = QFileDialog.getOpenFileName(self, "Choose config", str(Path.cwd()), "YAML Files (*.yaml *.yml);;All Files (*)")
         if path:
@@ -1100,19 +1278,38 @@ class PushView(QWidget):
 
     def set_documents(self, documents: list[WorkspaceDocumentSummary]) -> None:
         self._documents = list(documents)
-        reviewed_docs = [
-            doc
-            for doc in documents
-            if doc.reviewed and doc.page_count > 0 and doc.status != "Needs extraction"
-        ]
-        reviewed_doc_ids = {doc.doc_id for doc in reviewed_docs}
-        self._selected_validation_doc_ids &= reviewed_doc_ids
+        eligible_docs = self.eligible_push_documents(documents)
+        eligible_doc_ids = {doc.doc_id for doc in eligible_docs}
+        if self._split_selection_initialized:
+            self._selected_train_doc_ids &= eligible_doc_ids
+            self._selected_validation_doc_ids &= eligible_doc_ids
+        elif eligible_doc_ids:
+            self._selected_train_doc_ids = set(eligible_doc_ids)
+            self._selected_validation_doc_ids.clear()
+            self._split_selection_initialized = True
+        overlap_doc_ids = self._selected_train_doc_ids & self._selected_validation_doc_ids
+        if overlap_doc_ids:
+            self._selected_validation_doc_ids -= overlap_doc_ids
+
+        self.train_docs_list.blockSignals(True)
+        self.train_docs_list.clear()
+        for doc in eligible_docs:
+            label = (
+                f"{doc.doc_id}  |  approved {doc.approved_page_count}/{doc.page_count} pages  |  "
+                f"{doc.progress_pct}%  |  {doc.status}"
+            )
+            item = QListWidgetItem(label)
+            item.setData(Qt.UserRole, doc.doc_id)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setCheckState(Qt.Checked if doc.doc_id in self._selected_train_doc_ids else Qt.Unchecked)
+            self.train_docs_list.addItem(item)
+        self.train_docs_list.blockSignals(False)
 
         self.validation_docs_list.blockSignals(True)
         self.validation_docs_list.clear()
-        for doc in reviewed_docs:
+        for doc in eligible_docs:
             label = (
-                f"{doc.doc_id}  |  {doc.annotated_page_count}/{doc.page_count} pages  |  "
+                f"{doc.doc_id}  |  approved {doc.approved_page_count}/{doc.page_count} pages  |  "
                 f"{doc.progress_pct}%  |  {doc.status}"
             )
             item = QListWidgetItem(label)
@@ -1122,31 +1319,43 @@ class PushView(QWidget):
             self.validation_docs_list.addItem(item)
         self.validation_docs_list.blockSignals(False)
 
-        reviewed_count = len(reviewed_docs)
-        validation_count = len(self._selected_validation_doc_ids)
-        if reviewed_count == 0:
+        if len(eligible_docs) == 0:
             self.reviewed_docs_summary.setText(
-                "No reviewed PDFs yet. Mark PDFs as checked, then reviewed, from Home first."
+                "No eligible PDFs yet. A PDF must have at least one approved page and zero regulation flags."
             )
+            self.train_docs_list.setEnabled(False)
             self.validation_docs_list.setEnabled(False)
+            self.select_all_train_btn.setEnabled(False)
+            self.clear_all_train_btn.setEnabled(False)
+            self.select_all_validation_btn.setEnabled(False)
+            self.clear_all_validation_btn.setEnabled(False)
         else:
-            self.reviewed_docs_summary.setText(
-                f"{reviewed_count} checked and reviewed PDF(s) will be included in push. "
-                f"Validation set: {validation_count} selected."
-            )
+            self.train_docs_list.setEnabled(True)
             self.validation_docs_list.setEnabled(True)
+            self.select_all_train_btn.setEnabled(True)
+            self.clear_all_train_btn.setEnabled(True)
+            self.select_all_validation_btn.setEnabled(True)
+            self.clear_all_validation_btn.setEnabled(True)
+        self._refresh_selection_summary()
+        self._update_preview()
 
-    def reviewed_doc_ids(self) -> list[str]:
+    def eligible_push_documents(
+        self,
+        documents: list[WorkspaceDocumentSummary] | None = None,
+    ) -> list[WorkspaceDocumentSummary]:
+        source = self._documents if documents is None else documents
         return [
-            doc.doc_id
-            for doc in self._documents
-            if doc.reviewed and doc.page_count > 0 and doc.status != "Needs extraction"
+            doc
+            for doc in source
+            if doc.page_count > 0
+            and int(doc.approved_page_count or 0) > 0
+            and int(doc.reg_flag_count or 0) == 0
         ]
 
-    def selected_validation_doc_ids(self) -> list[str]:
+    def _selected_doc_ids_from_list(self, list_widget: QListWidget) -> list[str]:
         selected: list[str] = []
-        for index in range(self.validation_docs_list.count()):
-            item = self.validation_docs_list.item(index)
+        for index in range(list_widget.count()):
+            item = list_widget.item(index)
             if item is None:
                 continue
             if item.checkState() == Qt.Checked:
@@ -1155,14 +1364,106 @@ class PushView(QWidget):
                     selected.append(doc_id)
         return selected
 
+    def selected_train_doc_ids(self) -> list[str]:
+        return self._selected_doc_ids_from_list(self.train_docs_list)
+
+    def selected_train_documents(self) -> list[WorkspaceDocumentSummary]:
+        selected_ids = set(self._selected_train_doc_ids)
+        return [doc for doc in self.eligible_push_documents() if doc.doc_id in selected_ids]
+
+    def selected_validation_doc_ids(self) -> list[str]:
+        return self._selected_doc_ids_from_list(self.validation_docs_list)
+
+    def selected_validation_documents(self) -> list[WorkspaceDocumentSummary]:
+        selected_ids = set(self._selected_validation_doc_ids)
+        return [doc for doc in self.eligible_push_documents() if doc.doc_id in selected_ids]
+
+    def selected_included_doc_ids(self) -> list[str]:
+        selected_doc_ids = self._selected_train_doc_ids | self._selected_validation_doc_ids
+        return [doc.doc_id for doc in self.eligible_push_documents() if doc.doc_id in selected_doc_ids]
+
+    def selected_included_documents(self) -> list[WorkspaceDocumentSummary]:
+        selected_ids = set(self.selected_included_doc_ids())
+        return [doc for doc in self.eligible_push_documents() if doc.doc_id in selected_ids]
+
+    def _set_list_selection(self, list_widget: QListWidget, doc_ids: set[str]) -> None:
+        list_widget.blockSignals(True)
+        for index in range(list_widget.count()):
+            item = list_widget.item(index)
+            if item is None:
+                continue
+            item_doc_id = str(item.data(Qt.UserRole) or "").strip()
+            item.setCheckState(Qt.Checked if item_doc_id in doc_ids else Qt.Unchecked)
+        list_widget.blockSignals(False)
+
+    def _refresh_selection_summary(self) -> None:
+        eligible_docs = self.eligible_push_documents()
+        selected_docs = self.selected_included_documents()
+        train_count = len(self._selected_train_doc_ids)
+        validation_count = len(self._selected_validation_doc_ids)
+        total_pages = sum(int(doc.page_count or 0) for doc in selected_docs)
+        approved_pages = sum(int(doc.approved_page_count or 0) for doc in selected_docs)
+        skipped_pages = max(total_pages - approved_pages, 0)
+        self.reviewed_docs_summary.setText(
+            f"{len(selected_docs)}/{len(eligible_docs)} eligible PDF(s) selected. "
+            f"Train: {train_count}. Validation: {validation_count}. "
+            f"Selected pages: {approved_pages} approved of {total_pages} total. "
+            f"Non-approved pages skipped: {skipped_pages}."
+        )
+
     def _remember_validation_selection(self, _item: QListWidgetItem) -> None:
         self._selected_validation_doc_ids = set(self.selected_validation_doc_ids())
-        reviewed_count = len(self.reviewed_doc_ids())
-        validation_count = len(self._selected_validation_doc_ids)
-        self.reviewed_docs_summary.setText(
-            f"{reviewed_count} checked and reviewed PDF(s) will be included in push. "
-            f"Validation set: {validation_count} selected."
-        )
+        self._split_selection_initialized = True
+        overlap_doc_ids = self._selected_validation_doc_ids & self._selected_train_doc_ids
+        if overlap_doc_ids:
+            self._selected_train_doc_ids -= overlap_doc_ids
+            self._set_list_selection(self.train_docs_list, self._selected_train_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
+
+    def _remember_train_selection(self, _item: QListWidgetItem) -> None:
+        self._selected_train_doc_ids = set(self.selected_train_doc_ids())
+        self._split_selection_initialized = True
+        overlap_doc_ids = self._selected_train_doc_ids & self._selected_validation_doc_ids
+        if overlap_doc_ids:
+            self._selected_validation_doc_ids -= overlap_doc_ids
+            self._set_list_selection(self.validation_docs_list, self._selected_validation_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
+
+    def _select_all_train_docs(self) -> None:
+        eligible_doc_ids = {doc.doc_id for doc in self.eligible_push_documents()}
+        self._selected_train_doc_ids = set(eligible_doc_ids)
+        self._selected_validation_doc_ids -= eligible_doc_ids
+        self._split_selection_initialized = True
+        self._set_list_selection(self.train_docs_list, self._selected_train_doc_ids)
+        self._set_list_selection(self.validation_docs_list, self._selected_validation_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
+
+    def _clear_all_train_docs(self) -> None:
+        self._selected_train_doc_ids.clear()
+        self._split_selection_initialized = True
+        self._set_list_selection(self.train_docs_list, self._selected_train_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
+
+    def _select_all_validation_docs(self) -> None:
+        eligible_doc_ids = {doc.doc_id for doc in self.eligible_push_documents()}
+        self._selected_validation_doc_ids = set(eligible_doc_ids)
+        self._selected_train_doc_ids -= eligible_doc_ids
+        self._split_selection_initialized = True
+        self._set_list_selection(self.validation_docs_list, self._selected_validation_doc_ids)
+        self._set_list_selection(self.train_docs_list, self._selected_train_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
+
+    def _clear_all_validation_docs(self) -> None:
+        self._selected_validation_doc_ids.clear()
+        self._split_selection_initialized = True
+        self._set_list_selection(self.validation_docs_list, self._selected_validation_doc_ids)
+        self._refresh_selection_summary()
+        self._update_preview()
 
     def _build_argv(self) -> list[str]:
         argv = [
@@ -1172,12 +1473,18 @@ class PushView(QWidget):
             self.export_dir_edit.text().strip() or "artifacts/hf_dataset_export",
             "--instruction-mode",
             self.instruction_mode_combo.currentText().strip() or "source",
+            "--approved-pages-only",
         ]
-        reviewed_doc_ids = self.reviewed_doc_ids()
+        included_doc_ids = self.selected_included_doc_ids()
         validation_doc_ids = self.selected_validation_doc_ids()
-        if reviewed_doc_ids:
-            argv.extend(["--include-doc-ids", ",".join(reviewed_doc_ids)])
+        page_meta_keys = self.selected_page_meta_keys()
+        fact_keys = self.selected_fact_keys()
+        if included_doc_ids:
+            argv.extend(["--include-doc-ids", ",".join(included_doc_ids)])
+        if validation_doc_ids:
             argv.extend(["--validation-doc-ids", ",".join(validation_doc_ids)])
+        argv.extend(["--page-meta-keys", ",".join(page_meta_keys)])
+        argv.extend(["--fact-keys", ",".join(fact_keys)])
         if self.repo_id_edit.text().strip():
             argv.extend(["--repo-id", self.repo_id_edit.text().strip()])
         if self.repo_id_minimal_edit.text().strip():
@@ -1216,6 +1523,38 @@ class PushView(QWidget):
             argv.append("--allow-format-issues")
         return argv
 
+    def _update_preview(self) -> None:
+        page_meta_keys = self.selected_page_meta_keys()
+        fact_keys = self.selected_fact_keys()
+        eligible_docs = self.eligible_push_documents()
+        train_docs = self.selected_train_documents()
+        validation_docs = self.selected_validation_documents()
+        selected_docs = self.selected_included_documents()
+        approved_pages = sum(int(doc.approved_page_count or 0) for doc in selected_docs)
+        total_pages = sum(int(doc.page_count or 0) for doc in selected_docs)
+        skipped_pages = max(total_pages - approved_pages, 0)
+        self.schema_selection_summary.setText(
+            f"Page meta: {len(page_meta_keys)} selected  |  Facts: bbox + {len(fact_keys)} key(s)"
+        )
+        self.preview_summary_label.setText(
+            f"Eligible PDFs: {len(eligible_docs)}  |  Training PDFs: {len(train_docs)}  |  "
+            f"Validation PDFs: {len(validation_docs)}  |  Selected PDFs: {len(selected_docs)}  |  "
+            f"Approved pages to push: {approved_pages}  |  Skipped non-approved pages: {skipped_pages}  |  "
+            f"Filters: no reg flags + approved pages only"
+        )
+        self.schema_preview_view.setPlainText(
+            build_custom_extraction_schema_preview(
+                page_meta_keys=page_meta_keys,
+                fact_keys=fact_keys,
+            )
+        )
+        self.prompt_preview_view.setPlainText(
+            build_custom_extraction_prompt_template(
+                page_meta_keys=page_meta_keys,
+                fact_keys=fact_keys,
+            )
+        )
+
     def _set_running(self, running: bool) -> None:
         self.run_btn.setEnabled(not running)
         self.config_browse_btn.setEnabled(not running)
@@ -1229,27 +1568,21 @@ class PushView(QWidget):
     def run_pipeline(self) -> None:
         if self._worker_thread is not None:
             return
-        reviewed_doc_ids = self.reviewed_doc_ids()
+        included_doc_ids = self.selected_included_doc_ids()
+        train_doc_ids = self.selected_train_doc_ids()
         validation_doc_ids = self.selected_validation_doc_ids()
-        if not reviewed_doc_ids:
+        if not included_doc_ids:
             QMessageBox.warning(
                 self,
-                "No reviewed PDFs",
-                "Mark at least one PDF as checked and reviewed from Home before pushing.",
+                "No selected PDFs",
+                "Select at least one eligible PDF to push. Only approved pages will be exported; flagged and other non-approved pages are skipped.",
             )
             return
-        if len(reviewed_doc_ids) > 1 and not validation_doc_ids:
+        if not train_doc_ids:
             QMessageBox.warning(
                 self,
-                "Choose validation PDFs",
-                "Select at least one reviewed PDF for the validation set before pushing.",
-            )
-            return
-        if validation_doc_ids and len(validation_doc_ids) >= len(reviewed_doc_ids):
-            QMessageBox.warning(
-                self,
-                "Validation set too large",
-                "Keep at least one reviewed PDF in train. Do not place every reviewed PDF in validation.",
+                "No training PDFs",
+                "Keep at least one eligible PDF in training before pushing.",
             )
             return
         self.log_view.clear()

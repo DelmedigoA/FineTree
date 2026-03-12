@@ -6,7 +6,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List
+from typing import Any, Dict, Iterable, List, Sequence
 
 from ..annotation_core import bbox_to_list
 from ..fact_normalization import assert_fact_format
@@ -115,6 +115,9 @@ def _transform_page_for_target(
     page: Dict[str, Any],
     direction: str,
     drop_date: bool = False,
+    selected_page_meta_keys: Sequence[str] | None = None,
+    selected_fact_keys: Sequence[str] | None = None,
+    page_only_wrapper: bool = False,
 ) -> Dict[str, Any]:
     facts = page.get("facts") if isinstance(page.get("facts"), list) else []
     typed_facts: list[dict[str, Any]] = []
@@ -142,19 +145,36 @@ def _transform_page_for_target(
             item["bbox"] = bbox_to_list(item.get("bbox"))
         out_facts.append(item)
 
-    page_meta = PageMeta.model_validate(page.get("meta") if isinstance(page.get("meta"), dict) else {}).model_dump(
+    page_meta_full = PageMeta.model_validate(page.get("meta") if isinstance(page.get("meta"), dict) else {}).model_dump(
         mode="json"
     )
+    if selected_page_meta_keys is None:
+        page_meta = {
+            key: page_meta_full.get(key)
+            for key in ("entity_name", "page_num", "page_type", "statement_type", "title")
+        }
+    else:
+        page_meta = {str(key): page_meta_full.get(str(key)) for key in selected_page_meta_keys}
+
+    selected_fact_key_set = {str(key) for key in selected_fact_keys} if selected_fact_keys is not None else None
+    page_payload = {
+        "image": str(page.get("image") or "").strip() or None,
+        "meta": page_meta,
+        "facts": [
+            {
+                key: value
+                for key, value in fact.items()
+                if key == "bbox" or selected_fact_key_set is None or key in selected_fact_key_set
+            }
+            for fact in out_facts
+        ],
+    }
+    if page_only_wrapper:
+        return {"pages": [page_payload]}
     return {
         "images_dir": images_dir or None,
         "metadata": dict(metadata),
-        "pages": [
-            {
-                "image": str(page.get("image") or "").strip() or None,
-                "meta": page_meta,
-                "facts": out_facts,
-            }
-        ],
+        "pages": [page_payload],
     }
 
 
@@ -166,10 +186,14 @@ def build_unsloth_chat_datasets(
     force_explicit_val_doc_ids: bool = False,
     approved_pages_only: bool = False,
     drop_date: bool = False,
+    prompt_template_override: str | None = None,
+    selected_page_meta_keys: Sequence[str] | None = None,
+    selected_fact_keys: Sequence[str] | None = None,
+    page_only_wrapper: bool = False,
 ) -> DatasetBuildStats:
     stats = DatasetBuildStats()
 
-    prompt_template = _resolve_prompt_template(cfg)
+    prompt_template = prompt_template_override if isinstance(prompt_template_override, str) and prompt_template_override.strip() else _resolve_prompt_template(cfg)
     annotation_files = list(_iter_annotation_files(cfg.data.annotations_glob))
     included = {doc_id.strip() for doc_id in (include_doc_ids or set()) if str(doc_id).strip()}
     if include_doc_ids is not None:
@@ -242,6 +266,9 @@ def build_unsloth_chat_datasets(
                     page=page,
                     direction=direction,
                     drop_date=drop_date,
+                    selected_page_meta_keys=selected_page_meta_keys,
+                    selected_fact_keys=selected_fact_keys,
+                    page_only_wrapper=page_only_wrapper,
                 )
                 assistant_text = json.dumps(target_obj, ensure_ascii=False)
 

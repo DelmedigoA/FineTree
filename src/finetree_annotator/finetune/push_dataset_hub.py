@@ -19,7 +19,12 @@ from PIL import Image as PILImage
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
 from ..model_prompt_serialization import MODEL_PROMPT_MODE, coerce_payload_for_schema_mode
-from ..schema_contract import REQUIRED_PROMPT_CANONICAL_KEYS
+from ..schema_contract import (
+    PROMPT_FACT_KEYS,
+    PROMPT_PAGE_META_KEYS,
+    REQUIRED_PROMPT_CANONICAL_KEYS,
+    build_custom_extraction_prompt_template,
+)
 from .config import load_finetune_config
 from .dataset_builder import build_unsloth_chat_datasets
 from .duplicate_facts import assert_no_duplicate_facts
@@ -116,6 +121,10 @@ def build_dataset(
     validation_doc_ids: set[str] | None = None,
     approved_pages_only: bool = False,
     drop_date: bool = False,
+    prompt_template_override: str | None = None,
+    selected_page_meta_keys: tuple[str, ...] | None = None,
+    selected_fact_keys: tuple[str, ...] | None = None,
+    page_only_wrapper: bool = False,
 ) -> None:
     root = Path(".").resolve()
     cfg = load_finetune_config(config_path)
@@ -141,6 +150,10 @@ def build_dataset(
         force_explicit_val_doc_ids=(validation_doc_ids is not None),
         approved_pages_only=approved_pages_only,
         drop_date=drop_date,
+        prompt_template_override=prompt_template_override,
+        selected_page_meta_keys=selected_page_meta_keys,
+        selected_fact_keys=selected_fact_keys,
+        page_only_wrapper=page_only_wrapper,
     )
 
 
@@ -434,6 +447,29 @@ def _parse_excluded_doc_ids(raw: str | None) -> set[str]:
     return _parse_doc_ids_csv(raw)
 
 
+def _parse_selected_keys(raw: str | None, *, allowed: tuple[str, ...], flag_name: str) -> tuple[str, ...] | None:
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return tuple()
+    allowed_set = set(allowed)
+    selected: list[str] = []
+    invalid: list[str] = []
+    for part in text.split(","):
+        key = str(part).strip()
+        if not key:
+            continue
+        if key not in allowed_set:
+            invalid.append(key)
+            continue
+        if key not in selected:
+            selected.append(key)
+    if invalid:
+        raise ValueError(f"{flag_name} contains unknown keys: {', '.join(invalid)}")
+    return tuple(selected)
+
+
 def _compact_json_dumps(payload: Any) -> str:
     return json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
@@ -521,13 +557,66 @@ def _drop_date_text_payload(text: str) -> tuple[str, int, int]:
     return json.dumps(payload, ensure_ascii=False), removed, 0
 
 
+def _fallback_smart_resize_dimensions(
+    height: int,
+    width: int,
+    *,
+    min_pixels: int | None,
+    max_pixels: int | None,
+    factor: int = 28,
+) -> tuple[int, int]:
+    if height <= 0 or width <= 0:
+        raise ValueError("Invalid image dimensions.")
+
+    pixels = int(height) * int(width)
+    scale = 1.0
+    snap_mode = "nearest"
+    if min_pixels is not None and pixels < int(min_pixels):
+        scale = max(scale, (int(min_pixels) / float(pixels)) ** 0.5)
+        snap_mode = "ceil"
+    if max_pixels is not None and pixels > int(max_pixels):
+        scale = min(scale, (int(max_pixels) / float(pixels)) ** 0.5) if scale != 1.0 else (int(max_pixels) / float(pixels)) ** 0.5
+        snap_mode = "floor"
+
+    target_h = max(1, int(round(int(height) * scale)))
+    target_w = max(1, int(round(int(width) * scale)))
+    if factor > 1:
+        if snap_mode == "ceil":
+            target_h = max(factor, int(math.ceil(target_h / float(factor))) * factor)
+            target_w = max(factor, int(math.ceil(target_w / float(factor))) * factor)
+        else:
+            target_h = max(factor, (target_h // factor) * factor)
+            target_w = max(factor, (target_w // factor) * factor)
+
+    if min_pixels is not None:
+        while target_h * target_w < int(min_pixels):
+            grew = False
+            if target_w <= target_h:
+                target_w += factor
+                grew = True
+            if target_h * target_w < int(min_pixels):
+                target_h += factor
+                grew = True
+            if not grew:
+                break
+
+    if max_pixels is not None:
+        while target_h * target_w > int(max_pixels) and (target_h > factor or target_w > factor):
+            if target_w >= target_h and target_w > factor:
+                target_w -= factor
+            elif target_h > factor:
+                target_h -= factor
+            else:
+                break
+
+    return int(target_h), int(target_w)
+
+
 def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None, max_pixels: int | None) -> tuple[int, int]:
     try:
         from qwen_vl_utils.vision_process import smart_resize
-    except Exception as exc:
-        raise RuntimeError(
-            "Image resizing requested but qwen_vl_utils is not available. Install with `pip install qwen-vl-utils`."
-        ) from exc
+    except Exception:
+        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
 
     kwargs: dict[str, int] = {}
     if min_pixels is not None:
@@ -539,7 +628,10 @@ def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None,
     if factor_param is not None and factor_param.default is inspect._empty:
         # qwen_vl_utils versions with explicit factor require the Qwen vision grid multiple.
         kwargs["factor"] = 28
-    new_h, new_w = smart_resize(int(height), int(width), **kwargs)
+    try:
+        new_h, new_w = smart_resize(int(height), int(width), **kwargs)
+    except Exception:
+        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
     return int(new_h), int(new_w)
 
 
@@ -1008,6 +1100,33 @@ def _resolve_repo_id(repo_id: str | None, token: str) -> str:
     return _default_repo_id(api)
 
 
+def _repo_scope_suffix(*, approved_pages_only: bool) -> str:
+    return "approved" if approved_pages_only else "reviewed"
+
+
+def _repo_id_with_scope_suffix(repo_id: str | None, *, approved_pages_only: bool) -> str | None:
+    if repo_id is None:
+        return None
+    repo = str(repo_id).strip()
+    if not repo:
+        return None
+    scope_suffix = _repo_scope_suffix(approved_pages_only=approved_pages_only)
+    if "/" in repo:
+        owner, name = repo.split("/", 1)
+        owner = owner.strip()
+        name = name.strip()
+        if not owner or not name:
+            return repo
+        name_parts = [part for part in name.split("-") if part]
+        if "approved" in name_parts or "reviewed" in name_parts:
+            return f"{owner}/{name}"
+        return f"{owner}/{name}-{scope_suffix}"
+    repo_parts = [part for part in repo.split("-") if part]
+    if "approved" in repo_parts or "reviewed" in repo_parts:
+        return repo
+    return f"{repo}-{scope_suffix}"
+
+
 def _split_repo_ids(
     base_repo_id: str,
     *,
@@ -1106,6 +1225,16 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Comma-separated reviewed document ids to force into the validation split.",
     )
     parser.add_argument(
+        "--page-meta-keys",
+        default=None,
+        help="Comma-separated page meta keys to include in the source-instruction schema preview/export.",
+    )
+    parser.add_argument(
+        "--fact-keys",
+        default=None,
+        help="Comma-separated fact keys to include in the source-instruction schema preview/export. `bbox` stays included.",
+    )
+    parser.add_argument(
         "--approved-pages-only",
         action="store_true",
         help="Only include pages whose page meta annotation_status is approved.",
@@ -1182,6 +1311,16 @@ def main(argv: list[str] | None = None) -> int:
     excluded_doc_ids = _parse_doc_ids_csv(args.exclude_doc_ids)
     included_doc_ids = _parse_doc_ids_csv(args.include_doc_ids)
     validation_doc_ids = _parse_doc_ids_csv(args.validation_doc_ids)
+    selected_page_meta_keys = _parse_selected_keys(
+        args.page_meta_keys,
+        allowed=PROMPT_PAGE_META_KEYS,
+        flag_name="--page-meta-keys",
+    )
+    selected_fact_keys = _parse_selected_keys(
+        args.fact_keys,
+        allowed=PROMPT_FACT_KEYS,
+        flag_name="--fact-keys",
+    )
     effective_included_doc_ids: set[str] | None = None
     if included_doc_ids:
         effective_included_doc_ids = included_doc_ids - excluded_doc_ids
@@ -1196,8 +1335,23 @@ def main(argv: list[str] | None = None) -> int:
             "Validation document ids must also be included in the reviewed push set. "
             f"invalid={invalid_list}"
         )
-    main_repo_id = _resolve_repo_id(args.repo_id, token)
+    main_repo_id = _repo_id_with_scope_suffix(
+        _resolve_repo_id(args.repo_id, token),
+        approved_pages_only=args.approved_pages_only,
+    )
     compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
+    custom_prompt_fields = (
+        selected_page_meta_keys is not None
+        or selected_fact_keys is not None
+    )
+    prompt_template_override = (
+        build_custom_extraction_prompt_template(
+            page_meta_keys=(selected_page_meta_keys if selected_page_meta_keys is not None else PROMPT_PAGE_META_KEYS),
+            fact_keys=(selected_fact_keys if selected_fact_keys is not None else PROMPT_FACT_KEYS),
+        )
+        if custom_prompt_fields
+        else None
+    )
 
     build_dataset(
         config_path,
@@ -1206,8 +1360,12 @@ def main(argv: list[str] | None = None) -> int:
         validation_doc_ids=validation_doc_ids if args.validation_doc_ids is not None else None,
         approved_pages_only=args.approved_pages_only,
         drop_date=args.drop_date,
+        prompt_template_override=prompt_template_override,
+        selected_page_meta_keys=selected_page_meta_keys,
+        selected_fact_keys=selected_fact_keys,
+        page_only_wrapper=custom_prompt_fields,
     )
-    if instruction_mode == "source" or args.push_all_variants:
+    if (instruction_mode == "source" or args.push_all_variants) and not custom_prompt_fields:
         assert_source_instruction_schema(root, fail_on_issues=True)
     assert_no_train_val_contamination(root)
     duplicate_report = assert_no_duplicate_facts(
@@ -1271,8 +1429,14 @@ def main(argv: list[str] | None = None) -> int:
             token=token,
             base_repo_id=main_repo_id,
             private=not args.public,
-            repo_id_train=args.repo_id_train,
-            repo_id_validation=args.repo_id_validation,
+            repo_id_train=_repo_id_with_scope_suffix(
+                args.repo_id_train,
+                approved_pages_only=args.approved_pages_only,
+            ),
+            repo_id_validation=_repo_id_with_scope_suffix(
+                args.repo_id_validation,
+                approved_pages_only=args.approved_pages_only,
+            ),
         )
         print(f"PUSHED_TRAIN_REPO: {split_pushes.get('train')}")
         print(f"PUSHED_VALIDATION_REPO: {split_pushes.get('validation')}")
@@ -1286,15 +1450,26 @@ def main(argv: list[str] | None = None) -> int:
     print(f"AGGRESSIVE_COMPACT_TOKENS: {args.aggressive_compact_tokens}")
     print(f"APPROVED_PAGES_ONLY: {args.approved_pages_only}")
     print(f"DROP_DATE: {args.drop_date}")
+    print(f"PAGE_META_KEYS: {list(selected_page_meta_keys) if selected_page_meta_keys is not None else list(PROMPT_PAGE_META_KEYS)}")
+    print(f"FACT_KEYS: {list(selected_fact_keys) if selected_fact_keys is not None else list(PROMPT_FACT_KEYS)}")
     print(f"EXPORT_DIR: {export_dir}")
 
     if args.push_all_variants:
         from . import push_dataset_hub_no_bbox as no_bbox_mod
 
         derived_minimal, derived_no_bbox, derived_no_bbox_min = _derive_variant_repo_ids(main_repo_id)
-        repo_minimal = _resolve_repo_id(args.repo_id_minimal_instruction or derived_minimal, token)
-        repo_no_bbox = _resolve_repo_id(args.repo_id_no_bbox or derived_no_bbox, token)
-        repo_no_bbox_min = _resolve_repo_id(args.repo_id_no_bbox_minimal_instruction or derived_no_bbox_min, token)
+        repo_minimal = _repo_id_with_scope_suffix(
+            _resolve_repo_id(args.repo_id_minimal_instruction or derived_minimal, token),
+            approved_pages_only=args.approved_pages_only,
+        )
+        repo_no_bbox = _repo_id_with_scope_suffix(
+            _resolve_repo_id(args.repo_id_no_bbox or derived_no_bbox, token),
+            approved_pages_only=args.approved_pages_only,
+        )
+        repo_no_bbox_min = _repo_id_with_scope_suffix(
+            _resolve_repo_id(args.repo_id_no_bbox_minimal_instruction or derived_no_bbox_min, token),
+            approved_pages_only=args.approved_pages_only,
+        )
 
         export_minimal = (root / "artifacts/hf_dataset_export_minimal_instruction").resolve()
         export_no_bbox = (root / "artifacts/hf_dataset_export_no_bbox").resolve()
@@ -1318,6 +1493,14 @@ def main(argv: list[str] | None = None) -> int:
                 token=token,
                 base_repo_id=repo_minimal,
                 private=not args.public,
+                repo_id_train=_repo_id_with_scope_suffix(
+                    args.repo_id_train,
+                    approved_pages_only=args.approved_pages_only,
+                ),
+                repo_id_validation=_repo_id_with_scope_suffix(
+                    args.repo_id_validation,
+                    approved_pages_only=args.approved_pages_only,
+                ),
             )
             print(f"PUSHED_MINIMAL_TRAIN_REPO: {min_split_pushes.get('train')}")
             print(f"PUSHED_MINIMAL_VALIDATION_REPO: {min_split_pushes.get('validation')}")
@@ -1350,6 +1533,14 @@ def main(argv: list[str] | None = None) -> int:
                 token=token,
                 base_repo_id=repo_no_bbox,
                 private=not args.public,
+                repo_id_train=_repo_id_with_scope_suffix(
+                    args.repo_id_train,
+                    approved_pages_only=args.approved_pages_only,
+                ),
+                repo_id_validation=_repo_id_with_scope_suffix(
+                    args.repo_id_validation,
+                    approved_pages_only=args.approved_pages_only,
+                ),
             )
             print(f"PUSHED_NO_BBOX_TRAIN_REPO: {nb_split_pushes.get('train')}")
             print(f"PUSHED_NO_BBOX_VALIDATION_REPO: {nb_split_pushes.get('validation')}")
@@ -1383,6 +1574,14 @@ def main(argv: list[str] | None = None) -> int:
                 token=token,
                 base_repo_id=repo_no_bbox_min,
                 private=not args.public,
+                repo_id_train=_repo_id_with_scope_suffix(
+                    args.repo_id_train,
+                    approved_pages_only=args.approved_pages_only,
+                ),
+                repo_id_validation=_repo_id_with_scope_suffix(
+                    args.repo_id_validation,
+                    approved_pages_only=args.approved_pages_only,
+                ),
             )
             print(f"PUSHED_NO_BBOX_MINIMAL_TRAIN_REPO: {nbm_split_pushes.get('train')}")
             print(f"PUSHED_NO_BBOX_MINIMAL_VALIDATION_REPO: {nbm_split_pushes.get('validation')}")
