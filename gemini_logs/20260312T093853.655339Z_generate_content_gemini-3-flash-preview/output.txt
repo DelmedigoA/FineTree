@@ -1,0 +1,574 @@
+```json
+{
+  "meta_updates": {},
+  "fact_updates": [
+    {
+      "fact_num": 1,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 2,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 3,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 4,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31",
+        "equations": [
+          {
+            "equation": "fact_4 = fact_1 + fact_2 + fact_3",
+            "fact_equation": "268170 = 90904 + 128153 + 49113"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 5,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2022-12-31",
+        "date": "2022-12-31"
+      }
+    },
+    {
+      "fact_num": 6,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 7,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 8,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 9,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_9 = fact_6 + fact_7 + fact_8",
+            "fact_equation": "6230 = 6230 + 0 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 10,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 11,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 12,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 13,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 14,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_14 = fact_4 + fact_9 + fact_19",
+            "fact_equation": "269968 = 268170 + 6230 - 4432"
+          },
+          {
+            "equation": "fact_14 = fact_16 + fact_17 + fact_18",
+            "fact_equation": "269968 = 92702 + 128153 + 49113"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 15,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 16,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_16 = fact_1 + fact_6 + fact_11",
+            "fact_equation": "92702 = 90904 + 6230 - 4432"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 17,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_17 = fact_2 + fact_7 + fact_12",
+            "fact_equation": "128153 = 128153 + 0 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 18,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_18 = fact_3 + fact_8 + fact_13",
+            "fact_equation": "49113 = 49113 + 0 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 19,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_19 = fact_11 + fact_12 + fact_13",
+            "fact_equation": "-4432 = -4432 + 0 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 20,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 21,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 22,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 23,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 24,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31",
+        "equations": [
+          {
+            "equation": "fact_24 = fact_21 + fact_22 + fact_23",
+            "fact_equation": "180216 = 78534 + 83018 + 18664"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 25,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2022-12-31",
+        "date": "2022-12-31"
+      }
+    },
+    {
+      "fact_num": 26,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 27,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 28,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 29,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_29 = fact_26 + fact_27 + fact_28",
+            "fact_equation": "31957 = 3373 + 23672 + 4912"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 30,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 31,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 32,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 33,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 34,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_34 = fact_31 + fact_32 + fact_33",
+            "fact_equation": "-2918 = -2918 + 0 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 35,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 36,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_36 = fact_21 + fact_26 + fact_31",
+            "fact_equation": "78989 = 78534 + 3373 - 2918"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 37,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_37 = fact_22 + fact_27 + fact_32",
+            "fact_equation": "106690 = 83018 + 23672 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 38,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_38 = fact_23 + fact_28 + fact_33",
+            "fact_equation": "23576 = 18664 + 4912 + 0"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 39,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_39 = fact_24 + fact_29 + fact_34",
+            "fact_equation": "209255 = 180216 + 31957 - 2918"
+          },
+          {
+            "equation": "fact_39 = fact_36 + fact_37 + fact_38",
+            "fact_equation": "209255 = 78989 + 106690 + 23576"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 40,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 41,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_41 = fact_16 - fact_36",
+            "fact_equation": "13713 = 92702 - 78989"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 42,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_42 = fact_17 - fact_37",
+            "fact_equation": "21463 = 128153 - 106690"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 43,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_43 = fact_18 - fact_38",
+            "fact_equation": "25537 = 49113 - 23576"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 44,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_44 = fact_14 - fact_39",
+            "fact_equation": "60713 = 269968 - 209255"
+          },
+          {
+            "equation": "fact_44 = fact_41 + fact_42 + fact_43",
+            "fact_equation": "60713 = 13713 + 21463 + 25537"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 45,
+      "updates": {
+        "period_type": "instant",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31",
+        "equations": [
+          {
+            "equation": "fact_45 = fact_20 - fact_40",
+            "fact_equation": "87954 = 268170 - 180216"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 46,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 47,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 48,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 49,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 50,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 51,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "date": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 52,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31"
+      }
+    },
+    {
+      "fact_num": 53,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31"
+      }
+    },
+    {
+      "fact_num": 54,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "equations": [
+          {
+            "equation": "fact_54 = fact_46 + fact_48 + fact_50 + fact_52",
+            "fact_equation": "4085744 = 1930880 + 197784 + 844368 + 1112712"
+          }
+        ]
+      }
+    },
+    {
+      "fact_num": 55,
+      "updates": {
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "equations": [
+          {
+            "equation": "fact_55 = fact_47 + fact_49 + fact_51 + fact_53",
+            "fact_equation": "4110646 = 2200295 + 808711 + 0 + 1101640"
+          }
+        ]
+      }
+    }
+  ]
+}
+```

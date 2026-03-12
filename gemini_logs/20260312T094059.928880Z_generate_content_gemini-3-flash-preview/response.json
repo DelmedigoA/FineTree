@@ -1,0 +1,78 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Thu, 12 Mar 2026 09:41:20 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=20282",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"meta_updates\": {},\n  \"fact_updates\": [\n    {\n      \"fact_num\": 1,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 2,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 3,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 4,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 5,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 6,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 7,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 8,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 9,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 10,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 11,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 12,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 13,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 14,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 15,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 16,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 17,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 18,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 19,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 20,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 21,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 22,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 23,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 24,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 25,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2022-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 26,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 27,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 28,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 29,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 30,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 31,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 32,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 33,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 34,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 35,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 36,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 37,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 38,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 39,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 40,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 41,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 42,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 43,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 44,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 45,\n      \"updates\": {\n        \"period_type\": \"instant\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 46,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 47,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 48,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 49,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 50,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 51,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 52,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 53,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 54,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2024-01-01\",\n        \"period_end\": \"2024-12-31\"\n      }\n    },\n    {\n      \"fact_num\": 55,\n      \"updates\": {\n        \"period_type\": \"duration\",\n        \"period_start\": \"2023-01-01\",\n        \"period_end\": \"2023-12-31\"\n      }\n    }\n  ]\n}",
+            "thought": null,
+            "thought_signature": "EjQKMgG-Pvb7myOnpwvhSF7yEBr2Z3oR4Y8-d9-8OTrkAmhb1rmD6Nnv4ML_WP8_uQ5icc1j",
+            "video_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3-flash-preview",
+  "prompt_feedback": null,
+  "response_id": "QIqyaYmvEJ3k7M8PxNqLmQo",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 3608,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 17785,
+    "prompt_tokens_details": [
+      {
+        "modality": "TEXT",
+        "token_count": 16693
+      },
+      {
+        "modality": "IMAGE",
+        "token_count": 1092
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 21393,
+    "traffic_type": null
+  },
+  "automatic_function_calling_history": [],
+  "parsed": null
+}

@@ -1,0 +1,78 @@
+{
+  "sdk_http_response": {
+    "headers": {
+      "content-type": "application/json; charset=UTF-8",
+      "vary": "Origin, X-Origin, Referer",
+      "content-encoding": "gzip",
+      "date": "Thu, 12 Mar 2026 09:41:53 GMT",
+      "server": "scaffolding on HTTPServer2",
+      "x-xss-protection": "0",
+      "x-frame-options": "SAMEORIGIN",
+      "x-content-type-options": "nosniff",
+      "server-timing": "gfet4t7; dur=12351",
+      "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+      "transfer-encoding": "chunked"
+    },
+    "body": null
+  },
+  "candidates": [
+    {
+      "content": {
+        "parts": [
+          {
+            "media_resolution": null,
+            "code_execution_result": null,
+            "executable_code": null,
+            "file_data": null,
+            "function_call": null,
+            "function_response": null,
+            "inline_data": null,
+            "text": "{\n  \"meta_updates\": {},\n  \"fact_updates\": [\n    {\n      \"fact_num\": 4,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_1 + fact_2 + fact_3\",\n            \"fact_equation\": \"90904 + 128153 + 49113\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 9,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_6 + fact_7 + fact_8\",\n            \"fact_equation\": \"6230 + 0 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 14,\n      \"updates\": {\n        \"natural_sign\": \"positive\",\n        \"equations\": [\n          {\n            \"equation\": \"fact_4 + fact_9 + fact_19\",\n            \"fact_equation\": \"268170 + 6230 + (-4432)\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 16,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_1 + fact_6 + fact_11\",\n            \"fact_equation\": \"90904 + 6230 + (-4432)\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 17,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_2 + fact_7 + fact_12\",\n            \"fact_equation\": \"128153 + 0 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 18,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_3 + fact_8 + fact_13\",\n            \"fact_equation\": \"49113 + 0 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 19,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_11 + fact_12 + fact_13\",\n            \"fact_equation\": \"(-4432) + 0 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 24,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_21 + fact_22 + fact_23\",\n            \"fact_equation\": \"78534 + 83018 + 18664\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 29,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_26 + fact_27 + fact_28\",\n            \"fact_equation\": \"3373 + 23672 + 4912\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 34,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_31 + fact_32 + fact_33\",\n            \"fact_equation\": \"(-2918) + 0 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 36,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_21 + fact_26 + fact_31\",\n            \"fact_equation\": \"78534 + 3373 + (-2918)\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 37,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_22 + fact_27 + fact_32\",\n            \"fact_equation\": \"83018 + 23672 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 38,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_23 + fact_28 + fact_33\",\n            \"fact_equation\": \"18664 + 4912 + 0\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 39,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_36 + fact_37 + fact_38\",\n            \"fact_equation\": \"78989 + 106690 + 23576\"\n          },\n          {\n            \"equation\": \"fact_24 + fact_29 + fact_34\",\n            \"fact_equation\": \"180216 + 31957 + (-2918)\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 41,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_16 - fact_36\",\n            \"fact_equation\": \"92702 - 78989\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 42,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_17 - fact_37\",\n            \"fact_equation\": \"128153 - 106690\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 43,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_18 - fact_38\",\n            \"fact_equation\": \"49113 - 23576\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 44,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_41 + fact_42 + fact_43\",\n            \"fact_equation\": \"13713 + 21463 + 25537\"\n          },\n          {\n            \"equation\": \"fact_14 - fact_39\",\n            \"fact_equation\": \"269968 - 209255\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 45,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_20 - fact_40\",\n            \"fact_equation\": \"268170 - 180216\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 54,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_46 + fact_48 + fact_50 + fact_52\",\n            \"fact_equation\": \"1930880 + 197784 + 844368 + 1112712\"\n          }\n        ]\n      }\n    },\n    {\n      \"fact_num\": 55,\n      \"updates\": {\n        \"equations\": [\n          {\n            \"equation\": \"fact_47 + fact_49 + fact_51 + fact_53\",\n            \"fact_equation\": \"2200295 + 808711 + 0 + 1101640\"\n          }\n        ]\n      }\n    }\n  ]\n}",
+            "thought": null,
+            "thought_signature": "EjQKMgG-Pvb79MbrUaLJlGYXmR1wtXiCTvgeFU8OkicIXkdcaqjlsjVmmzl2NqwN-DpYz6zQ",
+            "video_metadata": null
+          }
+        ],
+        "role": "model"
+      },
+      "citation_metadata": null,
+      "finish_message": null,
+      "token_count": null,
+      "finish_reason": "STOP",
+      "grounding_metadata": null,
+      "avg_logprobs": null,
+      "index": 0,
+      "logprobs_result": null,
+      "safety_ratings": null,
+      "url_context_metadata": null
+    }
+  ],
+  "create_time": null,
+  "model_version": "gemini-3-flash-preview",
+  "prompt_feedback": null,
+  "response_id": "YYqyaZXGFOSf28oPubqMaA",
+  "usage_metadata": {
+    "cache_tokens_details": null,
+    "cached_content_token_count": null,
+    "candidates_token_count": 1941,
+    "candidates_tokens_details": null,
+    "prompt_token_count": 18680,
+    "prompt_tokens_details": [
+      {
+        "modality": "IMAGE",
+        "token_count": 1092
+      },
+      {
+        "modality": "TEXT",
+        "token_count": 17588
+      }
+    ],
+    "thoughts_token_count": null,
+    "tool_use_prompt_token_count": null,
+    "tool_use_prompt_tokens_details": null,
+    "total_token_count": 20621,
+    "traffic_type": null
+  },
+  "automatic_function_calling_history": [],
+  "parsed": null
+}

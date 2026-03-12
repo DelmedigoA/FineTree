@@ -6,8 +6,7 @@
     "reading_direction": "rtl",
     "company_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
     "report_year": 2024,
-    "entity_type": "registered_nonprofit",
-    "report_scope": "consolidated"
+    "entity_type": "registered_nonprofit"
   },
   "pages": [
     {
@@ -19,7 +18,7 @@
         "statement_type": null,
         "title": "דוח שנתי 2024",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -32,7 +31,7 @@
         "statement_type": null,
         "title": "תוכן העניינים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -42,10 +41,10 @@
         "entity_name": "צלול - עמותה לאיכות הסביבה (ע״ר)",
         "page_num": null,
         "page_type": "declaration",
-        "statement_type": null,
+        "statement_type": "auditors_report",
         "title": "דוח רואה החשבון המבקר לחברי העמותה",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -58,7 +57,7 @@
         "statement_type": "balance_sheet",
         "title": "מאזנים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -371,10 +370,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            473.65,
-            851.13,
+            474.69,
+            866.77,
             104.06,
-            39.26
+            25.7
           ]
         },
         {
@@ -406,9 +405,9 @@
           "value_context": "tabular",
           "bbox": [
             307.96,
-            857.97,
+            867.36,
             105.56,
-            39.26
+            29.87
           ]
         },
         {
@@ -440,9 +439,9 @@
           "value_context": "tabular",
           "bbox": [
             474.38,
-            889.46,
+            896.76,
             105.56,
-            39.26
+            31.96
           ]
         },
         {
@@ -473,10 +472,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            305.62,
-            893.03,
-            105.56,
-            39.26
+            313.13,
+            896.03,
+            96.55,
+            31.75
           ]
         },
         {
@@ -513,9 +512,9 @@
           "value_context": "tabular",
           "bbox": [
             490.07,
-            936.92,
+            942.93,
             89.04,
-            39.26
+            30.25
           ]
         },
         {
@@ -551,9 +550,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            314.3,
+            320.31,
             944.94,
-            98.05,
+            92.04,
             28.75
           ]
         },
@@ -589,10 +588,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            478.2,
-            999.68,
+            476.7,
+            1007.19,
             99.56,
-            39.26
+            28.75
           ]
         },
         {
@@ -627,10 +626,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            286.97,
-            1003.52,
-            120.58,
-            38.22
+            291.48,
+            1009.53,
+            114.57,
+            27.71
           ]
         },
         {
@@ -870,8 +869,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            479.88,
-            1229.35,
+            477.88,
+            1228.35,
             101.06,
             27.75
           ]
@@ -909,9 +908,9 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            315.3,
+            313.3,
             1224.02,
-            93.55,
+            95.55,
             37.76
           ]
         },
@@ -1015,10 +1014,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            460.02,
-            1405.45,
-            120.58,
-            39.26
+            478.04,
+            1408.45,
+            102.56,
+            36.26
           ]
         },
         {
@@ -1053,10 +1052,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            297.45,
-            1404.28,
-            116.07,
-            37.76
+            313.97,
+            1411.79,
+            99.55,
+            30.25
           ]
         },
         {
@@ -1087,10 +1086,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            461.52,
-            1500.93,
-            120.58,
-            39.26
+            481.04,
+            1506.94,
+            96.55,
+            24.24
           ]
         },
         {
@@ -1121,10 +1120,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            303.92,
-            1498.89,
-            116.07,
-            37.76
+            306.92,
+            1507.9,
+            104.06,
+            28.75
           ]
         },
         {
@@ -1155,10 +1154,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            467.36,
-            1532.47,
-            120.58,
-            39.26
+            494.39,
+            1539.98,
+            84.54,
+            25.74
           ]
         },
         {
@@ -1189,10 +1188,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            304.79,
-            1533.64,
-            116.07,
-            37.76
+            307.79,
+            1542.65,
+            104.06,
+            28.75
           ]
         },
         {
@@ -1228,10 +1227,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            465.03,
-            1562.85,
-            120.58,
-            39.26
+            481.55,
+            1571.86,
+            101.06,
+            30.25
           ]
         },
         {
@@ -1267,10 +1266,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            304.36,
-            1570.36,
-            116.07,
-            37.76
+            310.37,
+            1573.36,
+            104.06,
+            28.75
           ]
         },
         {
@@ -1296,7 +1295,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "התחייבויות",
+            "התחייבויות בניכוי נכסים נטו",
             "סה״כ"
           ],
           "path_source": "inferred",
@@ -1334,7 +1333,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "התחייבויות",
+            "התחייבויות בניכוי נכסים נטו",
             "סה״כ"
           ],
           "path_source": "inferred",
@@ -1343,7 +1342,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            293.94,
+            292.44,
             1632.95,
             118.08,
             27.92
@@ -1360,7 +1359,7 @@
         "statement_type": "statement_of_activities",
         "title": "דוחות על הפעילויות והשינויים בנכסים נטו",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -1384,16 +1383,16 @@
             "מחזור הפעילויות",
             "תרומות שנתקבלו"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             424.84,
-            533.79,
+            538.3,
             124.05,
-            42.08
+            33.07
           ]
         },
         {
@@ -1417,16 +1416,16 @@
             "מחזור הפעילויות",
             "תרומות שנתקבלו"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            264.85,
-            534.95,
+            263.35,
+            539.46,
             124.05,
-            42.08
+            33.07
           ]
         },
         {
@@ -1450,16 +1449,16 @@
             "עלות הפעילויות",
             "פרסום, ייעוץ הסברה, יחסי ציבור, שירותים מקצועיים ופחת"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            428.79,
-            634.62,
-            124.05,
-            42.08
+            430.29,
+            637.62,
+            118.04,
+            27.06
           ]
         },
         {
@@ -1483,16 +1482,16 @@
             "עלות הפעילויות",
             "פרסום, ייעוץ הסברה, יחסי ציבור, שירותים מקצועיים ופחת"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            260.9,
-            635.05,
-            124.05,
-            42.08
+            268.41,
+            638.05,
+            118.04,
+            33.07
           ]
         },
         {
@@ -1505,7 +1504,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "9",
+          "note_ref": "6,8,9",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1516,16 +1515,16 @@
             "עלות הפעילויות",
             "פרויקט השפעה מקומית, כולל שכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            443.27,
-            676.7,
-            124.05,
-            42.08
+            455.28,
+            679.7,
+            91.01,
+            27.06
           ]
         },
         {
@@ -1538,7 +1537,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "9",
+          "note_ref": "6,8,9",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1549,16 +1548,16 @@
             "עלות הפעילויות",
             "פרויקט השפעה מקומית, כולל שכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            268.8,
-            678.75,
-            124.05,
-            42.08
+            291.33,
+            684.76,
+            98.52,
+            25.56
           ]
         },
         {
@@ -1571,7 +1570,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "10",
+          "note_ref": "6,8,10",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1582,16 +1581,16 @@
             "עלות הפעילויות",
             "פרויקט צלול ברשויות, כולל שכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            443.27,
+            452.28,
             720.1,
-            124.05,
-            42.08
+            100.02,
+            28.56
           ]
         },
         {
@@ -1604,7 +1603,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "10",
+          "note_ref": "6,8,10",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1615,16 +1614,16 @@
             "עלות הפעילויות",
             "פרויקט צלול ברשויות, כולל שכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            361.87,
-            720.1,
-            32.15,
-            28.36
+            373.88,
+            729.11,
+            20.14,
+            14.84
           ]
         },
         {
@@ -1637,7 +1636,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1648,16 +1647,16 @@
             "עלות הפעילויות",
             "שכר עבודה והוצאות נלוות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             430.1,
-            751.52,
+            760.53,
             124.05,
-            42.08
+            27.06
           ]
         },
         {
@@ -1670,7 +1669,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1681,16 +1680,16 @@
             "עלות הפעילויות",
             "שכר עבודה והוצאות נלוות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             271.43,
-            759.85,
-            124.05,
-            42.08
+            761.35,
+            121.05,
+            28.56
           ]
         },
         {
@@ -1708,7 +1707,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1719,16 +1718,16 @@
             "עלות הפעילויות",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            427.47,
-            786.42,
+            431.98,
+            796.93,
             124.05,
-            42.08
+            27.06
           ]
         },
         {
@@ -1736,8 +1735,8 @@
           "fact_num": 12,
           "equations": [
             {
-              "equation": "1344452 + 856880 + 1252365 + 0",
-              "fact_equation": "f4 + f6 + f10 + f8"
+              "equation": "1344452 + 856880 + 0 + 1252365",
+              "fact_equation": "f4 + f6 + f8 + f10"
             }
           ],
           "natural_sign": "positive",
@@ -1746,7 +1745,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1757,16 +1756,16 @@
             "עלות הפעילויות",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             271.43,
-            794.92,
-            124.05,
-            42.08
+            803.93,
+            122.55,
+            27.06
           ]
         },
         {
@@ -1790,16 +1789,16 @@
             "הוצאות הנהלה וכלליות",
             "שכר עבודה והוצאות נלוות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            443.27,
-            860.38,
-            124.05,
-            42.08
+            452.28,
+            863.38,
+            107.53,
+            28.56
           ]
         },
         {
@@ -1823,16 +1822,16 @@
             "הוצאות הנהלה וכלליות",
             "שכר עבודה והוצאות נלוות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            270.11,
-            856.57,
-            124.05,
-            42.08
+            294.14,
+            865.58,
+            100.02,
+            30.07
           ]
         },
         {
@@ -1845,7 +1844,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1856,16 +1855,16 @@
             "הוצאות הנהלה וכלליות",
             "עלויות גיוס משאבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            443.27,
-            893.12,
-            124.05,
-            42.08
+            465.8,
+            900.63,
+            83.5,
+            27.06
           ]
         },
         {
@@ -1878,7 +1877,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1889,16 +1888,16 @@
             "הוצאות הנהלה וכלליות",
             "עלויות גיוס משאבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            275.38,
-            894.86,
-            124.05,
-            42.08
+            302.41,
+            900.87,
+            97.02,
+            27.06
           ]
         },
         {
@@ -1911,7 +1910,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "7",
+          "note_ref": "6,8,7",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1922,16 +1921,16 @@
             "הוצאות הנהלה וכלליות",
             "אחרות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            440.68,
-            923.51,
-            124.05,
-            42.08
+            457.2,
+            929.52,
+            98.52,
+            25.56
           ]
         },
         {
@@ -1944,7 +1943,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": "7",
+          "note_ref": "6,8,7",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -1955,16 +1954,16 @@
             "הוצאות הנהלה וכלליות",
             "אחרות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            274.06,
-            929.2,
-            124.05,
-            42.08
+            304.09,
+            933.71,
+            86.51,
+            30.07
           ]
         },
         {
@@ -1982,7 +1981,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2024-12-31",
           "period_type": "duration",
           "period_start": "2024-01-01",
@@ -1993,16 +1992,16 @@
             "הוצאות הנהלה וכלליות",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            443.27,
-            963.26,
-            124.05,
-            42.08
+            455.28,
+            966.26,
+            100.02,
+            25.56
           ]
         },
         {
@@ -2010,8 +2009,8 @@
           "fact_num": 20,
           "equations": [
             {
-              "equation": "158638 + 56607 + 314459",
-              "fact_equation": "f18 + f16 + f14"
+              "equation": "314459 + 56607 + 158638",
+              "fact_equation": "f14 + f16 + f18"
             }
           ],
           "natural_sign": "positive",
@@ -2020,7 +2019,7 @@
           "note_flag": false,
           "note_name": null,
           "note_num": null,
-          "note_ref": null,
+          "note_ref": "6,8",
           "date": "2023-12-31",
           "period_type": "duration",
           "period_start": "2023-01-01",
@@ -2031,16 +2030,16 @@
             "הוצאות הנהלה וכלליות",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            272.75,
-            966.32,
-            124.05,
-            42.08
+            295.28,
+            969.32,
+            100.02,
+            30.07
           ]
         },
         {
@@ -2063,16 +2062,16 @@
           "path": [
             "הפסד הון"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            442.58,
-            1025.93,
-            135.0,
-            48.38
+            468.11,
+            1034.94,
+            86.95,
+            31.86
           ]
         },
         {
@@ -2095,16 +2094,16 @@
           "path": [
             "הפסד הון"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            374.86,
-            1041.22,
-            28.57,
-            29.18
+            376.36,
+            1047.23,
+            22.56,
+            14.16
           ]
         },
         {
@@ -2127,16 +2126,16 @@
           "path": [
             "הכנסות מימון - נטו"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            476.71,
-            1093.29,
-            105.16,
-            35.39
+            506.74,
+            1100.8,
+            55.6,
+            26.38
           ]
         },
         {
@@ -2159,24 +2158,29 @@
           "path": [
             "הכנסות מימון - נטו"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            295.61,
-            1094.46,
-            105.16,
-            35.39
+            321.14,
+            1103.47,
+            79.63,
+            26.38
           ]
         },
         {
           "value": "345907",
           "fact_num": 25,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4085744 - 3234968 - 503921 - 1514 + 566",
+              "fact_equation": "f1 - f11 - f19 + f21 + f23"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2191,24 +2195,29 @@
           "path": [
             "הכנסות נטו לשנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
-          "scale": 1,
+          "scale": null,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            444.44,
-            1164.63,
-            117.47,
-            47.55
+            459.46,
+            1166.13,
+            96.45,
+            25.02
           ]
         },
         {
           "value": "132894",
           "fact_num": 26,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "4110646 - 3453697 - 529704 + 0 + 5649",
+              "fact_equation": "f2 - f12 - f20 + f22 + f24"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2223,16 +2232,16 @@
           "path": [
             "הכנסות נטו לשנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            279.33,
-            1167.03,
-            133.27,
-            40.97
+            295.85,
+            1165.53,
+            103.24,
+            28.96
           ]
         },
         {
@@ -2255,16 +2264,16 @@
           "path": [
             "גרעון נטו לתחילת השנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            444.99,
-            1218.19,
-            133.27,
-            40.97
+            460.01,
+            1216.69,
+            97.23,
+            28.96
           ]
         },
         {
@@ -2287,16 +2296,16 @@
           "path": [
             "גרעון נטו לתחילת השנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            276.08,
-            1218.44,
-            133.27,
-            40.97
+            282.09,
+            1222.95,
+            116.75,
+            27.45
           ]
         },
         {
@@ -2324,16 +2333,16 @@
           "path": [
             "נכסים (גרעון) נטו לגמר השנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            440.64,
-            1286.58,
-            124.05,
-            33.07
+            455.66,
+            1288.08,
+            101.52,
+            25.56
           ]
         },
         {
@@ -2361,16 +2370,16 @@
           "path": [
             "נכסים (גרעון) נטו לגמר השנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            280.03,
-            1286.88,
-            124.05,
-            33.07
+            296.55,
+            1291.39,
+            100.02,
+            27.06
           ]
         }
       ]
@@ -2384,7 +2393,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -2397,7 +2406,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "flagged"
       },
       "facts": [
         {
@@ -2408,29 +2417,29 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "עיקרי המדיניות החשבונאית",
           "note_num": 2,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "duration",
-          "period_start": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיעורי הפחת השנתיים",
+            "שיעורי הפחת השנתיים העיקריים",
             "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "mixed",
           "bbox": [
-            669.65,
-            1488.64,
-            41.35,
-            35.07
+            673.4,
+            1491.14,
+            32.59,
+            22.56
           ]
         },
         {
@@ -2441,29 +2450,29 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "עיקרי המדיניות החשבונאית",
           "note_num": 2,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "duration",
-          "period_start": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיעורי הפחת השנתיים",
+            "שיעורי הפחת השנתיים העיקריים",
             "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "mixed",
           "bbox": [
-            670.22,
-            1512.88,
-            41.35,
-            35.07
+            676.48,
+            1517.89,
+            32.59,
+            30.06
           ]
         },
         {
@@ -2474,29 +2483,29 @@
           "row_role": "detail",
           "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "עיקרי המדיניות החשבונאית",
           "note_num": 2,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "duration",
-          "period_start": "2024-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיעורי הפחת השנתיים",
+            "שיעורי הפחת השנתיים העיקריים",
             "רהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": null,
           "scale": null,
           "value_type": "percent",
-          "value_context": null,
+          "value_context": "mixed",
           "bbox": [
-            640.49,
-            1549.23,
-            84.15,
-            39.11
+            663.02,
+            1550.48,
+            61.62,
+            27.85
           ]
         }
       ]
@@ -2510,7 +2519,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     },
@@ -2523,7 +2532,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -2540,19 +2549,19 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
             "עלות",
-            "יתרה לתחילת השנה"
+            "יתרה לתחילת השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             857.59,
             827.2,
@@ -2574,19 +2583,19 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "מחשבים",
             "עלות",
-            "יתרה לתחילת השנה"
+            "יתרה לתחילת השנה",
+            "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             713.28,
             824.56,
@@ -2608,30 +2617,69 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפורים במושכר",
             "עלות",
-            "יתרה לתחילת השנה"
+            "יתרה לתחילת השנה",
+            "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            564.42,
-            832.46,
+            557.21,
+            834.26,
+            88.91,
+            44.29
+          ]
+        },
+        {
+          "value": "49113",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "יתרה לתחילת השנה",
+            "שיפורים במושכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            557.21,
+            834.26,
             88.91,
             44.29
           ]
         },
         {
           "value": "268170",
-          "fact_num": 4,
-          "equations": null,
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "90904 + 128153 + 49113",
+              "fact_equation": "f1 + f2 + f4"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "4",
@@ -2642,29 +2690,29 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "עלות",
-            "יתרה לתחילת השנה"
+            "יתרה לתחילת השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            411.61,
-            836.41,
+            407.41,
+            837.31,
             101.5,
             35.07
           ]
         },
         {
           "value": "251466",
-          "fact_num": 5,
+          "fact_num": 6,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
@@ -2676,21 +2724,21 @@
           "date": "2023-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2023-12-31",
+          "period_end": "2022-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "עלות",
-            "יתרה לתחילת השנה"
+            "יתרה לתחילת השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            258.22,
+            256.42,
             837.73,
             104.14,
             37.7
@@ -2698,7 +2746,7 @@
         },
         {
           "value": "6230",
-          "fact_num": 6,
+          "fact_num": 7,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -2708,60 +2756,26 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "רהוט וציוד",
             "עלות",
-            "תוספות במשך השנה"
+            "תוספות במשך השנה",
+            "רהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             862.71,
             859.63,
             82.7,
             35.07
-          ]
-        },
-        {
-          "value": "-",
-          "fact_num": 7,
-          "equations": null,
-          "natural_sign": null,
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "מחשבים",
-            "עלות",
-            "תוספות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            790.3,
-            866.22,
-            27.4,
-            28.49
           ]
         },
         {
@@ -2776,32 +2790,71 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפור במושכר",
             "עלות",
-            "תוספות במשך השנה"
+            "תוספות במשך השנה",
+            "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            636.26,
-            871.48,
+            790.3,
+            866.22,
+            27.4,
+            28.49
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "שיפור במושכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            629.05,
+            873.28,
             27.4,
             28.49
           ]
         },
         {
           "value": "6230",
-          "fact_num": 9,
-          "equations": null,
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "6230 + 0 + 0",
+              "fact_equation": "f7 + f8 + f9"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "4",
@@ -2810,21 +2863,138 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
+            "תוספות במשך השנה",
             "עלות",
-            "תוספות במשך השנה"
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
+          "bbox": [
+            430.04,
+            871.48,
+            90.0,
+            26.71
+          ]
+        },
+        {
+          "value": "6230",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "6230 + 0 + 0",
+              "fact_equation": "f7 + f8 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במשך השנה",
+            "עלות",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            430.04,
+            871.48,
+            90.0,
+            26.71
+          ]
+        },
+        {
+          "value": "6230",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "6230 + 0 + 0",
+              "fact_equation": "f7 + f8 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במשך השנה",
+            "עלות",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            430.04,
+            871.48,
+            90.0,
+            26.71
+          ]
+        },
+        {
+          "value": "6230",
+          "fact_num": 13,
+          "equations": [
+            {
+              "equation": "6230 + 0 + 0",
+              "fact_equation": "f7 + f8 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
           "bbox": [
             430.04,
             871.48,
@@ -2834,142 +3004,6 @@
         },
         {
           "value": "43803",
-          "fact_num": 10,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "סה״כ",
-            "עלות",
-            "תוספות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            279.29,
-            872.8,
-            90.97,
-            35.07
-          ]
-        },
-        {
-          "value": "(4432)",
-          "fact_num": 11,
-          "equations": null,
-          "natural_sign": "negative",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "ריהוט וציוד",
-            "עלות",
-            "גריעות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            858.76,
-            893.24,
-            82.7,
-            35.07
-          ]
-        },
-        {
-          "value": "-",
-          "fact_num": 12,
-          "equations": null,
-          "natural_sign": null,
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "מחשבים",
-            "עלות",
-            "גריעות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            790.3,
-            894.7,
-            26.09,
-            35.07
-          ]
-        },
-        {
-          "value": "-",
-          "fact_num": 13,
-          "equations": null,
-          "natural_sign": null,
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "שיפורים במושכר",
-            "עלות",
-            "גריעות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            633.62,
-            898.65,
-            26.09,
-            35.07
-          ]
-        },
-        {
-          "value": "269968",
           "fact_num": 14,
           "equations": null,
           "natural_sign": "positive",
@@ -2979,32 +3013,207 @@
           "note_name": "רכוש קבוע",
           "note_num": 4,
           "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במשך השנה",
+            "עלות",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            277.49,
+            872.8,
+            90.97,
+            35.07
+          ]
+        },
+        {
+          "value": "43803",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "תוספות במשך השנה",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            277.49,
+            872.8,
+            90.97,
+            35.07
+          ]
+        },
+        {
+          "value": "(4432)",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "עלות",
-            "יתרה לגמר השנה"
+            "גריעות במשך השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            417.93,
-            899.38,
-            101.68,
-            41.41
+            858.76,
+            893.24,
+            82.7,
+            35.07
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "גריעות במשך השנה",
+            "מחשבים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            790.3,
+            894.7,
+            26.09,
+            35.07
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "גריעות במשך השנה",
+            "שיפורים במושכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            626.41,
+            900.45,
+            26.09,
+            35.07
+          ]
+        },
+        {
+          "value": "(4432)",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "- 4432 + 0 + 0",
+              "fact_equation": "f16 + f17 + f18"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות",
+            "גריעות במשך השנה",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            412.95,
+            901.24,
+            106.16,
+            35.07
           ]
         },
         {
           "value": "(27099)",
-          "fact_num": 15,
+          "fact_num": 20,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
@@ -3014,23 +3223,23 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
           "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "גריעות במשך השנה",
             "עלות",
+            "גריעות במשך השנה",
             "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            259.16,
+            257.36,
             900.14,
             109.66,
             45.59
@@ -3038,176 +3247,6 @@
         },
         {
           "value": "92702",
-          "fact_num": 16,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "ריהוט וציוד",
-            "עלות",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            860.08,
-            937.35,
-            82.7,
-            35.07
-          ]
-        },
-        {
-          "value": "128153",
-          "fact_num": 17,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "מחשבים",
-            "עלות",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            710.64,
-            936.04,
-            110.35,
-            42.97
-          ]
-        },
-        {
-          "value": "49113",
-          "fact_num": 18,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "שיפורים במושכר",
-            "עלות",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            561.93,
-            939.99,
-            94.18,
-            36.39
-          ]
-        },
-        {
-          "value": "(4432)",
-          "fact_num": 19,
-          "equations": null,
-          "natural_sign": "negative",
-          "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "סה״כ",
-            "עלות",
-            "גריעות במשך השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            411.15,
-            946.29,
-            106.16,
-            35.07
-          ]
-        },
-        {
-          "value": "268170",
-          "fact_num": 20,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "סה״כ",
-            "עלות",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            256.83,
-            944.57,
-            115.51,
-            44.42
-          ]
-        },
-        {
-          "value": "78534",
           "fact_num": 21,
           "equations": null,
           "natural_sign": "positive",
@@ -3224,24 +3263,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
-            "פחת שנצבר",
-            "יתרה לתחילת השנה"
+            "עלות",
+            "יתרה לגמר השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            861.25,
-            1029.89,
+            860.08,
+            937.35,
             82.7,
             35.07
           ]
         },
         {
-          "value": "83018",
+          "value": "128153",
           "fact_num": 22,
           "equations": null,
           "natural_sign": "positive",
@@ -3258,24 +3297,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "מחשבים",
-            "פחת שנצבר",
-            "יתרה לתחילת השנה"
+            "עלות",
+            "יתרה לגמר השנה",
+            "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            712.57,
-            1034.57,
-            82.7,
-            35.07
+            710.64,
+            936.04,
+            110.35,
+            42.97
           ]
         },
         {
-          "value": "18664",
+          "value": "49113",
           "fact_num": 23,
           "equations": null,
           "natural_sign": "positive",
@@ -3292,26 +3331,31 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפורים במושכר",
-            "פחת שנצבר",
-            "יתרה לתחילת השנה"
+            "עלות",
+            "יתרה לגמר השנה",
+            "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            576.56,
-            1039.24,
-            79.1,
-            35.07
+            554.72,
+            941.79,
+            94.18,
+            36.39
           ]
         },
         {
-          "value": "180216",
+          "value": "269968",
           "fact_num": 24,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "92702 + 128153 + 49113",
+              "fact_equation": "f21 + f22 + f23"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "4",
@@ -3326,24 +3370,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
-            "פחת שנצבר",
-            "יתרה לתחילת השנה"
+            "עלות",
+            "יתרה לגמר השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            413.68,
-            1040.41,
-            107.33,
-            35.07
+            412.52,
+            940.83,
+            101.68,
+            41.41
           ]
         },
         {
-          "value": "176075",
+          "value": "268170",
           "fact_num": 25,
           "equations": null,
           "natural_sign": "positive",
@@ -3360,24 +3404,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
-            "פחת שנצבר",
-            "יתרה לתחילת השנה"
+            "עלות",
+            "יתרה לגמר השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            263.4,
-            1040.41,
-            125.29,
-            35.07
+            255.03,
+            944.57,
+            115.51,
+            44.42
           ]
         },
         {
-          "value": "3373",
+          "value": "78534",
           "fact_num": 26,
           "equations": null,
           "natural_sign": "positive",
@@ -3390,28 +3434,28 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
             "פחת שנצבר",
-            "תוספות במשך השנה"
+            "יתרה לתחילת השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            864.75,
-            1060.29,
+            861.25,
+            1029.89,
             82.7,
-            36.24
+            35.07
           ]
         },
         {
-          "value": "23672",
+          "value": "83018",
           "fact_num": 27,
           "equations": null,
           "natural_sign": "positive",
@@ -3424,28 +3468,28 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "מחשבים",
             "פחת שנצבר",
-            "תוספות במשך השנה"
+            "יתרה לתחילת השנה",
+            "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             712.57,
-            1067.3,
-            86.21,
+            1034.57,
+            82.7,
             35.07
           ]
         },
         {
-          "value": "4912",
+          "value": "18664",
           "fact_num": 28,
           "equations": null,
           "natural_sign": "positive",
@@ -3458,30 +3502,35 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפורים במושכר",
             "פחת שנצבר",
-            "תוספות במשך השנה"
+            "יתרה לתחילת השנה",
+            "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            580.27,
-            1068.62,
-            74.43,
+            576.56,
+            1039.24,
+            79.1,
             35.07
           ]
         },
         {
-          "value": "31957",
+          "value": "180216",
           "fact_num": 29,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "78534 + 83018 + 18664",
+              "fact_equation": "f26 + f27 + f28"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "4",
@@ -3492,28 +3541,28 @@
           "date": "2024-12-31",
           "period_type": "instant",
           "period_start": null,
-          "period_end": "2024-12-31",
+          "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "פחת שנצבר",
-            "תוספות במשך השנה"
+            "יתרה לתחילת השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            430.04,
-            1075.48,
-            90.97,
+            413.68,
+            1040.41,
+            107.33,
             35.07
           ]
         },
         {
-          "value": "31240",
+          "value": "176075",
           "fact_num": 30,
           "equations": null,
           "natural_sign": "positive",
@@ -3526,21 +3575,196 @@
           "date": "2023-12-31",
           "period_type": "instant",
           "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת שנצבר",
+            "יתרה לתחילת השנה",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            261.6,
+            1040.41,
+            125.29,
+            35.07
+          ]
+        },
+        {
+          "value": "3373",
+          "fact_num": 31,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "ריהוט וציוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            864.75,
+            1060.29,
+            82.7,
+            36.24
+          ]
+        },
+        {
+          "value": "23672",
+          "fact_num": 32,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "מחשבים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            712.57,
+            1067.3,
+            86.21,
+            35.07
+          ]
+        },
+        {
+          "value": "4912",
+          "fact_num": 33,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "שיפורים במושכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            580.27,
+            1068.62,
+            74.43,
+            35.07
+          ]
+        },
+        {
+          "value": "31957",
+          "fact_num": 34,
+          "equations": [
+            {
+              "equation": "3373 + 23672 + 4912",
+              "fact_equation": "f31 + f32 + f33"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת שנצבר",
+            "תוספות במשך השנה",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            430.04,
+            1075.48,
+            90.97,
+            35.07
+          ]
+        },
+        {
+          "value": "31240",
+          "fact_num": 35,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
           "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "פחת שנצבר",
-            "תוספות במשך השנה"
+            "תוספות במשך השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            277.86,
+            276.06,
             1074.31,
             90.97,
             35.07
@@ -3548,7 +3772,7 @@
         },
         {
           "value": "(2918)",
-          "fact_num": 31,
+          "fact_num": 36,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
@@ -3558,21 +3782,21 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
             "פחת שנצבר",
-            "גריעות במשך השנה"
+            "גריעות במשך השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             863.59,
             1090.69,
@@ -3582,7 +3806,7 @@
         },
         {
           "value": "-",
-          "fact_num": 32,
+          "fact_num": 37,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -3592,21 +3816,21 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
             "פחת שנצבר",
-            "גריעות במשך השנה"
+            "גריעות במשך השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             774.79,
             1102.37,
@@ -3616,7 +3840,7 @@
         },
         {
           "value": "-",
-          "fact_num": 33,
+          "fact_num": 38,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -3626,21 +3850,21 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפורים במושכר",
             "פחת שנצבר",
-            "גריעות במשך השנה"
+            "גריעות במשך השנה",
+            "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             632.24,
             1102.37,
@@ -3650,8 +3874,13 @@
         },
         {
           "value": "(2918)",
-          "fact_num": 34,
-          "equations": null,
+          "fact_num": 39,
+          "equations": [
+            {
+              "equation": "- 2918 + 0 + 0",
+              "fact_equation": "f36 + f37 + f38"
+            }
+          ],
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": "4",
@@ -3660,21 +3889,21 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "פחת שנצבר",
-            "גריעות במשך השנה"
+            "גריעות במשך השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             428.87,
             1102.37,
@@ -3684,7 +3913,7 @@
         },
         {
           "value": "(27099)",
-          "fact_num": 35,
+          "fact_num": 40,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
@@ -3694,23 +3923,23 @@
           "note_num": 4,
           "note_ref": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
           "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
             "פחת שנצבר",
-            "גריעות במשך השנה"
+            "גריעות במשך השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            267.69,
+            265.89,
             1107.81,
             103.31,
             36.44
@@ -3718,176 +3947,6 @@
         },
         {
           "value": "78989",
-          "fact_num": 36,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "ריהוט וציוד",
-            "פחת שנצבר",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            865.92,
-            1140.95,
-            82.7,
-            35.07
-          ]
-        },
-        {
-          "value": "106690",
-          "fact_num": 37,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "מחשבים",
-            "פחת שנצבר",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            703.22,
-            1143.29,
-            92.05,
-            37.41
-          ]
-        },
-        {
-          "value": "23576",
-          "fact_num": 38,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "שיפורים במושכר",
-            "פחת שנצבר",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            570.72,
-            1150.3,
-            88.45,
-            35.07
-          ]
-        },
-        {
-          "value": "209255",
-          "fact_num": 39,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "סה״כ",
-            "פחת שנצבר",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            414.85,
-            1150.3,
-            102.65,
-            31.56
-          ]
-        },
-        {
-          "value": "180216",
-          "fact_num": 40,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "סה״כ",
-            "פחת שנצבר",
-            "יתרה לגמר השנה"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            276.69,
-            1154.97,
-            90.97,
-            35.07
-          ]
-        },
-        {
-          "value": "13713",
           "fact_num": 41,
           "equations": null,
           "natural_sign": "positive",
@@ -3904,23 +3963,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "ריהוט וציוד",
-            "יתרה מופחתת"
+            "פחת שנצבר",
+            "יתרה לגמר השנה",
+            "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            860.08,
-            1209.92,
-            90.88,
-            32.73
+            865.92,
+            1140.95,
+            82.7,
+            35.07
           ]
         },
         {
-          "value": "21463",
+          "value": "106690",
           "fact_num": 42,
           "equations": null,
           "natural_sign": "positive",
@@ -3937,23 +3997,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "מחשבים",
-            "יתרה מופחתת"
+            "פחת שנצבר",
+            "יתרה לגמר השנה",
+            "מחשבים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            714.91,
-            1207.59,
-            82.7,
-            38.58
+            703.22,
+            1143.29,
+            92.05,
+            37.41
           ]
         },
         {
-          "value": "25537",
+          "value": "23576",
           "fact_num": 43,
           "equations": null,
           "natural_sign": "positive",
@@ -3970,25 +4031,31 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "שיפורים במושכר",
-            "יתרה מופחתת"
+            "פחת שנצבר",
+            "יתרה לגמר השנה",
+            "שיפורים במושכר"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            573.06,
-            1214.6,
-            83.78,
+            570.72,
+            1150.3,
+            88.45,
             35.07
           ]
         },
         {
-          "value": "60713",
+          "value": "209255",
           "fact_num": 44,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "78989 + 106690 + 23576",
+              "fact_equation": "f41 + f42 + f43"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "4",
@@ -4003,23 +4070,24 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
-            "יתרה מופחתת"
+            "פחת שנצבר",
+            "יתרה לגמר השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            428.87,
-            1214.6,
-            90.97,
-            35.07
+            414.85,
+            1150.3,
+            102.65,
+            31.56
           ]
         },
         {
-          "value": "87954",
+          "value": "180216",
           "fact_num": 45,
           "equations": null,
           "natural_sign": "positive",
@@ -4036,16 +4104,187 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "סה״כ",
-            "יתרה מופחתת"
+            "פחת שנצבר",
+            "יתרה לגמר השנה",
+            "סה״כ"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
-            281.36,
+            274.89,
+            1154.97,
+            90.97,
+            35.07
+          ]
+        },
+        {
+          "value": "13713",
+          "fact_num": 46,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה מופחתת",
+            "ריהוט וציוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            860.08,
+            1209.92,
+            90.88,
+            32.73
+          ]
+        },
+        {
+          "value": "21463",
+          "fact_num": 47,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה מופחתת",
+            "מחשבים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            714.91,
+            1207.59,
+            82.7,
+            38.58
+          ]
+        },
+        {
+          "value": "25537",
+          "fact_num": 48,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה מופחתת",
+            "שיפורים במושכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            573.06,
+            1214.6,
+            83.78,
+            35.07
+          ]
+        },
+        {
+          "value": "60713",
+          "fact_num": 49,
+          "equations": [
+            {
+              "equation": "13713 + 21463 + 25537",
+              "fact_equation": "f46 + f47 + f48"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה מופחתת",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            428.87,
+            1214.6,
+            90.97,
+            35.07
+          ]
+        },
+        {
+          "value": "87954",
+          "fact_num": 50,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה מופחתת",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            279.56,
             1219.27,
             90.97,
             35.07
@@ -4053,7 +4292,7 @@
         },
         {
           "value": "1930880",
-          "fact_num": 46,
+          "fact_num": 51,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4063,19 +4302,19 @@
           "note_num": 5,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
             "מצדדים קשורים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             476.34,
             1475.28,
@@ -4085,166 +4324,6 @@
         },
         {
           "value": "2200295",
-          "fact_num": 47,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "5",
-          "note_flag": true,
-          "note_name": "הכנסות מתרומות",
-          "note_num": 5,
-          "note_ref": null,
-          "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "מצדדים קשורים"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            316.78,
-            1481.12,
-            126.3,
-            36.24
-          ]
-        },
-        {
-          "value": "197784",
-          "fact_num": 48,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "5",
-          "note_flag": true,
-          "note_name": "הכנסות מתרומות",
-          "note_num": 5,
-          "note_ref": "9",
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "פרוייקט השפעה מקומית"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            492.69,
-            1511.52,
-            115.78,
-            35.07
-          ]
-        },
-        {
-          "value": "808711",
-          "fact_num": 49,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "5",
-          "note_flag": true,
-          "note_name": "הכנסות מתרומות",
-          "note_num": 5,
-          "note_ref": "9",
-          "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "פרוייקט השפעה מקומית"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            330.8,
-            1519.7,
-            115.78,
-            35.07
-          ]
-        },
-        {
-          "value": "844368",
-          "fact_num": 50,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "5",
-          "note_flag": true,
-          "note_name": "הכנסות מתרומות",
-          "note_num": 5,
-          "note_ref": "10",
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "פרוייקט צלול ברשויות"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            490.36,
-            1552.43,
-            115.78,
-            35.07
-          ]
-        },
-        {
-          "value": "-",
-          "fact_num": 51,
-          "equations": null,
-          "natural_sign": null,
-          "row_role": "detail",
-          "comment_ref": "5",
-          "note_flag": true,
-          "note_name": "הכנסות מתרומות",
-          "note_num": 5,
-          "note_ref": "10",
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "פרוייקט צלול ברשויות"
-          ],
-          "path_source": null,
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": null,
-          "bbox": [
-            423.76,
-            1552.43,
-            23.48,
-            26.89
-          ]
-        },
-        {
-          "value": "1112712",
           "fact_num": 52,
           "equations": null,
           "natural_sign": "positive",
@@ -4254,20 +4333,180 @@
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
           "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מצדדים קשורים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            316.78,
+            1481.12,
+            126.3,
+            36.24
+          ]
+        },
+        {
+          "value": "197784",
+          "fact_num": 53,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "הכנסות מתרומות",
+          "note_num": 5,
+          "note_ref": "9",
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרוייקט השפעה מקומית"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            492.69,
+            1511.52,
+            115.78,
+            35.07
+          ]
+        },
+        {
+          "value": "808711",
+          "fact_num": 54,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "הכנסות מתרומות",
+          "note_num": 5,
+          "note_ref": "9",
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרוייקט השפעה מקומית"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            330.8,
+            1519.7,
+            115.78,
+            35.07
+          ]
+        },
+        {
+          "value": "844368",
+          "fact_num": 55,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "הכנסות מתרומות",
+          "note_num": 5,
+          "note_ref": "10",
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרוייקט צלול ברשויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            490.36,
+            1552.43,
+            115.78,
+            35.07
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 56,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "הכנסות מתרומות",
+          "note_num": 5,
+          "note_ref": "10",
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרוייקט צלול ברשויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            423.76,
+            1552.43,
+            23.48,
+            26.89
+          ]
+        },
+        {
+          "value": "1112712",
+          "fact_num": 57,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "הכנסות מתרומות",
+          "note_num": 5,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
             "מאחרים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             470.5,
             1587.5,
@@ -4277,7 +4516,7 @@
         },
         {
           "value": "1101640",
-          "fact_num": 53,
+          "fact_num": 58,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4287,19 +4526,19 @@
           "note_num": 5,
           "note_ref": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
           "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
             "מאחרים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             317.95,
             1586.33,
@@ -4309,8 +4548,13 @@
         },
         {
           "value": "4085744",
-          "fact_num": 54,
-          "equations": null,
+          "fact_num": 59,
+          "equations": [
+            {
+              "equation": "1930880 + 197784 + 844368 + 1112712",
+              "fact_equation": "f51 + f53 + f55 + f57"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "5",
@@ -4319,19 +4563,19 @@
           "note_num": 5,
           "note_ref": null,
           "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
           "period_end": "2024-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             475.17,
             1652.98,
@@ -4341,8 +4585,13 @@
         },
         {
           "value": "4110646",
-          "fact_num": 55,
-          "equations": null,
+          "fact_num": 60,
+          "equations": [
+            {
+              "equation": "2200295 + 808711 + 0 + 1101640",
+              "fact_equation": "f52 + f54 + f56 + f58"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "5",
@@ -4351,19 +4600,19 @@
           "note_num": 5,
           "note_ref": null,
           "date": "2023-12-31",
-          "period_type": "instant",
-          "period_start": null,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
           "period_end": "2023-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             313.27,
             1655.31,
@@ -4382,7 +4631,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": [
         {
@@ -4405,11 +4654,11 @@
           "path": [
             "שכר דירה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             424.43,
             693.44,
@@ -4437,11 +4686,11 @@
           "path": [
             "שכר דירה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             293.51,
             692.04,
@@ -4469,11 +4718,11 @@
           "path": [
             "דואר וטלפון"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             428.64,
             725.71,
@@ -4501,11 +4750,11 @@
           "path": [
             "דואר וטלפון"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             299.12,
             727.11,
@@ -4533,11 +4782,11 @@
           "path": [
             "משרדיות וביטוח"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             423.03,
             764.98,
@@ -4565,11 +4814,11 @@
           "path": [
             "משרדיות וביטוח"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             289.31,
             767.79,
@@ -4597,11 +4846,11 @@
           "path": [
             "אחזקה ומיסים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             424.43,
             797.25,
@@ -4629,11 +4878,11 @@
           "path": [
             "אחזקה ומסים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             294.92,
             802.86,
@@ -4661,11 +4910,11 @@
           "path": [
             "פחת"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             430.04,
             832.32,
@@ -4693,11 +4942,11 @@
           "path": [
             "פחת"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             297.72,
             837.93,
@@ -4725,11 +4974,11 @@
           "path": [
             "שירותים מקצועים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             424.43,
             870.19,
@@ -4757,11 +5006,11 @@
           "path": [
             "שירותים מקצועים"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             294.92,
             871.6,
@@ -4789,11 +5038,11 @@
           "path": [
             "טיסות ונסיעות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             420.23,
             906.67,
@@ -4821,11 +5070,11 @@
           "path": [
             "טיסות ונסיעות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             292.11,
             908.07,
@@ -4853,11 +5102,11 @@
           "path": [
             "אחרות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             414.62,
             944.54,
@@ -4885,11 +5134,11 @@
           "path": [
             "אחרות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             289.31,
             947.35,
@@ -4900,7 +5149,12 @@
         {
           "value": "145021",
           "fact_num": 17,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "16654 + 2656 + 37824 + 12643 + 4394 + 21307 + 21792 + 27751",
+              "fact_equation": "f1 + f3 + f5 + f7 + f9 + f11 + f13 + f15"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "7",
@@ -4917,11 +5171,11 @@
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             413.22,
             1012.35,
@@ -4932,7 +5186,12 @@
         {
           "value": "158638",
           "fact_num": 18,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "16947 + 3986 + 42209 + 12396 + 4544 + 29952 + 21597 + 27007",
+              "fact_equation": "f2 + f4 + f6 + f8 + f10 + f12 + f14 + f16"
+            }
+          ],
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": "7",
@@ -4949,11 +5208,11 @@
           "path": [
             "סה\"כ"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             279.49,
             1015.15,
@@ -4981,11 +5240,11 @@
           "path": [
             "עלות הפעילויות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             424.43,
             1240.54,
@@ -5013,11 +5272,11 @@
           "path": [
             "עלות הפעילויות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             292.11,
             1240.54,
@@ -5045,11 +5304,11 @@
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             423.03,
             1285.9,
@@ -5077,11 +5336,11 @@
           "path": [
             "הוצאות הנהלה וכלליות"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             294.92,
             1284.5,
@@ -5100,7 +5359,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "ביאורים לדוחות הכספיים (המשך)",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "approved"
       },
       "facts": []
     }
