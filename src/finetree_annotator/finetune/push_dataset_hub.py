@@ -114,6 +114,8 @@ def build_dataset(
     allow_format_issues: bool = False,
     include_doc_ids: set[str] | None = None,
     validation_doc_ids: set[str] | None = None,
+    approved_pages_only: bool = False,
+    drop_date: bool = False,
 ) -> None:
     root = Path(".").resolve()
     cfg = load_finetune_config(config_path)
@@ -137,6 +139,8 @@ def build_dataset(
         include_doc_ids=include_doc_ids,
         forced_val_doc_ids=validation_doc_ids,
         force_explicit_val_doc_ids=(validation_doc_ids is not None),
+        approved_pages_only=approved_pages_only,
+        drop_date=drop_date,
     )
 
 
@@ -501,6 +505,22 @@ def _compact_token_text_payload(text: str, *, remap_keys: bool = False) -> str:
     return _compact_json_dumps(compacted_payload)
 
 
+def _drop_date_text_payload(text: str) -> tuple[str, int, int]:
+    try:
+        payload = json.loads(text)
+    except Exception:
+        return text, 0, 1
+
+    removed = 0
+    if isinstance(payload, dict):
+        for fact in _iter_fact_dicts(payload):
+            if "date" in fact:
+                fact.pop("date", None)
+                removed += 1
+
+    return json.dumps(payload, ensure_ascii=False), removed, 0
+
+
 def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None, max_pixels: int | None) -> tuple[int, int]:
     try:
         from qwen_vl_utils.vision_process import smart_resize
@@ -729,6 +749,7 @@ def export_for_hf(
     exclude_doc_ids: set[str] | None = None,
     compact_tokens: bool = False,
     aggressive_compact_tokens: bool = False,
+    drop_date: bool = False,
 ) -> Tuple[int, int]:
     instruction_mode = _normalize_instruction_mode(instruction_mode)
     system_prompt = _resolve_system_prompt(root)
@@ -751,9 +772,10 @@ def export_for_hf(
     bbox_clamped = 0
     json_parse_failures = 0
     skipped_excluded_docs = 0
+    dates_removed = 0
 
     def export_split(src_path: Path, dst_name: str) -> int:
-        nonlocal resized_images, unchanged_images, bbox_updated, bbox_clamped, json_parse_failures, skipped_excluded_docs
+        nonlocal resized_images, unchanged_images, bbox_updated, bbox_clamped, json_parse_failures, skipped_excluded_docs, dates_removed
         dst_path = export_dir / dst_name
         if not src_path.exists():
             dst_path.write_text("", encoding="utf-8")
@@ -797,6 +819,10 @@ def export_for_hf(
             )
             if instruction_mode == "minimal":
                 text_out = _normalize_model_prompt_text(text_out)
+            if drop_date:
+                text_out, removed_dates, parse_fail = _drop_date_text_payload(text_out)
+                dates_removed += removed_dates
+                json_parse_failures += parse_fail
             if compact_tokens or aggressive_compact_tokens:
                 text_out = _compact_token_text_payload(
                     text_out,
@@ -841,10 +867,12 @@ def export_for_hf(
         f"- BBox updated: {bbox_updated}\n"
         f"- BBox clamped: {bbox_clamped}\n"
         f"- BBox JSON parse failures: {json_parse_failures}\n"
+        f"- Dates removed: {dates_removed}\n"
         f"- Skipped rows by excluded docs: {skipped_excluded_docs}\n"
         f"- Excluded doc ids: {sorted(excluded)}\n"
         f"- Compact tokens: {'yes' if compact_tokens else 'no'}\n"
         f"- Aggressive compact tokens: {'yes' if aggressive_compact_tokens else 'no'}\n"
+        f"- Drop date: {'yes' if drop_date else 'no'}\n"
         f"- Train rows: {train_rows}\n"
         f"- Val rows: {val_rows}\n",
         encoding="utf-8",
@@ -862,10 +890,12 @@ def export_for_hf(
                 "bbox_updated": bbox_updated,
                 "bbox_clamped": bbox_clamped,
                 "bbox_json_parse_failures": json_parse_failures,
+                "dates_removed": dates_removed,
                 "skipped_excluded_docs": skipped_excluded_docs,
                 "excluded_doc_ids": sorted(excluded),
                 "compact_tokens": compact_tokens,
                 "aggressive_compact_tokens": aggressive_compact_tokens,
+                "drop_date": drop_date,
             },
             ensure_ascii=False,
         ),
@@ -1076,6 +1106,11 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Comma-separated reviewed document ids to force into the validation split.",
     )
     parser.add_argument(
+        "--approved-pages-only",
+        action="store_true",
+        help="Only include pages whose page meta annotation_status is approved.",
+    )
+    parser.add_argument(
         "--compact_tokens",
         action="store_true",
         help="Compact assistant JSON payload formatting and numeric separators without renaming keys.",
@@ -1117,6 +1152,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--allow-format-issues",
         action="store_true",
         help="Allow HF export/push to continue when fact schema/date/value format issues are detected.",
+    )
+    parser.add_argument(
+        "--drop-date",
+        "--omit-date",
+        action="store_true",
+        dest="drop_date",
+        help="Remove fact `date` from exported assistant JSON payloads.",
     )
     return parser.parse_args(argv)
 
@@ -1162,6 +1204,8 @@ def main(argv: list[str] | None = None) -> int:
         allow_format_issues=args.allow_format_issues,
         include_doc_ids=effective_included_doc_ids,
         validation_doc_ids=validation_doc_ids if args.validation_doc_ids is not None else None,
+        approved_pages_only=args.approved_pages_only,
+        drop_date=args.drop_date,
     )
     if instruction_mode == "source" or args.push_all_variants:
         assert_source_instruction_schema(root, fail_on_issues=True)
@@ -1218,6 +1262,7 @@ def main(argv: list[str] | None = None) -> int:
         exclude_doc_ids=excluded_doc_ids,
         compact_tokens=compact_tokens,
         aggressive_compact_tokens=args.aggressive_compact_tokens,
+        drop_date=args.drop_date,
     )
     dataset, _, _ = build_hf_dataset_from_export(export_dir)
     if args.push_train_val_separately:
@@ -1239,6 +1284,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"INSTRUCTION_MODE: {instruction_mode}")
     print(f"COMPACT_TOKENS: {compact_tokens}")
     print(f"AGGRESSIVE_COMPACT_TOKENS: {args.aggressive_compact_tokens}")
+    print(f"APPROVED_PAGES_ONLY: {args.approved_pages_only}")
+    print(f"DROP_DATE: {args.drop_date}")
     print(f"EXPORT_DIR: {export_dir}")
 
     if args.push_all_variants:
@@ -1262,6 +1309,7 @@ def main(argv: list[str] | None = None) -> int:
             exclude_doc_ids=excluded_doc_ids,
             compact_tokens=compact_tokens,
             aggressive_compact_tokens=args.aggressive_compact_tokens,
+            drop_date=args.drop_date,
         )
         min_ds, _, _ = build_hf_dataset_from_export(export_minimal)
         if args.push_train_val_separately:

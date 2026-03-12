@@ -26,6 +26,7 @@ class DatasetBuildStats:
     samples_written_val: int = 0
     pages_skipped_empty: int = 0
     pages_skipped_missing_image: int = 0
+    pages_skipped_unapproved: int = 0
 
 
 def _resolve_prompt_template(cfg: FinetuneConfig) -> str:
@@ -113,6 +114,7 @@ def _transform_page_for_target(
     metadata: dict[str, Any],
     page: Dict[str, Any],
     direction: str,
+    drop_date: bool = False,
 ) -> Dict[str, Any]:
     facts = page.get("facts") if isinstance(page.get("facts"), list) else []
     typed_facts: list[dict[str, Any]] = []
@@ -132,6 +134,8 @@ def _transform_page_for_target(
     out_facts: List[Dict[str, Any]] = []
     for fact in ordered_facts:
         item = dict(fact)
+        if drop_date:
+            item.pop("date", None)
         if cfg.data.bbox_policy == "drop_all":
             item.pop("bbox", None)
         elif "bbox" in item:
@@ -160,6 +164,8 @@ def build_unsloth_chat_datasets(
     include_doc_ids: set[str] | None = None,
     forced_val_doc_ids: set[str] | None = None,
     force_explicit_val_doc_ids: bool = False,
+    approved_pages_only: bool = False,
+    drop_date: bool = False,
 ) -> DatasetBuildStats:
     stats = DatasetBuildStats()
 
@@ -206,6 +212,12 @@ def build_unsloth_chat_datasets(
                     continue
                 stats.pages_seen += 1
 
+                meta = page.get("meta") if isinstance(page.get("meta"), dict) else {}
+                page_status = str(meta.get("annotation_status") or "").strip().lower()
+                if approved_pages_only and page_status != "approved":
+                    stats.pages_skipped_unapproved += 1
+                    continue
+
                 facts = page.get("facts") if isinstance(page.get("facts"), list) else []
                 if not cfg.data.include_empty_pages and not facts:
                     stats.pages_skipped_empty += 1
@@ -229,6 +241,7 @@ def build_unsloth_chat_datasets(
                     metadata=metadata,
                     page=page,
                     direction=direction,
+                    drop_date=drop_date,
                 )
                 assistant_text = json.dumps(target_obj, ensure_ascii=False)
 
@@ -301,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Val samples: {stats.samples_written_val}")
     print(f"Skipped empty pages: {stats.pages_skipped_empty}")
     print(f"Skipped missing images: {stats.pages_skipped_missing_image}")
+    print(f"Skipped unapproved pages: {stats.pages_skipped_unapproved}")
     return 0
 
 

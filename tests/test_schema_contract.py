@@ -59,6 +59,7 @@ def test_prompt_contract_is_page_only() -> None:
     assert '"metadata"' not in prompt
     assert "company_name" not in prompt
     assert "report_year" not in prompt
+    assert '"date"' not in prompt
     assert "Only return `pages` with page `image`, page `meta`, and page `facts`." in prompt
     assert "Only emit facts anchored on a visible numeric value" in prompt
     assert "נכסים שוטפים" in prompt

@@ -69,7 +69,6 @@ Top-level schema (exact keys only):
           "row_role": "detail|total",
           "currency": "ILS|USD|EUR|GBP|null",
           "scale": 1|1000|1000000|null,
-          "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
           "period_type": "instant|duration|expected|null",
           "period_start": "<YYYY-MM-DD|null>",
           "period_end": "<YYYY-MM-DD|null>",
@@ -97,29 +96,28 @@ Type/validation rules (must match schema):
 6. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
 7. `path` is a required list of strings (use `[]` when unknown, never `null`).
 8. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
-9. `date` must be `YYYY`, `YYYY-MM`, or `YYYY-MM-DD` when provided.
-10. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
-11. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
-12. `page_type` must be one of: `title|contents|declaration|statements|other`.
-13. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
-14. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
-15. Non-statement structural pages use `statement_type=null`.
-16. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
-17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
-18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
-20. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+9. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
+10. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
+11. `page_type` must be one of: `title|contents|declaration|statements|other`.
+12. `statement_type` must be one of: `balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|notes_to_financial_statements|board_of_directors_report|auditors_report|statement_of_activities|other_declaration` or null.
+13. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
+14. Non-statement structural pages use `statement_type=null`.
+15. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
+16. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
+17. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
+18. `value_context` must be `textual`, `tabular`, `mixed`, or null.
+19. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
     - if `value` contains both `(` and `)`, set `natural_sign="negative"`
     - if `value` is exactly `"-"`, set `natural_sign=null`
     - otherwise set `natural_sign="positive"`
-21. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
-22. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-23. `path_source` is only `observed`, `inferred`, or null.
-24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-25. If `note_num` is present, `note_flag` must be `true`.
-26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-27. Use JSON `null` literal for missing optional values (never `"null"` string).
-28. Do not include any keys not listed above.
+20. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
+21. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
+22. `path_source` is only `observed`, `inferred`, or null.
+23. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
+24. If `note_num` is present, `note_flag` must be `true`.
+25. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
+26. Use JSON `null` literal for missing optional values (never `"null"` string).
+27. Do not include any keys not listed above.
 
 Extraction rules:
 1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
@@ -135,7 +133,7 @@ Extraction rules:
 11. `scale`: `1` unless page/header indicates thousands or millions.
 12. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
 13. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
-14. Preserve `date` when visible. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
+14. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
 15. `period_type="instant"` means the fact represents a value at a single point in time.
 16. `period_type="duration"` means the fact represents a value over a period between two dates.
 17. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.

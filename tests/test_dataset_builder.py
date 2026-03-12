@@ -296,3 +296,126 @@ def test_dataset_builder_can_limit_to_reviewed_docs_and_explicit_validation(tmp_
     sample = json.loads(train_lines[0])
     assert sample["metadata"]["document_id"] == "doc_a"
     assert (tmp_path / "data/finetune/val.jsonl").read_text(encoding="utf-8") == ""
+
+
+def test_dataset_builder_can_restrict_to_approved_pages(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_approved"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    for image_name in ("page_0001.png", "page_0002.png"):
+        (img_dir / image_name).write_bytes(b"fake")
+
+    payload = {
+        "images_dir": str(img_dir),
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                    "annotation_status": "approved",
+                },
+                "facts": [{"bbox": {"x": 1, "y": 2, "w": 3, "h": 4}, "value": "10", "path": []}],
+            },
+            {
+                "image": "page_0002.png",
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "2",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                    "annotation_status": "flagged",
+                },
+                "facts": [{"bbox": {"x": 5, "y": 6, "w": 7, "h": 8}, "value": "20", "path": []}],
+            },
+        ],
+    }
+    (ann_dir / "doc_approved.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    stats = build_unsloth_chat_datasets(cfg, approved_pages_only=True)
+    assert stats.samples_written_train == 1
+    assert stats.pages_skipped_unapproved == 1
+
+    lines = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) == 1
+    sample = json.loads(lines[0])
+    assert sample["metadata"]["image"] == "page_0001.png"
+
+
+def test_dataset_builder_can_drop_date_from_target_payload(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_dates"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    image_name = "page_0001.png"
+    (img_dir / image_name).write_bytes(b"fake")
+    payload = {
+        "images_dir": str(img_dir),
+        "metadata": {},
+        "pages": [
+            {
+                "image": image_name,
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                    "annotation_status": "approved",
+                },
+                "facts": [
+                    {
+                        "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
+                        "value": "10",
+                        "date": "2024-12-31",
+                        "path": [],
+                    }
+                ],
+            }
+        ],
+    }
+    (ann_dir / "doc_dates.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    build_unsloth_chat_datasets(cfg, approved_pages_only=True, drop_date=True)
+    line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
+    sample = json.loads(line)
+    out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
+    assert "date" not in out_obj["pages"][0]["facts"][0]
