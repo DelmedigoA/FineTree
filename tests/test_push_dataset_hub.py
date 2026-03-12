@@ -483,6 +483,50 @@ def test_export_for_hf_excludes_doc_ids(tmp_path: Path, monkeypatch) -> None:
     assert out["image"].startswith("images/pdf_3/")
 
 
+def test_export_for_hf_drop_date_removes_date_from_facts(tmp_path: Path) -> None:
+    root = tmp_path
+    img_dir = root / "data" / "pdf_images" / "doc1"
+    img_dir.mkdir(parents=True)
+    image_path = img_dir / "page_0001.png"
+    PILImage.new("RGB", (100, 100), color=(255, 255, 255)).save(image_path)
+
+    finetune_dir = root / "data" / "finetune"
+    finetune_dir.mkdir(parents=True)
+    payload = _wrapper_payload(
+        facts=[
+            {
+                "bbox": {"x": 10, "y": 10, "w": 10, "h": 10},
+                "value": "1,234",
+                "date": "2024-12-31",
+                "note_ref": None,
+                "path": [],
+            }
+        ]
+    )
+    sample = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image", "image": str(image_path)},
+                    {"type": "text", "text": "Prompt"},
+                ],
+            },
+            {"role": "assistant", "content": [{"type": "text", "text": json.dumps(payload)}]},
+        ],
+    }
+    (finetune_dir / "train.jsonl").write_text(json.dumps(sample) + "\n", encoding="utf-8")
+    (finetune_dir / "val.jsonl").write_text("", encoding="utf-8")
+
+    export_dir = root / "artifacts" / "hf_dataset_export"
+    train_rows, _ = push_mod.export_for_hf(root, export_dir, compact_tokens=True, drop_date=True)
+    assert train_rows == 1
+
+    out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
+    exported_fact = json.loads(out["text"])["pages"][0]["facts"][0]
+    assert "date" not in exported_fact
+
+
 def test_assert_no_train_val_contamination_passes_for_disjoint_docs(tmp_path: Path) -> None:
     root = tmp_path
     finetune_dir = root / "data" / "finetune"
@@ -661,11 +705,15 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         allow_format_issues: bool = False,
         include_doc_ids: set[str] | None = None,
         validation_doc_ids: set[str] | None = None,
+        approved_pages_only: bool = False,
+        drop_date: bool = False,
     ) -> None:
         captured["config"] = str(config_path)
         captured["allow_format_issues"] = allow_format_issues
         captured["include_doc_ids"] = include_doc_ids
         captured["validation_doc_ids"] = validation_doc_ids
+        captured["approved_pages_only"] = approved_pages_only
+        captured["drop_date"] = drop_date
 
     def _fake_export(
         root: Path,
@@ -677,10 +725,12 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         exclude_doc_ids=None,
         compact_tokens: bool = False,
         aggressive_compact_tokens: bool = False,
+        drop_date: bool = False,
     ):
         _ = root, instruction_mode, min_pixels, max_pixels, exclude_doc_ids
         captured["compact_tokens"] = compact_tokens
         captured["aggressive_compact_tokens"] = aggressive_compact_tokens
+        captured["drop_date_export"] = drop_date
         export_dir.mkdir(parents=True, exist_ok=True)
         captured["export_dir"] = str(export_dir)
         return 1, 0
@@ -721,6 +771,9 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
     assert captured.get("compact_tokens") is False
     assert captured.get("aggressive_compact_tokens") is False
     assert captured.get("allow_format_issues") is False
+    assert captured.get("approved_pages_only") is False
+    assert captured.get("drop_date") is False
+    assert captured.get("drop_date_export") is False
 
 
 def test_main_forwards_reviewed_and_validation_doc_ids(monkeypatch, tmp_path: Path) -> None:
@@ -732,8 +785,10 @@ def test_main_forwards_reviewed_and_validation_doc_ids(monkeypatch, tmp_path: Pa
         allow_format_issues: bool = False,
         include_doc_ids: set[str] | None = None,
         validation_doc_ids: set[str] | None = None,
+        approved_pages_only: bool = False,
+        drop_date: bool = False,
     ) -> None:
-        _ = config_path, allow_format_issues
+        _ = config_path, allow_format_issues, approved_pages_only, drop_date
         captured["include_doc_ids"] = include_doc_ids
         captured["validation_doc_ids"] = validation_doc_ids
 
