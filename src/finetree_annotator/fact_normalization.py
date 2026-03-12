@@ -462,15 +462,18 @@ def normalize_fact_payload(
     natural_sign = _derive_natural_sign_from_value(value)
     date_value, date_warnings = normalize_date(payload.get("date"))
 
+    has_period_type = "period_type" in payload
+    has_period_start = "period_start" in payload
+    has_period_end = "period_end" in payload
     period_type = _normalize_period_type(payload.get("period_type"))
     period_start = _normalize_day_date(payload.get("period_start"))
     period_end = _normalize_day_date(payload.get("period_end"))
     inferred_type, inferred_start, inferred_end = _infer_period_from_date(date_value, period_type=period_type)
-    if period_type is None and inferred_type is not None:
+    if not has_period_type and period_type is None and inferred_type is not None:
         period_type = inferred_type
-    if period_start is None and inferred_start is not None:
+    if not has_period_start and period_start is None and inferred_start is not None:
         period_start = inferred_start
-    if period_end is None and inferred_end is not None:
+    if not has_period_end and period_end is None and inferred_end is not None:
         period_end = inferred_end
     duration_type = _normalize_duration_type(payload.get("duration_type"))
     recurring_period = _normalize_recurring_period(payload.get("recurring_period"))

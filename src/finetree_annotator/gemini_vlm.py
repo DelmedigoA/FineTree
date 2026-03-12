@@ -1471,13 +1471,33 @@ def _validate_patch_fact_updates(
     if not isinstance(updates_payload, dict):
         raise ValueError("Each patch updates object must be a JSON object.")
 
-    unknown_update_keys = sorted(str(key) for key in updates_payload.keys() if str(key) not in allowed_fact_fields)
+    normalized_updates = dict(updates_payload)
+    if "equations" in allowed_fact_fields:
+        legacy_equation_payload = any(
+            key in normalized_updates for key in ("equation", "fact_equation", "equation_children")
+        )
+        if legacy_equation_payload:
+            normalized_equation_payload, _warnings = normalize_fact_payload(
+                {
+                    "value": "0",
+                    "path": [],
+                    **normalized_updates,
+                },
+                include_bbox=False,
+            )
+            normalized_updates.pop("equation", None)
+            normalized_updates.pop("fact_equation", None)
+            normalized_updates.pop("equation_children", None)
+            if "equations" not in normalized_updates and normalized_equation_payload.get("equations") is not None:
+                normalized_updates["equations"] = normalized_equation_payload.get("equations")
+
+    unknown_update_keys = sorted(str(key) for key in normalized_updates.keys() if str(key) not in allowed_fact_fields)
     if unknown_update_keys:
         raise ValueError(
             f"Patch updates contain non-requested keys: {', '.join(unknown_update_keys)}."
         )
 
-    baseline_row_role = "total" if ("equations" in updates_payload or "fact_equation" in updates_payload or "equation" in updates_payload) else "detail"
+    baseline_row_role = "total" if "equations" in normalized_updates else "detail"
     baseline = {
         "value": "0",
         "equations": None,
@@ -1501,8 +1521,8 @@ def _validate_patch_fact_updates(
         "natural_sign": None,
         "row_role": baseline_row_role,
     }
-    validated = Fact.model_validate({**baseline, **updates_payload}).model_dump(mode="json")
-    return {key: validated[key] for key in updates_payload.keys()}
+    validated = Fact.model_validate({**baseline, **normalized_updates}).model_dump(mode="json")
+    return {key: validated[key] for key in normalized_updates.keys()}
 
 
 def parse_selected_field_patch_text(
