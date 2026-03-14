@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
+import types
 
 import pytest
+from PIL import Image
 
 from finetree_annotator import gemini_vlm
 
@@ -73,6 +76,117 @@ def test_resolve_api_key_uses_doppler_when_env_missing(monkeypatch) -> None:
 
     monkeypatch.setattr(gemini_vlm.subprocess, "run", _fake_run)
     assert gemini_vlm.resolve_api_key() == "doppler-key"
+
+
+def test_resolve_supported_gemini_model_name_preserves_vertex_tuned_model() -> None:
+    assert gemini_vlm.resolve_supported_gemini_model_name("gemini-flash-hf-tuned") == "gemini-flash-hf-tuned"
+    assert gemini_vlm.is_vertex_gemini_model_requested("Gemini Flash HF Tuned") is True
+
+
+def test_resolve_vertex_project_id_defaults_to_tuned_project(monkeypatch) -> None:
+    monkeypatch.delenv("FINETREE_VERTEX_PROJECT_ID", raising=False)
+    monkeypatch.delenv("GOOGLE_CLOUD_PROJECT", raising=False)
+    monkeypatch.delenv("GCLOUD_PROJECT", raising=False)
+    monkeypatch.delenv("GCP_PROJECT", raising=False)
+    monkeypatch.setattr(gemini_vlm.shutil, "which", lambda _cmd: None)
+
+    assert gemini_vlm.resolve_vertex_project_id() == "gen-lang-client-0533315636"
+
+
+def _install_fake_qwen_vl_utils(monkeypatch, *, height: int, width: int) -> None:
+    vision_mod = types.ModuleType("qwen_vl_utils.vision_process")
+
+    def _smart_resize(orig_height: int, orig_width: int, **kwargs):
+        assert kwargs.get("max_pixels") == gemini_vlm.DEFAULT_VERTEX_TUNED_MAX_PIXELS
+        return height, width
+
+    vision_mod.smart_resize = _smart_resize
+    root_mod = types.ModuleType("qwen_vl_utils")
+    root_mod.vision_process = vision_mod
+    monkeypatch.setitem(sys.modules, "qwen_vl_utils", root_mod)
+    monkeypatch.setitem(sys.modules, "qwen_vl_utils.vision_process", vision_mod)
+
+
+def test_prepare_vertex_tuned_gemini_image_resizes_with_qwen_utils(tmp_path: Path, monkeypatch) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (2000, 1000), color=(255, 255, 255)).save(image_path)
+    _install_fake_qwen_vl_utils(monkeypatch, height=756, width=1512)
+
+    prepared = gemini_vlm._prepare_vertex_tuned_gemini_image(image_path, mime_type=None)
+
+    assert prepared.original_width == 2000
+    assert prepared.original_height == 1000
+    assert prepared.prepared_width == 1512
+    assert prepared.prepared_height == 756
+    assert prepared.resized is True
+    assert prepared.mime_type == "image/png"
+    assert prepared.prepared_width * prepared.prepared_height <= gemini_vlm.DEFAULT_VERTEX_TUNED_MAX_PIXELS
+
+
+def test_restore_resized_bbox_text_scales_pixel_boxes_back_to_original() -> None:
+    prepared = gemini_vlm._PreparedGeminiImage(
+        image_bytes=b"",
+        mime_type="image/png",
+        original_width=2000,
+        original_height=1000,
+        prepared_width=1000,
+        prepared_height=500,
+    )
+    raw_text = json.dumps(
+        _wrapper_payload(
+            facts=[
+                {"bbox": [100, 50, 20, 10], "value": "10", "path": []},
+            ]
+        ),
+        ensure_ascii=False,
+    )
+
+    restored = gemini_vlm._restore_resized_bbox_text(raw_text, prepared)
+    payload = json.loads(restored)
+
+    assert payload["pages"][0]["facts"][0]["bbox"] == [200.0, 100.0, 40.0, 20.0]
+
+
+def test_restore_resized_bbox_text_scales_even_when_bbox_values_fit_under_1000() -> None:
+    prepared = gemini_vlm._PreparedGeminiImage(
+        image_bytes=b"",
+        mime_type="image/png",
+        original_width=2000,
+        original_height=1000,
+        prepared_width=1000,
+        prepared_height=500,
+    )
+    raw_text = json.dumps(
+        _wrapper_payload(
+            facts=[
+                {"bbox": [500, 500, 200, 100], "value": "10", "path": []},
+            ]
+        ),
+        ensure_ascii=False,
+    )
+
+    restored = gemini_vlm._restore_resized_bbox_text(raw_text, prepared)
+    payload = json.loads(restored)
+
+    assert payload["pages"][0]["facts"][0]["bbox"] == [1000.0, 1000.0, 400.0, 200.0]
+
+
+def test_vertex_tuned_effective_prompt_switches_bbox_instruction_to_resized_space() -> None:
+    prepared = gemini_vlm._PreparedGeminiImage(
+        image_bytes=b"",
+        mime_type="image/png",
+        original_width=1654,
+        original_height=2339,
+        prepared_width=896,
+        prepared_height=1288,
+    )
+    prompt = "bbox must tightly cover the value text only, in pixel coordinates of the original image."
+
+    effective = gemini_vlm._vertex_tuned_effective_prompt(prompt, prepared)
+
+    assert "pixel coordinates of the original image" not in effective
+    assert "resized image" in effective
+    assert "896 x 1288" in effective
 
 
 def test_build_generation_contents_legacy_shape_without_few_shot(tmp_path: Path, monkeypatch) -> None:
@@ -244,6 +358,105 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     assert thinking_response["observed_thinking_signal"] is True
 
 
+def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    Image.new("RGB", (2000, 1000), color=(255, 255, 255)).save(target_image)
+    _install_fake_qwen_vl_utils(monkeypatch, height=756, width=1512)
+
+    seen: dict[str, object] = {}
+
+    class _FakeResponse:
+        status_code = 200
+        text = '{"candidates":[{"content":{"parts":[{"text":"{\\"ok\\":true}"}]}}]}'
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def json(self) -> dict[str, object]:
+            return {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [
+                                {
+                                    "text": json.dumps(
+                                        _wrapper_payload(
+                                            facts=[
+                                                {"bbox": [100, 50, 20, 10], "value": "10", "path": []},
+                                            ]
+                                        ),
+                                        ensure_ascii=False,
+                                    )
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+
+    class _FakeClient:
+        def __init__(self, timeout: float):
+            seen["timeout"] = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            _ = exc_type, exc, tb
+            return False
+
+        def post(self, endpoint: str, *, headers: dict[str, str], json: dict[str, object]):
+            seen["endpoint"] = endpoint
+            seen["headers"] = headers
+            seen["json"] = json
+            return _FakeResponse()
+
+    import httpx
+
+    monkeypatch.setattr(httpx, "Client", _FakeClient)
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_generate_content_url", lambda **_kwargs: "https://vertex.example/generateContent")
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_access_token", lambda _token=None: "vertex-token")
+
+    text = gemini_vlm.generate_content_from_image(
+        image_path=target_image,
+        prompt="extract now",
+        model="gemini-flash-hf-tuned",
+        enable_thinking=True,
+        thinking_level="high",
+    )
+
+    payload = json.loads(text)
+    assert payload["pages"][0]["facts"][0]["bbox"] == [132.28, 66.14, 26.46, 13.23]
+    assert seen["endpoint"] == "https://vertex.example/generateContent"
+    assert seen["headers"] == {
+        "Authorization": "Bearer vertex-token",
+        "Content-Type": "application/json",
+    }
+    request_payload = seen["json"]
+    assert request_payload["contents"][0]["role"] == "user"
+    assert request_payload["contents"][0]["parts"][0]["inlineData"]["mimeType"] == "image/png"
+    assert isinstance(request_payload["contents"][0]["parts"][0]["inlineData"]["data"], str)
+    assert "resized image" in request_payload["contents"][0]["parts"][1]["text"]
+    assert "extract now" in request_payload["contents"][0]["parts"][1]["text"]
+
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    request_log = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+    assert request_log["backend"] == "vertex_generate_content"
+    assert request_log["image_resize"] == {
+        "max_pixels": gemini_vlm.DEFAULT_VERTEX_TUNED_MAX_PIXELS,
+        "original_width": 2000,
+        "original_height": 1000,
+        "prepared_width": 1512,
+        "prepared_height": 756,
+        "resized": True,
+    }
+    assert request_log["exact_request"]["endpoint"] == "https://vertex.example/generateContent"
+    assert request_log["exact_request"]["json"]["contents"][0]["parts"][0]["inlineData"] == {"file": "input_target.png"}
+
+
 def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, monkeypatch) -> None:
     monkeypatch.chdir(tmp_path)
     target_image = tmp_path / "target.png"
@@ -331,6 +544,114 @@ def test_stream_content_from_image_writes_chunk_logs_and_output(tmp_path: Path, 
     thinking_summary = next(payload for payload in event_payloads if payload["event"] == "thinking_response_summary")
     assert thinking_summary["observed_thinking_signal"] is True
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == "part-1 part-2"
+
+
+def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    Image.new("RGB", (2000, 1000), color=(255, 255, 255)).save(target_image)
+    _install_fake_qwen_vl_utils(monkeypatch, height=756, width=1512)
+
+    seen: dict[str, object] = {}
+
+    class _FakeStreamResponse:
+        status_code = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            _ = exc_type, exc, tb
+            return False
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def iter_text(self):
+            yield json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "parts": [
+                                    {"text": '{"meta":{"entity_name":"A"},"facts":['},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            )
+            yield json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "parts": [
+                                    {"text": '{"bbox":[100,50,20,10],"value":"10","path":[]}]}'},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            )
+
+    class _FakeClient:
+        def __init__(self, timeout: float):
+            seen["timeout"] = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            _ = exc_type, exc, tb
+            return False
+
+        def stream(self, method: str, endpoint: str, *, headers: dict[str, str], json: dict[str, object]):
+            seen["method"] = method
+            seen["endpoint"] = endpoint
+            seen["headers"] = headers
+            seen["json"] = json
+            return _FakeStreamResponse()
+
+    import httpx
+
+    monkeypatch.setattr(httpx, "Client", _FakeClient)
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_stream_generate_content_url", lambda **_kwargs: "https://vertex.example/streamGenerateContent")
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_access_token", lambda _token=None: "vertex-token")
+
+    chunks = list(
+        gemini_vlm.stream_content_from_image(
+            image_path=target_image,
+            prompt="extract stream",
+            model="gemini-flash-hf-tuned",
+            enable_thinking=True,
+            thinking_level="high",
+        )
+    )
+
+    assert chunks == ['{"meta":{"entity_name":"A"},"facts":[', '{"bbox":[132.28, 66.14, 26.46, 13.23],"value":"10","path":[]}]}']
+    assert seen["method"] == "POST"
+    assert seen["endpoint"] == "https://vertex.example/streamGenerateContent"
+    assert seen["headers"] == {
+        "Authorization": "Bearer vertex-token",
+        "Content-Type": "application/json",
+    }
+    request_payload = seen["json"]
+    assert "resized image" in request_payload["contents"][0]["parts"][1]["text"]
+    assert "extract stream" in request_payload["contents"][0]["parts"][1]["text"]
+
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    log_dir = log_dirs[0]
+    event_lines = (log_dir / "events.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    event_payloads = [json.loads(line) for line in event_lines]
+    chunk_events = [payload for payload in event_payloads if payload["event"] == "stream_chunk"]
+    request_log = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+
+    assert len(chunk_events) == 2
+    assert request_log["backend"] == "vertex_stream_generate_content"
+    assert request_log["exact_request"]["endpoint"] == "https://vertex.example/streamGenerateContent"
+    assert (log_dir / "output.txt").read_text(encoding="utf-8") == "".join(chunks)
 
 
 def test_stream_content_from_image_writes_partial_output_when_consumer_closes(tmp_path: Path, monkeypatch) -> None:
@@ -764,6 +1085,56 @@ def test_streaming_parser_finalize_falls_back_to_streamed_meta_and_facts() -> No
     assert extraction.meta.page_num == "3"
     assert len(extraction.facts) == 1
     assert extraction.facts[0].bbox.x == 1
+
+
+def test_parse_page_extraction_text_clears_note_flags_on_non_notes_pages() -> None:
+    payload = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            },
+            facts=[
+                {
+                    "bbox": [1, 2, 3, 4],
+                    "value": "10",
+                    "note_flag": True,
+                    "note_num": 7,
+                    "note_ref": None,
+                    "path": [],
+                }
+            ],
+        )
+    )
+
+    extraction = gemini_vlm.parse_page_extraction_text(payload)
+
+    assert extraction.meta.statement_type.value == "income_statement"
+    assert extraction.facts[0].note_flag is False
+    assert extraction.facts[0].note_num is None
+
+
+def test_streaming_parser_uses_meta_to_clear_note_flags_on_non_notes_pages() -> None:
+    parser = gemini_vlm.StreamingPageExtractionParser()
+    meta_chunk = '{"meta":{"entity_name":null,"page_num":"3","page_type":"statements","statement_type":"income_statement","title":null},'
+    facts_chunk = '"facts":[{"bbox":[1,2,3,4],"value":"10","note_flag":true,"note_num":7,"note_ref":null,"path":[]}]}'
+
+    meta, facts = parser.feed(meta_chunk)
+    assert meta is not None
+    assert facts == []
+
+    meta2, facts2 = parser.feed(facts_chunk)
+    assert meta2 is None
+    assert len(facts2) == 1
+    assert facts2[0]["note_flag"] is False
+    assert facts2[0]["note_num"] is None
+
+    extraction = parser.finalize()
+    assert extraction.facts[0].note_flag is False
+    assert extraction.facts[0].note_num is None
 
 
 def test_parse_selected_field_patch_text_valid_payload() -> None:

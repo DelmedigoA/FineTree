@@ -97,6 +97,7 @@ def test_dataset_builder_writes_unsloth_chat_jsonl(tmp_path: Path, monkeypatch) 
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
     assert out_obj["metadata"]["entity_type"] is None
     assert out_obj["pages"][0]["facts"][0]["bbox"] == [1.0, 2.0, 3.0, 4.0]
+    assert out_obj["pages"][0]["facts"][0]["fact_num"] == 1
 
 
 def test_dataset_builder_can_drop_bbox(tmp_path: Path, monkeypatch) -> None:
@@ -455,6 +456,6 @@ def test_dataset_builder_can_filter_selected_schema_fields(tmp_path: Path, monke
     line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
     sample = json.loads(line)
     out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
-    assert set(out_obj.keys()) == {"pages"}
-    assert set(out_obj["pages"][0]["meta"].keys()) == {"page_type", "title"}
-    assert set(out_obj["pages"][0]["facts"][0].keys()) == {"bbox", "value", "currency"}
+    assert set(out_obj.keys()) == {"meta", "facts"}
+    assert set(out_obj["meta"].keys()) == {"page_type", "title"}
+    assert set(out_obj["facts"][0].keys()) == {"bbox", "value", "currency"}

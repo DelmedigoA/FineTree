@@ -1,0 +1,504 @@
+```json
+{
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "\"דרך הרגליים\" לקידום מטרות חברתיות דרך פעילות ספורטיבית (ע\"ר)",
+        "page_num": "3",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
+        "title": "מאזן"
+      },
+      "facts": [
+        {
+          "bbox": [455, 301, 74, 15],
+          "fact_num": 1,
+          "value": "203,091",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים בבנק"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 302, 59, 14],
+          "fact_num": 2,
+          "value": "67,561",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים בבנק"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [476, 335, 14, 15],
+          "fact_num": 3,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "חייבים שונים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 334, 59, 14],
+          "fact_num": 4,
+          "value": "55,148",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "חייבים שונים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [455, 368, 74, 15],
+          "fact_num": 5,
+          "value": "203,091",
+          "equations": [
+            {
+              "equation": "203,091 + -",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "סה\"כ רכוש שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 368, 59, 14],
+          "fact_num": 6,
+          "value": "122,709",
+          "equations": [
+            {
+              "equation": "67,561 + 55,148",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש שוטף",
+            "סה\"כ רכוש שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [453, 401, 78, 17],
+          "fact_num": 7,
+          "value": "203,091",
+          "equations": [
+            {
+              "equation": "203,091",
+              "fact_equation": "f5"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 401, 59, 14],
+          "fact_num": 8,
+          "value": "122,709",
+          "equations": [
+            {
+              "equation": "122,709",
+              "fact_equation": "f6"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ נכסים"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [463, 477, 65, 14],
+          "fact_num": 9,
+          "value": "160,000",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "הלוואה",
+          "path": [
+            "התחייבויות שוטפות",
+            "הלוואה לטווח קצר-אלטשולר"
+          ],
+          "path_source": "observed",
+          "note_ref": "3",
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 477, 59, 15],
+          "fact_num": 10,
+          "value": "160,000",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "הלוואה",
+          "path": [
+            "התחייבויות שוטפות",
+            "הלוואה לטווח קצר-אלטשולר"
+          ],
+          "path_source": "observed",
+          "note_ref": "3",
+          "comment_ref": null
+        },
+        {
+          "bbox": [463, 510, 65, 14],
+          "fact_num": 11,
+          "value": "160,000",
+          "equations": [
+            {
+              "equation": "160,000",
+              "fact_equation": "f9"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "סה\"כ התחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 510, 59, 14],
+          "fact_num": 12,
+          "value": "160,000",
+          "equations": [
+            {
+              "equation": "160,000",
+              "fact_equation": "f10"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "סה\"כ התחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [455, 575, 74, 15],
+          "fact_num": 13,
+          "value": "43,091",
+          "equations": [
+            {
+              "equation": "203,091 - 160,000",
+              "fact_equation": "f7 - f11"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו",
+            "נכסים (גרעון) נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [237, 574, 64, 16],
+          "fact_num": 14,
+          "value": "(37,291)",
+          "equations": [
+            {
+              "equation": "122,709 - 160,000",
+              "fact_equation": "f8 - f12"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו",
+            "נכסים (גרעון) נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [453, 626, 78, 20],
+          "fact_num": 15,
+          "value": "203,091",
+          "equations": [
+            {
+              "equation": "160,000 + 43,091",
+              "fact_equation": "f11 + f13"
+            },
+            {
+              "equation": "203,091",
+              "fact_equation": "f7"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2021-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ נכסים נטו והתחייבויות"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [242, 626, 59, 14],
+          "fact_num": 16,
+          "value": "122,709",
+          "equations": [
+            {
+              "equation": "160,000 + (37,291)",
+              "fact_equation": "f12 + f14"
+            },
+            {
+              "equation": "122,709",
+              "fact_equation": "f8"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2020-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ נכסים נטו והתחייבויות"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

@@ -1,0 +1,41 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "text": "{\"pages\": [{\"image\": \"page-1.jpg\", \"meta\": {\"entity_name\": \"\\\"דרך הרגליים\\\" לקידום מטרות חברתיות דרך פעילות ספורטיבית (ע\\\"ר)\", \"page_num\": \"5\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": []}]}"
+          }
+        ]
+      },
+      "finishReason": "STOP",
+      "avgLogprobs": -0.0749358081817627
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 6061,
+    "candidatesTokenCount": 100,
+    "totalTokenCount": 6161,
+    "trafficType": "ON_DEMAND",
+    "promptTokensDetails": [
+      {
+        "modality": "IMAGE",
+        "tokenCount": 3354
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 2707
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 100
+      }
+    ]
+  },
+  "modelVersion": "gemini-2.5-flash@default",
+  "createTime": "2026-03-14T18:22:11.245070Z",
+  "responseId": "U6e1ac76Ds-0kNAP9dja8QE"
+}

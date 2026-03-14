@@ -2,9 +2,14 @@ from __future__ import annotations
 
 import argparse
 import ast
+import base64
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import lru_cache
+import inspect
+import io
 import json
+import math
 import mimetypes
 import os
 import re
@@ -14,6 +19,8 @@ import sys
 import tomllib
 from pathlib import Path
 from typing import Any, Iterator, Optional
+
+from PIL import Image
 
 try:  # pragma: no cover - import presence depends on runtime environment
     from google import genai
@@ -29,12 +36,20 @@ from .schemas import Fact, PageExtraction, PageMeta, split_legacy_page_type
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
+VERTEX_TUNED_GEMINI_MODEL = "gemini-flash-hf-tuned"
+DEFAULT_VERTEX_PROJECT_ID = "gen-lang-client-0533315636"
+DEFAULT_VERTEX_ENDPOINT_ID = "2095335460762025984"
+DEFAULT_VERTEX_REGION = "us-central1"
+DEFAULT_VERTEX_TUNED_MAX_PIXELS = 1_200_000
+DEFAULT_QWEN_VISION_FACTOR = 28
+_VERTEX_OAUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
 SUPPORTED_GEMINI_MODELS: tuple[str, ...] = (
     "gemini-3-flash-preview",
     "gemini-3.1-flash-lite",
     "gemini-3.1-pro-preview",
     "gemini-2.5-flash",
     "gemini-2.5-pro",
+    VERTEX_TUNED_GEMINI_MODEL,
 )
 _SUPPORTED_GEMINI_MODEL_MAP: dict[str, str] = {
     model.lower(): model
@@ -81,6 +96,9 @@ _GEMINI_3_THINKING_LEVEL_ATTRS = {
     "medium": "MEDIUM",
     "high": "HIGH",
 }
+_BBOX_ARRAY_LITERAL_RE = re.compile(
+    r'("bbox"\s*:\s*\[\s*)(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)(\s*\])'
+)
 
 
 def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
@@ -89,14 +107,22 @@ def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
         return ""
     text = re.sub(r"\s+", "-", text)
     text = re.sub(r"-+", "-", text)
+    if "gemini" in text and "flash" in text and "hf" in text and "tuned" in text:
+        return VERTEX_TUNED_GEMINI_MODEL
     text = re.sub(r"^gemini[-]?3", "gemini-3", text)
     return text
+
+
+def is_vertex_gemini_model_requested(model_name: Optional[str]) -> bool:
+    return _normalize_gemini_model_name(model_name) == VERTEX_TUNED_GEMINI_MODEL
 
 
 def resolve_supported_gemini_model_name(model_name: Optional[str]) -> str:
     normalized = _normalize_gemini_model_name(model_name)
     if not normalized:
         return DEFAULT_GEMINI_MODEL
+    if normalized == VERTEX_TUNED_GEMINI_MODEL:
+        return VERTEX_TUNED_GEMINI_MODEL
     direct = _SUPPORTED_GEMINI_MODEL_MAP.get(normalized)
     if direct is not None:
         return direct
@@ -228,6 +254,12 @@ def _generation_config(
         return None
     return types.GenerateContentConfig(**config_kwargs)
 
+def _create_genai_client_for_model(model_name: str, api_key: Optional[str]) -> Any:
+    _require_google_genai()
+    if api_key:
+        return genai.Client(api_key=api_key)
+    return genai.Client()
+
 
 def _require_google_genai() -> None:
     if genai is None or types is None:
@@ -237,11 +269,438 @@ def _require_google_genai() -> None:
         )
 
 
+def _resolve_vertex_project_id(explicit_project_id: Optional[str] = None) -> Optional[str]:
+    candidates = (
+        explicit_project_id,
+        os.getenv("FINETREE_VERTEX_PROJECT_ID"),
+        os.getenv("GOOGLE_CLOUD_PROJECT"),
+        os.getenv("GCLOUD_PROJECT"),
+        os.getenv("GCP_PROJECT"),
+        DEFAULT_VERTEX_PROJECT_ID,
+    )
+    for candidate in candidates:
+        text = str(candidate or "").strip()
+        if text:
+            return text
+
+    if shutil.which("gcloud") is None:
+        return None
+    try:
+        proc = subprocess.run(
+            ["gcloud", "config", "get-value", "project"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except Exception:
+        return None
+    value = proc.stdout.strip()
+    if not value or value == "(unset)":
+        return None
+    return value
+
+
+def resolve_vertex_project_id(explicit_project_id: Optional[str] = None) -> Optional[str]:
+    return _resolve_vertex_project_id(explicit_project_id)
+
+
+def _resolve_vertex_endpoint_id(explicit_endpoint_id: Optional[str] = None) -> str:
+    return str(
+        explicit_endpoint_id
+        or os.getenv("FINETREE_VERTEX_ENDPOINT_ID")
+        or DEFAULT_VERTEX_ENDPOINT_ID
+    ).strip()
+
+
+def _resolve_vertex_region(explicit_region: Optional[str] = None) -> str:
+    return str(
+        explicit_region
+        or os.getenv("FINETREE_VERTEX_REGION")
+        or DEFAULT_VERTEX_REGION
+    ).strip()
+
+
+def _resolve_vertex_endpoint_url(
+    *,
+    explicit_url: Optional[str] = None,
+    project_id: Optional[str] = None,
+    region: Optional[str] = None,
+    endpoint_id: Optional[str] = None,
+) -> str:
+    direct_url = str(explicit_url or os.getenv("FINETREE_VERTEX_ENDPOINT_URL") or "").strip()
+    if direct_url:
+        return direct_url
+    resolved_project_id = _resolve_vertex_project_id(project_id)
+    if not resolved_project_id:
+        raise RuntimeError(
+            "Vertex AI project id is missing. Set FINETREE_VERTEX_PROJECT_ID or GOOGLE_CLOUD_PROJECT."
+        )
+    resolved_region = _resolve_vertex_region(region)
+    resolved_endpoint_id = _resolve_vertex_endpoint_id(endpoint_id)
+    return (
+        f"https://{resolved_region}-aiplatform.googleapis.com/v1/projects/{resolved_project_id}"
+        f"/locations/{resolved_region}/endpoints/{resolved_endpoint_id}:predict"
+    )
+
+
+def resolve_vertex_endpoint_url(
+    *,
+    explicit_url: Optional[str] = None,
+    project_id: Optional[str] = None,
+    region: Optional[str] = None,
+    endpoint_id: Optional[str] = None,
+) -> str:
+    return _resolve_vertex_endpoint_url(
+        explicit_url=explicit_url,
+        project_id=project_id,
+        region=region,
+        endpoint_id=endpoint_id,
+    )
+
+
+def _vertex_access_token_from_adc() -> Optional[str]:
+    try:
+        import google.auth
+        from google.auth.transport.requests import Request
+    except Exception:
+        return None
+
+    try:
+        credentials, _project_id = google.auth.default(scopes=[_VERTEX_OAUTH_SCOPE])
+    except Exception:
+        return None
+    if credentials is None:
+        return None
+    token = str(getattr(credentials, "token", "") or "").strip()
+    needs_refresh = not token or bool(getattr(credentials, "expired", False))
+    if needs_refresh:
+        try:
+            credentials.refresh(Request())
+        except Exception:
+            return None
+        token = str(getattr(credentials, "token", "") or "").strip()
+    return token or None
+
+
+@lru_cache(maxsize=1)
+def _vertex_access_token_from_gcloud() -> Optional[str]:
+    if shutil.which("gcloud") is None:
+        return None
+    try:
+        proc = subprocess.run(
+            ["gcloud", "auth", "print-access-token"],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+    except Exception:
+        return None
+    value = proc.stdout.strip()
+    return value or None
+
+
+def _resolve_vertex_access_token(explicit_access_token: Optional[str] = None) -> Optional[str]:
+    return (
+        explicit_access_token
+        or os.getenv("FINETREE_VERTEX_ACCESS_TOKEN")
+        or os.getenv("VERTEX_AI_ACCESS_TOKEN")
+        or os.getenv("GOOGLE_CLOUD_ACCESS_TOKEN")
+        or _vertex_access_token_from_adc()
+        or _vertex_access_token_from_gcloud()
+    )
+
+
+def resolve_vertex_access_token(explicit_access_token: Optional[str] = None) -> Optional[str]:
+    return _resolve_vertex_access_token(explicit_access_token)
+
+
+def resolve_gemini_api_key_for_model(
+    model_name: Optional[str],
+    explicit_api_key: Optional[str] = None,
+) -> Optional[str]:
+    if is_vertex_gemini_model_requested(model_name):
+        return None
+    return _resolve_api_key(explicit_api_key)
+
+
+def ensure_gemini_backend_credentials(
+    model_name: Optional[str],
+    explicit_api_key: Optional[str] = None,
+) -> tuple[Optional[str], Optional[str]]:
+    resolved_model = resolve_supported_gemini_model_name(model_name)
+    if is_vertex_gemini_model_requested(resolved_model):
+        project_id = _resolve_vertex_project_id()
+        if not project_id:
+            return None, (
+                "Vertex AI project id not found.\n\n"
+                "Set FINETREE_VERTEX_PROJECT_ID or GOOGLE_CLOUD_PROJECT."
+            )
+        token = _resolve_vertex_access_token()
+        if not token:
+            return None, (
+                "Vertex AI access token not found.\n\n"
+                "Authenticate with Application Default Credentials, run "
+                "`gcloud auth print-access-token`, or set FINETREE_VERTEX_ACCESS_TOKEN."
+            )
+        return None, None
+
+    api_key = _resolve_api_key(explicit_api_key)
+    if api_key:
+        return api_key, None
+    return None, (
+        "Gemini API key not found.\n\n"
+        "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
+        "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
+    )
+
+
 def _infer_mime_type(image_path: Path, explicit_mime_type: Optional[str]) -> str:
     if explicit_mime_type:
         return explicit_mime_type
     guessed, _ = mimetypes.guess_type(str(image_path))
     return guessed or "application/octet-stream"
+
+
+@dataclass(frozen=True)
+class _PreparedGeminiImage:
+    image_bytes: bytes
+    mime_type: str
+    original_width: int
+    original_height: int
+    prepared_width: int
+    prepared_height: int
+
+    @property
+    def resized(self) -> bool:
+        return (
+            self.original_width != self.prepared_width
+            or self.original_height != self.prepared_height
+        )
+
+
+def _fallback_smart_resize_dimensions(
+    height: int,
+    width: int,
+    *,
+    min_pixels: int | None,
+    max_pixels: int | None,
+    factor: int = DEFAULT_QWEN_VISION_FACTOR,
+) -> tuple[int, int]:
+    if height <= 0 or width <= 0:
+        raise ValueError("Invalid image dimensions.")
+
+    pixels = int(height) * int(width)
+    scale = 1.0
+    snap_mode = "nearest"
+    if min_pixels is not None and pixels < int(min_pixels):
+        scale = max(scale, (int(min_pixels) / float(pixels)) ** 0.5)
+        snap_mode = "ceil"
+    if max_pixels is not None and pixels > int(max_pixels):
+        scale = min(scale, (int(max_pixels) / float(pixels)) ** 0.5) if scale != 1.0 else (int(max_pixels) / float(pixels)) ** 0.5
+        snap_mode = "floor"
+
+    target_h = max(1, int(round(int(height) * scale)))
+    target_w = max(1, int(round(int(width) * scale)))
+    if factor > 1:
+        if snap_mode == "ceil":
+            target_h = max(factor, int(math.ceil(target_h / float(factor))) * factor)
+            target_w = max(factor, int(math.ceil(target_w / float(factor))) * factor)
+        else:
+            target_h = max(factor, (target_h // factor) * factor)
+            target_w = max(factor, (target_w // factor) * factor)
+
+    if min_pixels is not None:
+        while target_h * target_w < int(min_pixels):
+            grew = False
+            if target_w <= target_h:
+                target_w += factor
+                grew = True
+            if target_h * target_w < int(min_pixels):
+                target_h += factor
+                grew = True
+            if not grew:
+                break
+
+    if max_pixels is not None:
+        while target_h * target_w > int(max_pixels) and (target_h > factor or target_w > factor):
+            if target_w >= target_h and target_w > factor:
+                target_w -= factor
+            elif target_h > factor:
+                target_h -= factor
+            else:
+                break
+
+    return int(target_h), int(target_w)
+
+
+def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None, max_pixels: int | None) -> tuple[int, int]:
+    try:
+        from qwen_vl_utils.vision_process import smart_resize
+    except Exception:
+        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
+
+    kwargs: dict[str, int] = {}
+    if min_pixels is not None:
+        kwargs["min_pixels"] = int(min_pixels)
+    if max_pixels is not None:
+        kwargs["max_pixels"] = int(max_pixels)
+    sig = inspect.signature(smart_resize)
+    factor_param = sig.parameters.get("factor")
+    if factor_param is not None and factor_param.default is inspect._empty:
+        kwargs["factor"] = DEFAULT_QWEN_VISION_FACTOR
+    try:
+        new_h, new_w = smart_resize(int(height), int(width), **kwargs)
+    except Exception:
+        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
+    return int(new_h), int(new_w)
+
+
+def _prepared_image_format(image: Image.Image, mime_type: str) -> str:
+    if mime_type == "image/png":
+        return "PNG"
+    if mime_type == "image/webp":
+        return "WEBP"
+    if mime_type == "image/jpeg":
+        return "JPEG"
+    return str(image.format or "PNG").upper()
+
+
+def _prepare_vertex_tuned_gemini_image(
+    image_path: Path,
+    *,
+    mime_type: Optional[str],
+    max_pixels: int = DEFAULT_VERTEX_TUNED_MAX_PIXELS,
+) -> _PreparedGeminiImage:
+    inferred_mime_type = _infer_mime_type(image_path, mime_type)
+    with Image.open(image_path) as image:
+        image.load()
+        original_width, original_height = image.size
+        prepared_width, prepared_height = original_width, original_height
+        if original_width * original_height > int(max_pixels):
+            prepared_height, prepared_width = _smart_resize_dimensions(
+                original_height,
+                original_width,
+                min_pixels=None,
+                max_pixels=int(max_pixels),
+            )
+        if prepared_width == original_width and prepared_height == original_height:
+            return _PreparedGeminiImage(
+                image_bytes=image_path.read_bytes(),
+                mime_type=inferred_mime_type,
+                original_width=original_width,
+                original_height=original_height,
+                prepared_width=prepared_width,
+                prepared_height=prepared_height,
+            )
+
+        resized = image.resize((prepared_width, prepared_height), Image.Resampling.BICUBIC)
+        if inferred_mime_type not in {"image/png", "image/webp", "image/jpeg"}:
+            inferred_mime_type = "image/png"
+        image_format = _prepared_image_format(resized, inferred_mime_type)
+        buffer = io.BytesIO()
+        save_kwargs: dict[str, Any] = {}
+        if image_format == "JPEG":
+            resized = resized.convert("RGB")
+            save_kwargs["quality"] = 95
+        resized.save(buffer, format=image_format, **save_kwargs)
+        return _PreparedGeminiImage(
+            image_bytes=buffer.getvalue(),
+            mime_type=inferred_mime_type,
+            original_width=original_width,
+            original_height=original_height,
+            prepared_width=prepared_width,
+            prepared_height=prepared_height,
+        )
+
+
+def _vertex_tuned_effective_prompt(prompt: str, prepared: _PreparedGeminiImage) -> str:
+    if not prepared.resized:
+        return prompt
+    note = (
+        f"\n\nRuntime note: the image sent to you has been resized to "
+        f"{prepared.prepared_width} x {prepared.prepared_height} pixels before inference. "
+        "Any `bbox` you emit must use pixel coordinates of this resized image, not the original source image. "
+        "Runtime will map your bbox coordinates back to the original image after inference."
+    )
+    adjusted = prompt
+    adjusted = adjusted.replace("original-image pixel coordinates", "resized-image pixel coordinates")
+    adjusted = adjusted.replace("original image pixel coordinates", "resized image pixel coordinates")
+    adjusted = adjusted.replace("pixel coordinates of the original image", "pixel coordinates of the resized image")
+    adjusted = adjusted.replace("in pixel coordinates of the original image", "in pixel coordinates of the resized image")
+    return adjusted + note
+
+
+def _iter_fact_dicts(payload: Any) -> list[dict[str, Any]]:
+    facts_out: list[dict[str, Any]] = []
+    if not isinstance(payload, dict):
+        return facts_out
+
+    facts = payload.get("facts")
+    if isinstance(facts, list):
+        facts_out.extend([fact for fact in facts if isinstance(fact, dict)])
+
+    pages = payload.get("pages")
+    if isinstance(pages, list):
+        for page in pages:
+            if not isinstance(page, dict):
+                continue
+            page_facts = page.get("facts")
+            if isinstance(page_facts, list):
+                facts_out.extend([fact for fact in page_facts if isinstance(fact, dict)])
+    return facts_out
+
+
+def _rescale_bbox_to_original_space(bbox: Any, prepared: _PreparedGeminiImage) -> Any:
+    normalized = _normalize_bbox(bbox)
+    if normalized is None:
+        return bbox
+    scale_x = float(prepared.original_width) / float(prepared.prepared_width)
+    scale_y = float(prepared.original_height) / float(prepared.prepared_height)
+    return [
+        round(normalized["x"] * scale_x, 2),
+        round(normalized["y"] * scale_y, 2),
+        round(normalized["w"] * scale_x, 2),
+        round(normalized["h"] * scale_y, 2),
+    ]
+
+
+def _restore_resized_bbox_chunk_text(raw_text: str, prepared: _PreparedGeminiImage) -> str:
+    if not prepared.resized or not str(raw_text).strip():
+        return raw_text
+
+    scale_x = float(prepared.original_width) / float(prepared.prepared_width)
+    scale_y = float(prepared.original_height) / float(prepared.prepared_height)
+
+    def _replace(match: re.Match[str]) -> str:
+        x = round(float(match.group(2)) * scale_x, 2)
+        y = round(float(match.group(3)) * scale_y, 2)
+        w = round(float(match.group(4)) * scale_x, 2)
+        h = round(float(match.group(5)) * scale_y, 2)
+        return f'{match.group(1)}{x}, {y}, {w}, {h}{match.group(6)}'
+
+    return _BBOX_ARRAY_LITERAL_RE.sub(_replace, raw_text)
+
+
+def _restore_resized_bbox_text(raw_text: str, prepared: _PreparedGeminiImage) -> str:
+    if not prepared.resized or not str(raw_text).strip():
+        return raw_text
+    try:
+        payload = _parse_llm_json(raw_text)
+    except Exception:
+        return raw_text
+    if not isinstance(payload, dict):
+        return raw_text
+
+    fact_dicts = _iter_fact_dicts(payload)
+    if not fact_dicts:
+        return raw_text
+
+    for fact in fact_dicts:
+        if isinstance(fact, dict) and fact.get("bbox") is not None:
+            fact["bbox"] = _rescale_bbox_to_original_space(fact.get("bbox"), prepared)
+    return json.dumps(payload, ensure_ascii=False)
 
 
 def _part_from_text(text: str) -> Any:
@@ -594,6 +1053,463 @@ def _build_generation_contents(
     return contents
 
 
+def _resolve_vertex_generate_content_url(
+    *,
+    explicit_url: Optional[str] = None,
+    project_id: Optional[str] = None,
+    region: Optional[str] = None,
+    endpoint_id: Optional[str] = None,
+) -> str:
+    direct_url = str(explicit_url or os.getenv("FINETREE_VERTEX_GENERATE_CONTENT_URL") or "").strip()
+    if direct_url:
+        return direct_url
+    return _resolve_vertex_endpoint_url(
+        explicit_url=None,
+        project_id=project_id,
+        region=region,
+        endpoint_id=endpoint_id,
+    ).removesuffix(":predict") + ":generateContent"
+
+
+def _resolve_vertex_stream_generate_content_url(
+    *,
+    explicit_url: Optional[str] = None,
+    project_id: Optional[str] = None,
+    region: Optional[str] = None,
+    endpoint_id: Optional[str] = None,
+) -> str:
+    direct_url = str(explicit_url or os.getenv("FINETREE_VERTEX_STREAM_GENERATE_CONTENT_URL") or "").strip()
+    if direct_url:
+        return direct_url
+    return _resolve_vertex_endpoint_url(
+        explicit_url=None,
+        project_id=project_id,
+        region=region,
+        endpoint_id=endpoint_id,
+    ).removesuffix(":predict") + ":streamGenerateContent"
+
+
+def _build_vertex_generate_content_contents(
+    *,
+    prepared_image: _PreparedGeminiImage,
+    prompt: str,
+) -> list[dict[str, Any]]:
+    image_b64 = base64.b64encode(prepared_image.image_bytes).decode("ascii")
+    return [
+        {
+            "role": "user",
+            "parts": [
+                {
+                    "inlineData": {
+                        "data": image_b64,
+                        "mimeType": prepared_image.mime_type,
+                    }
+                },
+                {"text": prompt},
+            ],
+        }
+    ]
+
+
+def _build_logged_vertex_generate_content_request(
+    *,
+    prompt: str,
+    session_dir: Path,
+) -> dict[str, Any]:
+    request_payload = _read_gemini_log_request(session_dir)
+    return {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [
+                    {
+                        "inlineData": {
+                            "file": request_payload["logged_image_path"],
+                        }
+                    },
+                    {"text": prompt},
+                ],
+            }
+        ],
+    }
+
+
+def _iter_json_objects_from_stream(chunks: Iterator[str]) -> Iterator[dict[str, Any]]:
+    buffer = ""
+    scan_pos = 0
+    decoder = json.JSONDecoder()
+
+    for chunk in chunks:
+        if not chunk:
+            continue
+        buffer += chunk
+        while True:
+            while scan_pos < len(buffer) and buffer[scan_pos] in " \r\n\t,[]":
+                scan_pos += 1
+            if scan_pos >= len(buffer):
+                if len(buffer) > 4096:
+                    buffer = ""
+                    scan_pos = 0
+                break
+            try:
+                payload, end_idx = decoder.raw_decode(buffer, scan_pos)
+            except json.JSONDecodeError:
+                if scan_pos > 0:
+                    buffer = buffer[scan_pos:]
+                    scan_pos = 0
+                break
+            scan_pos = end_idx
+            if isinstance(payload, dict):
+                yield payload
+        if scan_pos > 0 and scan_pos >= len(buffer):
+            buffer = ""
+            scan_pos = 0
+
+
+def _find_text_in_vertex_prediction(payload: Any) -> Optional[str]:
+    if isinstance(payload, str):
+        text = payload.strip()
+        return text or None
+    if isinstance(payload, dict):
+        text_responses = payload.get("textResponses")
+        if isinstance(text_responses, list):
+            for item in text_responses:
+                found = _find_text_in_vertex_prediction(item)
+                if found:
+                    return found
+        content = payload.get("content")
+        if isinstance(content, dict):
+            parts = content.get("parts")
+            if isinstance(parts, list):
+                texts = [
+                    str(part.get("text")).strip()
+                    for part in parts
+                    if isinstance(part, dict) and str(part.get("text") or "").strip()
+                ]
+                if texts:
+                    return "".join(texts)
+        for key in ("text", "generated_text", "prediction", "output", "response", "content"):
+            found = _find_text_in_vertex_prediction(payload.get(key))
+            if found:
+                return found
+        for value in payload.values():
+            found = _find_text_in_vertex_prediction(value)
+            if found:
+                return found
+        return None
+    if isinstance(payload, list):
+        for item in payload:
+            found = _find_text_in_vertex_prediction(item)
+            if found:
+                return found
+    return None
+
+
+def _extract_vertex_prediction_text(response_payload: Any) -> str:
+    if isinstance(response_payload, dict):
+        predictions = response_payload.get("predictions")
+        if isinstance(predictions, list) and predictions:
+            for prediction in predictions:
+                found = _find_text_in_vertex_prediction(prediction)
+                if found:
+                    return found
+        found = _find_text_in_vertex_prediction(response_payload)
+        if found:
+            return found
+    raise ValueError("Vertex AI endpoint returned no text prediction.")
+
+
+def _extract_vertex_generate_content_text(response_payload: Any) -> str:
+    found = _find_text_in_vertex_prediction(response_payload)
+    if found:
+        return found
+    raise ValueError("Vertex AI generateContent response returned no text.")
+
+
+def _stream_content_from_vertex_endpoint(
+    *,
+    image_path: Path,
+    prompt: str,
+    model: str,
+    mime_type: Optional[str],
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+    session_dir: Path,
+) -> Iterator[str]:
+    try:
+        import httpx
+    except Exception as exc:
+        raise RuntimeError("httpx is required for Vertex AI endpoint inference.") from exc
+
+    endpoint = _resolve_vertex_stream_generate_content_url()
+    access_token = _resolve_vertex_access_token()
+    if not access_token:
+        raise RuntimeError(
+            "Vertex AI access token not found. Authenticate with ADC/gcloud or set FINETREE_VERTEX_ACCESS_TOKEN."
+        )
+
+    prepared_image = _prepare_vertex_tuned_gemini_image(
+        image_path,
+        mime_type=mime_type,
+    )
+    effective_prompt = _vertex_tuned_effective_prompt(prompt, prepared_image)
+    contents = _build_vertex_generate_content_contents(
+        prepared_image=prepared_image,
+        prompt=effective_prompt,
+    )
+    payload: dict[str, Any] = {"contents": contents}
+    logged_payload = _build_logged_vertex_generate_content_request(prompt=effective_prompt, session_dir=session_dir)
+    request_summary = _vertex_request_summary(
+        endpoint,
+        model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+    )
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "backend": "vertex_stream_generate_content",
+            "request_summary": request_summary,
+            "image_resize": {
+                "max_pixels": DEFAULT_VERTEX_TUNED_MAX_PIXELS,
+                "original_width": prepared_image.original_width,
+                "original_height": prepared_image.original_height,
+                "prepared_width": prepared_image.prepared_width,
+                "prepared_height": prepared_image.prepared_height,
+                "resized": prepared_image.resized,
+            },
+            "effective_prompt": effective_prompt,
+            "exact_request": {
+                "endpoint": endpoint,
+                "method": "POST",
+                "json": logged_payload,
+            },
+        },
+    )
+    _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
+    _append_gemini_log_event(
+        session_dir,
+        "request",
+        {
+            "backend": "vertex_stream_generate_content",
+            "endpoint": endpoint,
+            "payload": logged_payload,
+        },
+    )
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    collected_text: list[str] = []
+    raw_chunks: list[Any] = []
+    observed_thinking_signal_path: Optional[str] = None
+    stream_status = "completed"
+    stream_error: Optional[str] = None
+
+    try:
+        with httpx.Client(timeout=120.0) as client:
+            with client.stream("POST", endpoint, headers=headers, json=payload) as response:
+                try:
+                    response.raise_for_status()
+                except Exception as exc:
+                    body = getattr(response, "text", "")
+                    raise RuntimeError(f"Vertex AI endpoint request failed ({response.status_code}): {body[:500]}") from exc
+
+                stream_iter = _iter_json_objects_from_stream(response.iter_text())
+                for index, response_payload in enumerate(stream_iter):
+                    raw_chunks.append(response_payload)
+                    text = _extract_vertex_generate_content_text(response_payload)
+                    if prepared_image.resized and text:
+                        text = _restore_resized_bbox_chunk_text(text, prepared_image)
+                    chunk_summary = _response_thinking_summary(response_payload)
+                    if observed_thinking_signal_path is None and chunk_summary["observed_thinking_signal"]:
+                        observed_thinking_signal_path = str(chunk_summary["observed_thinking_signal_path"])
+                    _append_gemini_log_event(
+                        session_dir,
+                        "stream_chunk",
+                        {
+                            "index": index,
+                            "backend": "vertex_stream_generate_content",
+                            "text": text,
+                            "raw": response_payload,
+                            **chunk_summary,
+                        },
+                    )
+                    if text:
+                        collected_text.append(text)
+                        yield text
+    except GeneratorExit:
+        stream_status = "aborted"
+        _append_gemini_log_event(
+            session_dir,
+            "stream_aborted",
+            {"reason": "consumer_closed", "collected_text_chars": len("".join(collected_text))},
+        )
+        raise
+    except Exception as exc:
+        stream_status = "error"
+        stream_error = str(exc)
+        _append_gemini_log_event(
+            session_dir,
+            "stream_error",
+            {"error": stream_error, "collected_text_chars": len("".join(collected_text))},
+        )
+        raise
+    finally:
+        _append_gemini_log_event(
+            session_dir,
+            "thinking_response_summary",
+            {
+                "backend": "vertex_stream_generate_content",
+                "observed_thinking_signal": observed_thinking_signal_path is not None,
+                "observed_thinking_signal_path": observed_thinking_signal_path,
+                "streamed": True,
+                "status": stream_status,
+                "resized_input": prepared_image.resized,
+            },
+        )
+        _write_gemini_log_output(
+            session_dir,
+            text="".join(collected_text),
+            raw={
+                "backend": "vertex_stream_generate_content",
+                "streamed": True,
+                "status": stream_status,
+                "error": stream_error,
+                "chunks": raw_chunks,
+            },
+        )
+
+
+def _vertex_request_summary(
+    endpoint: str,
+    model_name: str,
+    *,
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+) -> dict[str, Any]:
+    return {
+        "backend": "vertex_generate_content",
+        "endpoint": endpoint,
+        "resolved_model": model_name,
+        "requested_enable_thinking": enable_thinking,
+        "requested_thinking_level": thinking_level,
+        "thinking_supported": True,
+    }
+
+
+def _generate_content_from_vertex_endpoint(
+    *,
+    image_path: Path,
+    prompt: str,
+    model: str,
+    mime_type: Optional[str],
+    enable_thinking: Optional[bool],
+    thinking_level: Optional[str],
+    session_dir: Path,
+) -> str:
+    try:
+        import httpx
+    except Exception as exc:
+        raise RuntimeError("httpx is required for Vertex AI endpoint inference.") from exc
+
+    endpoint = _resolve_vertex_generate_content_url()
+    access_token = _resolve_vertex_access_token()
+    if not access_token:
+        raise RuntimeError(
+            "Vertex AI access token not found. Authenticate with ADC/gcloud or set FINETREE_VERTEX_ACCESS_TOKEN."
+        )
+
+    prepared_image = _prepare_vertex_tuned_gemini_image(
+        image_path,
+        mime_type=mime_type,
+    )
+    effective_prompt = _vertex_tuned_effective_prompt(prompt, prepared_image)
+    contents = _build_vertex_generate_content_contents(
+        prepared_image=prepared_image,
+        prompt=effective_prompt,
+    )
+    payload: dict[str, Any] = {"contents": contents}
+    logged_payload = _build_logged_vertex_generate_content_request(prompt=effective_prompt, session_dir=session_dir)
+    request_summary = _vertex_request_summary(
+        endpoint,
+        model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+    )
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "backend": "vertex_generate_content",
+            "request_summary": request_summary,
+            "image_resize": {
+                "max_pixels": DEFAULT_VERTEX_TUNED_MAX_PIXELS,
+                "original_width": prepared_image.original_width,
+                "original_height": prepared_image.original_height,
+                "prepared_width": prepared_image.prepared_width,
+                "prepared_height": prepared_image.prepared_height,
+                "resized": prepared_image.resized,
+            },
+            "effective_prompt": effective_prompt,
+            "exact_request": {
+                "endpoint": endpoint,
+                "method": "POST",
+                "json": logged_payload,
+            },
+        },
+    )
+    _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
+    _append_gemini_log_event(
+        session_dir,
+        "request",
+        {
+            "backend": "vertex_generate_content",
+            "endpoint": endpoint,
+            "payload": logged_payload,
+        },
+    )
+
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json",
+    }
+    with httpx.Client(timeout=120.0) as client:
+        response = client.post(endpoint, headers=headers, json=payload)
+    try:
+        response.raise_for_status()
+    except Exception as exc:
+        body = getattr(response, "text", "")
+        raise RuntimeError(f"Vertex AI endpoint request failed ({response.status_code}): {body[:500]}") from exc
+
+    try:
+        response_payload = response.json()
+    except Exception as exc:
+        raise RuntimeError(f"Vertex AI endpoint returned non-JSON response: {response.text[:500]}") from exc
+
+    raw_text = _extract_vertex_prediction_text(response_payload)
+    text = _restore_resized_bbox_text(raw_text, prepared_image)
+    response_summary = {
+        "backend": "vertex_generate_content",
+        "streamed": False,
+        "resized_input": prepared_image.resized,
+        **_response_thinking_summary(response_payload),
+    }
+    _append_gemini_log_event(
+        session_dir,
+        "response",
+        {
+            "backend": "vertex_generate_content",
+            "text": text,
+            "raw_text": raw_text,
+            "raw": response_payload,
+        },
+    )
+    _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
+    _write_gemini_log_output(session_dir, text=text, raw=response_payload)
+    return text
+
+
 def _resolve_config_path() -> Optional[Path]:
     candidates: list[Path] = []
     env_path = os.getenv("FINETREE_CONFIG_PATH")
@@ -888,6 +1804,21 @@ def _normalize_bbox(raw_bbox: Any) -> Optional[dict[str, float]]:
     return None
 
 
+def _coerce_fact_note_fields_for_statement_type(
+    fact_payload: dict[str, Any],
+    *,
+    statement_type: Optional[str],
+) -> dict[str, Any]:
+    if statement_type == "notes_to_financial_statements":
+        return fact_payload
+    if not bool(fact_payload.get("note_flag")) and fact_payload.get("note_num") in ("", None):
+        return fact_payload
+    normalized = dict(fact_payload)
+    normalized["note_flag"] = False
+    normalized["note_num"] = None
+    return normalized
+
+
 def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
     if isinstance(payload, list):
         payload = {"facts": payload}
@@ -951,6 +1882,10 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
         normalized_fact, _warnings = normalize_fact_payload({**raw_fact, "bbox": bbox, "value": str(value)}, include_bbox=True)
         if normalized_fact.get("bbox") is None:
             continue
+        normalized_fact = _coerce_fact_note_fields_for_statement_type(
+            normalized_fact,
+            statement_type=statement_type,
+        )
         facts_out.append(normalized_fact)
 
     return {
@@ -1051,7 +1986,9 @@ class StreamingPageExtractionParser:
                 break
             try:
                 parsed_fact = _parse_llm_json(obj)
-                normalized = _normalize_page_extraction_payload({"meta": {}, "facts": [parsed_fact]})
+                normalized = _normalize_page_extraction_payload(
+                    {"meta": self._latest_meta or {}, "facts": [parsed_fact]}
+                )
                 page_facts = normalized["pages"][0]["facts"]
                 if page_facts:
                     out.append(page_facts[0])
@@ -1096,7 +2033,6 @@ def generate_content_from_image(
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
 ) -> str:
-    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
@@ -1110,8 +2046,19 @@ def generate_content_from_image(
         thinking_level=thinking_level,
         few_shot_examples=few_shot_examples,
     )
-    key = _resolve_api_key(api_key)
-    client = genai.Client(api_key=key) if key else genai.Client()
+    if is_vertex_gemini_model_requested(resolved_model):
+        return _generate_content_from_vertex_endpoint(
+            image_path=image_path,
+            prompt=prompt,
+            model=resolved_model,
+            mime_type=mime_type,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            session_dir=session_dir,
+        )
+
+    key = resolve_gemini_api_key_for_model(resolved_model, explicit_api_key=api_key)
+    client = _create_genai_client_for_model(resolved_model, key)
     contents = _build_generation_contents(
         image_path=image_path,
         prompt=prompt,
@@ -1177,7 +2124,6 @@ def stream_content_from_image(
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
 ) -> Iterator[str]:
-    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
     resolved_model = resolve_supported_gemini_model_name(model)
@@ -1190,8 +2136,20 @@ def stream_content_from_image(
         thinking_level=thinking_level,
         few_shot_examples=few_shot_examples,
     )
-    key = _resolve_api_key(api_key)
-    client = genai.Client(api_key=key) if key else genai.Client()
+    if is_vertex_gemini_model_requested(resolved_model):
+        yield from _stream_content_from_vertex_endpoint(
+            image_path=image_path,
+            prompt=prompt,
+            model=resolved_model,
+            mime_type=mime_type,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            session_dir=session_dir,
+        )
+        return
+
+    key = resolve_gemini_api_key_for_model(resolved_model, explicit_api_key=api_key)
+    client = _create_genai_client_for_model(resolved_model, key)
     contents = _build_generation_contents(
         image_path=image_path,
         prompt=prompt,
@@ -1350,11 +2308,24 @@ def generate_structured_json_from_image(
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
 ) -> str:
-    _require_google_genai()
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
     resolved_model = resolve_supported_gemini_model_name(model)
+    if is_vertex_gemini_model_requested(resolved_model):
+        text = generate_content_from_image(
+            image_path=image_path,
+            prompt=prompt,
+            model=resolved_model,
+            mime_type=mime_type,
+            api_key=api_key,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+        )
+        if not text.strip():
+            raise ValueError("Gemini returned an empty response.")
+        return text
+
     session_dir = _create_gemini_log_session(
         operation="generate_structured_json",
         model=resolved_model,
@@ -1368,8 +2339,8 @@ def generate_structured_json_from_image(
     image_bytes = image_path.read_bytes()
     inferred_mime_type = _infer_mime_type(image_path, mime_type)
 
-    key = _resolve_api_key(api_key)
-    client = genai.Client(api_key=key) if key else genai.Client()
+    key = resolve_gemini_api_key_for_model(resolved_model, explicit_api_key=api_key)
+    client = _create_genai_client_for_model(resolved_model, key)
     contents = [
         types.Part.from_bytes(
             data=image_bytes,

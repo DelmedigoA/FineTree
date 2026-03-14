@@ -72,6 +72,7 @@ def _set_button_variant(button: QPushButton, variant: str) -> QPushButton:
 
 NAV_VISIBLE_SETTING_KEY = "ui/nav_visible"
 TOKEN_TARGET = 1_000_000
+_SUSPICIOUS_RESIZE_BUDGET = 100_000
 
 
 def _status_tone(status: str) -> str:
@@ -877,6 +878,15 @@ class PushView(QWidget):
         self.instruction_mode_combo.setMaximumWidth(260)
         self.min_pixels_spin.setMaximumWidth(180)
         self.max_pixels_spin.setMaximumWidth(180)
+        self.min_pixels_spin.setSpecialValueText("Unset")
+        self.max_pixels_spin.setSpecialValueText("Unset")
+        pixel_budget_tip = (
+            "Total image area budget, not width/height. "
+            "Example: 1200000 is about a 1.2MP target. "
+            "Very small values like 1200 will shrink pages to tiny thumbnails."
+        )
+        self.min_pixels_spin.setToolTip(pixel_budget_tip)
+        self.max_pixels_spin.setToolTip(pixel_budget_tip)
         self.token_status_label.setMaximumWidth(220)
 
         config_row = QWidget()
@@ -974,7 +984,7 @@ class PushView(QWidget):
         options_form = self._push_form_layout()
         options_form.addRow("Token", self.token_edit)
         options_form.addRow("Token status", self.token_status_label)
-        options_form.addRow("Pixels", self._compact_row(self.min_pixels_spin, self.max_pixels_spin))
+        options_form.addRow("Pixel budget", self._compact_row(self.min_pixels_spin, self.max_pixels_spin))
         options_form.addRow("Exclude docs", self.exclude_doc_ids_edit)
         options_layout.addLayout(options_form)
         options_checks = self._checkbox_grid(
@@ -1523,6 +1533,23 @@ class PushView(QWidget):
             argv.append("--allow-format-issues")
         return argv
 
+    def _resize_budget_warning(self) -> str | None:
+        budgets = [
+            value
+            for value in (self.min_pixels_spin.value(), self.max_pixels_spin.value())
+            if int(value) > 0
+        ]
+        if not budgets:
+            return None
+        smallest = min(int(value) for value in budgets)
+        if smallest >= _SUSPICIOUS_RESIZE_BUDGET:
+            return None
+        return (
+            "Pixel budget uses total image area, not width/height. "
+            f"The current value ({smallest}) is too small and will collapse pages to tiny images "
+            "(for example, 1200 becomes about 28x28). Use a value like 1200000 for ~1.2MP, or leave it unset."
+        )
+
     def _update_preview(self) -> None:
         page_meta_keys = self.selected_page_meta_keys()
         fact_keys = self.selected_fact_keys()
@@ -1567,6 +1594,14 @@ class PushView(QWidget):
 
     def run_pipeline(self) -> None:
         if self._worker_thread is not None:
+            return
+        resize_warning = self._resize_budget_warning()
+        if resize_warning:
+            QMessageBox.warning(
+                self,
+                "Pixel budget too small",
+                resize_warning,
+            )
             return
         included_doc_ids = self.selected_included_doc_ids()
         train_doc_ids = self.selected_train_doc_ids()

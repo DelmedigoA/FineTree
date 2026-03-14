@@ -1,0 +1,144 @@
+benchmark:
+  input_dir: benchmark/input
+  output_dir: benchmark/output
+  timezone: Asia/Jerusalem
+
+methods:
+  meta: weighted_soft_hard
+  facts: fact_quality_v1
+  overall: weighted_average
+
+weighting:
+  meta_fields:
+    meta.entity_name:
+      soft: 0.75
+      hard: 0.25
+    meta.page_num:
+      hard: 1.0
+    meta.page_type:
+      hard: 1.0
+    meta.statement_type:
+      hard: 1.0
+    meta.title:
+      soft: 0.75
+      hard: 0.25
+  aggregate:
+    meta_score: 0.5
+    facts_score: 0.5
+
+evaluation:
+  normalize_inputs: true
+  prediction_format_default: auto
+  require_explicit_mappings: true
+
+# Optional fallback defaults for the manual UI path.
+# When benchmark.input_dir contains info.json, the submission page will ingest it
+# directly and skip the manual metadata form.
+model_metadata:
+  checkpoint_name: Qwen3.5-27B-example-checkpoint
+  model: Qwen/Qwen3.5-27B
+  tuner_type: lora
+  dataset: asafd60/FineTree_V2-approved-no-bbox-train
+  validation_dataset: asafd60/FineTree_V2-approved-no-bbox-validation
+  use_hf: true
+  freeze_vit: false
+  vit_lr: 5.0e-06
+  freeze_aligner: false
+  enable_thinking: false
+  add_non_thinking_prefix: true
+  torch_dtype: bfloat16
+  num_train_epochs: 8
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  learning_rate: 0.0001
+  lora_rank: 4
+  lora_alpha: 16
+  target_modules: all-linear
+  gradient_accumulation_steps: 16
+  output_dir: output/Qwen3.5-27B
+  eval_steps: 5
+  save_steps: 5
+  save_total_limit: 3
+  logging_steps: 5
+  max_length: 6250
+  warmup_ratio: 0.03
+  dataset_num_proc: 3
+  dataloader_num_workers: 3
+  eval_on_start: true
+  max_pixels: 1000000
+  temperature: 0
+  gradient_checkpointing: true
+  gradient_checkpointing_kwargs:
+    use_reentrant: false
+  truncation_strategy: right
+  CUDA_VISIBLE_DEVICES: "0"
+  MAX_PIXELS: 1000000
+  gpu_used: NVIDIA A100 80GB
+  torch_env_used: torch 2.6.0+cu124
+  platform: linux/amd64
+
+mappings:
+  - prediction_file: predictions/pred_0001.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 0
+  - prediction_file: predictions/pred_0002.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 1
+  - prediction_file: predictions/pred_0003.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 2
+  - prediction_file: predictions/pred_0004.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 3
+  - prediction_file: predictions/pred_0005.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 4
+  - prediction_file: predictions/pred_0006.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 5
+  - prediction_file: predictions/pred_0007.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 6
+  - prediction_file: predictions/pred_0008.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 7
+  - prediction_file: predictions/pred_0009.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 8
+  - prediction_file: predictions/pred_0010.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 9
+  - prediction_file: predictions/pred_0011.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 10
+  - prediction_file: predictions/pred_0012.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 11
+  - prediction_file: predictions/pred_0013.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 12
+  - prediction_file: predictions/pred_0014.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 13
+  - prediction_file: predictions/pred_0015.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 14
+  - prediction_file: predictions/pred_0016.json
+    gt_file: data/annotations/P907062-00.json
+    prediction_format: page_level
+    gt_page_index: 15

@@ -1,0 +1,891 @@
+{
+  "meta": {
+    "entity_name": "שדות נפס חיפשיים (1992) - שותפות מוגבלת",
+    "page_num": "11",
+    "page_type": "statements",
+    "statement_type": "notes_to_financial_statements",
+    "title": "באורים לדוחות הכספיים"
+  },
+  "facts": [
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "בעל עניין - שדות נפס בע״מ"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "8",
+      "comment_ref": "היתרה אינה צמודה ואינה נושאת ריבית.",
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "בעל עניין - שדות נפס בע״מ"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "מקדמות לנותני שירותים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "5",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "מקדמות לנותני שירותים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "13",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "חייבים ויתרות חובה",
+      "note_num": 4,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "11",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "בעל עניין - שדות נפס בע״מ"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "בעל עניין - שדות נפס בע״מ"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1782",
+      "comment_ref": "כולל סך של 1.3 מיליון ש״ח לשותף הכללי.",
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "הוצאות לשלם"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1795",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "הוצאות לשלם"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1793",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1795",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "באים ויתרות זכות",
+      "note_num": 5,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1339201163",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "מזון השותפות",
+      "note_num": 6,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "מספר יחידות השתתפות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "1339201163",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "מזון השותפות",
+      "note_num": 6,
+      "note_ref": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "מספר יחידות השתתפות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון אבטח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון אבטח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "315",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון אבטח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון מד אשדוד"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "43",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון מד אשדוד"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "רכישון מד אשדוד"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "43",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "315",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות חיפשיי גז ונפט",
+      "note_num": 7,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "25",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול ושירותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "454",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול ושירותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "709",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול ושירותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "שכר מפקח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "47",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "שכר מפקח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "97",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "שכר מפקח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "ביטוח דירקטורים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "21",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "ביטוח דירקטורים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "36",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "ביטוח דירקטורים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "2",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "אחרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "2",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "אחרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "34",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "אחרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "27",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "524",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "876",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": 8,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "סה״כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול וחזור הוצאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "454",
+      "comment_ref": "ראה באור סטב.",
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול וחזור הוצאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "709",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי ניהול וחזור הוצאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "-",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2009-01-01",
+      "period_end": "2009-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי מפעיל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "314",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2008-01-01",
+      "period_end": "2008-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי מפעיל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "value": "392",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עסקאות עם בעלי עניין ועדדים קשורים",
+      "note_num": 9,
+      "note_ref": null,
+      "period_type": "duration",
+      "period_start": "2007-01-01",
+      "period_end": "2007-12-31",
+      "duration_type": null,
+      "path": [
+        "דמי מפעיל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1000,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ]
+}

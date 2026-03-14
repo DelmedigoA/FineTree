@@ -263,6 +263,28 @@ def item_scene_rect(item: QGraphicsRectItem) -> QRectF:
         return QRectF()
 
 
+def _is_alive_graphics_item(item: Optional[QGraphicsRectItem], scene: Optional[QGraphicsScene] = None) -> bool:
+    if item is None:
+        return False
+    try:
+        if sip.isdeleted(item):
+            return False
+        if scene is not None:
+            return item.scene() is scene
+        return item.scene() is not None
+    except RuntimeError:
+        return False
+
+
+def _is_save_key_event(event: QKeyEvent) -> bool:
+    if event.matches(QKeySequence.Save):
+        return True
+    if event.key() != Qt.Key_S:
+        return False
+    modifiers = event.modifiers()
+    return bool(modifiers & (Qt.ControlModifier | Qt.MetaModifier))
+
+
 def _format_decimal_plain(value: Decimal) -> str:
     text = format(value.normalize(), "f")
     if "." in text:
@@ -1491,6 +1513,29 @@ class AnnotationScene(QGraphicsScene):
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event) -> None:
+        if not _is_alive_graphics_item(self._temp_equation_select_item, self):
+            self._temp_equation_select_item = None
+        if not _is_alive_graphics_item(self._temp_select_item, self):
+            self._temp_select_item = None
+        if not _is_alive_graphics_item(self._temp_rect_item, self):
+            self._temp_rect_item = None
+        if self._equation_selecting and self._temp_equation_select_item is None:
+            self._equation_selecting = False
+            self._equation_select_start = None
+            self._equation_drag_reference_items = []
+            self._equation_drag_reference_item_ids = set()
+            event.accept()
+            return
+        if self._selecting and self._temp_select_item is None:
+            self._selecting = False
+            self._select_start = None
+            event.accept()
+            return
+        if self._drawing and self._temp_rect_item is None:
+            self._drawing = False
+            self._draw_start = None
+            event.accept()
+            return
         if self._calculate_drag_active and self._equation_interaction_start is not None and self._equation_select_start is not None:
             if not self._equation_selecting and self._equation_drag_exceeds_threshold(event.scenePos()):
                 self._equation_selecting = True
@@ -1535,6 +1580,31 @@ class AnnotationScene(QGraphicsScene):
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event) -> None:
+        if not _is_alive_graphics_item(self._temp_equation_select_item, self):
+            self._temp_equation_select_item = None
+        if not _is_alive_graphics_item(self._temp_select_item, self):
+            self._temp_select_item = None
+        if not _is_alive_graphics_item(self._temp_rect_item, self):
+            self._temp_rect_item = None
+        if self._equation_selecting and self._temp_equation_select_item is None:
+            self._equation_selecting = False
+            self._equation_select_start = None
+            self._equation_interaction_start = None
+            self._equation_drag_reference_items = []
+            self._equation_drag_reference_item_ids = set()
+            event.accept()
+            return
+        if self._selecting and self._temp_select_item is None:
+            self._selecting = False
+            self._select_start = None
+            self._select_append_mode = False
+            event.accept()
+            return
+        if self._drawing and self._temp_rect_item is None:
+            self._drawing = False
+            self._draw_start = None
+            event.accept()
+            return
         if self._equation_interaction_start is not None:
             if self._equation_selecting and self._temp_equation_select_item:
                 rect = self._temp_equation_select_item.rect().normalized().intersected(self.image_rect)
@@ -3559,8 +3629,13 @@ class AnnotationWindow(QMainWindow):
         self._save_action = QAction("Save", self)
         self._save_action.triggered.connect(self._trigger_save_annotations)
         self.addAction(self._save_action)
-        self._save_shortcut = QShortcut(QKeySequence.Save, self, activated=self._trigger_save_annotations)
-        self._save_shortcut.setContext(Qt.ApplicationShortcut)
+        self._save_shortcuts = [
+            QShortcut(QKeySequence.Save, self, activated=self._trigger_save_annotations),
+            QShortcut(QKeySequence("Ctrl+S"), self, activated=self._trigger_save_annotations),
+            QShortcut(QKeySequence("Meta+S"), self, activated=self._trigger_save_annotations),
+        ]
+        for shortcut in self._save_shortcuts:
+            shortcut.setContext(Qt.ApplicationShortcut)
         self.page_label.setObjectName("monoLabel")
         self._populate_page_thumbnails()
         self._configure_hidden_status_bar()
@@ -7321,22 +7396,14 @@ class AnnotationWindow(QMainWindow):
         thinking_level = dialog.thinking_level()
 
         try:
-            from .gemini_vlm import resolve_api_key
+            from .gemini_vlm import ensure_gemini_backend_credentials
         except Exception as exc:
             QMessageBox.warning(self, "Gemini Auto-Fix", f"Gemini backend is unavailable:\n{exc}")
             return
 
-        gemini_api_key = resolve_api_key()
-        if not gemini_api_key:
-            QMessageBox.warning(
-                self,
-                "Gemini Auto-Fix",
-                (
-                    "Gemini API key not found.\n\n"
-                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
-                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
-                ),
-            )
+        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
+        if auth_error:
+            QMessageBox.warning(self, "Gemini Auto-Fix", auth_error)
             return
 
         request_payload = self._build_gemini_fill_request_payload(
@@ -7577,7 +7644,7 @@ class AnnotationWindow(QMainWindow):
         page_name: str,
         prompt_text: str,
         model_name: str,
-        gemini_api_key: str,
+        gemini_api_key: Optional[str],
         enable_thinking: bool,
         thinking_level: str,
         few_shot_examples: Optional[list[dict[str, Any]]],
@@ -7735,22 +7802,14 @@ class AnnotationWindow(QMainWindow):
             return
 
         try:
-            from .gemini_vlm import resolve_api_key
+            from .gemini_vlm import ensure_gemini_backend_credentials
         except Exception as exc:
             QMessageBox.warning(self, "Gemini GT", f"Gemini backend is unavailable:\n{exc}")
             return
 
-        gemini_api_key = resolve_api_key()
-        if not gemini_api_key:
-            QMessageBox.warning(
-                self,
-                "Gemini GT",
-                (
-                    "Gemini API key not found.\n\n"
-                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
-                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
-                ),
-            )
+        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
+        if auth_error:
+            QMessageBox.warning(self, "Gemini GT", auth_error)
             return
 
         self._gemini_model_name = model_name
@@ -7878,22 +7937,14 @@ class AnnotationWindow(QMainWindow):
             return
 
         try:
-            from .gemini_vlm import resolve_api_key
+            from .gemini_vlm import ensure_gemini_backend_credentials
         except Exception as exc:
             QMessageBox.warning(self, "Gemini Auto Complete", f"Gemini backend is unavailable:\n{exc}")
             return
 
-        gemini_api_key = resolve_api_key()
-        if not gemini_api_key:
-            QMessageBox.warning(
-                self,
-                "Gemini Auto Complete",
-                (
-                    "Gemini API key not found.\n\n"
-                    "Set GOOGLE_API_KEY or GEMINI_API_KEY, or run through Doppler "
-                    "with a secret named GOOGLE_API_KEY / GEMINI_API_KEY."
-                ),
-            )
+        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
+        if auth_error:
+            QMessageBox.warning(self, "Gemini Auto Complete", auth_error)
             return
 
         self._gemini_model_name = model_name
@@ -9407,14 +9458,14 @@ class AnnotationWindow(QMainWindow):
             QTimer.singleShot(0, lambda: setattr(self, "_save_shortcut_in_flight", False))
 
     def keyPressEvent(self, event) -> None:
-        if event.matches(QKeySequence.Save):
+        if _is_save_key_event(event):
             if self._trigger_save_annotations():
                 event.accept()
                 return
         super().keyPressEvent(event)
 
     def event(self, event: QObject) -> bool:
-        if isinstance(event, QKeyEvent) and event.type() == QEvent.KeyPress and event.matches(QKeySequence.Save):
+        if isinstance(event, QKeyEvent) and event.type() == QEvent.KeyPress and _is_save_key_event(event):
             if self._trigger_save_annotations():
                 event.accept()
                 return True

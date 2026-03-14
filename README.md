@@ -1,653 +1,219 @@
-# FineTree
+# Qwen3.5-27B LoRA Training on a Fresh RunPod Pod
 
-## PDF Annotator (PyQt5)
+## Approach
 
-This repo now includes a simple local annotation app:
+Use the base RunPod image exactly as provided for Python, CUDA, and PyTorch. Do not create a virtual environment, do not use `uv`, and do not reinstall `torch`, `torchvision`, or `torchaudio`.
 
-- Draw bounding boxes over page images.
-- Double-click inside a box to edit full `Fact` fields.
-- Duplicate selected boxes to avoid retyping repeated facts.
-- Fill per-page metadata (`PageMeta`) on the right panel.
+Previous failures came from two issues:
 
-### Install
+- mixed Python environments
+- incorrect pod-level GPU visibility, especially `NVIDIA_VISIBLE_DEVICES=void`
 
-```bash
-python -m pip install -e .
-```
+This procedure keeps installs minimal, verifies CUDA before installing anything, and keeps outputs under `/workspace` so they persist.
 
-For GPU fine-tuning on a Linux CUDA host, install the training extra:
+## Ordered Steps
 
-```bash
-python -m pip install -e .[train]
-```
+### 1. Fix pod-level GPU environment variables in RunPod
 
-`unsloth` is not installed by default on macOS/local CPU setups because its `xformers`
-dependency is CUDA/Linux-oriented and commonly fails to build on Apple clang.
+In the RunPod pod settings:
 
-If your environment is offline or you want the editable package without dependency resolution:
+- remove `NVIDIA_VISIBLE_DEVICES` if it is set to `void`
+- remove `CUDA_VISIBLE_DEVICES` if it is blank or incorrectly set
+- save the settings
+- restart the pod
 
-```bash
-python -m pip install -e . --no-build-isolation
-```
+If `NVIDIA_VISIBLE_DEVICES=void` is present, CUDA initialization can fail even when GPUs are physically attached. Deleting old environments does not fix that.
 
-### Run
+### 2. Verify GPU access before installing anything
 
-Primary (PDF-first) flow:
+Run this exact block in the terminal:
 
 ```bash
-finetreeannotator path/to/doc.pdf
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+echo "NVIDIA_VISIBLE_DEVICES=$NVIDIA_VISIBLE_DEVICES"
+env | egrep 'CUDA|NVIDIA' | sort
+
+python3 - <<'PY'
+import torch
+print("torch:", torch.__version__)
+print("torch cuda:", torch.version.cuda)
+print("cuda available:", torch.cuda.is_available())
+print("device count:", torch.cuda.device_count())
+for i in range(torch.cuda.device_count()):
+    print(i, torch.cuda.get_device_name(i))
+print("bf16:", torch.cuda.is_bf16_supported())
+PY
 ```
 
-This creates/uses sibling artifacts:
+Stop here if this fails. Do not continue to package installation until CUDA is working and both GPUs are visible.
 
-- `path/to/doc_images/page_0001.png`, ...
-- `path/to/doc.json`
+### 3. Install only the higher-level packages
 
-If images already exist, they are reused. If some pages are missing, only missing pages are extracted.
-
-Legacy image-directory flow:
+Do not install any `torch` packages.
 
 ```bash
-finetree-annotator --images-dir data/pdf_images/test
+export PIP_ROOT_USER_ACTION=ignore
+
+python3 -m pip install --upgrade pip
+
+python3 -m pip install \
+  ipykernel \
+  ipywidgets \
+  jupyterlab_widgets \
+  transformers==5.2.0 \
+  datasets==3.6.0 \
+  accelerate==1.13.0 \
+  trl==0.28.0 \
+  peft==0.18.1 \
+  bitsandbytes==0.49.2 \
+  huggingface_hub==1.7.0 \
+  qwen-vl-utils==0.0.14 \
+  ms-swift==4.0.0
 ```
 
-Alternative module form:
+### 4. Register a Jupyter kernel
 
 ```bash
-python -m finetree_annotator --images-dir data/pdf_images/test
+python3 -m ipykernel install --user \
+  --name runpod-image \
+  --display-name "Python (runpod-image)"
 ```
 
-Optional output path:
+### 5. Switch to the new kernel in JupyterLab
 
-```bash
-finetree-annotator --images-dir data/pdf_images/test --annotations data/annotations/test.json
-```
+In JupyterLab:
 
-### Source layout
+`Kernel → Change Kernel → Python (runpod-image)`
 
-- `src/finetree_annotator/` contains application source code.
-- CLI entrypoints are defined in `pyproject.toml`.
+Then restart the kernel.
 
-### PDF Conversion
+### 6. Run notebook verification cells
 
-```bash
-finetree-pdf-to-images data/raw_pdfs/test.pdf
-```
-
-### Metadata fields
-
-When editing document metadata (either via the UI or the JSON schema), the `metadata.report_scope`
-field accepts the following values:
-
-- `separate`
-- `consolidated`
-- `combined`
-- `pro_forma`
-- `other`
-- `null` (use JSON `null` or the literal string `"null"` when the scope is unknown)
-
-### Gemini VLM (Image + Prompt)
-
-```bash
-export GOOGLE_API_KEY=your_key_here
-finetree-gemini-vlm path/to/small-sample.jpg "Caption this image."
-```
-
-Alternative (local config file):
-
-```toml
-# finetree_config.toml
-api_key = "your_key_here"
-```
-
-Or set a custom config location:
-
-```bash
-export FINETREE_CONFIG_PATH=/absolute/path/to/finetree_config.toml
-```
-
-Optional flags:
-
-- `--model` (default: `gemini-3-flash-preview`)
-- `--mime-type` (override auto-detected image MIME type)
-- `--api-key` (use explicit key instead of env vars)
-- `--thinking-level` (minimal|low|medium|high; default is `minimal` for the non-thinking presets, and the CLI/UI remaps `minimal` to `low` when it runs against Gemini 3.1 Pro because that level is not exposed).
-
-### Gemini thinking levels
-
-We configure thinking levels through the same `--thinking-level` knob used by the CLI and by the `types.GenerateContentConfig(types.ThinkingConfig(...))` wrapper in the SDK. The supported thinking levels for each Gemini 3 line are:
-
-| Thinking Level | Gemini 3.1 Pro | Gemini 3.1 Flash-Lite | Gemini 3 Flash | Description |
-| --- | --- | --- | --- | --- |
-| `minimal` | Not supported (falls back to `low`) | Supported (default for no thinking) | Supported | Matches the “no thinking” setting for most queries; keeps latency low but the model may still run light reasoning on harder prompts. |
-| `low` | Supported | Supported | Supported | Minimal-thinking mode that favors throughput and lower cost. |
-| `medium` | Supported | Supported | Supported | Balanced mix of reasoning depth and latency. |
-| `high` | Supported (default/dynamic) | Supported (dynamic) | Supported (default/dynamic) | Maximizes reasoning depth; expect longer first-token latency and more carefully reasoned text.
-
-When calling the SDK directly, requests look like:
+First verification cell:
 
 ```python
-from google import genai
-from google.genai import types
+import sys
+import torch
 
-client = genai.Client()
-
-response = client.models.generate_content(
-    model="gemini-3.1-pro-preview",
-    contents="How does AI work?",
-    config=types.GenerateContentConfig(
-        thinking_config=types.ThinkingConfig(
-            thinking_level=types.ThinkingLevel.LOW
-        )
-    ),
-)
-
-print(response.text)
+print("python:", sys.executable)
+print("torch:", torch.__version__)
+print("torch cuda:", torch.version.cuda)
+print("cuda available:", torch.cuda.is_available())
+print("device count:", torch.cuda.device_count())
+print("device 0:", torch.cuda.get_device_name(0))
+print("device 1:", torch.cuda.get_device_name(1))
+print("bf16:", torch.cuda.is_bf16_supported())
 ```
 
-The CLI/UI and helper functions in this repo automatically normalize the requested level to the proper `types.ThinkingLevel` enum and remap `minimal` to `low` on Gemini 3.1 Pro so you never send an unsupported value.
+Second verification cell:
 
-### Qwen VLM (Local, Multimodal)
+```python
+import importlib.metadata as md
+import transformers, datasets, accelerate, trl, peft, bitsandbytes
+import huggingface_hub, swift, ipywidgets, qwen_vl_utils
 
-`Qwen GT` supports local/RunPod backends, plus a hosted `qwen-flash-gt` alias.
-Local backend requires CUDA.
-The loader supports any Qwen 3.5 A3-family model id (not only a single repo name),
-and `inference.adapter_path` can be either a local folder or a Hugging Face repo id.
+print("transformers:", transformers.__version__)
+print("datasets:", datasets.__version__)
+print("accelerate:", accelerate.__version__)
+print("trl:", trl.__version__)
+print("peft:", peft.__version__)
+print("bitsandbytes:", bitsandbytes.__version__)
+print("huggingface_hub:", huggingface_hub.__version__)
+print("ipywidgets:", ipywidgets.__version__)
+print("swift module:", swift.__file__)
+print("swift version:", getattr(swift, "__version__", "unknown"))
+print("qwen-vl-utils:", md.version("qwen-vl-utils"))
+```
+
+If these checks do not pass, stop and fix the environment before training.
+
+## Training Command
+
+Use this exact starting command:
 
 ```bash
-finetree-qwen-gt --config configs/finetune_qwen35a3_vl.yaml --image data/pdf_images/test/page_0001.png --stream
+MAX_PIXELS=1000000 \
+PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
+CUDA_VISIBLE_DEVICES=0,1 \
+NPROC_PER_NODE=2 \
+swift sft \
+  --model Qwen/Qwen3.5-27B \
+  --tuner_type lora \
+  --use_hf true \
+  --dataset asafd60/FineTree_V2-approved-no-bbox-train \
+  --val_dataset asafd60/FineTree_V2-approved-no-bbox-validation \
+  --load_from_cache_file true \
+  --freeze_vit False \
+  --vit_lr 5e-6 \
+  --freeze_aligner False \
+  --enable_thinking false \
+  --add_non_thinking_prefix true \
+  --torch_dtype bfloat16 \
+  --num_train_epochs 1 \
+  --per_device_train_batch_size 2 \
+  --per_device_eval_batch_size 1 \
+  --learning_rate 1e-4 \
+  --lora_rank 4 \
+  --lora_alpha 16 \
+  --target_modules all-linear \
+  --gradient_accumulation_steps 4 \
+  --output_dir /workspace/output/Qwen3.5-27B \
+  --eval_steps 5 \
+  --save_steps 5 \
+  --save_total_limit 3 \
+  --logging_steps 5 \
+  --max_length 7000 \
+  --warmup_ratio 0.03 \
+  --dataset_num_proc 3 \
+  --dataloader_num_workers 3 \
+  --eval_on_start true \
+  --max_pixels 1000000 \
+  --temperature 0 \
+  --gradient_checkpointing true \
+  --gradient_checkpointing_kwargs '{"use_reentrant": false}' \
+  --truncation_strategy right
 ```
 
-Optional:
+## Batch Guidance
 
-- `--prompt` inline prompt text
-- `--prompt-path` prompt file path (defaults to `prompts/extraction_prompt.txt`)
-- `--model` override model id/path for inference
+Start with:
 
-To use hosted Qwen Flash (OpenAI-compatible DashScope) from UI/CLI model selection:
+- `per_device_train_batch_size=2`
+- `gradient_accumulation_steps=4`
 
-- set `--model qwen-flash-gt` (or use `qwen3.5-flash`)
-- set one API key env var: `FINETREE_QWEN_FLASH_API_KEY` / `FINETREE_QWEN_API_KEY` / `QWEN_API_KEY` / `DASHSCOPE_API_KEY`
-- optional base URL override: `FINETREE_QWEN_FLASH_BASE_URL` (default: `https://dashscope-intl.aliyuncs.com/compatible-mode/v1`)
+With 2 GPUs, the effective batch size is 16.
 
-### Simple Inference API (Image + Prompt)
+If memory is comfortable, increase only:
 
-Minimal FastAPI service for fine-tuned Qwen image inference:
+- `gradient_accumulation_steps=8`
+
+That gives an effective batch size of 32.
+
+## Why Similar GPU Memory Usage Is Expected
+
+In standard DDP or data-parallel training, each GPU holds a full copy of the model weights. Because of that, similar memory usage on both GPUs is expected. It is normal behavior and not a bug.
+
+## Troubleshooting
+
+- Do not create a venv.
+- Do not use `uv`.
+- Do not reinstall `torch`.
+- Do not mix system `torch` with venv-installed `torch` or `torchvision`.
+- If CUDA verification fails, check pod-level environment variables first.
+- If `NVIDIA_VISIBLE_DEVICES=void` appears, remove it in RunPod settings and restart the pod.
+
+## Benchmark
+
+Use the benchmark UI for persisted evaluation reports and the leaderboard:
 
 ```bash
-finetree-simple-infer-api --config configs/qwen_simple_infer_api.yaml --host 0.0.0.0 --port 8000
+finetree-benchmark --config benchmark/config.example.yaml --host 127.0.0.1 --port 8123
 ```
 
-Endpoints:
-
-- `GET /health`
-- `POST /infer` with payload:
-  - `image_b64` (base64 PNG/JPEG bytes)
-  - `prompt` (string)
-  - optional: `max_new_tokens`, `temperature`, `top_p`, `do_sample`, `max_pixels`
-
-RunPod image (simple API only):
+For file-backed benchmark submissions on the benchmark machine:
 
 ```bash
-docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.simple-infer-api -t <docker-user>/finetree-simple-infer:<tag> --push .
+finetree-benchmark-run --config benchmark/config.example.yaml --submission /path/to/run/benchmark_submission
 ```
 
-Use `deploy/runpod/simple_infer_api.env.example` as the env template in RunPod.
-
-### Fine-Tuning Pipeline (Unsloth)
-
-Use a Linux CUDA environment with the training extra installed:
-
-```bash
-python -m pip install -e .[train]
-```
-
-Default config: `configs/finetune_qwen35a3_vl.yaml`
-
-Build train/val datasets:
-
-```bash
-finetree-ft-build-dataset --config configs/finetune_qwen35a3_vl.yaml
-```
-
-Train adapters:
-
-```bash
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
-```
-
-Push existing adapters to Hub (without retraining):
-
-```bash
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --push-adapter-only
-```
-
-Validate environment/config without training:
-
-```bash
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --dry-run
-```
-
-Optional merge after training:
-
-```bash
-finetree-ft-merge-push --config configs/finetune_qwen35a3_vl.yaml
-```
-
-Build + export + push dataset JSONL/images to Hugging Face Dataset Hub:
-
-```bash
-finetree-ft-push-dataset --config configs/finetune_qwen35a3_vl.yaml --repo-id <user>/<dataset-repo>
-```
-
-Build + export + push dataset variant without bbox in assistant JSON (`facts[*].bbox` removed):
-
-```bash
-finetree-ft-push-dataset-no-bbox --config configs/finetune_qwen35a3_vl.yaml --repo-id <user>/<dataset-repo-no-bbox>
-```
-
-### RunPod GPU Validation + Full Fine-Tune
-
-Recommended workflow on a fresh RunPod pod:
-
-```bash
-cd /workspace
-git clone <YOUR_REPO_URL> FineTree
-cd FineTree
-./scripts/runpod_bootstrap.sh
-```
-
-Single-command smoke test (bootstrap + preflight + trainer dry-run):
-
-```bash
-./scripts/runpod_smoke_test.sh
-```
-
-If you use this as pod start command, use:
-
-```bash
-bash -lc "cd /workspace/FineTree && ./scripts/runpod_bootstrap.sh && sleep infinity"
-```
-
-`sleep infinity` prevents RunPod from repeatedly restarting the container command and re-running install steps.
-`runpod_bootstrap.sh` auto-repairs broken Unsloth installs when imports fail.
-If your config targets a Qwen3.5-A3 model family id, it also applies the notebook-style Qwen3.5 patch
-(installs `unsloth` + `unsloth-zoo` from GitHub and upgrades `transformers` to `5.2.0` when needed).
-
-Validate environment + data:
-
-```bash
-./scripts/runpod_validate_data.sh
-```
-
-Or run preflight directly (adds HF auth check):
-
-```bash
-finetree-ft-preflight --config configs/finetune_qwen35a3_vl.yaml --check-hf
-```
-
-Set secrets:
-
-```bash
-export FINETREE_HF_TOKEN=<your_hf_token>
-export GEMINI_API_KEY=<your_gemini_key>
-```
-
-Build dataset + train in one command:
-
-```bash
-./scripts/runpod_train.sh
-```
-
-Multi-GPU launch (RunPod with 2+ GPUs):
-
-```bash
-export MULTI_GPU=1
-# Optional override. Defaults to detected GPU count.
-export NPROC_PER_NODE=2
-# Optional cache warmup for remote adapter repo in inference.adapter_path.
-export PREFETCH_ADAPTER=1
-./scripts/runpod_train.sh
-```
-
-Launch modes for `runpod_train.sh`:
-
-- `MULTI_GPU=auto` (default): uses distributed launch when more than 1 GPU is visible.
-- `MULTI_GPU=1`: force distributed launch, fail fast if fewer than 2 GPUs are available.
-- `MULTI_GPU=0`: force single-process launch.
-
-Distributed runs use `torchrun --standalone --nproc_per_node ...`.
-Use `training.ddp_find_unused_parameters: false` (default) unless your adapter/module setup requires otherwise.
-
-Or explicit smoke path:
-
-```bash
-./scripts/runpod_smoke_test.sh
-```
-
-Optional manual steps:
-
-```bash
-finetree-ft-build-dataset --config configs/finetune_qwen35a3_vl.yaml
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --dry-run
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml
-```
-
-### RunPod Endpoint Prep
-
-Generate endpoint env values directly from your FineTree config:
-
-```bash
-finetree-runpod-endpoint-env \
-  --config configs/finetune_qwen35a3_vl.yaml \
-  --served-model-name qwenasaf \
-  --output artifacts/runpod/endpoint.env
-```
-
-This creates a sorted `.env`-style file with values like:
-
-- `MODEL_NAME`
-- `MAX_MODEL_LEN`
-- `GPU_MEMORY_UTILIZATION`
-- `OPENAI_SERVED_MODEL_NAME_OVERRIDE` (if provided)
-- `FINETREE_ADAPTER_REF` (when `inference.adapter_path` is set)
-
-To use PyQt Qwen GT via RunPod OpenAI-compatible endpoint, set in your config:
-
-```yaml
-inference:
-  backend: runpod_openai
-  endpoint_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>/openai/v1
-  endpoint_api_key_env: RUNPOD_API_KEY
-  endpoint_model: qwenasaf
-```
-
-To use PyQt Qwen GT via RunPod Serverless queue endpoint (`/run` + `/status`), set:
-
-```yaml
-inference:
-  backend: runpod_queue
-  endpoint_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>
-  endpoint_api_key_env: RUNPOD_API_KEY
-  endpoint_model: Qwen/Qwen3.5-35B-A3B
-  endpoint_timeout_sec: 600
-```
-
-Template for original (non-finetuned) Qwen:
-
-- `configs/qwen_ui_runpod_queue_qwen35_original.template.yaml`
-
-Optional override when status polling is on a different URL:
-
-```yaml
-inference:
-  endpoint_status_base_url: https://api.runpod.ai/v2/<ENDPOINT_ID>/status
-```
-
-Enable Hub push in config only when needed:
-
-```bash
-# push_to_hub.enabled: true
-# push_to_hub.repo_id: <your_org>/<your_model_repo>
-# keep push_to_hub.hf_token: null (use FINETREE_HF_TOKEN env var)
-```
-
-Push adapters after training with current config:
-
-```bash
-finetree-ft-train --config configs/finetune_qwen35a3_vl.yaml --push-adapter-only
-```
-
-### RunPod Serverless Queue Worker
-
-This repo now includes a queue-style RunPod Serverless worker implementation:
-
-- module: `src/finetree_annotator/deploy/runpod_serverless_worker.py`
-- CLI entrypoint: `finetree-runpod-worker`
-- sample payload: `deploy/runpod/test_input.json`
-- worker is configured for streaming (`yield`) with `return_aggregate_stream=true`
-
-Local payload test:
-
-```bash
-finetree-runpod-worker --test-input deploy/runpod/test_input.json --pretty
-```
-
-Run as Serverless worker process:
-
-```bash
-finetree-runpod-worker --serve
-```
-
-Recommended RunPod endpoint container command:
-
-```bash
-finetree-runpod-worker --serve
-```
-
-For true token streaming in UI, the endpoint must expose both:
-
-- `POST /run` (submit job)
-- `GET /stream/{job_id}` (stream events)
-
-The UI queue backend uses `/stream/{job_id}` first and falls back to `/status/{job_id}` when streaming is unavailable.
-
-Build and push a Serverless worker image:
-
-```bash
-export IMAGE_NAME=<registry>/<namespace>/finetree-serverless
-export IMAGE_TAG=latest
-docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.serverless -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
-```
-
-### RunPod Pod Services (Additive to Serverless)
-
-Serverless queue flow remains supported and unchanged. Pod services are an additional path.
-
-Pod Qwen config templates:
-
-- `configs/qwen_ui_runpod_pod_openai.yaml` (proxy mode to external OpenAI-compatible endpoint)
-- `configs/qwen_ui_runpod_pod_local_8bit.yaml` (local model loading, 8-bit quantized)
-- `configs/qwen_ui_runpod_pod_local_4bit.yaml` (local model loading, 4-bit quantized)
-- `configs/qwen_ui_runpod_pod_local_bf16.yaml` (local model loading, full bf16, multi-GPU aware)
-
-Local pod configs now include fallback to original Qwen when primary load fails:
-
-- Primary: `unsloth/Qwen3.5-35B-A3B`
-- Fallback: `Qwen/Qwen3.5-27B-Instruct` (adapter disabled on fallback)
-- Non-thinking defaults: `enable_thinking=false`, `do_sample=true`, `temperature=0.7`, `top_p=0.8`
-
-Manual model load smoke-test without exposing API:
-
-```bash
-cd /workspace/FineTree
-scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_bf16.yaml
-```
-
-You can also use:
-
-```bash
-scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_8bit.yaml
-scripts/runpod_model_test.sh configs/qwen_ui_runpod_pod_local_4bit.yaml
-```
-
-Start both Pod services in one process group:
-
-```bash
-finetree-runpod-pod-start --config configs/qwen_ui_runpod_pod_local_bf16.yaml
-```
-
-This starts:
-
-- API on `6666` (`/v1/chat/completions`, supports streaming)
-- Playground UI on `5555` (system prompt + generation params + image upload + live token streaming)
-
-Qwen3.5 default sampling preset in this repo is non-thinking by default and aligned to model-card guidance:
-`enable_thinking=false`, `do_sample=true`, `temperature=0.7`, `top_p=0.8`.
-
-Optional multi-GPU memory controls (helpful for `3x RTX A6000` / `1x A100` fleets):
-
-```bash
-export FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB=46
-export FINETREE_QWEN_GPU_MEMORY_UTILIZATION=0.92
-```
-
-`FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB` caps each GPU memory budget explicitly. If unset, memory budget is auto-computed from total VRAM and `FINETREE_QWEN_GPU_MEMORY_UTILIZATION`.
-
-Required Pod auth env vars:
-
-```bash
-export FINETREE_POD_API_KEY=<token-for-6666>
-export FINETREE_GRADIO_USER=<gradio-user>
-export FINETREE_GRADIO_PASS=<gradio-pass>
-export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>   # optional
-export FINETREE_POD_DEBUG_ERRORS=0
-```
-
-`FINETREE_ADAPTER_REF` overrides `inference.adapter_path` for local pod inference and is the recommended
-way to point the pod to a fine-tuned LoRA adapter repo.
-
-Minimal deployment flow (go/no-go):
-
-```bash
-export FINETREE_POD_API_KEY=<token-for-6666>
-export FINETREE_ADAPTER_REF=<hf-user>/<adapter-repo-or-local-path>   # optional but recommended
-scripts/runpod_machine_tools.sh flow-check                            # must PASS
-scripts/runpod_machine_tools.sh start configs/qwen_ui_runpod_pod_local_bf16.yaml
-scripts/runpod_machine_tools.sh warmup
-```
-
-Run full local tests inside pod env:
-
-```bash
-pytest -q
-```
-
-Doppler-first deployment flow (build + pod update + warmup in one command):
-
-```bash
-scripts/runpod_deploy_doppler.sh --project <doppler-project> --config <doppler-config>
-```
-
-Expected Doppler secrets:
-
-- `FINETREE_POD_API_KEY`
-- `POD_ID` (or `RUNPOD_POD_ID`)
-- `FINETREE_POD_IMAGE_NAME` (or `IMAGE_NAME`, default `delmedigo/finetree-pod`)
-- `FINETREE_POD_IMAGE_TAG` (or `IMAGE_TAG`, default `latest`)
-- Optional runtime secrets: `FINETREE_ADAPTER_REF`, `FINETREE_QWEN_FALLBACK_MODEL`, `FINETREE_QWEN_MAX_MEMORY_PER_GPU_GB`, `FINETREE_QWEN_GPU_MEMORY_UTILIZATION`, `HUGGING_FACE_HUB_TOKEN`, `HF_TOKEN`, `FINETREE_POD_DEBUG_ERRORS`
-
-Set `FINETREE_POD_DEBUG_ERRORS=1` during deployment/debug sessions to include exception details in `500` responses.
-Each internal failure returns an `error_id` and logs a matching traceback, which you can locate with:
-
-```bash
-scripts/runpod_machine_tools.sh logs-find <error_id>
-```
-
-Build and push a Pod image:
-
-```bash
-export IMAGE_NAME=delmedigo/finetree-pod
-export IMAGE_TAG=latest
-docker buildx build --platform linux/amd64 -f deploy/runpod/Dockerfile.pod -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
-```
-
-Recommended post-deploy warmup flow (first request can take time for HF download + weight materialization):
-
-```bash
-git clone https://github.com/DelmedigoA/FineTree.git
-cd FineTree
-export POD_ID=<your-pod-id>
-export FINETREE_POD_API_KEY=<your-pod-api-key>
-./scripts/runpod_api_warmup.sh --pod-id "${POD_ID}" --max-tokens 10
-```
-
-The warmup script retries until the pod can return a real `/v1/chat/completions` response.
-
-Export quantized artifacts (default 8-bit):
-
-```bash
-finetree-ft-export-quantized --config configs/finetune_qwen35a3_vl.yaml
-```
-
-Supported request `input` keys:
-
-- `image_path` (local path inside container) OR `image_data_uri` OR `image_base64`
-- `image_mime_type` (used with `image_base64`, default `image/png`)
-- `prompt` (optional; default uses FineTree extraction prompt)
-- `response_mode`: `page_extraction` (default) or `text`
-- `model` (optional inference model override)
-- `config_path` (optional fine-tune YAML path override)
-
-Minimal API request body example:
-
-```json
-{
-  "input": {
-    "image_base64": "<base64-png-or-jpg>",
-    "image_mime_type": "image/png",
-    "response_mode": "page_extraction"
-  }
-}
-```
-
-### Controls
-
-- Draw new bbox: click + drag on image
-- Jump to a page: use top-bar **Go to page** selector
-- Fast browse pages: scroll and click the left **Pages** thumbnail strip
-- Default page zoom: each page opens fit-to-panel-height
-- Magnifier: toggle **Lens** in the top bar for zoomed cursor inspection
-- Multi-select bboxes: **Shift + drag** on page
-- Batch path/reference edit for selected bboxes: use **Batch Edit Selected BBoxes** (Add Parent/Child, Insert At Position, Remove First/Last, Clear Refference)
-- Drag bbox: click and move selected box
-- Resize bbox: drag an edge/corner of the selected box
-- Edit fact: double-click inside bbox (or select bbox and click **Edit Selected Fact**)
-- Duplicate bbox: **Ctrl+D**
-- Gemini ground-truth draft for current page: **Gemini GT** button (**Ctrl+G**) with live streaming popup
-- Qwen ground-truth draft for current page: **Qwen GT** button (**Ctrl+Shift+G**) with live streaming popup (`qwen-flash-gt` supports Gemini-style few-shot examples)
-- Delete bbox: **Delete**
-- Save annotations: **Ctrl+S**
-- Undo / Redo: **Ctrl+Z** / **Ctrl+Y** (also **Ctrl+Shift+Z**)
-- Zoom in/out: **Ctrl + Mouse Wheel**, **Ctrl+=**, **Ctrl+-**
-- Fit to page: **Ctrl+0**
-- Move selected bbox(es): **Arrow keys** (hold **Shift** for faster move)
-- Pan view: **Ctrl+Arrow keys** or right/middle mouse drag
-
-### Metadata behavior
-
-- `entity_name` is automatically copied from the current page to the next page when navigating/saving page state.
-
-### Fact field lists
-
-- `note_num`: optional integer note number attached to a specific fact
-- `is_beur`: optional boolean flag for whether the fact is tied to a beur/footnote
-- `beur_num`: legacy alias for note-number input during normalization
-- `currency` options: `ILS`, `USD`, `EUR`, `GBP`
-- `scale` options: `1`, `1000`, `1000000`
-
-### Tests
-
-```bash
-pytest -q
-```
-
-### Build + Push Docker Image
-
-RunPod GPU image (Qwen3.5 MoE stack, `linux/amd64`):
-
-```bash
-export IMAGE_NAME=delmedigo/finetree-runpod
-export IMAGE_TAG=qwen35-moe
-docker buildx build --platform linux/amd64 -f Dockerfile -t "${IMAGE_NAME}:${IMAGE_TAG}" --push .
-```
-
-Local CPU image (macOS/PC data tooling, no Unsloth GPU training):
-
-```bash
-export LOCAL_IMAGE_NAME=delmedigo/finetree-local
-export LOCAL_IMAGE_TAG=cpu
-docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile.mac -t "${LOCAL_IMAGE_NAME}:${LOCAL_IMAGE_TAG}" --push .
-```
-
-Note: `Dockerfile.mac` is for CLI/data tooling and does not include `PyQt5`.
+The Colab notebook produces the submission bundle separately. See [benchmark/README.md](benchmark/README.md) for the unpacked folder layout and the `info.json` flow.

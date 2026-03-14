@@ -1,0 +1,1228 @@
+{
+  "backend": "vertex_stream_generate_content",
+  "streamed": true,
+  "status": "aborted",
+  "error": null,
+  "chunks": [
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "pages\": [{\"image\": null, \"meta\": {\"entity_name\": \"\\\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "הכנסת אורחים\\\" - בולטון, מירון (ע\\\"ר"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ")\", \"page_num\": \"5\", \"page_type\": \"statements\", \"statement_type\": \"statement_of_changes_in_equity\", \"title\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"דוחות על השינויים בנכסים נטו\"}, \"facts\": [{\"bbox\": [555, 237, 26"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", 17], \"fact_num\": 1, \"value\": \"170,025\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": \"2023-01-01\", \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": null, \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"לשימוש לפעילויות שלא"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " יועדו על ידי מוסדות המלכ\\\"ר\", \"יתרות ליום 1 בינואר 2023\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [291, 287, 26,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 17], \"fact_num\": 2, \"value\": \"210,509\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": \"2023-01-01\", \"period_end\": null, \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"שהושקעו בנכסים קבועים\", \"יתרות ליום 1 בינואר 2023\"], \"path_source\": \"observed\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "note_ref\": null, \"comment_ref\": null}, {\"bbox\": [48, 237, 26, 17], \"fact_num\": 3, \"value\": \"40,484\", \"equations\": [{\"equation\": \"210,509"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " - 170,025\", \"fact_equation\": \"f2 - f1\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"period_type\": \"instant\", \"period_start\": \"2023-01-01\", \"period_end\": null, \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"סה\\\"כ\", \"יתרות ליום 1 בינואר 2023\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": [557, 439, 26, 17], \"fact_num\": 4, \"value\": \"33,565\", \"equations\": [{\"equation\": \"170,025 - 33,565 - 18"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ",828 + 27,269\", \"fact_equation\": \"f1 - f5 - f8 + f9\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\\\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ר\", \"תוספות במהלך השנה\", \"גרעון לשנה\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [556, 440, 26, 17], \"fact_num\": 5, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value\": \"33,565\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\\\"ר\", \"תוספות במהלך השנה\", \"גריעות במהלך השנה\"], \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [15, 271, 25, 17], \"fact_num\": 6, \"value\": \"-\", \"equations\": null, \"value_type\": \"amount\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגב"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "לה\", \"סה\\\"כ\", \"תוספות במהלך השנה\", \"גרעון לשנה\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [15, 303, 25, 17], \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "fact_num\": 7, \"value\": \"-\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"סה\\\"כ\", \"תוספות במהלך השנה\", \"גריעות במהלך השנה\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null}, {\"bbox\": [556, 442, 26, 17], \"fact_num\": 8, \"value\": \"18,828\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"לשימוש לפעילויות שלא יועדו"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " על ידי מוסדות המלכ\\\"ר\", \"תוספות במהלך השנה\", \"העברת סכומים שלא קיימת לגביהם הגבלה שהושקעו בנכסים קבועים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ref\": null}, {\"bbox\": [291, 285, 26, 17], \"fact_num\": 9, \"value\": \"18,828\", \"equations\": [{\"equation\": \"210,509 - 18,828"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"fact_equation\": \"f2 - f8\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"שהושקעו בנכסים קבועים\", \"תוספות במהלך השנה\", \"העברת סכומים שלא קיימת לגביהם הגבלה שהושקע"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ו בנכסים קבועים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [15, 271, 25, 17], \"fact_num\": 10, \"value\": \"-\", \"equations"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": \"2023-0"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1-01\", \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " שאין לגביהם הגבלה\", \"סה\\\"כ\", \"תוספות במהלך השנה\", \"העברת סכומים שלא קיימת לגביהם הגבלה שהושקעו בנכסים קבועים\"], \"path_source\": \"observed\", \"note_ref"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"comment_ref\": null}, {\"bbox\": [556, 445, 26, 17], \"fact_num\": 11, \"value\": \"27,269\", \"equations\": null, \"value_type\": \"amount\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"20"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "23-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\\\"ר\", \"תוספות במהלך השנה\", \"סכומים שהועברו לכיסוי הוצאות פחת\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ref\": null}, {\"bbox\": [291, 273, 26, 17], \"fact_num\": 12, \"value\": \"27,269\", \"equations\": [{\"equation\": \"210,509 - 18,828"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " - 27,269\", \"fact_equation\": \"f2 - f9 - f11\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"שהושקעו בנכסים קבועים\", \"תוספות במהלך השנה\", \"סכומים שהועברו לכי"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "סוי הוצאות פחת\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [48, 240, 26, 17], \"fact_num\": 13, \"value\": \"-\", \"equations\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו ש"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "אין לגביהם הגבלה\", \"סה\\\"כ\", \"תוספות במהלך השנה\", \"סכומים שהועברו לכיסוי הוצאות פחת\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [5"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "55, 432, 26, 17], \"fact_num\": 14, \"value\": \"195,149\", \"equations\": [{\"equation\": \"170,025 - 33,565 - 18,828"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " + 27,269\", \"fact_equation\": \"f1 - f5 - f8 + f11\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"total\", \"currency\": \"ILS"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": \"2023-12-31\", \"period_end\": null, \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_name\": null, \"path\": [\"נכסים נטו שאין לגביהם הגבלה\", \"לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\\\"ר\", \"יתרות ליום 31 בדצמבר 2023\"], \"path"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [291, 281, 26, 17], \"fact_num\": 15, \"value\": \"202,068\", \"equations\": [{\"equation\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"210,509 - 18,828 - 27,269\", \"fact_equation\": \"f2 - f9 - f12\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T19:55:16.084467Z",
+      "responseId": "JL21afOTBdCVheMP4LPduQE"
+    }
+  ]
+}

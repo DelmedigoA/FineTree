@@ -4,7 +4,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from PyQt5.QtCore import QPointF, QRectF, Qt
+from PyQt5 import sip
+from PyQt5.QtCore import QEvent, QPointF, QRectF, Qt
 from PyQt5.QtGui import QColor, QImage, QKeyEvent, QPainter
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
@@ -229,6 +230,7 @@ def test_gemini_prompt_dialog_uses_supported_model_dropdown() -> None:
     assert "gemini-3-flash-preview" in options
     assert "gemini-3.1-pro-preview" in options
     assert "gemini-2.5-flash" in options
+    assert "gemini-flash-hf-tuned" in options
     assert dialog.model() == "gemini-2.5-pro"
     dialog.close()
 
@@ -245,6 +247,7 @@ def test_gemini_fill_dialog_uses_supported_model_dropdown() -> None:
     assert "gemini-3-flash-preview" in options
     assert "gemini-3.1-flash-lite" in options
     assert "gemini-2.5-pro" in options
+    assert "gemini-flash-hf-tuned" in options
     assert dialog.model() == "gemini-3.1-flash-lite"
     dialog.close()
 
@@ -492,8 +495,8 @@ def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Pat
     captured_stream_kwargs: dict[str, object] = {}
     monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
     monkeypatch.setattr(
-        "finetree_annotator.gemini_vlm.resolve_api_key",
-        lambda: "test-key",
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
     )
     monkeypatch.setattr(
         window,
@@ -557,13 +560,69 @@ def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypa
 
     captured_stream_kwargs: dict[str, object] = {}
     monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
-    monkeypatch.setattr("finetree_annotator.gemini_vlm.resolve_api_key", lambda: "test-key")
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
+    )
     monkeypatch.setattr(window, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
     window.generate_gemini_auto_complete()
 
     assert captured_stream_kwargs["max_facts"] == 2
     assert captured_stream_kwargs["mode"] == "autocomplete"
+
+    window.close()
+
+
+def test_gemini_gt_vertex_model_does_not_require_standard_api_key(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    class _AcceptedDialog:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
+        def exec_(self) -> int:
+            return app_mod.QDialog.Accepted
+
+        def prompt(self) -> str:
+            return "vertex prompt"
+
+        def model(self) -> str:
+            return "gemini-flash-hf-tuned"
+
+        def enable_thinking(self) -> bool:
+            return True
+
+        def thinking_level(self) -> str:
+            return "high"
+
+        def use_few_shot(self) -> bool:
+            return False
+
+        def few_shot_preset(self) -> str:
+            return app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
+
+        def max_facts(self) -> int:
+            return 0
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: (None, None),
+    )
+    monkeypatch.setattr(window, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.generate_gemini_ground_truth()
+
+    assert captured_stream_kwargs["model_name"] == "gemini-flash-hf-tuned"
+    assert captured_stream_kwargs["gemini_api_key"] is None
 
     window.close()
 
@@ -2712,6 +2771,31 @@ def test_shift_drag_adds_bboxes_to_existing_selection(tmp_path: Path) -> None:
     window.close()
 
 
+def test_drag_selection_ignores_deleted_temp_select_item(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=220, height=220)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.show()
+    _qt_app().processEvents()
+
+    window.scene.mousePressEvent(_SceneMouseEvent(QPointF(10, 10), modifiers=Qt.NoModifier))
+    assert window.scene._temp_select_item is not None
+    temp_item = window.scene._temp_select_item
+    window.scene.removeItem(temp_item)
+    sip.delete(temp_item)
+
+    window.scene.mouseMoveEvent(_SceneMouseEvent(QPointF(110, 60), modifiers=Qt.NoModifier))
+    _qt_app().processEvents()
+
+    assert window.scene._temp_select_item is None
+    assert window.scene._selecting is False
+    window.close()
+
+
 def test_click_empty_page_clears_selection(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -3171,14 +3255,17 @@ def test_save_shortcut_triggers_single_save(tmp_path: Path, monkeypatch) -> None
 
     window = AnnotationWindow(images_dir, annotations_path)
     window.show()
+    window.activateWindow()
+    window.setFocus(Qt.OtherFocusReason)
     _qt_app().processEvents()
 
     calls: list[str] = []
     monkeypatch.setattr(window, "save_annotations", lambda: calls.append("save") or True)
 
-    QTest.keyClick(window, Qt.Key_S, Qt.ControlModifier)
+    handled = window.event(QKeyEvent(QEvent.KeyPress, Qt.Key_S, Qt.ControlModifier))
     _qt_app().processEvents()
 
+    assert handled is True
     assert calls == ["save"]
     window.close()
 

@@ -1,0 +1,997 @@
+```json
+{
+  "pages": [
+    {
+      "image": null,
+      "meta": {
+        "entity_name": "הכנסת אורחים - בולטון, מירון (ע\"ר)",
+        "page_num": "5",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
+        "title": "דוחות על השינויים בנכסים נטו"
+      },
+      "facts": [
+        {
+          "bbox": [
+            422,
+            288,
+            57,
+            15
+          ],
+          "fact_num": 1,
+          "value": "(170,025)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "יתרות ליום 1 בינואר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            280,
+            288,
+            55,
+            15
+          ],
+          "fact_num": 2,
+          "value": "210,509",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "יתרות ליום 1 בינואר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            145,
+            288,
+            46,
+            15
+          ],
+          "fact_num": 3,
+          "value": "40,484",
+          "equations": [
+            {
+              "equation": "(170,025) + 210,509",
+              "fact_equation": "f1 + f2"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "יתרות ליום 1 בינואר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            418,
+            325,
+            61,
+            15
+          ],
+          "fact_num": 4,
+          "value": "(33,565)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "תוספות במהלך השנה",
+            "גרעון לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            310,
+            325,
+            25,
+            15
+          ],
+          "fact_num": 5,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "תוספות במהלך השנה",
+            "גרעון לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            145,
+            325,
+            46,
+            15
+          ],
+          "fact_num": 6,
+          "value": "(33,565)",
+          "equations": [
+            {
+              "equation": "(33,565) + -",
+              "fact_equation": "f4 + f5"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "תוספות במהלך השנה",
+            "גרעון לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            418,
+            386,
+            61,
+            15
+          ],
+          "fact_num": 7,
+          "value": "(18,828)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            290,
+            386,
+            45,
+            15
+          ],
+          "fact_num": 8,
+          "value": "18,828",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            200,
+            386,
+            10,
+            15
+          ],
+          "fact_num": 9,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "(18,828) + 18,828",
+              "fact_equation": "f7 + f8"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            431,
+            402,
+            48,
+            15
+          ],
+          "fact_num": 10,
+          "value": "27,269",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            277,
+            402,
+            58,
+            15
+          ],
+          "fact_num": 11,
+          "value": "(27,269)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            200,
+            402,
+            10,
+            15
+          ],
+          "fact_num": 12,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "27,269 + (27,269)",
+              "fact_equation": "f10 + f11"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            415,
+            424,
+            64,
+            15
+          ],
+          "fact_num": 13,
+          "value": "(195,149)",
+          "equations": [
+            {
+              "equation": "(170,025) + (33,565) + (18,828) + 27,269",
+              "fact_equation": "f1 + f4 + f7 + f10"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "יתרות ליום 31 בדצמבר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            280,
+            424,
+            55,
+            15
+          ],
+          "fact_num": 14,
+          "value": "202,068",
+          "equations": [
+            {
+              "equation": "210,509 + - + 18,828 + (27,269)",
+              "fact_equation": "f2 + f5 + f8 + f11"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "יתרות ליום 31 בדצמבר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            161,
+            424,
+            38,
+            15
+          ],
+          "fact_num": 15,
+          "value": "6,919",
+          "equations": [
+            {
+              "equation": "40,484 + (33,565) + - + -",
+              "fact_equation": "f3 + f6 + f9 + f12"
+            },
+            {
+              "equation": "(195,149) + 202,068",
+              "fact_equation": "f13 + f14"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "יתרות ליום 31 בדצמבר 2023"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            431,
+            466,
+            48,
+            15
+          ],
+          "fact_num": 16,
+          "value": "50,907",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            310,
+            466,
+            25,
+            15
+          ],
+          "fact_num": 17,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            153,
+            466,
+            46,
+            15
+          ],
+          "fact_num": 18,
+          "value": "50,907",
+          "equations": [
+            {
+              "equation": "50,907 + -",
+              "fact_equation": "f16 + f17"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "תוספות במהלך השנה",
+            "הכנסות נטו לשנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            423,
+            522,
+            56,
+            15
+          ],
+          "fact_num": 19,
+          "value": "(11,413)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            290,
+            522,
+            45,
+            15
+          ],
+          "fact_num": 20,
+          "value": "11,413",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            200,
+            522,
+            10,
+            15
+          ],
+          "fact_num": 21,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "(11,413) + 11,413",
+              "fact_equation": "f19 + f20"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            431,
+            539,
+            48,
+            15
+          ],
+          "fact_num": 22,
+          "value": "29,482",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            277,
+            539,
+            58,
+            15
+          ],
+          "fact_num": 23,
+          "value": "(29,482)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            200,
+            539,
+            10,
+            15
+          ],
+          "fact_num": 24,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "29,482 + (29,482)",
+              "fact_equation": "f22 + f23"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "גריעות במהלך השנה",
+            "סכומים שהועברו לכיסוי הוצאות פחת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            415,
+            560,
+            64,
+            15
+          ],
+          "fact_num": 25,
+          "value": "(126,173)",
+          "equations": [
+            {
+              "equation": "(195,149) + 50,907 + (11,413) + 29,482",
+              "fact_equation": "f13 + f16 + f19 + f22"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "יתרות ליום 31 בדצמבר 2024"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            280,
+            560,
+            55,
+            15
+          ],
+          "fact_num": 26,
+          "value": "183,999",
+          "equations": [
+            {
+              "equation": "202,068 + - + 11,413 + (29,482)",
+              "fact_equation": "f14 + f17 + f20 + f23"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "נכסים נטו שאין לגביהם הגבלה",
+            "שהושקעו בנכסים קבועים",
+            "יתרות ליום 31 בדצמבר 2024"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            161,
+            560,
+            38,
+            15
+          ],
+          "fact_num": 27,
+          "value": "57,826",
+          "equations": [
+            {
+              "equation": "6,919 + 50,907 + - + -",
+              "fact_equation": "f15 + f18 + f21 + f24"
+            },
+            {
+              "equation": "(126,173) + 183,999",
+              "fact_equation": "f25 + f26"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ",
+            "יתרות ליום 31 בדצמבר 2024"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

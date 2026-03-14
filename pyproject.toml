@@ -21,6 +21,7 @@ dependencies = [
   "peft",
   "fastapi",
   "uvicorn",
+  "python-multipart",
   "huggingface_hub",
   "runpod",
   "qwen-vl-utils",
@@ -54,6 +55,8 @@ finetree-pod-api = "finetree_annotator.deploy.pod_api:main"
 finetree-simple-infer-api = "finetree_annotator.deploy.simple_infer_api:main"
 finetree-pod-gradio = "finetree_annotator.deploy.pod_gradio:main"
 finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
+finetree-benchmark = "finetree_annotator.benchmark.web:main"
+finetree-benchmark-run = "finetree_annotator.benchmark.runner:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

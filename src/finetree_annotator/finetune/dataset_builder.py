@@ -157,20 +157,24 @@ def _transform_page_for_target(
         page_meta = {str(key): page_meta_full.get(str(key)) for key in selected_page_meta_keys}
 
     selected_fact_key_set = {str(key) for key in selected_fact_keys} if selected_fact_keys is not None else None
+    page_facts = [
+        {
+            key: value
+            for key, value in fact.items()
+            if key == "bbox" or selected_fact_key_set is None or key in selected_fact_key_set
+        }
+        for fact in out_facts
+    ]
+    if page_only_wrapper:
+        return {
+            "meta": page_meta,
+            "facts": page_facts,
+        }
     page_payload = {
         "image": str(page.get("image") or "").strip() or None,
         "meta": page_meta,
-        "facts": [
-            {
-                key: value
-                for key, value in fact.items()
-                if key == "bbox" or selected_fact_key_set is None or key in selected_fact_key_set
-            }
-            for fact in out_facts
-        ],
+        "facts": page_facts,
     }
-    if page_only_wrapper:
-        return {"pages": [page_payload]}
     return {
         "images_dir": images_dir or None,
         "metadata": dict(metadata),

@@ -28,7 +28,7 @@ def test_schema_contract_required_prompt_keys_are_canonical() -> None:
     assert set(REQUIRED_PROMPT_CANONICAL_KEYS).issubset(set(CANONICAL_FACT_KEYS))
     assert "annotation_note" not in PROMPT_PAGE_META_KEYS
     assert "annotation_status" not in PROMPT_PAGE_META_KEYS
-    assert "fact_num" not in PROMPT_FACT_KEYS
+    assert "fact_num" in PROMPT_FACT_KEYS
     assert "equations" in PROMPT_FACT_KEYS
     assert "equation" not in PROMPT_FACT_KEYS
     assert "fact_equation" not in PROMPT_FACT_KEYS
@@ -78,7 +78,11 @@ def test_custom_schema_preview_is_page_only() -> None:
     )
     assert '"images_dir"' not in preview
     assert '"metadata"' not in preview
-    assert "page-only wrapper" in prompt
+    assert '"pages"' not in preview
+    assert '"image"' not in preview
+    assert '"meta"' in preview
+    assert '"facts"' in preview
+    assert "page-level object" in prompt
 
 
 def test_equation_schema_is_present_in_model_prompts() -> None:

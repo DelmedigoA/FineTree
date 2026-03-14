@@ -1,0 +1,1728 @@
+{
+  "backend": "vertex_stream_generate_content",
+  "streamed": true,
+  "status": "completed",
+  "error": null,
+  "chunks": [
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "pages\": [{\"image\": null, \"meta\": {\"entity_name\": \"הכנס"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ת אורחים\\\" - בולטון, מירון (ע\\\"ר)\\"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\"\", \"page_num\": \"4\", \"page_type\": \"statements\", \"statement_type\": \"statement_of_activities\", \"title\": \"דוחות על"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " הפעילויות\"}, \"facts\": [{\"bbox\": [287, 150, 48, 10], \"fact_num\": "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1, \"value\": \"177,963\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"תרומות\"], \"path_source\": \"observed\", \"note_ref"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"comment_ref\": null}, {\"bbox\": [284, 275, 51, 9], \"fact_num\": 2, \"value\": \"167,404\", \"equations\": null, \"value_type\": \"amount\", \"value"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"תרומות\"], \"path_source\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [278, 153, 56, 11], \"fact_num\": 3, \"value\": \"231,279\", \"equations\": null, \"value_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"הכנס"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ות בשווה כסף\"], \"path_source\": \"observed\", \"note_ref\": \"12\", \"comment_ref\": null}, {\"bbox\": [287, 269, 51, 10], \"fact_num\": 4, \"value\": \"14"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "0,574\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"path\": [\"מחזור הפעילות\", \"הכנסות בשווה כסף\"], \"path_source\": \"observed\", \"note_ref\": \"12\", \"comment_ref\": null}, {\"bbox\": [323, 168, 15, 9], \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "fact_num\": 5, \"value\": \"1,500\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"הכנסות ממתן שירותים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [322, "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "335, 12, 12], \"fact_num\": 6, \"value\": \"-\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"הכנסות ממתן שירותים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": [287, 172, 48, 11], \"fact_num\": 7, \"value\": \"410,742\", \"equations\": [{\"equation\": \"f1 + f3 + f5\", \"fact_equation\": \"f1 + f3 + f"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "5\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מח"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "זור הפעילות\", \"סה״כ\"], \"path_source\": \"inferred\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [284, 287, 51, 12], \"fact_num\": 8, \"value\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"307,978\", \"equations\": [{\"equation\": \"f2 + f4 + f6\", \"fact_equation\": \"f2 + f4 + f6\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מחזור הפעילות\", \"סה״כ\"], \"path_source\": \"inferred\", \"note_ref\": null, \"comment"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_ref\": null}, {\"bbox\": [262, 154, 73, 10], \"fact_num\": 9, \"value\": \"419,556\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-3"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"עלות הפעילויות\"], \"path_source\": \"observed\", \"note_ref\": \"4"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"comment_ref\": null}, {\"bbox\": [257, 281, 78, 12], \"fact_num\": 10, \"value\": \"230,342\", \"equations\": null, \"value_type\": \"amount\", \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"20"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "24-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"עלות הפעילויות\"], \"path_source\": \"observed\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_ref\": \"4\", \"comment_ref\": null}, {\"bbox\": [267, 169, 68, 14], \"fact_num\": 11, \"value\": \"(8,814)\", \"equations\": [{\"equation\": \"f7 -"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " f9\", \"fact_equation\": \"f7 - f9\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"note_name\": null, \"path\": [\"הכנסות נטו מפעילויות (הוצאות נטו לפעילויות)\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [267, "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "307, 68, 15], \"fact_num\": 12, \"value\": \"77,636\", \"equations\": [{\"equation\": \"f8 - f10\", \"fact_equation\": \"f8 - f10\"}], \"value_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות נטו מפעילויות"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " (הוצאות נטו לפעילויות)\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [267, 168, 68, 14], \"fact_num\": 13, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value\": \"23,702\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_name\": null, \"path\": [\"הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"note_ref\": \"5\", \"comment_ref\": null}, {\"bbox\": [267, 304, 68, "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "14], \"fact_num\": 14, \"value\": \"25,445\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"note_ref\": \"5\", \"comment_ref\": null}, {\"bbox\": [25"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "9, 154, 76, 12], \"fact_num\": 15, \"value\": \"(32,516)\", \"equations\": [{\"equation\": \"f11 - f13\", \"fact_equation\": \"f11 - f13\"}],"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות ("
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "הוצאות) נטו לפני מימון\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [260, 290, 75, 12], \"fact_num\": 16, \"value\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "52,191\", \"equations\": [{\"equation\": \"f12 - f14\", \"fact_equation\": \"f12 - f14\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": \"recurrent\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות (הוצאות) נטו לפני מימון\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_ref\": null}, {\"bbox\": [278, 169, 57, 10], \"fact_num\": 17, \"value\": \"(2,246)\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מימון\", \"נטו\"], \"path_source\": \"observed\", \"note_ref\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"comment_ref\": null}, {\"bbox\": [287, 281, 47, 9], \"fact_num\": 18, \"value\": \"(1,284)\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"מימון\", \"נטו\"], \"path_source\": \"observed\", \"note"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_ref\": null, \"comment_ref\": null}, {\"bbox\": [267, 153, 72, 10], \"fact_num\": 19, \"value\": \"(34,762)\", \"equations\": [{\"equation\": \"f15 -"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " f17\", \"fact_equation\": \"f15 + f17\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"note_name\": null, \"path\": [\"הכנסות (הוצאות) נטו אחרי מימון\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [265, 298, 70"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", 10], \"fact_num\": 20, \"value\": \"50,907\", \"equations\": [{\"equation\": \"f16 - f18\", \"fact_equation\": \"f16 + f18\"}], \"value_type\": \"amount\", \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"20"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "24-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות (הוצאות) נטו אחרי מימון"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [323, 164, 12, 10], \"fact_num\": 21, \"value\": \"1,197\", \"equations\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2023-01-0"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות אחרות"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [320, 331, 15, 11], \"fact_num\": 22, \"value\": \"-\", \"equations\": null, \"value_type\": \"amount"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות אחרות\"], \"path_source\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [256, 149, 78, 12], \"fact_num\": 23, \"value\": \"(33,565)\", \"equations\": [{\"equation\": \"f"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "19 + f21\", \"fact_equation\": \"f19 + f21\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות (גרעון) נטו לשנה\", \"סה״כ\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [257, "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "290, 76, 12], \"fact_num\": 24, \"value\": \"50,907\", \"equations\": [{\"equation\": \"f20 + f22\", \"fact_equation\": \"f20 + f22\"}], \"value_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": \"2024-12-31\", \"duration_type\": \"recurrent\", \"recurring_period\": \"yearly\", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הכנסות (גרעון) נ"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "טו לשנה\", \"סה״כ\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}]}]}"
+              }
+            ]
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "usageMetadata": {
+        "promptTokenCount": 4513,
+        "candidatesTokenCount": 5336,
+        "totalTokenCount": 9849,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "IMAGE",
+            "tokenCount": 1806
+          },
+          {
+            "modality": "TEXT",
+            "tokenCount": 2707
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 5336
+          }
+        ]
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T18:47:13.870755Z",
+      "responseId": "Ma21aeOSNf-JlNsP__byiQY"
+    }
+  ]
+}

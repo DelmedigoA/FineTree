@@ -36,7 +36,7 @@ def test_schema_registry_prompt_contract_includes_schema_version_and_enums() -> 
     assert extraction["top_level_keys"] == ["pages"]
     assert "annotation_note" not in extraction["page_meta_keys"]
     assert "annotation_status" not in extraction["page_meta_keys"]
-    assert "fact_num" not in extraction["fact_keys"]
+    assert "fact_num" in extraction["fact_keys"]
     assert "equations" in extraction["fact_keys"]
     assert "equation" not in extraction["fact_keys"]
     assert "fact_equation" not in extraction["fact_keys"]

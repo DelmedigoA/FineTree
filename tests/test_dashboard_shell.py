@@ -380,6 +380,46 @@ def test_push_view_train_and_validation_lists_are_mutually_exclusive() -> None:
     view.close()
 
 
+def test_push_view_blocks_tiny_pixel_budget_values(monkeypatch) -> None:
+    _qt_app()
+    view = dashboard.PushView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_budget",
+                source_pdf=Path("/tmp/doc_budget.pdf"),
+                images_dir=Path("/tmp/doc_budget"),
+                annotations_path=Path("/tmp/doc_budget.json"),
+                thumbnail_path=None,
+                page_count=2,
+                annotated_page_count=1,
+                progress_pct=50,
+                status="In progress",
+                updated_at=None,
+                approved_page_count=1,
+                checked=False,
+                reviewed=False,
+            ),
+        ]
+    )
+    warnings: list[tuple[str, str]] = []
+    monkeypatch.setattr(
+        dashboard.QMessageBox,
+        "warning",
+        lambda _parent, title, text: warnings.append((title, text)),
+    )
+    view.max_pixels_spin.setValue(1200)
+
+    view.run_pipeline()
+
+    assert warnings
+    assert warnings[0][0] == "Pixel budget too small"
+    assert "1200" in warnings[0][1]
+    assert "28x28" in warnings[0][1]
+    assert view._worker_thread is None
+    view.close()
+
+
 def test_dashboard_nav_buttons_use_larger_icon_size() -> None:
     _qt_app()
     ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
