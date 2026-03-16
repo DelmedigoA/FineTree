@@ -458,6 +458,99 @@ def test_main_source_mode_runs_prompt_schema_audit(monkeypatch, tmp_path: Path) 
     assert captured["audited"] is True
 
 
+def test_main_supports_custom_schema_and_split_push(monkeypatch, tmp_path: Path) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_build_dataset(
+        config_path: Path,
+        *,
+        allow_format_issues: bool = False,
+        include_doc_ids: set[str] | None = None,
+        validation_doc_ids: set[str] | None = None,
+        approved_pages_only: bool = False,
+        drop_date: bool = False,
+        prompt_template_override: str | None = None,
+        selected_page_meta_keys: tuple[str, ...] | None = None,
+        selected_fact_keys: tuple[str, ...] | None = None,
+        page_only_wrapper: bool = False,
+    ) -> None:
+        _ = config_path, allow_format_issues, drop_date
+        captured["include_doc_ids"] = include_doc_ids
+        captured["validation_doc_ids"] = validation_doc_ids
+        captured["approved_pages_only"] = approved_pages_only
+        captured["prompt_template_override"] = prompt_template_override
+        captured["selected_page_meta_keys"] = selected_page_meta_keys
+        captured["selected_fact_keys"] = selected_fact_keys
+        captured["page_only_wrapper"] = page_only_wrapper
+
+    def _fake_split_push(
+        dataset: DatasetDict,
+        token: str,
+        *,
+        base_repo_id: str,
+        private: bool = True,
+        repo_id_train: str | None = None,
+        repo_id_validation: str | None = None,
+    ) -> dict[str, str]:
+        _ = dataset, token, private
+        captured["base_repo_id"] = base_repo_id
+        captured["repo_id_train"] = repo_id_train
+        captured["repo_id_validation"] = repo_id_validation
+        return {"train": repo_id_train or f"{base_repo_id}-train", "validation": repo_id_validation or f"{base_repo_id}-validation"}
+
+    monkeypatch.setattr(no_bbox_mod, "build_dataset", _fake_build_dataset)
+    monkeypatch.setattr(no_bbox_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})
+    monkeypatch.setattr(no_bbox_mod, "assert_no_duplicate_facts", lambda *_args, **_kwargs: {"duplicate_rows": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_order", lambda *_args, **_kwargs: {"pages_with_order_issues": 0})
+    monkeypatch.setattr(no_bbox_mod, "assert_fact_format", lambda *_args, **_kwargs: {"facts_with_issues": 0})
+    monkeypatch.setattr(no_bbox_mod, "export_for_hf_no_bbox", lambda *_args, **_kwargs: (1, 1))
+    monkeypatch.setattr(no_bbox_mod, "build_hf_dataset_no_bbox_from_export", lambda *_args, **_kwargs: (_empty_dataset(), 1, 1))
+    monkeypatch.setattr(no_bbox_mod, "push_train_validation_separately_no_bbox", _fake_split_push)
+
+    cwd = Path.cwd()
+    try:
+        os_root = tmp_path
+        (os_root / "configs").mkdir(parents=True)
+        (os_root / "configs" / "finetune_qwen35a3_vl.yaml").write_text("{}\n", encoding="utf-8")
+        monkeypatch.chdir(os_root)
+        rc = no_bbox_mod.main(
+            [
+                "--token",
+                "tok",
+                "--repo-id",
+                "asafd60/FineTree-value-path-no-bbox",
+                "--repo-id-train",
+                "asafd60/FineTree-value-path-no-bbox-train",
+                "--repo-id-validation",
+                "asafd60/FineTree-value-path-no-bbox-validation",
+                "--push-train-val-separately",
+                "--approved-pages-only",
+                "--include-doc-ids",
+                "pdf_7,pdf_8,pdf_9",
+                "--validation-doc-ids",
+                "pdf_9",
+                "--page-meta-keys",
+                "",
+                "--fact-keys",
+                "value,path",
+            ]
+        )
+    finally:
+        monkeypatch.chdir(cwd)
+
+    assert rc == 0
+    assert captured["include_doc_ids"] == {"pdf_7", "pdf_8", "pdf_9"}
+    assert captured["validation_doc_ids"] == {"pdf_9"}
+    assert captured["approved_pages_only"] is True
+    assert captured["selected_page_meta_keys"] == ()
+    assert captured["selected_fact_keys"] == ("value", "path")
+    assert captured["page_only_wrapper"] is True
+    assert isinstance(captured["prompt_template_override"], str)
+    assert captured["base_repo_id"] == "asafd60/FineTree-value-path-no-bbox-approved"
+    assert captured["repo_id_train"] == "asafd60/FineTree-value-path-no-bbox-train-approved"
+    assert captured["repo_id_validation"] == "asafd60/FineTree-value-path-no-bbox-validation-approved"
+
+
 def test_main_blocks_on_format_issues_by_default(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setattr(no_bbox_mod, "build_dataset", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(no_bbox_mod, "assert_no_train_val_contamination", lambda *_args, **_kwargs: {})

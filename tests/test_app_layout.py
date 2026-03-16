@@ -118,17 +118,12 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert not window.batch_box.isVisible()
     assert window.batch_toggle_btn.text() == "Show Batch Edit"
     assert window.save_btn.text() == "Save"
-    assert window.gemini_gt_btn.text() == "Gemini"
-    assert window.gemini_complete_btn.text() == "Auto Complete"
-    assert window.gemini_fill_btn.text() == "Auto-Fix"
+    assert window.ai_btn.text() == "AI"
     assert window.copy_image_btn.text() == "Copy Image"
     assert window.page_json_btn.text() == "JSON"
     assert window.exit_btn.text() == "Exit"
     assert window.page_jump_spin.minimumWidth() == 58
-    assert not window.gemini_gt_btn.icon().isNull()
-    assert not window.gemini_complete_btn.icon().isNull()
-    assert not window.gemini_fill_btn.icon().isNull()
-    assert not window.qwen_gt_btn.icon().isNull()
+    assert not window.ai_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
     assert window.facts_list.objectName() == "factsList"
@@ -136,8 +131,11 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
     assert window.fact_editor_box.layout().count() == 11
     assert window.apply_equation_btn.parentWidget() is not window.fact_editor_box
-    assert window.gemini_fill_btn.isEnabled() is False
-    assert window.gemini_complete_btn.isEnabled() is False
+    assert not hasattr(window, "gemini_gt_btn")
+    assert not hasattr(window, "gemini_complete_btn")
+    assert not hasattr(window, "gemini_fill_btn")
+    assert not hasattr(window, "qwen_gt_btn")
+    assert window._ai_controller.dialog is None
     assert window.fact_is_beur_combo.maximumWidth() > 500
     assert window.page_annotation_status_label.text() == "Unclassified"
     assert window.page_flag_btn.text().endswith("Flag")
@@ -220,54 +218,96 @@ def test_alt_f_focuses_fact_annotation_panel(tmp_path: Path) -> None:
     window.close()
 
 
-def test_gemini_prompt_dialog_uses_supported_model_dropdown() -> None:
+def test_ai_dialog_uses_supported_gemini_model_dropdown(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.GeminiPromptDialog(
-        prompt_text="test",
-        model_name="gemini-2.5-pro",
-    )
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
     options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
     assert "gemini-3-flash-preview" in options
     assert "gemini-3.1-pro-preview" in options
     assert "gemini-2.5-flash" in options
     assert "gemini-flash-hf-tuned" in options
-    assert dialog.model() == "gemini-2.5-pro"
+    assert dialog.current_provider() == app_mod.AIProvider.GEMINI
     dialog.close()
+    window.close()
 
 
-def test_gemini_fill_dialog_uses_supported_model_dropdown() -> None:
+def test_ai_fix_dialog_uses_supported_gemini_model_dropdown(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.GeminiFillDialog(
-        model_name="gemini-3.1-flash-lite",
-        thinking_enabled_default=True,
-        thinking_level_default="high",
-        prompt_builder=lambda *_args: "preview",
-    )
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.FIX_SELECTED)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
     options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
     assert "gemini-3-flash-preview" in options
     assert "gemini-3.1-flash-lite" in options
     assert "gemini-2.5-pro" in options
     assert "gemini-flash-hf-tuned" in options
-    assert dialog.model() == "gemini-3.1-flash-lite"
     dialog.close()
+    window.close()
 
 
-def test_gemini_prompt_dialog_defaults_max_facts_to_zero() -> None:
+def test_ai_ground_truth_dialog_defaults_max_facts_to_zero(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.GeminiPromptDialog(
-        prompt_text="extract",
-        model_name="gemini-3.1-flash-lite",
-        show_max_facts_control=True,
-        max_facts_default=0,
-    )
-
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
     assert dialog.max_facts_spin.isHidden() is False
-    assert dialog.max_facts() == 0
+    assert dialog.max_facts_spin.value() == 0
+    dialog.close()
+    window.close()
+
+
+def test_ai_dialog_prompt_section_starts_collapsed(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    assert dialog.prompt_toggle.isChecked() is False
+    assert dialog.prompt_frame.isVisible() is False
+    dialog.close()
+    window.close()
+
+
+def test_ai_dialog_running_state_disables_config_and_enables_stop(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+
+    window._ai_controller._set_status("Running...", fact_count=2, running=True)
+
+    assert dialog.provider_combo.isEnabled() is False
+    assert dialog.action_combo.isEnabled() is False
+    assert dialog.model_combo.isEnabled() is False
+    assert dialog.run_btn.isEnabled() is False
+    assert dialog.stop_btn.isEnabled() is True
 
     dialog.close()
+    window.close()
 
 
-def test_gemini_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_path: Path, monkeypatch) -> None:
+def test_ai_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -279,31 +319,17 @@ def test_gemini_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(
     window.scene.addItem(item)
     window.refresh_facts_list()
     _qt_app().processEvents()
-
-    captured_kwargs: dict[str, object] = {}
-
-    class _RejectedDialog:
-        def __init__(self, *args, **kwargs) -> None:
-            _ = args
-            captured_kwargs.update(kwargs)
-
-        def exec_(self) -> int:
-            return app_mod.QDialog.Rejected
-
-    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _RejectedDialog)
-
-    window.generate_gemini_auto_complete()
-
-    assert captured_kwargs["show_few_shot_controls"] is True
-    assert captured_kwargs["few_shot_enabled_default"] is False
-    assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_CLASSIC
-    assert captured_kwargs["show_max_facts_control"] is True
-    assert captured_kwargs["max_facts_default"] == 0
-
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.AUTO_COMPLETE)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    assert dialog.few_shot_check.isChecked() is False
+    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_CLASSIC
+    assert dialog.max_facts_spin.value() == 0
+    dialog.close()
     window.close()
 
 
-def test_gemini_gt_dialog_defaults_to_two_shot_preset(tmp_path: Path, monkeypatch) -> None:
+def test_ai_ground_truth_dialog_defaults_to_two_shot_preset(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -311,55 +337,50 @@ def test_gemini_gt_dialog_defaults_to_two_shot_preset(tmp_path: Path, monkeypatc
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    captured_kwargs: dict[str, object] = {}
-
-    class _RejectedDialog:
-        def __init__(self, *args, **kwargs) -> None:
-            _ = args
-            captured_kwargs.update(kwargs)
-
-        def exec_(self) -> int:
-            return app_mod.QDialog.Rejected
-
-    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _RejectedDialog)
-
-    window.generate_gemini_ground_truth()
-
-    assert captured_kwargs["few_shot_preset_default"] == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
+    window.open_ai_dialog()
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    assert dialog.current_provider() == app_mod.AIProvider.GEMINI
+    assert dialog.current_action() == app_mod.AIActionKind.GROUND_TRUTH
+    assert dialog.current_model() == "gemini-3-flash-preview"
+    assert dialog.thinking_check.isChecked() is False
+    assert dialog.thinking_level_combo.currentText().lower() == "minimal"
+    assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
+    dialog.close()
     window.close()
 
 
-def test_gemini_fill_dialog_defaults_only_period_fields_checked() -> None:
+def test_ai_fix_dialog_defaults_only_period_fields_checked(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.GeminiFillDialog(
-        model_name="gemini-3.1-flash-lite",
-        thinking_enabled_default=True,
-        thinking_level_default="high",
-        prompt_builder=lambda *_args: "preview",
-    )
-
-    assert dialog.selected_fact_fields() == {"period_type", "period_start", "period_end"}
-    assert "equations" in dialog._fact_field_checks
-
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.FIX_SELECTED)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    assert dialog.selected_fix_fields() == {"period_type", "period_start", "period_end"}
+    assert "equations" in dialog._fix_field_checks
     dialog.close()
+    window.close()
 
 
-def test_gemini_fill_dialog_clear_all_unchecks_every_fact_field() -> None:
+def test_ai_fix_dialog_clear_all_unchecks_every_fact_field(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.GeminiFillDialog(
-        model_name="gemini-3.1-flash-lite",
-        thinking_enabled_default=True,
-        thinking_level_default="high",
-        prompt_builder=lambda *_args: "preview",
-    )
-
-    dialog._fact_field_checks["currency"].setChecked(True)
-    dialog._fact_field_checks["date"].setChecked(True)
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.FIX_SELECTED)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog._fix_field_checks["currency"].setChecked(True)
+    dialog._fix_field_checks["date"].setChecked(True)
     dialog.clear_all_fields_btn.click()
-
-    assert dialog.selected_fact_fields() == set()
-
+    assert dialog.selected_fix_fields() == set()
     dialog.close()
+    window.close()
 
 
 def test_gemini_autocomplete_request_payload_includes_locked_page_state(tmp_path: Path) -> None:
@@ -428,7 +449,7 @@ def test_gemini_autocomplete_prompt_mentions_locked_facts(tmp_path: Path) -> Non
     window.close()
 
 
-def test_gemini_autocomplete_refuses_empty_page(tmp_path: Path, monkeypatch) -> None:
+def test_ai_autocomplete_dialog_shows_empty_page_validation(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -436,17 +457,12 @@ def test_gemini_autocomplete_refuses_empty_page(tmp_path: Path, monkeypatch) -> 
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
-    info_messages: list[str] = []
-    monkeypatch.setattr(
-        app_mod.QMessageBox,
-        "information",
-        lambda *_args: info_messages.append(str(_args[2]) if len(_args) > 2 else "info"),
-    )
-
-    window.generate_gemini_auto_complete()
-
-    assert info_messages == ["Auto Complete requires at least one existing fact on the current page."]
-
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.AUTO_COMPLETE)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    assert dialog.validation_label.text() == "Auto Complete requires at least one existing fact on the current page."
+    assert dialog.run_btn.isEnabled() is False
+    dialog.close()
     window.close()
 
 
@@ -463,37 +479,7 @@ def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Pat
     window.refresh_facts_list()
     _qt_app().processEvents()
 
-    class _AcceptedDialog:
-        def __init__(self, *args, **kwargs) -> None:
-            _ = args
-            _ = kwargs
-
-        def exec_(self) -> int:
-            return app_mod.QDialog.Accepted
-
-        def prompt(self) -> str:
-            return "autocomplete prompt"
-
-        def model(self) -> str:
-            return "gemini-3-flash-preview"
-
-        def enable_thinking(self) -> bool:
-            return True
-
-        def thinking_level(self) -> str:
-            return "high"
-
-        def use_few_shot(self) -> bool:
-            return True
-
-        def few_shot_preset(self) -> str:
-            return app_mod.FEW_SHOT_PRESET_ONE_SHOT
-
-        def max_facts(self) -> int:
-            return 0
-
     captured_stream_kwargs: dict[str, object] = {}
-    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
     monkeypatch.setattr(
         "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
         lambda _model_name, explicit_api_key=None: ("test-key", None),
@@ -503,16 +489,51 @@ def test_gemini_autocomplete_passes_few_shot_examples_when_enabled(tmp_path: Pat
         "_load_gemini_few_shot_examples",
         lambda *, preset: ([{"role": "user", "parts": ["example"]}], []),
     )
-    monkeypatch.setattr(
-        window,
-        "_start_gemini_stream",
-        lambda **kwargs: captured_stream_kwargs.update(kwargs),
-    )
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
-    window.generate_gemini_auto_complete()
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.AUTO_COMPLETE)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.prompt_edit.setPlainText("autocomplete prompt")
+    dialog.few_shot_check.setChecked(True)
+    dialog.few_shot_preset_combo.setCurrentIndex(dialog.few_shot_preset_combo.findData(app_mod.FEW_SHOT_PRESET_ONE_SHOT))
+    window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
     assert captured_stream_kwargs["mode"] == "autocomplete"
+
+    window.close()
+
+
+def test_ai_dialog_closes_after_run_starts(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
+    )
+
+    def _start_stream(**kwargs) -> None:
+        _ = kwargs
+        window._gemini_stream_thread = object()
+
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", _start_stream)
+
+    window.open_ai_dialog()
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.prompt_edit.setPlainText("ground truth prompt")
+
+    try:
+        window._ai_controller.run_from_dialog()
+        assert dialog.isVisible() is False
+    finally:
+        window._gemini_stream_thread = None
 
     window.close()
 
@@ -530,43 +551,19 @@ def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypa
     window.refresh_facts_list()
     _qt_app().processEvents()
 
-    class _AcceptedDialog:
-        def __init__(self, *args, **kwargs) -> None:
-            _ = args, kwargs
-
-        def exec_(self) -> int:
-            return app_mod.QDialog.Accepted
-
-        def prompt(self) -> str:
-            return "autocomplete prompt"
-
-        def model(self) -> str:
-            return "gemini-3-flash-preview"
-
-        def enable_thinking(self) -> bool:
-            return True
-
-        def thinking_level(self) -> str:
-            return "high"
-
-        def use_few_shot(self) -> bool:
-            return False
-
-        def few_shot_preset(self) -> str:
-            return app_mod.FEW_SHOT_PRESET_ONE_SHOT
-
-        def max_facts(self) -> int:
-            return 2
-
     captured_stream_kwargs: dict[str, object] = {}
-    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
     monkeypatch.setattr(
         "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
         lambda _model_name, explicit_api_key=None: ("test-key", None),
     )
-    monkeypatch.setattr(window, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
-    window.generate_gemini_auto_complete()
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.AUTO_COMPLETE)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.prompt_edit.setPlainText("autocomplete prompt")
+    dialog.max_facts_spin.setValue(2)
+    window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["max_facts"] == 2
     assert captured_stream_kwargs["mode"] == "autocomplete"
@@ -583,43 +580,19 @@ def test_gemini_gt_vertex_model_does_not_require_standard_api_key(tmp_path: Path
 
     window = AnnotationWindow(images_dir, annotations_path)
 
-    class _AcceptedDialog:
-        def __init__(self, *args, **kwargs) -> None:
-            _ = args, kwargs
-
-        def exec_(self) -> int:
-            return app_mod.QDialog.Accepted
-
-        def prompt(self) -> str:
-            return "vertex prompt"
-
-        def model(self) -> str:
-            return "gemini-flash-hf-tuned"
-
-        def enable_thinking(self) -> bool:
-            return True
-
-        def thinking_level(self) -> str:
-            return "high"
-
-        def use_few_shot(self) -> bool:
-            return False
-
-        def few_shot_preset(self) -> str:
-            return app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
-
-        def max_facts(self) -> int:
-            return 0
-
     captured_stream_kwargs: dict[str, object] = {}
-    monkeypatch.setattr(app_mod, "GeminiPromptDialog", _AcceptedDialog)
     monkeypatch.setattr(
         "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
         lambda _model_name, explicit_api_key=None: (None, None),
     )
-    monkeypatch.setattr(window, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
-    window.generate_gemini_ground_truth()
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.prompt_edit.setPlainText("vertex prompt")
+    dialog.model_combo.setCurrentText("gemini-flash-hf-tuned")
+    window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["model_name"] == "gemini-flash-hf-tuned"
     assert captured_stream_kwargs["gemini_api_key"] is None
@@ -1782,25 +1755,24 @@ def test_gemini_autocomplete_remaps_locked_equation_refs_after_geometry_resequen
     window.close()
 
 
-def test_qwen_prompt_dialog_accepts_thinking_controls() -> None:
+def test_ai_dialog_qwen_gt_accepts_thinking_controls(tmp_path: Path) -> None:
     _qt_app()
-    dialog = app_mod.QwenPromptDialog(
-        prompt_text="test",
-        model_name="qwen-flash-gt",
-        show_thinking_control=True,
-        thinking_enabled_default=True,
-        thinking_level_default="high",
-        few_shot_summary="summary",
-    )
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.QWEN, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
     options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
     assert "qwen-flash-gt" in options
     assert "qwen3.5-flash" in options
     assert "qwen3.5-plus" in options
-    assert dialog.model() == "qwen-flash-gt"
-    assert dialog.thinking_check.isChecked() is True
+    assert dialog.current_provider() == app_mod.AIProvider.QWEN
+    assert dialog.thinking_check.isVisible() is True
     assert dialog.thinking_level_combo.isVisible() is False
-    assert dialog.thinking_level() == "high"
     dialog.close()
+    window.close()
 
 
 def test_gemini_fill_completed_applies_equations_patch(tmp_path: Path, monkeypatch) -> None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
+from .bbox_utils import bbox_to_list
 from .equation_integrity import equation_integrity_reg_flags, resequence_fact_numbers_and_remap_fact_equations
 from .fact_normalization import LEGACY_FACT_KEYS, normalize_annotation_payload, normalize_fact_payload
 from .fact_ordering import compact_document_meta
@@ -113,7 +114,7 @@ def normalize_payload(
         for raw_fact, normalized_fact in zip(raw_facts, normalized_facts):
             include_bbox = "bbox" in raw_fact
             if include_bbox:
-                normalized_fact["bbox"] = _normalize_bbox_to_list(raw_fact.get("bbox"))
+                normalized_fact["bbox"] = bbox_to_list(raw_fact.get("bbox"))
             facts_out.append(normalized_fact)
         canonical_pages.append(
             {
@@ -132,27 +133,6 @@ def normalize_payload(
         "pages": canonical_pages,
     }
 
-
-def _normalize_bbox_to_list(raw_bbox: Any) -> list[float]:
-    def _to_float(value: Any, default: float) -> float:
-        try:
-            return float(value)
-        except Exception:
-            return default
-
-    if isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
-        x = _to_float(raw_bbox[0], 0.0)
-        y = _to_float(raw_bbox[1], 0.0)
-        w = max(_to_float(raw_bbox[2], 1.0), 1.0)
-        h = max(_to_float(raw_bbox[3], 1.0), 1.0)
-        return [round(x, 2), round(y, 2), round(w, 2), round(h, 2)]
-    if isinstance(raw_bbox, dict):
-        x = _to_float(raw_bbox.get("x"), 0.0)
-        y = _to_float(raw_bbox.get("y"), 0.0)
-        w = max(_to_float(raw_bbox.get("w"), 1.0), 1.0)
-        h = max(_to_float(raw_bbox.get("h"), 1.0), 1.0)
-        return [round(x, 2), round(y, 2), round(w, 2), round(h, 2)]
-    return [0.0, 0.0, 1.0, 1.0]
 
 
 def load_any_schema(

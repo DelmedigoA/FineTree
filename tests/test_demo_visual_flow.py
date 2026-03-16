@@ -58,13 +58,13 @@ def _bbox_items(window: app_mod.AnnotationWindow) -> list[AnnotRectItem]:
     return [item for item in window.scene.items() if isinstance(item, AnnotRectItem)]
 
 
-def _reject_open_gemini_prompt() -> None:
+def _close_open_ai_dialog() -> None:
     app = QApplication.instance()
     if app is None:
         return
     for widget in app.topLevelWidgets():
-        if isinstance(widget, app_mod.GeminiPromptDialog):
-            widget.reject()
+        if isinstance(widget, app_mod.AIDialog):
+            widget.close()
 
 
 @pytest.mark.skipif(
@@ -132,9 +132,9 @@ def test_demo_visual_flow(qtbot, monkeypatch) -> None:
     assert created_rect.height() > 1
     assert annotator.scene.image_rect.contains(created_rect.center())
 
-    # Trigger Gemini action (user touchpoint) and cancel the prompt automatically.
-    QTimer.singleShot(150, _reject_open_gemini_prompt)
-    qtbot.mouseClick(annotator.gemini_gt_btn, Qt.LeftButton)
+    # Trigger AI action window (user touchpoint) and close it automatically.
+    QTimer.singleShot(150, _close_open_ai_dialog)
+    qtbot.mouseClick(annotator.ai_btn, Qt.LeftButton)
     qtbot.wait(350)
     assert annotator._gemini_stream_thread is None
 

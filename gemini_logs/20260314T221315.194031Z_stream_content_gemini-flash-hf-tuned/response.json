@@ -1,0 +1,1588 @@
+{
+  "backend": "vertex_stream_generate_content",
+  "streamed": true,
+  "status": "aborted",
+  "error": null,
+  "chunks": [
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "pages\": [{\"image\": \"d1354a8e-a9b0-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "4f51-a96c-b26a6341"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "2702.jpg\", \"meta\": {\"entity_name\": \"“הכנסת אורחים” - בולטון, מירון (ע”"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ר)\", \"page_num\": null, \"page_type\": \"statements\", \"statement_type\": \"balance_sheet\", \"title\": \"דוחות על המצב"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " הכספי\"}, \"facts\": [{\"fact_num\": 1, \"value\": \"12,987\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"רכוש שוטף\", \"מזומנים\"], \"path_source\": \"observed\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_ref\": null, \"comment_ref\": null, \"bbox\": [108, 283, 38, 17]}, {\"fact_num\": 2, \"value\": \"2,823\", \"equations\": null, \"value_type\": \"amount"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"רכוש שוטף\", \"אשראי לקבל\"], \"path_source\": \"observed\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "note_ref\": null, \"comment_ref\": null, \"bbox\": [121, 310, 24, 16]}, {\"fact_num\": 3, \"value\": \"15,810\", \"equations\": [{\"equation\": \"12,987 +"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 2,823\", \"fact_equation\": \"f1 + f2\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "path\": [\"רכוש שוטף\", \"סה״כ רכוש שוטף\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [107, 332, 40, 16]}, {\"fact_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "num\": 4, \"value\": \"202,068\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "רכוש קבוע\", \"path\": [\"רכוש קבוע\", \"נטו\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [89, 368, 52, 17]}, {\"fact_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "num\": 5, \"value\": \"217,878\", \"equations\": [{\"equation\": \"15,810 + 202,068\", \"fact_equation\": \"f3 + f4\"}], \"value_type\": \"amount\", \"value_context\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"סה״כ נכסים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " [83, 386, 50, 16]}, {\"fact_num\": 6, \"value\": \"15,007\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"רכוש שוטף\", \"מזומנים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [203, 28"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "3, 40, 19]}, {\"fact_num\": 7, \"value\": \"392\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"note_name\": null, \"path\": [\"רכוש שוטף\", \"אשראי לקבל\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [227, 304, 18, 16]},"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " {\"fact_num\": 8, \"value\": \"15,399\", \"equations\": [{\"equation\": \"15,007 + 392\", \"fact_equation\": \"f6 + f7\"}], \"value_type\": \"amount\", \"value_context\": \"tabular"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"רכוש שוטף\", \"סה״כ רכוש שוטף\"], \"path_source\": \"observed\", \"note_ref\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"comment_ref\": null, \"bbox\": [200, 329, 44, 17]}, {\"fact_num\": 9, \"value\": \"183,999\", \"equations\": null, \"value_type\": \"amount\", \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע\", \"path\": [\"רכוש קבוע\", \"נטו\"], \"path_source\": \"observed\", \"note_ref"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"comment_ref\": null, \"bbox\": [178, 362, 57, 19]}, {\"fact_num\": 10, \"value\": \"199,398\", \"equations\": [{\"equation\": \"15,39"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "9 + 183,999\", \"fact_equation\": \"f8 + f9\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"path\": [\"סה״כ נכסים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [176, 383, 59, 21]}, {\"fact_num\": 11, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value\": \"22,575\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"הת"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "חייבויות שוטפות\", \"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [116, 560, 42, 17]}, {\"fact_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "num\": 12, \"value\": \"15,002\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"path\": [\"התחייבויות שוטפות\", \"זכאים שונים ויתרות זכות\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [113, 580, 41, 1"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "6]}, {\"fact_num\": 13, \"value\": \"37,577\", \"equations\": [{\"equation\": \"22,575 + 15,002\", \"fact_equation\": \"f11 + f12\"}], \"value_type\": \"amount"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"התחייבויות שוטפות\", \"סה״כ התחייבויות שוטפות\"], \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [113, 606, 43, 16]}, {\"fact_num\": 14, \"value\": \"1,430\", \"equations\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"20"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "24-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"התחייבויות שוטפות\", \"ספקים ונותני ש"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ירותים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [215, 560, 27, 19]}, {\"fact_num\": 15, \"value\": \"15,002\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"התחייבויות שוטפות\", \"ז"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "כאים שונים ויתרות זכות\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [201, 582, 44, 18]}, {\"fact_num\": 16, \"value\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "16,432\", \"equations\": [{\"equation\": \"1,430 + 15,002\", \"fact_equation\": \"f14 + f15\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"התחייבויות שוטפות\", \"סה״כ התחייבויות שוטפות\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_ref\": null, \"bbox\": [201, 608, 38, 14]}, {\"fact_num\": 17, \"value\": \"173,382\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"התחייבויות לזמן ארוך\", \"אשראי מאחרים\"], \"path_source\": \"observed\", \"note"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_ref\": null, \"comment_ref\": null, \"bbox\": [97, 680, 52, 23]}, {\"fact_num\": 18, \"value\": \"210,959\", \"equations\": [{\"equation\": \"37,5"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "77 + 173,382\", \"fact_equation\": \"f13 + f17\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "note_name\": null, \"path\": [\"סה״כ התחייבויות\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [91, 706, 50, 18]}, {\"fact_num\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 19, \"value\": \"125,140\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"path\": [\"התחייבויות לזמן ארוך\", \"אשראי מאחרים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [188, 680, 52, "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "16]}, {\"fact_num\": 20, \"value\": \"141,572\", \"equations\": [{\"equation\": \"16,432 + 125,140\", \"fact_equation\": \"f16 + f19\"}], \"value_type\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"סה״כ התחייבויות\"], \"path_source\": \"observed\", \"note_ref\": null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"comment_ref\": null, \"bbox\": [180, 705, 58, 20]}, {\"fact_num\": 21, \"value\": \"(195,149)\", \"equations\": null, \"value_type\": \"amount\", \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "context\": \"tabular\", \"natural_sign\": \"negative\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"נכסים נטו\", \"נכסים נטו שלא קיימת לגביהם הגבלה\", \"נכסים נטו"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " לשימוש לפעילויות\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [91, 843, 58, 17]}, {\"fact_num\": 22, \"value\": \"202,06"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "8\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"period_end\": \"2023-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע\", \"path\": [\"נכסים נ"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "טו\", \"נכסים נטו שהושקעו בנכסים קבועים\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null, \"bbox\": [88, 878, 55, 17]}, {\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "fact_num\": 23, \"value\": \"6,919\", \"equations\": [{\"equation\": \"-195,149 + 202,068\", \"fact_equation\": \"f21 + f22\"}], \"value_type\": \"amount\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": false, \"note_num\": null, \"note_name\": null, \"path\": [\"סה״כ התחייבויות ונכסים נטו\"], \"path_source\": \"observed\", \"note_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:18.565360Z",
+      "responseId": "ft21afDAIquIheMPw563iAk"
+    }
+  ]
+}

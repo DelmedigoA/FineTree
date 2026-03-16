@@ -11,6 +11,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence
 
 from pydantic import ValidationError
 
+from .bbox_utils import bbox_to_list, denormalize_bbox_from_1000, normalize_bbox_data
 from .equation_integrity import audit_and_rebuild_financial_facts
 from .equation_integrity import resequence_fact_numbers_and_remap_fact_equations
 from .fact_ordering import compact_document_meta, normalize_document_meta
@@ -72,44 +73,6 @@ def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     normalized, _warnings = normalize_fact_payload(data or {}, include_bbox=False)
     merged = {**default_fact_data(), **normalized}
     return merged
-
-
-def normalize_bbox_data(data: Optional[Any]) -> Dict[str, float]:
-    if isinstance(data, dict):
-        x_raw = data.get("x", 0.0)
-        y_raw = data.get("y", 0.0)
-        w_raw = data.get("w", 1.0)
-        h_raw = data.get("h", 1.0)
-    elif isinstance(data, (list, tuple)) and len(data) >= 4:
-        x_raw, y_raw, w_raw, h_raw = data[0], data[1], data[2], data[3]
-    else:
-        x_raw, y_raw, w_raw, h_raw = 0.0, 0.0, 1.0, 1.0
-
-    x = float(x_raw)
-    y = float(y_raw)
-    w = max(float(w_raw), 1.0)
-    h = max(float(h_raw), 1.0)
-    return {"x": round(x, 2), "y": round(y, 2), "w": round(w, 2), "h": round(h, 2)}
-
-
-def bbox_to_list(data: Optional[Any]) -> List[float]:
-    bbox = normalize_bbox_data(data)
-    return [bbox["x"], bbox["y"], bbox["w"], bbox["h"]]
-
-
-def denormalize_bbox_from_1000(data: Optional[Dict[str, Any]], image_width: float, image_height: float) -> Dict[str, float]:
-    bbox = normalize_bbox_data(data)
-    width = max(float(image_width), 1.0)
-    height = max(float(image_height), 1.0)
-    return normalize_bbox_data(
-        {
-            "x": (bbox["x"] * width) / 1000.0,
-            "y": (bbox["y"] * height) / 1000.0,
-            "w": (bbox["w"] * width) / 1000.0,
-            "h": (bbox["h"] * height) / 1000.0,
-        }
-    )
-
 
 def default_page_meta(index: int) -> Dict[str, Any]:
     return {

@@ -1,0 +1,1208 @@
+{
+  "backend": "vertex_stream_generate_content",
+  "streamed": true,
+  "status": "aborted",
+  "error": null,
+  "chunks": [
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "pages\": [{\"image\": \"022.jpg\", \"meta\": {\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "entity_name\": \"\\\"הכנסת אורחים\\\" - בולטון,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " מירון (ע\\\"ר)\", \"page_num\": \"8\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"bbox\": [530, 276, 52,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 22], \"fact_num\": 1, \"value\": \"129,746\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"חדר אוכל\"], \"path_source"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [454, 278, 51, 16], \"fact_num\": 2, \"value\": \"13,269\", \"equations\": null, \"value_type"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"ריהוט וציוד\"], \"path"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [363, 278, 52, 19], \"fact_num\": 3, \"value\": \"141,393\", \"equations\": null, \"value"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"202"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "4-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"שיפורים במושכר"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [128, 276, 54, 25], \"fact_num\": 4, \"value\": \"284,408\", \"equations\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " [{\"equation\": \"129,746 + 13,269 + 141,393\", \"fact_equation\": \"f1 + f2 + f3\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"duration_type\": null, \"recurring_period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"סה\\\"כ\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null},"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " {\"bbox\": [556, 381, 1, 1], \"fact_num\": 5, \"value\": \"-\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": null, \"row_role\": \"detail\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"תוספות במשך השנה\", \"חדר אוכל\"], \"path_source\": \"observed\", \"note_ref"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": null, \"comment_ref\": null}, {\"bbox\": [435, 380, 52, 18], \"fact_num\": 6, \"value\": \"9,360\", \"equations\": null, \"value_type\": \"amount\", \"value_context"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"202"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "4-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"תוספות במשך הש"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "נה\", \"ריהוט וציוד\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [336, 381, 52, 23], \"fact_num\": 7, \"value\": \"2,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "053\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"2024-01-01\", \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכ"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "וש קבוע, נטו\", \"path\": [\"עלות\", \"תוספות במשך השנה\", \"שיפורים במושכר\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [116, 380,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 50, 19], \"fact_num\": 8, \"value\": \"11,413\", \"equations\": [{\"equation\": \"- + 9,360 + 2,053\", \"fact_equation\": \"f5 + f6 + f7\"}"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"duration\", \"period_start\": \"2024-01"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-01\", \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "path\": [\"עלות\", \"תוספות במשך השנה\", \"סה\\\"כ\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [520, 480, 54, 18], \"fact_num"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": 9, \"value\": \"129,746\", \"equations\": [{\"equation\": \"129,746 + -\", \"fact_equation\": \"f1 + f5\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"חדר אוכל\"], \"path_source\": \"observed"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [435, 482, 51, 18], \"fact_num\": 10, \"value\": \"22,629\", \"equations\": [{\"equation\": \"13,"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "269 + 9,360\", \"fact_equation\": \"f2 + f6\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"ריהוט וציוד\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\": [332, 477, 56, 17], \"fact_num\": 11, \"value\": \"143,446\", \"equations\": [{\"equation\": \"141,393 + 2,053\", \"fact_equation\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "f3 + f7\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\","
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " \"יתרה ליום 31 בדצמבר 2024\", \"שיפורים במושכר\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [113, 479, 46, 21], \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "fact_num\": 12, \"value\": \"295,821\", \"equations\": [{\"equation\": \"129,746 + 22,629 + 143,446\", \"fact_equation\": \"f9 + f10 + f"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "11\"}], \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "end\": \"2024-12-31\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"עלות\", \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "יתרה ליום 31 בדצמבר 2024\", \"סה\\\"כ\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [551, 638, 54, 17], \"fact_num\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 13, \"value\": \"53,901\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"ר"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "כוש קבוע, נטו\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2024\", \"חדר אוכל\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [44"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "7, 634, 52, 20], \"fact_num\": 14, \"value\": \"3,889\", \"equations\": null, \"value_type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2024\", \"ריהוט וציוד\"], \"path_source\": \""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [337, 632, 53, 19], \"fact_num\": 15, \"value\": \"24,550\", \"equations\": null, \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"detail\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"פחת שנצבר\", \"יתרה ליום"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 1 בינואר 2024\", \"שיפורים במושכר\"], \"path_source\": \"observed\", \"note_ref\": null, \"comment_ref\": null}, {\"bbox\": [116, 634, 53, 22], \"fact_num\":"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": " 16, \"value\": \"82,340\", \"equations\": [{\"equation\": \"53,901 + 3,889 + 24,550\", \"fact_equation\": \"f13 + f14 + f15\"}], \"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "type\": \"amount\", \"value_context\": \"tabular\", \"natural_sign\": \"positive\", \"row_role\": \"total\", \"currency\": \"ILS\", \"scale\": 1, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-01-01\", \"duration_type\": null, \"recurring_period\": null, \"note_flag\": true, \"note_num\": 3, \"note_name\": \"רכוש קבוע, נטו\", \"path\": [\"פחת שנצבר\", \"יתרה ליום"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:08:54.194904Z",
+      "responseId": "dty1adjyC7bcmsUP357wiAY"
+    }
+  ]
+}

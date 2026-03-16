@@ -13,6 +13,7 @@ from huggingface_hub import HfApi
 from ..fact_normalization import assert_fact_format
 from ..fact_ordering import assert_fact_order
 from ..model_prompt_serialization import MODEL_PROMPT_MODE, coerce_payload_for_schema_mode
+from ..schema_contract import PROMPT_FACT_KEYS, PROMPT_PAGE_META_KEYS, build_custom_extraction_prompt_template
 from .config import load_finetune_config
 from .duplicate_facts import assert_no_duplicate_facts
 from .push_dataset_hub import (
@@ -21,9 +22,14 @@ from .push_dataset_hub import (
     _copy_or_resize_image,
     _dataset_for_push,
     _iter_fact_dicts,
+    _parse_doc_ids_csv,
     _parse_excluded_doc_ids,
+    _parse_selected_keys,
+    _repo_id_with_scope_suffix,
+    _resolve_repo_id,
     _resolve_system_prompt,
     _resolve_resize_bounds,
+    _split_repo_ids,
     assert_source_instruction_schema,
     assert_no_train_val_contamination,
     build_dataset,
@@ -370,6 +376,35 @@ def push_to_hf_no_bbox(
     return resolved_repo_id
 
 
+def push_train_validation_separately_no_bbox(
+    dataset: DatasetDict,
+    token: str,
+    *,
+    base_repo_id: str,
+    private: bool = True,
+    repo_id_train: str | None = None,
+    repo_id_validation: str | None = None,
+) -> dict[str, str]:
+    api = HfApi(token=token)
+    dataset_to_push, kept_splits, dropped_splits = _dataset_for_push(dataset)
+    train_repo, val_repo = _split_repo_ids(
+        base_repo_id,
+        repo_id_train=repo_id_train,
+        repo_id_validation=repo_id_validation,
+    )
+    pushed: dict[str, str] = {}
+    if "train" in dataset_to_push:
+        api.create_repo(repo_id=train_repo, repo_type="dataset", private=private, exist_ok=True)
+        dataset_to_push["train"].push_to_hub(repo_id=train_repo, token=token, private=private)
+        pushed["train"] = train_repo
+    if "validation" in dataset_to_push:
+        api.create_repo(repo_id=val_repo, repo_type="dataset", private=private, exist_ok=True)
+        dataset_to_push["validation"].push_to_hub(repo_id=val_repo, token=token, private=private)
+        pushed["validation"] = val_repo
+    print(f"PUSH_SPLITS: kept={kept_splits} dropped={dropped_splits}")
+    return pushed
+
+
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Build and push FineTree no-bbox dataset with columns: image, instruction, text (bbox removed)."
@@ -400,6 +435,31 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Comma-separated document/image folder ids to exclude, e.g. pdf_4,test",
     )
     parser.add_argument(
+        "--include-doc-ids",
+        default=None,
+        help="Comma-separated document ids to include in dataset build, e.g. pdf_7,pdf_9",
+    )
+    parser.add_argument(
+        "--validation-doc-ids",
+        default=None,
+        help="Comma-separated reviewed document ids to force into the validation split.",
+    )
+    parser.add_argument(
+        "--page-meta-keys",
+        default=None,
+        help="Comma-separated page meta keys to include. Pass an empty string to emit `{}` for meta.",
+    )
+    parser.add_argument(
+        "--fact-keys",
+        default=None,
+        help="Comma-separated fact keys to include in the no-bbox export.",
+    )
+    parser.add_argument(
+        "--approved-pages-only",
+        action="store_true",
+        help="Only include pages whose page meta annotation_status is approved.",
+    )
+    parser.add_argument(
         "--compact_tokens",
         action="store_true",
         help="Compact assistant JSON payload formatting and numeric separators without renaming keys.",
@@ -414,6 +474,21 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--min-pixels", type=int, default=None, help="Optional minimum image pixel budget for export.")
     parser.add_argument("--max-pixels", type=int, default=None, help="Optional maximum image pixel budget for export.")
     parser.add_argument(
+        "--push-train-val-separately",
+        action="store_true",
+        help="Push train and validation as separate repos (<repo>-train / <repo>-validation).",
+    )
+    parser.add_argument(
+        "--repo-id-train",
+        default=None,
+        help="Optional train repo id override when --push-train-val-separately is enabled.",
+    )
+    parser.add_argument(
+        "--repo-id-validation",
+        default=None,
+        help="Optional validation repo id override when --push-train-val-separately is enabled.",
+    )
+    parser.add_argument(
         "--allow-duplicate-facts",
         action="store_true",
         help="Allow HF export/push to continue even when exact duplicate facts are detected in annotations.",
@@ -427,6 +502,13 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--allow-format-issues",
         action="store_true",
         help="Allow HF export/push to continue when fact schema/date/value format issues are detected.",
+    )
+    parser.add_argument(
+        "--drop-date",
+        "--omit-date",
+        action="store_true",
+        dest="drop_date",
+        help="Remove fact `date` from exported assistant JSON payloads before bbox stripping.",
     )
     return parser.parse_args(argv)
 
@@ -445,20 +527,79 @@ def main(argv: list[str] | None = None) -> int:
         print("WARNING: --omit-instruction is deprecated; using --instruction-mode minimal.")
         instruction_mode = "minimal"
     excluded_doc_ids = _parse_excluded_doc_ids(args.exclude_doc_ids)
+    included_doc_ids = _parse_doc_ids_csv(args.include_doc_ids)
+    validation_doc_ids = _parse_doc_ids_csv(args.validation_doc_ids)
+    selected_page_meta_keys = _parse_selected_keys(
+        args.page_meta_keys,
+        allowed=PROMPT_PAGE_META_KEYS,
+        flag_name="--page-meta-keys",
+    )
+    selected_fact_keys = _parse_selected_keys(
+        args.fact_keys,
+        allowed=PROMPT_FACT_KEYS,
+        flag_name="--fact-keys",
+    )
+    effective_included_doc_ids: set[str] | None = None
+    if included_doc_ids:
+        effective_included_doc_ids = included_doc_ids - excluded_doc_ids
+    invalid_validation_doc_ids = (
+        validation_doc_ids - effective_included_doc_ids
+        if effective_included_doc_ids is not None
+        else set()
+    )
+    if invalid_validation_doc_ids:
+        invalid_list = ", ".join(sorted(invalid_validation_doc_ids))
+        raise RuntimeError(
+            "Validation document ids must also be included in the reviewed push set. "
+            f"invalid={invalid_list}"
+        )
     compact_tokens = bool(args.compact_tokens or args.aggressive_compact_tokens)
+    if args.repo_id:
+        main_repo_id = _repo_id_with_scope_suffix(
+            args.repo_id,
+            approved_pages_only=args.approved_pages_only,
+        )
+    elif args.push_train_val_separately:
+        main_repo_id = _repo_id_with_scope_suffix(
+            _resolve_repo_id(None, token),
+            approved_pages_only=args.approved_pages_only,
+        )
+    else:
+        main_repo_id = None
+    custom_prompt_fields = selected_page_meta_keys is not None or selected_fact_keys is not None
+    prompt_template_override = (
+        build_custom_extraction_prompt_template(
+            page_meta_keys=(selected_page_meta_keys if selected_page_meta_keys is not None else PROMPT_PAGE_META_KEYS),
+            fact_keys=(selected_fact_keys if selected_fact_keys is not None else PROMPT_FACT_KEYS),
+        )
+        if custom_prompt_fields
+        else None
+    )
 
     config_path = (root / args.config).resolve()
     cfg = load_finetune_config(config_path)
     export_dir = (root / args.export_dir).resolve()
 
-    build_dataset(config_path, allow_format_issues=args.allow_format_issues)
-    if instruction_mode == "source":
+    build_dataset(
+        config_path,
+        allow_format_issues=args.allow_format_issues,
+        include_doc_ids=effective_included_doc_ids,
+        validation_doc_ids=validation_doc_ids if args.validation_doc_ids is not None else None,
+        approved_pages_only=args.approved_pages_only,
+        drop_date=args.drop_date,
+        prompt_template_override=prompt_template_override,
+        selected_page_meta_keys=selected_page_meta_keys,
+        selected_fact_keys=selected_fact_keys,
+        page_only_wrapper=custom_prompt_fields,
+    )
+    if instruction_mode == "source" and not custom_prompt_fields:
         assert_source_instruction_schema(root, fail_on_issues=True)
     assert_no_train_val_contamination(root)
     duplicate_report = assert_no_duplicate_facts(
         root,
         annotations_glob=cfg.data.annotations_glob,
         fail_on_duplicates=not args.allow_duplicate_facts,
+        include_doc_ids=effective_included_doc_ids,
     )
     if args.allow_duplicate_facts and int(duplicate_report["duplicate_rows"]) > 0:
         print(
@@ -473,6 +614,7 @@ def main(argv: list[str] | None = None) -> int:
             row_tolerance_ratio=cfg.data.fact_order_row_tolerance_ratio,
             row_tolerance_min_px=cfg.data.fact_order_row_tolerance_min_px,
             fail_on_issues=not args.allow_ordering_issues,
+            include_doc_ids=effective_included_doc_ids,
         )
         if args.allow_ordering_issues and int(ordering_report["pages_with_order_issues"]) > 0:
             print(
@@ -486,6 +628,7 @@ def main(argv: list[str] | None = None) -> int:
             root,
             annotations_glob=cfg.data.annotations_glob,
             fail_on_issues=not args.allow_format_issues,
+            include_doc_ids=effective_included_doc_ids,
         )
         if args.allow_format_issues and int(format_report["facts_with_issues"]) > 0:
             print(
@@ -505,20 +648,42 @@ def main(argv: list[str] | None = None) -> int:
         aggressive_compact_tokens=args.aggressive_compact_tokens,
     )
     dataset, _, _ = build_hf_dataset_no_bbox_from_export(export_dir, instruction_mode=instruction_mode)
-    repo = push_to_hf_no_bbox(
-        dataset,
-        token=token,
-        repo_id=args.repo_id,
-        private=not args.public,
-        instruction_mode=instruction_mode,
-    )
+    if args.push_train_val_separately:
+        split_pushes = push_train_validation_separately_no_bbox(
+            dataset,
+            token=token,
+            base_repo_id=main_repo_id,
+            private=not args.public,
+            repo_id_train=_repo_id_with_scope_suffix(
+                args.repo_id_train,
+                approved_pages_only=args.approved_pages_only,
+            ),
+            repo_id_validation=_repo_id_with_scope_suffix(
+                args.repo_id_validation,
+                approved_pages_only=args.approved_pages_only,
+            ),
+        )
+        print(f"PUSHED_TRAIN_REPO: {split_pushes.get('train')}")
+        print(f"PUSHED_VALIDATION_REPO: {split_pushes.get('validation')}")
+    else:
+        repo = push_to_hf_no_bbox(
+            dataset,
+            token=token,
+            repo_id=main_repo_id,
+            private=not args.public,
+            instruction_mode=instruction_mode,
+        )
+        print(f"PUSHED: {repo}")
 
-    print(f"PUSHED: {repo}")
     print(f"TRAIN_ROWS: {train_rows}")
     print(f"VAL_ROWS: {val_rows}")
     print(f"INSTRUCTION_MODE: {instruction_mode}")
     print(f"COMPACT_TOKENS: {compact_tokens}")
     print(f"AGGRESSIVE_COMPACT_TOKENS: {args.aggressive_compact_tokens}")
+    print(f"APPROVED_PAGES_ONLY: {args.approved_pages_only}")
+    print(f"DROP_DATE: {args.drop_date}")
+    print(f"PAGE_META_KEYS: {list(selected_page_meta_keys) if selected_page_meta_keys is not None else list(PROMPT_PAGE_META_KEYS)}")
+    print(f"FACT_KEYS: {list(selected_fact_keys) if selected_fact_keys is not None else list(PROMPT_FACT_KEYS)}")
     print(f"EXPORT_DIR: {export_dir}")
     return 0
 

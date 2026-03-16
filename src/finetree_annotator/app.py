@@ -54,6 +54,35 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from .ai.bbox import (
+    BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+    BBOX_MODE_PIXEL_AS_IS,
+    bbox_looks_normalized_1000,
+    normalize_ai_fact_payload,
+    ordered_fact_payloads_by_geometry,
+    payloads_for_bbox_mode,
+    resolve_bbox_mode,
+    score_bbox_candidate_payloads,
+    score_bbox_payload_ink,
+)
+from .ai.controller import AIWorkflowController
+from .ai.dialog import AIDialog
+from .ai.payloads import (
+    build_gemini_autocomplete_prompt as build_ai_gemini_autocomplete_prompt,
+    build_gemini_autocomplete_request_payload as build_ai_gemini_autocomplete_request_payload,
+    build_gemini_fill_prompt as build_ai_gemini_fill_prompt,
+    build_gemini_fill_request_payload as build_ai_gemini_fill_request_payload,
+    build_page_prompt_payload as build_ai_page_prompt_payload,
+)
+from .ai.types import (
+    AIActionKind,
+    AIPageContext,
+    AIProvider,
+    FEW_SHOT_PRESET_2015_TWO_SHOT,
+    FEW_SHOT_PRESET_CLASSIC,
+    FEW_SHOT_PRESET_EXTENDED,
+    FEW_SHOT_PRESET_ONE_SHOT,
+)
 from .annotation_core import (
     BoxRecord,
     CURRENCY_OPTIONS,
@@ -76,7 +105,7 @@ from .equation_integrity import audit_and_rebuild_financial_facts, resequence_fa
 from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
-from .gemini_vlm import DEFAULT_GEMINI_MODEL, SUPPORTED_GEMINI_MODELS, resolve_supported_gemini_model_name
+from .gemini_vlm import DEFAULT_GEMINI_MODEL
 from .gemini_few_shot import (
     DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
@@ -87,9 +116,7 @@ from .gemini_few_shot import (
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
-from .model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload, serialize_schema_mode_payload
-from .provider_workers import DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS, GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
-from .qwen_vlm import current_qwen_gt_model_choices
+from .provider_workers import GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
 from .schema_contract import (
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
@@ -101,49 +128,13 @@ from .schema_ui import enum_options
 from .schemas import PageExtraction, PageMeta, PageType
 from .workspace import page_has_annotation
 
-FEW_SHOT_PRESET_ONE_SHOT = "test_1"
-FEW_SHOT_PRESET_2015_TWO_SHOT = "2015_2"
-FEW_SHOT_PRESET_CLASSIC = "classic_4"
-FEW_SHOT_PRESET_EXTENDED = "extended_7"
-
-FEW_SHOT_PRESET_CHOICES: tuple[tuple[str, str], ...] = (
-    (FEW_SHOT_PRESET_ONE_SHOT, "Test 1-shot"),
-    (FEW_SHOT_PRESET_2015_TWO_SHOT, "2015 2-shot"),
-    (FEW_SHOT_PRESET_CLASSIC, "Classic 4-shot"),
-    (FEW_SHOT_PRESET_EXTENDED, "Extended 7-shot"),
-)
-
-FEW_SHOT_PRESET_SUMMARY: dict[str, str] = {
-    FEW_SHOT_PRESET_ONE_SHOT: "test(1): page_num 4",
-    FEW_SHOT_PRESET_2015_TWO_SHOT: "2015(2): pages 4,11",
-    FEW_SHOT_PRESET_CLASSIC: "classic(4): test 1,4,9,2",
-    FEW_SHOT_PRESET_EXTENDED: "extended(7): test 9,4,5,10 | pdf_3 18,23 | pdf_2 8",
-}
-FEW_SHOT_PRESET_HELP_TEXT = " | ".join(
-    FEW_SHOT_PRESET_SUMMARY.get(preset_id, preset_id)
-    for preset_id, _ in FEW_SHOT_PRESET_CHOICES
-)
-QWEN_GT_MAX_NEW_TOKENS = DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS
-
-GEMINI_MODEL_CHOICES: tuple[str, ...] = SUPPORTED_GEMINI_MODELS
-BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
-BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
-BBOX_MODE_SWITCH_MARGIN = 0.08
-BBOX_DARK_LUMA_THRESHOLD = 220.0
-BBOX_INK_TARGET_RATIO = 0.12
 GEMINI_GT_BBOX_LOCK_MIN_FACTS = 4
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_ROOT.parents[1]
 ASSETS_ROOT = PACKAGE_ROOT / "assets"
 ICONS_ROOT = ASSETS_ROOT / "icons"
-PROMPTS_ROOT = REPO_ROOT / "prompts"
-DEFAULT_EXTRACTION_PROMPT_PATH = PROMPTS_ROOT / "extraction_prompt.txt"
-DEFAULT_GEMINI_FILL_PROMPT_PATH = PROMPTS_ROOT / "gemini_fill_prompt.txt"
-DEFAULT_GEMINI_AUTOCOMPLETE_PROMPT_PATH = PROMPTS_ROOT / "gemini_autocomplete_prompt.txt"
-LEGACY_EXTRACTION_PROMPT_PATH = REPO_ROOT / "prompt.txt"
 GEMINI_BUTTON_ICON = ICONS_ROOT / "gemini.png"
-QWEN_BUTTON_ICON = ICONS_ROOT / "qwen.png"
 MULTI_VALUE_PLACEHOLDER = "Multiple values"
 PATH_LEVEL_INDEX_ROLE = Qt.UserRole + 17
 EQUATION_TERM_INDEX_ROLE = Qt.UserRole + 18
@@ -1752,331 +1743,6 @@ class JsonImportDialog(QDialog):
         return self.normalized_1000_check.isChecked()
 
 
-class GeminiPromptDialog(QDialog):
-    def __init__(
-        self,
-        prompt_text: str,
-        model_name: str,
-        parent: Optional[QWidget] = None,
-        *,
-        show_few_shot_controls: bool = False,
-        few_shot_enabled_default: bool = True,
-        few_shot_presets: tuple[tuple[str, str], ...] = FEW_SHOT_PRESET_CHOICES,
-        few_shot_preset_default: str = FEW_SHOT_PRESET_CLASSIC,
-        few_shot_summary: str = "",
-        show_thinking_control: bool = True,
-        thinking_enabled_default: bool = True,
-        thinking_level_default: str = "high",
-        thinking_tooltip: str = "",
-        window_title: str = "Gemini Prompt",
-        hint_text: str = (
-            "Edit the prompt before sending to Gemini.\n"
-            "This prompt is used for the initial extraction run."
-        ),
-        ok_button_text: str = "Start Gemini GT",
-        show_max_facts_control: bool = False,
-        max_facts_default: int = 0,
-    ) -> None:
-        super().__init__(parent)
-        self.setWindowTitle(window_title)
-        self.resize(980, 760)
-
-        root = QVBoxLayout(self)
-        hint = QLabel(hint_text)
-        hint.setWordWrap(True)
-        root.addWidget(hint)
-
-        form = QFormLayout()
-        self.form_layout = form
-        self.model_combo = QComboBox()
-        self.model_combo.setEditable(True)
-        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
-        for option in GEMINI_MODEL_CHOICES:
-            self.model_combo.addItem(option)
-        self.model_combo.setCurrentText(model_name)
-        form.addRow("model", self.model_combo)
-        self.thinking_check = QCheckBox("Enable thinking")
-        self.thinking_check.setChecked(bool(thinking_enabled_default))
-        self.thinking_level_combo = QComboBox()
-        self.thinking_level_combo.addItems(list(GEMINI_THINKING_LEVEL_OPTIONS))
-        normalized_default_level = str(thinking_level_default or "").strip().lower()
-        if normalized_default_level not in GEMINI_THINKING_LEVEL_OPTIONS:
-            normalized_default_level = "high" if thinking_enabled_default else "minimal"
-        level_idx = self.thinking_level_combo.findText(normalized_default_level)
-        self.thinking_level_combo.setCurrentIndex(max(0, level_idx))
-        if thinking_tooltip:
-            self.thinking_check.setToolTip(thinking_tooltip)
-            self.thinking_level_combo.setToolTip(thinking_tooltip)
-        if show_thinking_control:
-            form.addRow("thinking", self.thinking_check)
-            form.addRow("thinking_level", self.thinking_level_combo)
-        else:
-            self.thinking_check.setVisible(False)
-            self.thinking_level_combo.setVisible(False)
-        self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
-        self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
-        self.max_facts_spin = QSpinBox()
-        self.max_facts_spin.setRange(0, 999)
-        self.max_facts_spin.setValue(max(0, int(max_facts_default)))
-        if show_max_facts_control:
-            form.addRow("max_facts", self.max_facts_spin)
-        else:
-            self.max_facts_spin.setVisible(False)
-        self.few_shot_check = QCheckBox("Use few-shot examples")
-        self.few_shot_check.setChecked(bool(few_shot_enabled_default))
-        self.few_shot_preset_combo = QComboBox()
-        for preset_id, preset_label in few_shot_presets:
-            self.few_shot_preset_combo.addItem(preset_label, preset_id)
-        default_idx = self.few_shot_preset_combo.findData(few_shot_preset_default)
-        if default_idx >= 0:
-            self.few_shot_preset_combo.setCurrentIndex(default_idx)
-        self.few_shot_summary_label = QLabel(few_shot_summary)
-        self.few_shot_summary_label.setWordWrap(True)
-        self.few_shot_summary_label.setObjectName("hintText")
-        if show_few_shot_controls:
-            form.addRow("few_shot", self.few_shot_check)
-            form.addRow("few_shot mode", self.few_shot_preset_combo)
-            form.addRow("few_shot preset", self.few_shot_summary_label)
-        else:
-            self.few_shot_check.setVisible(False)
-            self.few_shot_preset_combo.setVisible(False)
-            self.few_shot_summary_label.setVisible(False)
-        root.addLayout(form)
-
-        self.prompt_edit = QPlainTextEdit()
-        self.prompt_edit.setPlainText(prompt_text)
-        root.addWidget(self.prompt_edit, 1)
-
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
-        if ok_btn is not None:
-            ok_btn.setText(ok_button_text)
-        self.button_box.accepted.connect(self.accept)
-        self.button_box.rejected.connect(self.reject)
-        root.addWidget(self.button_box)
-
-    def prompt(self) -> str:
-        return self.prompt_edit.toPlainText()
-
-    def model(self) -> str:
-        return self.model_combo.currentText().strip()
-
-    def enable_thinking(self) -> bool:
-        return self.thinking_level() != "minimal"
-
-    def thinking_level(self) -> str:
-        if not self.thinking_level_combo.isVisible():
-            return "high" if (self.thinking_check.isVisible() and self.thinking_check.isChecked()) else "minimal"
-        chosen = self.thinking_level_combo.currentText().strip().lower()
-        if chosen not in GEMINI_THINKING_LEVEL_OPTIONS:
-            chosen = "high" if self.thinking_check.isChecked() else "minimal"
-        if not self.thinking_check.isChecked():
-            return "minimal"
-        return chosen
-
-    def use_few_shot(self) -> bool:
-        return self.few_shot_check.isVisible() and self.few_shot_check.isChecked()
-
-    def few_shot_preset(self) -> str:
-        if not self.few_shot_preset_combo.isVisible():
-            return FEW_SHOT_PRESET_CLASSIC
-        value = self.few_shot_preset_combo.currentData()
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-        return FEW_SHOT_PRESET_CLASSIC
-
-    def max_facts(self) -> int:
-        return int(self.max_facts_spin.value()) if self.max_facts_spin.isVisible() else 0
-
-
-class GeminiFillDialog(QDialog):
-    def __init__(
-        self,
-        *,
-        model_name: str,
-        thinking_enabled_default: bool,
-        thinking_level_default: str,
-        prompt_builder: Callable[[set[str], bool], str],
-        parent: Optional[QWidget] = None,
-    ) -> None:
-        super().__init__(parent)
-        self.setWindowTitle("Gemini Auto-Fix Selected Fields")
-        self.resize(960, 760)
-        self._prompt_builder = prompt_builder
-
-        root = QVBoxLayout(self)
-        hint = QLabel(
-            "Choose fields to auto-fix on selected facts.\n"
-            "Requested fields are redacted before sending to Gemini."
-        )
-        hint.setWordWrap(True)
-        root.addWidget(hint)
-
-        form = QFormLayout()
-        self.model_combo = QComboBox()
-        self.model_combo.setEditable(True)
-        self.model_combo.setInsertPolicy(QComboBox.NoInsert)
-        for option in GEMINI_MODEL_CHOICES:
-            self.model_combo.addItem(option)
-        self.model_combo.setCurrentText(model_name)
-        self.thinking_check = QCheckBox("Enable thinking")
-        self.thinking_check.setChecked(bool(thinking_enabled_default))
-        self.thinking_level_combo = QComboBox()
-        self.thinking_level_combo.addItems(list(GEMINI_THINKING_LEVEL_OPTIONS))
-        normalized_default_level = str(thinking_level_default or "").strip().lower()
-        if normalized_default_level not in GEMINI_THINKING_LEVEL_OPTIONS:
-            normalized_default_level = "high" if thinking_enabled_default else "minimal"
-        level_idx = self.thinking_level_combo.findText(normalized_default_level)
-        self.thinking_level_combo.setCurrentIndex(max(0, level_idx))
-        self.thinking_level_combo.setEnabled(self.thinking_check.isChecked())
-        self.thinking_check.toggled.connect(self.thinking_level_combo.setEnabled)
-        form.addRow("model", self.model_combo)
-        form.addRow("thinking", self.thinking_check)
-        form.addRow("thinking_level", self.thinking_level_combo)
-        root.addLayout(form)
-
-        fields_box = QGroupBox("Fields To Auto-Fix")
-        fields_layout = QVBoxLayout(fields_box)
-        field_actions = QHBoxLayout()
-        field_actions.setContentsMargins(0, 0, 0, 0)
-        field_actions.setSpacing(6)
-        self.select_all_fields_btn = QPushButton("Select All")
-        self.clear_all_fields_btn = QPushButton("Clear All")
-        self.select_all_fields_btn.setObjectName("smallActionBtn")
-        self.clear_all_fields_btn.setObjectName("smallActionBtn")
-        field_actions.addWidget(self.select_all_fields_btn)
-        field_actions.addWidget(self.clear_all_fields_btn)
-        field_actions.addStretch(1)
-        fields_layout.addLayout(field_actions)
-        self._fact_field_checks: dict[str, QCheckBox] = {}
-        for field_name, checked_default in GEMINI_AUTO_FIX_FIELD_CHOICES:
-            checkbox = QCheckBox(field_name)
-            checkbox.setChecked(bool(checked_default))
-            fields_layout.addWidget(checkbox)
-            checkbox.toggled.connect(self._refresh_prompt_preview)
-            self._fact_field_checks[field_name] = checkbox
-        self.select_all_fields_btn.clicked.connect(self._select_all_fact_fields)
-        self.clear_all_fields_btn.clicked.connect(self._clear_all_fact_fields)
-        self.statement_type_check = QCheckBox("meta.statement_type")
-        self.statement_type_check.setChecked(False)
-        fields_layout.addWidget(self.statement_type_check)
-        self.statement_type_check.toggled.connect(self._refresh_prompt_preview)
-        root.addWidget(fields_box)
-
-        preview_label = QLabel("Prompt Preview")
-        preview_label.setObjectName("hintText")
-        root.addWidget(preview_label)
-        self.prompt_edit = QPlainTextEdit()
-        self.prompt_edit.setReadOnly(True)
-        root.addWidget(self.prompt_edit, 1)
-
-        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
-        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
-        if ok_btn is not None:
-            ok_btn.setText("Start Gemini Auto-Fix")
-        self.button_box.accepted.connect(self.accept)
-        self.button_box.rejected.connect(self.reject)
-        root.addWidget(self.button_box)
-        self._refresh_prompt_preview()
-
-    def selected_fact_fields(self) -> set[str]:
-        return {
-            field_name
-            for field_name, checkbox in self._fact_field_checks.items()
-            if checkbox.isChecked()
-        }
-
-    def _set_all_fact_fields_checked(self, checked: bool) -> None:
-        for checkbox in self._fact_field_checks.values():
-            checkbox.setChecked(checked)
-        self._refresh_prompt_preview()
-
-    def _select_all_fact_fields(self) -> None:
-        self._set_all_fact_fields_checked(True)
-
-    def _clear_all_fact_fields(self) -> None:
-        self._set_all_fact_fields_checked(False)
-
-    def include_statement_type(self) -> bool:
-        return self.statement_type_check.isChecked()
-
-    def model(self) -> str:
-        return self.model_combo.currentText().strip()
-
-    def enable_thinking(self) -> bool:
-        return self.thinking_level() != "minimal"
-
-    def thinking_level(self) -> str:
-        chosen = self.thinking_level_combo.currentText().strip().lower()
-        if chosen not in GEMINI_THINKING_LEVEL_OPTIONS:
-            chosen = "high" if self.thinking_check.isChecked() else "minimal"
-        if not self.thinking_check.isChecked():
-            return "minimal"
-        return chosen
-
-    def prompt(self) -> str:
-        return self.prompt_edit.toPlainText()
-
-    def _refresh_prompt_preview(self) -> None:
-        selected_fact_fields = self.selected_fact_fields()
-        include_statement_type = self.include_statement_type()
-        prompt = self._prompt_builder(selected_fact_fields, include_statement_type)
-        self.prompt_edit.setPlainText(prompt)
-        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
-        if ok_btn is not None:
-            ok_btn.setEnabled(bool(selected_fact_fields) or include_statement_type)
-
-
-class GeminiStreamDialog(QDialog):
-    stop_requested = pyqtSignal()
-
-    def __init__(self, page_name: str, parent: Optional[QWidget] = None) -> None:
-        super().__init__(parent)
-        self.setWindowTitle(f"Gemini GT Stream - {page_name}")
-        self.resize(900, 620)
-        self.setModal(False)
-        self.setWindowModality(Qt.NonModal)
-
-        root = QVBoxLayout(self)
-        self.status_label = QLabel("Connecting to Gemini...")
-        root.addWidget(self.status_label)
-
-        self.text_view = QPlainTextEdit()
-        self.text_view.setReadOnly(True)
-        root.addWidget(self.text_view, 1)
-
-        actions = QHBoxLayout()
-        self.stop_btn = QPushButton("Stop")
-        self.close_btn = QPushButton("Close")
-        actions.addWidget(self.stop_btn)
-        actions.addStretch(1)
-        actions.addWidget(self.close_btn)
-        root.addLayout(actions)
-
-        self.stop_btn.clicked.connect(self.stop_requested.emit)
-        self.close_btn.clicked.connect(self.close)
-
-    def append_text(self, text: str) -> None:
-        if not text:
-            return
-        cursor = self.text_view.textCursor()
-        cursor.movePosition(QTextCursor.End)
-        cursor.insertText(text)
-        self.text_view.setTextCursor(cursor)
-        self.text_view.ensureCursorVisible()
-
-    def set_status(self, text: str) -> None:
-        self.status_label.setText(text)
-
-    def mark_done(self, text: str) -> None:
-        self.set_status(text)
-        self.stop_btn.setEnabled(False)
-
-    def mark_error(self, text: str) -> None:
-        self.set_status(text)
-        self.stop_btn.setEnabled(False)
-
-
 class PageJsonDialog(QDialog):
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -2154,66 +1820,6 @@ class PageJsonDialog(QDialog):
         return self.text_view.find(needle, flags)
 
 
-class QwenPromptDialog(GeminiPromptDialog):
-    def __init__(
-        self,
-        prompt_text: str,
-        model_name: str,
-        parent: Optional[QWidget] = None,
-        *,
-        show_few_shot_controls: bool = True,
-        few_shot_enabled_default: bool = True,
-        few_shot_presets: tuple[tuple[str, str], ...] = FEW_SHOT_PRESET_CHOICES,
-        few_shot_preset_default: str = FEW_SHOT_PRESET_CLASSIC,
-        few_shot_summary: str = "",
-        show_thinking_control: bool = True,
-        thinking_enabled_default: bool = False,
-        thinking_level_default: str = "minimal",
-        thinking_tooltip: str = "",
-        config_path: Optional[str] = None,
-    ) -> None:
-        super().__init__(
-            prompt_text=prompt_text,
-            model_name=model_name,
-            parent=parent,
-            show_few_shot_controls=show_few_shot_controls,
-            few_shot_enabled_default=few_shot_enabled_default,
-            few_shot_presets=few_shot_presets,
-            few_shot_preset_default=few_shot_preset_default,
-            few_shot_summary=few_shot_summary,
-            show_thinking_control=show_thinking_control,
-            thinking_enabled_default=thinking_enabled_default,
-            thinking_level_default=thinking_level_default,
-            thinking_tooltip=thinking_tooltip,
-        )
-        self.setWindowTitle("Qwen Prompt")
-        self.model_combo.clear()
-        for option in current_qwen_gt_model_choices(config_path):
-            self.model_combo.addItem(option)
-        self.model_combo.setCurrentText(model_name)
-        self.thinking_level_combo.setVisible(False)
-        thinking_level_label = self.form_layout.labelForField(self.thinking_level_combo)
-        if thinking_level_label is not None:
-            thinking_level_label.setVisible(False)
-        self.thinking_level_combo.setEnabled(False)
-        ok_btn = self.button_box.button(QDialogButtonBox.Ok)
-        if ok_btn is not None:
-            ok_btn.setText("Start Qwen GT")
-
-    def model(self) -> str:
-        return self.model_combo.currentText().strip()
-
-    def thinking_level(self) -> str:
-        return "high" if self.thinking_check.isChecked() else "minimal"
-
-
-class QwenStreamDialog(GeminiStreamDialog):
-    def __init__(self, page_name: str, parent: Optional[QWidget] = None) -> None:
-        super().__init__(page_name=page_name, parent=parent)
-        self.setWindowTitle(f"Qwen GT Stream - {page_name}")
-        self.set_status("Connecting to Qwen...")
-
-
 class AnnotationWindow(QMainWindow):
     annotations_saved = pyqtSignal(object)
     annotations_save_status = pyqtSignal(object)
@@ -2279,9 +1885,9 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_snapshot: Optional[dict[str, Any]] = None
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
-        self._gemini_model_name = os.getenv("FINETREE_GEMINI_MODEL", DEFAULT_GEMINI_MODEL)
-        self._gemini_enable_thinking = True
-        self._gemini_thinking_level = "high"
+        self._gemini_model_name = DEFAULT_GEMINI_MODEL
+        self._gemini_enable_thinking = False
+        self._gemini_thinking_level = "minimal"
         self._qwen_stream_thread: Optional[QThread] = None
         self._qwen_stream_worker: Optional[QwenStreamWorker] = None
         self._qwen_stream_target_page: Optional[str] = None
@@ -2290,7 +1896,11 @@ class AnnotationWindow(QMainWindow):
         self._qwen_stream_cancel_requested = False
         self._qwen_model_name = self._initial_qwen_model_name()
         self._qwen_enable_thinking = self._initial_qwen_enable_thinking()
-        self._gt_activity_provider: Optional[str] = None
+        self._ai_controller = AIWorkflowController(
+            self,
+            thinking_levels=GEMINI_THINKING_LEVEL_OPTIONS,
+            fix_field_choices=GEMINI_AUTO_FIX_FIELD_CHOICES,
+        )
         self._page_issue_summaries: Dict[str, PageIssueSummary] = {}
         self._last_document_issue_signature: Optional[tuple[int, int, int, int]] = None
         self._last_saved_content: Dict[str, Any] = {"page_states": {}, "metadata": {}}
@@ -2462,10 +2072,7 @@ class AnnotationWindow(QMainWindow):
             (self.undo_btn, "Undo", "Undo", None),
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
-            (self.gemini_gt_btn, "Gemini", "Gemini GT", self._load_repo_icon(GEMINI_BUTTON_ICON)),
-            (self.gemini_complete_btn, "Auto Complete", "Gemini auto complete missing facts", self._load_repo_icon(GEMINI_BUTTON_ICON)),
-            (self.gemini_fill_btn, "Auto-Fix", "Gemini auto-fix selected fields", self._load_repo_icon(GEMINI_BUTTON_ICON)),
-            (self.qwen_gt_btn, "Qwen", "Qwen GT", self._load_repo_icon(QWEN_BUTTON_ICON)),
+            (self.ai_btn, "AI", "Open AI actions", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
             (self.zoom_in_btn, "Zoom +", "Zoom in", None),
@@ -2532,10 +2139,7 @@ class AnnotationWindow(QMainWindow):
         self.undo_btn = QPushButton("Undo")
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
-        self.gemini_gt_btn = QPushButton("Gemini GT")
-        self.gemini_complete_btn = QPushButton("Gemini Auto Complete")
-        self.gemini_fill_btn = QPushButton("Gemini Auto-Fix")
-        self.qwen_gt_btn = QPushButton("Qwen GT")
+        self.ai_btn = QPushButton("AI")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
         self.zoom_in_btn = QPushButton("Zoom +")
@@ -2557,10 +2161,7 @@ class AnnotationWindow(QMainWindow):
             self.undo_btn,
             self.redo_btn,
             self.import_btn,
-            self.gemini_gt_btn,
-            self.gemini_complete_btn,
-            self.gemini_fill_btn,
-            self.qwen_gt_btn,
+            self.ai_btn,
             self.delete_nav_btn,
             self.zoom_out_btn,
             self.zoom_in_btn,
@@ -2577,10 +2178,7 @@ class AnnotationWindow(QMainWindow):
         ):
             btn.setObjectName("toolbarActionBtn")
         self._apply_top_nav_icons()
-        self.gemini_gt_btn.setProperty("variant", "primary")
-        self.gemini_complete_btn.setProperty("variant", "primary")
-        self.gemini_fill_btn.setProperty("variant", "primary")
-        self.qwen_gt_btn.setProperty("variant", "primary")
+        self.ai_btn.setProperty("variant", "primary")
         self.save_btn.setProperty("variant", "primary")
         for button in (self.import_btn, self.page_json_btn, self.help_btn, self.apply_entity_all_btn, self.exit_btn):
             button.setProperty("variant", "ghost")
@@ -2613,10 +2211,7 @@ class AnnotationWindow(QMainWindow):
 
         gt_layout = QHBoxLayout()
         gt_layout.setSpacing(4)
-        gt_layout.addWidget(self.gemini_gt_btn)
-        gt_layout.addWidget(self.gemini_complete_btn)
-        gt_layout.addWidget(self.gemini_fill_btn)
-        gt_layout.addWidget(self.qwen_gt_btn)
+        gt_layout.addWidget(self.ai_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self._toolbar_group("Generation", gt_layout))
         nav.addWidget(self._toolbar_divider())
@@ -3383,25 +2978,6 @@ class AnnotationWindow(QMainWindow):
 
         self.batch_box.setVisible(False)
 
-        self.gt_activity_box = QGroupBox("Generation Activity")
-        self.gt_activity_box.setObjectName("inspectorSubsection")
-        gt_activity_layout = QVBoxLayout(self.gt_activity_box)
-        gt_activity_layout.setContentsMargins(14, 14, 14, 12)
-        gt_activity_layout.setSpacing(7)
-        self.gt_activity_status_label = QLabel("No active generation.")
-        self.gt_activity_status_label.setObjectName("subtitleLabel")
-        self.gt_activity_provider_label = QLabel("Idle")
-        self.gt_activity_provider_label.setObjectName("statusPill")
-        self.gt_activity_provider_label.setProperty("tone", "accent")
-        self.gt_activity_count_label = QLabel("Parsed facts: 0")
-        self.gt_activity_count_label.setObjectName("monoLabel")
-        self.gt_activity_stop_btn = QPushButton("Stop Generation")
-        self.gt_activity_stop_btn.setProperty("variant", "danger")
-        self.gt_activity_stop_btn.setEnabled(False)
-        gt_activity_layout.addWidget(self.gt_activity_provider_label, 0, Qt.AlignLeft)
-        gt_activity_layout.addWidget(self.gt_activity_status_label)
-        gt_activity_layout.addWidget(self.gt_activity_count_label)
-        gt_activity_layout.addWidget(self.gt_activity_stop_btn, 0, Qt.AlignLeft)
         tip = QLabel(
             "Select a box to edit fields here. "
             "Click a box to select it, drag on empty page area for rectangle select, and hold Shift to add to selection. "
@@ -3419,7 +2995,6 @@ class AnnotationWindow(QMainWindow):
         right_layout.addWidget(page_meta_box)
         right_layout.addWidget(self.page_issues_box)
         right_layout.addWidget(fact_box, 1)
-        right_layout.addWidget(self.gt_activity_box)
         right_layout.addWidget(tip)
         right_layout.addStretch(1)
 
@@ -3461,10 +3036,7 @@ class AnnotationWindow(QMainWindow):
         self.exit_btn.clicked.connect(self.request_application_exit)
         self.save_btn.clicked.connect(self._trigger_save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
-        self.gemini_gt_btn.clicked.connect(self.generate_gemini_ground_truth)
-        self.gemini_complete_btn.clicked.connect(self.generate_gemini_auto_complete)
-        self.gemini_fill_btn.clicked.connect(self.generate_gemini_fill_selected_fields)
-        self.qwen_gt_btn.clicked.connect(self.generate_qwen_ground_truth)
+        self.ai_btn.clicked.connect(self.open_ai_dialog)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
         self.del_fact_btn.clicked.connect(self.delete_selected_fact)
@@ -3494,7 +3066,6 @@ class AnnotationWindow(QMainWindow):
         self.equation_mark_add_btn.clicked.connect(lambda: self._apply_operator_to_selected_equation_terms("+"))
         self.equation_mark_subtract_btn.clicked.connect(lambda: self._apply_operator_to_selected_equation_terms("-"))
         self.batch_toggle_btn.clicked.connect(self.toggle_batch_panel)
-        self.gt_activity_stop_btn.clicked.connect(self._stop_active_generation)
         self.page_issues_list.itemClicked.connect(self._on_page_issue_clicked)
         self.facts_list.itemSelectionChanged.connect(self._on_fact_list_selection_changed)
         self.facts_list.installEventFilter(self)
@@ -3606,10 +3177,8 @@ class AnnotationWindow(QMainWindow):
         QShortcut(QKeySequence("Ctrl+Shift+Z"), self, activated=self.redo)
         QShortcut(QKeySequence("Ctrl+I"), self, activated=self.import_annotations_json)
         QShortcut(QKeySequence("Meta+I"), self, activated=self.import_annotations_json)
-        QShortcut(QKeySequence("Ctrl+G"), self, activated=self.generate_gemini_ground_truth)
-        QShortcut(QKeySequence("Meta+G"), self, activated=self.generate_gemini_ground_truth)
-        QShortcut(QKeySequence("Ctrl+Shift+G"), self, activated=self.generate_qwen_ground_truth)
-        QShortcut(QKeySequence("Meta+Shift+G"), self, activated=self.generate_qwen_ground_truth)
+        QShortcut(QKeySequence("Ctrl+G"), self, activated=self.open_ai_dialog)
+        QShortcut(QKeySequence("Meta+G"), self, activated=self.open_ai_dialog)
         QShortcut(QKeySequence("Ctrl+D"), self, activated=self.duplicate_selected_fact)
         QShortcut(QKeySequence("Meta+D"), self, activated=self.duplicate_selected_fact)
         self._delete_shortcut = QShortcut(QKeySequence(Qt.Key_Delete), self, activated=self._delete_selected_fact_shortcut)
@@ -5825,37 +5394,16 @@ class AnnotationWindow(QMainWindow):
             self.statusBar().showMessage("Zoom lens disabled.", 2000)
 
     def _set_gt_buttons_enabled(self, enabled: bool) -> None:
-        if hasattr(self, "gemini_gt_btn"):
-            self.gemini_gt_btn.setEnabled(enabled)
-        if hasattr(self, "gemini_complete_btn"):
-            self.gemini_complete_btn.setEnabled(enabled)
-        if hasattr(self, "qwen_gt_btn"):
-            self.qwen_gt_btn.setEnabled(enabled)
-        self._update_gemini_fill_button_state(force_disable=not enabled)
-        self._update_gemini_complete_button_state(force_disable=not enabled)
+        _ = enabled
+        self._refresh_ai_dialog_state()
 
     def _update_gemini_fill_button_state(self, *, force_disable: bool = False) -> None:
-        if not hasattr(self, "gemini_fill_btn"):
-            return
-        has_selection = bool(self._selected_fact_items()) if not force_disable else False
-        no_active_generation = (
-            self._gemini_stream_thread is None
-            and self._qwen_stream_thread is None
-            and self._gemini_fill_thread is None
-        )
-        enabled = has_selection and no_active_generation and not force_disable
-        self.gemini_fill_btn.setEnabled(enabled)
+        _ = force_disable
+        self._refresh_ai_dialog_state()
 
     def _update_gemini_complete_button_state(self, *, force_disable: bool = False) -> None:
-        if not hasattr(self, "gemini_complete_btn"):
-            return
-        has_current_page_facts = bool(getattr(self, "_fact_items", [])) if not force_disable else False
-        no_active_generation = (
-            self._gemini_stream_thread is None
-            and self._qwen_stream_thread is None
-            and self._gemini_fill_thread is None
-        )
-        self.gemini_complete_btn.setEnabled(has_current_page_facts and no_active_generation and not force_disable)
+        _ = force_disable
+        self._refresh_ai_dialog_state()
 
     def toggle_batch_panel(self) -> None:
         visible = not self.batch_box.isVisible()
@@ -5863,30 +5411,16 @@ class AnnotationWindow(QMainWindow):
         self.batch_toggle_btn.setText("Hide Batch Edit" if visible else "Show Batch Edit")
 
     def _set_gt_activity(self, provider: str, status: str, *, fact_count: int = 0, running: bool = False) -> None:
-        self._gt_activity_provider = provider
-        self.gt_activity_provider_label.setText(provider)
-        tone = "accent" if running else ("ok" if "complete" in status.lower() else ("warn" if "stop" in status.lower() else "accent"))
-        self.gt_activity_provider_label.setProperty("tone", tone)
-        self.gt_activity_provider_label.style().unpolish(self.gt_activity_provider_label)
-        self.gt_activity_provider_label.style().polish(self.gt_activity_provider_label)
-        self.gt_activity_status_label.setText(status)
-        self.gt_activity_count_label.setText(f"Parsed facts: {int(fact_count)}")
-        self.gt_activity_stop_btn.setEnabled(running)
+        if hasattr(self, "_ai_controller"):
+            self._ai_controller._set_status(f"{provider}: {status}", fact_count=int(fact_count), running=running)
 
     def _clear_gt_activity(self) -> None:
-        self._gt_activity_provider = None
-        self._set_gt_activity("Idle", "No active generation.", fact_count=0, running=False)
+        if hasattr(self, "_ai_controller"):
+            self._ai_controller._set_status("Idle.", fact_count=0, running=False)
 
     def _stop_active_generation(self) -> None:
-        if self._gemini_stream_thread is not None:
-            self._cancel_gemini_stream()
-            return
-        if self._qwen_stream_thread is not None:
-            self._cancel_qwen_stream()
-            return
-        if self._gemini_fill_thread is not None:
-            self._cancel_gemini_fill()
-            return
+        if hasattr(self, "_ai_controller"):
+            self._ai_controller.stop_active_generation()
 
     def _apply_zoom(self, factor: float) -> None:
         current_zoom = self.view.transform().m11()
@@ -6406,88 +5940,7 @@ class AnnotationWindow(QMainWindow):
 
     @staticmethod
     def _bbox_looks_normalized_1000(bbox: Dict[str, Any]) -> bool:
-        try:
-            x = float(bbox.get("x", 0.0))
-            y = float(bbox.get("y", 0.0))
-            w = float(bbox.get("w", 0.0))
-            h = float(bbox.get("h", 0.0))
-        except Exception:
-            return False
-        limit = 1000.0 + 1e-6
-        return (
-            0.0 <= x <= limit
-            and 0.0 <= y <= limit
-            and 0.0 <= w <= limit
-            and 0.0 <= h <= limit
-            and (x + w) <= limit
-            and (y + h) <= limit
-        )
-
-    def _resolve_prompt_txt_path(self) -> Optional[Path]:
-        candidates: List[Path] = []
-        env_path = os.getenv("FINETREE_PROMPT_PATH")
-        if env_path:
-            candidates.append(Path(env_path).expanduser())
-
-        candidates.append(Path.cwd() / "prompts" / "extraction_prompt.txt")
-        candidates.append(DEFAULT_EXTRACTION_PROMPT_PATH)
-        candidates.append(Path.cwd() / "prompt.txt")
-        candidates.append(LEGACY_EXTRACTION_PROMPT_PATH)
-        for parent in Path(__file__).resolve().parents:
-            candidates.append(parent / "prompts" / "extraction_prompt.txt")
-            candidates.append(parent / "prompt.txt")
-
-        seen: set[Path] = set()
-        for path in candidates:
-            resolved = path.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            if resolved.is_file():
-                return resolved
-        return None
-
-    def _resolve_gemini_fill_prompt_txt_path(self) -> Optional[Path]:
-        candidates: List[Path] = []
-        env_path = os.getenv("FINETREE_GEMINI_FILL_PROMPT_PATH")
-        if env_path:
-            candidates.append(Path(env_path).expanduser())
-
-        candidates.append(Path.cwd() / "prompts" / "gemini_fill_prompt.txt")
-        candidates.append(DEFAULT_GEMINI_FILL_PROMPT_PATH)
-        for parent in Path(__file__).resolve().parents:
-            candidates.append(parent / "prompts" / "gemini_fill_prompt.txt")
-
-        seen: set[Path] = set()
-        for path in candidates:
-            resolved = path.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            if resolved.is_file():
-                return resolved
-        return None
-
-    def _resolve_gemini_autocomplete_prompt_txt_path(self) -> Optional[Path]:
-        candidates: List[Path] = []
-        env_path = os.getenv("FINETREE_GEMINI_AUTOCOMPLETE_PROMPT_PATH")
-        if env_path:
-            candidates.append(Path(env_path).expanduser())
-
-        candidates.append(Path.cwd() / "prompts" / "gemini_autocomplete_prompt.txt")
-        candidates.append(DEFAULT_GEMINI_AUTOCOMPLETE_PROMPT_PATH)
-        for parent in Path(__file__).resolve().parents:
-            candidates.append(parent / "prompts" / "gemini_autocomplete_prompt.txt")
-
-        seen: set[Path] = set()
-        for path in candidates:
-            resolved = path.resolve()
-            if resolved in seen:
-                continue
-            seen.add(resolved)
-            if resolved.is_file():
-                return resolved
-        return None
+        return bbox_looks_normalized_1000(bbox)
 
     def _load_gemini_few_shot_examples(
         self,
@@ -6569,11 +6022,6 @@ class AnnotationWindow(QMainWindow):
             return False
         return bool(cfg.inference.enable_thinking)
 
-    def _build_prompt_from_template(self, template: str, page_image_path: Path) -> str:
-        prompt = template.replace("{{PAGE_IMAGE}}", str(page_image_path))
-        prompt = prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
-        return prompt
-
     def _build_page_prompt_payload(
         self,
         *,
@@ -6581,11 +6029,10 @@ class AnnotationWindow(QMainWindow):
         page_meta: Dict[str, Any],
         facts: list[dict[str, Any]],
     ) -> Dict[str, Any]:
-        return build_single_page_payload(
+        return build_ai_page_prompt_payload(
             page_name=page_name,
             page_meta=page_meta,
             facts=facts,
-            mode=MODEL_PROMPT_MODE,
         )
 
     def _build_gemini_fill_prompt_from_template(
@@ -6596,25 +6043,12 @@ class AnnotationWindow(QMainWindow):
         selected_fact_fields: set[str],
         include_statement_type: bool,
     ) -> str:
-        fact_fields = ", ".join(sorted(selected_fact_fields)) if selected_fact_fields else "none"
-        meta_fields = "statement_type" if include_statement_type else "none"
-        if include_statement_type:
-            meta_updates_schema = (
-                '{\n'
-                '    "statement_type": '
-                '"balance_sheet|income_statement|cash_flow_statement|statement_of_changes_in_equity|'
-                'notes_to_financial_statements|board_of_directors_report|auditors_report|'
-                'statement_of_activities|other_declaration|null"\n'
-                "  }"
-            )
-        else:
-            meta_updates_schema = "{}"
-        request_json = serialize_schema_mode_payload(request_payload)
-        prompt = template.replace("{{FACT_FIELDS}}", fact_fields)
-        prompt = prompt.replace("{{META_FIELDS}}", meta_fields)
-        prompt = prompt.replace("{{META_UPDATES_SCHEMA}}", meta_updates_schema)
-        prompt = prompt.replace("{{REQUEST_JSON}}", request_json)
-        return prompt
+        return build_ai_gemini_fill_prompt(
+            template,
+            request_payload=request_payload,
+            selected_fact_fields=selected_fact_fields,
+            include_statement_type=include_statement_type,
+        )
 
     def _build_gemini_autocomplete_prompt_from_template(
         self,
@@ -6622,27 +6056,14 @@ class AnnotationWindow(QMainWindow):
         *,
         request_payload: Dict[str, Any],
     ) -> str:
-        request_json = serialize_schema_mode_payload(request_payload)
-        first_page = {}
         pages = request_payload.get("pages")
+        page_name = ""
         if isinstance(pages, list) and pages and isinstance(pages[0], dict):
-            first_page = {
-                "image": pages[0].get("image"),
-                "meta": pages[0].get("meta"),
-                "facts": pages[0].get("facts"),
-            }
-        seed_page_json = json.dumps(first_page, ensure_ascii=False, indent=2)
-        page_name = str(first_page.get("image") or "")
-        image_dims = self._image_dimensions_for_page(page_name) if page_name else None
-        image_dimensions = (
-            f"{int(image_dims[0])} x {int(image_dims[1])} pixels"
-            if image_dims is not None
-            else "unknown"
-        )
-        return (
-            template.replace("{{REQUEST_JSON}}", request_json)
-            .replace("{{SEED_PAGE_JSON}}", seed_page_json)
-            .replace("{{IMAGE_DIMENSIONS}}", image_dimensions)
+            page_name = str(pages[0].get("image") or "")
+        return build_ai_gemini_autocomplete_prompt(
+            template,
+            request_payload=request_payload,
+            image_dimensions=self._image_dimensions_for_page(page_name) if page_name else None,
         )
 
     def _fact_payload_from_item(self, item: AnnotRectItem) -> Dict[str, Any]:
@@ -6694,28 +6115,55 @@ class AnnotationWindow(QMainWindow):
             signature.append(self._fact_uniqueness_key(self._fact_payload_from_item(item)))
         return signature
 
-    def _normalized_stream_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
-        raw_bbox = fact_payload.get("bbox")
-        if not isinstance(raw_bbox, dict) and not (isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4):
+    def _ai_page_context(self) -> AIPageContext | None:
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
             return None
-        bbox = normalize_bbox_data(raw_bbox)
-        fact_data = normalize_fact_data(fact_payload)
-        return {"bbox": bbox_to_list(bbox), **fact_data}
+        page_path = self.page_images[self.current_index]
+        page_name = page_path.name
+        ordered_items = self._sorted_fact_items()
+        state = self.page_states.get(page_name, self._default_state(self.current_index))
+        page_meta = PageMeta.model_validate(
+            {**self._default_meta(self.current_index), **(state.meta or {})}
+        ).model_dump(mode="json")
+        selected_ids = {id(item) for item in self._selected_fact_items()}
+        selected_fact_nums = [
+            fact_num
+            for item in ordered_items
+            if id(item) in selected_ids
+            for fact_num in [self._fact_num_for_item(item)]
+            if fact_num is not None
+        ]
+        ordered_fact_payloads = [deepcopy(self._fact_payload_from_item(item)) for item in ordered_items]
+        return AIPageContext(
+            page_path=page_path,
+            page_name=page_name,
+            page_index=self.current_index,
+            page_meta=page_meta,
+            ordered_fact_payloads=ordered_fact_payloads,
+            ordered_fact_signature=self._current_page_fact_snapshot_signature(ordered_items),
+            selected_fact_nums=selected_fact_nums,
+            existing_fact_count=len(ordered_fact_payloads),
+            selected_fact_count=len(selected_fact_nums),
+            image_dimensions=self._image_dimensions_for_page(page_name),
+        )
+
+    def open_ai_dialog(
+        self,
+        _checked: bool = False,
+        *,
+        provider: AIProvider | None = None,
+        action: AIActionKind | None = None,
+    ) -> None:
+        self._ai_controller.open_dialog(provider=provider, action=action)
+
+    def _refresh_ai_dialog_state(self) -> None:
+        self._ai_controller.refresh_dialog_state()
+
+    def _normalized_stream_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
+        return normalize_ai_fact_payload(fact_payload)
 
     def _normalized_autocomplete_generated_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
-        normalized_payload = self._normalized_stream_fact_payload(fact_payload)
-        if normalized_payload is None:
-            return None
-        normalized_fact = normalize_fact_data(
-            {
-                **normalized_payload,
-                "fact_num": None,
-            }
-        )
-        return {
-            "bbox": bbox_to_list(normalized_payload.get("bbox")),
-            **normalized_fact,
-        }
+        return normalize_ai_fact_payload(fact_payload, clear_fact_num=True)
 
     def _autocomplete_candidate_payloads_for_bbox_mode(
         self,
@@ -6725,140 +6173,38 @@ class AnnotationWindow(QMainWindow):
         image_width: float,
         image_height: float,
     ) -> List[Dict[str, Any]]:
-        out: list[dict[str, Any]] = []
-        for payload in fact_payloads:
-            normalized_payload = self._normalized_stream_fact_payload(payload)
-            if normalized_payload is None:
-                continue
-            bbox = normalize_bbox_data(normalized_payload.get("bbox"))
-            if mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL:
-                bbox = denormalize_bbox_from_1000(bbox, image_width, image_height)
-            out.append({"bbox": bbox_to_list(bbox), **normalize_fact_data(normalized_payload)})
-        return out
+        return payloads_for_bbox_mode(
+            fact_payloads,
+            mode=mode,
+            image_width=image_width,
+            image_height=image_height,
+        )
 
     @staticmethod
     def _score_bbox_payload_ink(image: QImage, bbox_payload: Dict[str, Any]) -> tuple[float, float]:
-        image_width = image.width()
-        image_height = image.height()
-        if image_width <= 0 or image_height <= 0:
-            return 0.0, 0.0
-        bbox = normalize_bbox_data(bbox_payload.get("bbox"))
-        area = max(float(bbox["w"]) * float(bbox["h"]), 1.0)
-        left = float(bbox["x"])
-        top = float(bbox["y"])
-        right = left + float(bbox["w"])
-        bottom = top + float(bbox["h"])
-
-        sample_left = max(0, min(image_width - 1, int(math.floor(left))))
-        sample_top = max(0, min(image_height - 1, int(math.floor(top))))
-        sample_right = max(0, min(image_width, int(math.ceil(right))))
-        sample_bottom = max(0, min(image_height, int(math.ceil(bottom))))
-        if sample_right <= sample_left or sample_bottom <= sample_top:
-            return 0.0, 0.0
-
-        clipped_area = float((sample_right - sample_left) * (sample_bottom - sample_top))
-        coverage = max(0.0, min(1.0, clipped_area / area))
-        span_w = sample_right - sample_left
-        span_h = sample_bottom - sample_top
-        step = max(1, int(max(span_w / 32.0, span_h / 32.0)))
-
-        dark_pixels = 0
-        sampled_pixels = 0
-        for py in range(sample_top, sample_bottom, step):
-            for px in range(sample_left, sample_right, step):
-                color = image.pixelColor(px, py)
-                luma = 0.299 * float(color.red()) + 0.587 * float(color.green()) + 0.114 * float(color.blue())
-                if luma <= BBOX_DARK_LUMA_THRESHOLD:
-                    dark_pixels += 1
-                sampled_pixels += 1
-        if sampled_pixels <= 0:
-            return 0.0, coverage
-
-        ink_ratio = dark_pixels / sampled_pixels
-        ink_score = max(0.0, min(1.0, ink_ratio / BBOX_INK_TARGET_RATIO))
-        score = (0.75 * ink_score) + (0.25 * coverage)
-        if coverage < 0.35:
-            score *= coverage / 0.35
-        return score, coverage
+        return score_bbox_payload_ink(image, bbox_payload)
 
     def _score_autocomplete_bbox_candidate_payloads(self, page_name: str, fact_payloads: List[Dict[str, Any]]) -> float:
-        image_path = self.images_dir / page_name
-        image = QImage(str(image_path))
-        if image.isNull():
-            return 0.0
-        if not fact_payloads:
-            return 0.0
-
-        total_score = 0.0
-        total_coverage = 0.0
-        scored_count = 0
-        for payload in fact_payloads:
-            score, coverage = self._score_bbox_payload_ink(image, payload)
-            total_score += score
-            total_coverage += coverage
-            scored_count += 1
-        if scored_count <= 0:
-            return 0.0
-        avg_score = total_score / float(scored_count)
-        avg_coverage = total_coverage / float(scored_count)
-        # Coverage penalty helps reject candidates that mostly fall outside image bounds.
-        return max(0.0, avg_score - ((1.0 - avg_coverage) * 0.35))
+        return score_bbox_candidate_payloads(self.images_dir / page_name, fact_payloads)
 
     def _resolve_autocomplete_bbox_mode(
         self,
         page_name: str,
         fact_payloads: List[Dict[str, Any]],
     ) -> tuple[List[Dict[str, Any]], str]:
-        if not fact_payloads:
-            self._gemini_autocomplete_last_bbox_scores = {
-                BBOX_MODE_PIXEL_AS_IS: 0.0,
-                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
-            }
-            return [], BBOX_MODE_PIXEL_AS_IS
-
-        image_dims = self._image_dimensions_for_page(page_name)
-        if image_dims is None:
-            self._gemini_autocomplete_last_bbox_scores = {
-                BBOX_MODE_PIXEL_AS_IS: 0.0,
-                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
-            }
-            return [deepcopy(payload) for payload in fact_payloads], BBOX_MODE_PIXEL_AS_IS
-
-        image_width, image_height = image_dims
-        pixel_payloads = self._autocomplete_candidate_payloads_for_bbox_mode(
+        result = resolve_bbox_mode(
+            image_path=self.images_dir / page_name,
+            image_dimensions=self._image_dimensions_for_page(page_name),
             fact_payloads=fact_payloads,
-            mode=BBOX_MODE_PIXEL_AS_IS,
-            image_width=image_width,
-            image_height=image_height,
         )
-        normalized_payloads = self._autocomplete_candidate_payloads_for_bbox_mode(
-            fact_payloads=fact_payloads,
-            mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
-            image_width=image_width,
-            image_height=image_height,
-        )
-        pixel_score = self._score_autocomplete_bbox_candidate_payloads(page_name, pixel_payloads)
-        normalized_score = self._score_autocomplete_bbox_candidate_payloads(page_name, normalized_payloads)
-        self._gemini_autocomplete_last_bbox_scores = {
-            BBOX_MODE_PIXEL_AS_IS: pixel_score,
-            BBOX_MODE_NORMALIZED_1000_TO_PIXEL: normalized_score,
-        }
-        if normalized_score > (pixel_score + BBOX_MODE_SWITCH_MARGIN):
-            return normalized_payloads, BBOX_MODE_NORMALIZED_1000_TO_PIXEL
-        return pixel_payloads, BBOX_MODE_PIXEL_AS_IS
+        self._gemini_autocomplete_last_bbox_scores = dict(result.scores)
+        return result.payloads, result.mode
 
     def _ordered_fact_payloads_by_geometry(self, fact_payloads: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        if len(fact_payloads) <= 1:
-            return [deepcopy(payload) for payload in fact_payloads]
-        facts_for_order = [{"bbox": normalize_bbox_data(payload.get("bbox"))} for payload in fact_payloads]
-        direction = self._active_reading_direction()
-        ordered_indices = canonical_fact_order_indices(
-            facts_for_order,
-            direction="rtl" if direction == "rtl" else "ltr",
-            row_tolerance_ratio=0.35,
-            row_tolerance_min_px=6.0,
+        return ordered_fact_payloads_by_geometry(
+            fact_payloads,
+            reading_direction=self._active_reading_direction(),
         )
-        return [deepcopy(fact_payloads[idx]) for idx in ordered_indices if 0 <= idx < len(fact_payloads)]
 
     def _apply_page_state_to_scene(self, page_name: str) -> None:
         page_idx = self._page_index_by_name(page_name)
@@ -7058,6 +6404,19 @@ class AnnotationWindow(QMainWindow):
             )
         self._render_gemini_gt_live_buffer(page_name)
 
+    def _ai_request_fact_payloads(self, ordered_items: List[AnnotRectItem]) -> list[dict[str, Any]]:
+        payloads: list[dict[str, Any]] = []
+        for item in ordered_items:
+            payload = self._fact_payload_from_item(item)
+            payloads.append(
+                {
+                    "fact_num": self._fact_num_for_item(item),
+                    "bbox": bbox_to_list(payload.get("bbox")),
+                    **normalize_fact_data(payload),
+                }
+            )
+        return payloads
+
     def _build_gemini_fill_request_payload(
         self,
         *,
@@ -7070,34 +6429,13 @@ class AnnotationWindow(QMainWindow):
         page_idx = self._page_index_by_name(page_name)
         state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
         page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
-
-        if include_statement_type:
-            page_meta["statement_type"] = None
-
-        facts_out: list[dict[str, Any]] = []
-        selected_lookup = set(selected_fact_nums)
-        for item in ordered_items:
-            fact_num = self._fact_num_for_item(item)
-            if fact_num not in selected_lookup:
-                continue
-            payload = self._fact_payload_from_item(item)
-            fact_data = normalize_fact_data(payload)
-            redacted_fact = {**fact_data}
-            for field_name in selected_fact_fields:
-                if field_name in redacted_fact:
-                    redacted_fact[field_name] = None
-            facts_out.append(
-                {
-                    "fact_num": fact_num,
-                    "bbox": bbox_to_list(payload.get("bbox")),
-                    **redacted_fact,
-                }
-            )
-
-        return self._build_page_prompt_payload(
+        return build_ai_gemini_fill_request_payload(
             page_name=page_name,
             page_meta=page_meta,
-            facts=facts_out,
+            ordered_fact_payloads=self._ai_request_fact_payloads(ordered_items),
+            selected_fact_nums=selected_fact_nums,
+            selected_fact_fields=selected_fact_fields,
+            include_statement_type=include_statement_type,
         )
 
     def _build_gemini_autocomplete_request_payload(
@@ -7109,21 +6447,10 @@ class AnnotationWindow(QMainWindow):
         page_idx = self._page_index_by_name(page_name)
         state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
         page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
-
-        facts_out: list[dict[str, Any]] = []
-        for item in ordered_items:
-            payload = self._fact_payload_from_item(item)
-            facts_out.append(
-                {
-                    "fact_num": self._fact_num_for_item(item),
-                    "bbox": bbox_to_list(payload.get("bbox")),
-                    **normalize_fact_data(payload),
-                }
-            )
-        return self._build_page_prompt_payload(
+        return build_ai_gemini_autocomplete_request_payload(
             page_name=page_name,
             page_meta=page_meta,
-            facts=facts_out,
+            ordered_fact_payloads=self._ai_request_fact_payloads(ordered_items),
         )
 
     def _apply_stream_meta(self, page_name: str, meta_payload: Dict[str, Any]) -> None:
@@ -7312,159 +6639,7 @@ class AnnotationWindow(QMainWindow):
             self.statusBar().showMessage(f"Imported annotations for {imported_count} page(s).", 4500)
 
     def generate_gemini_fill_selected_fields(self) -> None:
-        if self._qwen_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Auto-Fix", "A Qwen stream is already running.")
-            return
-        if self._gemini_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Auto-Fix", "A Gemini stream is already running.")
-            return
-        if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Gemini Auto-Fix", "A Gemini auto-fix task is already running.")
-            return
-        if self.current_index < 0 or self.current_index >= len(self.page_images):
-            QMessageBox.warning(self, "Gemini Auto-Fix", "No current page is loaded.")
-            return
-
-        selected_items = self._selected_fact_items()
-        if not selected_items:
-            QMessageBox.information(self, "Gemini Auto-Fix", "Select one or more facts first.")
-            return
-
-        self._capture_current_state()
-        page_path = self.page_images[self.current_index]
-        page_name = page_path.name
-        ordered_items = self._sorted_fact_items()
-        selected_ids = {id(item) for item in selected_items}
-        selected_fact_nums = [
-            fact_num
-            for item in ordered_items
-            if id(item) in selected_ids
-            for fact_num in [self._fact_num_for_item(item)]
-            if fact_num is not None
-        ]
-        if not selected_fact_nums:
-            QMessageBox.information(self, "Gemini Auto-Fix", "No selected facts matched current page ordering.")
-            return
-
-        prompt_path = self._resolve_gemini_fill_prompt_txt_path()
-        if prompt_path is None:
-            prompt_template = default_gemini_fill_prompt_template()
-        else:
-            try:
-                prompt_template = prompt_path.read_text(encoding="utf-8")
-            except Exception as exc:
-                QMessageBox.warning(self, "Gemini Auto-Fix", f"Failed to read Gemini auto-fix prompt template:\n{exc}")
-                return
-
-        def _prompt_preview_builder(selected_fact_fields: set[str], include_statement_type: bool) -> str:
-            request_payload = self._build_gemini_fill_request_payload(
-                page_name=page_name,
-                selected_fact_nums=selected_fact_nums,
-                selected_fact_fields=selected_fact_fields,
-                include_statement_type=include_statement_type,
-                ordered_items=ordered_items,
-            )
-            return self._build_gemini_fill_prompt_from_template(
-                prompt_template,
-                request_payload=request_payload,
-                selected_fact_fields=selected_fact_fields,
-                include_statement_type=include_statement_type,
-            )
-
-        dialog = GeminiFillDialog(
-            model_name=self._gemini_model_name,
-            thinking_enabled_default=self._gemini_enable_thinking,
-            thinking_level_default=self._gemini_thinking_level,
-            prompt_builder=_prompt_preview_builder,
-            parent=self,
-        )
-        if dialog.exec_() != QDialog.Accepted:
-            return
-
-        selected_fact_fields = dialog.selected_fact_fields()
-        include_statement_type = dialog.include_statement_type()
-        if not selected_fact_fields and not include_statement_type:
-            QMessageBox.warning(self, "Gemini Auto-Fix", "Choose at least one fact field or statement_type.")
-            return
-
-        prompt_text = dialog.prompt().strip()
-        if not prompt_text:
-            QMessageBox.warning(self, "Gemini Auto-Fix", "Prompt cannot be empty.")
-            return
-        model_name = resolve_supported_gemini_model_name(dialog.model().strip() or self._gemini_model_name)
-        enable_thinking = dialog.enable_thinking()
-        thinking_level = dialog.thinking_level()
-
-        try:
-            from .gemini_vlm import ensure_gemini_backend_credentials
-        except Exception as exc:
-            QMessageBox.warning(self, "Gemini Auto-Fix", f"Gemini backend is unavailable:\n{exc}")
-            return
-
-        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
-        if auth_error:
-            QMessageBox.warning(self, "Gemini Auto-Fix", auth_error)
-            return
-
-        request_payload = self._build_gemini_fill_request_payload(
-            page_name=page_name,
-            selected_fact_nums=selected_fact_nums,
-            selected_fact_fields=selected_fact_fields,
-            include_statement_type=include_statement_type,
-            ordered_items=ordered_items,
-        )
-        prompt_text = self._build_gemini_fill_prompt_from_template(
-            prompt_template,
-            request_payload=request_payload,
-            selected_fact_fields=selected_fact_fields,
-            include_statement_type=include_statement_type,
-        )
-
-        self._gemini_model_name = model_name
-        self._gemini_enable_thinking = enable_thinking
-        self._gemini_thinking_level = thinking_level
-        self._gemini_fill_target_page = page_name
-        self._gemini_fill_selected_fact_fields = set(selected_fact_fields)
-        self._gemini_fill_include_statement_type = include_statement_type
-        self._gemini_fill_snapshot = {
-            "page_name": page_name,
-            "selected_fact_nums": list(selected_fact_nums),
-            "ordered_fact_signature": self._current_page_fact_snapshot_signature(ordered_items),
-        }
-        self._gemini_fill_cancel_requested = False
-
-        self._set_gt_activity(
-            "Gemini Auto-Fix",
-            f"Running Gemini auto-fix for {len(selected_fact_nums)} selected fact(s) ({thinking_level})...",
-            fact_count=0,
-            running=True,
-        )
-
-        worker = GeminiFillWorker(
-            image_path=page_path,
-            prompt=prompt_text,
-            model=model_name,
-            api_key=gemini_api_key,
-            allowed_fact_fields=set(selected_fact_fields),
-            allow_statement_type=include_statement_type,
-            enable_thinking=enable_thinking,
-            thinking_level=thinking_level,
-        )
-        thread = QThread(self)
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run)
-        worker.completed.connect(self._on_gemini_fill_completed)
-        worker.failed.connect(self._on_gemini_fill_failed)
-        worker.finished.connect(thread.quit)
-        worker.finished.connect(worker.deleteLater)
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(self._on_gemini_fill_finished)
-
-        self._gemini_fill_worker = worker
-        self._gemini_fill_thread = thread
-        self._set_gt_buttons_enabled(False)
-        self.statusBar().showMessage(f"Running Gemini Auto-Fix for {page_name}...", 3000)
-        thread.start()
+        self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.FIX_SELECTED)
 
     def _cancel_gemini_fill(self) -> None:
         if self._gemini_fill_worker is not None:
@@ -7596,859 +6771,59 @@ class AnnotationWindow(QMainWindow):
         if self._gemini_stream_thread is None and self._qwen_stream_thread is None:
             self._set_gt_buttons_enabled(True)
 
-    def _gemini_stream_provider_name(self) -> str:
-        return "Gemini Auto Complete" if self._gemini_stream_mode == "autocomplete" else "Gemini"
-
-    def _gemini_stream_completion_text(self) -> tuple[str, str]:
-        if self._gemini_stream_mode == "autocomplete":
-            bbox_mode_label = (
-                "normalized_1000→pixel"
-                if self._gemini_autocomplete_last_bbox_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL
-                else "pixel"
-            )
-            return (
-                (
-                    "Gemini Auto Complete complete. "
-                    f"Merged {self._gemini_stream_fact_count} new fact(s) "
-                    f"(bbox mode: {bbox_mode_label})."
-                ),
-                (
-                    "Gemini Auto Complete complete "
-                    f"({self._gemini_stream_fact_count} new fact(s) merged, bbox mode: {bbox_mode_label})."
-                ),
-            )
-        bbox_mode_label = (
-            "normalized_1000→pixel"
-            if self._gemini_gt_last_bbox_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL
-            else "pixel"
-        )
-        pixel_score = float(self._gemini_gt_last_bbox_scores.get(BBOX_MODE_PIXEL_AS_IS, 0.0))
-        normalized_score = float(self._gemini_gt_last_bbox_scores.get(BBOX_MODE_NORMALIZED_1000_TO_PIXEL, 0.0))
-        return (
-            (
-                "Gemini GT complete. "
-                f"Parsed {self._gemini_stream_fact_count} fact(s) "
-                f"(bbox mode: {bbox_mode_label}, pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."
-            ),
-            (
-                "Gemini GT complete "
-                f"({self._gemini_stream_fact_count} fact(s), bbox mode: {bbox_mode_label}, "
-                f"pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."
-            ),
-        )
-
-    def _start_gemini_stream(
-        self,
-        *,
-        page_path: Path,
-        page_name: str,
-        prompt_text: str,
-        model_name: str,
-        gemini_api_key: Optional[str],
-        enable_thinking: bool,
-        thinking_level: str,
-        few_shot_examples: Optional[list[dict[str, Any]]],
-        mode: str,
-        max_facts: int = 0,
-        apply_meta: bool = True,
-        initial_seen_facts: Optional[set[tuple[Any, ...]]] = None,
-    ) -> None:
-        self._gemini_stream_target_page = page_name
-        self._gemini_stream_seen_facts = set(initial_seen_facts or set())
-        self._gemini_stream_fact_count = 0
-        self._gemini_autocomplete_buffered_facts = []
-        self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_autocomplete_last_bbox_scores = {}
-        self._gemini_gt_buffered_facts = []
-        self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_gt_last_bbox_scores = {}
-        self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_gt_live_bbox_mode_locked = False
-        self._gemini_gt_live_applied = False
-        self._gemini_stream_cancel_requested = False
-        self._gemini_stream_mode = mode
-        self._gemini_stream_apply_meta = bool(apply_meta)
-        self._gemini_stream_max_facts = max(0, int(max_facts))
-        self._gemini_stream_limit_reached = False
-
-        provider = self._gemini_stream_provider_name()
-        thinking_mode = f"thinking={thinking_level}"
-        if mode == "autocomplete":
-            self._set_gt_activity(
-                provider,
-                f"Completing from {model_name} ({thinking_mode}) ...",
-                fact_count=0,
-                running=True,
-            )
-        elif few_shot_examples:
-            self._set_gt_activity(
-                provider,
-                f"Streaming from {model_name} ({thinking_mode}) with few-shot ({len(few_shot_examples)} examples) ...",
-                fact_count=0,
-                running=True,
-            )
-        else:
-            self._set_gt_activity(
-                provider,
-                f"Streaming from {model_name} ({thinking_mode}) ...",
-                fact_count=0,
-                running=True,
-            )
-
-        worker = GeminiStreamWorker(
-            image_path=page_path,
-            prompt=prompt_text,
-            model=model_name,
-            api_key=gemini_api_key,
-            few_shot_examples=few_shot_examples,
-            enable_thinking=enable_thinking,
-            thinking_level=thinking_level,
-            max_facts=self._gemini_stream_max_facts,
-            allow_partial_finalize_error=(mode == "autocomplete"),
-        )
-        thread = QThread(self)
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run)
-        worker.chunk_received.connect(self._on_gemini_stream_chunk)
-        worker.meta_received.connect(self._on_gemini_stream_meta)
-        worker.fact_received.connect(self._on_gemini_stream_fact)
-        worker.limit_reached.connect(self._on_gemini_stream_limit_reached)
-        worker.completed.connect(self._on_gemini_stream_completed)
-        worker.failed.connect(self._on_gemini_stream_failed)
-        worker.finished.connect(thread.quit)
-        worker.finished.connect(worker.deleteLater)
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(self._on_gemini_stream_finished)
-
-        self._gemini_stream_worker = worker
-        self._gemini_stream_thread = thread
-        self._set_gt_buttons_enabled(False)
-        if mode == "autocomplete":
-            self.statusBar().showMessage(f"Running Gemini Auto Complete for {page_name}...", 3000)
-        else:
-            self.statusBar().showMessage(f"Streaming Gemini GT for {page_name}...", 3000)
-        thread.start()
-
     def generate_gemini_ground_truth(self) -> None:
-        if self._qwen_stream_thread is not None:
-            QMessageBox.information(self, "Gemini GT", "A Qwen stream is already running.")
-            return
-        if self._gemini_stream_thread is not None:
-            QMessageBox.information(self, "Gemini GT", "A Gemini stream is already running.")
-            return
-        if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Gemini GT", "A Gemini auto-fix task is already running.")
-            return
-        if self.current_index < 0 or self.current_index >= len(self.page_images):
-            QMessageBox.warning(self, "Gemini GT", "No current page is loaded.")
-            return
-
-        page_path = self.page_images[self.current_index]
-        page_name = page_path.name
-        self._capture_current_state()
-
-        current_state = self.page_states.get(page_name, self._default_state(self.current_index))
-        if current_state.facts:
-            answer = QMessageBox.question(
-                self,
-                "Replace current annotations?",
-                (
-                    f"Current page already has {len(current_state.facts)} bbox(es).\n"
-                    "Generate Gemini ground truth and replace this page annotations?"
-                ),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No,
-            )
-            if answer != QMessageBox.Yes:
-                return
-
-        prompt_path = self._resolve_prompt_txt_path()
-        if prompt_path is None:
-            prompt_template = default_extraction_prompt_template()
-        else:
-            try:
-                prompt_template = prompt_path.read_text(encoding="utf-8")
-            except Exception as exc:
-                QMessageBox.warning(self, "Gemini GT", f"Failed to read prompt template:\n{exc}")
-                return
-
-        prompt_text = self._build_prompt_from_template(prompt_template, page_path)
-        prompt_dialog = GeminiPromptDialog(
-            prompt_text=prompt_text,
-            model_name=self._gemini_model_name,
-            parent=self,
-            show_few_shot_controls=True,
-            show_thinking_control=True,
-            thinking_enabled_default=self._gemini_enable_thinking,
-            thinking_level_default=self._gemini_thinking_level,
-            thinking_tooltip="Checked uses Gemini thinking mode. Unchecked requests minimal/non-thinking mode.",
-            few_shot_enabled_default=True,
-            few_shot_preset_default=FEW_SHOT_PRESET_2015_TWO_SHOT,
-            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
-            show_max_facts_control=True,
-            max_facts_default=0,
-        )
-        if prompt_dialog.exec_() != QDialog.Accepted:
-            return
-        prompt_text = prompt_dialog.prompt().strip()
-        model_name = resolve_supported_gemini_model_name(prompt_dialog.model().strip() or self._gemini_model_name)
-        enable_thinking = prompt_dialog.enable_thinking()
-        thinking_level = prompt_dialog.thinking_level()
-        use_few_shot = prompt_dialog.use_few_shot()
-        few_shot_preset = prompt_dialog.few_shot_preset()
-        max_facts = prompt_dialog.max_facts()
-        if not prompt_text:
-            QMessageBox.warning(self, "Gemini GT", "Prompt cannot be empty.")
-            return
-
-        try:
-            from .gemini_vlm import ensure_gemini_backend_credentials
-        except Exception as exc:
-            QMessageBox.warning(self, "Gemini GT", f"Gemini backend is unavailable:\n{exc}")
-            return
-
-        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
-        if auth_error:
-            QMessageBox.warning(self, "Gemini GT", auth_error)
-            return
-
-        self._gemini_model_name = model_name
-        self._gemini_enable_thinking = enable_thinking
-        self._gemini_thinking_level = thinking_level
-        few_shot_examples: Optional[list[dict[str, Any]]] = None
-        if use_few_shot:
-            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
-            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
-            if loaded_examples:
-                few_shot_examples = loaded_examples
-                if warnings:
-                    self.statusBar().showMessage(
-                        f"Gemini few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
-                        6500,
-                    )
-            else:
-                warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
-                self.statusBar().showMessage(
-                    f"Gemini few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
-                    7000,
-                )
-
-        page_idx = self.current_index
-        existing_meta = self.page_states.get(page_name, self._default_state(page_idx)).meta or {}
-        self.page_states[page_name] = PageState(
-            meta={**self._default_meta(page_idx), **existing_meta},
-            facts=[],
-        )
-        was_restoring = self._is_restoring_history
-        self._is_restoring_history = True
-        try:
-            self.show_page(page_idx)
-        finally:
-            self._is_restoring_history = was_restoring
-        self._start_gemini_stream(
-            page_path=page_path,
-            page_name=page_name,
-            prompt_text=prompt_text,
-            model_name=model_name,
-            gemini_api_key=gemini_api_key,
-            enable_thinking=enable_thinking,
-            thinking_level=thinking_level,
-            few_shot_examples=few_shot_examples,
-            mode="gt",
-            max_facts=max_facts,
-            apply_meta=True,
-            initial_seen_facts=set(),
-        )
+        self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.GROUND_TRUTH)
 
     def generate_gemini_auto_complete(self) -> None:
-        if self._qwen_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Auto Complete", "A Qwen stream is already running.")
-            return
-        if self._gemini_stream_thread is not None:
-            QMessageBox.information(self, "Gemini Auto Complete", "A Gemini stream is already running.")
-            return
-        if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Gemini Auto Complete", "A Gemini auto-fix task is already running.")
-            return
-        if self.current_index < 0 or self.current_index >= len(self.page_images):
-            QMessageBox.warning(self, "Gemini Auto Complete", "No current page is loaded.")
-            return
-
-        page_path = self.page_images[self.current_index]
-        page_name = page_path.name
-        self._capture_current_state()
-        current_state = self.page_states.get(page_name, self._default_state(self.current_index))
-        if not current_state.facts:
-            QMessageBox.information(
-                self,
-                "Gemini Auto Complete",
-                "Auto Complete requires at least one existing fact on the current page.",
-            )
-            return
-
-        prompt_path = self._resolve_gemini_autocomplete_prompt_txt_path()
-        if prompt_path is None:
-            prompt_template = default_gemini_autocomplete_prompt_template()
-        else:
-            try:
-                prompt_template = prompt_path.read_text(encoding="utf-8")
-            except Exception as exc:
-                QMessageBox.warning(self, "Gemini Auto Complete", f"Failed to read prompt template:\n{exc}")
-                return
-
-        ordered_items = self._sorted_fact_items()
-        request_payload = self._build_gemini_autocomplete_request_payload(page_name=page_name, ordered_items=ordered_items)
-        prompt_text = self._build_gemini_autocomplete_prompt_from_template(
-            prompt_template,
-            request_payload=request_payload,
-        )
-        prompt_dialog = GeminiPromptDialog(
-            prompt_text=prompt_text,
-            model_name=self._gemini_model_name,
-            parent=self,
-            show_few_shot_controls=True,
-            few_shot_enabled_default=False,
-            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
-            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
-            show_max_facts_control=True,
-            max_facts_default=0,
-            show_thinking_control=True,
-            thinking_enabled_default=self._gemini_enable_thinking,
-            thinking_level_default=self._gemini_thinking_level,
-            thinking_tooltip="Checked uses Gemini thinking mode. Unchecked requests minimal/non-thinking mode.",
-            window_title="Gemini Auto Complete",
-            hint_text=(
-                "Review the prompt before asking Gemini to complete the remaining facts.\n"
-                "Existing page facts are sent as locked context and will not be modified."
-            ),
-            ok_button_text="Start Auto Complete",
-        )
-        if prompt_dialog.exec_() != QDialog.Accepted:
-            return
-        prompt_text = prompt_dialog.prompt().strip()
-        model_name = resolve_supported_gemini_model_name(prompt_dialog.model().strip() or self._gemini_model_name)
-        enable_thinking = prompt_dialog.enable_thinking()
-        thinking_level = prompt_dialog.thinking_level()
-        use_few_shot = prompt_dialog.use_few_shot()
-        few_shot_preset = prompt_dialog.few_shot_preset()
-        max_facts = prompt_dialog.max_facts()
-        if not prompt_text:
-            QMessageBox.warning(self, "Gemini Auto Complete", "Prompt cannot be empty.")
-            return
-
-        try:
-            from .gemini_vlm import ensure_gemini_backend_credentials
-        except Exception as exc:
-            QMessageBox.warning(self, "Gemini Auto Complete", f"Gemini backend is unavailable:\n{exc}")
-            return
-
-        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
-        if auth_error:
-            QMessageBox.warning(self, "Gemini Auto Complete", auth_error)
-            return
-
-        self._gemini_model_name = model_name
-        self._gemini_enable_thinking = enable_thinking
-        self._gemini_thinking_level = thinking_level
-        few_shot_examples: Optional[list[dict[str, Any]]] = None
-        if use_few_shot:
-            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
-            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
-            if loaded_examples:
-                few_shot_examples = loaded_examples
-                if warnings:
-                    self.statusBar().showMessage(
-                        f"Gemini Auto Complete few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
-                        6500,
-                    )
-            else:
-                warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
-                self.statusBar().showMessage(
-                    f"Gemini Auto Complete few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
-                    7000,
-                )
-        initial_seen_facts = {
-            self._fact_uniqueness_key(self._fact_payload_from_item(item))
-            for item in ordered_items
-        }
-        self._gemini_autocomplete_snapshot = {
-            "page_name": page_name,
-            "ordered_fact_signature": self._current_page_fact_snapshot_signature(ordered_items),
-            "locked_fact_payloads": [deepcopy(self._fact_payload_from_item(item)) for item in ordered_items],
-        }
-        self._start_gemini_stream(
-            page_path=page_path,
-            page_name=page_name,
-            prompt_text=prompt_text,
-            model_name=model_name,
-            gemini_api_key=gemini_api_key,
-            enable_thinking=enable_thinking,
-            thinking_level=thinking_level,
-            few_shot_examples=few_shot_examples,
-            mode="autocomplete",
-            max_facts=max_facts,
-            apply_meta=False,
-            initial_seen_facts=initial_seen_facts,
-        )
+        self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.AUTO_COMPLETE)
 
     def _cancel_gemini_stream(self) -> None:
-        if self._gemini_stream_worker is not None:
-            self._gemini_stream_cancel_requested = True
-            self._gemini_stream_worker.request_cancel()
-            self._set_gt_activity(
-                self._gemini_stream_provider_name(),
-                "Stopping stream...",
-                fact_count=self._gemini_stream_fact_count,
-                running=True,
-            )
+        self._ai_controller.stop_active_generation()
 
     def _on_gemini_stream_chunk(self, text: str) -> None:
-        _ = text
+        self._ai_controller._on_gemini_stream_chunk(text)
 
     def _on_gemini_stream_limit_reached(self) -> None:
-        self._gemini_stream_limit_reached = True
+        self._ai_controller._on_gemini_stream_limit_reached()
 
     def _on_gemini_stream_meta(self, meta_payload: Dict[str, Any]) -> None:
-        page_name = self._gemini_stream_target_page
-        if page_name is None:
-            return
-        if self._gemini_stream_apply_meta:
-            self._apply_stream_meta(page_name, meta_payload)
-        status = "Meta received. Streaming facts..." if self._gemini_stream_apply_meta else "Locked context loaded. Streaming missing facts..."
-        self._set_gt_activity(
-            self._gemini_stream_provider_name(),
-            status,
-            fact_count=self._gemini_stream_fact_count,
-            running=True,
-        )
+        self._ai_controller._on_gemini_stream_meta(meta_payload)
 
     def _on_gemini_stream_fact(self, fact_payload: Dict[str, Any]) -> None:
-        page_name = self._gemini_stream_target_page
-        if page_name is None:
-            return
-        added = self._apply_stream_fact(
-            page_name,
-            fact_payload,
-            seen_facts=self._gemini_stream_seen_facts,
-            stream_source="gemini",
-        )
-        if added:
-            self._gemini_stream_fact_count += 1
-            if self._gemini_stream_mode == "gt":
-                self._update_gemini_gt_live_stream(page_name)
-            progress_text = (
-                f"Streaming missing facts... {self._gemini_stream_fact_count} parsed"
-                if self._gemini_stream_mode == "autocomplete"
-                else f"Streaming facts... {self._gemini_stream_fact_count} parsed"
-            )
-            self._set_gt_activity(
-                self._gemini_stream_provider_name(),
-                progress_text,
-                fact_count=self._gemini_stream_fact_count,
-                running=True,
-            )
+        self._ai_controller._on_gemini_stream_fact(fact_payload)
 
     def _on_gemini_stream_completed(self, extraction_obj: Any) -> None:
-        page_name = self._gemini_stream_target_page
-        if page_name is None:
-            return
-        try:
-            extraction_meta = getattr(extraction_obj, "meta", None)
-            if hasattr(extraction_meta, "model_dump"):
-                meta_payload = extraction_meta.model_dump(mode="json")
-            elif isinstance(extraction_meta, dict):
-                meta_payload = extraction_meta
-            else:
-                meta_payload = {}
-            if self._gemini_stream_apply_meta:
-                self._apply_stream_meta(page_name, meta_payload)
-            extraction_facts = getattr(extraction_obj, "facts", [])
-            if not isinstance(extraction_facts, list):
-                extraction_facts = []
-            for fact in extraction_facts:
-                if hasattr(fact, "model_dump"):
-                    fact_payload = fact.model_dump(mode="json")
-                elif isinstance(fact, dict):
-                    fact_payload = fact
-                else:
-                    continue
-                added = self._apply_stream_fact(
-                    page_name,
-                    fact_payload,
-                    seen_facts=self._gemini_stream_seen_facts,
-                    stream_source="gemini",
-                )
-                if added:
-                    self._gemini_stream_fact_count += 1
-            if self._gemini_stream_mode == "autocomplete":
-                merged, error_message = self._merge_autocomplete_buffered_facts(page_name)
-                if not merged:
-                    self._on_gemini_stream_failed(error_message or "Gemini Auto Complete could not merge results.")
-                    return
-            elif self._gemini_stream_mode == "gt":
-                merged, error_message = self._merge_gemini_gt_buffered_facts(page_name)
-                if not merged:
-                    self._on_gemini_stream_failed(error_message or "Gemini GT could not merge results.")
-                    return
-        except Exception as exc:
-            self._on_gemini_stream_failed(f"Final parse failed: {exc}")
-            return
-
-        if self._gemini_stream_mode != "autocomplete" or self._gemini_stream_fact_count > 0:
-            self._record_history_snapshot()
-        completion_status, completion_message = self._gemini_stream_completion_text()
-        self._set_gt_activity(
-            self._gemini_stream_provider_name(),
-            completion_status,
-            fact_count=self._gemini_stream_fact_count,
-            running=False,
-        )
-        self.statusBar().showMessage(completion_message, 6000)
+        self._ai_controller._on_gemini_stream_completed(extraction_obj)
 
     def _on_gemini_stream_failed(self, message: str) -> None:
-        provider = self._gemini_stream_provider_name()
-        title = "Gemini Auto Complete failed" if self._gemini_stream_mode == "autocomplete" else "Gemini GT failed"
-        self._set_gt_activity(provider, f"Error: {message}", fact_count=self._gemini_stream_fact_count, running=False)
-        if self._gemini_stream_mode == "gt" and self._gemini_gt_live_applied:
-            detail = f"{message}\n\nSome streamed facts were rendered live and remain on the page."
-        elif self._gemini_stream_mode in {"autocomplete", "gt"}:
-            detail = f"{message}\n\nNo changes were applied."
-        else:
-            detail = f"{message}\n\nAny facts already streamed remain on the page."
-        QMessageBox.warning(
-            self,
-            title,
-            detail,
-        )
+        self._ai_controller._on_gemini_stream_failed(message)
 
     def _on_gemini_stream_finished(self) -> None:
-        if self._gemini_stream_cancel_requested and not self._gemini_stream_limit_reached:
-            stopped_status = (
-                (
-                    "Gemini GT stopped before finalize. "
-                    f"Parsed {self._gemini_stream_fact_count} fact(s); live-streamed facts remain on the page."
-                )
-                if self._gemini_gt_live_applied
-                else (
-                    "Gemini GT stopped before finalize. "
-                    f"Parsed {self._gemini_stream_fact_count} fact(s); no changes were applied."
-                )
-                if self._gemini_stream_mode == "gt"
-                else f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped. Parsed {self._gemini_stream_fact_count} fact(s) before stop."
-            )
-            stopped_message = (
-                (
-                    f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed, live-streamed facts kept)."
-                )
-                if self._gemini_gt_live_applied
-                else f"Gemini GT stopped ({self._gemini_stream_fact_count} fact(s) parsed, no changes applied)."
-                if self._gemini_stream_mode == "gt"
-                else f"{'Gemini Auto Complete' if self._gemini_stream_mode == 'autocomplete' else 'Gemini GT'} stopped ({self._gemini_stream_fact_count} fact(s) parsed)."
-            )
-            self._set_gt_activity(
-                self._gemini_stream_provider_name(),
-                stopped_status,
-                fact_count=self._gemini_stream_fact_count,
-                running=False,
-            )
-            self.statusBar().showMessage(stopped_message, 5000)
-        self._gemini_stream_thread = None
-        self._gemini_stream_worker = None
-        self._gemini_stream_target_page = None
-        self._gemini_stream_cancel_requested = False
-        self._gemini_stream_limit_reached = False
-        self._gemini_stream_max_facts = 0
-        self._gemini_stream_apply_meta = True
-        self._gemini_stream_mode = "gt"
-        self._gemini_autocomplete_snapshot = None
-        self._gemini_autocomplete_buffered_facts = []
-        self._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_autocomplete_last_bbox_scores = {}
-        self._gemini_gt_buffered_facts = []
-        self._gemini_gt_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_gt_last_bbox_scores = {}
-        self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
-        self._gemini_gt_live_bbox_mode_locked = False
-        self._gemini_gt_live_applied = False
-        if self._qwen_stream_thread is None and self._gemini_fill_thread is None:
-            self._set_gt_buttons_enabled(True)
+        self._ai_controller._on_gemini_stream_finished()
 
     def generate_qwen_ground_truth(self) -> None:
-        if self._gemini_stream_thread is not None:
-            QMessageBox.information(self, "Qwen GT", "A Gemini stream is already running.")
-            return
-        if self._qwen_stream_thread is not None:
-            QMessageBox.information(self, "Qwen GT", "A Qwen stream is already running.")
-            return
-        if self._gemini_fill_thread is not None:
-            QMessageBox.information(self, "Qwen GT", "A Gemini auto-fix task is already running.")
-            return
-        if self.current_index < 0 or self.current_index >= len(self.page_images):
-            QMessageBox.warning(self, "Qwen GT", "No current page is loaded.")
-            return
-
-        page_path = self.page_images[self.current_index]
-        page_name = page_path.name
-        self._capture_current_state()
-
-        current_state = self.page_states.get(page_name, self._default_state(self.current_index))
-        if current_state.facts:
-            answer = QMessageBox.question(
-                self,
-                "Replace current annotations?",
-                (
-                    f"Current page already has {len(current_state.facts)} bbox(es).\n"
-                    "Generate Qwen ground truth and replace this page annotations?"
-                ),
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.No,
-            )
-            if answer != QMessageBox.Yes:
-                return
-
-        prompt_path = self._resolve_prompt_txt_path()
-        if prompt_path is None:
-            prompt_template = default_extraction_prompt_template()
-        else:
-            try:
-                prompt_template = prompt_path.read_text(encoding="utf-8")
-            except Exception as exc:
-                QMessageBox.warning(self, "Qwen GT", f"Failed to read prompt template:\n{exc}")
-                return
-
-        prompt_text = self._build_prompt_from_template(prompt_template, page_path)
-        qwen_config_path = self._resolve_qwen_config_path()
-        prompt_dialog = QwenPromptDialog(
-            prompt_text=prompt_text,
-            model_name=self._qwen_model_name,
-            parent=self,
-            show_few_shot_controls=True,
-            show_thinking_control=True,
-            thinking_enabled_default=self._qwen_enable_thinking,
-            thinking_tooltip="Checked enables Qwen thinking where the selected backend supports it.",
-            few_shot_enabled_default=True,
-            few_shot_preset_default=FEW_SHOT_PRESET_CLASSIC,
-            few_shot_summary=FEW_SHOT_PRESET_HELP_TEXT,
-            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
-        )
-        if prompt_dialog.exec_() != QDialog.Accepted:
-            return
-        prompt_text = prompt_dialog.prompt().strip()
-        model_name = prompt_dialog.model().strip() or self._qwen_model_name
-        enable_thinking = prompt_dialog.enable_thinking()
-        use_few_shot = prompt_dialog.use_few_shot()
-        few_shot_preset = prompt_dialog.few_shot_preset()
-        if not prompt_text:
-            QMessageBox.warning(self, "Qwen GT", "Prompt cannot be empty.")
-            return
-
-        try:
-            from .qwen_vlm import is_qwen_flash_model_requested, resolve_qwen_flash_api_key
-        except Exception as exc:
-            QMessageBox.warning(self, "Qwen GT", f"Qwen backend is unavailable:\n{exc}")
-            return
-
-        is_qwen_flash = is_qwen_flash_model_requested(model_name)
-        if is_qwen_flash:
-            if not resolve_qwen_flash_api_key():
-                QMessageBox.warning(
-                    self,
-                    "Qwen GT",
-                    (
-                        "Qwen hosted API key not found.\n\n"
-                        "Set FINETREE_QWEN_FLASH_API_KEY, FINETREE_QWEN_API_KEY, "
-                        "QWEN_API_KEY, or DASHSCOPE_API_KEY."
-                    ),
-                )
-                return
-        else:
-            if qwen_config_path is None:
-                QMessageBox.warning(
-                    self,
-                    "Qwen GT",
-                    (
-                        "Could not find Qwen fine-tune config.\n"
-                        "Expected configs/qwen_ui_runpod_queue.yaml, "
-                        "configs/finetune_qwen35a3_vl.yaml, or FINETREE_QWEN_CONFIG."
-                    ),
-                )
-                return
-
-        self._qwen_model_name = model_name
-        self._qwen_enable_thinking = enable_thinking
-        few_shot_examples: Optional[list[dict[str, Any]]] = None
-        if use_few_shot and is_qwen_flash:
-            loaded_examples, warnings = self._load_gemini_few_shot_examples(preset=few_shot_preset)
-            preset_summary = FEW_SHOT_PRESET_SUMMARY.get(few_shot_preset, few_shot_preset)
-            if loaded_examples:
-                few_shot_examples = loaded_examples
-                if warnings:
-                    self.statusBar().showMessage(
-                        f"Qwen few-shot ({preset_summary}) loaded with warnings: {'; '.join(warnings[:2])}",
-                        6500,
-                    )
-            else:
-                warning_text = "; ".join(warnings[:2]) if warnings else "Few-shot preset unavailable."
-                self.statusBar().showMessage(
-                    f"Qwen few-shot ({preset_summary}) fallback to standard mode: {warning_text}",
-                    7000,
-                )
-        elif use_few_shot:
-            self.statusBar().showMessage(
-                "Qwen few-shot is currently enabled only for hosted Qwen 3.5 DashScope models; running standard mode.",
-                7000,
-            )
-
-        page_idx = self.current_index
-        existing_meta = self.page_states.get(page_name, self._default_state(page_idx)).meta or {}
-        self.page_states[page_name] = PageState(
-            meta={**self._default_meta(page_idx), **existing_meta},
-            facts=[],
-        )
-        was_restoring = self._is_restoring_history
-        self._is_restoring_history = True
-        try:
-            self.show_page(page_idx)
-        finally:
-            self._is_restoring_history = was_restoring
-
-        self._qwen_stream_target_page = page_name
-        self._qwen_stream_seen_facts = set()
-        self._qwen_stream_fact_count = 0
-        self._qwen_stream_cancel_requested = False
-
-        thinking_mode = "thinking" if enable_thinking else "non-thinking"
-        if few_shot_examples:
-            self._set_gt_activity(
-                "Qwen",
-                f"Streaming from {model_name} ({thinking_mode}) with few-shot ({len(few_shot_examples)} examples) ...",
-                fact_count=0,
-                running=True,
-            )
-        else:
-            self._set_gt_activity(
-                "Qwen",
-                f"Streaming from {model_name} ({thinking_mode}) ...",
-                fact_count=0,
-                running=True,
-            )
-
-        worker = QwenStreamWorker(
-            image_path=page_path,
-            prompt=prompt_text,
-            model=model_name,
-            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
-            few_shot_examples=few_shot_examples,
-            enable_thinking=enable_thinking,
-        )
-        thread = QThread(self)
-        worker.moveToThread(thread)
-        thread.started.connect(worker.run)
-        worker.chunk_received.connect(self._on_qwen_stream_chunk)
-        worker.meta_received.connect(self._on_qwen_stream_meta)
-        worker.fact_received.connect(self._on_qwen_stream_fact)
-        worker.completed.connect(self._on_qwen_stream_completed)
-        worker.failed.connect(self._on_qwen_stream_failed)
-        worker.finished.connect(thread.quit)
-        worker.finished.connect(worker.deleteLater)
-        thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(self._on_qwen_stream_finished)
-
-        self._qwen_stream_worker = worker
-        self._qwen_stream_thread = thread
-        self._set_gt_buttons_enabled(False)
-        self.statusBar().showMessage(f"Streaming Qwen GT for {page_name}...", 3000)
-        thread.start()
+        self.open_ai_dialog(provider=AIProvider.QWEN, action=AIActionKind.GROUND_TRUTH)
 
     def _cancel_qwen_stream(self) -> None:
-        if self._qwen_stream_worker is not None:
-            self._qwen_stream_cancel_requested = True
-            self._qwen_stream_worker.request_cancel()
-            self._set_gt_activity("Qwen", "Stopping stream...", fact_count=self._qwen_stream_fact_count, running=True)
+        self._ai_controller.stop_active_generation()
 
     def _on_qwen_stream_chunk(self, text: str) -> None:
-        _ = text
+        self._ai_controller._on_qwen_stream_chunk(text)
 
     def _on_qwen_stream_meta(self, meta_payload: Dict[str, Any]) -> None:
-        page_name = self._qwen_stream_target_page
-        if page_name is None:
-            return
-        self._apply_stream_meta(page_name, meta_payload)
-        self._set_gt_activity("Qwen", "Meta received. Streaming facts...", fact_count=self._qwen_stream_fact_count, running=True)
+        self._ai_controller._on_qwen_stream_meta(meta_payload)
 
     def _on_qwen_stream_fact(self, fact_payload: Dict[str, Any]) -> None:
-        page_name = self._qwen_stream_target_page
-        if page_name is None:
-            return
-        added = self._apply_stream_fact(
-            page_name,
-            fact_payload,
-            seen_facts=self._qwen_stream_seen_facts,
-            stream_source="qwen",
-        )
-        if added:
-            self._qwen_stream_fact_count += 1
-            self._set_gt_activity(
-                "Qwen",
-                f"Streaming facts... {self._qwen_stream_fact_count} parsed",
-                fact_count=self._qwen_stream_fact_count,
-                running=True,
-            )
+        self._ai_controller._on_qwen_stream_fact(fact_payload)
 
     def _on_qwen_stream_completed(self, extraction_obj: Any) -> None:
-        page_name = self._qwen_stream_target_page
-        if page_name is None:
-            return
-        try:
-            meta_payload = extraction_obj.meta.model_dump(mode="json")
-            self._apply_stream_meta(page_name, meta_payload)
-            for fact in extraction_obj.facts:
-                added = self._apply_stream_fact(
-                    page_name,
-                    fact.model_dump(mode="json"),
-                    seen_facts=self._qwen_stream_seen_facts,
-                    stream_source="qwen",
-                )
-                if added:
-                    self._qwen_stream_fact_count += 1
-        except Exception as exc:
-            self._on_qwen_stream_failed(f"Final parse failed: {exc}")
-            return
-
-        self._record_history_snapshot()
-        self._set_gt_activity(
-            "Qwen",
-            f"Qwen GT complete. Parsed {self._qwen_stream_fact_count} fact(s).",
-            fact_count=self._qwen_stream_fact_count,
-            running=False,
-        )
-        self.statusBar().showMessage(f"Qwen GT complete ({self._qwen_stream_fact_count} fact(s)).", 6000)
+        self._ai_controller._on_qwen_stream_completed(extraction_obj)
 
     def _on_qwen_stream_failed(self, message: str) -> None:
-        self._set_gt_activity("Qwen", f"Error: {message}", fact_count=self._qwen_stream_fact_count, running=False)
-        QMessageBox.warning(
-            self,
-            "Qwen GT failed",
-            f"{message}\n\nAny facts already streamed remain on the page.",
-        )
+        self._ai_controller._on_qwen_stream_failed(message)
 
     def _on_qwen_stream_finished(self) -> None:
-        if self._qwen_stream_cancel_requested:
-            self._set_gt_activity(
-                "Qwen",
-                f"Qwen GT stopped. Parsed {self._qwen_stream_fact_count} fact(s) before stop.",
-                fact_count=self._qwen_stream_fact_count,
-                running=False,
-            )
-            self.statusBar().showMessage(
-                f"Qwen GT stopped ({self._qwen_stream_fact_count} fact(s) parsed).",
-                5000,
-            )
-        self._qwen_stream_thread = None
-        self._qwen_stream_worker = None
-        self._qwen_stream_target_page = None
-        if self._gemini_stream_thread is None and self._gemini_fill_thread is None:
-            self._set_gt_buttons_enabled(True)
+        self._ai_controller._on_qwen_stream_finished()
 
     def _capture_current_state(self) -> None:
         if self.current_index < 0 or self._is_restoring_history:
@@ -9629,8 +8004,7 @@ class AnnotationWindow(QMainWindow):
             "- Ctrl/Cmd+Z: Undo\n"
             "- Ctrl/Cmd+Y or Ctrl/Cmd+Shift+Z: Redo\n"
             "- Ctrl/Cmd+I: Import JSON\n"
-            "- Ctrl/Cmd+G: Gemini GT (current page)\n"
-            "- Ctrl/Cmd+Shift+G: Qwen GT (current page)\n"
+            "- Ctrl/Cmd+G: Open AI window\n"
             "- Ctrl/Cmd+D: Duplicate selected bbox\n"
             "- Delete or Backspace: Delete selected bbox(es)\n"
             "- +: Zoom in when the page view is focused\n"

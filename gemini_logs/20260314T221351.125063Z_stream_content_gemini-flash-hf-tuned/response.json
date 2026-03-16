@@ -1,0 +1,568 @@
+{
+  "backend": "vertex_stream_generate_content",
+  "streamed": true,
+  "status": "completed",
+  "error": null,
+  "chunks": [
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "{\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "pages\":[{\"image\":\"images/image_0.png\",\"meta\":{\"entity_name\":\"״"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "הכנסת אורחים״ - בולטון, מירון (ע״"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ר)\",\"page_num\":\"9\",\"page_type\":\"statements\",\"statement_type\":\"notes_to_financial_statements\",\"title\":\"באורים לד"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "וחות הכספיים\"},\"facts\":[{\"fact_num\":1,\"value\":\"14,465\",\"equations\":null,\"value_type\":\"amount\",\"value_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"detail\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2023-01-01\",\"period_end"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\":\"2023-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\":[\"משרדיות\"],\"path_source\":\"observed\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[389,173,34,16]},{\"fact_num\":2,\"value\":\"9,131\",\"equations\":null,\"value_type\":\"amount"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"detail\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2024-01-01\",\"period_end\":\"2024-12-31\",\"duration_type"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path\":[\"משרדיות\"],\"path_source\":\"observed\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[32"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "2,175,25,14]},{\"fact_num\":3,\"value\":\"9,718\",\"equations\":null,\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"detail\",\"currency\":\"ILS\",\"scale\":1,\"period"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "_type\":\"duration\",\"period_start\":\"2023-01-01\",\"period_end\":\"2023-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצא"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ות הנהלה וכלליות\",\"path\":[\"שירותים מקצועיים\"],\"path_source\":\"observed\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[384,196,39,18]},{\"fact_num\":4,\"value\":\"13,356\",\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "equations\":null,\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"detail\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2024-01-01\",\"period_end\":\"2024-"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path\":[\"שירותים מקצועיים\"],\"path_source\":\"observed\",\"note_ref\":null"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ",\"comment_ref\":null,\"bbox\":[310,195,35,16]},{\"fact_num\":5,\"value\":\"1,262\",\"equations\":null,\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "detail\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2023-01-01\",\"period_end\":\"2023-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path\":[\"מיסים ואגרות\"],\"path_source\":\"observed\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[394,222,30,13]},{\"fact_num\":6"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ",\"value\":\"1,215\",\"equations\":null,\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"detail\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2024-01-01\",\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "period_end\":\"2024-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path\":[\"מיסים ואגרות\"],\"path_source"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "\":\"observed\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[305,220,38,15]},{\"fact_num\":7,\"value\":\"25,445\",\"equations\":[{\"equation\":\"14,465 + 9,718 + "
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "1,262\",\"fact_equation\":\"f1 + f3 + f5\"}],\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"total\",\"currency\":\"ILS\",\"scale\":1,\"period_type\":\"duration\",\"period_start\":\"2023"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "-01-01\",\"period_end\":\"2023-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"הוצאות הנהלה וכלליות\",\"path\":[\"ס"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "ך הכל הוצאות הנהלה וכלליות\"],\"path_source\":\"inferred\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[380,266,44,14]},{\"fact_num\":8,\"value\":\"23,702\",\"equations\":[{\"equation\":\""
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "9,131 + 13,356 + 1,215\",\"fact_equation\":\"f2 + f4 + f6\"}],\"value_type\":\"amount\",\"value_context\":\"tabular\",\"natural_sign\":\"positive\",\"row_role\":\"total\",\"currency\":\"ILS\",\"scale\":1"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": ",\"period_type\":\"duration\",\"period_start\":\"2024-01-01\",\"period_end\":\"2024-12-31\",\"duration_type\":\"yearly\",\"recurring_period\":\"yearly\",\"note_flag\":true,\"note_num\":5,\"note_name\":\"ה"
+              }
+            ]
+          }
+        }
+      ],
+      "usageMetadata": {
+        "trafficType": "ON_DEMAND"
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    },
+    {
+      "candidates": [
+        {
+          "content": {
+            "role": "model",
+            "parts": [
+              {
+                "text": "וצאות הנהלה וכלליות\",\"path\":[\"סך הכל הוצאות הנהלה וכלליות\"],\"path_source\":\"inferred\",\"note_ref\":null,\"comment_ref\":null,\"bbox\":[299,266,46,17]}]}]}"
+              }
+            ]
+          },
+          "finishReason": "STOP"
+        }
+      ],
+      "usageMetadata": {
+        "promptTokenCount": 4575,
+        "candidatesTokenCount": 1525,
+        "totalTokenCount": 6100,
+        "trafficType": "ON_DEMAND",
+        "promptTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 2769
+          },
+          {
+            "modality": "IMAGE",
+            "tokenCount": 1806
+          }
+        ],
+        "candidatesTokensDetails": [
+          {
+            "modality": "TEXT",
+            "tokenCount": 1525
+          }
+        ]
+      },
+      "modelVersion": "gemini-2.5-flash@default",
+      "createTime": "2026-03-14T22:13:53.113428Z",
+      "responseId": "od21aZT2BquIheMPw563iAk"
+    }
+  ]
+}
