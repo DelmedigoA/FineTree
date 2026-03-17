@@ -1,0 +1,708 @@
+{
+  "pages": [
+    {
+      "image": "page_0012.png",
+      "meta": {
+        "entity_name": "\"סחלב״ - העמותה העירונית למתנ״ס מודיעין, מכבים, רעות (ע״ר)",
+        "page_num": "12",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            319,
+            238,
+            111,
+            24
+          ],
+          "fact_num": 1,
+          "value": "3,761,858",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "חובות פתוחים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            238,
+            111,
+            24
+          ],
+          "fact_num": 2,
+          "value": "3,144,204",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "חובות פתוחים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            319,
+            257,
+            111,
+            24
+          ],
+          "fact_num": 3,
+          "value": "77,359",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "המחאות לפרעון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            257,
+            111,
+            24
+          ],
+          "fact_num": 4,
+          "value": "71,973",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "המחאות לפרעון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            319,
+            277,
+            111,
+            24
+          ],
+          "fact_num": 5,
+          "value": "3,839,217",
+          "equations": [
+            {
+              "equation": "3,761,858 + 77,359",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            277,
+            111,
+            24
+          ],
+          "fact_num": 6,
+          "value": "3,216,177",
+          "equations": [
+            {
+              "equation": "3,144,204 + 71,973",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 8,
+          "note_name": "ספקים והמחאות לפרעון",
+          "path": [
+            "ספקים והמחאות לפרעון",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            396,
+            111,
+            24
+          ],
+          "fact_num": 7,
+          "value": "4,353,681",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "עובדים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            164,
+            396,
+            111,
+            24
+          ],
+          "fact_num": 8,
+          "value": "4,217,413",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "עובדים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            415,
+            111,
+            24
+          ],
+          "fact_num": 9,
+          "value": "4,405,895",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הוצאות לשלם"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            164,
+            415,
+            111,
+            24
+          ],
+          "fact_num": 10,
+          "value": "3,467,154",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הוצאות לשלם"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            435,
+            111,
+            24
+          ],
+          "fact_num": 11,
+          "value": "1,001,748",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הפרשה לחופשה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            164,
+            435,
+            111,
+            24
+          ],
+          "fact_num": 12,
+          "value": "772,116",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "הפרשה לחופשה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            455,
+            111,
+            24
+          ],
+          "fact_num": 13,
+          "value": "6,872",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "מס ערך מוסף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            164,
+            455,
+            111,
+            24
+          ],
+          "fact_num": 14,
+          "value": "7,424",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "מס ערך מוסף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            475,
+            111,
+            24
+          ],
+          "fact_num": 15,
+          "value": "495,252",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "עמותת עירוני מודיעין - חו״ז שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            164,
+            475,
+            111,
+            24
+          ],
+          "fact_num": 16,
+          "value": "564,035",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "עמותת עירוני מודיעין - חו״ז שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            308,
+            495,
+            111,
+            24
+          ],
+          "fact_num": 17,
+          "value": "10,263,448",
+          "equations": [
+            {
+              "equation": "4,353,681 + 4,405,895 + 1,001,748 + 6,872 + 495,252",
+              "fact_equation": "f7 + f9 + f11 + f13 + f15"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            161,
+            495,
+            111,
+            24
+          ],
+          "fact_num": 18,
+          "value": "9,028,142",
+          "equations": [
+            {
+              "equation": "4,217,413 + 3,467,154 + 772,116 + 7,424 + 564,035",
+              "fact_equation": "f8 + f10 + f12 + f14 + f16"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 9,
+          "note_name": "זכאים ויתרות זכות",
+          "path": [
+            "זכאים ויתרות זכות",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            308,
+            614,
+            111,
+            24
+          ],
+          "fact_num": 19,
+          "value": "4,281,665",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "התחייבויות בגין סיום יחסי עובד מעביד, נטו",
+          "path": [
+            "התחייבויות בגין סיום יחסי עובד מעביד, נטו",
+            "התחייבות לסיום יחסי עובד מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            159,
+            614,
+            111,
+            24
+          ],
+          "fact_num": 20,
+          "value": "4,174,596",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 10,
+          "note_name": "התחייבויות בגין סיום יחסי עובד מעביד, נטו",
+          "path": [
+            "התחייבויות בגין סיום יחסי עובד מעביד, נטו",
+            "התחייבות לסיום יחסי עובד מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            688,
+            786,
+            28,
+            16
+          ],
+          "fact_num": 21,
+          "value": "240",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1000,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 11,
+          "note_name": "התחייבויות תלויות",
+          "path": [
+            "התחייבויות תלויות",
+            "הפרשה"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

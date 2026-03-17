@@ -81,6 +81,12 @@ def test_extracted_fact_derives_natural_sign_from_value() -> None:
     assert fact.natural_sign.value == "negative"
 
 
+def test_extracted_fact_derives_natural_sign_from_angle_bracketed_negative_value() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(value="<-123>", natural_sign="positive"))
+    assert fact.natural_sign is not None
+    assert fact.natural_sign.value == "negative"
+
+
 def test_extracted_fact_sets_natural_sign_null_for_dash_value() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(value="-", natural_sign="positive"))
     assert fact.natural_sign is None

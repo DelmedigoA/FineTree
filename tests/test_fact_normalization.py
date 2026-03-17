@@ -76,6 +76,18 @@ def test_normalize_value_handles_marker_prefixed_numeric_and_currency_dash() -> 
     assert currency_dash_warnings == []
 
 
+def test_normalize_fact_payload_derives_negative_sign_from_angle_bracketed_negative_value() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "<-200>",
+            "path": [],
+        }
+    )
+    assert normalized["value"] == "<-200>"
+    assert normalized["natural_sign"] == "negative"
+    assert warnings == []
+
+
 def test_normalize_fact_payload_keeps_range_value_in_value_field() -> None:
     normalized, warnings = normalize_fact_payload(
         {

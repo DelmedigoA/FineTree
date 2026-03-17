@@ -463,6 +463,40 @@ def test_home_document_card_shows_prepare_for_unprepared_pdf(tmp_path: Path) -> 
     card.close()
 
 
+def test_home_document_card_emits_delete_request(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    annotations_path = tmp_path / "doc.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=1,
+        progress_pct=100,
+        status="Complete",
+        updated_at=None,
+        checked=True,
+        reviewed=False,
+    )
+
+    card = dashboard.HomeDocumentCard(summary)
+    deleted: list[str] = []
+    card.delete_requested.connect(deleted.append)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.delete_btn.text() == "Remove"
+    assert card.delete_btn.property("variant") == "danger"
+    card.delete_btn.click()
+    assert deleted == ["doc"]
+    card.close()
+
+
 def test_home_document_card_prefers_source_pdf_stem_as_title(tmp_path: Path) -> None:
     _qt_app()
     source_pdf = tmp_path / "דוח כספי 2014 - אגודת הסטודנטים.pdf"
@@ -1169,6 +1203,52 @@ def test_dashboard_refuses_checked_for_incomplete_documents(monkeypatch, tmp_pat
     assert persisted == []
     assert reloads == ["reload"]
     assert warnings == [("Cannot mark checked", "Finish annotating every page before marking this PDF as checked.")]
+    window.close()
+
+
+def test_dashboard_deletes_document_bundle_after_confirmation(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=tmp_path / "doc.pdf",
+        images_dir=tmp_path / "doc",
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=1,
+        progress_pct=100,
+        status="Complete",
+        updated_at=None,
+        checked=True,
+        reviewed=False,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    confirmations: list[str] = []
+    deleted: list[str] = []
+    close_calls: list[str] = []
+    reloads: list[str] = []
+    show_home_calls: list[str] = []
+    monkeypatch.setattr(
+        dashboard.QMessageBox,
+        "question",
+        lambda _parent, _title, message, *_args: (confirmations.append(message), dashboard.QMessageBox.Yes)[1],
+    )
+    monkeypatch.setattr(dashboard, "delete_workspace_document_files", lambda doc_id: deleted.append(doc_id))
+    monkeypatch.setattr(window.annotator_host, "confirm_close_document", lambda doc_id: close_calls.append(f"confirm:{doc_id}") or True)
+    monkeypatch.setattr(window.annotator_host, "close_document", lambda doc_id: close_calls.append(f"close:{doc_id}") or True)
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+    window.show_home = lambda: show_home_calls.append("home")  # type: ignore[method-assign]
+
+    window.delete_workspace_document("doc")
+
+    assert confirmations and "Delete doc.pdf" in confirmations[0]
+    assert deleted == ["doc"]
+    assert close_calls == ["confirm:doc", "close:doc"]
+    assert reloads == ["reload"]
+    assert show_home_calls == ["home"]
     window.close()
 
 

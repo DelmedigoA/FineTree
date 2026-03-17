@@ -1,0 +1,378 @@
+{
+  "pages": [
+    {
+      "image": "page_0010.png",
+      "meta": {
+        "entity_name": "סחלבים - העמותה העירונית למתנ\"ס מודיעין, מכבים, רעות (ע\"ר)",
+        "page_num": "10",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            319,
+            238,
+            75,
+            16
+          ],
+          "fact_num": 1,
+          "value": "3,071,974",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "עיריית מודיעין, מכבים, רעות - חו\"ז שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            238,
+            64,
+            16
+          ],
+          "fact_num": 2,
+          "value": "484,970",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "עיריית מודיעין, מכבים, רעות - חו\"ז שוטף"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            354,
+            259,
+            41,
+            14
+          ],
+          "fact_num": 3,
+          "value": "31,448",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "הוצאות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            204,
+            259,
+            41,
+            14
+          ],
+          "fact_num": 4,
+          "value": "31,147",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "הוצאות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            354,
+            280,
+            41,
+            14
+          ],
+          "fact_num": 5,
+          "value": "35,972",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "פקדונות בגין ליסינג"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            204,
+            280,
+            41,
+            14
+          ],
+          "fact_num": 6,
+          "value": "33,110",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "פקדונות בגין ליסינג"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            322,
+            302,
+            75,
+            15
+          ],
+          "fact_num": 7,
+          "value": "3,139,394",
+          "equations": [
+            {
+              "equation": "3,071,974 + 31,448 + 35,972",
+              "fact_equation": "f1 + f3 + f5"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            302,
+            64,
+            15
+          ],
+          "fact_num": 8,
+          "value": "549,227",
+          "equations": [
+            {
+              "equation": "484,970 + 31,147 + 33,110",
+              "fact_equation": "f2 + f4 + f6"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 5,
+          "note_name": "חייבים ויתרות חובה",
+          "path": [
+            "חייבים ויתרות חובה",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            396,
+            399,
+            7,
+            14
+          ],
+          "fact_num": 9,
+          "value": "3",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1000000,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-11-30",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "פיקדון לזמן ארוך",
+          "path": [
+            "פיקדון לזמן ארוך",
+            "יתרת המפקדון"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": "בסוף נובמבר 2024"
+        },
+        {
+          "bbox": [
+            560,
+            423,
+            40,
+            14
+          ],
+          "fact_num": 10,
+          "value": "4.75%",
+          "equations": null,
+          "value_type": "percent",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": null,
+          "period_type": "duration",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "פיקדון לזמן ארוך",
+          "path": [
+            "פיקדון לזמן ארוך",
+            "ריבית הפיקדון"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            504,
+            423,
+            16,
+            14
+          ],
+          "fact_num": 11,
+          "value": "15",
+          "equations": null,
+          "value_type": "count",
+          "value_context": "textual",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": null,
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 6,
+          "note_name": "פיקדון לזמן ארוך",
+          "path": [
+            "פיקדון לזמן ארוך",
+            "תקופת הפקדה (חודשים)"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

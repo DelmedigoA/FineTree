@@ -1,0 +1,690 @@
+{
+  "pages": [
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "סחלב - העמותה העירונית למתנ\"ס מודיעין, מכבים, רעות (ע\"ר)",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "cash_flow_statement",
+        "title": "דוחות על תזרימי המזומנים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            341,
+            252,
+            64,
+            16
+          ],
+          "fact_num": 1,
+          "value": "124,364",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "עודף לשנה לפי דוח על הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            205,
+            250,
+            51,
+            18
+          ],
+          "fact_num": 2,
+          "value": "81,394",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "עודף לשנה לפי דוח על הפעילויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            322,
+            288,
+            83,
+            17
+          ],
+          "fact_num": 3,
+          "value": "1,187,911",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "התאמות הדרושות להצגת תזרימי המזומנים מפעילות שוטפת-נספח א'"
+          ],
+          "path_source": "observed",
+          "note_ref": "נספח א'",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            182,
+            284,
+            75,
+            19
+          ],
+          "fact_num": 4,
+          "value": "(565,585)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "התאמות הדרושות להצגת תזרימי המזומנים מפעילות שוטפת-נספח א'"
+          ],
+          "path_source": "observed",
+          "note_ref": "נספח א'",
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            308,
+            84,
+            18
+          ],
+          "fact_num": 5,
+          "value": "1,312,275",
+          "equations": [
+            {
+              "equation": "124,364 + 1,187,911",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "מזומנים נטו שנבעו (ששימשו) לפעילות שוטפת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            304,
+            76,
+            18
+          ],
+          "fact_num": 6,
+          "value": "(484,191)",
+          "equations": [
+            {
+              "equation": "81,394 + (565,585)",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "מזומנים נטו שנבעו (ששימשו) לפעילות שוטפת"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            368,
+            84,
+            18
+          ],
+          "fact_num": 7,
+          "value": "(118,518)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "רכישת נכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            185,
+            366,
+            72,
+            16
+          ],
+          "fact_num": 8,
+          "value": "(45,000)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "רכישת נכסים קבועים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            316,
+            386,
+            89,
+            18
+          ],
+          "fact_num": 9,
+          "value": "(3,000,000)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "קבלת פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            383,
+            86,
+            19
+          ],
+          "fact_num": 10,
+          "value": "(3,000,000)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "קבלת פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            404,
+            84,
+            17
+          ],
+          "fact_num": 11,
+          "value": "3,010,472",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "פרעון פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            183,
+            402,
+            73,
+            17
+          ],
+          "fact_num": 12,
+          "value": "2,713,907",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "פרעון פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            423,
+            84,
+            18
+          ],
+          "fact_num": 13,
+          "value": "(108,046)",
+          "equations": [
+            {
+              "equation": "(118,518) + (3,000,000) + 3,010,472",
+              "fact_equation": "f7 + f9 + f11"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "מזומנים נטו ששימשו לפעילות השקעה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            420,
+            75,
+            18
+          ],
+          "fact_num": 14,
+          "value": "(331,093)",
+          "equations": [
+            {
+              "equation": "(45,000) + (3,000,000) + 2,713,907",
+              "fact_equation": "f8 + f10 + f12"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "תזרימי מזומנים מפעילות השקעה",
+            "מזומנים נטו ששימשו לפעילות השקעה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            322,
+            486,
+            83,
+            17
+          ],
+          "fact_num": 15,
+          "value": "1,204,229",
+          "equations": [
+            {
+              "equation": "1,312,275 + (108,046)",
+              "fact_equation": "f5 + f13"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "עליה (ירידה) במזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            484,
+            75,
+            18
+          ],
+          "fact_num": 16,
+          "value": "(815,284)",
+          "equations": [
+            {
+              "equation": "(484,191) + (331,093)",
+              "fact_equation": "f6 + f14"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "עליה (ירידה) במזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            504,
+            84,
+            17
+          ],
+          "fact_num": 17,
+          "value": "13,765,339",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            503,
+            86,
+            18
+          ],
+          "fact_num": 18,
+          "value": "14,580,623",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            316,
+            523,
+            89,
+            18
+          ],
+          "fact_num": 19,
+          "value": "14,969,568",
+          "equations": [
+            {
+              "equation": "1,204,229 + 13,765,339",
+              "fact_equation": "f15 + f17"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לסוף השנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            172,
+            520,
+            85,
+            18
+          ],
+          "fact_num": 20,
+          "value": "13,765,339",
+          "equations": [
+            {
+              "equation": "(815,284) + 14,580,623",
+              "fact_equation": "f16 + f18"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לסוף השנה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

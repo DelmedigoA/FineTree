@@ -1,0 +1,102 @@
+dataset:
+  gt_path: "/Users/delmedigo/Dev/FineTree/data/annotations/P907062-00.json"
+
+  start_idx: 1
+  end_idx: 16
+  pages_to_skip: "8"
+  pred_pattern: "/Users/delmedigo/Dev/FineTree/benchmark/input/predictions/pred_{idx:04d}.json"
+
+evaluation:
+  facts_key: "facts"
+  skip_0: true
+  skip_mismatch: true
+
+output:
+  report_path: "/Users/delmedigo/Dev/FineTree/benchmark/output/evaluation_report.json"
+
+meta_fields:
+  entity_name:
+    method: "char_similarity"
+    weight: 1.0
+
+  page_num:
+    method: "char_similarity"
+    weight: 1.0
+
+  page_type:
+    method: "equality"
+    weight: 1.0
+
+  statement_type:
+    method: "equality"
+    weight: 1.0
+
+  title:
+    method: "char_similarity"
+    weight: 1.0
+
+fact_fields:
+
+  value:
+    method: "char_similarity"
+    weight: 3.0
+
+  comment_ref:
+    method: "string_normalized"
+    weight: 0.5
+
+  note_flag:
+    method: "equality"
+    weight: 1.0
+
+  note_name:
+    method: "string_normalized"
+    weight: 0.5
+
+  note_num:
+    method: "equality"
+    weight: 0.5
+
+  note_ref:
+    method: "equality"
+    weight: 0.5
+
+  period_type:
+    method: "equality"
+    weight: 1.0
+
+  period_start:
+    method: "equality"
+    weight: 1.0
+
+  period_end:
+    method: "equality"
+    weight: 1.0
+
+  duration_type:
+    method: "equality"
+    weight: 0.5
+
+  recurring_period:
+    method: "equality"
+    weight: 0.5
+
+  path:
+    method: "path_exact"
+    weight: 2.0
+
+  currency:
+    method: "equality"
+    weight: 1.0
+
+  scale:
+    method: "equality"
+    weight: 1.0
+
+  value_type:
+    method: "equality"
+    weight: 1.0
+
+  value_context:
+    method: "equality"
+    weight: 1.0

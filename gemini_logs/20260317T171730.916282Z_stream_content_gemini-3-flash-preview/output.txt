@@ -1,0 +1,872 @@
+{
+  "pages": [
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "\"סחלבים\" - העמותה העירונית למתנ\"ס מודיעין, מכבים, רעות (ע\"ר)",
+        "page_num": "7",
+        "page_type": "statements",
+        "statement_type": "cash_flow_statement",
+        "title": "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'"
+      },
+      "facts": [
+        {
+          "bbox": [
+            345,
+            273,
+            61,
+            16
+          ],
+          "fact_num": 1,
+          "value": "84,460",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "פחת והפחתות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            273,
+            61,
+            16
+          ],
+          "fact_num": 2,
+          "value": "124,884",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "פחת והפחתות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            343,
+            295,
+            63,
+            16
+          ],
+          "fact_num": 3,
+          "value": "107,069",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "עליה בהתחייבות לסיום יחסי עובד מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            295,
+            61,
+            16
+          ],
+          "fact_num": 4,
+          "value": "293,291",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "עליה בהתחייבות לסיום יחסי עובד מעביד"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            317,
+            61,
+            16
+          ],
+          "fact_num": 5,
+          "value": "579,166",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "עלייה (ירידה) בהתחייבויות תלויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            317,
+            65,
+            16
+          ],
+          "fact_num": 6,
+          "value": "(273,350)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "עלייה (ירידה) בהתחייבויות תלויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            339,
+            61,
+            16
+          ],
+          "fact_num": 7,
+          "value": "(18,300)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "שערוך פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            339,
+            61,
+            16
+          ],
+          "fact_num": 8,
+          "value": "(10,472)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים",
+            "שערוך פקדון"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            354,
+            61,
+            16
+          ],
+          "fact_num": 9,
+          "value": "752,395",
+          "equations": [
+            {
+              "equation": "84,460+107,069+579,166+(18,300)",
+              "fact_equation": "f1 + f3 + f5 + f7"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            354,
+            61,
+            16
+          ],
+          "fact_num": 10,
+          "value": "134,353",
+          "equations": [
+            {
+              "equation": "124,884+293,291+(273,350)+(10,472)",
+              "fact_equation": "f2 + f4 + f6 + f8"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            412,
+            85,
+            16
+          ],
+          "fact_num": 11,
+          "value": "(1,316,785)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "(עליה)ירידה בהמחאות לגביה וכרטיסי אשראי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            185,
+            412,
+            57,
+            16
+          ],
+          "fact_num": 12,
+          "value": "44,421",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "(עליה)ירידה בהמחאות לגביה וכרטיסי אשראי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            321,
+            434,
+            85,
+            16
+          ],
+          "fact_num": 13,
+          "value": "(2,590,167)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה בחייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            434,
+            65,
+            16
+          ],
+          "fact_num": 14,
+          "value": "(504,518)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה בחייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            456,
+            61,
+            16
+          ],
+          "fact_num": 15,
+          "value": "218,835",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בהקצבות והכנסות לקבל"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            185,
+            456,
+            57,
+            16
+          ],
+          "fact_num": 16,
+          "value": "66,075",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בהקצבות והכנסות לקבל"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            478,
+            61,
+            16
+          ],
+          "fact_num": 17,
+          "value": "623,040",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה בספקים ונותני שירותים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            181,
+            478,
+            61,
+            16
+          ],
+          "fact_num": 18,
+          "value": "420,919",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה בספקים ונותני שירותים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            335,
+            500,
+            71,
+            16
+          ],
+          "fact_num": 19,
+          "value": "1,235,306",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה)זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            500,
+            65,
+            16
+          ],
+          "fact_num": 20,
+          "value": "(374,757)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה)זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            335,
+            522,
+            71,
+            16
+          ],
+          "fact_num": 21,
+          "value": "2,265,287",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה)בהכנסות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            522,
+            65,
+            16
+          ],
+          "fact_num": 22,
+          "value": "(352,078)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה)בהכנסות מראש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            345,
+            537,
+            61,
+            16
+          ],
+          "fact_num": 23,
+          "value": "435,516",
+          "equations": [
+            {
+              "equation": "(1,316,785)+(2,590,167)+218,835+623,040+1,235,306+2,265,287",
+              "fact_equation": "f11 + f13 + f15 + f17 + f19 + f21"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            537,
+            65,
+            16
+          ],
+          "fact_num": 24,
+          "value": "(699,938)",
+          "equations": [
+            {
+              "equation": "44,421+(504,518)+66,075+420,919+(374,757)+(352,078)",
+              "fact_equation": "f12 + f14 + f16 + f18 + f20 + f22"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            330,
+            583,
+            76,
+            16
+          ],
+          "fact_num": 25,
+          "value": "1,187,911",
+          "equations": [
+            {
+              "equation": "752,395+435,516",
+              "fact_equation": "f9 + f23"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            177,
+            583,
+            65,
+            16
+          ],
+          "fact_num": 26,
+          "value": "(565,585)",
+          "equations": [
+            {
+              "equation": "134,353+(699,938)",
+              "fact_equation": "f10 + f24"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": "yearly",
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,282 @@
+{
+  "pages": [
+    {
+      "image": "page_0009.png",
+      "meta": {
+        "entity_name": "סחלבים - העמותה העירונית למתנ\"ס מודיעין, מכבים, רעות (ע\"ר)",
+        "page_num": "9",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים"
+      },
+      "facts": [
+        {
+          "bbox": [
+            312,
+            559,
+            96,
+            16
+          ],
+          "fact_num": 1,
+          "value": "6,643,836",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "מזומנים בבנקים במטבע ישראלי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            165,
+            559,
+            86,
+            16
+          ],
+          "fact_num": 2,
+          "value": "5,324,382",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "מזומנים בבנקים במטבע ישראלי"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            312,
+            579,
+            96,
+            16
+          ],
+          "fact_num": 3,
+          "value": "8,325,732",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "פקדונות לזמן קצר"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            165,
+            579,
+            86,
+            16
+          ],
+          "fact_num": 4,
+          "value": "8,440,957",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "פקדונות לזמן קצר"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            302,
+            599,
+            106,
+            17
+          ],
+          "fact_num": 5,
+          "value": "14,969,568",
+          "equations": [
+            {
+              "equation": "6,643,836 + 8,325,732",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            154,
+            599,
+            97,
+            17
+          ],
+          "fact_num": 6,
+          "value": "13,765,339",
+          "equations": [
+            {
+              "equation": "5,324,382 + 8,440,957",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 3,
+          "note_name": "מזומנים ושווי מזומנים",
+          "path": [
+            "מזומנים ושווי מזומנים",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            386,
+            723,
+            12,
+            15
+          ],
+          "fact_num": 7,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הקצבות והכנסות לקבל",
+          "path": [
+            "הקצבות והכנסות לקבל",
+            "קופות חולים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            183,
+            723,
+            68,
+            16
+          ],
+          "fact_num": 8,
+          "value": "218,835",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": true,
+          "note_num": 4,
+          "note_name": "הקצבות והכנסות לקבל",
+          "path": [
+            "הקצבות והכנסות לקבל",
+            "קופות חולים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

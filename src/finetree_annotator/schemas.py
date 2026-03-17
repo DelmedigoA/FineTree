@@ -6,6 +6,7 @@ from typing import Any, List, Optional
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from .date_normalization import normalize_date
+from .numeric_text import derive_natural_sign_from_value_text
 
 CURRENT_SCHEMA_VERSION = 3
 
@@ -343,12 +344,7 @@ def _normalize_row_role_value(value: Any) -> str | None:
 
 
 def _derive_natural_sign_from_value(value: str) -> str | None:
-    text = str(value or "").strip()
-    if text == "-":
-        return None
-    if "(" in text and ")" in text:
-        return "negative"
-    return "positive"
+    return derive_natural_sign_from_value_text(value)
 
 
 def _normalize_required_value(value: Any) -> str:

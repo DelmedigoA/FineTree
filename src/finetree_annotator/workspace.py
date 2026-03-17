@@ -292,6 +292,29 @@ def set_document_reviewed(doc_id: str, reviewed: bool, data_root: Path = DEFAULT
     save_workspace_check_state(checked_doc_ids, reviewed_doc_ids, data_root=data_root)
 
 
+def delete_workspace_document(doc_id: str, data_root: Path = DEFAULT_DATA_ROOT) -> None:
+    normalized = str(doc_id or "").strip()
+    if not normalized:
+        return
+
+    images_dir = _resolve_images_dir(normalized, data_root=data_root)
+    annotations_path = _resolve_annotations_path(normalized, data_root=data_root)
+    source_pdf = _resolve_source_pdf(normalized, data_root=data_root)
+
+    if source_pdf.is_file():
+        source_pdf.unlink()
+    if annotations_path.is_file():
+        annotations_path.unlink()
+    if images_dir.is_dir():
+        shutil.rmtree(images_dir)
+
+    checked_doc_ids, reviewed_doc_ids = load_workspace_check_state(data_root)
+    if normalized in checked_doc_ids or normalized in reviewed_doc_ids:
+        checked_doc_ids.discard(normalized)
+        reviewed_doc_ids.discard(normalized)
+        save_workspace_check_state(checked_doc_ids, reviewed_doc_ids, data_root=data_root)
+
+
 def page_has_annotation(state: PageState, index: int) -> bool:
     _ = index
     meta = state.meta or {}
@@ -301,6 +324,14 @@ def page_has_annotation(state: PageState, index: int) -> bool:
         if title.strip():
             return True
     elif title not in (None, "", [], {}, False):
+        return True
+
+    status = meta.get("annotation_status")
+    if isinstance(status, str) and status.strip().lower() in {"approved", "flagged"}:
+        return True
+
+    facts = state.facts or []
+    if facts:
         return True
 
     return False

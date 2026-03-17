@@ -54,6 +54,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
+from .numeric_text import normalize_angle_bracketed_numeric_text
 from .ai.bbox import (
     BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
     BBOX_MODE_PIXEL_AS_IS,
@@ -349,7 +350,7 @@ def _normalize_page_annotation_status(value: Any) -> str | None:
 
 
 def _parse_fact_value_for_equation(value: Any) -> tuple[Decimal | None, str | None, dict[str, Any]]:
-    raw = str(value or "").strip()
+    raw = normalize_angle_bracketed_numeric_text(value)
     if not raw:
         return None, None, {"raw_value": "", "normalized_value": None, "status": "invalid"}
 

@@ -3103,6 +3103,12 @@ def test_equation_result_match_state_applies_target_natural_sign() -> None:
     assert message == "Matches target value."
 
 
+def test_equation_result_match_state_supports_angle_bracketed_negative_values() -> None:
+    tone, message = app_mod._equation_result_match_state("<-100>", "100", "negative")
+    assert tone == "ok"
+    assert message == "Matches target value."
+
+
 def test_evaluate_equation_string_uses_left_side_when_equals_present() -> None:
     assert app_mod._evaluate_equation_string("971771 + 599659 = 599659") == "1571430"
 

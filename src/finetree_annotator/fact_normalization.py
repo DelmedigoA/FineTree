@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from .date_normalization import normalize_date
+from .numeric_text import derive_natural_sign_from_value_text
 from .schema_contract import CANONICAL_FACT_KEYS as _CANONICAL_FACT_KEY_TUPLE
 from .schema_contract import (
     CURRENCY_VALUES,
@@ -157,12 +158,7 @@ def _infer_row_role(
 
 
 def _derive_natural_sign_from_value(value: str) -> str | None:
-    text = str(value or "").strip()
-    if text == "-":
-        return None
-    if "(" in text and ")" in text:
-        return "negative"
-    return "positive"
+    return derive_natural_sign_from_value_text(value)
 
 
 def _normalize_equation(value: Any) -> str | None:

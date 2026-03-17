@@ -315,7 +315,9 @@ def default_extraction_prompt_template() -> str:
         18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
         19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
         20. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
+            - if `value` is wrapped in angle brackets and the inner text is negative like `<-123>` or `<(123)>`, set `natural_sign="negative"`
             - if `value` contains both `(` and `)`, set `natural_sign="negative"`
+            - if `value` starts with `-`, set `natural_sign="negative"`
             - if `value` is exactly `"-"`, set `natural_sign=null`
             - otherwise set `natural_sign="positive"`
         21. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
@@ -350,7 +352,7 @@ def default_extraction_prompt_template() -> str:
         20. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
         21. When a total/subtotal has a clearly supported arithmetic expression, populate `equations` with one or more variants. Use `null` when no reliable equation is available.
         22. In each `equations[]` entry, `equation` is the visible arithmetic text and `fact_equation` is the optional fact-reference form like `f2 + f3`.
-        23. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+        23. `natural_sign` is deterministic from `value`: angle-bracketed negatives / parentheses / leading `-` => `negative`, `"-"` => null, otherwise `positive`.
         24. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
         25. Do not emit empty-value facts.
         Page classification rules:
@@ -456,7 +458,7 @@ def default_gemini_fill_prompt_template() -> str:
         3. `fact_num` must match the provided snapshot identity.
         4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
         5. Use JSON null (not string "null") for unknowns.
-        6. `natural_sign` is deterministic from `value`: parentheses => `negative`, `"-"` => null, otherwise `positive`.
+        6. `natural_sign` is deterministic from `value`: angle-bracketed negatives / parentheses / leading `-` => `negative`, `"-"` => null, otherwise `positive`.
         7. `row_role` must be `detail` or `total`.
         8. `equations` must be a JSON list or null. Each `equations[]` entry must include non-empty `equation`; `fact_equation` may be null.
         9. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys in `updates`.

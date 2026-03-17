@@ -63,6 +63,17 @@ def test_page_has_annotation_accepts_title() -> None:
     assert workspace.page_has_annotation(state, 0) is True
 
 
+def test_page_has_annotation_accepts_flagged_annotation_status() -> None:
+    state = PageState(
+        meta={
+            **default_page_meta(0),
+            "annotation_status": "flagged",
+        },
+        facts=[],
+    )
+    assert workspace.page_has_annotation(state, 0) is True
+
+
 def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
     data_root = tmp_path / "data"
     images_dir = data_root / "pdf_images" / "doc_a"
@@ -103,6 +114,38 @@ def test_build_document_summary_counts_progress(tmp_path: Path) -> None:
     assert summary.status == "In progress"
     assert summary.reg_flag_count == 0
     assert summary.warning_count == 0
+
+
+def test_build_document_summary_counts_flagged_pages_as_annotated(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    images_dir = data_root / "pdf_images" / "doc_flagged"
+    images_dir.mkdir(parents=True)
+    (data_root / "raw_pdfs").mkdir(parents=True)
+    (data_root / "annotations").mkdir(parents=True)
+    (data_root / "raw_pdfs" / "doc_flagged.pdf").write_bytes(b"%PDF-1.4")
+    (images_dir / "page_0001.png").write_bytes(b"png")
+    (data_root / "annotations" / "doc_flagged.json").write_text(
+        json.dumps(
+            {
+                "pages": [
+                    {
+                        "image": "page_0001.png",
+                        "meta": {**default_page_meta(0), "annotation_status": "flagged"},
+                        "facts": [],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    summary = workspace.build_document_summary("doc_flagged", data_root=data_root)
+    assert summary.annotated_page_count == 1
+    assert summary.progress_pct == 100
+
+    workspace.set_document_checked("doc_flagged", True, data_root=data_root)
+    summary = workspace.build_document_summary("doc_flagged", data_root=data_root)
+    assert summary.checked is True
 
 
 def test_import_pdf_to_workspace_reuses_existing_doc(tmp_path: Path, monkeypatch) -> None:
@@ -230,6 +273,34 @@ def test_reviewed_document_state_persists_in_workspace_summary(tmp_path: Path) -
     summary = workspace.build_document_summary("doc_review", data_root=data_root)
     assert summary.checked is True
     assert summary.reviewed is False
+
+
+def test_delete_workspace_document_removes_pdf_images_annotations_and_state(tmp_path: Path) -> None:
+    data_root = tmp_path / "data"
+    images_dir = data_root / "pdf_images" / "doc_delete"
+    images_dir.mkdir(parents=True)
+    (data_root / "raw_pdfs").mkdir(parents=True)
+    (data_root / "annotations").mkdir(parents=True)
+    pdf_path = data_root / "raw_pdfs" / "doc_delete.pdf"
+    annotations_path = data_root / "annotations" / "doc_delete.json"
+    pdf_path.write_bytes(b"%PDF-1.4")
+    (images_dir / "page_0001.png").write_bytes(b"png")
+    annotations_path.write_text(
+        json.dumps({"pages": [{"image": "page_0001.png", "meta": default_page_meta(0), "facts": []}]}),
+        encoding="utf-8",
+    )
+
+    workspace.set_document_checked("doc_delete", True, data_root=data_root)
+    workspace.set_document_reviewed("doc_delete", True, data_root=data_root)
+
+    workspace.delete_workspace_document("doc_delete", data_root=data_root)
+
+    checked_doc_ids, reviewed_doc_ids = workspace.load_workspace_check_state(data_root)
+    assert not pdf_path.exists()
+    assert not images_dir.exists()
+    assert not annotations_path.exists()
+    assert "doc_delete" not in checked_doc_ids
+    assert "doc_delete" not in reviewed_doc_ids
 
 
 def test_checked_document_state_persists_in_workspace_summary(tmp_path: Path) -> None:

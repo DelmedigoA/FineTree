@@ -1231,18 +1231,13 @@
         "statement_type": "statement_of_activities",
         "title": "Consolidated Statement of Activities",
         "annotation_note": null,
-        "annotation_status": "flagged"
+        "annotation_status": "approved"
       },
       "facts": [
         {
           "value": "3763601",
           "fact_num": 1,
-          "equations": [
-            {
-              "equation": "4409556 - 645955",
-              "fact_equation": "f3 - f2"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -1301,7 +1296,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1240.81,
+            1245.9,
             433.58,
             103.89,
             28.74
@@ -1310,9 +1305,14 @@
         {
           "value": "4409556",
           "fact_num": 3,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "3763601 + 645955",
+              "fact_equation": "f1 + f2"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1335,7 +1335,7 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            1460.16,
+            1458.46,
             433.58,
             148.04,
             28.74
@@ -1344,12 +1344,7 @@
         {
           "value": "135297",
           "fact_num": 4,
-          "equations": [
-            {
-              "equation": "135297 - 0",
-              "fact_equation": "f6 - f5"
-            }
-          ],
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -1415,11 +1410,59 @@
           ]
         },
         {
-          "value": "135297",
+          "value": "135,297",
           "fact_num": 6,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "135297 + 0",
+              "fact_equation": "f4 + f5"
+            },
+            {
+              "equation": "135,297 + -",
+              "fact_equation": "f4 + f5"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "In-kind contributions",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            468.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "135297",
+          "fact_num": 7,
+          "equations": [
+            {
+              "equation": "135297 + 0",
+              "fact_equation": "f4 + f5"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1450,13 +1493,8 @@
         },
         {
           "value": "189593",
-          "fact_num": 7,
-          "equations": [
-            {
-              "equation": "189593 - 0",
-              "fact_equation": "f9 - f8"
-            }
-          ],
+          "fact_num": 8,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -1489,7 +1527,7 @@
         },
         {
           "value": "-",
-          "fact_num": 8,
+          "fact_num": 9,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -1522,11 +1560,59 @@
           ]
         },
         {
-          "value": "189593",
-          "fact_num": 9,
-          "equations": null,
+          "value": "189,593",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "189593 + 0",
+              "fact_equation": "f8 + f9"
+            },
+            {
+              "equation": "189,593 + -",
+              "fact_equation": "f8 + f9"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Merchandise sales",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            534.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "189593",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "189593 + 0",
+              "fact_equation": "f8 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1557,13 +1643,8 @@
         },
         {
           "value": "(142085)",
-          "fact_num": 10,
-          "equations": [
-            {
-              "equation": "- 142085 - 0",
-              "fact_equation": "f12 - f11"
-            }
-          ],
+          "fact_num": 12,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -1596,7 +1677,7 @@
         },
         {
           "value": "-",
-          "fact_num": 11,
+          "fact_num": 13,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -1629,11 +1710,59 @@
           ]
         },
         {
-          "value": "(142085)",
-          "fact_num": 12,
-          "equations": null,
+          "value": "(142,085)",
+          "fact_num": 14,
+          "equations": [
+            {
+              "equation": "- 142085 + 0",
+              "fact_equation": "f12 + f13"
+            },
+            {
+              "equation": "(142,085) + -",
+              "fact_equation": "f12 + f13"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Less cost of goods sold",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            565.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "(142085)",
+          "fact_num": 15,
+          "equations": [
+            {
+              "equation": "- 142085 + 0",
+              "fact_equation": "f12 + f13"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1657,24 +1786,15 @@
           "value_context": "tabular",
           "bbox": [
             1468.8,
-            567.6,
+            565.9,
             136.0,
             35.2
           ]
         },
         {
           "value": "47508",
-          "fact_num": 13,
-          "equations": [
-            {
-              "equation": "189593 - 142085",
-              "fact_equation": "f7 + f10"
-            },
-            {
-              "equation": "47508 - 0",
-              "fact_equation": "f15 - f14"
-            }
-          ],
+          "fact_num": 16,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -1706,13 +1826,8 @@
         },
         {
           "value": "-",
-          "fact_num": 14,
-          "equations": [
-            {
-              "equation": "0 + 0",
-              "fact_equation": "f8 + f11"
-            }
-          ],
+          "fact_num": 17,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -1744,15 +1859,19 @@
         },
         {
           "value": "47508",
-          "fact_num": 15,
+          "fact_num": 18,
           "equations": [
             {
               "equation": "189593 - 142085",
-              "fact_equation": "f9 + f12"
+              "fact_equation": "f11 + f15"
+            },
+            {
+              "equation": "47508 + 0",
+              "fact_equation": "f16 + f17"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1782,13 +1901,8 @@
         },
         {
           "value": "18063204",
-          "fact_num": 16,
-          "equations": [
-            {
-              "equation": "18063204 - 0",
-              "fact_equation": "f18 - f17"
-            }
-          ],
+          "fact_num": 19,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -1821,7 +1935,7 @@
         },
         {
           "value": "-",
-          "fact_num": 17,
+          "fact_num": 20,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -1855,10 +1969,15 @@
         },
         {
           "value": "18063204",
-          "fact_num": 18,
-          "equations": null,
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "18063204 + 0",
+              "fact_equation": "f19 + f20"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1888,14 +2007,52 @@
           ]
         },
         {
-          "value": "(228894)",
-          "fact_num": 19,
+          "value": "18,063,204",
+          "fact_num": 22,
           "equations": [
             {
-              "equation": "- 228894 - 0",
-              "fact_equation": "f21 - f20"
+              "equation": "18063204 + 0",
+              "fact_equation": "f19 + f20"
+            },
+            {
+              "equation": "18,063,204 + -",
+              "fact_equation": "f19 + f20"
             }
           ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Gross special events revenue",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            708.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "(228894)",
+          "fact_num": 23,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -1928,7 +2085,7 @@
         },
         {
           "value": "-",
-          "fact_num": 20,
+          "fact_num": 24,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -1961,11 +2118,59 @@
           ]
         },
         {
-          "value": "(228894)",
-          "fact_num": 21,
-          "equations": null,
+          "value": "(228,894)",
+          "fact_num": 25,
+          "equations": [
+            {
+              "equation": "- 228894 + 0",
+              "fact_equation": "f23 + f24"
+            },
+            {
+              "equation": "(228,894) + -",
+              "fact_equation": "f23 + f24"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Less cost of direct benefits to donors",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            743.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "(228894)",
+          "fact_num": 26,
+          "equations": [
+            {
+              "equation": "- 228894 + 0",
+              "fact_equation": "f23 + f24"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -1996,13 +2201,8 @@
         },
         {
           "value": "17834310",
-          "fact_num": 22,
-          "equations": [
-            {
-              "equation": "17834310 - 0",
-              "fact_equation": "f24 - f23"
-            }
-          ],
+          "fact_num": 27,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2034,13 +2234,8 @@
         },
         {
           "value": "-",
-          "fact_num": 23,
-          "equations": [
-            {
-              "equation": "0 + 0",
-              "fact_equation": "f17 + f20"
-            }
-          ],
+          "fact_num": 28,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -2072,15 +2267,19 @@
         },
         {
           "value": "17834310",
-          "fact_num": 24,
+          "fact_num": 29,
           "equations": [
             {
               "equation": "18063204 - 228894",
-              "fact_equation": "f18 + f21"
+              "fact_equation": "f21 + f26"
+            },
+            {
+              "equation": "17834310 + 0",
+              "fact_equation": "f27 + f28"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2110,13 +2309,8 @@
         },
         {
           "value": "348995",
-          "fact_num": 25,
-          "equations": [
-            {
-              "equation": "348995 - 0",
-              "fact_equation": "f27 - f26"
-            }
-          ],
+          "fact_num": 30,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2149,7 +2343,7 @@
         },
         {
           "value": "-",
-          "fact_num": 26,
+          "fact_num": 31,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -2182,11 +2376,59 @@
           ]
         },
         {
-          "value": "348995",
-          "fact_num": 27,
-          "equations": null,
+          "value": "348,995",
+          "fact_num": 32,
+          "equations": [
+            {
+              "equation": "348995 + 0",
+              "fact_equation": "f30 + f31"
+            },
+            {
+              "equation": "348,995 + -",
+              "fact_equation": "f30 + f31"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Net investment return",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            880.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "348995",
+          "fact_num": 33,
+          "equations": [
+            {
+              "equation": "348995 + 0",
+              "fact_equation": "f30 + f31"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2210,20 +2452,15 @@
           "value_context": "tabular",
           "bbox": [
             1475.6,
-            882.2,
+            880.17,
             129.2,
             35.2
           ]
         },
         {
           "value": "(16118)",
-          "fact_num": 28,
-          "equations": [
-            {
-              "equation": "- 16118 - 0",
-              "fact_equation": "f30 - f29"
-            }
-          ],
+          "fact_num": 34,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -2256,7 +2493,7 @@
         },
         {
           "value": "-",
-          "fact_num": 29,
+          "fact_num": 35,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -2289,11 +2526,59 @@
           ]
         },
         {
-          "value": "(16118)",
-          "fact_num": 30,
-          "equations": null,
+          "value": "(16,118)",
+          "fact_num": 36,
+          "equations": [
+            {
+              "equation": "- 16118 + 0",
+              "fact_equation": "f34 + f35"
+            },
+            {
+              "equation": "(16,118) + -",
+              "fact_equation": "f34 + f35"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Other revenue",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            917.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "(16118)",
+          "fact_num": 37,
+          "equations": [
+            {
+              "equation": "- 16118 + 0",
+              "fact_equation": "f34 + f35"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2324,13 +2609,8 @@
         },
         {
           "value": "-",
-          "fact_num": 31,
-          "equations": [
-            {
-              "equation": "3172008 - 3172008",
-              "fact_equation": "f33 - f32"
-            }
-          ],
+          "fact_num": 38,
+          "equations": null,
           "natural_sign": null,
           "row_role": "total",
           "comment_ref": null,
@@ -2363,7 +2643,7 @@
         },
         {
           "value": "3172008",
-          "fact_num": 32,
+          "fact_num": 39,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -2397,10 +2677,15 @@
         },
         {
           "value": "3172008",
-          "fact_num": 33,
-          "equations": null,
+          "fact_num": 40,
+          "equations": [
+            {
+              "equation": "0 + 3172008",
+              "fact_equation": "f38 + f39"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2424,20 +2709,15 @@
           "value_context": "tabular",
           "bbox": [
             1460.3,
-            952.6,
+            950.57,
             144.5,
             35.2
           ]
         },
         {
           "value": "(126309)",
-          "fact_num": 34,
-          "equations": [
-            {
-              "equation": "- 126309 - 0",
-              "fact_equation": "f36 - f35"
-            }
-          ],
+          "fact_num": 41,
+          "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
           "comment_ref": null,
@@ -2470,7 +2750,7 @@
         },
         {
           "value": "-",
-          "fact_num": 35,
+          "fact_num": 42,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -2503,11 +2783,59 @@
           ]
         },
         {
-          "value": "(126309)",
-          "fact_num": 36,
-          "equations": null,
+          "value": "(126,309)",
+          "fact_num": 43,
+          "equations": [
+            {
+              "equation": "- 126309 + 0",
+              "fact_equation": "f41 + f42"
+            },
+            {
+              "equation": "(126,309) + -",
+              "fact_equation": "f41 + f42"
+            }
+          ],
           "natural_sign": "negative",
-          "row_role": "detail",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": null,
+          "period_type": "duration",
+          "period_start": "2017-01-01",
+          "period_end": "2017-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "Revenue, Support, and Gains",
+            "Distributions from and change in value of beneficial interests in assets held by others",
+            "Total"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            1458.0,
+            1020.0,
+            148.0,
+            35.0
+          ]
+        },
+        {
+          "value": "(126309)",
+          "fact_num": 44,
+          "equations": [
+            {
+              "equation": "- 126309 + 0",
+              "fact_equation": "f41 + f42"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2538,13 +2866,8 @@
         },
         {
           "value": "3783102",
-          "fact_num": 37,
-          "equations": [
-            {
-              "equation": "0 + 3783102",
-              "fact_equation": "f39 - f38"
-            }
-          ],
+          "fact_num": 45,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2577,7 +2900,7 @@
         },
         {
           "value": "(3783102)",
-          "fact_num": 38,
+          "fact_num": 46,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
@@ -2611,10 +2934,15 @@
         },
         {
           "value": "-",
-          "fact_num": 39,
-          "equations": null,
+          "fact_num": 47,
+          "equations": [
+            {
+              "equation": "3783102 - 3783102",
+              "fact_equation": "f45 + f46"
+            }
+          ],
           "natural_sign": null,
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2645,13 +2973,8 @@
         },
         {
           "value": "25770386",
-          "fact_num": 40,
-          "equations": [
-            {
-              "equation": "135297 + 3763601 - 142085 + 189593 + 18063204 - 228894 + 3783102 - 126309 + 0 - 16118 + 348995",
-              "fact_equation": "f4 + f1 + f10 + f7 + f16 + f19 + f37 + f34 + f31 + f28 + f25"
-            }
-          ],
+          "fact_num": 48,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2684,13 +3007,8 @@
         },
         {
           "value": "34861",
-          "fact_num": 41,
-          "equations": [
-            {
-              "equation": "645955 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 0 + 3172008 + 0 - 3783102",
-              "fact_equation": "f2 + f5 + f8 + f11 + f14 + f17 + f20 + f23 + f26 + f29 + f32 + f35 + f38"
-            }
-          ],
+          "fact_num": 49,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -2723,15 +3041,15 @@
         },
         {
           "value": "25805247",
-          "fact_num": 42,
+          "fact_num": 50,
           "equations": [
             {
-              "equation": "4409556 + 135297 + 189593 - 142085 + 18063204 - 228894 + 348995 - 16118 + 3172008 - 126309 + 0",
-              "fact_equation": "f3 + f6 + f9 + f12 + f18 + f21 + f27 + f30 + f33 + f36 + f39"
+              "equation": "25770386 + 34861",
+              "fact_equation": "f48 + f49"
             }
           ],
           "natural_sign": "positive",
-          "row_role": "detail",
+          "row_role": "total",
           "comment_ref": null,
           "note_flag": false,
           "note_name": null,
@@ -2762,13 +3080,8 @@
         },
         {
           "value": "17900636",
-          "fact_num": 43,
-          "equations": [
-            {
-              "equation": "17900636 - 0",
-              "fact_equation": "f45 - f44"
-            }
-          ],
+          "fact_num": 51,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2801,7 +3114,7 @@
         },
         {
           "value": "-",
-          "fact_num": 44,
+          "fact_num": 52,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -2835,7 +3148,7 @@
         },
         {
           "value": "17900636",
-          "fact_num": 45,
+          "fact_num": 53,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -2869,13 +3182,8 @@
         },
         {
           "value": "836760",
-          "fact_num": 46,
-          "equations": [
-            {
-              "equation": "836760 - 0",
-              "fact_equation": "f48 - f47"
-            }
-          ],
+          "fact_num": 54,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -2909,7 +3217,7 @@
         },
         {
           "value": "-",
-          "fact_num": 47,
+          "fact_num": 55,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -2944,7 +3252,7 @@
         },
         {
           "value": "836760",
-          "fact_num": 48,
+          "fact_num": 56,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -2979,13 +3287,8 @@
         },
         {
           "value": "1550014",
-          "fact_num": 49,
-          "equations": [
-            {
-              "equation": "1550014 - 0",
-              "fact_equation": "f51 - f50"
-            }
-          ],
+          "fact_num": 57,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3019,7 +3322,7 @@
         },
         {
           "value": "-",
-          "fact_num": 50,
+          "fact_num": 58,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
@@ -3054,7 +3357,7 @@
         },
         {
           "value": "1550014",
-          "fact_num": 51,
+          "fact_num": 59,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -3089,17 +3392,8 @@
         },
         {
           "value": "20287410",
-          "fact_num": 52,
-          "equations": [
-            {
-              "equation": "20287410 - 0",
-              "fact_equation": "f54 - f53"
-            },
-            {
-              "equation": "17900636 + 836760 + 1550014",
-              "fact_equation": "f43 + f46 + f49"
-            }
-          ],
+          "fact_num": 60,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3132,13 +3426,8 @@
         },
         {
           "value": "-",
-          "fact_num": 53,
-          "equations": [
-            {
-              "equation": "0 + 0 + 0",
-              "fact_equation": "f44 + f47 + f50"
-            }
-          ],
+          "fact_num": 61,
+          "equations": null,
           "natural_sign": null,
           "row_role": "detail",
           "comment_ref": null,
@@ -3171,13 +3460,8 @@
         },
         {
           "value": "20287410",
-          "fact_num": 54,
-          "equations": [
-            {
-              "equation": "17900636 + 836760 + 1550014",
-              "fact_equation": "f45 + f48 + f51"
-            }
-          ],
+          "fact_num": 62,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
           "comment_ref": null,
@@ -3210,13 +3494,8 @@
         },
         {
           "value": "5482976",
-          "fact_num": 55,
-          "equations": [
-            {
-              "equation": "5517837 - 34861",
-              "fact_equation": "f57 - f56"
-            }
-          ],
+          "fact_num": 63,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3248,7 +3527,7 @@
         },
         {
           "value": "34861",
-          "fact_num": 56,
+          "fact_num": 64,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -3281,7 +3560,7 @@
         },
         {
           "value": "5517837",
-          "fact_num": 57,
+          "fact_num": 65,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -3314,13 +3593,8 @@
         },
         {
           "value": "7343105",
-          "fact_num": 58,
-          "equations": [
-            {
-              "equation": "11050488 - 3707383",
-              "fact_equation": "f60 - f59"
-            }
-          ],
+          "fact_num": 66,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3352,7 +3626,7 @@
         },
         {
           "value": "3707383",
-          "fact_num": 59,
+          "fact_num": 67,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -3385,7 +3659,7 @@
         },
         {
           "value": "11050488",
-          "fact_num": 60,
+          "fact_num": 68,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -3418,17 +3692,8 @@
         },
         {
           "value": "12826081",
-          "fact_num": 61,
-          "equations": [
-            {
-              "equation": "16568325 - 3742244",
-              "fact_equation": "f63 - f62"
-            },
-            {
-              "equation": "7343105 + 5482976",
-              "fact_equation": "f58 + f55"
-            }
-          ],
+          "fact_num": 69,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3460,13 +3725,8 @@
         },
         {
           "value": "3742244",
-          "fact_num": 62,
-          "equations": [
-            {
-              "equation": "3707383 + 34861",
-              "fact_equation": "f59 + f56"
-            }
-          ],
+          "fact_num": 70,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -3498,13 +3758,8 @@
         },
         {
           "value": "16568325",
-          "fact_num": 63,
-          "equations": [
-            {
-              "equation": "11050488 + 5517837",
-              "fact_equation": "f60 + f57"
-            }
-          ],
+          "fact_num": 71,
+          "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
           "comment_ref": null,
@@ -15329,7 +15584,7 @@
         "statement_type": "notes_to_financial_statements",
         "title": "Notes to Consolidated Financial Statements",
         "annotation_note": null,
-        "annotation_status": null
+        "annotation_status": "flagged"
       },
       "facts": [
         {
@@ -15338,27 +15593,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
-          "period_type": "duration",
-          "period_start": "2017-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Promises to give that are not restricted by donors, but which are unavailable for expenditure until due"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1228.4,
             576.8,
@@ -15372,27 +15626,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
-          "period_type": "duration",
-          "period_start": "2016-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2016-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Promises to give that are not restricted by donors, but which are unavailable for expenditure until due"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1461.3,
             576.8,
@@ -15406,27 +15659,27 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
-          "period_type": "duration",
-          "period_start": "2017-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
-            "Other time-based, general purpose restrictions: Interest in net assets of chapters"
+            "Other time-based, general purpose restrictions",
+            "Interest in net assets of chapters"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1208.0,
             642.8,
@@ -15440,27 +15693,27 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
-          "period_type": "duration",
-          "period_start": "2016-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2016-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
-            "Other time-based, general purpose restrictions: Interest in net assets of chapters"
+            "Other time-based, general purpose restrictions",
+            "Interest in net assets of chapters"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1483.4,
             642.8,
@@ -15474,27 +15727,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
-          "period_type": "duration",
-          "period_start": "2017-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Restricted real estate"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1208.0,
             678.0,
@@ -15508,27 +15760,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
-          "period_type": "duration",
-          "period_start": "2016-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2016-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Restricted real estate"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1461.3,
             678.0,
@@ -15542,27 +15793,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
-          "period_type": "duration",
-          "period_start": "2017-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Restricted for Honor cottage program"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1259.0,
             711.0,
@@ -15576,27 +15826,26 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
-          "period_type": "duration",
-          "period_start": "2016-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2016-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Temporarily restricted net assets",
             "Restricted for Honor cottage program"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1497.0,
             711.0,
@@ -15607,29 +15856,34 @@
         {
           "value": "3742244",
           "fact_num": 9,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "675955 + 1882081 + 1176250 + 7958",
+              "fact_equation": "f1 + f3 + f5 + f7"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "6",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
-          "period_type": "duration",
-          "period_start": "2017-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2017-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
-            "Temporarily restricted net assets"
+            "Temporarily restricted net assets",
+            "Total"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1204.3,
             783.2,
@@ -15640,29 +15894,34 @@
         {
           "value": "3707383",
           "fact_num": 10,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1608571 + 881453 + 1207323 + 10036",
+              "fact_equation": "f2 + f4 + f6 + f8"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "6",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
-          "period_type": "duration",
-          "period_start": "2016-01-01",
+          "period_type": "instant",
+          "period_start": null,
           "period_end": "2016-12-31",
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
-            "Temporarily restricted net assets"
+            "Temporarily restricted net assets",
+            "Total"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1459.3,
             783.2,
@@ -15676,9 +15935,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
@@ -15688,15 +15947,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Expiration of time restrictions"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1205.3,
             1174.4,
@@ -15710,9 +15968,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
@@ -15722,15 +15980,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Expiration of time restrictions"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1494.3,
             1174.4,
@@ -15744,9 +16001,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
@@ -15756,15 +16013,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Distributions from chapters"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1205.3,
             1207.4,
@@ -15778,9 +16034,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
@@ -15790,15 +16046,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Distributions from chapters"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1460.3,
             1207.4,
@@ -15812,9 +16067,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
@@ -15824,15 +16079,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Depreciation of restricted real estate"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1246.1,
             1242.6,
@@ -15846,9 +16100,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
@@ -15858,15 +16112,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Depreciation of restricted real estate"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1499.4,
             1242.6,
@@ -15880,9 +16133,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
@@ -15892,15 +16145,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Release for Honor cottage program"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1259.7,
             1275.6,
@@ -15914,9 +16166,9 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "6",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
@@ -15926,15 +16178,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
             "Net assets were released from restrictions",
             "Release for Honor cottage program"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1513.0,
             1275.6,
@@ -15945,12 +16196,17 @@
         {
           "value": "3783102",
           "fact_num": 19,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "1578571 + 2171380 + 31073 + 2078",
+              "fact_equation": "f11 + f13 + f15 + f17"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "6",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2017",
@@ -15960,14 +16216,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
-            "Net assets were released from restrictions"
+            "Net assets were released from restrictions",
+            "Total"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1207.0,
             1352.6,
@@ -15978,12 +16234,17 @@
         {
           "value": "2330046",
           "fact_num": 20,
-          "equations": null,
+          "equations": [
+            {
+              "equation": "74573 + 2222043 + 31073 + 2357",
+              "fact_equation": "f12 + f14 + f16 + f18"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "6",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Restricted Net Assets",
           "note_num": 6,
           "note_ref": null,
           "date": "2016",
@@ -15993,14 +16254,14 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 6 - Restricted Net Assets",
-            "Net assets were released from restrictions"
+            "Net assets were released from restrictions",
+            "Total"
           ],
-          "path_source": null,
+          "path_source": "inferred",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "tabular",
           "bbox": [
             1460.3,
             1352.6,
@@ -16016,7 +16277,7 @@
           "row_role": "detail",
           "comment_ref": "7",
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Donated Advertising and Materials",
           "note_num": 7,
           "note_ref": null,
           "date": "2017",
@@ -16026,14 +16287,13 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 7 - Donated Advertising and Materials",
             "Donated materials and advertising"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "textual",
           "bbox": [
             301.09,
             1617.0,
@@ -16049,7 +16309,7 @@
           "row_role": "detail",
           "comment_ref": "7",
           "note_flag": true,
-          "note_name": null,
+          "note_name": "Donated Advertising and Materials",
           "note_num": 7,
           "note_ref": null,
           "date": "2016",
@@ -16059,14 +16319,13 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "Note 7 - Donated Advertising and Materials",
             "Donated materials and advertising"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": "USD",
           "scale": 1,
           "value_type": "amount",
-          "value_context": null,
+          "value_context": "textual",
           "bbox": [
             391.0,
             1617.0,

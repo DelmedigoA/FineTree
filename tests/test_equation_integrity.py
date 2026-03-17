@@ -62,6 +62,26 @@ def test_audit_and_rebuild_financial_facts_treats_dash_as_zero_in_equation() -> 
     assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
 
 
+def test_audit_and_rebuild_financial_facts_treats_angle_bracketed_negative_as_negative() -> None:
+    facts = [
+        {"fact_num": 1, "value": "<-5>", "path": ["A"]},
+        {"fact_num": 2, "value": "10", "path": ["A"]},
+        {
+            "fact_num": 3,
+            "value": "5",
+            "row_role": "total",
+            "path": ["A", "total"],
+            "equation": "10 - 5",
+            "fact_equation": "f2 + f1",
+        },
+    ]
+
+    rebuilt, findings = audit_and_rebuild_financial_facts(facts, apply_repairs=True)
+    total_fact = next(fact for fact in rebuilt if fact["fact_num"] == 3)
+    assert total_fact["equations"] == [{"equation": "10 - 5", "fact_equation": "f2 + f1"}]
+    assert all(finding.get("code") != "equation_arithmetic_mismatch" for finding in findings)
+
+
 def test_audit_and_rebuild_financial_facts_preserves_subtractive_dash_sign() -> None:
     facts = [
         {"fact_num": 1, "value": "100", "path": ["A"]},

@@ -1,0 +1,439 @@
+{
+  "pages": [
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "מכורים אנונימיים אנ.איי. ישראל (ע\"ר)",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "statement_of_changes_in_equity",
+        "title": "דוח על השינויים בנכסים נטו"
+      },
+      "facts": [
+        {
+          "bbox": [
+            849.58,
+            443.46,
+            88.18,
+            30.85
+          ],
+          "fact_num": 1,
+          "value": "31,724",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "עודף הכנסות על הוצאות לסוף השנה",
+            "נכסים נטו, שלא קיימת לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            629.5,
+            447.04,
+            29.13,
+            18.33
+          ],
+          "fact_num": 2,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "עודף הכנסות על הוצאות לסוף השנה",
+            "נכסים נטו ללא הגבלה ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            350.76,
+            443.46,
+            102.49,
+            27.87
+          ],
+          "fact_num": 3,
+          "value": "31,724",
+          "equations": [
+            {
+              "equation": "31,724 + 0",
+              "fact_equation": "f1 + f2"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "עודף הכנסות על הוצאות לסוף השנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            879.33,
+            471.07,
+            24.8,
+            18.33
+          ],
+          "fact_num": 4,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "רכישת נכסים קבועים",
+            "נכסים נטו, שלא קיימת לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            629.5,
+            471.07,
+            29.13,
+            18.33
+          ],
+          "fact_num": 5,
+          "value": "-",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "רכישת נכסים קבועים",
+            "נכסים נטו ללא הגבלה ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            383.82,
+            471.07,
+            24.8,
+            18.33
+          ],
+          "fact_num": 6,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f4 + f5"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "רכישת נכסים קבועים",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            857.84,
+            492.38,
+            71.08,
+            30.85
+          ],
+          "fact_num": 7,
+          "value": "2,526",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "העברת סכומים לכיסוי הוצאות פחת",
+            "נכסים נטו, שלא קיימת לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            600.5,
+            492.38,
+            82.65,
+            30.85
+          ],
+          "fact_num": 8,
+          "value": "(2,526)",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "העברת סכומים לכיסוי הוצאות פחת",
+            "נכסים נטו ללא הגבלה ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            383.82,
+            492.38,
+            24.8,
+            27.87
+          ],
+          "fact_num": 9,
+          "value": "-",
+          "equations": [
+            {
+              "equation": "2,526 - 2,526",
+              "fact_equation": "f7 + f8"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": null,
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "duration",
+          "period_start": "2014-01-01",
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "שינויים במהלך השנה",
+            "העברת סכומים לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            849.58,
+            516.66,
+            102.49,
+            39.8
+          ],
+          "fact_num": 10,
+          "value": "283,033",
+          "equations": [
+            {
+              "equation": "248,783 + 31,724 + 0 + 2,526",
+              "fact_equation": "L13 + f1 + f4 + f7"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2014",
+            "נכסים נטו, שלא קיימת לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            600.5,
+            525.61,
+            87.61,
+            30.85
+          ],
+          "fact_num": 11,
+          "value": "5,163",
+          "equations": [
+            {
+              "equation": "7,689 + 0 + 0 - 2,526",
+              "fact_equation": "L14 + f2 + f5 + f8"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2014",
+            "נכסים נטו ללא הגבלה ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            350.76,
+            525.61,
+            102.49,
+            27.87
+          ],
+          "fact_num": 12,
+          "value": "288,196",
+          "equations": [
+            {
+              "equation": "256,472 + 31,724 + 0 + 0",
+              "fact_equation": "L15 + f3 + f6 + f9"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2014-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2014",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}

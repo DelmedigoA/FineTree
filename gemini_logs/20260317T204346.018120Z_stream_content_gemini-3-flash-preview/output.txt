@@ -1,0 +1,298 @@
+```json
+{
+  "pages": [
+    {
+      "image": "page_0000.png",
+      "meta": {
+        "entity_name": "נח ההתאחדות הישראלית של הארגונים להגנת בעלי חיים (ע״ר)",
+        "page_num": "4",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
+        "title": "מאזן ליום 31 בדצמבר 2013"
+      },
+      "facts": [
+        {
+          "bbox": [
+            429,
+            377,
+            55,
+            16
+          ],
+          "fact_num": 1,
+          "value": "28,194",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש",
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            377,
+            55,
+            16
+          ],
+          "fact_num": 2,
+          "value": "32,310",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2012-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש",
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            429,
+            424,
+            55,
+            16
+          ],
+          "fact_num": 3,
+          "value": "28,194",
+          "equations": [
+            {
+              "equation": "28,194",
+              "fact_equation": "f1"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש",
+            "סך – רכוש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            424,
+            55,
+            16
+          ],
+          "fact_num": 4,
+          "value": "32,310",
+          "equations": [
+            {
+              "equation": "32,310",
+              "fact_equation": "f2"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2012-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "רכוש",
+            "סך – רכוש"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            430,
+            535,
+            55,
+            16
+          ],
+          "fact_num": 5,
+          "value": "28,194",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות",
+            "נכסים נטו",
+            "נכסים נטו שאין לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            535,
+            56,
+            16
+          ],
+          "fact_num": 6,
+          "value": "32,310",
+          "equations": null,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2012-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות",
+            "נכסים נטו",
+            "נכסים נטו שאין לגביהם הגבלה"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            430,
+            583,
+            54,
+            16
+          ],
+          "fact_num": 7,
+          "value": "28,194",
+          "equations": [
+            {
+              "equation": "28,194",
+              "fact_equation": "f5"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2013-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות",
+            "סך - התחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        },
+        {
+          "bbox": [
+            171,
+            583,
+            55,
+            16
+          ],
+          "fact_num": 8,
+          "value": "32,310",
+          "equations": [
+            {
+              "equation": "32,310",
+              "fact_equation": "f6"
+            }
+          ],
+          "value_type": "amount",
+          "value_context": "tabular",
+          "natural_sign": "positive",
+          "row_role": "total",
+          "currency": "ILS",
+          "scale": 1,
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2012-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "note_flag": false,
+          "note_num": null,
+          "note_name": null,
+          "path": [
+            "התחייבויות",
+            "סך - התחייבויות"
+          ],
+          "path_source": "observed",
+          "note_ref": null,
+          "comment_ref": null
+        }
+      ]
+    }
+  ]
+}
+```

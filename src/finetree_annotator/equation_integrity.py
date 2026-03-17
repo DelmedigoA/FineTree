@@ -4,6 +4,7 @@ import re
 from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping, Sequence
 
+from .numeric_text import normalize_angle_bracketed_numeric_text
 from .fact_normalization import normalize_fact_payload
 
 _EQUATION_NUMERIC_VALUE_RE = re.compile(r"^\d[\d,]*(?:\.\d+)?$")
@@ -77,7 +78,7 @@ def _normalize_row_role(value: Any) -> str | None:
 
 
 def _parse_fact_value_for_equation(value: Any) -> tuple[Decimal | None, str | None]:
-    raw = str(value or "").strip()
+    raw = normalize_angle_bracketed_numeric_text(value)
     if not raw:
         return None, None
     if raw == "-":

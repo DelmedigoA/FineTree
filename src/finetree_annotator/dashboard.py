@@ -56,6 +56,7 @@ from .workspace import (
     annotations_root,
     build_document_summary,
     discover_workspace_documents,
+    delete_workspace_document as delete_workspace_document_files,
     import_pdf_to_workspace,
     reset_document_approved_pages,
     set_document_checked as set_workspace_document_checked,
@@ -213,6 +214,7 @@ class HomeDocumentCard(QFrame):
     prepare_requested = pyqtSignal(str)
     checked_toggled = pyqtSignal(str, bool)
     review_toggled = pyqtSignal(str, bool)
+    delete_requested = pyqtSignal(str)
 
     def __init__(self, summary: WorkspaceDocumentSummary, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -294,15 +296,18 @@ class HomeDocumentCard(QFrame):
         self.checked_btn.setCheckable(True)
         self.review_btn = _set_button_variant(QPushButton("Mark Reviewed"), "ghost")
         self.review_btn.setCheckable(True)
+        self.delete_btn = _set_button_variant(QPushButton("Remove"), "danger")
         actions.addWidget(self.action_btn)
         actions.addWidget(self.checked_btn)
         actions.addWidget(self.review_btn)
+        actions.addWidget(self.delete_btn)
         actions.addStretch(1)
         body.addLayout(actions)
 
         self.action_btn.clicked.connect(lambda: self.open_requested.emit(self.summary.doc_id))
         self.checked_btn.toggled.connect(self._emit_checked_toggled)
         self.review_btn.toggled.connect(self._emit_review_toggled)
+        self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.summary.doc_id))
 
         self.refresh(summary)
 
@@ -437,6 +442,7 @@ class HomeView(QWidget):
     prepare_document_requested = pyqtSignal(str)
     checked_document_requested = pyqtSignal(str, bool)
     review_document_requested = pyqtSignal(str, bool)
+    delete_document_requested = pyqtSignal(str)
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -653,6 +659,7 @@ class HomeView(QWidget):
             card.prepare_requested.connect(self.prepare_document_requested.emit)
             card.checked_toggled.connect(self.checked_document_requested.emit)
             card.review_toggled.connect(self.review_document_requested.emit)
+            card.delete_requested.connect(self.delete_document_requested.emit)
             self.cards_layout.addWidget(card)
             self._cards[document.doc_id] = card
         if not visible_docs:
@@ -741,6 +748,35 @@ class AnnotatorHost(QWidget):
         self.current_document_changed.emit(context)
         return self._windows[key]
 
+    def close_document(self, doc_id: str) -> bool:
+        normalized = str(doc_id or "").strip()
+        if not normalized:
+            return False
+
+        removed = False
+        current_removed = False
+        for key, context in list(self._contexts.items()):
+            if context.doc_id != normalized:
+                continue
+            window = self._windows.pop(key, None)
+            self._contexts.pop(key, None)
+            if window is not None:
+                self.stack.removeWidget(window)
+                window.setParent(None)
+                window.deleteLater()
+            if self._current_key == key:
+                current_removed = True
+            removed = True
+
+        if current_removed:
+            if self._windows:
+                next_key = next(iter(self._windows))
+                self._current_key = next_key
+                self.stack.setCurrentWidget(self._windows[next_key])
+            else:
+                self.show_placeholder()
+        return removed
+
     def show_placeholder(self) -> None:
         self._current_key = None
         self.stack.setCurrentWidget(self.placeholder)
@@ -768,6 +804,28 @@ class AnnotatorHost(QWidget):
                 continue
             managed.append((context, window))
         return managed
+
+    def confirm_close_document(self, doc_id: str) -> bool:
+        normalized = str(doc_id or "").strip()
+        if not normalized:
+            return True
+
+        confirmed_windows: list[app_mod.AnnotationWindow] = []
+        for context, window in self.managed_windows():
+            if context.doc_id != normalized:
+                continue
+            confirm_method = getattr(window, "confirm_close", None)
+            if not callable(confirm_method):
+                continue
+            if confirm_method(prepare_for_close=True):
+                confirmed_windows.append(window)
+                continue
+            for confirmed_window in confirmed_windows:
+                cancel_method = getattr(confirmed_window, "cancel_pending_close", None)
+                if callable(cancel_method):
+                    cancel_method()
+            return False
+        return True
 
     def confirm_close_all_documents(self) -> bool:
         confirmed_windows: list[app_mod.AnnotationWindow] = []
@@ -1789,6 +1847,7 @@ class DashboardWindow(QMainWindow):
         self.home_view.prepare_document_requested.connect(self.prepare_workspace_document)
         self.home_view.checked_document_requested.connect(self.set_document_checked)
         self.home_view.review_document_requested.connect(self.set_document_reviewed)
+        self.home_view.delete_document_requested.connect(self.delete_workspace_document)
         self.annotator_host.document_saved.connect(self._on_document_saved)
         self.annotator_host.current_document_changed.connect(self._on_current_document_changed)
         self.annotator_host.document_issues_changed.connect(self._on_document_issues_changed)
@@ -2021,6 +2080,39 @@ class DashboardWindow(QMainWindow):
         self.reload_workspace()
         state_text = "reviewed" if reviewed else "not reviewed"
         self.statusBar().showMessage(f"{doc_id} marked as {state_text}.", 3000)
+
+    def delete_workspace_document(self, doc_id: str) -> None:
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+
+        display_name = summary.source_pdf.name if summary.source_pdf is not None else f"{doc_id}.pdf"
+        answer = QMessageBox.question(
+            self,
+            "Remove PDF",
+            (
+                f"Delete {display_name} and all of its workspace data?\n\n"
+                "This removes the PDF, extracted images, and annotations permanently."
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return
+
+        if not self.annotator_host.confirm_close_document(doc_id):
+            return
+
+        try:
+            delete_workspace_document_files(doc_id)
+        except Exception as exc:
+            QMessageBox.warning(self, "Remove failed", str(exc))
+            return
+
+        self.annotator_host.close_document(doc_id)
+        self.reload_workspace()
+        self.show_home()
+        self.statusBar().showMessage(f"Removed {display_name} and all associated data.", 4000)
 
     def reset_all_approved_pages(self) -> None:
         total_approved = sum(int(doc.approved_page_count or 0) for doc in self._documents_by_id.values())
