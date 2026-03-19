@@ -88,6 +88,19 @@ def test_normalize_fact_payload_derives_negative_sign_from_angle_bracketed_negat
     assert warnings == []
 
 
+def test_normalize_fact_payload_accepts_footnote_marked_dash_as_negative() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "(*)-",
+            "natural_sign": "negative",
+            "path": [],
+        }
+    )
+    assert normalized["value"] == "(*)-"
+    assert normalized["natural_sign"] == "negative"
+    assert warnings == []
+
+
 def test_normalize_fact_payload_keeps_range_value_in_value_field() -> None:
     normalized, warnings = normalize_fact_payload(
         {
@@ -301,6 +314,22 @@ def test_normalize_fact_payload_keeps_explicit_null_period_range_without_date_in
     )
     assert normalized["date"] == "2024"
     assert normalized["period_type"] is None
+    assert normalized["period_start"] is None
+    assert normalized["period_end"] is None
+    assert warnings == []
+
+
+def test_normalize_fact_payload_clears_partial_duration_period_range() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "10",
+            "period_type": "duration",
+            "period_start": "2024-01-01",
+            "period_end": None,
+            "path": [],
+        }
+    )
+    assert normalized["period_type"] == "duration"
     assert normalized["period_start"] is None
     assert normalized["period_end"] is None
     assert warnings == []

@@ -8,6 +8,9 @@ from finetree_annotator import gemini_vlm, qwen_vlm
 
 
 class _FakeParser:
+    def __init__(self, *args, **kwargs) -> None:
+        _ = args, kwargs
+
     def feed(self, _chunk: str):
         return None, []
 
@@ -89,6 +92,69 @@ def test_gemini_stream_worker_forwards_model_and_thinking_level(monkeypatch, tmp
     assert seen["thinking_level"] == "high"
 
 
+def test_gemini_stream_worker_forwards_temperature(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
+
+    monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
+    monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.GeminiStreamWorker(
+        image_path=image_path,
+        prompt="extract",
+        model="gemini-3-flash-preview",
+        api_key="k",
+        temperature=0.4,
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["temperature"] == 0.4
+
+
+def test_gemini_stream_worker_uses_json_mode_and_high_media_resolution_for_gt(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
+
+    monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
+    monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.GeminiStreamWorker(
+        image_path=image_path,
+        prompt="extract",
+        model="gemini-3-flash-preview",
+        mode="gt",
+        api_key="k",
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["response_mime_type"] == "application/json"
+    assert seen["media_resolution"] == "high"
+
+
 def test_gemini_stream_worker_stops_after_max_facts(monkeypatch, tmp_path: Path) -> None:
     image_path = tmp_path / "page.png"
     image_path.write_bytes(b"img")
@@ -97,6 +163,9 @@ def test_gemini_stream_worker_stops_after_max_facts(monkeypatch, tmp_path: Path)
         yield "chunk"
 
     class _LimitParser:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
         def feed(self, _chunk: str):
             facts = []
             for idx in range(5):
@@ -172,6 +241,9 @@ def test_gemini_stream_worker_allows_partial_finalize_error(monkeypatch, tmp_pat
         yield "chunk"
 
     class _FinalizeFailParser:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
         def feed(self, _chunk: str):
             return (
                 {
@@ -230,6 +302,9 @@ def test_gemini_stream_worker_finalize_error_without_partial_still_fails(monkeyp
         yield "chunk"
 
     class _FinalizeFailParser:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
         def feed(self, _chunk: str):
             return None, [{"bbox": [10, 20, 30, 40], "value": "100"}]
 
@@ -314,3 +389,31 @@ def test_gemini_fill_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path
     worker.run()
 
     assert seen["enable_thinking"] is False
+
+
+def test_gemini_fill_worker_forwards_temperature(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_generate_content_from_image(**kwargs):
+        seen.update(kwargs)
+        return '{"meta_updates":{},"fact_updates":[]}'
+
+    monkeypatch.setattr(gemini_vlm, "generate_content_from_image", _fake_generate_content_from_image)
+
+    worker = app_mod.GeminiFillWorker(
+        image_path=image_path,
+        prompt="fill",
+        model="gemini-3-flash-preview",
+        api_key="k",
+        allowed_fact_fields={"period_type"},
+        allow_statement_type=False,
+        enable_thinking=False,
+        temperature=0.25,
+    )
+
+    worker.run()
+
+    assert seen["temperature"] == 0.25

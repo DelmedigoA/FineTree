@@ -8,7 +8,7 @@ from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QMessageBox
 
 from ..annotation_core import PageState
-from ..gemini_vlm import resolve_supported_gemini_model_name
+from ..gemini_vlm import format_issue_summary_brief, load_issue_summary, resolve_supported_gemini_model_name
 from ..provider_workers import GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
 from ..qwen_vlm import current_qwen_gt_model_choices
 from .bbox import (
@@ -183,6 +183,7 @@ class AIWorkflowController:
             action=dialog.current_action(),
             model=dialog.current_model(),
             prompt_text=dialog.current_prompt().strip(),
+            temperature=dialog.current_temperature(),
             enable_thinking=dialog.thinking_check.isChecked(),
             thinking_level=dialog.thinking_level_combo.currentText().strip().lower() or "minimal",
             use_few_shot=dialog.few_shot_check.isChecked(),
@@ -263,6 +264,7 @@ class AIWorkflowController:
 
         few_shot_examples = self._load_gemini_few_shot_examples(request)
         self.host._gemini_model_name = model_name
+        self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         existing_meta = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index)).meta or {}
@@ -283,6 +285,7 @@ class AIWorkflowController:
             prompt_text=prompt_text,
             model_name=model_name,
             gemini_api_key=gemini_api_key,
+            temperature=request.temperature,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
             few_shot_examples=few_shot_examples,
@@ -312,6 +315,7 @@ class AIWorkflowController:
 
         few_shot_examples = self._load_gemini_few_shot_examples(request)
         self.host._gemini_model_name = model_name
+        self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         initial_seen_facts = {
@@ -329,6 +333,7 @@ class AIWorkflowController:
             prompt_text=prompt_text,
             model_name=model_name,
             gemini_api_key=gemini_api_key,
+            temperature=request.temperature,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
             few_shot_examples=few_shot_examples,
@@ -360,6 +365,7 @@ class AIWorkflowController:
             return
 
         self.host._gemini_model_name = model_name
+        self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         self.host._gemini_fill_target_page = context.page_name
@@ -379,6 +385,7 @@ class AIWorkflowController:
             api_key=gemini_api_key,
             allowed_fact_fields=set(request.selected_fact_fields),
             allow_statement_type=request.include_statement_type,
+            temperature=request.temperature,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
         )
@@ -519,6 +526,7 @@ class AIWorkflowController:
         prompt_text: str,
         model_name: str,
         gemini_api_key: Optional[str],
+        temperature: Optional[float],
         enable_thinking: bool,
         thinking_level: str,
         few_shot_examples: Optional[list[dict[str, Any]]],
@@ -549,8 +557,10 @@ class AIWorkflowController:
             image_path=page_path,
             prompt=prompt_text,
             model=model_name,
+            mode=mode,
             api_key=gemini_api_key,
             few_shot_examples=few_shot_examples,
+            temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
             max_facts=self.host._gemini_stream_max_facts,
@@ -637,6 +647,7 @@ class AIWorkflowController:
                 supports_thinking=True,
                 supports_thinking_level=True,
                 supports_few_shot=True,
+                supports_temperature=True,
                 supports_max_facts=True,
                 replaces_existing_page_facts=True,
             )
@@ -645,12 +656,14 @@ class AIWorkflowController:
                 supports_thinking=True,
                 supports_thinking_level=True,
                 supports_few_shot=True,
+                supports_temperature=True,
                 supports_max_facts=True,
                 requires_existing_facts=True,
             )
         return AIActionCapabilities(
             supports_thinking=True,
             supports_thinking_level=True,
+            supports_temperature=True,
             supports_fix_fields=True,
             supports_statement_type_toggle=True,
             requires_selected_facts=True,
@@ -667,6 +680,7 @@ class AIWorkflowController:
                 provider=provider,
                 action=AIActionKind.GROUND_TRUTH,
                 model=self.host._qwen_model_name,
+                temperature=None,
                 enable_thinking=bool(self.host._qwen_enable_thinking),
                 thinking_level="high" if self.host._qwen_enable_thinking else "minimal",
                 use_few_shot=True,
@@ -688,6 +702,7 @@ class AIWorkflowController:
             provider=provider,
             action=action,
             model=self.host._gemini_model_name,
+            temperature=getattr(self.host, "_gemini_temperature", None),
             enable_thinking=bool(self.host._gemini_enable_thinking),
             thinking_level=self.host._gemini_thinking_level,
             use_few_shot=use_few_shot,
@@ -735,7 +750,11 @@ class AIWorkflowController:
         if context is None:
             return ""
         if provider == AIProvider.QWEN or action == AIActionKind.GROUND_TRUTH:
-            return build_extraction_prompt(extraction_prompt_template(), context.page_path)
+            return build_extraction_prompt(
+                extraction_prompt_template(),
+                context.page_path,
+                image_dimensions=context.image_dimensions,
+            )
         if action == AIActionKind.AUTO_COMPLETE:
             request_payload = build_gemini_autocomplete_request_payload(
                 page_name=context.page_name,
@@ -772,6 +791,43 @@ class AIWorkflowController:
             self.dialog.set_status(text, fact_count=self._status_fact_count)
             self.dialog.set_running(running)
             self.dialog.set_run_enabled(not running)
+
+    def _current_gemini_stream_issue_summary(self) -> tuple[dict[str, Any] | None, Path | None]:
+        worker = self.host._gemini_stream_worker
+        if worker is None:
+            return None, None
+        summary = getattr(worker, "issue_summary", None)
+        session_dir = getattr(worker, "session_dir", None)
+        if summary is None and isinstance(session_dir, Path):
+            summary = load_issue_summary(session_dir)
+        return summary, session_dir if isinstance(session_dir, Path) else None
+
+    def _apply_finalized_gemini_stream_payloads(self, extraction_facts: list[Any]) -> None:
+        mode = self.host._gemini_stream_mode
+        finalized_payloads: list[dict[str, Any]] = []
+        for fact in extraction_facts:
+            if hasattr(fact, "model_dump"):
+                fact_payload = fact.model_dump(mode="json")
+            elif isinstance(fact, dict):
+                fact_payload = fact
+            else:
+                continue
+            if mode == "autocomplete":
+                normalized_payload = self.host._normalized_autocomplete_generated_fact_payload(fact_payload)
+            else:
+                normalized_payload = self.host._normalized_stream_fact_payload(fact_payload)
+            if normalized_payload is None:
+                continue
+            finalized_payloads.append(normalized_payload)
+        self.host._gemini_stream_seen_facts = {
+            self.host._fact_uniqueness_key(payload)
+            for payload in finalized_payloads
+        }
+        self.host._gemini_stream_fact_count = len(finalized_payloads)
+        if mode == "autocomplete":
+            self.host._gemini_autocomplete_buffered_facts = finalized_payloads
+        elif mode == "gt":
+            self.host._gemini_gt_buffered_facts = finalized_payloads
 
     def _on_gemini_stream_chunk(self, text: str) -> None:
         _ = text
@@ -826,21 +882,24 @@ class AIWorkflowController:
             extraction_facts = getattr(extraction_obj, "facts", [])
             if not isinstance(extraction_facts, list):
                 extraction_facts = []
-            for fact in extraction_facts:
-                if hasattr(fact, "model_dump"):
-                    fact_payload = fact.model_dump(mode="json")
-                elif isinstance(fact, dict):
-                    fact_payload = fact
-                else:
-                    continue
-                added = self.host._apply_stream_fact(
-                    page_name,
-                    fact_payload,
-                    seen_facts=self.host._gemini_stream_seen_facts,
-                    stream_source="gemini",
-                )
-                if added:
-                    self.host._gemini_stream_fact_count += 1
+            if self.host._gemini_stream_mode in {"autocomplete", "gt"}:
+                self._apply_finalized_gemini_stream_payloads(extraction_facts)
+            else:
+                for fact in extraction_facts:
+                    if hasattr(fact, "model_dump"):
+                        fact_payload = fact.model_dump(mode="json")
+                    elif isinstance(fact, dict):
+                        fact_payload = fact
+                    else:
+                        continue
+                    added = self.host._apply_stream_fact(
+                        page_name,
+                        fact_payload,
+                        seen_facts=self.host._gemini_stream_seen_facts,
+                        stream_source="gemini",
+                    )
+                    if added:
+                        self.host._gemini_stream_fact_count += 1
             if self.host._gemini_stream_mode == "autocomplete":
                 merged, error_message = self.host._merge_autocomplete_buffered_facts(page_name)
                 if not merged:
@@ -855,6 +914,19 @@ class AIWorkflowController:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
             return
 
+        summary, session_dir = self._current_gemini_stream_issue_summary()
+        if summary is not None and int(summary.get("issue_count") or 0) > 0:
+            QMessageBox.warning(
+                self.host,
+                "AI warning",
+                format_issue_summary_brief(
+                    summary,
+                    session_dir=session_dir,
+                    streamed_live_facts_remain=False,
+                    no_changes_applied=False,
+                ),
+            )
+
         if self.host._gemini_stream_mode != "autocomplete" or self.host._gemini_stream_fact_count > 0:
             self.host._record_history_snapshot()
         completion_status, completion_message = self._gemini_stream_completion_text()
@@ -864,7 +936,15 @@ class AIWorkflowController:
     def _on_gemini_stream_failed(self, message: str) -> None:
         title = "AI failed"
         self._set_status(f"Error: {message}", fact_count=self.host._gemini_stream_fact_count, running=False)
-        if self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_applied:
+        summary, session_dir = self._current_gemini_stream_issue_summary()
+        if summary is not None:
+            detail = format_issue_summary_brief(
+                summary,
+                session_dir=session_dir,
+                streamed_live_facts_remain=(self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_applied),
+                no_changes_applied=self.host._gemini_stream_mode in {"autocomplete", "gt"} and not self.host._gemini_gt_live_applied,
+            )
+        elif self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_applied:
             detail = f"{message}\n\nSome streamed facts were rendered live and remain on the page."
         elif self.host._gemini_stream_mode in {"autocomplete", "gt"}:
             detail = f"{message}\n\nNo changes were applied."

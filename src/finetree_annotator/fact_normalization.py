@@ -471,6 +471,9 @@ def normalize_fact_payload(
         period_start = inferred_start
     if not has_period_end and period_end is None and inferred_end is not None:
         period_end = inferred_end
+    if period_type == "duration" and ((period_start is None) != (period_end is None)):
+        period_start = None
+        period_end = None
     duration_type = _normalize_duration_type(payload.get("duration_type"))
     recurring_period = _normalize_recurring_period(payload.get("recurring_period"))
     value_context = _normalize_value_context(payload.get("value_context"))

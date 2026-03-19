@@ -125,6 +125,9 @@ def build_dataset(
     selected_page_meta_keys: tuple[str, ...] | None = None,
     selected_fact_keys: tuple[str, ...] | None = None,
     page_only_wrapper: bool = False,
+    excluded_value_contexts: tuple[str, ...] | None = None,
+    include_empty_pages_override: bool | None = None,
+    dedupe_exact_facts: bool = False,
 ) -> None:
     root = Path(".").resolve()
     cfg = load_finetune_config(config_path)
@@ -154,6 +157,9 @@ def build_dataset(
         selected_page_meta_keys=selected_page_meta_keys,
         selected_fact_keys=selected_fact_keys,
         page_only_wrapper=page_only_wrapper,
+        excluded_value_contexts=excluded_value_contexts,
+        include_empty_pages_override=include_empty_pages_override,
+        dedupe_exact_facts=dedupe_exact_facts,
     )
 
 

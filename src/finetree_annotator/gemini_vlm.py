@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import ast
 import base64
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import lru_cache
+import hashlib
 import inspect
 import io
 import json
@@ -20,7 +22,8 @@ import tomllib
 from pathlib import Path
 from typing import Any, Iterator, Optional
 
-from PIL import Image
+from PIL import Image, ImageDraw
+from pydantic import ValidationError
 
 try:  # pragma: no cover - import presence depends on runtime environment
     from google import genai
@@ -29,10 +32,11 @@ except Exception:  # pragma: no cover
     genai = None
     types = None
 
+from .bbox_utils import bbox_to_list, denormalize_bbox_from_1000
 from .fact_normalization import normalize_fact_payload, normalize_note_num
 from .fact_ordering import normalize_document_meta
 from .schema_registry import SchemaRegistry
-from .schemas import Fact, PageExtraction, PageMeta, split_legacy_page_type
+from .schemas import ExtractedFact, Fact, PageExtraction, PageMeta, split_legacy_page_type
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -42,6 +46,11 @@ DEFAULT_VERTEX_ENDPOINT_ID = "2095335460762025984"
 DEFAULT_VERTEX_REGION = "us-central1"
 DEFAULT_VERTEX_TUNED_MAX_PIXELS = 1_200_000
 DEFAULT_QWEN_VISION_FACTOR = 28
+DEFAULT_GEMINI_GT_RESPONSE_MIME_TYPE = "application/json"
+DEFAULT_GEMINI_GT_MEDIA_RESOLUTION = "high"
+_BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
+_BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
+_BBOX_MODE_SWITCH_MARGIN = 0.08
 _VERTEX_OAUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
 SUPPORTED_GEMINI_MODELS: tuple[str, ...] = (
     "gemini-3-flash-preview",
@@ -99,6 +108,12 @@ _GEMINI_3_THINKING_LEVEL_ATTRS = {
 _BBOX_ARRAY_LITERAL_RE = re.compile(
     r'("bbox"\s*:\s*\[\s*)(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)(\s*\])'
 )
+_PROMPT_IMAGE_SIZE_RE = re.compile(
+    r"Current image size:\s*(\d+)\s*x\s*(\d+)\s*pixels",
+    flags=re.IGNORECASE,
+)
+_FACT_TRACE_FILE_NAME = "fact_trace.jsonl"
+_ISSUE_SUMMARY_FILE_NAME = "issue_summary.json"
 
 
 def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
@@ -237,8 +252,10 @@ def _generation_config(
     *,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
+    temperature: Optional[float] = None,
     response_mime_type: Optional[str] = None,
     response_json_schema: Any = None,
+    media_resolution: Optional[str] = None,
 ) -> Any:
     _require_google_genai()
 
@@ -246,13 +263,57 @@ def _generation_config(
     thinking_config = _thinking_config_for_model(model_name, enable_thinking, thinking_level=thinking_level)
     if thinking_config is not None:
         config_kwargs["thinking_config"] = thinking_config
+    normalized_temperature = _normalize_temperature(temperature)
+    if normalized_temperature is not None:
+        config_kwargs["temperature"] = normalized_temperature
     if response_mime_type is not None:
         config_kwargs["response_mime_type"] = response_mime_type
     if response_json_schema is not None:
         config_kwargs["response_json_schema"] = response_json_schema
+    resolved_media_resolution = _resolve_media_resolution(media_resolution)
+    if resolved_media_resolution is not None:
+        config_kwargs["media_resolution"] = resolved_media_resolution
     if not config_kwargs:
         return None
     return types.GenerateContentConfig(**config_kwargs)
+
+
+def _normalize_temperature(temperature: Optional[float]) -> float | None:
+    if temperature is None:
+        return None
+    try:
+        normalized = float(temperature)
+    except Exception as exc:
+        raise ValueError("temperature must be numeric.") from exc
+    if math.isnan(normalized) or math.isinf(normalized):
+        raise ValueError("temperature must be finite.")
+    if normalized < 0.0 or normalized > 2.0:
+        raise ValueError("temperature must be between 0.0 and 2.0.")
+    return normalized
+
+
+def _resolve_media_resolution(media_resolution: Optional[str]) -> Any:
+    if media_resolution is None:
+        return None
+    if not isinstance(media_resolution, str):
+        return media_resolution
+    normalized = str(media_resolution).strip().lower().replace("-", "_").replace(" ", "_")
+    if not normalized:
+        return None
+    if types is None:
+        return normalized
+    enum_cls = getattr(types, "MediaResolution", None)
+    if enum_cls is None:
+        return normalized
+    attr_map = {
+        "low": "MEDIA_RESOLUTION_LOW",
+        "medium": "MEDIA_RESOLUTION_MEDIUM",
+        "high": "MEDIA_RESOLUTION_HIGH",
+    }
+    attr_name = attr_map.get(normalized)
+    if not attr_name:
+        return normalized
+    return getattr(enum_cls, attr_name, normalized)
 
 def _create_genai_client_for_model(model_name: str, api_key: Optional[str]) -> Any:
     _require_google_genai()
@@ -683,6 +744,53 @@ def _restore_resized_bbox_chunk_text(raw_text: str, prepared: _PreparedGeminiIma
     return _BBOX_ARRAY_LITERAL_RE.sub(_replace, raw_text)
 
 
+def _split_streaming_bbox_restore_buffer(raw_text: str) -> tuple[str, str]:
+    if not raw_text:
+        return "", ""
+
+    last_bbox_idx = raw_text.rfind('"bbox"')
+    if last_bbox_idx < 0:
+        return raw_text, ""
+
+    colon_idx = raw_text.find(":", last_bbox_idx + len('"bbox"'))
+    if colon_idx < 0:
+        return raw_text[:last_bbox_idx], raw_text[last_bbox_idx:]
+
+    array_start = raw_text.find("[", colon_idx + 1)
+    if array_start < 0:
+        return raw_text[:last_bbox_idx], raw_text[last_bbox_idx:]
+
+    array_end = raw_text.find("]", array_start + 1)
+    if array_end < 0:
+        return raw_text[:last_bbox_idx], raw_text[last_bbox_idx:]
+
+    return raw_text, ""
+
+
+@dataclass
+class _StreamingResizedBBoxRestorer:
+    prepared: _PreparedGeminiImage
+    buffer: str = ""
+
+    def push(self, raw_text: str) -> str:
+        if not self.prepared.resized or not raw_text:
+            return raw_text
+
+        self.buffer += raw_text
+        ready_text, pending_text = _split_streaming_bbox_restore_buffer(self.buffer)
+        self.buffer = pending_text
+        if not ready_text:
+            return ""
+        return _restore_resized_bbox_chunk_text(ready_text, self.prepared)
+
+    def flush(self) -> str:
+        if not self.buffer:
+            return ""
+        remaining = self.buffer
+        self.buffer = ""
+        return _restore_resized_bbox_chunk_text(remaining, self.prepared)
+
+
 def _restore_resized_bbox_text(raw_text: str, prepared: _PreparedGeminiImage) -> str:
     if not prepared.resized or not str(raw_text).strip():
         return raw_text
@@ -762,12 +870,115 @@ def _copy_gemini_log_image(source_path: Path, target_path: Path) -> None:
     shutil.copy2(source_path, target_path)
 
 
+def _image_dimensions_for_path(image_path: Path) -> tuple[int, int] | None:
+    try:
+        with Image.open(image_path) as image:
+            image.load()
+            width, height = image.size
+    except Exception:
+        return None
+    return int(width), int(height)
+
+
+def _image_summary_for_log(image_path: Path, *, logged_image_path: str, mime_type: Optional[str]) -> dict[str, Any]:
+    dims = _image_dimensions_for_path(image_path)
+    summary: dict[str, Any] = {
+        "source_image_path": str(image_path),
+        "logged_image_path": logged_image_path,
+        "mime_type": _infer_mime_type(image_path, mime_type),
+        "file_size_bytes": image_path.stat().st_size if image_path.exists() else None,
+        "image_width": None,
+        "image_height": None,
+    }
+    if dims is not None:
+        summary["image_width"], summary["image_height"] = dims
+    return summary
+
+
+def _prompt_image_size_summary(prompt: str, *, image_summary: dict[str, Any]) -> dict[str, Any]:
+    match = _PROMPT_IMAGE_SIZE_RE.search(str(prompt or ""))
+    summary: dict[str, Any] = {
+        "mentions_current_image_size": match is not None,
+        "prompt_image_size_text": None,
+        "prompt_image_width": None,
+        "prompt_image_height": None,
+        "matches_source_image": None,
+    }
+    if match is None:
+        return summary
+    width = int(match.group(1))
+    height = int(match.group(2))
+    source_width = image_summary.get("image_width")
+    source_height = image_summary.get("image_height")
+    summary.update(
+        {
+            "prompt_image_size_text": f"{width} x {height} pixels",
+            "prompt_image_width": width,
+            "prompt_image_height": height,
+            "matches_source_image": (
+                source_width == width and source_height == height
+                if source_width is not None and source_height is not None
+                else None
+            ),
+        }
+    )
+    return summary
+
+
+def _schema_signature_from_payload(payload: Any) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        return {
+            "top_level_keys": [],
+            "page_meta_keys": [],
+            "fact_keys": [],
+            "page_count": 0,
+            "fact_count": 0,
+        }
+    top_level_keys = list(payload.keys())
+    pages = payload.get("pages")
+    if not isinstance(pages, list):
+        return {
+            "top_level_keys": top_level_keys,
+            "page_meta_keys": [],
+            "fact_keys": [],
+            "page_count": 0,
+            "fact_count": 0,
+        }
+    first_page = pages[0] if pages and isinstance(pages[0], dict) else {}
+    facts = first_page.get("facts") if isinstance(first_page, dict) else []
+    first_fact = facts[0] if isinstance(facts, list) and facts and isinstance(facts[0], dict) else {}
+    return {
+        "top_level_keys": top_level_keys,
+        "page_meta_keys": list((first_page.get("meta") or {}).keys()) if isinstance(first_page.get("meta"), dict) else [],
+        "fact_keys": list(first_fact.keys()) if isinstance(first_fact, dict) else [],
+        "page_count": len(pages),
+        "fact_count": len(facts) if isinstance(facts, list) else 0,
+    }
+
+
+def _schema_signature_from_text(text: str) -> dict[str, Any]:
+    try:
+        payload = json.loads(str(text or ""))
+    except Exception as exc:
+        return {
+            "top_level_keys": [],
+            "page_meta_keys": [],
+            "fact_keys": [],
+            "page_count": 0,
+            "fact_count": 0,
+            "parse_error": str(exc),
+        }
+    return _schema_signature_from_payload(payload)
+
+
 def _create_gemini_log_session(
     *,
     operation: str,
     model: str,
     image_path: Path,
     prompt: str,
+    mime_type: Optional[str],
+    temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
@@ -782,6 +993,7 @@ def _create_gemini_log_session(
 
     target_copy_name = f"input_target{image_path.suffix.lower() or '.bin'}"
     _copy_gemini_log_image(image_path, session_dir / target_copy_name)
+    image_summary = _image_summary_for_log(image_path, logged_image_path=target_copy_name, mime_type=mime_type)
 
     logged_examples: list[dict[str, Any]] = []
     for index, raw_example in enumerate(few_shot_examples or [], start=1):
@@ -793,23 +1005,32 @@ def _create_gemini_log_session(
             continue
         copy_name = f"few_shot_{index:02d}_{example_image_path.name}"
         _copy_gemini_log_image(example_image_path, session_dir / copy_name)
+        expected_json = str(raw_example.get("expected_json") or "")
         logged_examples.append(
             {
                 "source_image_path": str(example_image_path),
                 "logged_image_path": copy_name,
-                "expected_json": str(raw_example.get("expected_json") or ""),
+                "expected_json": expected_json,
+                "image_summary": _image_summary_for_log(example_image_path, logged_image_path=copy_name, mime_type=None),
+                "schema_signature": _schema_signature_from_text(expected_json),
             }
         )
 
     request_payload = {
+        "session_id": session_dir.name,
         "operation": operation,
         "model": model,
         "prompt": prompt,
         "image_path": str(image_path),
         "logged_image_path": target_copy_name,
+        "image_summary": image_summary,
+        "prompt_image_size": _prompt_image_size_summary(prompt, image_summary=image_summary),
+        "temperature": _normalize_temperature(temperature),
         "enable_thinking": enable_thinking,
         "thinking_level": thinking_level,
         "few_shot_examples": logged_examples,
+        "issue_summary_path": _ISSUE_SUMMARY_FILE_NAME,
+        "fact_trace_path": _FACT_TRACE_FILE_NAME,
     }
     if extra_request:
         request_payload.update(extra_request)
@@ -825,6 +1046,8 @@ def _create_gemini_log_session(
             "operation": operation,
             "model": model,
             "image_path": str(image_path),
+            "image_summary": image_summary,
+            "temperature": _normalize_temperature(temperature),
             "enable_thinking": enable_thinking,
             "thinking_level": thinking_level,
         },
@@ -856,6 +1079,216 @@ def _update_gemini_log_request(session_dir: Path, updates: dict[str, Any]) -> No
     )
 
 
+def _append_jsonl_record(path: Path, payload: dict[str, Any]) -> None:
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(_serialize_gemini_log_value(payload), ensure_ascii=False, default=str))
+        fh.write("\n")
+
+
+def _fact_trace_path(session_dir: Path) -> Path:
+    return session_dir / _FACT_TRACE_FILE_NAME
+
+
+def _issue_summary_path(session_dir: Path) -> Path:
+    return session_dir / _ISSUE_SUMMARY_FILE_NAME
+
+
+def _append_fact_trace(session_dir: Optional[Path], payload: dict[str, Any]) -> None:
+    if session_dir is None:
+        return
+    _append_jsonl_record(_fact_trace_path(session_dir), payload)
+
+
+def _read_issue_summary(session_dir: Path) -> dict[str, Any] | None:
+    path = _issue_summary_path(session_dir)
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _write_issue_summary(session_dir: Optional[Path], payload: dict[str, Any]) -> None:
+    if session_dir is None:
+        return
+    serialized = _serialize_gemini_log_value(payload)
+    _issue_summary_path(session_dir).write_text(
+        json.dumps(serialized, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+    _update_gemini_log_request(
+        session_dir,
+        {
+            "issue_summary_path": _ISSUE_SUMMARY_FILE_NAME,
+            "fact_trace_path": _FACT_TRACE_FILE_NAME,
+            "issue_summary": serialized,
+        },
+    )
+
+
+def _stable_signature_from_payload(payload: Any) -> str | None:
+    if payload in ("", None, [], {}, ()):
+        return None
+    try:
+        encoded = json.dumps(_serialize_gemini_log_value(payload), ensure_ascii=False, sort_keys=True).encode("utf-8")
+    except Exception:
+        encoded = str(payload).encode("utf-8", errors="ignore")
+    return hashlib.sha1(encoded).hexdigest()[:16]
+
+
+def _read_gemini_log_events(session_dir: Path) -> list[dict[str, Any]]:
+    events_path = session_dir / "events.jsonl"
+    if not events_path.is_file():
+        return []
+    records: list[dict[str, Any]] = []
+    for line in events_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            parsed = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(parsed, dict):
+            records.append(parsed)
+    return records
+
+
+def _usage_tokens_from_events(events: list[dict[str, Any]]) -> dict[str, int | None]:
+    prompt_token_count: int | None = None
+    candidate_token_count: int | None = None
+    cached_content_token_count: int | None = None
+    for event in events:
+        raw_payload = event.get("raw")
+        if not isinstance(raw_payload, dict):
+            continue
+        usage = raw_payload.get("usage_metadata")
+        if not isinstance(usage, dict):
+            continue
+        prompt_value = usage.get("prompt_token_count")
+        candidate_value = usage.get("candidates_token_count")
+        cached_value = usage.get("cached_content_token_count")
+        if isinstance(prompt_value, int):
+            prompt_token_count = max(prompt_token_count or 0, prompt_value)
+        if isinstance(candidate_value, int):
+            candidate_token_count = max(candidate_token_count or 0, candidate_value)
+        if isinstance(cached_value, int):
+            cached_content_token_count = max(cached_content_token_count or 0, cached_value)
+    return {
+        "prompt_token_count": prompt_token_count,
+        "candidate_token_count": candidate_token_count,
+        "cached_content_token_count": cached_content_token_count,
+    }
+
+
+def _raw_page_components_from_payload(payload: Any) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    if not isinstance(payload, dict):
+        return {}, []
+    page_in = payload
+    pages = payload.get("pages")
+    if isinstance(pages, list) and pages:
+        first_page = next((page for page in pages if isinstance(page, dict)), None)
+        if first_page is not None:
+            page_in = first_page
+    meta = page_in.get("meta")
+    facts = page_in.get("facts")
+    return (meta if isinstance(meta, dict) else {}), [fact for fact in facts or [] if isinstance(fact, dict)] if isinstance(facts, list) else []
+
+
+def _normalize_issue_code(message: str, *, fallback: str) -> str:
+    text = str(message or "").strip().lower()
+    if "note_num requires note_flag=true" in text:
+        return "note_num_without_note_flag"
+    if "note_ref requires note_flag=true" in text:
+        return "note_ref_without_note_flag"
+    if "duration facts require both period_start and period_end" in text:
+        return "duration_missing_period_boundary"
+    if "page meta" in text:
+        return "meta_validation_error"
+    return fallback
+
+
+def _normalize_validation_errors(exc: Exception, *, fallback_code: str) -> list[dict[str, Any]]:
+    if isinstance(exc, ValidationError):
+        out: list[dict[str, Any]] = []
+        for error in exc.errors():
+            raw_loc = error.get("loc") or ()
+            if isinstance(raw_loc, tuple):
+                loc = [str(part) for part in raw_loc]
+            elif isinstance(raw_loc, list):
+                loc = [str(part) for part in raw_loc]
+            else:
+                loc = [str(raw_loc)] if raw_loc not in ("", None) else []
+            message = str(error.get("msg") or str(exc))
+            out.append(
+                {
+                    "code": _normalize_issue_code(message, fallback=fallback_code),
+                    "field_path": ".".join(loc),
+                    "message": message,
+                }
+            )
+        if out:
+            return out
+    message = str(exc)
+    return [
+        {
+            "code": _normalize_issue_code(message, fallback=fallback_code),
+            "field_path": "",
+            "message": message,
+        }
+    ]
+
+
+def _group_issue_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for entry in entries:
+        code = str(entry.get("code") or "unknown_issue").strip() or "unknown_issue"
+        group = grouped.setdefault(
+            code,
+            {
+                "code": code,
+                "count": 0,
+                "sample_fact_indexes": [],
+                "sample_messages": [],
+            },
+        )
+        group["count"] += 1
+        fact_index = entry.get("fact_index")
+        if isinstance(fact_index, int) and fact_index not in group["sample_fact_indexes"] and len(group["sample_fact_indexes"]) < 3:
+            group["sample_fact_indexes"].append(fact_index)
+        message = str(entry.get("message") or "").strip()
+        if message and message not in group["sample_messages"] and len(group["sample_messages"]) < 2:
+            group["sample_messages"].append(message)
+    return sorted(grouped.values(), key=lambda item: (-int(item["count"]), str(item["code"])))
+
+
+def _issue_category_for_code(code: str) -> str:
+    if code.startswith("bbox_"):
+        return "bbox"
+    if code in {"stream_parse_error", "final_parse_error"}:
+        return "parse"
+    if code == "meta_validation_error":
+        return "meta"
+    return "schema"
+
+
+def _build_issue_signature(summary_payload: dict[str, Any]) -> str:
+    grouped = summary_payload.get("validation_failure_groups") or []
+    normalized_groups = [
+        {"code": str(group.get("code") or ""), "count": int(group.get("count") or 0)}
+        for group in grouped
+        if str(group.get("code") or "").strip()
+    ]
+    signature_source = {
+        "model": summary_payload.get("model"),
+        "operation": summary_payload.get("operation"),
+        "statement_type": summary_payload.get("statement_type"),
+        "bbox_resolution_policy": summary_payload.get("bbox_resolution_policy"),
+        "groups": normalized_groups,
+    }
+    return _stable_signature_from_payload(signature_source) or "no_issues"
+
+
 def _model_family_label(model_name: Optional[str]) -> str:
     return "gemini_3" if _is_gemini_3_model(model_name) else "gemini_legacy"
 
@@ -876,6 +1309,7 @@ def _thinking_request_summary(
     *,
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
+    temperature: Optional[float],
     config: Any,
 ) -> dict[str, Any]:
     config_payload = _serialize_gemini_log_value(config)
@@ -906,6 +1340,12 @@ def _thinking_request_summary(
         "model_family": _model_family_label(model_name),
         "requested_enable_thinking": enable_thinking,
         "requested_thinking_level": thinking_level,
+        "requested_temperature": _normalize_temperature(temperature),
+        "effective_temperature": (
+            config_payload.get("kwargs", {}).get("temperature")
+            if isinstance(config_payload, dict) and isinstance(config_payload.get("kwargs"), dict)
+            else (config_payload.get("temperature") if isinstance(config_payload, dict) else None)
+        ),
         "normalized_requested_thinking_level": normalized_level,
         "requested_mode": (
             "default"
@@ -983,6 +1423,446 @@ def _write_gemini_log_output(session_dir: Path, *, text: str, raw: Any) -> None:
         json.dumps(_serialize_gemini_log_value(raw), ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
+
+
+def _median(values: list[float]) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(float(value) for value in values)
+    middle = len(ordered) // 2
+    if len(ordered) % 2:
+        return ordered[middle]
+    return (ordered[middle - 1] + ordered[middle]) / 2.0
+
+
+def _bbox_ink_ratio(image: Image.Image, bbox: dict[str, float]) -> float:
+    x1 = max(0, int(round(bbox["x"])))
+    y1 = max(0, int(round(bbox["y"])))
+    x2 = min(image.width, int(round(bbox["x"] + bbox["w"])))
+    y2 = min(image.height, int(round(bbox["y"] + bbox["h"])))
+    if x2 <= x1 or y2 <= y1:
+        return 0.0
+    histogram = image.crop((x1, y1, x2, y2)).convert("L").histogram()
+    dark_pixels = sum(histogram[:235])
+    total_pixels = sum(histogram) or 1
+    return float(dark_pixels) / float(total_pixels)
+
+
+def _write_bbox_overlay(image_path: Path, boxes: list[dict[str, float]], overlay_path: Path) -> None:
+    with Image.open(image_path) as image:
+        image.load()
+        canvas = image.convert("RGB")
+    draw = ImageDraw.Draw(canvas)
+    for bbox in boxes[:40]:
+        x1 = bbox["x"]
+        y1 = bbox["y"]
+        x2 = bbox["x"] + bbox["w"]
+        y2 = bbox["y"] + bbox["h"]
+        draw.rectangle((x1, y1, x2, y2), outline=(255, 0, 0), width=3)
+    canvas.save(overlay_path)
+
+
+def _bbox_issue_codes_for_box(
+    bbox: dict[str, float],
+    *,
+    image_width: int,
+    image_height: int,
+) -> list[str]:
+    issues: list[str] = []
+    x = float(bbox["x"])
+    y = float(bbox["y"])
+    w = float(bbox["w"])
+    h = float(bbox["h"])
+    if w <= 0.0 or h <= 0.0:
+        issues.append("bbox_zero_area")
+    if x < 0.0 or y < 0.0 or (x + w) > float(image_width) + 1e-6 or (y + h) > float(image_height) + 1e-6:
+        issues.append("bbox_out_of_bounds")
+    if x <= (0.15 * float(image_width)) and y <= (0.15 * float(image_height)):
+        issues.append("bbox_near_origin_cluster")
+    image_area = max(float(image_width * image_height), 1.0)
+    if (w * h) >= (0.20 * image_area):
+        issues.append("bbox_huge_area")
+    if h > 0.0 and (w / max(h, 1e-6)) >= 10.0 and h <= 20.0:
+        issues.append("bbox_repeated_strip_pattern")
+    return issues
+
+
+def analyze_bbox_payloads(
+    image_path: Path,
+    fact_payloads: list[dict[str, Any]],
+    *,
+    overlay_path: Optional[Path] = None,
+    bbox_mode_scores: Optional[dict[str, float]] = None,
+    preferred_bbox_mode: Optional[str] = None,
+) -> dict[str, Any]:
+    diagnostics: dict[str, Any] = {
+        "image_path": str(image_path),
+        "image_width": None,
+        "image_height": None,
+        "bbox_count": 0,
+        "x_range": None,
+        "y_range": None,
+        "w_range": None,
+        "h_range": None,
+        "out_of_bounds_count": 0,
+        "near_origin_count": 0,
+        "repeated_strip_count": 0,
+        "repeated_strip_ratio": None,
+        "median_aspect_ratio": None,
+        "max_aspect_ratio": None,
+        "median_ink_ratio": None,
+        "min_ink_ratio": None,
+        "elongated_strip_count": 0,
+        "zero_area_count": 0,
+        "huge_area_count": 0,
+        "suspicious": False,
+        "suspicion_reasons": [],
+        "bbox_mode_scores": bbox_mode_scores,
+        "preferred_bbox_mode": preferred_bbox_mode,
+        "overlay_path": None,
+    }
+    dims = _image_dimensions_for_path(image_path)
+    if dims is None:
+        return diagnostics
+    diagnostics["image_width"], diagnostics["image_height"] = dims
+    boxes: list[dict[str, float]] = []
+    for fact in fact_payloads:
+        if not isinstance(fact, dict):
+            continue
+        bbox = _normalize_bbox(fact.get("bbox") or fact.get("box") or fact.get("bounding_box"))
+        if bbox is not None:
+            boxes.append(bbox)
+    if not boxes:
+        return diagnostics
+
+    xs = [box["x"] for box in boxes]
+    ys = [box["y"] for box in boxes]
+    ws = [box["w"] for box in boxes]
+    hs = [box["h"] for box in boxes]
+    aspect_ratios = [box["w"] / max(box["h"], 1e-6) for box in boxes]
+    repeated_keys = [(round(box["x"], 1), round(box["w"], 1), round(box["h"], 1)) for box in boxes]
+    repeated_strip_count = len(repeated_keys) - len(set(repeated_keys))
+    issue_codes_by_box = [
+        _bbox_issue_codes_for_box(box, image_width=int(dims[0]), image_height=int(dims[1]))
+        for box in boxes
+    ]
+    out_of_bounds_count = sum(1 for codes in issue_codes_by_box if "bbox_out_of_bounds" in codes)
+    near_origin_count = sum(1 for codes in issue_codes_by_box if "bbox_near_origin_cluster" in codes)
+    zero_area_count = sum(1 for codes in issue_codes_by_box if "bbox_zero_area" in codes)
+    huge_area_count = sum(1 for codes in issue_codes_by_box if "bbox_huge_area" in codes)
+    with Image.open(image_path) as image:
+        image.load()
+        grayscale = image.convert("L")
+        ink_ratios = [_bbox_ink_ratio(grayscale, box) for box in boxes[: min(len(boxes), 24)]]
+    elongated_strip_count = sum(
+        1 for box in boxes if box["h"] <= 20.0 and (box["w"] / max(box["h"], 1e-6)) >= 10.0
+    )
+    suspicion_reasons: list[str] = []
+    if out_of_bounds_count > 0:
+        suspicion_reasons.append("bbox_out_of_bounds")
+    if near_origin_count >= max(6, len(boxes) // 2):
+        suspicion_reasons.append("bbox_near_origin_cluster")
+    if repeated_strip_count >= max(6, len(boxes) // 2):
+        suspicion_reasons.append("bbox_repeated_strip_pattern")
+    if boxes and elongated_strip_count >= max(6, len(boxes) // 2) and (_median(ink_ratios) or 0.0) < 0.14:
+        if "bbox_repeated_strip_pattern" not in suspicion_reasons:
+            suspicion_reasons.append("bbox_repeated_strip_pattern")
+
+    diagnostics.update(
+        {
+            "bbox_count": len(boxes),
+            "x_range": [round(min(xs), 2), round(max(xs), 2)],
+            "y_range": [round(min(ys), 2), round(max(ys), 2)],
+            "w_range": [round(min(ws), 2), round(max(ws), 2)],
+            "h_range": [round(min(hs), 2), round(max(hs), 2)],
+            "out_of_bounds_count": out_of_bounds_count,
+            "near_origin_count": near_origin_count,
+            "repeated_strip_count": repeated_strip_count,
+            "repeated_strip_ratio": round(repeated_strip_count / float(len(boxes)), 4) if boxes else None,
+            "median_aspect_ratio": round(_median(aspect_ratios) or 0.0, 4),
+            "max_aspect_ratio": round(max(aspect_ratios), 4),
+            "median_ink_ratio": round(_median(ink_ratios) or 0.0, 4),
+            "min_ink_ratio": round(min(ink_ratios), 4) if ink_ratios else None,
+            "elongated_strip_count": elongated_strip_count,
+            "zero_area_count": zero_area_count,
+            "huge_area_count": huge_area_count,
+            "suspicious": bool(suspicion_reasons),
+            "suspicion_reasons": suspicion_reasons,
+        }
+    )
+    if overlay_path is not None and suspicion_reasons:
+        _write_bbox_overlay(image_path, boxes, overlay_path)
+        diagnostics["overlay_path"] = str(overlay_path)
+    return diagnostics
+
+
+def analyze_bbox_response(
+    image_path: Path,
+    raw_text: str,
+    *,
+    overlay_path: Optional[Path] = None,
+) -> dict[str, Any]:
+    diagnostics: dict[str, Any] = {
+        "image_path": str(image_path),
+        "image_width": None,
+        "image_height": None,
+        "bbox_count": 0,
+        "x_range": None,
+        "y_range": None,
+        "w_range": None,
+        "h_range": None,
+        "out_of_bounds_count": 0,
+        "repeated_strip_count": 0,
+        "repeated_strip_ratio": None,
+        "median_aspect_ratio": None,
+        "max_aspect_ratio": None,
+        "median_ink_ratio": None,
+        "min_ink_ratio": None,
+        "elongated_strip_count": 0,
+        "suspicious": False,
+        "suspicion_reasons": [],
+        "bbox_mode_scores": None,
+        "preferred_bbox_mode": None,
+        "overlay_path": None,
+    }
+    dims = _image_dimensions_for_path(image_path)
+    if dims is None or not str(raw_text or "").strip():
+        return diagnostics
+    diagnostics["image_width"], diagnostics["image_height"] = dims
+    try:
+        payload = _parse_llm_json(raw_text)
+    except Exception as exc:
+        diagnostics["parse_error"] = str(exc)
+        return diagnostics
+    if not isinstance(payload, dict):
+        return diagnostics
+
+    fact_payloads = [fact for fact in _iter_fact_dicts(payload) if isinstance(fact, dict)]
+    if not fact_payloads:
+        return diagnostics
+
+    bbox_mode_scores: dict[str, float] | None = None
+    preferred_bbox_mode: str | None = None
+    try:
+        from .ai.bbox import (
+            BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+            BBOX_MODE_PIXEL_AS_IS,
+            BBOX_MODE_SWITCH_MARGIN,
+            payloads_for_bbox_mode,
+            score_bbox_candidate_payloads,
+        )
+
+        pixel_payloads = payloads_for_bbox_mode(
+            fact_payloads,
+            mode=BBOX_MODE_PIXEL_AS_IS,
+            image_width=float(dims[0]),
+            image_height=float(dims[1]),
+        )
+        normalized_payloads = payloads_for_bbox_mode(
+            fact_payloads,
+            mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+            image_width=float(dims[0]),
+            image_height=float(dims[1]),
+        )
+        pixel_mode_score = score_bbox_candidate_payloads(image_path, pixel_payloads)
+        normalized_mode_score = score_bbox_candidate_payloads(image_path, normalized_payloads)
+        preferred_bbox_mode = (
+            BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+            if normalized_mode_score > (pixel_mode_score + BBOX_MODE_SWITCH_MARGIN)
+            else BBOX_MODE_PIXEL_AS_IS
+        )
+        bbox_mode_scores = {
+            BBOX_MODE_PIXEL_AS_IS: round(pixel_mode_score, 4),
+            BBOX_MODE_NORMALIZED_1000_TO_PIXEL: round(normalized_mode_score, 4),
+        }
+    except Exception:
+        pass
+    analyzed = analyze_bbox_payloads(
+        image_path,
+        fact_payloads,
+        overlay_path=overlay_path,
+        bbox_mode_scores=bbox_mode_scores,
+        preferred_bbox_mode=preferred_bbox_mode,
+    )
+    diagnostics.update(analyzed)
+    if diagnostics.get("suspicion_reasons") == ["bbox_repeated_strip_pattern"]:
+        diagnostics["suspicion_reasons"] = ["wide_low_ink_strips"]
+    return diagnostics
+
+
+def analyze_logged_bbox_session(session_dir: Path) -> dict[str, Any]:
+    request_payload = _read_gemini_log_request(session_dir)
+    logged_image_path = str(request_payload.get("logged_image_path") or "").strip()
+    if not logged_image_path:
+        diagnostics = {
+            "bbox_count": 0,
+            "suspicious": False,
+            "suspicion_reasons": [],
+            "overlay_path": None,
+            "error": "logged_image_path_missing",
+        }
+        _append_gemini_log_event(session_dir, "bbox_diagnostics", diagnostics)
+        _update_gemini_log_request(session_dir, {"bbox_diagnostics": diagnostics, "bbox_diagnostics_raw": diagnostics})
+        return diagnostics
+    image_path = session_dir / logged_image_path
+    raw_text = (session_dir / "output.txt").read_text(encoding="utf-8") if (session_dir / "output.txt").is_file() else ""
+    overlay_path = session_dir / "bbox_overlay.png"
+    diagnostics = analyze_bbox_response(
+        image_path,
+        raw_text,
+        overlay_path=overlay_path,
+    )
+    if diagnostics.get("overlay_path") is not None:
+        diagnostics["overlay_path"] = overlay_path.name
+    elif overlay_path.exists():
+        overlay_path.unlink()
+    _append_gemini_log_event(session_dir, "bbox_diagnostics", diagnostics)
+    _update_gemini_log_request(session_dir, {"bbox_diagnostics": diagnostics, "bbox_diagnostics_raw": diagnostics})
+    return diagnostics
+
+
+def _finalize_bbox_diagnostics(session_dir: Path) -> None:
+    try:
+        analyze_logged_bbox_session(session_dir)
+    except Exception as exc:
+        _append_gemini_log_event(session_dir, "bbox_diagnostics_error", {"error": str(exc)})
+
+
+def _payloads_for_bbox_mode_local(
+    fact_payloads: list[dict[str, Any]],
+    *,
+    mode: str,
+    image_width: float,
+    image_height: float,
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for fact_payload in fact_payloads:
+        if not isinstance(fact_payload, dict):
+            continue
+        bbox = _normalize_bbox(fact_payload.get("bbox"))
+        if bbox is None:
+            continue
+        resolved_bbox = (
+            denormalize_bbox_from_1000(bbox, image_width, image_height)
+            if mode == _BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+            else bbox
+        )
+        out.append({**deepcopy(fact_payload), "bbox": bbox_to_list(resolved_bbox)})
+    return out
+
+
+def _score_bbox_payloads_with_pil(image_path: Path, fact_payloads: list[dict[str, Any]]) -> float:
+    if not fact_payloads or not image_path.is_file():
+        return 0.0
+
+    with Image.open(image_path) as image:
+        image.load()
+        grayscale = image.convert("L")
+        image_width = grayscale.width
+        image_height = grayscale.height
+
+        total_score = 0.0
+        total_coverage = 0.0
+        scored_count = 0
+        for payload in fact_payloads:
+            bbox = _normalize_bbox(payload.get("bbox"))
+            if bbox is None:
+                continue
+            area = max(float(bbox["w"]) * float(bbox["h"]), 1.0)
+            left = float(bbox["x"])
+            top = float(bbox["y"])
+            right = left + float(bbox["w"])
+            bottom = top + float(bbox["h"])
+
+            sample_left = max(0, min(image_width - 1, int(math.floor(left))))
+            sample_top = max(0, min(image_height - 1, int(math.floor(top))))
+            sample_right = max(0, min(image_width, int(math.ceil(right))))
+            sample_bottom = max(0, min(image_height, int(math.ceil(bottom))))
+            if sample_right <= sample_left or sample_bottom <= sample_top:
+                continue
+
+            clipped_area = float((sample_right - sample_left) * (sample_bottom - sample_top))
+            coverage = max(0.0, min(1.0, clipped_area / area))
+            ink_ratio = _bbox_ink_ratio(grayscale, bbox)
+            ink_score = max(0.0, min(1.0, ink_ratio / 0.12))
+            score = (0.75 * ink_score) + (0.25 * coverage)
+            if coverage < 0.35:
+                score *= coverage / 0.35
+            total_score += score
+            total_coverage += coverage
+            scored_count += 1
+
+    if scored_count <= 0:
+        return 0.0
+    avg_score = total_score / float(scored_count)
+    avg_coverage = total_coverage / float(scored_count)
+    return max(0.0, avg_score - ((1.0 - avg_coverage) * 0.35))
+
+
+def _resolve_page_extraction_bbox_mode(
+    normalized_payload: dict[str, Any],
+    *,
+    image_path: Optional[Path] = None,
+) -> tuple[dict[str, Any], str, dict[str, float], list[str], str]:
+    pages = normalized_payload.get("pages")
+    first_page = pages[0] if isinstance(pages, list) and pages and isinstance(pages[0], dict) else None
+    facts = first_page.get("facts") if isinstance(first_page, dict) and isinstance(first_page.get("facts"), list) else []
+    empty_scores = {
+        _BBOX_MODE_PIXEL_AS_IS: 0.0,
+        _BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+    }
+    if image_path is None or not image_path.is_file() or not facts:
+        return normalized_payload, _BBOX_MODE_PIXEL_AS_IS, empty_scores, [], "page_locked"
+
+    image_dimensions = _image_dimensions_for_path(image_path)
+    if image_dimensions is None:
+        return normalized_payload, _BBOX_MODE_PIXEL_AS_IS, empty_scores, [], "page_locked"
+
+    try:
+        from .ai.bbox import resolve_bbox_mode as resolve_bbox_mode_qt
+
+        resolved = resolve_bbox_mode_qt(
+            image_path=image_path,
+            image_dimensions=image_dimensions,
+            fact_payloads=facts,
+        )
+        out_payload = deepcopy(normalized_payload)
+        out_payload["pages"][0]["facts"] = resolved.payloads
+        return out_payload, resolved.mode, {
+            str(key): float(value)
+            for key, value in dict(resolved.scores).items()
+        }, list(resolved.fact_modes), str(resolved.policy)
+    except Exception:
+        image_width, image_height = image_dimensions
+        pixel_payloads = _payloads_for_bbox_mode_local(
+            facts,
+            mode=_BBOX_MODE_PIXEL_AS_IS,
+            image_width=float(image_width),
+            image_height=float(image_height),
+        )
+        normalized_payloads = _payloads_for_bbox_mode_local(
+            facts,
+            mode=_BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+            image_width=float(image_width),
+            image_height=float(image_height),
+        )
+        pixel_score = _score_bbox_payloads_with_pil(image_path, pixel_payloads)
+        normalized_score = _score_bbox_payloads_with_pil(image_path, normalized_payloads)
+        scores = {
+            _BBOX_MODE_PIXEL_AS_IS: float(pixel_score),
+            _BBOX_MODE_NORMALIZED_1000_TO_PIXEL: float(normalized_score),
+        }
+        if normalized_score > (pixel_score + _BBOX_MODE_SWITCH_MARGIN):
+            out_payload = deepcopy(normalized_payload)
+            out_payload["pages"][0]["facts"] = normalized_payloads
+            return out_payload, _BBOX_MODE_NORMALIZED_1000_TO_PIXEL, scores, [
+                _BBOX_MODE_NORMALIZED_1000_TO_PIXEL for _ in normalized_payloads
+            ], "page_locked"
+        out_payload = deepcopy(normalized_payload)
+        out_payload["pages"][0]["facts"] = pixel_payloads
+        return out_payload, _BBOX_MODE_PIXEL_AS_IS, scores, [
+            _BBOX_MODE_PIXEL_AS_IS for _ in pixel_payloads
+        ], "page_locked"
 
 
 def _build_generation_contents(
@@ -1115,9 +1995,10 @@ def _build_logged_vertex_generate_content_request(
     *,
     prompt: str,
     session_dir: Path,
+    generation_config: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     request_payload = _read_gemini_log_request(session_dir)
-    return {
+    payload = {
         "contents": [
             {
                 "role": "user",
@@ -1132,6 +2013,9 @@ def _build_logged_vertex_generate_content_request(
             }
         ],
     }
+    if generation_config:
+        payload["generationConfig"] = deepcopy(generation_config)
+    return payload
 
 
 def _iter_json_objects_from_stream(chunks: Iterator[str]) -> Iterator[dict[str, Any]]:
@@ -1232,6 +2116,7 @@ def _stream_content_from_vertex_endpoint(
     prompt: str,
     model: str,
     mime_type: Optional[str],
+    temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
     session_dir: Path,
@@ -1257,13 +2142,24 @@ def _stream_content_from_vertex_endpoint(
         prepared_image=prepared_image,
         prompt=effective_prompt,
     )
+    generation_config: dict[str, Any] = {}
+    normalized_temperature = _normalize_temperature(temperature)
+    if normalized_temperature is not None:
+        generation_config["temperature"] = normalized_temperature
     payload: dict[str, Any] = {"contents": contents}
-    logged_payload = _build_logged_vertex_generate_content_request(prompt=effective_prompt, session_dir=session_dir)
+    if generation_config:
+        payload["generationConfig"] = generation_config
+    logged_payload = _build_logged_vertex_generate_content_request(
+        prompt=effective_prompt,
+        session_dir=session_dir,
+        generation_config=generation_config or None,
+    )
     request_summary = _vertex_request_summary(
         endpoint,
         model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
     )
     _update_gemini_log_request(
         session_dir,
@@ -1306,6 +2202,7 @@ def _stream_content_from_vertex_endpoint(
     observed_thinking_signal_path: Optional[str] = None
     stream_status = "completed"
     stream_error: Optional[str] = None
+    bbox_restorer = _StreamingResizedBBoxRestorer(prepared_image) if prepared_image.resized else None
 
     try:
         with httpx.Client(timeout=120.0) as client:
@@ -1320,8 +2217,7 @@ def _stream_content_from_vertex_endpoint(
                 for index, response_payload in enumerate(stream_iter):
                     raw_chunks.append(response_payload)
                     text = _extract_vertex_generate_content_text(response_payload)
-                    if prepared_image.resized and text:
-                        text = _restore_resized_bbox_chunk_text(text, prepared_image)
+                    emitted_text = bbox_restorer.push(text) if bbox_restorer is not None and text else text
                     chunk_summary = _response_thinking_summary(response_payload)
                     if observed_thinking_signal_path is None and chunk_summary["observed_thinking_signal"]:
                         observed_thinking_signal_path = str(chunk_summary["observed_thinking_signal_path"])
@@ -1331,14 +2227,28 @@ def _stream_content_from_vertex_endpoint(
                         {
                             "index": index,
                             "backend": "vertex_stream_generate_content",
-                            "text": text,
+                            "text": emitted_text,
                             "raw": response_payload,
                             **chunk_summary,
                         },
                     )
-                    if text:
-                        collected_text.append(text)
-                        yield text
+                    if emitted_text:
+                        collected_text.append(emitted_text)
+                        yield emitted_text
+
+                if bbox_restorer is not None:
+                    flushed_text = bbox_restorer.flush()
+                    if flushed_text:
+                        _append_gemini_log_event(
+                            session_dir,
+                            "stream_resized_bbox_flush",
+                            {
+                                "backend": "vertex_stream_generate_content",
+                                "text": flushed_text,
+                            },
+                        )
+                        collected_text.append(flushed_text)
+                        yield flushed_text
     except GeneratorExit:
         stream_status = "aborted"
         _append_gemini_log_event(
@@ -1380,6 +2290,7 @@ def _stream_content_from_vertex_endpoint(
                 "chunks": raw_chunks,
             },
         )
+        _finalize_bbox_diagnostics(session_dir)
 
 
 def _vertex_request_summary(
@@ -1388,6 +2299,7 @@ def _vertex_request_summary(
     *,
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
+    temperature: Optional[float],
 ) -> dict[str, Any]:
     return {
         "backend": "vertex_generate_content",
@@ -1395,6 +2307,7 @@ def _vertex_request_summary(
         "resolved_model": model_name,
         "requested_enable_thinking": enable_thinking,
         "requested_thinking_level": thinking_level,
+        "requested_temperature": _normalize_temperature(temperature),
         "thinking_supported": True,
     }
 
@@ -1405,6 +2318,7 @@ def _generate_content_from_vertex_endpoint(
     prompt: str,
     model: str,
     mime_type: Optional[str],
+    temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
     session_dir: Path,
@@ -1430,13 +2344,24 @@ def _generate_content_from_vertex_endpoint(
         prepared_image=prepared_image,
         prompt=effective_prompt,
     )
+    generation_config: dict[str, Any] = {}
+    normalized_temperature = _normalize_temperature(temperature)
+    if normalized_temperature is not None:
+        generation_config["temperature"] = normalized_temperature
     payload: dict[str, Any] = {"contents": contents}
-    logged_payload = _build_logged_vertex_generate_content_request(prompt=effective_prompt, session_dir=session_dir)
+    if generation_config:
+        payload["generationConfig"] = generation_config
+    logged_payload = _build_logged_vertex_generate_content_request(
+        prompt=effective_prompt,
+        session_dir=session_dir,
+        generation_config=generation_config or None,
+    )
     request_summary = _vertex_request_summary(
         endpoint,
         model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
     )
     _update_gemini_log_request(
         session_dir,
@@ -1507,6 +2432,7 @@ def _generate_content_from_vertex_endpoint(
     )
     _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response_payload)
+    _finalize_bbox_diagnostics(session_dir)
     return text
 
 
@@ -1901,8 +2827,442 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
     }
 
 
+def _first_page_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    pages = payload.get("pages")
+    if isinstance(pages, list):
+        for page in pages:
+            if isinstance(page, dict):
+                return page
+    return {}
+
+
+def _build_page_extraction_issue_summary(
+    *,
+    session_dir: Optional[Path],
+    meta_payload: dict[str, Any],
+    bbox_mode: str,
+    bbox_scores: dict[str, float],
+    bbox_fact_modes: list[str],
+    bbox_resolution_policy: str,
+    bbox_diagnostics_raw: dict[str, Any] | None,
+    bbox_diagnostics_resolved: dict[str, Any] | None,
+    streamed_fact_count: int,
+    final_raw_fact_count: int,
+    kept_fact_count: int,
+    dropped_fact_count: int,
+    issue_entries: list[dict[str, Any]],
+    status: str,
+) -> dict[str, Any]:
+    request_payload = _read_gemini_log_request(session_dir) if session_dir is not None else {}
+    image_summary = request_payload.get("image_summary") if isinstance(request_payload.get("image_summary"), dict) else {}
+    prompt_image_size = request_payload.get("prompt_image_size") if isinstance(request_payload.get("prompt_image_size"), dict) else {}
+    few_shot_examples = request_payload.get("few_shot_examples") if isinstance(request_payload.get("few_shot_examples"), list) else []
+    events = _read_gemini_log_events(session_dir) if session_dir is not None else []
+    token_usage = _usage_tokens_from_events(events)
+    validation_failure_groups = _group_issue_entries(issue_entries)
+    issue_category_counts: dict[str, int] = {}
+    for entry in issue_entries:
+        category = _issue_category_for_code(str(entry.get("code") or ""))
+        issue_category_counts[category] = issue_category_counts.get(category, 0) + 1
+    summary = {
+        "session_id": session_dir.name if session_dir is not None else None,
+        "status": status,
+        "model": request_payload.get("model"),
+        "operation": request_payload.get("operation"),
+        "temperature": request_payload.get("temperature"),
+        "page_image_path": request_payload.get("image_path"),
+        "logged_image_path": request_payload.get("logged_image_path"),
+        "original_image_width": image_summary.get("image_width"),
+        "original_image_height": image_summary.get("image_height"),
+        "prompt_image_size": prompt_image_size,
+        "prompt_signature": _stable_signature_from_payload(request_payload.get("prompt")),
+        "few_shot_count": len(few_shot_examples),
+        "few_shot_example_paths": [
+            example.get("source_image_path") or example.get("logged_image_path")
+            for example in few_shot_examples
+            if isinstance(example, dict)
+        ],
+        "few_shot_signature": _stable_signature_from_payload(
+            [
+                {
+                    "source_image_path": example.get("source_image_path"),
+                    "logged_image_path": example.get("logged_image_path"),
+                    "schema_signature": example.get("schema_signature"),
+                }
+                for example in few_shot_examples
+                if isinstance(example, dict)
+            ]
+        ),
+        "few_shot_schema_signature": [
+            example.get("schema_signature")
+            for example in few_shot_examples
+            if isinstance(example, dict)
+        ],
+        **token_usage,
+        "statement_type": meta_payload.get("statement_type"),
+        "page_type": meta_payload.get("page_type"),
+        "bbox_mode_scores": {str(key): round(float(value), 4) for key, value in bbox_scores.items()},
+        "preferred_bbox_mode": bbox_mode,
+        "bbox_fact_modes": list(bbox_fact_modes),
+        "bbox_resolution_policy": bbox_resolution_policy,
+        "bbox_diagnostics_raw": bbox_diagnostics_raw,
+        "bbox_diagnostics_resolved": bbox_diagnostics_resolved,
+        "bbox_issue_counts": {
+            "out_of_bounds": int((bbox_diagnostics_resolved or {}).get("out_of_bounds_count") or 0),
+            "near_origin_cluster": int((bbox_diagnostics_resolved or {}).get("near_origin_count") or 0),
+            "repeated_strip_pattern": int((bbox_diagnostics_resolved or {}).get("repeated_strip_count") or 0),
+            "zero_area": int((bbox_diagnostics_resolved or {}).get("zero_area_count") or 0),
+            "huge_area": int((bbox_diagnostics_resolved or {}).get("huge_area_count") or 0),
+        },
+        "streamed_fact_count": int(streamed_fact_count),
+        "final_raw_fact_count": int(final_raw_fact_count),
+        "kept_fact_count": int(kept_fact_count),
+        "dropped_fact_count": int(dropped_fact_count),
+        "validation_failure_groups": validation_failure_groups,
+        "issue_category_counts": issue_category_counts,
+        "issue_count": len(issue_entries),
+    }
+    summary["issue_signature"] = _build_issue_signature(summary)
+    return summary
+
+
+def format_issue_summary_brief(
+    summary: dict[str, Any] | None,
+    *,
+    session_dir: Optional[Path] = None,
+    streamed_live_facts_remain: bool = False,
+    no_changes_applied: bool = False,
+) -> str:
+    if not summary:
+        if no_changes_applied:
+            return "No changes were applied."
+        return "No issue summary available."
+    kept = int(summary.get("kept_fact_count") or 0)
+    dropped = int(summary.get("dropped_fact_count") or 0)
+    groups = summary.get("validation_failure_groups") if isinstance(summary.get("validation_failure_groups"), list) else []
+    lines = [f"Kept {kept} valid fact(s), dropped {dropped} invalid fact(s)."]
+    if groups:
+        top_groups = ", ".join(
+            f"{group.get('code')} ({int(group.get('count') or 0)})"
+            for group in groups[:3]
+            if isinstance(group, dict)
+        )
+        if top_groups:
+            lines.append(f"Top issues: {top_groups}.")
+    if streamed_live_facts_remain:
+        lines.append("Some streamed facts were rendered live and remain on the page.")
+    elif no_changes_applied:
+        lines.append("No changes were applied.")
+    if session_dir is not None:
+        lines.append(f"Session log: {session_dir}")
+    return "\n".join(lines)
+
+
+def load_issue_summary(session_dir: Path) -> dict[str, Any] | None:
+    return _read_issue_summary(session_dir)
+
+
+def _append_bbox_issue_entries(
+    issue_entries: list[dict[str, Any]],
+    *,
+    diagnostics: dict[str, Any] | None,
+) -> None:
+    if not isinstance(diagnostics, dict):
+        return
+    if int(diagnostics.get("out_of_bounds_count") or 0) > 0:
+        issue_entries.append(
+            {
+                "code": "bbox_out_of_bounds",
+                "message": "Resolved bbox output contains out-of-bounds boxes.",
+            }
+        )
+    if "bbox_near_origin_cluster" in set(diagnostics.get("suspicion_reasons") or []):
+        issue_entries.append(
+            {
+                "code": "bbox_near_origin_cluster",
+                "message": "Resolved bbox output is clustered near the top-left origin.",
+            }
+        )
+    if (
+        "bbox_repeated_strip_pattern" in set(diagnostics.get("suspicion_reasons") or [])
+        or float(diagnostics.get("repeated_strip_ratio") or 0.0) >= 0.5
+    ):
+        issue_entries.append(
+            {
+                "code": "bbox_repeated_strip_pattern",
+                "message": "Resolved bbox output repeats strip-like geometry.",
+            }
+        )
+
+
+def _finalize_page_extraction_payload(
+    payload: Any,
+    *,
+    raw_text: str,
+    image_path: Optional[Path] = None,
+    session_dir: Optional[Path] = None,
+    streamed_fact_count: int = 0,
+) -> tuple[PageExtraction, dict[str, Any]]:
+    raw_meta, raw_facts = _raw_page_components_from_payload(payload)
+    normalized = _normalize_page_extraction_payload(payload)
+    resolved_payload, bbox_mode, bbox_scores, bbox_fact_modes, bbox_resolution_policy = _resolve_page_extraction_bbox_mode(
+        normalized,
+        image_path=image_path,
+    )
+    first_page = _first_page_from_payload(resolved_payload)
+    resolved_facts = [fact for fact in first_page.get("facts") or [] if isinstance(fact, dict)]
+    meta_payload = first_page.get("meta") if isinstance(first_page.get("meta"), dict) else {}
+
+    bbox_diagnostics_raw = None
+    bbox_diagnostics_resolved = None
+    if session_dir is not None:
+        request_payload = _read_gemini_log_request(session_dir)
+        bbox_diagnostics_raw = request_payload.get("bbox_diagnostics_raw") or request_payload.get("bbox_diagnostics")
+    if image_path is not None and image_path.is_file():
+        bbox_diagnostics_resolved = analyze_bbox_payloads(
+            image_path,
+            resolved_facts,
+            overlay_path=(session_dir / "bbox_overlay_resolved.png") if session_dir is not None else None,
+            bbox_mode_scores={str(key): round(float(value), 4) for key, value in bbox_scores.items()},
+            preferred_bbox_mode=bbox_mode,
+        )
+        if session_dir is not None:
+            raw_suspicious = bool((bbox_diagnostics_raw or {}).get("suspicious"))
+            resolved_suspicious = bool((bbox_diagnostics_resolved or {}).get("suspicious"))
+            if raw_suspicious and not resolved_suspicious and resolved_facts:
+                overlay_path = session_dir / "bbox_overlay_resolved.png"
+                resolved_boxes = [
+                    bbox
+                    for bbox in (_normalize_bbox(fact.get("bbox")) for fact in resolved_facts)
+                    if bbox is not None
+                ]
+                if resolved_boxes:
+                    _write_bbox_overlay(image_path, resolved_boxes, overlay_path)
+                    bbox_diagnostics_resolved["overlay_path"] = "bbox_overlay_resolved.png"
+            if bbox_diagnostics_resolved.get("overlay_path") is not None:
+                bbox_diagnostics_resolved["overlay_path"] = "bbox_overlay_resolved.png"
+            overlay_path = session_dir / "bbox_overlay_resolved.png"
+            if bbox_diagnostics_resolved.get("overlay_path") is None and overlay_path.exists():
+                overlay_path.unlink()
+
+    issue_entries: list[dict[str, Any]] = []
+    _append_bbox_issue_entries(issue_entries, diagnostics=bbox_diagnostics_resolved)
+
+    try:
+        validated_meta = PageMeta.model_validate(meta_payload).model_dump(mode="json")
+    except Exception as exc:
+        issue_entries.extend(_normalize_validation_errors(exc, fallback_code="meta_validation_error"))
+        summary = _build_page_extraction_issue_summary(
+            session_dir=session_dir,
+            meta_payload=meta_payload,
+            bbox_mode=bbox_mode,
+            bbox_scores=bbox_scores,
+            bbox_fact_modes=bbox_fact_modes,
+            bbox_resolution_policy=bbox_resolution_policy,
+            bbox_diagnostics_raw=bbox_diagnostics_raw,
+            bbox_diagnostics_resolved=bbox_diagnostics_resolved,
+            streamed_fact_count=streamed_fact_count,
+            final_raw_fact_count=len(raw_facts),
+            kept_fact_count=0,
+            dropped_fact_count=len(raw_facts),
+            issue_entries=issue_entries,
+            status="error",
+        )
+        _write_issue_summary(session_dir, summary)
+        raise ValueError(format_issue_summary_brief(summary, session_dir=session_dir))
+
+    valid_facts: list[dict[str, Any]] = []
+    kept_count = 0
+    dropped_count = 0
+    max_trace_count = max(len(raw_facts), len(resolved_facts))
+    for fact_index in range(max_trace_count):
+        raw_fact = raw_facts[fact_index] if fact_index < len(raw_facts) else None
+        resolved_fact = resolved_facts[fact_index] if fact_index < len(resolved_facts) else None
+        fact_seq = fact_index + 1
+        if raw_fact is not None:
+            _append_fact_trace(
+                session_dir,
+                {
+                    "fact_seq": fact_seq,
+                    "source_stage": "final_parse",
+                    "raw_payload": raw_fact,
+                    "raw_bbox": _normalize_bbox(raw_fact.get("bbox") or raw_fact.get("box") or raw_fact.get("bounding_box")),
+                    "validation_result": None,
+                },
+            )
+        if resolved_fact is None:
+            dropped_count += 1
+            issue_entries.append(
+                {
+                    "code": "final_parse_error",
+                    "message": "Fact was dropped during normalization before bbox resolution.",
+                    "fact_index": fact_index,
+                }
+            )
+            _append_fact_trace(
+                session_dir,
+                {
+                    "fact_seq": fact_seq,
+                    "source_stage": "final_dropped",
+                    "raw_payload": raw_fact,
+                    "normalized_payload": None,
+                    "validation_result": "invalid",
+                    "normalized_errors": [
+                        {
+                            "code": "final_parse_error",
+                            "field_path": "",
+                            "message": "Fact was dropped during normalization before bbox resolution.",
+                        }
+                    ],
+                },
+            )
+            continue
+
+        resolved_bbox = _normalize_bbox(resolved_fact.get("bbox"))
+        _append_fact_trace(
+            session_dir,
+            {
+                "fact_seq": fact_seq,
+                "source_stage": "final_resolved",
+                "raw_payload": raw_fact,
+                "normalized_payload": resolved_fact,
+                "raw_bbox": _normalize_bbox(raw_fact.get("bbox") or raw_fact.get("box") or raw_fact.get("bounding_box")) if isinstance(raw_fact, dict) else None,
+                "resolved_bbox": resolved_bbox,
+                "bbox_mode": bbox_fact_modes[fact_index] if fact_index < len(bbox_fact_modes) else bbox_mode,
+                "bbox_issue_codes": (
+                    _bbox_issue_codes_for_box(
+                        resolved_bbox,
+                        image_width=int(bbox_diagnostics_resolved.get("image_width") or 0),
+                        image_height=int(bbox_diagnostics_resolved.get("image_height") or 0),
+                    )
+                    if resolved_bbox is not None
+                    and isinstance(bbox_diagnostics_resolved, dict)
+                    and int(bbox_diagnostics_resolved.get("image_width") or 0) > 0
+                    and int(bbox_diagnostics_resolved.get("image_height") or 0) > 0
+                    else []
+                ),
+                "validation_result": None,
+            },
+        )
+        try:
+            validated_fact = ExtractedFact.model_validate(resolved_fact).model_dump(mode="json")
+        except Exception as exc:
+            errors = _normalize_validation_errors(exc, fallback_code="schema_validation_error")
+            for error in errors:
+                error["fact_index"] = fact_index
+            issue_entries.extend(errors)
+            dropped_count += 1
+            _append_fact_trace(
+                session_dir,
+                {
+                    "fact_seq": fact_seq,
+                    "source_stage": "final_dropped",
+                    "raw_payload": raw_fact,
+                    "normalized_payload": resolved_fact,
+                    "resolved_bbox": resolved_bbox,
+                    "bbox_mode": bbox_fact_modes[fact_index] if fact_index < len(bbox_fact_modes) else bbox_mode,
+                    "validation_result": "invalid",
+                    "normalized_errors": errors,
+                },
+            )
+            continue
+
+        kept_count += 1
+        valid_facts.append(validated_fact)
+        _append_fact_trace(
+            session_dir,
+            {
+                "fact_seq": fact_seq,
+                "source_stage": "final_validated",
+                "raw_payload": raw_fact,
+                "normalized_payload": resolved_fact,
+                "resolved_bbox": resolved_bbox,
+                "bbox_mode": bbox_fact_modes[fact_index] if fact_index < len(bbox_fact_modes) else bbox_mode,
+                "validation_result": "valid",
+                "validated_payload": validated_fact,
+            },
+        )
+
+    final_payload = {
+        "images_dir": resolved_payload.get("images_dir"),
+        "metadata": resolved_payload.get("metadata"),
+        "pages": [
+            {
+                "image": first_page.get("image"),
+                "meta": validated_meta,
+                "facts": valid_facts,
+            }
+        ],
+    }
+    status = "warning" if issue_entries else "success"
+    summary = _build_page_extraction_issue_summary(
+        session_dir=session_dir,
+        meta_payload=validated_meta,
+        bbox_mode=bbox_mode,
+        bbox_scores=bbox_scores,
+        bbox_fact_modes=bbox_fact_modes,
+        bbox_resolution_policy=bbox_resolution_policy,
+        bbox_diagnostics_raw=bbox_diagnostics_raw,
+        bbox_diagnostics_resolved=bbox_diagnostics_resolved,
+        streamed_fact_count=streamed_fact_count,
+        final_raw_fact_count=len(raw_facts),
+        kept_fact_count=kept_count,
+        dropped_fact_count=dropped_count,
+        issue_entries=issue_entries,
+        status=status,
+    )
+    _write_issue_summary(session_dir, summary)
+    if raw_facts and not valid_facts:
+        summary = _build_page_extraction_issue_summary(
+            session_dir=session_dir,
+            meta_payload=validated_meta,
+            bbox_mode=bbox_mode,
+            bbox_scores=bbox_scores,
+            bbox_fact_modes=bbox_fact_modes,
+            bbox_resolution_policy=bbox_resolution_policy,
+            bbox_diagnostics_raw=bbox_diagnostics_raw,
+            bbox_diagnostics_resolved=bbox_diagnostics_resolved,
+            streamed_fact_count=streamed_fact_count,
+            final_raw_fact_count=len(raw_facts),
+            kept_fact_count=kept_count,
+            dropped_fact_count=dropped_count,
+            issue_entries=issue_entries,
+            status="error",
+        )
+        _write_issue_summary(session_dir, summary)
+        raise ValueError(format_issue_summary_brief(summary, session_dir=session_dir))
+    try:
+        extraction = PageExtraction.model_validate(final_payload)
+    except Exception as exc:
+        page_level_entries = _normalize_validation_errors(exc, fallback_code="meta_validation_error")
+        for entry in page_level_entries:
+            entry["fact_index"] = None
+        issue_entries.extend(page_level_entries)
+        summary = _build_page_extraction_issue_summary(
+            session_dir=session_dir,
+            meta_payload=validated_meta,
+            bbox_mode=bbox_mode,
+            bbox_scores=bbox_scores,
+            bbox_fact_modes=bbox_fact_modes,
+            bbox_resolution_policy=bbox_resolution_policy,
+            bbox_diagnostics_raw=bbox_diagnostics_raw,
+            bbox_diagnostics_resolved=bbox_diagnostics_resolved,
+            streamed_fact_count=streamed_fact_count,
+            final_raw_fact_count=len(raw_facts),
+            kept_fact_count=kept_count,
+            dropped_fact_count=dropped_count,
+            issue_entries=issue_entries,
+            status="error",
+        )
+        _write_issue_summary(session_dir, summary)
+        raise ValueError(format_issue_summary_brief(summary, session_dir=session_dir))
+    return extraction, summary
+
+
 class StreamingPageExtractionParser:
-    def __init__(self) -> None:
+    def __init__(self, *, image_path: Optional[Path] = None, session_dir: Optional[Path] = None) -> None:
+        self.image_path = image_path
+        self.session_dir = session_dir
         self.buffer = ""
         self._meta_emitted = False
         self._facts_array_start: Optional[int] = None
@@ -1910,6 +3270,8 @@ class StreamingPageExtractionParser:
         self._facts_done = False
         self._latest_meta: Optional[dict[str, Any]] = None
         self._all_facts: list[dict[str, Any]] = []
+        self._fact_seq = 0
+        self.last_issue_summary: dict[str, Any] | None = None
 
     def feed(self, text_chunk: str) -> tuple[Optional[dict[str, Any]], list[dict[str, Any]]]:
         if text_chunk:
@@ -1984,8 +3346,23 @@ class StreamingPageExtractionParser:
             obj = _extract_balanced_block_from_index(self.buffer, pos, "{", "}")
             if not obj:
                 break
+            self._fact_seq += 1
+            fact_seq = self._fact_seq
             try:
                 parsed_fact = _parse_llm_json(obj)
+                _append_fact_trace(
+                    self.session_dir,
+                    {
+                        "fact_seq": fact_seq,
+                        "source_stage": "stream_partial",
+                        "raw_snippet": obj,
+                        "raw_payload": parsed_fact,
+                        "raw_bbox": _normalize_bbox(parsed_fact.get("bbox") or parsed_fact.get("box") or parsed_fact.get("bounding_box"))
+                        if isinstance(parsed_fact, dict)
+                        else None,
+                        "validation_result": None,
+                    },
+                )
                 normalized = _normalize_page_extraction_payload(
                     {"meta": self._latest_meta or {}, "facts": [parsed_fact]}
                 )
@@ -1993,8 +3370,49 @@ class StreamingPageExtractionParser:
                 if page_facts:
                     out.append(page_facts[0])
                     self._all_facts.append(page_facts[0])
-            except Exception:
-                pass
+                    _append_fact_trace(
+                        self.session_dir,
+                        {
+                            "fact_seq": fact_seq,
+                            "source_stage": "stream_normalized",
+                            "raw_payload": parsed_fact,
+                            "normalized_payload": page_facts[0],
+                            "raw_bbox": _normalize_bbox(parsed_fact.get("bbox") or parsed_fact.get("box") or parsed_fact.get("bounding_box"))
+                            if isinstance(parsed_fact, dict)
+                            else None,
+                            "resolved_bbox": _normalize_bbox(page_facts[0].get("bbox")),
+                            "validation_result": None,
+                        },
+                    )
+                else:
+                    _append_fact_trace(
+                        self.session_dir,
+                        {
+                            "fact_seq": fact_seq,
+                            "source_stage": "final_dropped",
+                            "raw_payload": parsed_fact,
+                            "normalized_payload": None,
+                            "validation_result": "invalid",
+                            "normalized_errors": [
+                                {
+                                    "code": "stream_parse_error",
+                                    "field_path": "",
+                                    "message": "Fact was dropped during streaming normalization.",
+                                }
+                            ],
+                        },
+                    )
+            except Exception as exc:
+                _append_fact_trace(
+                    self.session_dir,
+                    {
+                        "fact_seq": fact_seq,
+                        "source_stage": "stream_partial",
+                        "raw_snippet": obj,
+                        "validation_result": "invalid",
+                        "normalized_errors": _normalize_validation_errors(exc, fallback_code="stream_parse_error"),
+                    },
+                )
             pos += len(obj)
 
         self._facts_scan_pos = pos
@@ -2002,9 +3420,14 @@ class StreamingPageExtractionParser:
 
     def finalize(self) -> PageExtraction:
         try:
-            parsed = _parse_llm_json(self.buffer)
-            normalized = _normalize_page_extraction_payload(parsed)
-            return PageExtraction.model_validate(normalized)
+            extraction = parse_page_extraction_text(
+                self.buffer,
+                image_path=self.image_path,
+                session_dir=self.session_dir,
+                streamed_fact_count=len(self._all_facts),
+            )
+            self.last_issue_summary = _read_issue_summary(self.session_dir) if self.session_dir is not None else None
+            return extraction
         except Exception:
             if not self._latest_meta and not self._all_facts:
                 raise
@@ -2019,8 +3442,15 @@ class StreamingPageExtractionParser:
                 },
                 "facts": self._all_facts,
             }
-            normalized = _normalize_page_extraction_payload(fallback_payload)
-            return PageExtraction.model_validate(normalized)
+            extraction, summary = _finalize_page_extraction_payload(
+                fallback_payload,
+                raw_text=self.buffer,
+                image_path=self.image_path,
+                session_dir=self.session_dir,
+                streamed_fact_count=len(self._all_facts),
+            )
+            self.last_issue_summary = summary
+            return extraction
 
 
 def generate_content_from_image(
@@ -2030,28 +3460,36 @@ def generate_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
+    response_mime_type: Optional[str] = None,
+    media_resolution: Optional[str] = None,
+    session_dir: Optional[Path] = None,
 ) -> str:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
 
     resolved_model = resolve_supported_gemini_model_name(model)
-    session_dir = _create_gemini_log_session(
-        operation="generate_content",
-        model=resolved_model,
-        image_path=image_path,
-        prompt=prompt,
-        enable_thinking=enable_thinking,
-        thinking_level=thinking_level,
-        few_shot_examples=few_shot_examples,
-    )
+    if session_dir is None:
+        session_dir = _create_gemini_log_session(
+            operation="generate_content",
+            model=resolved_model,
+            image_path=image_path,
+            prompt=prompt,
+            mime_type=mime_type,
+            temperature=temperature,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            few_shot_examples=few_shot_examples,
+        )
     if is_vertex_gemini_model_requested(resolved_model):
         return _generate_content_from_vertex_endpoint(
             image_path=image_path,
             prompt=prompt,
             model=resolved_model,
             mime_type=mime_type,
+            temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
             session_dir=session_dir,
@@ -2077,13 +3515,21 @@ def generate_content_from_image(
         "model": resolved_model,
         "contents": contents,
     }
-    config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+    config = _generation_config(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        temperature=temperature,
+        response_mime_type=response_mime_type,
+        media_resolution=media_resolution,
+    )
     if config is not None:
         request_kwargs["config"] = config
     request_summary = _thinking_request_summary(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
         config=config,
     )
     _update_gemini_log_request(
@@ -2111,6 +3557,7 @@ def generate_content_from_image(
     )
     _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
+    _finalize_bbox_diagnostics(session_dir)
     return text
 
 
@@ -2121,27 +3568,35 @@ def stream_content_from_image(
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
+    temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
+    response_mime_type: Optional[str] = None,
+    media_resolution: Optional[str] = None,
+    session_dir: Optional[Path] = None,
 ) -> Iterator[str]:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
     resolved_model = resolve_supported_gemini_model_name(model)
-    session_dir = _create_gemini_log_session(
-        operation="stream_content",
-        model=resolved_model,
-        image_path=image_path,
-        prompt=prompt,
-        enable_thinking=enable_thinking,
-        thinking_level=thinking_level,
-        few_shot_examples=few_shot_examples,
-    )
+    if session_dir is None:
+        session_dir = _create_gemini_log_session(
+            operation="stream_content",
+            model=resolved_model,
+            image_path=image_path,
+            prompt=prompt,
+            mime_type=mime_type,
+            temperature=temperature,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            few_shot_examples=few_shot_examples,
+        )
     if is_vertex_gemini_model_requested(resolved_model):
         yield from _stream_content_from_vertex_endpoint(
             image_path=image_path,
             prompt=prompt,
             model=resolved_model,
             mime_type=mime_type,
+            temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
             session_dir=session_dir,
@@ -2174,13 +3629,21 @@ def stream_content_from_image(
             "model": resolved_model,
             "contents": contents,
         }
-        config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+        config = _generation_config(
+            resolved_model,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            temperature=temperature,
+            response_mime_type=response_mime_type,
+            media_resolution=media_resolution,
+        )
         if config is not None:
             request_kwargs["config"] = config
         request_summary = _thinking_request_summary(
             resolved_model,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
+            temperature=temperature,
             config=config,
         )
         _update_gemini_log_request(
@@ -2253,6 +3716,7 @@ def stream_content_from_image(
                     "error": stream_error,
                 },
             )
+            _finalize_bbox_diagnostics(session_dir)
         return
 
     _append_gemini_log_event(session_dir, "stream_fallback", {"reason": "generate_content_stream unavailable"})
@@ -2260,13 +3724,21 @@ def stream_content_from_image(
         "model": resolved_model,
         "contents": contents,
     }
-    config = _generation_config(resolved_model, enable_thinking=enable_thinking, thinking_level=thinking_level)
+    config = _generation_config(
+        resolved_model,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        temperature=temperature,
+        response_mime_type=response_mime_type,
+        media_resolution=media_resolution,
+    )
     if config is not None:
         request_kwargs["config"] = config
     request_summary = _thinking_request_summary(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
         config=config,
     )
     _update_gemini_log_request(
@@ -2294,6 +3766,7 @@ def stream_content_from_image(
     )
     _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
+    _finalize_bbox_diagnostics(session_dir)
     if text:
         yield text
 
@@ -2305,6 +3778,7 @@ def generate_structured_json_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
 ) -> str:
@@ -2319,6 +3793,7 @@ def generate_structured_json_from_image(
             model=resolved_model,
             mime_type=mime_type,
             api_key=api_key,
+            temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
         )
@@ -2331,6 +3806,8 @@ def generate_structured_json_from_image(
         model=resolved_model,
         image_path=image_path,
         prompt=prompt,
+        mime_type=mime_type,
+        temperature=temperature,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
         extra_request={"schema": _serialize_gemini_log_value(schema)},
@@ -2360,6 +3837,7 @@ def generate_structured_json_from_image(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
         response_mime_type="application/json",
         response_json_schema=schema,
     )
@@ -2367,6 +3845,7 @@ def generate_structured_json_from_image(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        temperature=temperature,
         config=config,
     )
     _update_gemini_log_request(
@@ -2398,6 +3877,7 @@ def generate_structured_json_from_image(
     )
     _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
     _write_gemini_log_output(session_dir, text=text, raw=response)
+    _finalize_bbox_diagnostics(session_dir)
     if not text.strip():
         raise ValueError("Gemini returned an empty response.")
     return text
@@ -2409,29 +3889,103 @@ def generate_page_extraction_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
 ) -> PageExtraction:
+    resolved_model = resolve_supported_gemini_model_name(model)
+    session_dir = _create_gemini_log_session(
+        operation="generate_content",
+        model=resolved_model,
+        image_path=image_path,
+        prompt=prompt,
+        mime_type=mime_type,
+        temperature=temperature,
+        enable_thinking=enable_thinking,
+        thinking_level=thinking_level,
+        few_shot_examples=None,
+    )
     # Temporarily avoid Gemini-side schema enforcement to prevent INVALID_ARGUMENT
     # errors from response_json_schema. We still enforce strict local validation.
     raw_text = generate_content_from_image(
         image_path=image_path,
         prompt=prompt,
-        model=model,
+        model=resolved_model,
         mime_type=mime_type,
         api_key=api_key,
+        temperature=temperature,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        response_mime_type=DEFAULT_GEMINI_GT_RESPONSE_MIME_TYPE,
+        media_resolution=DEFAULT_GEMINI_GT_MEDIA_RESOLUTION,
+        session_dir=session_dir,
     )
-    return parse_page_extraction_text(raw_text)
+    return parse_page_extraction_text(raw_text, image_path=image_path, session_dir=session_dir)
 
 
-def parse_page_extraction_text(raw_text: str) -> PageExtraction:
+def parse_page_extraction_text(
+    raw_text: str,
+    *,
+    image_path: Optional[Path] = None,
+    session_dir: Optional[Path] = None,
+    streamed_fact_count: int = 0,
+) -> PageExtraction:
     if not str(raw_text).strip():
+        if session_dir is not None:
+            summary = _build_page_extraction_issue_summary(
+                session_dir=session_dir,
+                meta_payload={},
+                bbox_mode=_BBOX_MODE_PIXEL_AS_IS,
+                bbox_scores={
+                    _BBOX_MODE_PIXEL_AS_IS: 0.0,
+                    _BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+                },
+                bbox_fact_modes=[],
+                bbox_resolution_policy="page_locked",
+                bbox_diagnostics_raw=None,
+                bbox_diagnostics_resolved=None,
+                streamed_fact_count=streamed_fact_count,
+                final_raw_fact_count=0,
+                kept_fact_count=0,
+                dropped_fact_count=0,
+                issue_entries=[{"code": "final_parse_error", "message": "Gemini returned an empty response."}],
+                status="error",
+            )
+            _write_issue_summary(session_dir, summary)
         raise ValueError("Gemini returned an empty response.")
-    parsed = _parse_llm_json(raw_text)
-    normalized = _normalize_page_extraction_payload(parsed)
-    return PageExtraction.model_validate(normalized)
+    try:
+        parsed = _parse_llm_json(raw_text)
+    except Exception as exc:
+        if session_dir is not None:
+            summary = _build_page_extraction_issue_summary(
+                session_dir=session_dir,
+                meta_payload={},
+                bbox_mode=_BBOX_MODE_PIXEL_AS_IS,
+                bbox_scores={
+                    _BBOX_MODE_PIXEL_AS_IS: 0.0,
+                    _BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+                },
+                bbox_fact_modes=[],
+                bbox_resolution_policy="page_locked",
+                bbox_diagnostics_raw=_read_gemini_log_request(session_dir).get("bbox_diagnostics_raw"),
+                bbox_diagnostics_resolved=None,
+                streamed_fact_count=streamed_fact_count,
+                final_raw_fact_count=0,
+                kept_fact_count=0,
+                dropped_fact_count=0,
+                issue_entries=_normalize_validation_errors(exc, fallback_code="final_parse_error"),
+                status="error",
+            )
+            _write_issue_summary(session_dir, summary)
+        raise
+    extraction, _summary = _finalize_page_extraction_payload(
+        parsed,
+        raw_text=raw_text,
+        image_path=image_path,
+        session_dir=session_dir,
+        streamed_fact_count=streamed_fact_count,
+    )
+    return extraction
 
 
 def _validate_patch_fact_updates(

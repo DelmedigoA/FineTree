@@ -14,7 +14,9 @@ from ..fact_ordering import canonical_fact_order_indices
 
 BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
 BBOX_MODE_NORMALIZED_1000_TO_PIXEL = "normalized_1000_to_pixel"
+BBOX_MODE_MIXED_AUTO = "mixed_auto"
 BBOX_MODE_SWITCH_MARGIN = 0.08
+BBOX_PAGE_MODE_LOCK_MARGIN = 0.2
 BBOX_DARK_LUMA_THRESHOLD = 220.0
 BBOX_INK_TARGET_RATIO = 0.12
 
@@ -24,6 +26,8 @@ class BBoxResolutionResult:
     payloads: list[dict[str, Any]]
     mode: str
     scores: dict[str, float]
+    fact_modes: list[str]
+    policy: str
 
 
 def normalize_bbox_to_list(raw_bbox: Any) -> list[float]:
@@ -159,12 +163,20 @@ def resolve_bbox_mode(
         BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
     }
     if not fact_payloads:
-        return BBoxResolutionResult(payloads=[], mode=BBOX_MODE_PIXEL_AS_IS, scores=empty_scores)
+        return BBoxResolutionResult(
+            payloads=[],
+            mode=BBOX_MODE_PIXEL_AS_IS,
+            scores=empty_scores,
+            fact_modes=[],
+            policy="page_locked",
+        )
     if image_dimensions is None:
         return BBoxResolutionResult(
             payloads=[deepcopy(payload) for payload in fact_payloads],
             mode=BBOX_MODE_PIXEL_AS_IS,
             scores=empty_scores,
+            fact_modes=[BBOX_MODE_PIXEL_AS_IS for _ in fact_payloads],
+            policy="page_locked",
         )
 
     image_width, image_height = image_dimensions
@@ -186,9 +198,78 @@ def resolve_bbox_mode(
         BBOX_MODE_PIXEL_AS_IS: pixel_score,
         BBOX_MODE_NORMALIZED_1000_TO_PIXEL: normalized_score,
     }
-    if normalized_score > (pixel_score + BBOX_MODE_SWITCH_MARGIN):
-        return BBoxResolutionResult(payloads=normalized_payloads, mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL, scores=scores)
-    return BBoxResolutionResult(payloads=pixel_payloads, mode=BBOX_MODE_PIXEL_AS_IS, scores=scores)
+    preferred_mode = (
+        BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+        if normalized_score > (pixel_score + BBOX_MODE_SWITCH_MARGIN)
+        else BBOX_MODE_PIXEL_AS_IS
+    )
+    page_gap = abs(normalized_score - pixel_score)
+    image = QImage(str(image_path))
+    if image.isNull():
+        if preferred_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL:
+            return BBoxResolutionResult(
+                payloads=normalized_payloads,
+                mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+                scores=scores,
+                fact_modes=[BBOX_MODE_NORMALIZED_1000_TO_PIXEL for _ in normalized_payloads],
+                policy="page_locked",
+            )
+        return BBoxResolutionResult(
+            payloads=pixel_payloads,
+            mode=BBOX_MODE_PIXEL_AS_IS,
+            scores=scores,
+            fact_modes=[BBOX_MODE_PIXEL_AS_IS for _ in pixel_payloads],
+            policy="page_locked",
+        )
+    if page_gap >= BBOX_PAGE_MODE_LOCK_MARGIN:
+        if preferred_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL:
+            return BBoxResolutionResult(
+                payloads=normalized_payloads,
+                mode=BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
+                scores=scores,
+                fact_modes=[BBOX_MODE_NORMALIZED_1000_TO_PIXEL for _ in normalized_payloads],
+                policy="page_locked",
+            )
+        return BBoxResolutionResult(
+            payloads=pixel_payloads,
+            mode=BBOX_MODE_PIXEL_AS_IS,
+            scores=scores,
+            fact_modes=[BBOX_MODE_PIXEL_AS_IS for _ in pixel_payloads],
+            policy="page_locked",
+        )
+
+    resolved_payloads: list[dict[str, Any]] = []
+    chosen_modes: set[str] = set()
+    fact_modes: list[str] = []
+    for pixel_payload, normalized_payload in zip(pixel_payloads, normalized_payloads):
+        pixel_fact_score, _pixel_coverage = score_bbox_payload_ink(image, pixel_payload)
+        normalized_fact_score, _normalized_coverage = score_bbox_payload_ink(image, normalized_payload)
+        if preferred_mode == BBOX_MODE_NORMALIZED_1000_TO_PIXEL:
+            choose_normalized = not (pixel_fact_score > (normalized_fact_score + BBOX_MODE_SWITCH_MARGIN))
+        else:
+            choose_normalized = normalized_fact_score > (pixel_fact_score + BBOX_MODE_SWITCH_MARGIN)
+        if choose_normalized:
+            resolved_payloads.append(deepcopy(normalized_payload))
+            chosen_modes.add(BBOX_MODE_NORMALIZED_1000_TO_PIXEL)
+            fact_modes.append(BBOX_MODE_NORMALIZED_1000_TO_PIXEL)
+        else:
+            resolved_payloads.append(deepcopy(pixel_payload))
+            chosen_modes.add(BBOX_MODE_PIXEL_AS_IS)
+            fact_modes.append(BBOX_MODE_PIXEL_AS_IS)
+
+    if chosen_modes == {BBOX_MODE_NORMALIZED_1000_TO_PIXEL}:
+        resolved_mode = BBOX_MODE_NORMALIZED_1000_TO_PIXEL
+    elif chosen_modes == {BBOX_MODE_PIXEL_AS_IS}:
+        resolved_mode = BBOX_MODE_PIXEL_AS_IS
+    else:
+        resolved_mode = BBOX_MODE_MIXED_AUTO
+    return BBoxResolutionResult(
+        payloads=resolved_payloads,
+        mode=resolved_mode,
+        scores=scores,
+        fact_modes=fact_modes,
+        policy="mixed_auto",
+    )
 
 
 def ordered_fact_payloads_by_geometry(
@@ -211,6 +292,7 @@ def ordered_fact_payloads_by_geometry(
 __all__ = [
     "BBOX_MODE_NORMALIZED_1000_TO_PIXEL",
     "BBOX_MODE_PIXEL_AS_IS",
+    "BBOX_MODE_MIXED_AUTO",
     "BBoxResolutionResult",
     "bbox_looks_normalized_1000",
     "normalize_ai_fact_payload",

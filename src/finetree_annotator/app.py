@@ -8,13 +8,11 @@ import os
 import re
 import sys
 from copy import deepcopy
-from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Callable, Dict, List, Optional
 
-from pdf2image import convert_from_path, pdfinfo_from_path
 from pydantic import ValidationError
 from PyQt5 import sip
 from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QRegularExpression
@@ -56,6 +54,7 @@ from PyQt5.QtWidgets import (
 
 from .numeric_text import normalize_angle_bracketed_numeric_text
 from .ai.bbox import (
+    BBOX_MODE_MIXED_AUTO,
     BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
     BBOX_MODE_PIXEL_AS_IS,
     bbox_looks_normalized_1000,
@@ -127,9 +126,16 @@ from .schema_io import load_any_schema, payload_requires_migration, payload_uses
 from .schema_registry import SchemaRegistry
 from .schema_ui import enum_options
 from .schemas import PageExtraction, PageMeta, PageType
+from .startup import (
+    StartupContext as _StartupContext,
+    default_annotations_path as _default_annotations_path_impl,
+    resolve_startup_context as _resolve_startup_context_impl,
+)
+from . import workspace as workspace_mod
 from .workspace import page_has_annotation
 
 GEMINI_GT_BBOX_LOCK_MIN_FACTS = 4
+GEMINI_GENERATED_BBOX_POLICY_DEFAULT = "auto"
 
 PACKAGE_ROOT = Path(__file__).resolve().parent
 REPO_ROOT = PACKAGE_ROOT.parents[1]
@@ -1887,6 +1893,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
         self._gemini_model_name = DEFAULT_GEMINI_MODEL
+        self._gemini_temperature: Optional[float] = None
         self._gemini_enable_thinking = False
         self._gemini_thinking_level = "minimal"
         self._qwen_stream_thread: Optional[QThread] = None
@@ -6188,6 +6195,12 @@ class AnnotationWindow(QMainWindow):
     def _score_autocomplete_bbox_candidate_payloads(self, page_name: str, fact_payloads: List[Dict[str, Any]]) -> float:
         return score_bbox_candidate_payloads(self.images_dir / page_name, fact_payloads)
 
+    def _gemini_generated_bbox_policy(self) -> str:
+        raw_policy = str(
+            os.getenv("FINETREE_GEMINI_GENERATED_BBOX_POLICY") or GEMINI_GENERATED_BBOX_POLICY_DEFAULT
+        ).strip().lower()
+        return "auto" if raw_policy == "auto" else "pixel"
+
     def _resolve_autocomplete_bbox_mode(
         self,
         page_name: str,
@@ -6199,6 +6212,17 @@ class AnnotationWindow(QMainWindow):
             fact_payloads=fact_payloads,
         )
         self._gemini_autocomplete_last_bbox_scores = dict(result.scores)
+        if self._gemini_generated_bbox_policy() != "auto":
+            image_dims = self._image_dimensions_for_page(page_name)
+            if image_dims is None:
+                return [deepcopy(payload) for payload in fact_payloads], BBOX_MODE_PIXEL_AS_IS
+            pixel_payloads = self._autocomplete_candidate_payloads_for_bbox_mode(
+                fact_payloads=fact_payloads,
+                mode=BBOX_MODE_PIXEL_AS_IS,
+                image_width=image_dims[0],
+                image_height=image_dims[1],
+            )
+            return pixel_payloads, BBOX_MODE_PIXEL_AS_IS
         return result.payloads, result.mode
 
     def _ordered_fact_payloads_by_geometry(self, fact_payloads: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -6297,7 +6321,7 @@ class AnnotationWindow(QMainWindow):
             self._apply_page_state_to_scene(page_name)
             return True, None
 
-        _resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
+        resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
             page_name,
             self._gemini_gt_buffered_facts,
         )
@@ -6308,11 +6332,6 @@ class AnnotationWindow(QMainWindow):
                 BBOX_MODE_PIXEL_AS_IS: 0.0,
                 BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
             }
-        )
-        resolved_payloads = self._gemini_gt_payloads_for_bbox_mode(
-            page_name=page_name,
-            fact_payloads=self._gemini_gt_buffered_facts,
-            mode=bbox_mode,
         )
         merged_records = self._build_box_records_from_fact_payloads(resolved_payloads)
 
@@ -6362,18 +6381,24 @@ class AnnotationWindow(QMainWindow):
             for payload, resequenced_fact in zip(ordered_payloads, resequenced_facts)
         ]
 
-    def _render_gemini_gt_live_buffer(self, page_name: str) -> bool:
+    def _render_gemini_gt_live_buffer(
+        self,
+        page_name: str,
+        *,
+        resolved_payloads: list[dict[str, Any]] | None = None,
+    ) -> bool:
         page_idx = self._page_index_by_name(page_name)
         if page_idx < 0:
             return False
         if not self._gemini_gt_buffered_facts:
             return False
 
-        resolved_payloads = self._gemini_gt_payloads_for_bbox_mode(
-            page_name=page_name,
-            fact_payloads=self._gemini_gt_buffered_facts,
-            mode=self._gemini_gt_live_bbox_mode,
-        )
+        if resolved_payloads is None:
+            resolved_payloads = self._gemini_gt_payloads_for_bbox_mode(
+                page_name=page_name,
+                fact_payloads=self._gemini_gt_buffered_facts,
+                mode=self._gemini_gt_live_bbox_mode,
+            )
         merged_records = self._build_box_records_from_fact_payloads(resolved_payloads)
         state = self.page_states.get(page_name, self._default_state(page_idx))
         self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
@@ -6386,24 +6411,22 @@ class AnnotationWindow(QMainWindow):
             return
         if not self._gemini_gt_buffered_facts:
             return
-        if not self._gemini_gt_live_bbox_mode_locked:
-            if len(self._gemini_gt_buffered_facts) < max(1, int(self._gemini_gt_live_lock_min_facts)):
-                return
-            _resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
-                page_name,
-                self._gemini_gt_buffered_facts,
-            )
-            self._gemini_gt_live_bbox_mode = bbox_mode
+        resolved_payloads, bbox_mode = self._resolve_autocomplete_bbox_mode(
+            page_name,
+            self._gemini_gt_buffered_facts,
+        )
+        self._gemini_gt_live_bbox_mode = bbox_mode
+        self._gemini_gt_last_bbox_mode = bbox_mode
+        self._gemini_gt_last_bbox_scores = dict(
+            self._gemini_autocomplete_last_bbox_scores
+            or {
+                BBOX_MODE_PIXEL_AS_IS: 0.0,
+                BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+            }
+        )
+        if len(self._gemini_gt_buffered_facts) >= max(1, int(self._gemini_gt_live_lock_min_facts)):
             self._gemini_gt_live_bbox_mode_locked = True
-            self._gemini_gt_last_bbox_mode = bbox_mode
-            self._gemini_gt_last_bbox_scores = dict(
-                self._gemini_autocomplete_last_bbox_scores
-                or {
-                    BBOX_MODE_PIXEL_AS_IS: 0.0,
-                    BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
-                }
-            )
-        self._render_gemini_gt_live_buffer(page_name)
+        self._render_gemini_gt_live_buffer(page_name, resolved_payloads=resolved_payloads)
 
     def _ai_request_fact_payloads(self, ordered_items: List[AnnotRectItem]) -> list[dict[str, Any]]:
         payloads: list[dict[str, Any]] = []
@@ -8092,16 +8115,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-@dataclass(frozen=True)
-class StartupContext:
-    mode: str
-    images_dir: Optional[Path] = None
-    annotations_path: Optional[Path] = None
-    pdf_path: Optional[Path] = None
+StartupContext = _StartupContext
 
 
 def _default_annotations_path(images_dir: Path) -> Path:
-    return Path("data/annotations") / f"{images_dir.name}.json"
+    return _default_annotations_path_impl(images_dir)
 
 
 def _resolve_startup_context(
@@ -8109,121 +8127,19 @@ def _resolve_startup_context(
     images_dir_arg: Optional[str],
     annotations_arg: Optional[str],
 ) -> StartupContext:
-    if input_path_arg and images_dir_arg:
-        raise ValueError("Cannot provide both positional input_path and --images-dir.")
-
-    if input_path_arg:
-        input_path = Path(input_path_arg).expanduser().resolve()
-        if input_path.is_dir():
-            annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(input_path)
-            return StartupContext(mode="images-dir", images_dir=input_path, annotations_path=annotations_path)
-        if not input_path.exists():
-            raise ValueError(f"Input path not found: {input_path}")
-        if input_path.is_file() and input_path.suffix.lower() == ".pdf":
-            images_dir = (Path("data/pdf_images") / input_path.stem).resolve()
-            annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(images_dir)
-            return StartupContext(mode="pdf", images_dir=images_dir, annotations_path=annotations_path, pdf_path=input_path)
-        raise ValueError(f"Unsupported input path: {input_path}. Provide a PDF file or an image directory.")
-
-    if images_dir_arg:
-        images_dir = Path(images_dir_arg).expanduser().resolve()
-        annotations_path = Path(annotations_arg) if annotations_arg else _default_annotations_path(images_dir)
-        return StartupContext(mode="images-dir", images_dir=images_dir, annotations_path=annotations_path)
-
-    return StartupContext(mode="home")
+    return _resolve_startup_context_impl(input_path_arg, images_dir_arg, annotations_arg)
 
 
 def _missing_page_numbers(images_dir: Path, page_count: int) -> List[int]:
-    missing: List[int] = []
-    for idx in range(1, page_count + 1):
-        target = images_dir / f"page_{idx:04d}.png"
-        if not target.is_file():
-            missing.append(idx)
-    return missing
+    return workspace_mod.missing_page_numbers(images_dir, page_count)
 
 
 def _build_page_ranges(page_numbers: List[int]) -> List[tuple[int, int]]:
-    if not page_numbers:
-        return []
-    ranges: List[tuple[int, int]] = []
-    start = page_numbers[0]
-    prev = page_numbers[0]
-    for page_num in page_numbers[1:]:
-        if page_num == prev + 1:
-            prev = page_num
-            continue
-        ranges.append((start, prev))
-        start = page_num
-        prev = page_num
-    ranges.append((start, prev))
-    return ranges
+    return workspace_mod.build_page_ranges(page_numbers)
 
 
 def _ensure_pdf_images(pdf_path: Path, images_dir: Path, dpi: int = 200) -> Dict[str, Any]:
-    if not pdf_path.is_file():
-        raise RuntimeError(f"PDF not found: {pdf_path}")
-
-    images_dir.mkdir(parents=True, exist_ok=True)
-
-    try:
-        pdf_info = pdfinfo_from_path(str(pdf_path))
-    except Exception as exc:
-        raise RuntimeError(f"Failed to read PDF metadata for {pdf_path}: {exc}") from exc
-
-    try:
-        page_count = int((pdf_info or {}).get("Pages"))
-    except Exception as exc:
-        raise RuntimeError(f"Failed to determine page count for {pdf_path}.") from exc
-    if page_count <= 0:
-        raise RuntimeError(f"PDF has no pages: {pdf_path}")
-
-    missing_pages = _missing_page_numbers(images_dir, page_count)
-    if not missing_pages:
-        return {
-            "action": "reused",
-            "page_count": page_count,
-            "created_pages": 0,
-            "reused_pages": page_count,
-            "missing_before": 0,
-        }
-
-    existing_before = page_count - len(missing_pages)
-    created_pages = 0
-    for first_page, last_page in _build_page_ranges(missing_pages):
-        try:
-            rendered_pages = convert_from_path(
-                str(pdf_path),
-                dpi=dpi,
-                use_pdftocairo=True,
-                first_page=first_page,
-                last_page=last_page,
-            )
-        except Exception as exc:
-            raise RuntimeError(
-                f"Failed converting pages {first_page}-{last_page} for {pdf_path}: {exc}"
-            ) from exc
-
-        expected = last_page - first_page + 1
-        if len(rendered_pages) != expected:
-            raise RuntimeError(
-                f"Unexpected rendered page count for range {first_page}-{last_page}: "
-                f"expected {expected}, got {len(rendered_pages)}"
-            )
-
-        for offset, page in enumerate(rendered_pages):
-            page_num = first_page + offset
-            target = images_dir / f"page_{page_num:04d}.png"
-            page.save(target, format="PNG")
-            created_pages += 1
-
-    action = "created" if existing_before == 0 else "healed"
-    return {
-        "action": action,
-        "page_count": page_count,
-        "created_pages": created_pages,
-        "reused_pages": page_count - created_pages,
-        "missing_before": len(missing_pages),
-    }
+    return workspace_mod.ensure_pdf_images(pdf_path, images_dir, dpi=dpi)
 
 
 def _ensure_annotations_path_writable(annotations_path: Path) -> None:

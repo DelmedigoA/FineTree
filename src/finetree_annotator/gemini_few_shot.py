@@ -4,7 +4,10 @@ import json
 from pathlib import Path
 from typing import Any, Iterable, Optional, Sequence
 
-from .model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload
+from .bbox_utils import bbox_to_list
+from .fact_normalization import normalize_fact_payload
+from .schema_contract import PROMPT_FACT_KEYS, PROMPT_PAGE_META_KEYS
+from .schemas import PageMeta
 
 DEFAULT_TEST_FEW_SHOT_PAGES: tuple[str, ...] = (
     "page_0001.png",
@@ -69,13 +72,30 @@ def _page_payload_map(pages: Iterable[Any]) -> dict[str, dict[str, Any]]:
     return out
 
 
+def _prompt_page_meta_payload(raw_meta: Any) -> dict[str, Any]:
+    validated = PageMeta.model_validate(raw_meta if isinstance(raw_meta, dict) else {}).model_dump(mode="json")
+    return {key: validated.get(key) for key in PROMPT_PAGE_META_KEYS}
+
+
+def _prompt_fact_payload(raw_fact: Any) -> dict[str, Any]:
+    normalized, _warnings = normalize_fact_payload(raw_fact if isinstance(raw_fact, dict) else {}, include_bbox=True)
+    bbox_value = raw_fact.get("bbox") if isinstance(raw_fact, dict) else normalized.get("bbox")
+    payload = {"bbox": bbox_to_list(bbox_value)}
+    payload.update({key: normalized.get(key) for key in PROMPT_FACT_KEYS})
+    return payload
+
+
 def _expected_payload_from_page(page_payload: dict[str, Any]) -> dict[str, Any]:
-    return build_single_page_payload(
-        page_name=str(page_payload.get("image") or ""),
-        page_meta=page_payload.get("meta") if isinstance(page_payload.get("meta"), dict) else {},
-        facts=page_payload.get("facts") if isinstance(page_payload.get("facts"), list) else [],
-        mode=MODEL_PROMPT_MODE,
-    )
+    facts = page_payload.get("facts") if isinstance(page_payload.get("facts"), list) else []
+    return {
+        "pages": [
+            {
+                "image": str(page_payload.get("image") or "").strip() or None,
+                "meta": _prompt_page_meta_payload(page_payload.get("meta")),
+                "facts": [_prompt_fact_payload(fact) for fact in facts if isinstance(fact, dict)],
+            }
+        ]
+    }
 
 
 def _load_annotations_payload(

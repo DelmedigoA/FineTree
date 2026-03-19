@@ -27,8 +27,10 @@ class GeminiStreamWorker(QObject):
         image_path: Path,
         prompt: str,
         model: str,
+        mode: str = "gt",
         api_key: Optional[str] = None,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
+        temperature: Optional[float] = None,
         enable_thinking: bool = True,
         thinking_level: Optional[str] = None,
         max_facts: int = 0,
@@ -39,8 +41,10 @@ class GeminiStreamWorker(QObject):
         self.image_path = image_path
         self.prompt = prompt
         self.model = model
+        self.mode = str(mode or "gt").strip().lower()
         self.api_key = api_key
         self.few_shot_examples = few_shot_examples
+        self.temperature = float(temperature) if temperature is not None else None
         self.enable_thinking = bool(enable_thinking)
         self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
         self.max_facts = max(0, int(max_facts))
@@ -49,6 +53,8 @@ class GeminiStreamWorker(QObject):
         self._limit_reached = False
         self._latest_meta_payload: Optional[dict[str, Any]] = None
         self._emitted_facts: list[dict[str, Any]] = []
+        self.session_dir: Optional[Path] = None
+        self.issue_summary: Optional[dict[str, Any]] = None
 
     def request_cancel(self) -> None:
         self._cancel_requested = True
@@ -95,17 +101,39 @@ class GeminiStreamWorker(QObject):
 
     def run(self) -> None:
         try:
-            from .gemini_vlm import StreamingPageExtractionParser, stream_content_from_image
+            from .gemini_vlm import (
+                StreamingPageExtractionParser,
+                _create_gemini_log_session,
+                load_issue_summary,
+                resolve_supported_gemini_model_name,
+                stream_content_from_image,
+            )
 
-            parser = StreamingPageExtractionParser()
+            resolved_model = resolve_supported_gemini_model_name(self.model)
+            self.session_dir = _create_gemini_log_session(
+                operation="stream_content",
+                model=resolved_model,
+                image_path=self.image_path,
+                prompt=self.prompt,
+                mime_type=None,
+                temperature=self.temperature,
+                enable_thinking=self.enable_thinking,
+                thinking_level=self.thinking_level,
+                few_shot_examples=self.few_shot_examples,
+            )
+            parser = StreamingPageExtractionParser(image_path=self.image_path, session_dir=self.session_dir)
             for chunk in stream_content_from_image(
                 image_path=self.image_path,
                 prompt=self.prompt,
-                model=self.model,
+                model=resolved_model,
                 api_key=self.api_key,
                 few_shot_examples=self.few_shot_examples,
+                temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 thinking_level=self.thinking_level,
+                response_mime_type="application/json" if self.mode == "gt" else None,
+                media_resolution="high" if self.mode == "gt" else None,
+                session_dir=self.session_dir,
             ):
                 if self._cancel_requested:
                     break
@@ -133,11 +161,19 @@ class GeminiStreamWorker(QObject):
                 try:
                     extraction = parser.finalize()
                 except Exception:
-                    if self.allow_partial_finalize_error and (self._latest_meta_payload is not None or self._emitted_facts):
+                    if self.session_dir is not None:
+                        self.issue_summary = load_issue_summary(self.session_dir)
+                    if (
+                        self.allow_partial_finalize_error
+                        and self.issue_summary is None
+                        and (self._latest_meta_payload is not None or self._emitted_facts)
+                    ):
                         self.completed.emit(self._build_lenient_stream_result())
                     else:
                         raise
                 else:
+                    if self.session_dir is not None:
+                        self.issue_summary = load_issue_summary(self.session_dir)
                     self.completed.emit(extraction)
         except Exception as exc:
             self.failed.emit(str(exc))
@@ -161,6 +197,7 @@ class GeminiFillWorker(QObject):
         allow_statement_type: bool,
         enable_thinking: bool,
         thinking_level: Optional[str] = None,
+        temperature: Optional[float] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -170,6 +207,7 @@ class GeminiFillWorker(QObject):
         self.api_key = api_key
         self.allowed_fact_fields = set(allowed_fact_fields)
         self.allow_statement_type = bool(allow_statement_type)
+        self.temperature = float(temperature) if temperature is not None else None
         self.enable_thinking = bool(enable_thinking)
         self.thinking_level = str(thinking_level).strip().lower() if thinking_level is not None else None
         self._cancel_requested = False
@@ -186,6 +224,7 @@ class GeminiFillWorker(QObject):
                 prompt=self.prompt,
                 model=self.model,
                 api_key=self.api_key,
+                temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 thinking_level=self.thinking_level,
             )
@@ -242,7 +281,7 @@ class QwenStreamWorker(QObject):
             from .gemini_vlm import StreamingPageExtractionParser
             from .qwen_vlm import stream_content_from_image
 
-            parser = StreamingPageExtractionParser()
+            parser = StreamingPageExtractionParser(image_path=self.image_path)
             for chunk in stream_content_from_image(
                 image_path=self.image_path,
                 prompt=self.prompt,

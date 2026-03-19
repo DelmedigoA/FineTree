@@ -87,16 +87,23 @@ def _selected_keys(keys: Sequence[str] | None, allowed: Sequence[str]) -> list[s
     return selected
 
 
+def _indent_block(text: str, prefix: str) -> str:
+    return "\n".join(f"{prefix}{line}" if line else line for line in str(text).splitlines())
+
+
 def build_custom_extraction_schema_preview(
     *,
     page_meta_keys: Sequence[str] | None = None,
     fact_keys: Sequence[str] | None = None,
+    include_bbox: bool = True,
 ) -> str:
     selected_page_meta_keys = _selected_keys(page_meta_keys, PROMPT_PAGE_META_KEYS)
     selected_fact_keys = _selected_keys(fact_keys, PROMPT_FACT_KEYS)
 
     meta_lines = [_PAGE_META_SCHEMA_LINES[key] for key in selected_page_meta_keys]
-    fact_lines = ['"bbox": [<x>, <y>, <w>, <h>]']
+    fact_lines: list[str] = []
+    if include_bbox:
+        fact_lines.append('"bbox": [<x>, <y>, <w>, <h>]')
     fact_lines.extend(_FACT_SCHEMA_LINES[key] for key in selected_fact_keys)
     meta_body = ",\n        ".join(meta_lines)
     fact_body = ",\n      ".join(fact_lines)
@@ -120,15 +127,20 @@ def build_custom_extraction_prompt_template(
     *,
     page_meta_keys: Sequence[str] | None = None,
     fact_keys: Sequence[str] | None = None,
+    include_bbox: bool = True,
 ) -> str:
     selected_page_meta_keys = _selected_keys(page_meta_keys, PROMPT_PAGE_META_KEYS)
     selected_fact_keys = _selected_keys(fact_keys, PROMPT_FACT_KEYS)
     schema_preview = build_custom_extraction_schema_preview(
         page_meta_keys=selected_page_meta_keys,
         fact_keys=selected_fact_keys,
+        include_bbox=include_bbox,
     )
     selected_page_meta = ", ".join(selected_page_meta_keys) if selected_page_meta_keys else "(none)"
-    selected_fact = ", ".join(["bbox", *selected_fact_keys]) if selected_fact_keys else "bbox"
+    selected_fact_names = list(selected_fact_keys)
+    if include_bbox:
+        selected_fact_names = ["bbox", *selected_fact_names]
+    selected_fact = ", ".join(selected_fact_names) if selected_fact_names else "(none)"
     lines = [
         "You are extracting financial-statement annotations from a single page image.",
         "",
@@ -149,13 +161,22 @@ def build_custom_extraction_prompt_template(
         "Rules:",
         "1. Return only a single page-level object with `meta` and `facts`.",
         "2. Extract only visible numeric/table facts. Do not emit standalone labels or headings as facts.",
-        "3. `bbox` must use original-image pixel coordinates `[x, y, w, h]` and tightly cover the value text.",
-        "4. Preserve value text exactly as printed, including `%`, commas, parentheses, and dash placeholders.",
-        "5. Use JSON `null` for missing optional values. Do not emit the string `\"null\"`.",
-        "6. Keep UTF-8 Hebrew directly; do not escape it to unicode sequences.",
-        "7. Order facts top-to-bottom; within each row use right-to-left for Hebrew pages and left-to-right for English pages.",
     ]
-    next_rule_num = 8
+    next_rule_num = 3
+    if include_bbox:
+        lines.append(
+            f"{next_rule_num}. `bbox` must use original-image pixel coordinates `[x, y, w, h]` and tightly cover the value text."
+        )
+        next_rule_num += 1
+    lines.extend(
+        [
+            f"{next_rule_num}. Preserve value text exactly as printed, including `%`, commas, parentheses, and dash placeholders.",
+            f"{next_rule_num + 1}. Use JSON `null` for missing optional values. Do not emit the string `\"null\"`.",
+            f"{next_rule_num + 2}. Keep UTF-8 Hebrew directly; do not escape it to unicode sequences.",
+            f"{next_rule_num + 3}. Order facts top-to-bottom; within each row use right-to-left for Hebrew pages and left-to-right for English pages.",
+        ]
+    )
+    next_rule_num += 4
     if "fact_num" in selected_fact_keys:
         lines.append(f"{next_rule_num}. `fact_num` must be contiguous integers starting at 1 and must match the emitted fact order.")
         next_rule_num += 1
@@ -225,158 +246,55 @@ def schema_snapshot() -> dict[str, Any]:
 
 
 def default_extraction_prompt_template() -> str:
-    page_types = "|".join(PAGE_TYPE_VALUES)
-    statement_types = "|".join(STATEMENT_TYPE_VALUES)
-    currencies = "|".join(CURRENCY_VALUES)
-    scales = "|".join(str(value) for value in SCALE_VALUES)
-    value_types = "|".join(VALUE_TYPE_VALUES)
-    value_contexts = "|".join(VALUE_CONTEXT_VALUES)
-    natural_signs = "|".join(NATURAL_SIGN_VALUES)
-    row_roles = "|".join(ROW_ROLE_VALUES)
-    period_types = "|".join(PERIOD_TYPE_VALUES)
-    path_sources = "|".join(PATH_SOURCE_VALUES)
+    meta_lines = ",\n".join(_PAGE_META_SCHEMA_LINES[key] for key in PROMPT_PAGE_META_KEYS)
+    fact_lines = ['"bbox": [<x>, <y>, <w>, <h>]']
+    fact_lines.extend(_FACT_SCHEMA_LINES[key] for key in PROMPT_FACT_KEYS)
+    meta_body = _indent_block(meta_lines, "        ")
+    fact_body = _indent_block(",\n".join(fact_lines), "          ")
 
     return dedent(
         f"""
         You are extracting financial-statement annotations from a single page image into the exact Pydantic schema `PageExtraction`.
 
+        Current page image: {{{{IMAGE_NAME}}}}.
+        Current image size: {{{{IMAGE_DIMENSIONS}}}}.
+
         Return ONLY valid JSON.
         Do NOT return markdown, code fences, comments, prose, or extra keys.
 
-        Return a page-only wrapper with exactly one page.
-        Runtime owns document-level metadata, `schema_version`, and `images_dir`.
         Only return `pages` with page `image`, page `meta`, and page `facts`.
 
-        Top-level schema (exact keys only):
+        Return exactly this wrapper shape:
         {{
           "pages": [
             {{
               "image": "<string or null>",
               "meta": {{
-                "entity_name": "<string or null>",
-                "page_num": "<string or null>",
-                "page_type": "{page_types}",
-                "statement_type": "{statement_types}|null",
-                "title": "<string or null>"
+{meta_body}
               }},
               "facts": [
                 {{
-                  "bbox": [<x>, <y>, <w>, <h>],
-                  "fact_num": <integer >= 1>,
-                  "value": "<string>",
-                  "equations": [
-                    {{
-                      "equation": "<string>",
-                      "fact_equation": "<string or null>"
-                    }}
-                  ]|null,
-                  "value_type": "{value_types}|null",
-                  "value_context": "{value_contexts}|null",
-                  "natural_sign": "{natural_signs}|null",
-                  "row_role": "{row_roles}",
-                  "currency": "{currencies}|null",
-                  "scale": {scales}|null,
-                  "period_type": "{period_types}|null",
-                  "period_start": "<YYYY-MM-DD|null>",
-                  "period_end": "<YYYY-MM-DD|null>",
-                  "duration_type": "recurrent|null",
-                  "recurring_period": "daily|quarterly|monthly|yearly|null",
-                  "note_flag": <true|false>,
-                  "note_num": "<integer or null>",
-                  "note_name": "<string or null>",
-                  "path": ["<string>", "..."],
-                  "path_source": "{path_sources}|null",
-                  "note_ref": "<string or null>",
-                  "comment_ref": "<string or null>"
+{fact_body}
                 }}
               ]
             }}
           ]
         }}
 
-        Type/validation rules (must match schema):
         1. `pages` is required. Emit exactly one page inside `pages`.
-        2. All listed page `meta` keys are required.
-        3. All listed fact keys are required in every fact object, including `bbox` and `fact_num`; nullable fields must still be present with JSON null.
-        4. `fact_num` must be contiguous integers starting at 1 and must match the emitted fact order.
-        5. `equations` must be a JSON list or null. Use `null` when the fact has no equation.
-        6. Each `equations[]` entry must include non-empty `equation`; `fact_equation` may be null.
-        7. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
-        8. `path` is a required list of strings (use `[]` when unknown, never `null`).
-        9. `note_flag` must be boolean (never null and never `"true"`/`"false"` strings).
-        10. `period_start` and `period_end` must be `YYYY-MM-DD` when provided.
-        11. `period_type` must be `instant`, `duration`, `expected`, or null. Use `expected` for projected/budgetary values.
-        12. `page_type` must be one of: `{page_types}`.
-        13. `statement_type` must be one of: `{statement_types}` or null.
-        14. `page_type="statements"` for balance sheet / income statement / cash flow / changes in equity / notes / board report / auditor report / statement of activities / other declaration pages.
-        15. Non-statement structural pages use `statement_type=null`.
-        16. `value` must be a non-empty string. Keep source symbols like `<`, `>`, `(`, `)`, `.`, `*` when present.
-        17. `value_type` must be `amount`, `percent`, `ratio`, `count`, `points`, or null.
-        18. If `value_type="percent"`, keep `%` inside `value` and set `currency` to null.
-        19. `value_context` must be `textual`, `tabular`, `mixed`, or null.
-        20. `natural_sign` must be `positive`, `negative`, or null and is derived from `value`:
-            - if `value` is wrapped in angle brackets and the inner text is negative like `<-123>` or `<(123)>`, set `natural_sign="negative"`
-            - if `value` contains both `(` and `)`, set `natural_sign="negative"`
-            - if `value` starts with `-`, set `natural_sign="negative"`
-            - if `value` is exactly `"-"`, set `natural_sign=null`
-            - otherwise set `natural_sign="positive"`
-        21. `row_role` must be `detail` or `total` and indicates whether this row is a detail row or a computed total/subtotal row.
-        22. `duration_type` must be `recurrent` or null; set `recurring_period` to `daily`, `quarterly`, `monthly`, or `yearly` when the fact recurs.
-        23. `path_source` is only `observed`, `inferred`, or null.
-        24. `note_num` must be a JSON integer or `null` only. Never emit a quoted number.
-        25. If `note_num` is present, `note_flag` must be `true`.
-        26. If `statement_type` is not `notes_to_financial_statements`, all facts must have `note_flag=false` and `note_num=null`.
-        27. Use JSON `null` literal for missing optional values (never `"null"` string).
-        28. Do not include any keys not listed above.
-
-        Extraction rules:
-        1. Extract all visible numeric/table facts, including negatives in parentheses and totals.
-        2. Only emit facts anchored on a visible numeric value or numeric symbol cell. Do not emit standalone text labels, section titles, row labels, column headers, page titles, or captions such as `נכסים שוטפים` unless they are part of a numeric fact being extracted.
-        3. If source value is exactly `-`, `—`, or `–`, keep `value` as `"-"` (never empty).
-        4. Preserve value text as shown, including symbols such as `<`, `>`, `(`, `)`, `.`, and `*`. Do not output empty strings.
-        5. For percent values, keep `%` in `value`.
-        6. `bbox` must tightly cover the value text only, in pixel coordinates of the original image, as `[x, y, w, h]`.
-        7. Assign `fact_num` in the same reading order as emitted facts: top-to-bottom; within a row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages (fallback RTL if uncertain).
-        8. `comment_ref`: textual qualifier tied to the specific fact, else `null`.
-        9. `note_ref`: use when the fact points or references another note; else `null`.
-        10. `note_name`: note title/name only. Do not include generic prefixes such as `Note`, `note`, `באור`, or `ביאור`.
-        11. `currency`: infer from page/header context when clear, else `null`.
-        12. `scale`: `1` unless page/header indicates thousands or millions.
-        13. `value_type`: use `amount` unless the fact is clearly a percent, ratio, count, or points.
-        14. `value_context`: choose `textual` for running text, `tabular` for table cells, or `mixed` for hybrid contexts.
-        15. Only populate `period_type`, `period_start`, and `period_end` when explicitly known from the page.
-        16. `period_type="instant"` means the fact represents a value at a single point in time.
-        17. `period_type="duration"` means the fact represents a value over a period between two dates.
-        18. `period_type="expected"` marks projected/budgetary values; populate `period_start`/`period_end` only when the future span is defined.
-        19. `duration_type="recurrent"` labels a repeating value; populate `recurring_period` with `daily`, `quarterly`, `monthly`, or `yearly` when known.
-        20. Use `path_source="observed"` when path labels are directly visible. Use `path_source="inferred"` only when hierarchy is reconstructed from layout/context.
-        21. When a total/subtotal has a clearly supported arithmetic expression, populate `equations` with one or more variants. Use `null` when no reliable equation is available.
-        22. In each `equations[]` entry, `equation` is the visible arithmetic text and `fact_equation` is the optional fact-reference form like `f2 + f3`.
-        23. `natural_sign` is deterministic from `value`: angle-bracketed negatives / parentheses / leading `-` => `negative`, `"-"` => null, otherwise `positive`.
-        24. Output UTF-8 Hebrew directly (do not escape to unicode sequences).
-        25. Do not emit empty-value facts.
-        Page classification rules:
-        1. Use `page_type="title"` for cover/title pages.
-        2. Use `page_type="contents"` for table-of-contents pages.
-        3. Use `page_type="declaration"` for declaration/signoff pages.
-        4. Use `page_type="statements"` for business-content statement/report pages.
-        5. Use `page_type="other"` only when the page fits none of the above.
-        6. Use `statement_type="balance_sheet"` for מאזן.
-        7. Use `statement_type="income_statement"` for דוח רווח והפסד / P&L.
-        8. Use `statement_type="cash_flow_statement"` for דוח על תזרימי מזומנים.
-        9. Use `statement_type="statement_of_changes_in_equity"` for דוח על השינויים בהון העצמי.
-        10. Use `statement_type="notes_to_financial_statements"` for באורים לדוחות הכספיים.
-        11. Use `statement_type="board_of_directors_report"` for דוח הדירקטוריון.
-        12. Use `statement_type="auditors_report"` for דוח רואה החשבון המבקר.
-        13. Use `statement_type="statement_of_activities"` for דוח על הפעילויות.
-        14. Use `statement_type="other_declaration"` for declaration/report pages that are business declarations but do not fit the other statement types.
-
-        Path hierarchy rule:
-        1. Build `path` with horizontal-axis hierarchy first (group -> subgroup -> line item).
-        2. Then append vertical-axis hierarchy only when it adds business semantics not already represented by dedicated fields.
-        3. Do not encode period/currency/scale/value-format in `path` when already represented by dedicated fields.
-        4. Keep labels exactly as shown. Do not invent levels.
-        5. Do not include generic note markers like `Note`, `note`, `באור`, or `ביאור` inside `path`.
+        2. Include all listed `meta` keys and all listed fact keys in every emitted fact. Use JSON `null` for missing optional values.
+        3. Only emit facts anchored on a visible numeric value or numeric symbol cell. Do not emit standalone labels, section titles, row labels, column headers, page titles, or captions such as `נכסים שוטפים`.
+        4. `bbox` must tightly cover the value text only, in original image pixel coordinates `[x, y, w, h]`.
+        5. `fact_num` must be contiguous integers starting at 1 and must match the emitted fact order.
+        6. Order facts top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages.
+        7. Keep `value` exactly as printed, including `%`, commas, parentheses, leading `-`, angle brackets, and dash placeholders. If the source cell is `-`, `—`, or `–`, return `"-"`.
+        8. `path` must be a JSON list of visible hierarchy labels. Use `[]` when unknown.
+        9. `equations` must be a JSON list or `null`. Use `null` unless the page visibly supports a reliable arithmetic relation.
+        10. Classify `page_type` and `statement_type` from visible page context only.
+        11. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
+        12. Do not emit runtime-only page keys such as `annotation_note` or `annotation_status`, and do not emit `date`.
+        13. Extract a fact only when you can localize its numeric cell tightly. Skip uncertain or non-localizable facts.
+        14. Output UTF-8 Hebrew directly. Do not escape it to unicode sequences.
         """
     ).strip()
 

@@ -47,6 +47,7 @@ class AIActionCapabilities:
     supports_thinking: bool = False
     supports_thinking_level: bool = False
     supports_few_shot: bool = False
+    supports_temperature: bool = False
     supports_max_facts: bool = False
     supports_fix_fields: bool = False
     supports_statement_type_toggle: bool = False
@@ -75,6 +76,7 @@ class AIWorkflowRequest:
     action: AIActionKind
     model: str
     prompt_text: str
+    temperature: Optional[float] = None
     enable_thinking: bool = False
     thinking_level: str = "minimal"
     use_few_shot: bool = False
@@ -89,6 +91,7 @@ class AIDialogDefaults:
     provider: AIProvider
     action: AIActionKind
     model: str
+    temperature: Optional[float]
     enable_thinking: bool
     thinking_level: str
     use_few_shot: bool

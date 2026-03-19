@@ -40,7 +40,7 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from . import app as app_mod
+from .app import AnnotationWindow
 from .finetune import push_dataset_hub
 from .schema_contract import (
     PROMPT_FACT_KEYS,
@@ -48,6 +48,7 @@ from .schema_contract import (
     build_custom_extraction_prompt_template,
     build_custom_extraction_schema_preview,
 )
+from .startup import StartupContext
 from .ui_theme import app_settings, apply_theme, load_theme_choice, save_theme_choice
 from .workspace import (
     DEFAULT_DATA_ROOT,
@@ -692,7 +693,7 @@ class AnnotatorHost(QWidget):
         super().__init__(parent)
         self.setObjectName("annotatorHost")
         self._contexts: dict[str, DocumentContext] = {}
-        self._windows: dict[str, app_mod.AnnotationWindow] = {}
+        self._windows: dict[str, AnnotationWindow] = {}
         self._current_key: Optional[str] = None
 
         root = QVBoxLayout(self)
@@ -722,15 +723,15 @@ class AnnotatorHost(QWidget):
             return None
         return self._contexts.get(self._current_key)
 
-    def current_window(self) -> Optional[app_mod.AnnotationWindow]:
+    def current_window(self) -> Optional[AnnotationWindow]:
         if self._current_key is None:
             return None
         return self._windows.get(self._current_key)
 
-    def open_document(self, context: DocumentContext) -> app_mod.AnnotationWindow:
+    def open_document(self, context: DocumentContext) -> AnnotationWindow:
         key = context.cache_key
         if key not in self._windows:
-            window = app_mod.AnnotationWindow(images_dir=context.images_dir, annotations_path=context.annotations_path)
+            window = AnnotationWindow(images_dir=context.images_dir, annotations_path=context.annotations_path)
             window.setWindowFlags(Qt.Widget)
             if hasattr(window, "annotations_save_status"):
                 window.annotations_save_status.connect(self.document_saved.emit)
@@ -796,8 +797,8 @@ class AnnotatorHost(QWidget):
                     continue
         return summaries
 
-    def managed_windows(self) -> list[tuple[DocumentContext, app_mod.AnnotationWindow]]:
-        managed: list[tuple[DocumentContext, app_mod.AnnotationWindow]] = []
+    def managed_windows(self) -> list[tuple[DocumentContext, AnnotationWindow]]:
+        managed: list[tuple[DocumentContext, AnnotationWindow]] = []
         for key, window in self._windows.items():
             context = self._contexts.get(key)
             if context is None or not context.managed:
@@ -810,7 +811,7 @@ class AnnotatorHost(QWidget):
         if not normalized:
             return True
 
-        confirmed_windows: list[app_mod.AnnotationWindow] = []
+        confirmed_windows: list[AnnotationWindow] = []
         for context, window in self.managed_windows():
             if context.doc_id != normalized:
                 continue
@@ -828,7 +829,7 @@ class AnnotatorHost(QWidget):
         return True
 
     def confirm_close_all_documents(self) -> bool:
-        confirmed_windows: list[app_mod.AnnotationWindow] = []
+        confirmed_windows: list[AnnotationWindow] = []
         for window in self._windows.values():
             confirm_method = getattr(window, "confirm_close", None)
             if not callable(confirm_method):
@@ -1737,7 +1738,7 @@ class PushView(QWidget):
 
 
 class DashboardWindow(QMainWindow):
-    def __init__(self, startup_context: app_mod.StartupContext, *, dpi: int = 200) -> None:
+    def __init__(self, startup_context: StartupContext, *, dpi: int = 200) -> None:
         super().__init__()
         self.setObjectName("shellWindow")
         self.startup_context = startup_context

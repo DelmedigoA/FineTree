@@ -15,6 +15,7 @@ from ..fact_ordering import normalize_document_meta, reorder_facts, resolve_read
 from ..schema_contract import default_extraction_prompt_template
 from ..schema_io import load_any_schema
 from ..schemas import PageMeta
+from .duplicate_facts import fact_uniqueness_key
 from .config import FinetuneConfig, load_finetune_config
 
 
@@ -27,6 +28,7 @@ class DatasetBuildStats:
     pages_skipped_empty: int = 0
     pages_skipped_missing_image: int = 0
     pages_skipped_unapproved: int = 0
+    facts_deduped: int = 0
 
 
 def _resolve_prompt_template(cfg: FinetuneConfig) -> str:
@@ -118,13 +120,31 @@ def _transform_page_for_target(
     selected_page_meta_keys: Sequence[str] | None = None,
     selected_fact_keys: Sequence[str] | None = None,
     page_only_wrapper: bool = False,
-) -> Dict[str, Any]:
+    excluded_value_contexts: Sequence[str] | None = None,
+    dedupe_exact_facts: bool = False,
+) -> tuple[Dict[str, Any], int]:
     facts = page.get("facts") if isinstance(page.get("facts"), list) else []
+    excluded_value_context_set = {
+        str(value_context).strip().lower()
+        for value_context in (excluded_value_contexts or ())
+        if str(value_context).strip()
+    }
+    seen_fact_keys: set[tuple[Any, ...]] = set()
+    deduped_count = 0
     typed_facts: list[dict[str, Any]] = []
     for fact in facts:
         if not isinstance(fact, dict):
             continue
         normalized_fact, _warnings = normalize_fact_payload(fact, include_bbox=("bbox" in fact))
+        value_context = str(normalized_fact.get("value_context") or "").strip().lower()
+        if value_context and value_context in excluded_value_context_set:
+            continue
+        if dedupe_exact_facts:
+            duplicate_key = fact_uniqueness_key(fact)
+            if duplicate_key in seen_fact_keys:
+                deduped_count += 1
+                continue
+            seen_fact_keys.add(duplicate_key)
         typed_facts.append(normalized_fact)
     ordered_facts = typed_facts
     if cfg.data.fact_order_enforce:
@@ -169,17 +189,20 @@ def _transform_page_for_target(
         return {
             "meta": page_meta,
             "facts": page_facts,
-        }
+        }, deduped_count
     page_payload = {
         "image": str(page.get("image") or "").strip() or None,
         "meta": page_meta,
         "facts": page_facts,
     }
-    return {
-        "images_dir": images_dir or None,
-        "metadata": dict(metadata),
-        "pages": [page_payload],
-    }
+    return (
+        {
+            "images_dir": images_dir or None,
+            "metadata": dict(metadata),
+            "pages": [page_payload],
+        },
+        deduped_count,
+    )
 
 
 def build_unsloth_chat_datasets(
@@ -194,10 +217,14 @@ def build_unsloth_chat_datasets(
     selected_page_meta_keys: Sequence[str] | None = None,
     selected_fact_keys: Sequence[str] | None = None,
     page_only_wrapper: bool = False,
+    excluded_value_contexts: Sequence[str] | None = None,
+    include_empty_pages_override: bool | None = None,
+    dedupe_exact_facts: bool = False,
 ) -> DatasetBuildStats:
     stats = DatasetBuildStats()
 
     prompt_template = prompt_template_override if isinstance(prompt_template_override, str) and prompt_template_override.strip() else _resolve_prompt_template(cfg)
+    include_empty_pages = cfg.data.include_empty_pages if include_empty_pages_override is None else bool(include_empty_pages_override)
     annotation_files = list(_iter_annotation_files(cfg.data.annotations_glob))
     included = {doc_id.strip() for doc_id in (include_doc_ids or set()) if str(doc_id).strip()}
     if include_doc_ids is not None:
@@ -246,11 +273,6 @@ def build_unsloth_chat_datasets(
                     stats.pages_skipped_unapproved += 1
                     continue
 
-                facts = page.get("facts") if isinstance(page.get("facts"), list) else []
-                if not cfg.data.include_empty_pages and not facts:
-                    stats.pages_skipped_empty += 1
-                    continue
-
                 image_name = str(page.get("image") or "").strip()
                 if not image_name:
                     continue
@@ -263,7 +285,7 @@ def build_unsloth_chat_datasets(
                 prompt_text = prompt_template.replace("{{PAGE_IMAGE}}", str(image_path))
                 prompt_text = prompt_text.replace("{{IMAGE_NAME}}", image_path.name)
 
-                target_obj = _transform_page_for_target(
+                target_obj, deduped_count = _transform_page_for_target(
                     cfg,
                     images_dir=images_dir,
                     metadata=metadata,
@@ -273,7 +295,18 @@ def build_unsloth_chat_datasets(
                     selected_page_meta_keys=selected_page_meta_keys,
                     selected_fact_keys=selected_fact_keys,
                     page_only_wrapper=page_only_wrapper,
+                    excluded_value_contexts=excluded_value_contexts,
+                    dedupe_exact_facts=dedupe_exact_facts,
                 )
+                stats.facts_deduped += deduped_count
+                page_payload = target_obj if page_only_wrapper else (target_obj.get("pages") or [{}])[0]
+                target_facts = page_payload.get("facts") if isinstance(page_payload, dict) else None
+                if not include_empty_pages and not isinstance(target_facts, list):
+                    stats.pages_skipped_empty += 1
+                    continue
+                if not include_empty_pages and not target_facts:
+                    stats.pages_skipped_empty += 1
+                    continue
                 assistant_text = json.dumps(target_obj, ensure_ascii=False)
 
                 sample = {
@@ -346,6 +379,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Skipped empty pages: {stats.pages_skipped_empty}")
     print(f"Skipped missing images: {stats.pages_skipped_missing_image}")
     print(f"Skipped unapproved pages: {stats.pages_skipped_unapproved}")
+    print(f"Deduped facts: {stats.facts_deduped}")
     return 0
 
 

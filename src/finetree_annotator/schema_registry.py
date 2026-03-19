@@ -19,7 +19,7 @@ SCHEMA_MODEL_MAP: dict[str, type[BaseModel]] = {
 }
 PROMPT_RUNTIME_OWNED_KEYS: tuple[str, ...] = ("schema_version",)
 PROMPT_RUNTIME_OWNED_PAGE_META_KEYS: tuple[str, ...] = ("annotation_note", "annotation_status")
-PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ()
+PROMPT_RUNTIME_OWNED_FACT_KEYS: tuple[str, ...] = ("date",)
 PROMPT_REQUIRED_FACT_KEYS: tuple[str, ...] = (
     "natural_sign",
     "row_role",

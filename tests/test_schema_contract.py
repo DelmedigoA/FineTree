@@ -85,6 +85,24 @@ def test_custom_schema_preview_is_page_only() -> None:
     assert "page-level object" in prompt
 
 
+def test_custom_no_bbox_prompt_omits_bbox_contract() -> None:
+    from finetree_annotator.schema_contract import build_custom_extraction_prompt_template, build_custom_extraction_schema_preview
+
+    preview = build_custom_extraction_schema_preview(
+        page_meta_keys=("page_type", "title"),
+        fact_keys=("value", "currency"),
+        include_bbox=False,
+    )
+    prompt = build_custom_extraction_prompt_template(
+        page_meta_keys=("page_type", "title"),
+        fact_keys=("value", "currency"),
+        include_bbox=False,
+    )
+    assert '"bbox"' not in preview
+    assert "`bbox` must use original-image pixel coordinates" not in prompt
+    assert "Selected fact keys:\n- value, currency" in prompt
+
+
 def test_equation_schema_is_present_in_model_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
     fill_prompt = default_gemini_fill_prompt_template()

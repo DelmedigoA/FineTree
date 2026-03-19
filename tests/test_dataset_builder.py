@@ -459,3 +459,145 @@ def test_dataset_builder_can_filter_selected_schema_fields(tmp_path: Path, monke
     assert set(out_obj.keys()) == {"meta", "facts"}
     assert set(out_obj["meta"].keys()) == {"page_type", "title"}
     assert set(out_obj["facts"][0].keys()) == {"bbox", "value", "currency"}
+
+
+def test_dataset_builder_can_exclude_value_contexts_and_keep_empty_pages(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_value_context"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    image_name = "page_0001.png"
+    (img_dir / image_name).write_bytes(b"fake")
+    payload = {
+        "images_dir": str(img_dir),
+        "metadata": {},
+        "pages": [
+            {
+                "image": image_name,
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": "Page title",
+                },
+                "facts": [
+                    {
+                        "value": "10",
+                        "value_context": "textual",
+                        "path": [],
+                    },
+                    {
+                        "value": "20",
+                        "value_context": "mixed",
+                        "path": [],
+                    },
+                ],
+            }
+        ],
+    }
+    (ann_dir / "doc_value_context.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+                "include_empty_pages": False,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    stats = build_unsloth_chat_datasets(
+        cfg,
+        excluded_value_contexts=("textual", "mixed"),
+        include_empty_pages_override=True,
+        selected_fact_keys=("value",),
+        page_only_wrapper=True,
+    )
+
+    assert stats.samples_written_train == 1
+    line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
+    sample = json.loads(line)
+    out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
+    assert out_obj["facts"] == []
+
+
+def test_dataset_builder_can_dedupe_exact_facts_for_export(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    data_dir = tmp_path / "data"
+    ann_dir = data_dir / "annotations"
+    img_dir = data_dir / "pdf_images" / "doc_dupes"
+    ann_dir.mkdir(parents=True)
+    img_dir.mkdir(parents=True)
+
+    image_name = "page_0001.png"
+    (img_dir / image_name).write_bytes(b"fake")
+    duplicate_fact = {
+        "bbox": {"x": 1, "y": 2, "w": 3, "h": 4},
+        "value": "10",
+        "comment_ref": None,
+        "note_flag": False,
+        "note_name": None,
+        "note_num": None,
+        "note_ref": None,
+        "date": "2024-12-31",
+        "period_type": "instant",
+        "period_start": None,
+        "period_end": "2024-12-31",
+        "path": ["assets"],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+    }
+    payload = {
+        "images_dir": str(img_dir),
+        "metadata": {},
+        "pages": [
+            {
+                "image": image_name,
+                "meta": {
+                    "entity_name": "ACME",
+                    "page_num": "1",
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                "facts": [duplicate_fact, dict(duplicate_fact)],
+            }
+        ],
+    }
+    (ann_dir / "doc_dupes.json").write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
+
+    cfg = FinetuneConfig.model_validate(
+        {
+            "data": {
+                "annotations_glob": "data/annotations/*.json",
+                "images_root": ".",
+                "output_train_jsonl": "data/finetune/train.jsonl",
+                "output_val_jsonl": "data/finetune/val.jsonl",
+                "val_ratio": 0.0,
+            },
+            "prompt": {"use_custom_prompt": False},
+        }
+    )
+
+    stats = build_unsloth_chat_datasets(
+        cfg,
+        dedupe_exact_facts=True,
+        page_only_wrapper=True,
+    )
+
+    assert stats.facts_deduped == 1
+    line = (tmp_path / "data/finetune/train.jsonl").read_text(encoding="utf-8").strip()
+    sample = json.loads(line)
+    out_obj = json.loads(sample["messages"][1]["content"][0]["text"])
+    assert len(out_obj["facts"]) == 1

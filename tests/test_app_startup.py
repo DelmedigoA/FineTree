@@ -61,12 +61,12 @@ def test_ensure_pdf_images_reuses_complete_folder(tmp_path: Path, monkeypatch) -
     for idx in (1, 2, 3):
         (images_dir / f"page_{idx:04d}.png").write_bytes(b"png")
 
-    monkeypatch.setattr(app_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
+    monkeypatch.setattr(app_mod.workspace_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
 
     def _should_not_run(*_args, **_kwargs):
         raise AssertionError("convert_from_path should not run for complete image folders")
 
-    monkeypatch.setattr(app_mod, "convert_from_path", _should_not_run)
+    monkeypatch.setattr(app_mod.workspace_mod, "convert_from_path", _should_not_run)
 
     summary = app_mod._ensure_pdf_images(pdf_path, images_dir, dpi=200)
     assert summary["action"] == "reused"
@@ -80,7 +80,7 @@ def test_ensure_pdf_images_creates_all_pages_when_folder_missing(tmp_path: Path,
     pdf_path.write_bytes(b"%PDF-1.4")
     images_dir = tmp_path / "doc_images"
 
-    monkeypatch.setattr(app_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
+    monkeypatch.setattr(app_mod.workspace_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
 
     calls: list[tuple[int, int]] = []
 
@@ -89,7 +89,7 @@ def test_ensure_pdf_images_creates_all_pages_when_folder_missing(tmp_path: Path,
         calls.append((first_page, last_page))
         return [_DummyPage() for _ in range(last_page - first_page + 1)]
 
-    monkeypatch.setattr(app_mod, "convert_from_path", _fake_convert)
+    monkeypatch.setattr(app_mod.workspace_mod, "convert_from_path", _fake_convert)
 
     summary = app_mod._ensure_pdf_images(pdf_path, images_dir, dpi=200)
     assert calls == [(1, 3)]
@@ -108,7 +108,7 @@ def test_ensure_pdf_images_heals_missing_subset_only(tmp_path: Path, monkeypatch
     (images_dir / "page_0001.png").write_bytes(b"png")
     (images_dir / "page_0003.png").write_bytes(b"png")
 
-    monkeypatch.setattr(app_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
+    monkeypatch.setattr(app_mod.workspace_mod, "pdfinfo_from_path", lambda _path: {"Pages": 3})
 
     calls: list[tuple[int, int]] = []
 
@@ -117,7 +117,7 @@ def test_ensure_pdf_images_heals_missing_subset_only(tmp_path: Path, monkeypatch
         calls.append((first_page, last_page))
         return [_DummyPage()]
 
-    monkeypatch.setattr(app_mod, "convert_from_path", _fake_convert)
+    monkeypatch.setattr(app_mod.workspace_mod, "convert_from_path", _fake_convert)
 
     summary = app_mod._ensure_pdf_images(pdf_path, images_dir, dpi=200)
     assert calls == [(2, 2)]
@@ -132,12 +132,12 @@ def test_ensure_pdf_images_conversion_failure_raises(tmp_path: Path, monkeypatch
     pdf_path.write_bytes(b"%PDF-1.4")
     images_dir = tmp_path / "doc_images"
 
-    monkeypatch.setattr(app_mod, "pdfinfo_from_path", lambda _path: {"Pages": 2})
+    monkeypatch.setattr(app_mod.workspace_mod, "pdfinfo_from_path", lambda _path: {"Pages": 2})
 
     def _boom(*_args, **_kwargs):
         raise RuntimeError("boom")
 
-    monkeypatch.setattr(app_mod, "convert_from_path", _boom)
+    monkeypatch.setattr(app_mod.workspace_mod, "convert_from_path", _boom)
 
     with pytest.raises(RuntimeError, match="Failed converting pages"):
         app_mod._ensure_pdf_images(pdf_path, images_dir, dpi=200)

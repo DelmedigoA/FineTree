@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import shutil
 import sys
 import types
+from typing import Any
 
 import pytest
 from PIL import Image
@@ -37,6 +39,52 @@ def _wrapper_payload(
             }
         ],
     }
+
+
+def _prompt_only_payload(
+    *,
+    image: str = "page_0001.png",
+    meta: dict[str, object] | None = None,
+    facts: list[dict[str, object]] | None = None,
+) -> dict[str, object]:
+    return {
+        "pages": [
+            {
+                "image": image,
+                "meta": meta
+                or {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": None,
+                },
+                "facts": facts or [],
+            }
+        ]
+    }
+
+
+def _create_logged_session(
+    tmp_path: Path,
+    *,
+    image_size: tuple[int, int] = (800, 800),
+    prompt: str | None = None,
+) -> tuple[Path, Path]:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", image_size, color=(255, 255, 255)).save(image_path)
+    session_dir = gemini_vlm._create_gemini_log_session(
+        operation="stream_content",
+        model="gemini-3-flash-preview",
+        image_path=image_path,
+        prompt=prompt or f"Current image size: {image_size[0]} x {image_size[1]} pixels",
+        mime_type=None,
+        temperature=0.01,
+        enable_thinking=False,
+        thinking_level=None,
+        few_shot_examples=None,
+    )
+    return session_dir, image_path
 
 
 def test_resolve_api_key_prefers_google_api_key_env(monkeypatch) -> None:
@@ -272,8 +320,8 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     monkeypatch.chdir(tmp_path)
     target_image = tmp_path / "target.png"
     example_image = tmp_path / "example.png"
-    target_image.write_bytes(b"target")
-    example_image.write_bytes(b"example")
+    Image.new("RGB", (32, 48), color=(255, 255, 255)).save(target_image)
+    Image.new("RGB", (20, 12), color=(240, 240, 240)).save(example_image)
 
     class _FakePart:
         @staticmethod
@@ -293,11 +341,15 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
         LOW = "LOW"
         MINIMAL = "MINIMAL"
 
+    class _FakeMediaResolution:
+        MEDIA_RESOLUTION_HIGH = "HIGH"
+
     class _FakeTypes:
         Part = _FakePart
         ThinkingConfig = _FakeThinkingConfig
         GenerateContentConfig = _FakeGenerateContentConfig
         ThinkingLevel = _FakeThinkingLevel
+        MediaResolution = _FakeMediaResolution
 
     class _FakeResponse:
         text = '{"ok":true}'
@@ -321,15 +373,52 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
 
     monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
     monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+    example_payload = _prompt_only_payload(
+        image="example.png",
+        facts=[
+            {
+                "bbox": [1, 2, 3, 4],
+                "fact_num": 1,
+                "value": "10",
+                "equations": None,
+                "value_type": None,
+                "value_context": None,
+                "natural_sign": "positive",
+                "row_role": "detail",
+                "currency": None,
+                "scale": None,
+                "period_type": None,
+                "period_start": None,
+                "period_end": None,
+                "duration_type": None,
+                "recurring_period": None,
+                "note_flag": False,
+                "note_num": None,
+                "note_name": None,
+                "path": [],
+                "path_source": None,
+                "note_ref": None,
+                "comment_ref": None,
+            }
+        ],
+    )
 
     text = gemini_vlm.generate_content_from_image(
         image_path=target_image,
-        prompt="extract now",
+        prompt="Current image size: 32 x 48 pixels.\nextract now",
         model="Gemini Pro",
         api_key="k",
-        few_shot_examples=[{"image_path": example_image, "expected_json": '{"pages":[]}'}],
+        few_shot_examples=[
+            {
+                "image_path": example_image,
+                "expected_json": json.dumps(example_payload, ensure_ascii=False, separators=(",", ":")),
+            }
+        ],
+        temperature=0.35,
         enable_thinking=True,
         thinking_level="high",
+        response_mime_type="application/json",
+        media_resolution="high",
     )
 
     assert text == '{"ok":true}'
@@ -341,16 +430,70 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     events = [json.loads(line) for line in (log_dir / "events.jsonl").read_text(encoding="utf-8").splitlines()]
 
     assert request_payload["model"] == "gemini-3.1-pro-preview"
-    assert request_payload["prompt"] == "extract now"
+    assert request_payload["prompt"] == "Current image size: 32 x 48 pixels.\nextract now"
+    assert request_payload["image_summary"]["image_width"] == 32
+    assert request_payload["image_summary"]["image_height"] == 48
+    assert request_payload["image_summary"]["mime_type"] == "image/png"
+    assert request_payload["prompt_image_size"] == {
+        "mentions_current_image_size": True,
+        "prompt_image_size_text": "32 x 48 pixels",
+        "prompt_image_width": 32,
+        "prompt_image_height": 48,
+        "matches_source_image": True,
+    }
+    assert request_payload["temperature"] == 0.35
     assert request_payload["request_summary"]["model_family"] == "gemini_3"
     assert request_payload["request_summary"]["thinking_semantics"] == "thinking_level"
     assert request_payload["request_summary"]["effective_thinking_value"] == "HIGH"
+    assert request_payload["request_summary"]["requested_temperature"] == 0.35
+    assert request_payload["request_summary"]["effective_temperature"] == 0.35
+    assert request_payload["exact_request"]["config"]["kwargs"]["temperature"] == 0.35
+    assert request_payload["exact_request"]["config"]["kwargs"]["response_mime_type"] == "application/json"
+    assert request_payload["exact_request"]["config"]["kwargs"]["media_resolution"] == "HIGH"
     assert request_payload["exact_request"]["contents"][0]["role"] == "user"
     assert request_payload["exact_request"]["contents"][0]["parts"][0] == {"type": "image_file", "file": "few_shot_01_example.png"}
     assert request_payload["exact_request"]["contents"][-1]["parts"][0] == {"type": "image_file", "file": "input_target.png"}
-    assert request_payload["few_shot_examples"][0]["expected_json"] == '{"pages":[]}'
-    assert (log_dir / request_payload["logged_image_path"]).read_bytes() == b"target"
-    assert (log_dir / request_payload["few_shot_examples"][0]["logged_image_path"]).read_bytes() == b"example"
+    assert request_payload["few_shot_examples"][0]["expected_json"] == json.dumps(
+        example_payload,
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    assert request_payload["few_shot_examples"][0]["image_summary"]["image_width"] == 20
+    assert request_payload["few_shot_examples"][0]["image_summary"]["image_height"] == 12
+    assert request_payload["few_shot_examples"][0]["schema_signature"]["top_level_keys"] == ["pages"]
+    assert request_payload["few_shot_examples"][0]["schema_signature"]["page_meta_keys"] == [
+        "entity_name",
+        "page_num",
+        "page_type",
+        "statement_type",
+        "title",
+    ]
+    assert request_payload["few_shot_examples"][0]["schema_signature"]["fact_keys"] == [
+        "bbox",
+        "fact_num",
+        "value",
+        "equations",
+        "value_type",
+        "value_context",
+        "natural_sign",
+        "row_role",
+        "currency",
+        "scale",
+        "period_type",
+        "period_start",
+        "period_end",
+        "duration_type",
+        "recurring_period",
+        "note_flag",
+        "note_num",
+        "note_name",
+        "path",
+        "path_source",
+        "note_ref",
+        "comment_ref",
+    ]
+    assert (log_dir / request_payload["logged_image_path"]).is_file()
+    assert (log_dir / request_payload["few_shot_examples"][0]["logged_image_path"]).is_file()
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == '{"ok":true}'
     assert response_payload["thinking"] == "hidden-thought"
     assert any(event["event"] == "thinking_request_summary" for event in events)
@@ -422,6 +565,7 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
         image_path=target_image,
         prompt="extract now",
         model="gemini-flash-hf-tuned",
+        temperature=0.2,
         enable_thinking=True,
         thinking_level="high",
     )
@@ -435,6 +579,7 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
     }
     request_payload = seen["json"]
     assert request_payload["contents"][0]["role"] == "user"
+    assert request_payload["generationConfig"] == {"temperature": 0.2}
     assert request_payload["contents"][0]["parts"][0]["inlineData"]["mimeType"] == "image/png"
     assert isinstance(request_payload["contents"][0]["parts"][0]["inlineData"]["data"], str)
     assert "resized image" in request_payload["contents"][0]["parts"][1]["text"]
@@ -445,6 +590,8 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
     log_dir = log_dirs[0]
     request_log = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
     assert request_log["backend"] == "vertex_generate_content"
+    assert request_log["temperature"] == 0.2
+    assert request_log["request_summary"]["requested_temperature"] == 0.2
     assert request_log["image_resize"] == {
         "max_pixels": gemini_vlm.DEFAULT_VERTEX_TUNED_MAX_PIXELS,
         "original_width": 2000,
@@ -624,6 +771,7 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
             image_path=target_image,
             prompt="extract stream",
             model="gemini-flash-hf-tuned",
+            temperature=0.15,
             enable_thinking=True,
             thinking_level="high",
         )
@@ -637,6 +785,7 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
         "Content-Type": "application/json",
     }
     request_payload = seen["json"]
+    assert request_payload["generationConfig"] == {"temperature": 0.15}
     assert "resized image" in request_payload["contents"][0]["parts"][1]["text"]
     assert "extract stream" in request_payload["contents"][0]["parts"][1]["text"]
 
@@ -650,8 +799,93 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
 
     assert len(chunk_events) == 2
     assert request_log["backend"] == "vertex_stream_generate_content"
+    assert request_log["temperature"] == 0.15
+    assert request_log["request_summary"]["requested_temperature"] == 0.15
     assert request_log["exact_request"]["endpoint"] == "https://vertex.example/streamGenerateContent"
     assert (log_dir / "output.txt").read_text(encoding="utf-8") == "".join(chunks)
+
+
+def test_stream_content_from_image_vertex_rescales_bbox_split_across_chunks(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    Image.new("RGB", (2000, 1000), color=(255, 255, 255)).save(target_image)
+    _install_fake_qwen_vl_utils(monkeypatch, height=756, width=1512)
+
+    class _FakeStreamResponse:
+        status_code = 200
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            _ = exc_type, exc, tb
+            return False
+
+        def raise_for_status(self) -> None:
+            return None
+
+        def iter_text(self):
+            yield json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "parts": [
+                                    {"text": '{"meta":{"entity_name":"A"},"facts":[{"bbox":[100,'},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            )
+            yield json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "parts": [
+                                    {"text": '50,20,10],"value":"10","path":[]}]}'},
+                                ]
+                            }
+                        }
+                    ]
+                }
+            )
+
+    class _FakeClient:
+        def __init__(self, timeout: float):
+            _ = timeout
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, exc_type, exc, tb):
+            _ = exc_type, exc, tb
+            return False
+
+        def stream(self, method: str, endpoint: str, *, headers: dict[str, str], json: dict[str, object]):
+            _ = method, endpoint, headers, json
+            return _FakeStreamResponse()
+
+    import httpx
+
+    monkeypatch.setattr(httpx, "Client", _FakeClient)
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_stream_generate_content_url", lambda **_kwargs: "https://vertex.example/streamGenerateContent")
+    monkeypatch.setattr(gemini_vlm, "_resolve_vertex_access_token", lambda _token=None: "vertex-token")
+
+    chunks = list(
+        gemini_vlm.stream_content_from_image(
+            image_path=target_image,
+            prompt="extract stream",
+            model="gemini-flash-hf-tuned",
+            enable_thinking=False,
+        )
+    )
+
+    combined = "".join(chunks)
+
+    assert '{"bbox":[100,50,20,10]' not in combined
+    assert '{"bbox":[132.28, 66.14, 26.46, 13.23],"value":"10","path":[]}]}' in combined
 
 
 def test_stream_content_from_image_writes_partial_output_when_consumer_closes(tmp_path: Path, monkeypatch) -> None:
@@ -985,6 +1219,48 @@ def test_generation_config_uses_auto_budget_for_thinking_legacy_models(monkeypat
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_budget": -1}
 
 
+def test_analyze_logged_bbox_session_flags_tracked_bad_log_and_writes_overlay(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    source_dir = repo_root / "gemini_logs/20260317T205644.557610Z_stream_content_gemini-3-flash-preview"
+    session_dir = tmp_path / "bad_session"
+    shutil.copytree(source_dir, session_dir)
+
+    diagnostics = gemini_vlm.analyze_logged_bbox_session(session_dir)
+    request_payload = json.loads((session_dir / "request.json").read_text(encoding="utf-8"))
+
+    assert diagnostics["suspicious"] is True
+    assert "wide_low_ink_strips" in diagnostics["suspicion_reasons"]
+    assert diagnostics["preferred_bbox_mode"] == "normalized_1000_to_pixel"
+    assert diagnostics["bbox_mode_scores"]["normalized_1000_to_pixel"] > diagnostics["bbox_mode_scores"]["pixel_as_is"]
+    assert diagnostics["overlay_path"] == "bbox_overlay.png"
+    assert (session_dir / "bbox_overlay.png").is_file()
+    assert request_payload["bbox_diagnostics"]["suspicious"] is True
+    assert request_payload["bbox_diagnostics"]["preferred_bbox_mode"] == "normalized_1000_to_pixel"
+    assert "wide_low_ink_strips" in request_payload["bbox_diagnostics"]["suspicion_reasons"]
+
+
+def test_analyze_bbox_response_accepts_known_good_2015_page(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    image_path = repo_root / "data/pdf_images/2015/page_0011.png"
+    annotations = json.loads((repo_root / "data/annotations/2015.json").read_text(encoding="utf-8"))
+    page_payload = next(page for page in annotations["pages"] if page.get("image") == "page_0011.png")
+    overlay_path = tmp_path / "bbox_overlay.png"
+
+    diagnostics = gemini_vlm.analyze_bbox_response(
+        image_path,
+        json.dumps({"pages": [page_payload]}, ensure_ascii=False),
+        overlay_path=overlay_path,
+    )
+
+    assert diagnostics["bbox_count"] > 0
+    assert diagnostics["suspicious"] is False
+    assert diagnostics["preferred_bbox_mode"] == "pixel_as_is"
+    assert diagnostics["bbox_mode_scores"]["pixel_as_is"] > diagnostics["bbox_mode_scores"]["normalized_1000_to_pixel"]
+    assert diagnostics["median_aspect_ratio"] < 10.0
+    assert diagnostics["overlay_path"] is None
+    assert overlay_path.exists() is False
+
+
 def test_generation_config_rejects_unknown_thinking_level(monkeypatch) -> None:
     class _FakeThinkingConfig:
         def __init__(self, **kwargs):
@@ -1117,6 +1393,89 @@ def test_parse_page_extraction_text_clears_note_flags_on_non_notes_pages() -> No
     assert extraction.facts[0].note_num is None
 
 
+def test_parse_page_extraction_text_auto_resolves_normalized_bboxes_when_image_path_is_provided(tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (800, 800), color=(255, 255, 255)).save(image_path)
+    image = Image.open(image_path)
+    for x in range(400, 560):
+        for y in range(400, 480):
+            image.putpixel((x, y), (16, 16, 16))
+    image.save(image_path)
+
+    payload = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            },
+            facts=[
+                {"bbox": [500, 500, 200, 100], "value": "10", "note_ref": None, "path": []},
+            ],
+        )
+    )
+
+    extraction = gemini_vlm.parse_page_extraction_text(payload, image_path=image_path)
+
+    assert extraction.facts[0].bbox.x == pytest.approx(400.0)
+    assert extraction.facts[0].bbox.y == pytest.approx(400.0)
+    assert extraction.facts[0].bbox.w == pytest.approx(160.0)
+    assert extraction.facts[0].bbox.h == pytest.approx(80.0)
+
+
+def test_parse_page_extraction_text_uses_page_wide_normalized_mode_when_global_score_dominates(tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (800, 800), color=(255, 255, 255)).save(image_path)
+    image = Image.open(image_path)
+    normalized_rects = [
+        (400, 400, 80, 40),
+        (520, 400, 80, 40),
+        (400, 520, 80, 40),
+    ]
+    for rect in normalized_rects:
+        x0, y0, w, h = rect
+        for x in range(x0, x0 + w):
+            for y in range(y0, y0 + h):
+                image.putpixel((x, y), (16, 16, 16))
+    for x in range(500, 600):
+        for y in range(500, 550):
+            image.putpixel((x, y), (16, 16, 16))
+    image.save(image_path)
+
+    payload = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            },
+            facts=[
+                {"bbox": [500, 500, 100, 50], "value": "10", "note_ref": None, "path": []},
+                {"bbox": [650, 500, 100, 50], "value": "11", "note_ref": None, "path": []},
+                {"bbox": [500, 650, 100, 50], "value": "12", "note_ref": None, "path": []},
+            ],
+        )
+    )
+
+    normalized = gemini_vlm._normalize_page_extraction_payload(json.loads(payload))
+    resolved, mode, scores, _fact_modes, _policy = gemini_vlm._resolve_page_extraction_bbox_mode(
+        normalized,
+        image_path=image_path,
+    )
+
+    assert mode == "normalized_1000_to_pixel"
+    assert scores["normalized_1000_to_pixel"] > scores["pixel_as_is"]
+    for fact, (expected_x, expected_y, expected_w, expected_h) in zip(resolved["pages"][0]["facts"], normalized_rects):
+        assert fact["bbox"][0] == pytest.approx(expected_x)
+        assert fact["bbox"][1] == pytest.approx(expected_y)
+        assert fact["bbox"][2] == pytest.approx(expected_w)
+        assert fact["bbox"][3] == pytest.approx(expected_h)
+
+
 def test_streaming_parser_uses_meta_to_clear_note_flags_on_non_notes_pages() -> None:
     parser = gemini_vlm.StreamingPageExtractionParser()
     meta_chunk = '{"meta":{"entity_name":null,"page_num":"3","page_type":"statements","statement_type":"income_statement","title":null},'
@@ -1135,6 +1494,229 @@ def test_streaming_parser_uses_meta_to_clear_note_flags_on_non_notes_pages() -> 
     extraction = parser.finalize()
     assert extraction.facts[0].note_flag is False
     assert extraction.facts[0].note_num is None
+
+
+def test_streaming_parser_finalize_auto_resolves_normalized_bboxes_when_image_path_is_provided(tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (800, 800), color=(255, 255, 255)).save(image_path)
+    image = Image.open(image_path)
+    for x in range(400, 560):
+        for y in range(400, 480):
+            image.putpixel((x, y), (16, 16, 16))
+    image.save(image_path)
+
+    parser = gemini_vlm.StreamingPageExtractionParser(image_path=image_path)
+    chunk = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            },
+            facts=[{"bbox": [500, 500, 200, 100], "value": "10", "note_ref": None, "path": []}],
+        )
+    )
+    parser.feed(chunk)
+
+    extraction = parser.finalize()
+
+    assert extraction.facts[0].bbox.x == pytest.approx(400.0)
+    assert extraction.facts[0].bbox.y == pytest.approx(400.0)
+    assert extraction.facts[0].bbox.w == pytest.approx(160.0)
+    assert extraction.facts[0].bbox.h == pytest.approx(80.0)
+
+
+def test_streaming_parser_finalize_clears_partial_duration_period_range() -> None:
+    parser = gemini_vlm.StreamingPageExtractionParser()
+    chunk = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "3",
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            },
+            facts=[
+                {
+                    "bbox": [10, 20, 30, 40],
+                    "value": "10",
+                    "period_type": "duration",
+                    "period_start": "2024-01-01",
+                    "period_end": None,
+                    "path": [],
+                }
+            ],
+        )
+    )
+    parser.feed(chunk)
+
+    extraction = parser.finalize()
+
+    assert extraction.facts[0].period_type is not None
+    assert extraction.facts[0].period_type.value == "duration"
+    assert extraction.facts[0].period_start is None
+    assert extraction.facts[0].period_end is None
+
+
+def test_parse_page_extraction_text_drops_invalid_facts_and_writes_issue_summary(tmp_path: Path) -> None:
+    session_dir, image_path = _create_logged_session(tmp_path)
+    raw_text = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "11",
+                "page_type": "statements",
+                "statement_type": "notes_to_financial_statements",
+                "title": "Notes",
+            },
+            facts=[
+                {
+                    "bbox": [100, 120, 40, 20],
+                    "value": "10",
+                    "note_flag": True,
+                    "note_num": 5,
+                    "path": ["A"],
+                },
+                {
+                    "bbox": [180, 120, 40, 20],
+                    "value": "20",
+                    "note_flag": False,
+                    "note_num": 5,
+                    "path": ["B"],
+                },
+            ],
+        ),
+        ensure_ascii=False,
+    )
+
+    extraction = gemini_vlm.parse_page_extraction_text(
+        raw_text,
+        image_path=image_path,
+        session_dir=session_dir,
+    )
+    summary = gemini_vlm.load_issue_summary(session_dir)
+    trace_rows = [
+        json.loads(line)
+        for line in (session_dir / "fact_trace.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+
+    assert len(extraction.facts) == 1
+    assert extraction.facts[0].value == "10"
+    assert summary is not None
+    assert summary["status"] == "warning"
+    assert summary["kept_fact_count"] == 1
+    assert summary["dropped_fact_count"] == 1
+    assert summary["validation_failure_groups"][0]["code"] == "note_num_without_note_flag"
+    assert summary["validation_failure_groups"][0]["count"] == 1
+    assert any(row["source_stage"] == "final_validated" for row in trace_rows)
+    assert any(row["source_stage"] == "final_dropped" for row in trace_rows)
+
+
+def test_streaming_parser_records_fact_lineage_across_stream_and_finalize(tmp_path: Path) -> None:
+    session_dir, image_path = _create_logged_session(tmp_path)
+    parser = gemini_vlm.StreamingPageExtractionParser(image_path=image_path, session_dir=session_dir)
+    payload = json.dumps(
+        _wrapper_payload(
+            meta={
+                "entity_name": None,
+                "page_num": "11",
+                "page_type": "statements",
+                "statement_type": "notes_to_financial_statements",
+                "title": "Notes",
+            },
+            facts=[
+                {
+                    "bbox": [100, 120, 40, 20],
+                    "value": "10",
+                    "note_flag": True,
+                    "note_num": 5,
+                    "path": ["A"],
+                },
+                {
+                    "bbox": [180, 120, 40, 20],
+                    "value": "20",
+                    "note_flag": False,
+                    "note_num": 5,
+                    "path": ["B"],
+                },
+            ],
+        ),
+        ensure_ascii=False,
+    )
+
+    parser.feed(payload)
+    extraction = parser.finalize()
+    trace_rows = [
+        json.loads(line)
+        for line in (session_dir / "fact_trace.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    stages = {row["source_stage"] for row in trace_rows}
+
+    assert len(extraction.facts) == 1
+    assert stages >= {
+        "stream_partial",
+        "stream_normalized",
+        "final_parse",
+        "final_resolved",
+        "final_validated",
+        "final_dropped",
+    }
+
+
+def test_parse_page_extraction_text_latest_bad_log_writes_grouped_issue_summary(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    source_dir = repo_root / "gemini_logs/20260319T115800.605745Z_stream_content_gemini-3-flash-preview"
+    session_dir = tmp_path / "bad_note_session"
+    shutil.copytree(source_dir, session_dir)
+    raw_text = (session_dir / "output.txt").read_text(encoding="utf-8")
+    image_path = session_dir / "input_target.png"
+
+    with pytest.raises(ValueError, match=r"Kept 0 valid fact\(s\), dropped 24 invalid fact\(s\)\."):
+        gemini_vlm.parse_page_extraction_text(
+            raw_text,
+            image_path=image_path,
+            session_dir=session_dir,
+        )
+
+    summary = gemini_vlm.load_issue_summary(session_dir)
+
+    assert summary is not None
+    assert summary["status"] == "error"
+    assert summary["kept_fact_count"] == 0
+    assert summary["dropped_fact_count"] == 24
+    assert summary["validation_failure_groups"][0]["code"] == "note_num_without_note_flag"
+    assert summary["validation_failure_groups"][0]["count"] == 24
+    assert (session_dir / "issue_summary.json").is_file()
+    assert (session_dir / "fact_trace.jsonl").is_file()
+
+
+def test_parse_page_extraction_text_records_raw_and_resolved_bbox_diagnostics_for_suspicious_log(tmp_path: Path) -> None:
+    repo_root = Path(__file__).resolve().parents[1]
+    source_dir = repo_root / "gemini_logs/20260317T205644.557610Z_stream_content_gemini-3-flash-preview"
+    session_dir = tmp_path / "bbox_session"
+    shutil.copytree(source_dir, session_dir)
+    gemini_vlm.analyze_logged_bbox_session(session_dir)
+    raw_text = (session_dir / "output.txt").read_text(encoding="utf-8")
+    image_path = session_dir / "input_target.png"
+
+    extraction = gemini_vlm.parse_page_extraction_text(
+        raw_text,
+        image_path=image_path,
+        session_dir=session_dir,
+    )
+    summary = gemini_vlm.load_issue_summary(session_dir)
+
+    assert len(extraction.facts) > 0
+    assert summary is not None
+    assert summary["bbox_diagnostics_raw"]["suspicious"] is True
+    assert summary["bbox_diagnostics_resolved"]["bbox_count"] == len(extraction.facts)
+    assert (session_dir / "bbox_overlay.png").is_file()
+    assert (session_dir / "bbox_overlay_resolved.png").is_file()
 
 
 def test_parse_selected_field_patch_text_valid_payload() -> None:

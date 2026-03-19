@@ -78,7 +78,7 @@ def test_resolve_startup_context_no_args_opens_home() -> None:
 
 def test_dashboard_consumes_images_dir_startup(monkeypatch, tmp_path: Path) -> None:
     _qt_app()
-    monkeypatch.setattr(dashboard.app_mod, "AnnotationWindow", _FakeAnnotationWindow)
+    monkeypatch.setattr(dashboard, "AnnotationWindow", _FakeAnnotationWindow)
 
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -97,7 +97,7 @@ def test_dashboard_consumes_images_dir_startup(monkeypatch, tmp_path: Path) -> N
 
 def test_dashboard_close_is_blocked_when_embedded_annotator_refuses(monkeypatch, tmp_path: Path) -> None:
     _qt_app()
-    monkeypatch.setattr(dashboard.app_mod, "AnnotationWindow", _FakeAnnotationWindow)
+    monkeypatch.setattr(dashboard, "AnnotationWindow", _FakeAnnotationWindow)
 
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)

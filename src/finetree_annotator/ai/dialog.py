@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDialog,
+    QDoubleSpinBox,
     QFormLayout,
     QFrame,
     QGridLayout,
@@ -95,12 +96,19 @@ class AIDialog(QDialog):
         self.few_shot_preset_combo = QComboBox()
         for preset_id, preset_label in few_shot_presets:
             self.few_shot_preset_combo.addItem(preset_label, preset_id)
+        self.temperature_spin = QDoubleSpinBox()
+        self.temperature_spin.setDecimals(2)
+        self.temperature_spin.setSingleStep(0.05)
+        self.temperature_spin.setRange(-1.0, 2.0)
+        self.temperature_spin.setSpecialValueText("Model default")
+        self.temperature_spin.setValue(-1.0)
         self.max_facts_spin = QSpinBox()
         self.max_facts_spin.setRange(0, 999)
         options_layout.addRow("Thinking", self.thinking_check)
         options_layout.addRow("Thinking level", self.thinking_level_combo)
         options_layout.addRow("Few-shot", self.few_shot_check)
         options_layout.addRow("Few-shot preset", self.few_shot_preset_combo)
+        options_layout.addRow("Temperature", self.temperature_spin)
         options_layout.addRow("Max facts", self.max_facts_spin)
         root.addWidget(self.options_box)
 
@@ -182,6 +190,7 @@ class AIDialog(QDialog):
         self.model_combo.currentTextChanged.connect(self.state_changed.emit)
         self.thinking_check.toggled.connect(self._on_thinking_toggled)
         self.few_shot_check.toggled.connect(self._on_few_shot_toggled)
+        self.temperature_spin.valueChanged.connect(lambda _value: self.state_changed.emit())
         self.max_facts_spin.valueChanged.connect(lambda _value: self.state_changed.emit())
         self.thinking_level_combo.currentTextChanged.connect(self.state_changed.emit)
         self.few_shot_preset_combo.currentTextChanged.connect(self.state_changed.emit)
@@ -231,6 +240,11 @@ class AIDialog(QDialog):
     def current_prompt(self) -> str:
         return self.prompt_edit.toPlainText()
 
+    def current_temperature(self) -> float | None:
+        if self.temperature_spin.value() <= self.temperature_spin.minimum():
+            return None
+        return float(self.temperature_spin.value())
+
     def selected_fix_fields(self) -> set[str]:
         return {
             field_name
@@ -270,6 +284,14 @@ class AIDialog(QDialog):
         self.prompt_edit.setPlainText(text)
         self.prompt_edit.blockSignals(False)
 
+    def set_temperature(self, value: float | None) -> None:
+        self.temperature_spin.blockSignals(True)
+        if value is None:
+            self.temperature_spin.setValue(self.temperature_spin.minimum())
+        else:
+            self.temperature_spin.setValue(float(value))
+        self.temperature_spin.blockSignals(False)
+
     def set_status(self, text: str, *, fact_count: int) -> None:
         self.status_label.setText(text)
         self.fact_count_label.setText(f"Parsed facts: {int(fact_count)}")
@@ -290,6 +312,11 @@ class AIDialog(QDialog):
         if few_shot_preset_label is not None:
             few_shot_preset_label.setVisible(capabilities.supports_few_shot)
 
+        self.temperature_spin.setVisible(capabilities.supports_temperature)
+        temperature_label = self.options_box.layout().labelForField(self.temperature_spin)
+        if temperature_label is not None:
+            temperature_label.setVisible(capabilities.supports_temperature)
+
         self.max_facts_spin.setVisible(capabilities.supports_max_facts)
         max_facts_label = self.options_box.layout().labelForField(self.max_facts_spin)
         if max_facts_label is not None:
@@ -300,6 +327,7 @@ class AIDialog(QDialog):
         self.options_box.setVisible(
             capabilities.supports_thinking
             or capabilities.supports_few_shot
+            or capabilities.supports_temperature
             or capabilities.supports_max_facts
         )
         self._on_thinking_toggled(self.thinking_check.isChecked())
@@ -309,6 +337,7 @@ class AIDialog(QDialog):
         provider_index = self.provider_combo.findData(defaults.provider.value)
         if provider_index >= 0:
             self.provider_combo.setCurrentIndex(provider_index)
+        self.set_temperature(defaults.temperature)
         self.thinking_check.setChecked(bool(defaults.enable_thinking))
         level_index = self.thinking_level_combo.findText(defaults.thinking_level)
         if level_index >= 0:
@@ -336,6 +365,7 @@ class AIDialog(QDialog):
             self.thinking_level_combo,
             self.few_shot_check,
             self.few_shot_preset_combo,
+            self.temperature_spin,
             self.max_facts_spin,
             self.statement_type_check,
             self.select_all_fields_btn,

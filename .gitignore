@@ -23,11 +23,16 @@ logs/
 *.log
 .runpod/
 train.log
+gemini_logs/
+qwen_logs/
 
 finetree_config.toml
 
 artifacts/
 data/finetune/
+benchmark/output/
+data/annotations/_backup/
+data/annotations_backup_*/
 
 # Local workspace-managed documents. Tracked fixture files remain tracked;
 # force-add new ones only when they are intentional repo content.

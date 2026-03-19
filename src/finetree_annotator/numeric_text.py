@@ -3,10 +3,17 @@ from __future__ import annotations
 from typing import Any
 
 
+def _is_footnote_dash_text(text: str) -> bool:
+    compact = str(text or "").strip().replace(" ", "")
+    return compact in {"(*)-", "-(*)"}
+
+
 def _is_negative_numeric_text(text: str) -> bool:
     text = str(text or "").strip()
     if not text or text == "-":
         return False
+    if _is_footnote_dash_text(text):
+        return True
     return (text.startswith("(") and text.endswith(")")) or text.startswith("-")
 
 
@@ -27,6 +34,8 @@ def derive_natural_sign_from_value_text(value: Any) -> str | None:
         return None
     if text == "-":
         return None
+    if _is_footnote_dash_text(text):
+        return "negative"
     if text.startswith("(") and text.endswith(")"):
         return "negative"
     if text.startswith("-"):

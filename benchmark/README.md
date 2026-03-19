@@ -1,119 +1,73 @@
 # Benchmark
 
-This workspace is for evaluating already-generated prediction JSON files against ground-truth JSON documents.
+The benchmark evaluates already-generated prediction JSON files against ground-truth annotation documents. It does not run model inference itself.
 
-The benchmark module does not run model inference. You can use it in two ways:
+Use it when you already have:
 
-- manual mode: place prediction files in `benchmark/input`, open the local UI, fill metadata, and upload `logging.jsonl`
-- `info.json` mode: point `benchmark.input_dir` at a submission folder containing `info.json`, `logging.jsonl`, and `predictions/`; the UI will ingest the metadata automatically and skip the manual form
+- `predictions/*.json`
+- `logging.jsonl`
+- optional `info.json` metadata bundle
 
-## Workspace Layout
+## Modes
+
+### Web UI
+
+Start the local benchmark server:
+
+```bash
+./.env/bin/finetree-benchmark --config benchmark/config.example.yaml --host 127.0.0.1 --port 8123
+```
+
+Open:
+
+- [http://127.0.0.1:8123/submission](http://127.0.0.1:8123/submission)
+- [http://127.0.0.1:8123/leaderboard](http://127.0.0.1:8123/leaderboard)
+
+### Headless Runner
+
+Run a benchmark bundle directly:
+
+```bash
+./.env/bin/finetree-benchmark-run \
+  --config benchmark/config.example.yaml \
+  --submission /absolute/path/to/benchmark_submission
+```
+
+## Expected Layout
 
 ```text
-benchmark/
-  config.example.yaml
-  input/
-    info.json
-    logging.jsonl
-    predictions/
-      pred_0001.json
-  output/
-    submissions/
-      <israel-local-timestamp>__<checkpoint-slug>/
-        logging.jsonl
-        report.json
+benchmark_submission/
+  info.json
+  logging.jsonl
+  predictions/
+    pred_0001.json
 ```
 
-## Prepare A Submission
+The benchmark config controls the explicit mappings between prediction files and ground-truth pages.
 
-1. Create a submission folder with:
-   - `info.json`
-   - `logging.jsonl`
-   - prediction JSONs such as `predictions/pred_0001.json`
-2. Update [`benchmark/config.example.yaml`](config.example.yaml):
-   - benchmark input/output paths
-   - weighting and evaluation settings
-   - optional manual UI metadata defaults
-   - explicit prediction-to-GT mappings
-3. In `info.json`, keep `model_metadata` aligned with the benchmark submission fields and include the structured sections:
-   - `training_args`
-   - `environment`
-   - `run`
-   - `selected_checkpoint`
-   - `artifacts`
-4. Make the YAML mappings match the prediction filenames the submission folder contains, for example `predictions/pred_0001.json`.
+## Config
 
-## Run The Benchmark
+Start from [config.example.yaml](/Users/delmedigo/Dev/FineTree/benchmark/config.example.yaml).
 
-```bash
-finetree-benchmark --config benchmark/config.example.yaml --host 127.0.0.1 --port 8123
+Important sections:
+
+- `benchmark.input_dir`
+- `benchmark.output_dir`
+- `methods`
+- `weighting`
+- `evaluation`
+- `mappings`
+
+## Outputs
+
+Persisted reports are written under:
+
+```text
+benchmark/output/submissions/<submission_id>/
+  logging.jsonl
+  report.json
 ```
 
-Open the submission page at [http://127.0.0.1:8123/submission](http://127.0.0.1:8123/submission), review the mapping status, upload `logging.jsonl`, and submit one benchmark run.
+## More Detail
 
-If `benchmark.input_dir` already contains `info.json`, the page will use those files directly and the manual form will not be shown.
-
-For headless evaluation on the benchmark machine after unpacking a Colab-generated bundle:
-
-```bash
-finetree-benchmark-run \
-  --config benchmark/config.example.yaml \
-  --submission /path/to/run/benchmark_submission
-```
-
-## Leaderboard
-
-Open [http://127.0.0.1:8123/leaderboard](http://127.0.0.1:8123/leaderboard).
-
-The leaderboard supports:
-
-- sorting by any column
-- global text filtering across metrics, metadata, and logging summaries
-- comparing persisted submissions without rerunning evaluation
-
-## Reported Metrics
-
-The persisted `report.json` and leaderboard include:
-
-- `overall_score`
-- `meta_score`
-- `facts_score`
-- `meta_hard_score`
-- `entity_score`
-- `title_score`
-- `page_num_score`
-- `page_type_score`
-- `statement_type_score`
-- logging-derived summaries such as latest/best loss, token accuracy, memory, speed, and step progress
-- file-backed submission context such as run id, selected checkpoint, and artifact paths when loaded from `info.json`
-
-## Notebook Flow
-
-Use one of these Colab notebooks, depending on whether you are backfilling an existing model or running a new training job:
-
-- [notebooks/qwen35_finetree_v21_infer_only.ipynb](../notebooks/qwen35_finetree_v21_infer_only.ipynb)
-  Purpose: one-time backfill for the already-trained merged model `asafd60/Qwen3.5-27B-FineTree-V2.1`
-- [notebooks/ms_swift_qwen35_train_and_bundle.ipynb](../notebooks/ms_swift_qwen35_train_and_bundle.ipynb)
-  Purpose: future MS-Swift training runs that should emit a benchmark-ready bundle automatically
-
-The inference-only notebook:
-
-- downloads the exact historical `args.json` from the Hugging Face model repo
-- fetches or uploads the historical `logging.jsonl`
-- runs dataset-wide GPU inference for the configured target model
-- writes `info.json` plus benchmark-ready predictions
-- packages a self-contained submission bundle for download
-
-The training notebook:
-
-- saves args and environment metadata before training
-- picks the single best checkpoint by lowest `eval_loss`
-- pushes adapter-only exports for the best and final checkpoints
-- runs inference once for the selected best checkpoint
-- writes `info.json` plus benchmark-ready predictions
-- packages a self-contained submission bundle for download
-
-After downloading that bundle, move it to the benchmark/UI machine, unpack it, and either:
-
-- point `benchmark.input_dir` at the unpacked folder and use the UI
-- run `finetree-benchmark-run` against the unpacked folder
+For the end-to-end dataset, training, prediction, and evaluation flow, see [docs/training_and_benchmark.md](/Users/delmedigo/Dev/FineTree/docs/training_and_benchmark.md).

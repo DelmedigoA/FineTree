@@ -95,9 +95,20 @@ def gemini_autocomplete_prompt_template() -> str:
     )
 
 
-def build_extraction_prompt(template: str, page_image_path: Path) -> str:
+def build_extraction_prompt(
+    template: str,
+    page_image_path: Path,
+    *,
+    image_dimensions: Optional[tuple[float, float]],
+) -> str:
     prompt = template.replace("{{PAGE_IMAGE}}", str(page_image_path))
-    return prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
+    prompt = prompt.replace("{{IMAGE_NAME}}", page_image_path.name)
+    image_size = (
+        f"{int(image_dimensions[0])} x {int(image_dimensions[1])} pixels"
+        if image_dimensions is not None
+        else "unknown"
+    )
+    return prompt.replace("{{IMAGE_DIMENSIONS}}", image_size)
 
 
 def build_page_prompt_payload(

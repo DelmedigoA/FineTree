@@ -2541,7 +2541,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2575,7 +2575,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2609,41 +2609,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "instant",
-          "period_start": null,
-          "period_end": "2023-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "עלות",
-            "יתרה לתחילת השנה",
-            "שיפורים במושכר"
-          ],
-          "path_source": "observed",
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": "tabular",
-          "bbox": [
-            557.21,
-            834.26,
-            88.91,
-            44.29
-          ]
-        },
-        {
-          "value": "49113",
-          "fact_num": 4,
-          "equations": null,
-          "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2673,16 +2639,16 @@
         },
         {
           "value": "268170",
-          "fact_num": 5,
+          "fact_num": 4,
           "equations": [
             {
               "equation": "90904 + 128153 + 49113",
-              "fact_equation": "f1 + f2 + f4"
+              "fact_equation": "f1 + f2 + f3"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2704,19 +2670,19 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            407.41,
-            837.31,
+            414.46,
+            830.26,
             101.5,
             35.07
           ]
         },
         {
           "value": "251466",
-          "fact_num": 6,
+          "fact_num": 5,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2746,11 +2712,11 @@
         },
         {
           "value": "6230",
-          "fact_num": 7,
+          "fact_num": 6,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2780,11 +2746,11 @@
         },
         {
           "value": "-",
-          "fact_num": 8,
+          "fact_num": 7,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2814,11 +2780,11 @@
         },
         {
           "value": "-",
-          "fact_num": 9,
+          "fact_num": 8,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2848,16 +2814,55 @@
         },
         {
           "value": "6230",
-          "fact_num": 10,
+          "fact_num": 9,
           "equations": [
             {
               "equation": "6230 + 0 + 0",
-              "fact_equation": "f7 + f8 + f9"
+              "fact_equation": "f6 + f7 + f8"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": 4,
+          "note_ref": null,
+          "date": "2024-12-31",
+          "period_type": "duration",
+          "period_start": "2024-01-01",
+          "period_end": "2024-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במשך השנה",
+            "עלות",
+            "סה״כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            430.04,
+            871.48,
+            90.0,
+            26.71
+          ]
+        },
+        {
+          "value": "6230",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "6230 + 0 + 0",
+              "fact_equation": "f6 + f7 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2891,12 +2896,12 @@
           "equations": [
             {
               "equation": "6230 + 0 + 0",
-              "fact_equation": "f7 + f8 + f9"
+              "fact_equation": "f6 + f7 + f8"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -2930,51 +2935,12 @@
           "equations": [
             {
               "equation": "6230 + 0 + 0",
-              "fact_equation": "f7 + f8 + f9"
+              "fact_equation": "f6 + f7 + f8"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
-          "note_flag": true,
-          "note_name": "רכוש קבוע",
-          "note_num": 4,
-          "note_ref": null,
-          "date": "2024-12-31",
-          "period_type": "duration",
-          "period_start": "2024-01-01",
-          "period_end": "2024-12-31",
-          "duration_type": null,
-          "recurring_period": null,
-          "path": [
-            "תוספות במשך השנה",
-            "עלות",
-            "סה״כ"
-          ],
-          "path_source": "observed",
-          "currency": "ILS",
-          "scale": 1,
-          "value_type": "amount",
-          "value_context": "tabular",
-          "bbox": [
-            430.04,
-            871.48,
-            90.0,
-            26.71
-          ]
-        },
-        {
-          "value": "6230",
-          "fact_num": 13,
-          "equations": [
-            {
-              "equation": "6230 + 0 + 0",
-              "fact_equation": "f7 + f8 + f9"
-            }
-          ],
-          "natural_sign": "positive",
-          "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3004,11 +2970,11 @@
         },
         {
           "value": "43803",
-          "fact_num": 14,
+          "fact_num": 13,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3038,11 +3004,11 @@
         },
         {
           "value": "43803",
-          "fact_num": 15,
+          "fact_num": 14,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3072,11 +3038,11 @@
         },
         {
           "value": "(4432)",
-          "fact_num": 16,
+          "fact_num": 15,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3106,11 +3072,11 @@
         },
         {
           "value": "-",
-          "fact_num": 17,
+          "fact_num": 16,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3140,11 +3106,11 @@
         },
         {
           "value": "-",
-          "fact_num": 18,
+          "fact_num": 17,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3174,16 +3140,16 @@
         },
         {
           "value": "(4432)",
-          "fact_num": 19,
+          "fact_num": 18,
           "equations": [
             {
               "equation": "- 4432 + 0 + 0",
-              "fact_equation": "f16 + f17 + f18"
+              "fact_equation": "f15 + f16 + f17"
             }
           ],
           "natural_sign": "negative",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3213,11 +3179,11 @@
         },
         {
           "value": "(27099)",
-          "fact_num": 20,
+          "fact_num": 19,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3247,11 +3213,16 @@
         },
         {
           "value": "92702",
-          "fact_num": 21,
-          "equations": null,
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "90904 + 6230 - 4432",
+              "fact_equation": "f1 + f6 + f15"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3281,11 +3252,16 @@
         },
         {
           "value": "128153",
-          "fact_num": 22,
-          "equations": null,
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "128153 + 0 + 0",
+              "fact_equation": "f2 + f7 + f16"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3315,11 +3291,16 @@
         },
         {
           "value": "49113",
-          "fact_num": 23,
-          "equations": null,
+          "fact_num": 22,
+          "equations": [
+            {
+              "equation": "49113 + 0 + 0",
+              "fact_equation": "f3 + f8 + f17"
+            }
+          ],
           "natural_sign": "positive",
-          "row_role": "detail",
-          "comment_ref": "4",
+          "row_role": "total",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3349,16 +3330,16 @@
         },
         {
           "value": "269968",
-          "fact_num": 24,
+          "fact_num": 23,
           "equations": [
             {
               "equation": "92702 + 128153 + 49113",
-              "fact_equation": "f21 + f22 + f23"
+              "fact_equation": "f20 + f21 + f22"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3388,11 +3369,11 @@
         },
         {
           "value": "268170",
-          "fact_num": 25,
+          "fact_num": 24,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3422,11 +3403,11 @@
         },
         {
           "value": "78534",
-          "fact_num": 26,
+          "fact_num": 25,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3456,11 +3437,11 @@
         },
         {
           "value": "83018",
-          "fact_num": 27,
+          "fact_num": 26,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3490,11 +3471,11 @@
         },
         {
           "value": "18664",
-          "fact_num": 28,
+          "fact_num": 27,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3524,16 +3505,16 @@
         },
         {
           "value": "180216",
-          "fact_num": 29,
+          "fact_num": 28,
           "equations": [
             {
               "equation": "78534 + 83018 + 18664",
-              "fact_equation": "f26 + f27 + f28"
+              "fact_equation": "f25 + f26 + f27"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3563,11 +3544,11 @@
         },
         {
           "value": "176075",
-          "fact_num": 30,
+          "fact_num": 29,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3597,11 +3578,11 @@
         },
         {
           "value": "3373",
-          "fact_num": 31,
+          "fact_num": 30,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3631,11 +3612,11 @@
         },
         {
           "value": "23672",
-          "fact_num": 32,
+          "fact_num": 31,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3665,11 +3646,11 @@
         },
         {
           "value": "4912",
-          "fact_num": 33,
+          "fact_num": 32,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3699,16 +3680,16 @@
         },
         {
           "value": "31957",
-          "fact_num": 34,
+          "fact_num": 33,
           "equations": [
             {
               "equation": "3373 + 23672 + 4912",
-              "fact_equation": "f31 + f32 + f33"
+              "fact_equation": "f30 + f31 + f32"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3738,11 +3719,11 @@
         },
         {
           "value": "31240",
-          "fact_num": 35,
+          "fact_num": 34,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3772,11 +3753,11 @@
         },
         {
           "value": "(2918)",
-          "fact_num": 36,
+          "fact_num": 35,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3806,11 +3787,11 @@
         },
         {
           "value": "-",
-          "fact_num": 37,
+          "fact_num": 36,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3840,11 +3821,11 @@
         },
         {
           "value": "-",
-          "fact_num": 38,
+          "fact_num": 37,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3874,16 +3855,16 @@
         },
         {
           "value": "(2918)",
-          "fact_num": 39,
+          "fact_num": 38,
           "equations": [
             {
               "equation": "- 2918 + 0 + 0",
-              "fact_equation": "f36 + f37 + f38"
+              "fact_equation": "f35 + f36 + f37"
             }
           ],
           "natural_sign": "negative",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3913,11 +3894,11 @@
         },
         {
           "value": "(27099)",
-          "fact_num": 40,
+          "fact_num": 39,
           "equations": null,
           "natural_sign": "negative",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3947,11 +3928,11 @@
         },
         {
           "value": "78989",
-          "fact_num": 41,
+          "fact_num": 40,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -3981,11 +3962,11 @@
         },
         {
           "value": "106690",
-          "fact_num": 42,
+          "fact_num": 41,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4015,11 +3996,11 @@
         },
         {
           "value": "23576",
-          "fact_num": 43,
+          "fact_num": 42,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4049,16 +4030,16 @@
         },
         {
           "value": "209255",
-          "fact_num": 44,
+          "fact_num": 43,
           "equations": [
             {
               "equation": "78989 + 106690 + 23576",
-              "fact_equation": "f41 + f42 + f43"
+              "fact_equation": "f40 + f41 + f42"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4088,11 +4069,11 @@
         },
         {
           "value": "180216",
-          "fact_num": 45,
+          "fact_num": 44,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4122,11 +4103,11 @@
         },
         {
           "value": "13713",
-          "fact_num": 46,
+          "fact_num": 45,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4155,11 +4136,11 @@
         },
         {
           "value": "21463",
-          "fact_num": 47,
+          "fact_num": 46,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4188,11 +4169,11 @@
         },
         {
           "value": "25537",
-          "fact_num": 48,
+          "fact_num": 47,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4221,16 +4202,16 @@
         },
         {
           "value": "60713",
-          "fact_num": 49,
+          "fact_num": 48,
           "equations": [
             {
               "equation": "13713 + 21463 + 25537",
-              "fact_equation": "f46 + f47 + f48"
+              "fact_equation": "f45 + f46 + f47"
             }
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4259,11 +4240,11 @@
         },
         {
           "value": "87954",
-          "fact_num": 50,
+          "fact_num": 49,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "4",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": 4,
@@ -4292,7 +4273,7 @@
         },
         {
           "value": "1930880",
-          "fact_num": 51,
+          "fact_num": 50,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4324,7 +4305,7 @@
         },
         {
           "value": "2200295",
-          "fact_num": 52,
+          "fact_num": 51,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4356,11 +4337,11 @@
         },
         {
           "value": "197784",
-          "fact_num": 53,
+          "fact_num": 52,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "5",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
@@ -4388,11 +4369,11 @@
         },
         {
           "value": "808711",
-          "fact_num": 54,
+          "fact_num": 53,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "5",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
@@ -4420,11 +4401,11 @@
         },
         {
           "value": "844368",
-          "fact_num": 55,
+          "fact_num": 54,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "5",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
@@ -4452,11 +4433,11 @@
         },
         {
           "value": "-",
-          "fact_num": 56,
+          "fact_num": 55,
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": "5",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הכנסות מתרומות",
           "note_num": 5,
@@ -4484,7 +4465,7 @@
         },
         {
           "value": "1112712",
-          "fact_num": 57,
+          "fact_num": 56,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4516,7 +4497,7 @@
         },
         {
           "value": "1101640",
-          "fact_num": 58,
+          "fact_num": 57,
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
@@ -4548,11 +4529,11 @@
         },
         {
           "value": "4085744",
-          "fact_num": 59,
+          "fact_num": 58,
           "equations": [
             {
               "equation": "1930880 + 197784 + 844368 + 1112712",
-              "fact_equation": "f51 + f53 + f55 + f57"
+              "fact_equation": "f50 + f52 + f54 + f56"
             }
           ],
           "natural_sign": "positive",
@@ -4585,11 +4566,11 @@
         },
         {
           "value": "4110646",
-          "fact_num": 60,
+          "fact_num": 59,
           "equations": [
             {
               "equation": "2200295 + 808711 + 0 + 1101640",
-              "fact_equation": "f52 + f54 + f56 + f58"
+              "fact_equation": "f51 + f53 + f55 + f57"
             }
           ],
           "natural_sign": "positive",
@@ -4640,7 +4621,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4672,7 +4653,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4704,7 +4685,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4736,7 +4717,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4768,7 +4749,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4800,7 +4781,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4832,7 +4813,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4864,7 +4845,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4896,7 +4877,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4928,7 +4909,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4960,7 +4941,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -4992,7 +4973,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5024,7 +5005,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5056,7 +5037,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5088,7 +5069,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5120,7 +5101,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5157,7 +5138,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5194,7 +5175,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "7",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות - אחרות",
           "note_num": 7,
@@ -5226,7 +5207,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
@@ -5258,7 +5239,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
@@ -5290,7 +5271,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,
@@ -5322,7 +5303,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות צדדים קשורים",
           "note_num": 8,

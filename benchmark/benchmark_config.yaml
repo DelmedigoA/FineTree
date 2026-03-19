@@ -1,11 +1,8 @@
 dataset:
-  gt_path: "/Users/delmedigo/Dev/FineTree/data/annotations/P907062-00.json"
+  gt_path: "/Users/delmedigo/Dev/FineTree/data/annotations/test.json"
 
-  start_idx: 1
-  end_idx: 16
-  pages_to_skip: "8"
-  pred_pattern: "/Users/delmedigo/Dev/FineTree/benchmark/input/predictions/pred_{idx:04d}.json"
-
+  pred_path: "..."
+  
 evaluation:
   facts_key: "facts"
   skip_0: true

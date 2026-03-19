@@ -266,6 +266,7 @@ def test_ai_ground_truth_dialog_defaults_max_facts_to_zero(tmp_path: Path) -> No
     assert dialog is not None
     assert dialog.max_facts_spin.isHidden() is False
     assert dialog.max_facts_spin.value() == 0
+    assert dialog.current_temperature() is None
     dialog.close()
     window.close()
 
@@ -343,6 +344,8 @@ def test_ai_ground_truth_dialog_defaults_to_two_shot_preset(tmp_path: Path) -> N
     assert dialog.current_provider() == app_mod.AIProvider.GEMINI
     assert dialog.current_action() == app_mod.AIActionKind.GROUND_TRUTH
     assert dialog.current_model() == "gemini-3-flash-preview"
+    assert dialog.temperature_spin.isVisible() is True
+    assert dialog.current_temperature() is None
     assert dialog.thinking_check.isChecked() is False
     assert dialog.thinking_level_combo.currentText().lower() == "minimal"
     assert dialog.few_shot_check.isChecked() is True
@@ -445,6 +448,32 @@ def test_gemini_autocomplete_prompt_mentions_locked_facts(tmp_path: Path) -> Non
     assert '"image": "page_0001.png"' in prompt
     assert "runtime rebuilds final contiguous numbering" in prompt.lower()
     assert '"metadata"' not in prompt
+
+    window.close()
+
+
+def test_gemini_ground_truth_prompt_mentions_exact_image_size_and_tight_bbox_rule(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=165, height=239)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    context = window._ai_page_context()
+    assert context is not None
+
+    prompt = window._ai_controller._build_prompt_for_dialog(
+        app_mod.AIProvider.GEMINI,
+        app_mod.AIActionKind.GROUND_TRUTH,
+        context,
+    )
+
+    assert "current image size: 165 x 239 pixels." in prompt.lower()
+    assert "`bbox` must tightly cover the value text only" in prompt
+    assert "do not emit runtime-only page keys such as `annotation_note` or `annotation_status`" in prompt.lower()
+    assert '"date"' not in prompt
+    assert "Only return `pages` with page `image`, page `meta`, and page `facts`." in prompt
 
     window.close()
 
@@ -562,10 +591,12 @@ def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypa
     dialog = window._ai_controller.dialog
     assert dialog is not None
     dialog.prompt_edit.setPlainText("autocomplete prompt")
+    dialog.temperature_spin.setValue(0.35)
     dialog.max_facts_spin.setValue(2)
     window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["max_facts"] == 2
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.35)
     assert captured_stream_kwargs["mode"] == "autocomplete"
 
     window.close()
@@ -786,7 +817,80 @@ def test_gemini_gt_stream_fact_is_buffered_until_completion(tmp_path: Path) -> N
     window.close()
 
 
-def test_gemini_gt_stream_renders_live_after_lock_threshold(tmp_path: Path) -> None:
+def test_gemini_gt_stream_completion_replaces_buffer_with_finalized_facts(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=1617, height=2384)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
+
+    assert window._apply_stream_fact(
+        page_name,
+        {
+            "bbox": [474, 731, 58, 30],
+            "value": "18,763",
+            "row_role": "detail",
+            "note_flag": True,
+            "note_num": 5,
+            "path": ["A"],
+        },
+        stream_source="gemini",
+    )
+    assert window._apply_stream_fact(
+        page_name,
+        {
+            "bbox": [574, 731, 58, 30],
+            "value": "99",
+            "row_role": "detail",
+            "note_flag": False,
+            "note_num": 5,
+            "path": ["B"],
+        },
+        stream_source="gemini",
+    )
+    assert len(window._gemini_gt_buffered_facts) == 2
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "notes_to_financial_statements",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [474, 731, 58, 30],
+                    "value": "18,763",
+                    "row_role": "detail",
+                    "note_flag": True,
+                    "note_num": 5,
+                    "path": ["A"],
+                }
+            )
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert len(window._gemini_gt_buffered_facts) == 1
+    assert len(window._fact_items) == 1
+    assert window._fact_items[0].fact_data["value"] == "18,763"
+
+    window.close()
+
+
+def test_gemini_gt_stream_renders_live_before_lock_threshold(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -907,8 +1011,12 @@ def test_gemini_gt_stream_renders_live_after_lock_threshold(tmp_path: Path) -> N
 
     for payload in payloads[:3]:
         window._on_gemini_stream_fact(payload)
-    assert len(window._fact_items) == 0
+    assert len(window._fact_items) == 3
     assert window._gemini_gt_live_bbox_mode_locked is False
+    assert window._gemini_gt_live_applied is True
+    rect = item_scene_rect(window._fact_items[0])
+    assert rect.x() == pytest.approx(120.0)
+    assert rect.y() == pytest.approx(20.0)
 
     window._on_gemini_stream_fact(payloads[3])
 
@@ -918,6 +1026,52 @@ def test_gemini_gt_stream_renders_live_after_lock_threshold(tmp_path: Path) -> N
     rect = item_scene_rect(window._fact_items[0])
     assert rect.x() == pytest.approx(120.0)
     assert rect.y() == pytest.approx(20.0)
+
+    window.close()
+
+
+def test_gemini_stream_failed_shows_grouped_issue_summary(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=200)
+    annotations_path = tmp_path / "annotations.json"
+    session_dir = tmp_path / "gemini_logs" / "session"
+    session_dir.mkdir(parents=True)
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window._gemini_stream_mode = "gt"
+    window._gemini_gt_live_applied = True
+    window._gemini_stream_worker = SimpleNamespace(
+        issue_summary={
+            "kept_fact_count": 0,
+            "dropped_fact_count": 24,
+            "issue_count": 24,
+            "validation_failure_groups": [
+                {
+                    "code": "note_num_without_note_flag",
+                    "count": 24,
+                }
+            ],
+        },
+        session_dir=session_dir,
+    )
+
+    captured: dict[str, str] = {}
+
+    def _fake_warning(_parent, title: str, detail: str) -> None:
+        captured["title"] = title
+        captured["detail"] = detail
+
+    monkeypatch.setattr(app_mod.QMessageBox, "warning", _fake_warning)
+
+    window._on_gemini_stream_failed("Final parse failed: boom")
+
+    assert captured["title"] == "AI failed"
+    assert "Kept 0 valid fact(s), dropped 24 invalid fact(s)." in captured["detail"]
+    assert "Top issues: note_num_without_note_flag (24)." in captured["detail"]
+    assert "Some streamed facts were rendered live and remain on the page." in captured["detail"]
+    assert str(session_dir) in captured["detail"]
 
     window.close()
 
@@ -940,7 +1094,7 @@ def test_gemini_gt_finalize_reconciles_mode_after_live_lock(tmp_path: Path) -> N
     calls = {"count": 0}
     def _fake_resolve(target_page: str, fact_payloads: list[dict[str, object]]):
         calls["count"] += 1
-        if calls["count"] == 1:
+        if calls["count"] <= 4:
             window._gemini_autocomplete_last_bbox_scores = {
                 app_mod.BBOX_MODE_PIXEL_AS_IS: 0.9,
                 app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.1,
@@ -1101,15 +1255,15 @@ def test_gemini_gt_finalize_reconciles_mode_after_live_lock(tmp_path: Path) -> N
     window.close()
 
 
-def test_gemini_gt_bbox_mode_converts_normalized_1000_when_ink_score_is_better(tmp_path: Path) -> None:
+def test_gemini_gt_bbox_mode_chooses_normalized_when_normalized_score_is_better(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
     _write_test_png(
         images_dir / "page_0001.png",
-        width=200,
-        height=200,
-        dark_rects=[(100, 100, 40, 20)],
+        width=800,
+        height=800,
+        dark_rects=[(400, 400, 160, 80)],
     )
     annotations_path = tmp_path / "annotations.json"
 
@@ -1162,11 +1316,12 @@ def test_gemini_gt_bbox_mode_converts_normalized_1000_when_ink_score_is_better(t
 
     window._on_gemini_stream_completed(extraction)
 
-    rect = item_scene_rect(window._fact_items[0])
-    assert rect.x() == pytest.approx(100.0)
-    assert rect.y() == pytest.approx(100.0)
-    assert rect.width() == pytest.approx(40.0)
-    assert rect.height() == pytest.approx(20.0)
+    state = window.page_states[page_name]
+    bbox = state.facts[0].bbox
+    assert bbox["x"] == pytest.approx(400.0)
+    assert bbox["y"] == pytest.approx(400.0)
+    assert bbox["w"] == pytest.approx(160.0)
+    assert bbox["h"] == pytest.approx(80.0)
     assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL
     assert window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL] > window._gemini_gt_last_bbox_scores[app_mod.BBOX_MODE_PIXEL_AS_IS]
 
@@ -1347,7 +1502,7 @@ def test_gemini_gt_dedupes_facts_across_stream_and_finalize(tmp_path: Path) -> N
     }
 
     window._on_gemini_stream_fact(payload)
-    assert len(window._fact_items) == 0
+    assert len(window._fact_items) == 1
     assert len(window._gemini_gt_buffered_facts) == 1
 
     extraction = SimpleNamespace(
@@ -1371,15 +1526,15 @@ def test_gemini_gt_dedupes_facts_across_stream_and_finalize(tmp_path: Path) -> N
     window.close()
 
 
-def test_autocomplete_bbox_mode_converts_normalized_1000_when_ink_score_is_better(tmp_path: Path) -> None:
+def test_autocomplete_bbox_mode_chooses_normalized_when_normalized_score_is_better(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
     _write_test_png(
         images_dir / "page_0001.png",
-        width=200,
-        height=200,
-        dark_rects=[(100, 100, 40, 20)],
+        width=800,
+        height=800,
+        dark_rects=[(400, 400, 160, 80)],
     )
     annotations_path = tmp_path / "annotations.json"
 
@@ -1400,10 +1555,10 @@ def test_autocomplete_bbox_mode_converts_normalized_1000_when_ink_score_is_bette
 
     assert bbox_mode == app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL
     resolved_bbox = resolved_payloads[0]["bbox"]
-    assert resolved_bbox[0] == pytest.approx(100.0)
-    assert resolved_bbox[1] == pytest.approx(100.0)
-    assert resolved_bbox[2] == pytest.approx(40.0)
-    assert resolved_bbox[3] == pytest.approx(20.0)
+    assert resolved_bbox[0] == pytest.approx(400.0)
+    assert resolved_bbox[1] == pytest.approx(400.0)
+    assert resolved_bbox[2] == pytest.approx(160.0)
+    assert resolved_bbox[3] == pytest.approx(80.0)
     assert window._gemini_autocomplete_last_bbox_scores[app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL] > window._gemini_autocomplete_last_bbox_scores[app_mod.BBOX_MODE_PIXEL_AS_IS]
 
     window.close()
@@ -1468,6 +1623,134 @@ def test_autocomplete_bbox_mode_defaults_to_pixel_when_scores_are_ambiguous(tmp_
     assert bbox_mode == app_mod.BBOX_MODE_PIXEL_AS_IS
     assert resolved_payloads[0]["bbox"][0] == pytest.approx(120.0)
     assert resolved_payloads[0]["bbox"][1] == pytest.approx(110.0)
+
+    window.close()
+
+
+def test_autocomplete_bbox_mode_uses_mixed_per_fact_resolution_when_response_mixes_spaces(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(
+        images_dir / "page_0001.png",
+        width=800,
+        height=800,
+        dark_rects=[(120, 110, 30, 20), (400, 400, 160, 80)],
+    )
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+
+    resolved_payloads, bbox_mode = window._resolve_autocomplete_bbox_mode(
+        page_name,
+        [
+            {
+                "bbox": [120, 110, 30, 20],
+                "value": "55",
+                "row_role": "detail",
+                "path": ["A"],
+            },
+            {
+                "bbox": [500, 500, 200, 100],
+                "value": "12",
+                "row_role": "detail",
+                "path": ["B"],
+            },
+        ],
+    )
+
+    assert bbox_mode == app_mod.BBOX_MODE_MIXED_AUTO
+    assert resolved_payloads[0]["bbox"][0] == pytest.approx(120.0)
+    assert resolved_payloads[0]["bbox"][1] == pytest.approx(110.0)
+    assert resolved_payloads[1]["bbox"][0] == pytest.approx(400.0)
+    assert resolved_payloads[1]["bbox"][1] == pytest.approx(400.0)
+    assert resolved_payloads[1]["bbox"][2] == pytest.approx(160.0)
+    assert resolved_payloads[1]["bbox"][3] == pytest.approx(80.0)
+
+    window.close()
+
+
+def test_gemini_gt_uses_mixed_resolved_payloads_for_live_and_finalize(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=800, height=800)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
+    window._gemini_stream_fact_count = 0
+
+    raw_payloads = [
+        {
+            "bbox": [120, 110, 30, 20],
+            "value": "55",
+            "row_role": "detail",
+            "path": ["A"],
+        },
+        {
+            "bbox": [500, 500, 200, 100],
+            "value": "12",
+            "row_role": "detail",
+            "path": ["B"],
+        },
+    ]
+
+    def _fake_resolve(target_page: str, fact_payloads: list[dict[str, object]]):
+        assert target_page == page_name
+        resolved: list[dict[str, object]] = []
+        for payload in fact_payloads:
+            if payload.get("value") == "12":
+                resolved.append({"bbox": [400.0, 400.0, 160.0, 80.0], "value": "12", "row_role": "detail", "path": ["B"]})
+            else:
+                resolved.append({"bbox": [120.0, 110.0, 30.0, 20.0], "value": "55", "row_role": "detail", "path": ["A"]})
+        window._gemini_autocomplete_last_bbox_scores = {
+            app_mod.BBOX_MODE_PIXEL_AS_IS: 0.7,
+            app_mod.BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.8,
+        }
+        mode = app_mod.BBOX_MODE_MIXED_AUTO if len(resolved) > 1 else app_mod.BBOX_MODE_PIXEL_AS_IS
+        return resolved, mode
+
+    window._resolve_autocomplete_bbox_mode = _fake_resolve  # type: ignore[assignment]
+
+    window._on_gemini_stream_fact(raw_payloads[0])
+    assert len(window._fact_items) == 1
+    rect = item_scene_rect(window._fact_items[0])
+    assert rect.x() == pytest.approx(120.0)
+    assert rect.y() == pytest.approx(110.0)
+
+    window._on_gemini_stream_fact(raw_payloads[1])
+    assert len(window._fact_items) == 2
+    live_second_rect = item_scene_rect(window._fact_items[1])
+    assert live_second_rect.x() == pytest.approx(400.0)
+    assert live_second_rect.y() == pytest.approx(400.0)
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_MIXED_AUTO
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "income_statement",
+                "title": None,
+            }
+        ),
+        facts=[SimpleNamespace(model_dump=lambda mode="json", _payload=payload: _payload) for payload in raw_payloads],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert len(window._fact_items) == 2
+    final_second_rect = item_scene_rect(window._fact_items[1])
+    assert final_second_rect.x() == pytest.approx(400.0)
+    assert final_second_rect.y() == pytest.approx(400.0)
+    assert window._gemini_gt_last_bbox_mode == app_mod.BBOX_MODE_MIXED_AUTO
 
     window.close()
 
@@ -1769,6 +2052,7 @@ def test_ai_dialog_qwen_gt_accepts_thinking_controls(tmp_path: Path) -> None:
     assert "qwen3.5-flash" in options
     assert "qwen3.5-plus" in options
     assert dialog.current_provider() == app_mod.AIProvider.QWEN
+    assert dialog.temperature_spin.isVisible() is False
     assert dialog.thinking_check.isVisible() is True
     assert dialog.thinking_level_combo.isVisible() is False
     dialog.close()
