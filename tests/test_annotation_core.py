@@ -7,13 +7,17 @@ from pydantic import ValidationError
 
 from finetree_annotator.annotation_core import (
     BoxRecord,
+    IMPORT_BBOX_MODE_NORMALIZED_1000,
+    IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS,
     PageState,
     apply_entity_name_to_missing_pages,
     bbox_to_list,
     build_annotations_payload,
+    convert_imported_page_states,
     denormalize_bbox_from_1000,
     extract_document_meta,
     load_page_states,
+    parse_import_json_text,
     parse_import_payload,
     normalize_bbox_data,
     normalize_fact_data,
@@ -389,6 +393,103 @@ def test_parse_import_payload_supports_full_document_shape() -> None:
     assert set(states.keys()) == {"page_0001.png"}
     assert states["page_0001.png"].meta["page_type"] == "statements"
     assert states["page_0001.png"].meta["statement_type"] == "notes_to_financial_statements"
+
+
+def test_parse_import_json_text_recovers_complete_facts_from_truncated_single_page_payload() -> None:
+    raw = (
+        '{"meta":{"page_num":"3","page_type":"statements"},'
+        '"facts":[{"bbox":[1,2,3,4],"value":"10","path":[]},'
+        '{"bbox":[5,6,7'
+    )
+
+    result = parse_import_json_text(raw)
+
+    assert result.recovered is True
+    assert result.message is not None
+    assert "Recovered import from invalid JSON" in result.message
+    assert result.payload["meta"]["page_num"] == "3"
+    assert result.payload["facts"] == [{"bbox": [1, 2, 3, 4], "value": "10", "path": []}]
+
+
+def test_convert_imported_page_states_normalized_1000_mode_scales_bbox() -> None:
+    imported_states = {
+        "page_0001.png": PageState(
+            meta={},
+            facts=[
+                BoxRecord(
+                    bbox={"x": 250, "y": 500, "w": 100, "h": 50},
+                    fact={"value": "10", "path": []},
+                )
+            ],
+        )
+    }
+
+    converted_states, stats = convert_imported_page_states(
+        imported_states,
+        {"page_0001.png": (2000.0, 3000.0)},
+        bbox_mode=IMPORT_BBOX_MODE_NORMALIZED_1000,
+    )
+
+    assert stats.converted == 1
+    assert stats.clamped == 0
+    assert stats.skipped == 0
+    assert converted_states["page_0001.png"].facts[0].bbox == {
+        "x": 500.0,
+        "y": 1500.0,
+        "w": 200.0,
+        "h": 150.0,
+    }
+
+
+def test_convert_imported_page_states_resized_pixels_mode_uses_max_pixels(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    def _fake_restore(bbox, *, original_width: float, original_height: float, max_pixels: int):
+        captured["bbox"] = bbox
+        captured["original_width"] = original_width
+        captured["original_height"] = original_height
+        captured["max_pixels"] = max_pixels
+        return normalize_bbox_data({"x": 11, "y": 22, "w": 33, "h": 44}), True
+
+    monkeypatch.setattr(
+        "finetree_annotator.annotation_core.restore_bbox_from_resized_pixels_with_stats",
+        _fake_restore,
+    )
+
+    imported_states = {
+        "page_0001.png": PageState(
+            meta={},
+            facts=[
+                BoxRecord(
+                    bbox={"x": 5, "y": 6, "w": 7, "h": 8},
+                    fact={"value": "10", "path": []},
+                )
+            ],
+        )
+    }
+
+    converted_states, stats = convert_imported_page_states(
+        imported_states,
+        {"page_0001.png": (1000.0, 500.0)},
+        bbox_mode=IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS,
+        max_pixels=1_400_000,
+    )
+
+    assert captured == {
+        "bbox": {"x": 5.0, "y": 6.0, "w": 7.0, "h": 8.0},
+        "original_width": 1000.0,
+        "original_height": 500.0,
+        "max_pixels": 1_400_000,
+    }
+    assert stats.converted == 1
+    assert stats.clamped == 1
+    assert stats.skipped == 0
+    assert converted_states["page_0001.png"].facts[0].bbox == {
+        "x": 11.0,
+        "y": 22.0,
+        "w": 33.0,
+        "h": 44.0,
+    }
 
 
 def test_extract_document_meta_normalizes_supported_values() -> None:

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import inspect
 import json
-import math
 import os
 import re
 import shutil
@@ -24,6 +22,10 @@ from ..schema_contract import (
     PROMPT_PAGE_META_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
     build_custom_extraction_prompt_template,
+)
+from ..vision_resize import (
+    fallback_smart_resize_dimensions as _shared_fallback_smart_resize_dimensions,
+    smart_resize_dimensions as _shared_smart_resize_dimensions,
 )
 from .config import load_finetune_config
 from .dataset_builder import build_unsloth_chat_datasets
@@ -571,74 +573,17 @@ def _fallback_smart_resize_dimensions(
     max_pixels: int | None,
     factor: int = 28,
 ) -> tuple[int, int]:
-    if height <= 0 or width <= 0:
-        raise ValueError("Invalid image dimensions.")
-
-    pixels = int(height) * int(width)
-    scale = 1.0
-    snap_mode = "nearest"
-    if min_pixels is not None and pixels < int(min_pixels):
-        scale = max(scale, (int(min_pixels) / float(pixels)) ** 0.5)
-        snap_mode = "ceil"
-    if max_pixels is not None and pixels > int(max_pixels):
-        scale = min(scale, (int(max_pixels) / float(pixels)) ** 0.5) if scale != 1.0 else (int(max_pixels) / float(pixels)) ** 0.5
-        snap_mode = "floor"
-
-    target_h = max(1, int(round(int(height) * scale)))
-    target_w = max(1, int(round(int(width) * scale)))
-    if factor > 1:
-        if snap_mode == "ceil":
-            target_h = max(factor, int(math.ceil(target_h / float(factor))) * factor)
-            target_w = max(factor, int(math.ceil(target_w / float(factor))) * factor)
-        else:
-            target_h = max(factor, (target_h // factor) * factor)
-            target_w = max(factor, (target_w // factor) * factor)
-
-    if min_pixels is not None:
-        while target_h * target_w < int(min_pixels):
-            grew = False
-            if target_w <= target_h:
-                target_w += factor
-                grew = True
-            if target_h * target_w < int(min_pixels):
-                target_h += factor
-                grew = True
-            if not grew:
-                break
-
-    if max_pixels is not None:
-        while target_h * target_w > int(max_pixels) and (target_h > factor or target_w > factor):
-            if target_w >= target_h and target_w > factor:
-                target_w -= factor
-            elif target_h > factor:
-                target_h -= factor
-            else:
-                break
-
-    return int(target_h), int(target_w)
+    return _shared_fallback_smart_resize_dimensions(
+        height,
+        width,
+        min_pixels=min_pixels,
+        max_pixels=max_pixels,
+        factor=factor,
+    )
 
 
 def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None, max_pixels: int | None) -> tuple[int, int]:
-    try:
-        from qwen_vl_utils.vision_process import smart_resize
-    except Exception:
-        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
-
-    kwargs: dict[str, int] = {}
-    if min_pixels is not None:
-        kwargs["min_pixels"] = int(min_pixels)
-    if max_pixels is not None:
-        kwargs["max_pixels"] = int(max_pixels)
-    sig = inspect.signature(smart_resize)
-    factor_param = sig.parameters.get("factor")
-    if factor_param is not None and factor_param.default is inspect._empty:
-        # qwen_vl_utils versions with explicit factor require the Qwen vision grid multiple.
-        kwargs["factor"] = 28
-    try:
-        new_h, new_w = smart_resize(int(height), int(width), **kwargs)
-    except Exception:
-        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
-    return int(new_h), int(new_w)
+    return _shared_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
 
 
 def _clamp_bbox(x: float, y: float, w: float, h: float, *, image_w: int, image_h: int) -> tuple[float, float, float, float, bool]:

@@ -8,10 +8,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from functools import lru_cache
 import hashlib
-import inspect
 import io
 import json
-import math
 import mimetypes
 import os
 import re
@@ -37,6 +35,11 @@ from .fact_normalization import normalize_fact_payload, normalize_note_num
 from .fact_ordering import normalize_document_meta
 from .schema_registry import SchemaRegistry
 from .schemas import ExtractedFact, Fact, PageExtraction, PageMeta, split_legacy_page_type
+from .vision_resize import (
+    DEFAULT_QWEN_VISION_FACTOR,
+    fallback_smart_resize_dimensions as _shared_fallback_smart_resize_dimensions,
+    smart_resize_dimensions as _shared_smart_resize_dimensions,
+)
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
@@ -45,7 +48,6 @@ DEFAULT_VERTEX_PROJECT_ID = "gen-lang-client-0533315636"
 DEFAULT_VERTEX_ENDPOINT_ID = "2095335460762025984"
 DEFAULT_VERTEX_REGION = "us-central1"
 DEFAULT_VERTEX_TUNED_MAX_PIXELS = 1_200_000
-DEFAULT_QWEN_VISION_FACTOR = 28
 DEFAULT_GEMINI_GT_RESPONSE_MIME_TYPE = "application/json"
 DEFAULT_GEMINI_GT_MEDIA_RESOLUTION = "high"
 _BBOX_MODE_PIXEL_AS_IS = "pixel_as_is"
@@ -549,73 +551,17 @@ def _fallback_smart_resize_dimensions(
     max_pixels: int | None,
     factor: int = DEFAULT_QWEN_VISION_FACTOR,
 ) -> tuple[int, int]:
-    if height <= 0 or width <= 0:
-        raise ValueError("Invalid image dimensions.")
-
-    pixels = int(height) * int(width)
-    scale = 1.0
-    snap_mode = "nearest"
-    if min_pixels is not None and pixels < int(min_pixels):
-        scale = max(scale, (int(min_pixels) / float(pixels)) ** 0.5)
-        snap_mode = "ceil"
-    if max_pixels is not None and pixels > int(max_pixels):
-        scale = min(scale, (int(max_pixels) / float(pixels)) ** 0.5) if scale != 1.0 else (int(max_pixels) / float(pixels)) ** 0.5
-        snap_mode = "floor"
-
-    target_h = max(1, int(round(int(height) * scale)))
-    target_w = max(1, int(round(int(width) * scale)))
-    if factor > 1:
-        if snap_mode == "ceil":
-            target_h = max(factor, int(math.ceil(target_h / float(factor))) * factor)
-            target_w = max(factor, int(math.ceil(target_w / float(factor))) * factor)
-        else:
-            target_h = max(factor, (target_h // factor) * factor)
-            target_w = max(factor, (target_w // factor) * factor)
-
-    if min_pixels is not None:
-        while target_h * target_w < int(min_pixels):
-            grew = False
-            if target_w <= target_h:
-                target_w += factor
-                grew = True
-            if target_h * target_w < int(min_pixels):
-                target_h += factor
-                grew = True
-            if not grew:
-                break
-
-    if max_pixels is not None:
-        while target_h * target_w > int(max_pixels) and (target_h > factor or target_w > factor):
-            if target_w >= target_h and target_w > factor:
-                target_w -= factor
-            elif target_h > factor:
-                target_h -= factor
-            else:
-                break
-
-    return int(target_h), int(target_w)
+    return _shared_fallback_smart_resize_dimensions(
+        height,
+        width,
+        min_pixels=min_pixels,
+        max_pixels=max_pixels,
+        factor=factor,
+    )
 
 
 def _smart_resize_dimensions(height: int, width: int, *, min_pixels: int | None, max_pixels: int | None) -> tuple[int, int]:
-    try:
-        from qwen_vl_utils.vision_process import smart_resize
-    except Exception:
-        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
-
-    kwargs: dict[str, int] = {}
-    if min_pixels is not None:
-        kwargs["min_pixels"] = int(min_pixels)
-    if max_pixels is not None:
-        kwargs["max_pixels"] = int(max_pixels)
-    sig = inspect.signature(smart_resize)
-    factor_param = sig.parameters.get("factor")
-    if factor_param is not None and factor_param.default is inspect._empty:
-        kwargs["factor"] = DEFAULT_QWEN_VISION_FACTOR
-    try:
-        new_h, new_w = smart_resize(int(height), int(width), **kwargs)
-    except Exception:
-        return _fallback_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
-    return int(new_h), int(new_w)
+    return _shared_smart_resize_dimensions(height, width, min_pixels=min_pixels, max_pixels=max_pixels)
 
 
 def _prepared_image_format(image: Image.Image, mime_type: str) -> str:

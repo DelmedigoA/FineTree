@@ -4,10 +4,12 @@ This module intentionally has no Qt dependency so it can be unit tested.
 """
 from __future__ import annotations
 
+import ast
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from pydantic import ValidationError
 
@@ -19,10 +21,14 @@ from .fact_normalization import normalize_fact_payload
 from .schema_io import canonicalize_with_findings, save_canonical
 from .schema_contract import CANONICAL_FACT_KEYS, CURRENCY_VALUES, SCALE_VALUES
 from .schemas import Fact, PageMeta, PageType
+from .vision_resize import restore_bbox_from_resized_pixels_with_stats
 
 FACT_KEYS = tuple(CANONICAL_FACT_KEYS)
 CURRENCY_OPTIONS = list(CURRENCY_VALUES)
 SCALE_OPTIONS = list(SCALE_VALUES)
+IMPORT_BBOX_MODE_ORIGINAL_PIXELS = "original_pixels"
+IMPORT_BBOX_MODE_NORMALIZED_1000 = "normalized_1000"
+IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS = "resized_pixels_via_max_pixels"
 
 
 @dataclass
@@ -35,6 +41,20 @@ class BoxRecord:
 class PageState:
     meta: Dict[str, Any] = field(default_factory=dict)
     facts: List[BoxRecord] = field(default_factory=list)
+
+
+@dataclass(frozen=True)
+class ImportBBoxConversionStats:
+    converted: int = 0
+    clamped: int = 0
+    skipped: int = 0
+
+
+@dataclass(frozen=True)
+class ImportJsonParseResult:
+    payload: Any
+    recovered: bool = False
+    message: str | None = None
 
 
 def default_fact_data() -> Dict[str, Any]:
@@ -153,6 +173,350 @@ def parse_import_payload(
     return load_page_states({"pages": [page_obj]}, page_image_names)
 
 
+def _clean_json_candidate(candidate: str) -> str:
+    fixed = candidate.strip()
+    if "\n" in fixed:
+        first_line, rest = fixed.split("\n", 1)
+        if first_line.strip().lower() in {"json", "javascript", "js"}:
+            fixed = rest.strip()
+    fixed = fixed.replace("“", "\"").replace("”", "\"").replace("’", "'")
+    fixed = re.sub(r",\s*([}\]])", r"\1", fixed)
+    return fixed
+
+
+def _extract_balanced_block_from_index(text: str, start_idx: int, open_char: str, close_char: str) -> str | None:
+    if start_idx < 0 or start_idx >= len(text) or text[start_idx] != open_char:
+        return None
+    depth = 0
+    in_str = False
+    esc = False
+    for i in range(start_idx, len(text)):
+        ch = text[i]
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == "\"":
+                in_str = False
+            continue
+
+        if ch == "\"":
+            in_str = True
+            continue
+        if ch == open_char:
+            depth += 1
+        elif ch == close_char:
+            depth -= 1
+            if depth == 0:
+                return text[start_idx : i + 1]
+    return None
+
+
+def _parse_json_like(candidate: str) -> Any:
+    for variant in (candidate, _clean_json_candidate(candidate)):
+        try:
+            return json.loads(variant)
+        except Exception:
+            pass
+        try:
+            parsed = ast.literal_eval(variant)
+            if isinstance(parsed, (dict, list)):
+                return parsed
+        except Exception:
+            pass
+    raise ValueError("Could not parse JSON-like payload.")
+
+
+def _extract_key_array_start(text: str, key: str) -> int:
+    for token in (f'"{key}"', f"'{key}'"):
+        idx = text.find(token)
+        if idx < 0:
+            continue
+        colon = text.find(":", idx + len(token))
+        if colon < 0:
+            continue
+        array_start = text.find("[", colon + 1)
+        if array_start >= 0:
+            return array_start
+    return -1
+
+
+def _extract_key_object(text: str, key: str) -> dict[str, Any] | None:
+    for token in (f'"{key}"', f"'{key}'"):
+        idx = text.find(token)
+        if idx < 0:
+            continue
+        colon = text.find(":", idx + len(token))
+        if colon < 0:
+            continue
+        brace = text.find("{", colon + 1)
+        if brace < 0:
+            continue
+        block = _extract_balanced_block_from_index(text, brace, "{", "}")
+        if not block:
+            continue
+        try:
+            parsed = _parse_json_like(block)
+        except Exception:
+            continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
+
+
+def _extract_key_string(text: str, key: str) -> str | None:
+    for token in (f'"{key}"', f"'{key}'"):
+        idx = text.find(token)
+        if idx < 0:
+            continue
+        colon = text.find(":", idx + len(token))
+        if colon < 0:
+            continue
+        match = re.search(r'"((?:\\.|[^"\\])*)"', text[colon + 1 :])
+        if match is None:
+            continue
+        try:
+            return json.loads(f'"{match.group(1)}"')
+        except Exception:
+            continue
+    return None
+
+
+def _extract_object_blocks_from_array(
+    text: str,
+    array_start: int,
+) -> tuple[list[str], bool, int]:
+    if array_start < 0 or array_start >= len(text) or text[array_start] != "[":
+        return [], False, array_start
+    blocks: list[str] = []
+    pos = array_start + 1
+    while pos < len(text):
+        while pos < len(text) and text[pos] in " \t\r\n,":
+            pos += 1
+        if pos >= len(text):
+            return blocks, False, pos
+        if text[pos] == "]":
+            return blocks, True, pos + 1
+        if text[pos] != "{":
+            next_obj = text.find("{", pos)
+            next_close = text.find("]", pos)
+            if next_obj < 0:
+                return blocks, False, pos
+            if next_close >= 0 and next_close < next_obj:
+                return blocks, True, next_close + 1
+            pos = next_obj
+        block = _extract_balanced_block_from_index(text, pos, "{", "}")
+        if not block:
+            return blocks, False, pos
+        blocks.append(block)
+        pos += len(block)
+    return blocks, False, pos
+
+
+def _salvage_facts_from_text(text: str) -> list[dict[str, Any]]:
+    facts_start = _extract_key_array_start(text, "facts")
+    if facts_start < 0:
+        return []
+    fact_blocks, _array_closed, _end_pos = _extract_object_blocks_from_array(text, facts_start)
+    facts: list[dict[str, Any]] = []
+    for block in fact_blocks:
+        try:
+            parsed = _parse_json_like(block)
+        except Exception:
+            continue
+        if isinstance(parsed, dict):
+            facts.append(parsed)
+    return facts
+
+
+def _salvage_single_page_payload_from_text(text: str) -> dict[str, Any] | None:
+    image_name = _extract_key_string(text, "image")
+    meta = _extract_key_object(text, "meta") or {}
+    facts = _salvage_facts_from_text(text)
+    if image_name is None and not meta and not facts:
+        return None
+    payload: dict[str, Any] = {"meta": meta, "facts": facts}
+    if image_name is not None:
+        payload["image"] = image_name
+    return payload
+
+
+def _salvage_pages_payload_from_text(text: str) -> dict[str, Any] | None:
+    pages_start = _extract_key_array_start(text, "pages")
+    if pages_start < 0:
+        return None
+    page_blocks, _array_closed, end_pos = _extract_object_blocks_from_array(text, pages_start)
+    pages: list[dict[str, Any]] = []
+    for block in page_blocks:
+        try:
+            parsed = _parse_json_like(block)
+        except Exception:
+            continue
+        if isinstance(parsed, dict):
+            pages.append(parsed)
+    partial_page = _salvage_single_page_payload_from_text(text[end_pos:])
+    if partial_page is not None:
+        pages.append(partial_page)
+    if not pages:
+        return None
+    payload: dict[str, Any] = {"pages": pages}
+    metadata = _extract_key_object(text, "metadata")
+    if metadata:
+        payload["metadata"] = metadata
+    document_meta = _extract_key_object(text, "document_meta")
+    if document_meta and "metadata" not in payload:
+        payload["document_meta"] = document_meta
+    images_dir = _extract_key_string(text, "images_dir")
+    if images_dir is not None:
+        payload["images_dir"] = images_dir
+    return payload
+
+
+def parse_import_json_text(text: str) -> ImportJsonParseResult:
+    stripped = str(text or "").strip()
+    if not stripped:
+        raise ValueError("No JSON text was provided.")
+    try:
+        return ImportJsonParseResult(payload=json.loads(stripped), recovered=False, message=None)
+    except Exception as exc:
+        pages_payload = _salvage_pages_payload_from_text(stripped)
+        if pages_payload is not None:
+            imported_pages = pages_payload.get("pages") if isinstance(pages_payload, dict) else None
+            recovered_page_count = len(imported_pages) if isinstance(imported_pages, list) else 0
+            recovered_fact_count = 0
+            if isinstance(imported_pages, list):
+                for page in imported_pages:
+                    if isinstance(page, dict) and isinstance(page.get("facts"), list):
+                        recovered_fact_count += len([fact for fact in page["facts"] if isinstance(fact, dict)])
+            return ImportJsonParseResult(
+                payload=pages_payload,
+                recovered=True,
+                message=(
+                    "Recovered import from invalid JSON. "
+                    f"Imported {recovered_page_count} page(s) and {recovered_fact_count} complete fact(s); "
+                    "ignored trailing incomplete content."
+                ),
+            )
+        page_payload = _salvage_single_page_payload_from_text(stripped)
+        if page_payload is not None and isinstance(page_payload.get("facts"), list):
+            return ImportJsonParseResult(
+                payload=page_payload,
+                recovered=True,
+                message=(
+                    "Recovered import from invalid JSON. "
+                    f"Imported {len(page_payload['facts'])} complete fact(s); ignored trailing incomplete content."
+                ),
+            )
+        raise ValueError(str(exc)) from exc
+
+
+def _clamp_bbox_to_image_bounds(
+    bbox: Dict[str, Any],
+    *,
+    image_width: float,
+    image_height: float,
+) -> tuple[Dict[str, float], bool]:
+    normalized = normalize_bbox_data(bbox)
+    width = max(float(image_width), 1.0)
+    height = max(float(image_height), 1.0)
+
+    x = max(0.0, float(normalized["x"]))
+    y = max(0.0, float(normalized["y"]))
+    x = min(x, max(width - 1.0, 0.0))
+    y = min(y, max(height - 1.0, 0.0))
+
+    w = max(float(normalized["w"]), 1.0)
+    h = max(float(normalized["h"]), 1.0)
+    w = min(w, max(width - x, 1.0))
+    h = min(h, max(height - y, 1.0))
+
+    clamped = (
+        x != float(normalized["x"])
+        or y != float(normalized["y"])
+        or w != float(normalized["w"])
+        or h != float(normalized["h"])
+    )
+    return normalize_bbox_data({"x": x, "y": y, "w": w, "h": h}), clamped
+
+
+def convert_imported_page_states(
+    imported_states: Mapping[str, PageState],
+    page_image_dimensions: Mapping[str, tuple[float, float] | None],
+    *,
+    bbox_mode: str = IMPORT_BBOX_MODE_ORIGINAL_PIXELS,
+    max_pixels: int | None = None,
+) -> tuple[Dict[str, PageState], ImportBBoxConversionStats]:
+    allowed_modes = {
+        IMPORT_BBOX_MODE_ORIGINAL_PIXELS,
+        IMPORT_BBOX_MODE_NORMALIZED_1000,
+        IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS,
+    }
+    normalized_mode = str(bbox_mode or "").strip().lower()
+    if normalized_mode not in allowed_modes:
+        raise ValueError(f"Unsupported import bbox mode: {bbox_mode}")
+    if normalized_mode == IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS and (
+        max_pixels is None or int(max_pixels) <= 0
+    ):
+        raise ValueError("max_pixels must be set to a positive integer for resized-image bbox import.")
+
+    converted_states: Dict[str, PageState] = {}
+    converted_count = 0
+    clamped_count = 0
+    skipped_count = 0
+
+    for page_name, imported_state in imported_states.items():
+        image_dims = page_image_dimensions.get(page_name)
+        converted_facts: list[BoxRecord] = []
+        for record in imported_state.facts:
+            bbox = normalize_bbox_data(record.bbox)
+            clamped = False
+            if normalized_mode == IMPORT_BBOX_MODE_NORMALIZED_1000:
+                if image_dims is None:
+                    skipped_count += 1
+                else:
+                    bbox = denormalize_bbox_from_1000(
+                        bbox,
+                        image_width=image_dims[0],
+                        image_height=image_dims[1],
+                    )
+                    bbox, clamped = _clamp_bbox_to_image_bounds(
+                        bbox,
+                        image_width=image_dims[0],
+                        image_height=image_dims[1],
+                    )
+                    converted_count += 1
+            elif normalized_mode == IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS:
+                if image_dims is None:
+                    raise ValueError(f"Original image dimensions unavailable for imported page '{page_name}'.")
+                bbox, clamped = restore_bbox_from_resized_pixels_with_stats(
+                    bbox,
+                    original_width=image_dims[0],
+                    original_height=image_dims[1],
+                    max_pixels=int(max_pixels or 0),
+                )
+                converted_count += 1
+
+            if clamped:
+                clamped_count += 1
+            converted_facts.append(
+                BoxRecord(
+                    bbox=bbox,
+                    fact=normalize_fact_data(record.fact),
+                )
+            )
+        converted_states[str(page_name)] = PageState(
+            meta=dict(imported_state.meta or {}),
+            facts=converted_facts,
+        )
+
+    return converted_states, ImportBBoxConversionStats(
+        converted=converted_count,
+        clamped=clamped_count,
+        skipped=skipped_count,
+    )
+
+
 def extract_document_meta(payload: Any) -> Dict[str, Any]:
     if not isinstance(payload, dict):
         return {
@@ -267,9 +631,15 @@ def serialize_annotations_json(payload: Dict[str, Any]) -> str:
 __all__ = [
     "BoxRecord",
     "FACT_KEYS",
+    "IMPORT_BBOX_MODE_NORMALIZED_1000",
+    "IMPORT_BBOX_MODE_ORIGINAL_PIXELS",
+    "IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS",
+    "ImportBBoxConversionStats",
+    "ImportJsonParseResult",
     "CURRENCY_OPTIONS",
     "PageState",
     "SCALE_OPTIONS",
+    "convert_imported_page_states",
     "build_annotations_payload",
     "bbox_to_list",
     "denormalize_bbox_from_1000",
@@ -280,6 +650,7 @@ __all__ = [
     "parse_import_payload",
     "normalize_bbox_data",
     "normalize_fact_data",
+    "parse_import_json_text",
     "apply_entity_name_to_pages",
     "apply_entity_name_to_missing_pages",
     "serialize_annotations_json",

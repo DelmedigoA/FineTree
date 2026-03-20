@@ -86,16 +86,22 @@ from .ai.types import (
 from .annotation_core import (
     BoxRecord,
     CURRENCY_OPTIONS,
+    IMPORT_BBOX_MODE_NORMALIZED_1000,
+    IMPORT_BBOX_MODE_ORIGINAL_PIXELS,
+    IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS,
+    ImportBBoxConversionStats,
+    ImportJsonParseResult,
     PageState,
     SCALE_OPTIONS,
     apply_entity_name_to_pages,
     bbox_to_list,
     build_annotations_payload_with_findings,
-    denormalize_bbox_from_1000,
+    convert_imported_page_states,
     default_page_meta,
     extract_document_meta,
     load_page_states,
     parse_import_payload,
+    parse_import_json_text,
     normalize_bbox_data,
     normalize_fact_data,
     serialize_annotations_json,
@@ -131,6 +137,7 @@ from .startup import (
     default_annotations_path as _default_annotations_path_impl,
     resolve_startup_context as _resolve_startup_context_impl,
 )
+from .vision_resize import prepared_dimensions_for_max_pixels
 from . import workspace as workspace_mod
 from .workspace import page_has_annotation
 
@@ -1689,6 +1696,12 @@ class AnnotationScene(QGraphicsScene):
 
 
 class JsonImportDialog(QDialog):
+    _BBOX_MODE_ITEMS: tuple[tuple[str, str], ...] = (
+        ("Original pixels", IMPORT_BBOX_MODE_ORIGINAL_PIXELS),
+        ("Normalized 0..1000", IMPORT_BBOX_MODE_NORMALIZED_1000),
+        ("Resized image pixels via max pixels", IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS),
+    )
+
     def __init__(self, default_page_name: str, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
         self.setWindowTitle("Import Annotations JSON")
@@ -1702,14 +1715,24 @@ class JsonImportDialog(QDialog):
             'or legacy full-document {"images_dir":"...","metadata":{...},"pages":[...]} '
             'or legacy {"meta": {...}, "facts": [...]} / {"image": "...", "meta": {...}, "facts": [...]}.\n'
             f'If "image" is omitted, current page "{default_page_name}" is used.\n'
-            'Use the checkbox below for Gemini-style normalized coordinates (0..1000).'
+            "Choose how incoming bbox coordinates should be interpreted before the annotator stores them "
+            "as original-image pixels."
         )
         hint.setWordWrap(True)
         root.addWidget(hint)
 
-        self.normalized_1000_check = QCheckBox("Import bbox as normalized 0..1000 (Gemini)")
-        self.normalized_1000_check.setChecked(True)
-        root.addWidget(self.normalized_1000_check)
+        options_form = QFormLayout()
+        self.bbox_mode_combo = QComboBox()
+        for label, mode in self._BBOX_MODE_ITEMS:
+            self.bbox_mode_combo.addItem(label, mode)
+        self.max_pixels_spin = QSpinBox()
+        self.max_pixels_spin.setRange(1, 10_000_000)
+        self.max_pixels_spin.setValue(1_400_000)
+        self.max_pixels_spin.setSingleStep(100_000)
+        self.max_pixels_spin.setEnabled(False)
+        options_form.addRow("BBox mode", self.bbox_mode_combo)
+        options_form.addRow("Max pixels", self.max_pixels_spin)
+        root.addLayout(options_form)
 
         self.text_edit = QPlainTextEdit()
         root.addWidget(self.text_edit, 1)
@@ -1724,8 +1747,10 @@ class JsonImportDialog(QDialog):
         root.addWidget(self.button_box)
 
         self.load_file_btn.clicked.connect(self._load_from_file)
+        self.bbox_mode_combo.currentIndexChanged.connect(self._sync_bbox_mode_controls)
         self.button_box.accepted.connect(self.accept)
         self.button_box.rejected.connect(self.reject)
+        self._sync_bbox_mode_controls()
 
     def _load_from_file(self) -> None:
         path, _ = QFileDialog.getOpenFileName(
@@ -1746,8 +1771,18 @@ class JsonImportDialog(QDialog):
     def json_text(self) -> str:
         return self.text_edit.toPlainText()
 
-    def import_normalized_1000_enabled(self) -> bool:
-        return self.normalized_1000_check.isChecked()
+    def _sync_bbox_mode_controls(self) -> None:
+        self.max_pixels_spin.setEnabled(
+            self.selected_bbox_mode() == IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS
+        )
+
+    def selected_bbox_mode(self) -> str:
+        return str(self.bbox_mode_combo.currentData() or IMPORT_BBOX_MODE_ORIGINAL_PIXELS)
+
+    def import_max_pixels(self) -> int | None:
+        if self.selected_bbox_mode() != IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS:
+            return None
+        return int(self.max_pixels_spin.value())
 
 
 class PageJsonDialog(QDialog):
@@ -6579,19 +6614,12 @@ class AnnotationWindow(QMainWindow):
             return
 
         try:
-            payload = json.loads(raw_text)
+            parse_result = parse_import_json_text(raw_text)
         except Exception as exc:
             QMessageBox.warning(self, "Invalid JSON", str(exc))
             return
+        payload = parse_result.payload
         imported_document_meta = extract_document_meta(payload)
-
-        import_normalized_1000 = dialog.import_normalized_1000_enabled()
-        if isinstance(payload, dict):
-            bbox_space = str(payload.get("bbox_space") or "").strip().lower()
-            if bbox_space in {"normalized_1000", "norm1000", "1000"}:
-                import_normalized_1000 = True
-            elif bbox_space in {"pixel", "pixels", "absolute"}:
-                import_normalized_1000 = False
 
         imported_states = parse_import_payload(
             payload,
@@ -6606,28 +6634,31 @@ class AnnotationWindow(QMainWindow):
             )
             return
 
+        bbox_mode = dialog.selected_bbox_mode()
+        max_pixels = dialog.import_max_pixels()
+        page_dimensions = {
+            page_name: self._image_dimensions_for_page(page_name)
+            for page_name in imported_states.keys()
+        }
+        try:
+            normalized_states, conversion_stats = convert_imported_page_states(
+                imported_states,
+                page_dimensions,
+                bbox_mode=bbox_mode,
+                max_pixels=max_pixels,
+            )
+        except ValueError as exc:
+            QMessageBox.warning(self, "Import error", str(exc))
+            return
+
         self._capture_current_state()
         imported_count = 0
-        converted_bbox_count = 0
-        for page_name, imported_state in imported_states.items():
+        for page_name, imported_state in normalized_states.items():
             page_idx = self._page_index_by_name(page_name)
             if page_idx < 0:
                 continue
             normalized_meta = {**self._default_meta(page_idx), **(imported_state.meta or {})}
-            image_dims = self._image_dimensions_for_page(page_name)
-            normalized_facts: List[BoxRecord] = []
-            for record in imported_state.facts:
-                bbox = normalize_bbox_data(record.bbox)
-                if import_normalized_1000 and image_dims and self._bbox_looks_normalized_1000(bbox):
-                    bbox = denormalize_bbox_from_1000(bbox, image_dims[0], image_dims[1])
-                    converted_bbox_count += 1
-                normalized_facts.append(
-                    BoxRecord(
-                        bbox=bbox,
-                        fact=normalize_fact_data(record.fact),
-                    )
-                )
-            self.page_states[page_name] = PageState(meta=normalized_meta, facts=normalized_facts)
+            self.page_states[page_name] = PageState(meta=normalized_meta, facts=list(imported_state.facts))
             imported_count += 1
 
         if imported_count == 0:
@@ -6654,13 +6685,91 @@ class AnnotationWindow(QMainWindow):
 
         self._populate_page_thumbnails()
         self._record_history_snapshot()
-        if converted_bbox_count:
-            self.statusBar().showMessage(
-                f"Imported {imported_count} page(s); converted {converted_bbox_count} normalized bbox(es).",
-                5500,
+        self.statusBar().showMessage(
+            self._import_status_message(imported_count, conversion_stats),
+            5500 if (conversion_stats.converted or conversion_stats.clamped or conversion_stats.skipped) else 4500,
+        )
+        sanity_message = self._import_sanity_check_message(
+            imported_states=normalized_states,
+            page_dimensions=page_dimensions,
+            bbox_mode=bbox_mode,
+            max_pixels=max_pixels,
+        )
+        self._show_import_info_messages(parse_result=parse_result, sanity_message=sanity_message)
+
+    @staticmethod
+    def _import_status_message(imported_count: int, stats: ImportBBoxConversionStats) -> str:
+        details: list[str] = []
+        if stats.converted:
+            details.append(f"converted {stats.converted} bbox(es)")
+        if stats.clamped:
+            details.append(f"clamped {stats.clamped} bbox(es)")
+        if stats.skipped:
+            details.append(f"skipped {stats.skipped} bbox(es)")
+        if not details:
+            return f"Imported annotations for {imported_count} page(s)."
+        return f"Imported {imported_count} page(s); " + ", ".join(details) + "."
+
+    @staticmethod
+    def _import_sanity_check_message(
+        *,
+        imported_states: Dict[str, PageState],
+        page_dimensions: Dict[str, tuple[float, float] | None],
+        bbox_mode: str,
+        max_pixels: int | None,
+    ) -> str | None:
+        if bbox_mode != IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS or max_pixels is None:
+            return None
+
+        page_names = sorted(imported_states.keys())
+        lines = [
+            "Imported bbox mode: resized image pixels via max pixels.",
+            f"Max pixels: {int(max_pixels):,}",
+            "",
+            "Prepared image sizes used for bbox restoration:",
+        ]
+        max_lines = 8
+        for page_name in page_names[:max_lines]:
+            image_dims = page_dimensions.get(page_name)
+            if image_dims is None:
+                lines.append(f"- {page_name}: original image size unavailable")
+                continue
+            original_w = max(int(round(float(image_dims[0]))), 1)
+            original_h = max(int(round(float(image_dims[1]))), 1)
+            prepared_h, prepared_w = prepared_dimensions_for_max_pixels(
+                original_width=original_w,
+                original_height=original_h,
+                max_pixels=int(max_pixels),
             )
+            suffix = " (no resize)" if (prepared_w == original_w and prepared_h == original_h) else ""
+            lines.append(
+                f"- {page_name}: {prepared_w} x {prepared_h} from original {original_w} x {original_h}{suffix}"
+            )
+        remaining = len(page_names) - min(len(page_names), max_lines)
+        if remaining > 0:
+            lines.append(f"- ...and {remaining} more page(s)")
+        return "\n".join(lines)
+
+    def _show_import_info_messages(
+        self,
+        *,
+        parse_result: ImportJsonParseResult,
+        sanity_message: str | None,
+    ) -> None:
+        messages: list[str] = []
+        if parse_result.recovered and parse_result.message:
+            messages.append(parse_result.message)
+        if sanity_message:
+            messages.append(sanity_message)
+        if not messages:
+            return
+        if len(messages) == 2:
+            title = "Import details"
+        elif parse_result.recovered:
+            title = "Recovered partial JSON"
         else:
-            self.statusBar().showMessage(f"Imported annotations for {imported_count} page(s).", 4500)
+            title = "Import sanity check"
+        QMessageBox.information(self, title, "\n\n".join(messages))
 
     def generate_gemini_fill_selected_fields(self) -> None:
         self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.FIX_SELECTED)
