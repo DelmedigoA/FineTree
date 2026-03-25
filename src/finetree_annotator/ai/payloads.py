@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 from ..model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload, serialize_schema_mode_payload
 from ..schema_contract import (
+    build_gemini_fill_updates_schema,
     default_extraction_prompt_template,
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
@@ -181,10 +182,12 @@ def build_gemini_fill_prompt(
         )
     else:
         meta_updates_schema = "{}"
+    fact_updates_schema = build_gemini_fill_updates_schema(sorted(selected_fact_fields))
     request_json = serialize_schema_mode_payload(request_payload)
     prompt = template.replace("{{FACT_FIELDS}}", fact_fields)
     prompt = prompt.replace("{{META_FIELDS}}", meta_fields)
     prompt = prompt.replace("{{META_UPDATES_SCHEMA}}", meta_updates_schema)
+    prompt = prompt.replace("{{FACT_UPDATES_SCHEMA}}", fact_updates_schema)
     return prompt.replace("{{REQUEST_JSON}}", request_json)
 
 

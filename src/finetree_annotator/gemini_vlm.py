@@ -10,6 +10,7 @@ from functools import lru_cache
 import hashlib
 import io
 import json
+import math
 import mimetypes
 import os
 import re
@@ -3942,7 +3943,11 @@ def _validate_patch_fact_updates(
     if not isinstance(updates_payload, dict):
         raise ValueError("Each patch updates object must be a JSON object.")
 
-    normalized_updates = dict(updates_payload)
+    normalized_updates = {
+        key: value
+        for key, value in dict(updates_payload).items()
+        if not (isinstance(value, str) and not value.strip())
+    }
     if "equations" in allowed_fact_fields:
         legacy_equation_payload = any(
             key in normalized_updates for key in ("equation", "fact_equation", "equation_children")

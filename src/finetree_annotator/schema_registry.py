@@ -270,23 +270,9 @@ class SchemaRegistry:
                 "schema_version": SchemaRegistry.current_version(),
                 "statement_types": list(enum_lookup.get("statement_type", ())),
                 "fact_patch_fields": [
-                    "period_type",
-                    "period_start",
-                    "period_end",
-                    "duration_type",
-                    "recurring_period",
-                    "value_context",
-                    "natural_sign",
-                    "row_role",
-                    "equations",
-                    "path_source",
-                    "value_type",
-                    "currency",
-                    "scale",
-                    "date",
-                    "comment_ref",
-                    "note_ref",
-                    "note_name",
+                    key
+                    for key in fact_spec.canonical_write_keys
+                    if key != "fact_num"
                 ],
                 "period_types": list(enum_lookup.get("period_type", ())),
                 "path_sources": list(enum_lookup.get("path_source", ())),

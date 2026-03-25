@@ -91,6 +91,18 @@ def _indent_block(text: str, prefix: str) -> str:
     return "\n".join(f"{prefix}{line}" if line else line for line in str(text).splitlines())
 
 
+def _patch_fact_schema_lines() -> list[str]:
+    return [_FACT_SCHEMA_LINES[key] for key in _PATCH_CONTRACT["fact_patch_fields"]]
+
+
+def build_gemini_fill_updates_schema(selected_fact_fields: Sequence[str] | None = None) -> str:
+    selected_patch_keys = _selected_keys(selected_fact_fields, _PATCH_CONTRACT["fact_patch_fields"])
+    if not selected_patch_keys:
+        return "{}"
+    schema_lines = ",\n".join(_FACT_SCHEMA_LINES[key] for key in selected_patch_keys)
+    return "{\n" + _indent_block(schema_lines, "  ") + "\n}"
+
+
 def build_custom_extraction_schema_preview(
     *,
     page_meta_keys: Sequence[str] | None = None,
@@ -289,25 +301,19 @@ def default_extraction_prompt_template() -> str:
         6. Order facts top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages.
         7. Keep `value` exactly as printed, including `%`, commas, parentheses, leading `-`, angle brackets, and dash placeholders. If the source cell is `-`, `—`, or `–`, return `"-"`.
         8. `path` must be a JSON list of visible hierarchy labels. Use `[]` when unknown.
-        9. `equations` must be a JSON list or `null`. Use `null` unless the page visibly supports a reliable arithmetic relation.
-        10. Classify `page_type` and `statement_type` from visible page context only.
-        11. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
-        12. Do not emit runtime-only page keys such as `annotation_note` or `annotation_status`, and do not emit `date`.
-        13. Extract a fact only when you can localize its numeric cell tightly. Skip uncertain or non-localizable facts.
-        14. Output UTF-8 Hebrew directly. Do not escape it to unicode sequences.
+        9. If `comment_ref` seems unreasonably long, do not include the full text. Use a short marker only, for example `"*"` or `"(1)"`.
+        10. `equations` must be a JSON list or `null`. Use `null` unless the page visibly supports a reliable arithmetic relation.
+        11. Classify `page_type` and `statement_type` from visible page context only.
+        12. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
+        13. Do not emit runtime-only page keys such as `annotation_note` or `annotation_status`, and do not emit `date`.
+        14. Extract a fact only when you can localize its numeric cell tightly. Skip uncertain or non-localizable facts.
+        15. Output UTF-8 Hebrew directly. Do not escape it to unicode sequences.
         """
     ).strip()
 
 
 def default_gemini_fill_prompt_template() -> str:
     statement_types = "|".join(_PATCH_CONTRACT["statement_types"])
-    period_types = "|".join(_PATCH_CONTRACT["period_types"])
-    path_sources = "|".join(_PATCH_CONTRACT["path_sources"])
-    value_types = "|".join(_PATCH_CONTRACT["value_types"])
-    currencies = "|".join(_PATCH_CONTRACT["currencies"])
-    scales = "|".join(str(value) for value in _PATCH_CONTRACT["scales"])
-    natural_signs = "|".join(NATURAL_SIGN_VALUES)
-    row_roles = "|".join(ROW_ROLE_VALUES)
 
     return dedent(
         f"""
@@ -341,30 +347,7 @@ def default_gemini_fill_prompt_template() -> str:
           "fact_updates": [
             {{
               "fact_num": <integer >= 1>,
-              "updates": {{
-                "period_type": "{period_types}|null",
-                "period_start": "<YYYY-MM-DD|null>",
-                "period_end": "<YYYY-MM-DD|null>",
-                "duration_type": "recurrent|null",
-                "recurring_period": "daily|quarterly|monthly|yearly|null",
-                "date": "<YYYY|YYYY-MM|YYYY-MM-DD|null>",
-                "value_context": "textual|tabular|mixed|null",
-                "value_type": "{value_types}|null",
-                "currency": "{currencies}|null",
-                "scale": {scales}|null,
-                "natural_sign": "{natural_signs}|null",
-                "row_role": "{row_roles}",
-                "equations": [
-                  {{
-                    "equation": "<string>",
-                    "fact_equation": "<string|null>"
-                  }}
-                ]|null,
-                "path_source": "{path_sources}|null",
-                "comment_ref": "<string|null>",
-                "note_ref": "<string|null>",
-                "note_name": "<string|null>"
-              }}
+              "updates": {{{{FACT_UPDATES_SCHEMA}}}}
             }}
           ]
         }}
@@ -377,10 +360,12 @@ def default_gemini_fill_prompt_template() -> str:
         4. Keep `fact_updates` focused and minimal. Include only facts that need updates.
         5. Use JSON null (not string "null") for unknowns.
         6. `natural_sign` is deterministic from `value`: angle-bracketed negatives / parentheses / leading `-` => `negative`, `"-"` => null, otherwise `positive`.
+        6a. If the visible source value is `-`, `—`, or `–`, set `value` to `"-"`. Never convert dash placeholders to `0`.
         7. `row_role` must be `detail` or `total`.
         8. `equations` must be a JSON list or null. Each `equations[]` entry must include non-empty `equation`; `fact_equation` may be null.
-        9. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys in `updates`.
-        10. If no confident update for a requested field, omit that field from `updates`.
+        9. If `comment_ref` seems unreasonably long, do not include the full text. Use a short marker only, for example `"*"` or `"(1)"`.
+        10. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys in `updates`.
+        11. If no confident update for a requested field, omit that field from `updates`.
         """
     ).strip()
 
@@ -450,6 +435,7 @@ __all__ = [
     "ROW_ROLE_VALUES",
     "VALUE_TYPE_VALUES",
     "VALUE_CONTEXT_VALUES",
+    "build_gemini_fill_updates_schema",
     "default_gemini_autocomplete_prompt_template",
     "default_gemini_fill_prompt_template",
     "default_extraction_prompt_template",

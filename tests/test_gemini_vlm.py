@@ -1891,3 +1891,98 @@ def test_parse_selected_field_patch_text_rejects_non_requested_update_key() -> N
             allowed_fact_fields={"period_type"},
             allow_statement_type=False,
         )
+
+
+def test_parse_selected_field_patch_text_accepts_value_and_structural_updates() -> None:
+    payload = {
+        "meta_updates": {},
+        "fact_updates": [
+            {
+                "fact_num": 1,
+                "updates": {
+                    "value": "(123)",
+                    "note_flag": True,
+                    "note_num": 7,
+                    "path": ["assets", "current"],
+                },
+            }
+        ],
+    }
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(payload),
+        allowed_fact_fields={"value", "note_flag", "note_num", "path"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["fact_updates"] == [
+        {
+            "fact_num": 1,
+            "updates": {
+                "value": "(123)",
+                "note_flag": True,
+                "note_num": 7,
+                "path": ["assets", "current"],
+            },
+        }
+    ]
+
+
+def test_parse_selected_field_patch_text_drops_blank_string_updates() -> None:
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(
+            {
+                "meta_updates": {},
+                "fact_updates": [
+                    {
+                        "fact_num": 1,
+                        "updates": {
+                            "value": "",
+                            "path": "   ",
+                            "period_type": "instant",
+                        },
+                    }
+                ],
+            }
+        ),
+        allowed_fact_fields={"value", "path", "period_type"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["fact_updates"] == [
+        {
+            "fact_num": 1,
+            "updates": {
+                "period_type": "instant",
+            },
+        }
+    ]
+
+
+def test_parse_selected_field_patch_text_ignores_blank_unrequested_fields() -> None:
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(
+            {
+                "meta_updates": {},
+                "fact_updates": [
+                    {
+                        "fact_num": 1,
+                        "updates": {
+                            "period_type": "duration",
+                            "natural_sign": "",
+                        },
+                    }
+                ],
+            }
+        ),
+        allowed_fact_fields={"period_type"},
+        allow_statement_type=False,
+    )
+
+    assert parsed["fact_updates"] == [
+        {
+            "fact_num": 1,
+            "updates": {
+                "period_type": "duration",
+            },
+        }
+    ]

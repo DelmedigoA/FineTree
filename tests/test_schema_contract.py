@@ -10,6 +10,7 @@ from finetree_annotator.schema_contract import (
     PROMPT_PAGE_META_KEYS,
     PROMPT_FACT_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
+    build_gemini_fill_updates_schema,
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
@@ -63,6 +64,7 @@ def test_prompt_contract_is_page_only() -> None:
     assert "Only return `pages` with page `image`, page `meta`, and page `facts`." in prompt
     assert "Only emit facts anchored on a visible numeric value" in prompt
     assert "נכסים שוטפים" in prompt
+    assert 'If `comment_ref` seems unreasonably long, do not include the full text.' in prompt
 
 
 def test_custom_schema_preview_is_page_only() -> None:
@@ -105,7 +107,7 @@ def test_custom_no_bbox_prompt_omits_bbox_contract() -> None:
 
 def test_equation_schema_is_present_in_model_prompts() -> None:
     extraction_prompt = default_extraction_prompt_template()
-    fill_prompt = default_gemini_fill_prompt_template()
+    fill_prompt = build_gemini_fill_updates_schema(["value", "equations", "natural_sign", "row_role"])
     autocomplete_prompt = default_gemini_autocomplete_prompt_template()
     assert '"equations"' in extraction_prompt
     assert '"equation"' in extraction_prompt
@@ -116,13 +118,25 @@ def test_equation_schema_is_present_in_model_prompts() -> None:
     assert '"equations"' in fill_prompt
     assert '"equation"' in fill_prompt
     assert '"fact_equation"' in fill_prompt
+    assert '"value"' in fill_prompt
     assert "natural_sign" in fill_prompt
     assert "row_role" in fill_prompt
+    assert 'Never convert dash placeholders to `0`.' in default_gemini_fill_prompt_template()
+    assert 'If `comment_ref` seems unreasonably long, do not include the full text.' in default_gemini_fill_prompt_template()
     assert "locked facts" in autocomplete_prompt.lower()
     assert "return only new missing facts" in autocomplete_prompt.lower()
     assert "original image pixel coordinates" in autocomplete_prompt.lower()
     assert "runtime rebuilds final contiguous numbering" in autocomplete_prompt.lower()
+    assert 'If `comment_ref` seems unreasonably long, do not include the full text.' in autocomplete_prompt
     assert '"equations"' in autocomplete_prompt
     assert '"metadata"' not in autocomplete_prompt
     assert "balance_type" not in extraction_prompt
     assert "aggregation_role" not in extraction_prompt
+
+
+def test_build_gemini_fill_updates_schema_only_contains_requested_fields() -> None:
+    schema = build_gemini_fill_updates_schema(["value", "path"])
+    assert '"value"' in schema
+    assert '"path"' in schema
+    assert '"natural_sign"' not in schema
+    assert '"row_role"' not in schema

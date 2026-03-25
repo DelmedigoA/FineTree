@@ -57,6 +57,8 @@ class AIWorkflowController:
         self._status_fact_count = 0
         self._dialog_refresh_in_progress = False
         self._last_dialog_defaults_key: tuple[AIProvider, AIActionKind] | None = None
+        self._gemini_gt_finalize_retained_live = False
+        self._gemini_gt_finalize_retained_counts: tuple[int, int] | None = None
 
     def ensure_dialog(self) -> AIDialog:
         if self.dialog is None:
@@ -547,6 +549,8 @@ class AIWorkflowController:
         self.host._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self.host._gemini_gt_live_bbox_mode_locked = False
         self.host._gemini_gt_live_applied = False
+        self._gemini_gt_finalize_retained_live = False
+        self._gemini_gt_finalize_retained_counts = None
         self.host._gemini_stream_cancel_requested = False
         self.host._gemini_stream_mode = mode
         self.host._gemini_stream_apply_meta = bool(apply_meta)
@@ -829,6 +833,56 @@ class AIWorkflowController:
         elif mode == "gt":
             self.host._gemini_gt_buffered_facts = finalized_payloads
 
+    def _gt_finalize_counts(
+        self,
+        *,
+        live_fact_count: int,
+        finalized_fact_count: int,
+        summary: dict[str, Any] | None,
+    ) -> tuple[int, int]:
+        if isinstance(summary, dict):
+            streamed_count = int(summary.get("streamed_fact_count") or 0)
+            kept_count = int(summary.get("kept_fact_count") or finalized_fact_count)
+            if streamed_count > 0:
+                return streamed_count, kept_count
+        return live_fact_count, finalized_fact_count
+
+    def _gt_should_retain_live_result(
+        self,
+        *,
+        live_fact_count: int,
+        finalized_fact_count: int,
+        summary: dict[str, Any] | None,
+    ) -> tuple[bool, int, int]:
+        streamed_count, kept_count = self._gt_finalize_counts(
+            live_fact_count=live_fact_count,
+            finalized_fact_count=finalized_fact_count,
+            summary=summary,
+        )
+        return kept_count < streamed_count, streamed_count, kept_count
+
+    def _gt_finalize_retained_live_warning(
+        self,
+        *,
+        streamed_count: int,
+        kept_count: int,
+        summary: dict[str, Any] | None,
+        session_dir: Path | None,
+    ) -> str:
+        base_detail = format_issue_summary_brief(
+            summary,
+            session_dir=session_dir,
+            streamed_live_facts_remain=True,
+            no_changes_applied=False,
+        )
+        retain_line = (
+            f"Preserved the {streamed_count} live-streamed fact(s) because final validation retained only "
+            f"{kept_count}."
+        )
+        if base_detail:
+            return f"{base_detail}\n{retain_line}"
+        return retain_line
+
     def _on_gemini_stream_chunk(self, text: str) -> None:
         _ = text
 
@@ -869,6 +923,15 @@ class AIWorkflowController:
         page_name = self.host._gemini_stream_target_page
         if page_name is None:
             return
+        self._gemini_gt_finalize_retained_live = False
+        self._gemini_gt_finalize_retained_counts = None
+        pre_finalize_gt_buffer: list[dict[str, Any]] = []
+        pre_finalize_gt_seen_facts: set[tuple[Any, ...]] = set()
+        pre_finalize_gt_count = 0
+        if self.host._gemini_stream_mode == "gt":
+            pre_finalize_gt_buffer = [deepcopy(payload) for payload in self.host._gemini_gt_buffered_facts]
+            pre_finalize_gt_seen_facts = set(self.host._gemini_stream_seen_facts)
+            pre_finalize_gt_count = len(pre_finalize_gt_buffer)
         try:
             extraction_meta = getattr(extraction_obj, "meta", None)
             if hasattr(extraction_meta, "model_dump"):
@@ -906,16 +969,46 @@ class AIWorkflowController:
                     self._on_gemini_stream_failed(error_message or "Auto Complete could not merge results.")
                     return
             elif self.host._gemini_stream_mode == "gt":
-                merged, error_message = self.host._merge_gemini_gt_buffered_facts(page_name)
-                if not merged:
-                    self._on_gemini_stream_failed(error_message or "Ground Truth could not merge results.")
-                    return
+                summary, _session_dir = self._current_gemini_stream_issue_summary()
+                finalized_gt_count = len(self.host._gemini_gt_buffered_facts)
+                retain_live, streamed_count, kept_count = self._gt_should_retain_live_result(
+                    live_fact_count=pre_finalize_gt_count,
+                    finalized_fact_count=finalized_gt_count,
+                    summary=summary,
+                )
+                if retain_live and pre_finalize_gt_count > 0:
+                    self.host._gemini_gt_buffered_facts = pre_finalize_gt_buffer
+                    self.host._gemini_stream_seen_facts = set(pre_finalize_gt_seen_facts)
+                    self.host._gemini_stream_fact_count = pre_finalize_gt_count
+                    self.host._gemini_gt_live_applied = True
+                    self._gemini_gt_finalize_retained_live = True
+                    self._gemini_gt_finalize_retained_counts = (streamed_count, kept_count)
+                else:
+                    merged, error_message = self.host._merge_gemini_gt_buffered_facts(page_name)
+                    if not merged:
+                        self._on_gemini_stream_failed(error_message or "Ground Truth could not merge results.")
+                        return
         except Exception as exc:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
             return
 
         summary, session_dir = self._current_gemini_stream_issue_summary()
-        if summary is not None and int(summary.get("issue_count") or 0) > 0:
+        if self.host._gemini_stream_mode == "gt" and self._gemini_gt_finalize_retained_live:
+            streamed_count, kept_count = self._gemini_gt_finalize_retained_counts or (
+                self.host._gemini_stream_fact_count,
+                len(self.host._gemini_gt_buffered_facts),
+            )
+            QMessageBox.warning(
+                self.host,
+                "AI warning",
+                self._gt_finalize_retained_live_warning(
+                    streamed_count=streamed_count,
+                    kept_count=kept_count,
+                    summary=summary,
+                    session_dir=session_dir,
+                ),
+            )
+        elif summary is not None and int(summary.get("issue_count") or 0) > 0:
             QMessageBox.warning(
                 self.host,
                 "AI warning",
@@ -985,6 +1078,8 @@ class AIWorkflowController:
         self.host._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self.host._gemini_gt_live_bbox_mode_locked = False
         self.host._gemini_gt_live_applied = False
+        self._gemini_gt_finalize_retained_live = False
+        self._gemini_gt_finalize_retained_counts = None
         self.refresh_dialog_state()
 
     def _gemini_stream_completion_text(self) -> tuple[str, str]:
@@ -1006,6 +1101,17 @@ class AIWorkflowController:
         )
         pixel_score = float(self.host._gemini_gt_last_bbox_scores.get(BBOX_MODE_PIXEL_AS_IS, 0.0))
         normalized_score = float(self.host._gemini_gt_last_bbox_scores.get(BBOX_MODE_NORMALIZED_1000_TO_PIXEL, 0.0))
+        if self._gemini_gt_finalize_retained_live:
+            streamed_count, kept_count = self._gemini_gt_finalize_retained_counts or (
+                self.host._gemini_stream_fact_count,
+                self.host._gemini_stream_fact_count,
+            )
+            text = (
+                f"Ground Truth complete with warnings. Preserved {self.host._gemini_stream_fact_count} "
+                f"live-streamed fact(s); final validation retained only {kept_count}/{streamed_count} "
+                f"(bbox mode: {bbox_mode_label}, pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."
+            )
+            return text, text
         text = (
             f"Ground Truth complete. Parsed {self.host._gemini_stream_fact_count} fact(s) "
             f"(bbox mode: {bbox_mode_label}, pixel={pixel_score:.3f}, normalized={normalized_score:.3f})."

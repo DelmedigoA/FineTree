@@ -817,7 +817,7 @@ def test_gemini_gt_stream_fact_is_buffered_until_completion(tmp_path: Path) -> N
     window.close()
 
 
-def test_gemini_gt_stream_completion_replaces_buffer_with_finalized_facts(tmp_path: Path) -> None:
+def test_gemini_gt_stream_completion_preserves_live_buffer_when_finalize_shrinks(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -830,6 +830,8 @@ def test_gemini_gt_stream_completion_replaces_buffer_with_finalized_facts(tmp_pa
     window._gemini_stream_mode = "gt"
     window._gemini_stream_seen_facts = set()
     window._gemini_stream_apply_meta = False
+    session_dir = tmp_path / "gemini_logs" / "session"
+    session_dir.mkdir(parents=True)
 
     assert window._apply_stream_fact(
         page_name,
@@ -856,6 +858,31 @@ def test_gemini_gt_stream_completion_replaces_buffer_with_finalized_facts(tmp_pa
         stream_source="gemini",
     )
     assert len(window._gemini_gt_buffered_facts) == 2
+    window._update_gemini_gt_live_stream(page_name)
+    history_before = window._history_index
+
+    captured: dict[str, str] = {}
+
+    def _fake_warning(_parent, title: str, detail: str) -> None:
+        captured["title"] = title
+        captured["detail"] = detail
+
+    monkeypatch.setattr(app_mod.QMessageBox, "warning", _fake_warning)
+    window._gemini_stream_worker = SimpleNamespace(
+        issue_summary={
+            "streamed_fact_count": 2,
+            "kept_fact_count": 1,
+            "dropped_fact_count": 1,
+            "issue_count": 1,
+            "validation_failure_groups": [
+                {
+                    "code": "note_num_without_note_flag",
+                    "count": 1,
+                }
+            ],
+        },
+        session_dir=session_dir,
+    )
 
     extraction = SimpleNamespace(
         meta=SimpleNamespace(
@@ -883,9 +910,95 @@ def test_gemini_gt_stream_completion_replaces_buffer_with_finalized_facts(tmp_pa
 
     window._on_gemini_stream_completed(extraction)
 
-    assert len(window._gemini_gt_buffered_facts) == 1
-    assert len(window._fact_items) == 1
+    assert len(window._gemini_gt_buffered_facts) == 2
+    assert len(window._fact_items) == 2
     assert window._fact_items[0].fact_data["value"] == "18,763"
+    assert window._fact_items[1].fact_data["value"] == "99"
+    assert window._gemini_gt_live_applied is True
+    assert window._history_index > history_before
+    assert captured["title"] == "AI warning"
+    assert "Some streamed facts were rendered live and remain on the page." in captured["detail"]
+    assert "Preserved the 2 live-streamed fact(s) because final validation retained only 1." in captured["detail"]
+    assert "Kept 1 valid fact(s), dropped 1 invalid fact(s)." in captured["detail"]
+    assert "Top issues: note_num_without_note_flag (1)." in captured["detail"]
+    assert window._ai_controller._status_text.startswith("Ground Truth complete with warnings.")
+    assert "Preserved 2 live-streamed fact(s);" in window._ai_controller._status_text
+    assert "retained only 1/2" in window._ai_controller._status_text
+    assert "Ground Truth complete with warnings." in window.statusBar().currentMessage()
+
+    window.close()
+
+
+def test_gemini_gt_stream_completion_applies_larger_finalized_facts(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=1617, height=2384)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[window.current_index].name
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_apply_meta = False
+
+    assert window._apply_stream_fact(
+        page_name,
+        {
+            "bbox": [474, 731, 58, 30],
+            "value": "18,763",
+            "row_role": "detail",
+            "note_flag": True,
+            "note_num": 5,
+            "path": ["A"],
+        },
+        stream_source="gemini",
+    )
+    assert len(window._gemini_gt_buffered_facts) == 1
+
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": None,
+                "page_num": None,
+                "page_type": "statements",
+                "statement_type": "notes_to_financial_statements",
+                "title": None,
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [474, 731, 58, 30],
+                    "value": "18,763",
+                    "row_role": "detail",
+                    "note_flag": True,
+                    "note_num": 5,
+                    "path": ["A"],
+                }
+            ),
+            SimpleNamespace(
+                model_dump=lambda mode="json": {
+                    "bbox": [574, 731, 58, 30],
+                    "value": "99",
+                    "row_role": "detail",
+                    "note_flag": False,
+                    "note_num": None,
+                    "path": ["B"],
+                }
+            ),
+        ],
+    )
+
+    window._on_gemini_stream_completed(extraction)
+
+    assert len(window._gemini_gt_buffered_facts) == 2
+    assert len(window._fact_items) == 2
+    assert window._fact_items[0].fact_data["value"] == "18,763"
+    assert window._fact_items[1].fact_data["value"] == "99"
+    assert window._gemini_stream_fact_count == 2
+    assert window._ai_controller._status_text.startswith("Ground Truth complete.")
 
     window.close()
 
@@ -2347,6 +2460,29 @@ def test_gemini_fill_prompt_omits_statement_type_schema_when_not_requested(tmp_p
     assert "Requested meta fields:\nnone" in prompt
     assert "Schema:\n{}" in prompt
     assert '"statement_type"' not in prompt
+
+    window.close()
+
+
+def test_gemini_fill_prompt_only_includes_requested_fact_update_schema(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    prompt = window._build_gemini_fill_prompt_from_template(
+        "Schema:\n{{FACT_UPDATES_SCHEMA}}\n{{REQUEST_JSON}}",
+        request_payload={"pages": [{"image": "page_0001.png", "meta": {}, "facts": []}]},
+        selected_fact_fields={"value", "path"},
+        include_statement_type=False,
+    )
+
+    assert '"value"' in prompt
+    assert '"path"' in prompt
+    assert '"natural_sign"' not in prompt
+    assert '"row_role"' not in prompt
 
     window.close()
 

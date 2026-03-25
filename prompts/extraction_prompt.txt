@@ -63,9 +63,10 @@ Return exactly this wrapper shape:
 6. Order facts top-to-bottom; within each row use right-to-left for Hebrew/RTL pages and left-to-right for English/LTR pages.
 7. Keep `value` exactly as printed, including `%`, commas, parentheses, leading `-`, angle brackets, and dash placeholders. If the source cell is `-`, `—`, or `–`, return `"-"`.
 8. `path` must be a JSON list of visible hierarchy labels. Use `[]` when unknown.
-9. `equations` must be a JSON list or `null`. Use `null` unless the page visibly supports a reliable arithmetic relation.
-10. Classify `page_type` and `statement_type` from visible page context only.
-11. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
-12. Do not emit runtime-only page keys such as `annotation_note` or `annotation_status`, and do not emit `date`.
-13. Extract a fact only when you can localize its numeric cell tightly. Skip uncertain or non-localizable facts.
-14. Output UTF-8 Hebrew directly. Do not escape it to unicode sequences.
+9. If `comment_ref` seems unreasonably long, do not include the full text. Use a short marker only, for example `"*"` or `"(1)"`.
+10. `equations` must be a JSON list or `null`. Use `null` unless the page visibly supports a reliable arithmetic relation.
+11. Classify `page_type` and `statement_type` from visible page context only.
+12. Do not emit legacy top-level `equation`, `fact_equation`, or `equation_children` keys inside facts.
+13. Do not emit runtime-only page keys such as `annotation_note` or `annotation_status`, and do not emit `date`.
+14. Extract a fact only when you can localize its numeric cell tightly. Skip uncertain or non-localizable facts.
+15. Output UTF-8 Hebrew directly. Do not escape it to unicode sequences.
