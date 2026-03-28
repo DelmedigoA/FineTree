@@ -11,6 +11,8 @@ from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
 from finetree_annotator.annotation_core import PageState, default_page_meta
+from finetree_annotator.ai.payloads import system_prompt_template
+from finetree_annotator.ai.types import AIWorkflowRequest
 import finetree_annotator.app as app_mod
 from finetree_annotator.app import AnnotRectItem, AnnotationWindow, item_scene_rect
 
@@ -237,6 +239,24 @@ def test_ai_dialog_uses_supported_gemini_model_dropdown(tmp_path: Path) -> None:
     window.close()
 
 
+def test_ai_dialog_includes_bbox_only_action_for_gemini(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    actions = [dialog.action_combo.itemText(index) for index in range(dialog.action_combo.count())]
+    assert "Ground Truth" in actions
+    assert "BBoxes + Values" in actions
+    assert "Auto Complete" in actions
+    assert "Fix" in actions
+    dialog.close()
+    window.close()
+
+
 def test_ai_fix_dialog_uses_supported_gemini_model_dropdown(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -330,7 +350,7 @@ def test_ai_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_
     window.close()
 
 
-def test_ai_ground_truth_dialog_defaults_to_two_shot_preset(tmp_path: Path) -> None:
+def test_ai_ground_truth_dialog_defaults_to_gemini_flash_preview(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -348,7 +368,7 @@ def test_ai_ground_truth_dialog_defaults_to_two_shot_preset(tmp_path: Path) -> N
     assert dialog.current_temperature() is None
     assert dialog.thinking_check.isChecked() is False
     assert dialog.thinking_level_combo.currentText().lower() == "minimal"
-    assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_check.isChecked() is False
     assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
     dialog.close()
     window.close()
@@ -478,6 +498,36 @@ def test_gemini_ground_truth_prompt_mentions_exact_image_size_and_tight_bbox_rul
     window.close()
 
 
+def test_gemini_bbox_only_prompt_mentions_numerical_entities_and_dash(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=165, height=239)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    context = window._ai_page_context()
+    assert context is not None
+
+    prompt = window._ai_controller._build_prompt_for_dialog(
+        app_mod.AIProvider.GEMINI,
+        app_mod.AIActionKind.BBOX_ONLY,
+        context,
+    )
+
+    assert "current image size: 165 x 239 pixels." in prompt.lower()
+    assert "all numerical entities" in prompt.lower()
+    assert 'standalone "-" entries' in prompt
+    assert "same overall json wrapper shape" in prompt.lower()
+    assert '"pages"' in prompt
+    assert '"facts"' in prompt
+    assert '"bbox"' in prompt
+    assert '"value"' in prompt
+    assert "do not include any other fact fields" in prompt.lower()
+
+    window.close()
+
+
 def test_ai_autocomplete_dialog_shows_empty_page_validation(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
@@ -602,7 +652,7 @@ def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypa
     window.close()
 
 
-def test_gemini_gt_vertex_model_does_not_require_standard_api_key(tmp_path: Path, monkeypatch) -> None:
+def test_gemini_gt_tuned_model_uses_training_prompt_and_no_standard_api_key(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -616,6 +666,11 @@ def test_gemini_gt_vertex_model_does_not_require_standard_api_key(tmp_path: Path
         "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
         lambda _model_name, explicit_api_key=None: (None, None),
     )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_gemini_few_shot_examples",
+        lambda _request: pytest.fail("few-shot should not be loaded for tuned Gemini GT"),
+    )
     monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
     window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
@@ -623,10 +678,140 @@ def test_gemini_gt_vertex_model_does_not_require_standard_api_key(tmp_path: Path
     assert dialog is not None
     dialog.prompt_edit.setPlainText("vertex prompt")
     dialog.model_combo.setCurrentText("gemini-flash-hf-tuned")
+    dialog.temperature_spin.setValue(0.35)
+    dialog.few_shot_check.setChecked(True)
     window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["model_name"] == "gemini-flash-hf-tuned"
     assert captured_stream_kwargs["gemini_api_key"] is None
+    assert captured_stream_kwargs["system_prompt"] == system_prompt_template()
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
+    assert captured_stream_kwargs["few_shot_examples"] is None
+    assert captured_stream_kwargs["prompt_text"] != "vertex prompt"
+    assert "Current image size: 32 x 32 pixels." in captured_stream_kwargs["prompt_text"]
+
+    window.close()
+
+
+def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
+    )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_gemini_few_shot_examples",
+        lambda _request: [{"role": "user", "parts": ["example"]}],
+    )
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.model_combo.setCurrentText("gemini-3-flash-preview")
+    dialog.temperature_spin.setValue(0.35)
+    dialog.few_shot_check.setChecked(True)
+    dialog.prompt_edit.setPlainText("custom gt prompt")
+    window._ai_controller.run_from_dialog()
+
+    assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
+    assert captured_stream_kwargs["gemini_api_key"] == "test-key"
+    assert captured_stream_kwargs["system_prompt"] is None
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.35)
+    assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
+    assert captured_stream_kwargs["prompt_text"] == "custom gt prompt"
+
+    window.close()
+
+
+def test_gemini_bbox_only_run_uses_selected_model_and_mode(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
+    )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_gemini_bbox_only_few_shot_examples",
+        lambda request: [{"image_path": Path("/tmp/example.png"), "expected_json": "{\"pages\":[]}"}] if request.use_few_shot else None,
+    )
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.BBOX_ONLY)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.model_combo.setCurrentText("gemini-2.5-flash")
+    dialog.temperature_spin.setValue(0.15)
+    dialog.few_shot_check.setChecked(True)
+    window._ai_controller.run_from_dialog()
+
+    assert captured_stream_kwargs["mode"] == "bbox_only"
+    assert captured_stream_kwargs["model_name"] == "gemini-2.5-flash"
+    assert captured_stream_kwargs["gemini_api_key"] == "test-key"
+    assert captured_stream_kwargs["system_prompt"] is None
+    assert captured_stream_kwargs["few_shot_examples"] == [{"image_path": Path("/tmp/example.png"), "expected_json": "{\"pages\":[]}"}]
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.15)
+    assert "all numerical entities" in captured_stream_kwargs["prompt_text"]
+    assert '"value"' in captured_stream_kwargs["prompt_text"]
+
+    window.close()
+
+
+def test_gemini_bbox_only_few_shot_examples_are_projected_to_bbox_and_value(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    request = AIWorkflowRequest(
+        provider=app_mod.AIProvider.GEMINI,
+        action=app_mod.AIActionKind.BBOX_ONLY,
+        model="gemini-3-flash-preview",
+        prompt_text="x",
+        use_few_shot=True,
+        few_shot_preset=app_mod.FEW_SHOT_PRESET_CLASSIC,
+    )
+    window._load_gemini_few_shot_examples = lambda preset: (
+        [
+            {
+                "image_path": tmp_path / "example.png",
+                "expected_json": (
+                    '{"pages":[{"image":"page_0001.png","meta":{"page_type":"other","statement_type":null},'
+                    '"facts":[{"bbox":[1,2,3,4],"value":"10","path":["Assets"],"currency":"ILS"}]}]}'
+                ),
+            }
+        ],
+        [],
+    )
+
+    examples = window._ai_controller._load_gemini_bbox_only_few_shot_examples(request)
+
+    assert examples is not None
+    assert len(examples) == 1
+    assert examples[0]["image_path"] == tmp_path / "example.png"
+    assert examples[0]["expected_json"] == (
+        '{"pages":[{"image":"page_0001.png","meta":{"page_type":"other","statement_type":null},'
+        '"facts":[{"bbox":[1,2,3,4],"value":"10"}]}]}'
+    )
 
     window.close()
 

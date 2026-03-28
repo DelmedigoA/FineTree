@@ -29,6 +29,7 @@ class GeminiStreamWorker(QObject):
         model: str,
         mode: str = "gt",
         api_key: Optional[str] = None,
+        system_prompt: Optional[str] = None,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
         temperature: Optional[float] = None,
         enable_thinking: bool = True,
@@ -43,6 +44,7 @@ class GeminiStreamWorker(QObject):
         self.model = model
         self.mode = str(mode or "gt").strip().lower()
         self.api_key = api_key
+        self.system_prompt = str(system_prompt or "").strip() or None
         self.few_shot_examples = few_shot_examples
         self.temperature = float(temperature) if temperature is not None else None
         self.enable_thinking = bool(enable_thinking)
@@ -102,6 +104,7 @@ class GeminiStreamWorker(QObject):
     def run(self) -> None:
         try:
             from .gemini_vlm import (
+                StreamingBBoxOnlyParser,
                 StreamingPageExtractionParser,
                 _create_gemini_log_session,
                 load_issue_summary,
@@ -116,23 +119,29 @@ class GeminiStreamWorker(QObject):
                 image_path=self.image_path,
                 prompt=self.prompt,
                 mime_type=None,
+                system_prompt=self.system_prompt,
                 temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 thinking_level=self.thinking_level,
                 few_shot_examples=self.few_shot_examples,
             )
-            parser = StreamingPageExtractionParser(image_path=self.image_path, session_dir=self.session_dir)
+            parser = (
+                StreamingBBoxOnlyParser(image_path=self.image_path, session_dir=self.session_dir)
+                if self.mode == "bbox_only"
+                else StreamingPageExtractionParser(image_path=self.image_path, session_dir=self.session_dir)
+            )
             for chunk in stream_content_from_image(
                 image_path=self.image_path,
                 prompt=self.prompt,
                 model=resolved_model,
                 api_key=self.api_key,
+                system_prompt=self.system_prompt,
                 few_shot_examples=self.few_shot_examples,
                 temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 thinking_level=self.thinking_level,
-                response_mime_type="application/json" if self.mode == "gt" else None,
-                media_resolution="high" if self.mode == "gt" else None,
+                response_mime_type="application/json" if self.mode in {"gt", "bbox_only"} else None,
+                media_resolution="high" if self.mode in {"gt", "bbox_only"} else None,
                 session_dir=self.session_dir,
             ):
                 if self._cancel_requested:

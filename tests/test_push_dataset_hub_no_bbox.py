@@ -492,8 +492,9 @@ def test_main_supports_custom_schema_and_split_push(monkeypatch, tmp_path: Path)
         repo_id_train: str | None = None,
         repo_id_validation: str | None = None,
     ) -> dict[str, str]:
-        _ = dataset, token, private
+        _ = dataset, token
         captured["base_repo_id"] = base_repo_id
+        captured["private"] = private
         captured["repo_id_train"] = repo_id_train
         captured["repo_id_validation"] = repo_id_validation
         return {"train": repo_id_train or f"{base_repo_id}-train", "validation": repo_id_validation or f"{base_repo_id}-validation"}
@@ -547,6 +548,7 @@ def test_main_supports_custom_schema_and_split_push(monkeypatch, tmp_path: Path)
     assert captured["page_only_wrapper"] is True
     assert isinstance(captured["prompt_template_override"], str)
     assert captured["base_repo_id"] == "asafd60/FineTree-value-path-no-bbox-approved"
+    assert captured["private"] is False
     assert captured["repo_id_train"] == "asafd60/FineTree-value-path-no-bbox-train-approved"
     assert captured["repo_id_validation"] == "asafd60/FineTree-value-path-no-bbox-validation-approved"
 

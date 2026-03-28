@@ -913,6 +913,7 @@ class PushView(QWidget):
         self.token_edit.setPlaceholderText("Optional; falls back to env or Doppler")
         self.export_dir_edit = QLineEdit("artifacts/hf_dataset_export")
         self.public_check = QCheckBox("Create public dataset repos")
+        self.public_check.setChecked(True)
         self.instruction_mode_combo = QComboBox()
         self.instruction_mode_combo.addItems(["source", "minimal"])
         self.min_pixels_spin = QSpinBox()
@@ -1564,8 +1565,8 @@ class PushView(QWidget):
             argv.extend(["--repo-id-no-bbox-minimal-instruction", self.repo_id_no_bbox_min_edit.text().strip()])
         if self.token_edit.text().strip():
             argv.extend(["--token", self.token_edit.text().strip()])
-        if self.public_check.isChecked():
-            argv.append("--public")
+        if not self.public_check.isChecked():
+            argv.append("--private")
         if self.min_pixels_spin.value() > 0:
             argv.extend(["--min-pixels", str(self.min_pixels_spin.value())])
         if self.max_pixels_spin.value() > 0:

@@ -79,6 +79,7 @@ def _create_logged_session(
         image_path=image_path,
         prompt=prompt or f"Current image size: {image_size[0]} x {image_size[1]} pixels",
         mime_type=None,
+        system_prompt=None,
         temperature=0.01,
         enable_thinking=False,
         thinking_level=None,
@@ -139,6 +140,18 @@ def test_resolve_vertex_project_id_defaults_to_tuned_project(monkeypatch) -> Non
     monkeypatch.setattr(gemini_vlm.shutil, "which", lambda _cmd: None)
 
     assert gemini_vlm.resolve_vertex_project_id() == "gen-lang-client-0533315636"
+
+
+def test_resolve_vertex_endpoint_id_defaults_to_new_tuned_endpoint(monkeypatch) -> None:
+    monkeypatch.delenv("FINETREE_VERTEX_ENDPOINT_ID", raising=False)
+
+    assert gemini_vlm._resolve_vertex_endpoint_id() == "4766539037060104192"
+
+
+def test_resolve_vertex_region_defaults_to_europe_west4(monkeypatch) -> None:
+    monkeypatch.delenv("FINETREE_VERTEX_REGION", raising=False)
+
+    assert gemini_vlm._resolve_vertex_region() == "europe-west4"
 
 
 def _install_fake_qwen_vl_utils(monkeypatch, *, height: int, width: int) -> None:
@@ -217,6 +230,45 @@ def test_restore_resized_bbox_text_scales_even_when_bbox_values_fit_under_1000()
     payload = json.loads(restored)
 
     assert payload["pages"][0]["facts"][0]["bbox"] == [1000.0, 1000.0, 400.0, 200.0]
+
+
+def test_parse_bbox_only_text_accepts_simple_facts_shape() -> None:
+    facts = gemini_vlm.parse_bbox_only_text(
+        '{"pages":[{"image":"page_0001.png","meta":{"page_type":"other","statement_type":null},"facts":[{"bbox":[10,20,30,40],"value":"10"},{"bounding_box":[50,60,70,80],"value":"20"}]}]}'
+    )
+
+    assert facts == [
+        {"bbox": [10.0, 20.0, 30.0, 40.0], "value": "10"},
+        {"bbox": [50.0, 60.0, 70.0, 80.0], "value": "20"},
+    ]
+
+
+def test_streaming_bbox_only_parser_emits_complete_bbox_objects_before_finalize() -> None:
+    parser = gemini_vlm.StreamingBBoxOnlyParser()
+
+    meta_1, facts_1 = parser.feed('{"pages":[{"image":"page_0001.png","meta":{"page_type":"other","statement_type":null},"facts":[{"bbox":[10,20,30,40],"value":"10"},')
+    meta_2, facts_2 = parser.feed('{"bounding_box":[50,60,70,80],"value":"20"}]}]}')
+
+    assert meta_1 == {"entity_name": None, "page_num": None, "page_type": "other", "statement_type": None, "title": None}
+    assert facts_1 == [{"bbox": [10.0, 20.0, 30.0, 40.0], "value": "10"}]
+    assert meta_2 is None
+    assert facts_2 == [{"bbox": [50.0, 60.0, 70.0, 80.0], "value": "20"}]
+    assert parser.finalize().facts == [
+        {"bbox": [10.0, 20.0, 30.0, 40.0], "value": "10"},
+        {"bbox": [50.0, 60.0, 70.0, 80.0], "value": "20"},
+    ]
+
+
+def test_streaming_bbox_only_parser_salvages_valid_boxes_from_malformed_tail() -> None:
+    parser = gemini_vlm.StreamingBBoxOnlyParser()
+
+    parser.feed('{"pages":[{"image":"page_0001.png","meta":{"page_type":"other","statement_type":null},"facts":[{"bbox":[394,266,65,12],"value":"123"},{"bbox":[289,266,56,12],"value":"456"},')
+    parser.feed('{"bbox":{"ymin_row":521,"xmin_col":218,"xmax_row":225')
+
+    assert parser.finalize().facts == [
+        {"bbox": [394.0, 266.0, 65.0, 12.0], "value": "123"},
+        {"bbox": [289.0, 266.0, 56.0, 12.0], "value": "456"},
+    ]
 
 
 def test_vertex_tuned_effective_prompt_switches_bbox_instruction_to_resized_space() -> None:
@@ -408,6 +460,7 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
         prompt="Current image size: 32 x 48 pixels.\nextract now",
         model="Gemini Pro",
         api_key="k",
+        system_prompt="system exact",
         few_shot_examples=[
             {
                 "image_path": example_image,
@@ -431,6 +484,7 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
 
     assert request_payload["model"] == "gemini-3.1-pro-preview"
     assert request_payload["prompt"] == "Current image size: 32 x 48 pixels.\nextract now"
+    assert request_payload["system_prompt"] == "system exact"
     assert request_payload["image_summary"]["image_width"] == 32
     assert request_payload["image_summary"]["image_height"] == 48
     assert request_payload["image_summary"]["mime_type"] == "image/png"
@@ -448,6 +502,7 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
     assert request_payload["request_summary"]["requested_temperature"] == 0.35
     assert request_payload["request_summary"]["effective_temperature"] == 0.35
     assert request_payload["exact_request"]["config"]["kwargs"]["temperature"] == 0.35
+    assert request_payload["exact_request"]["config"]["kwargs"]["system_instruction"] == "system exact"
     assert request_payload["exact_request"]["config"]["kwargs"]["response_mime_type"] == "application/json"
     assert request_payload["exact_request"]["config"]["kwargs"]["media_resolution"] == "HIGH"
     assert request_payload["exact_request"]["contents"][0]["role"] == "user"
@@ -565,6 +620,7 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
         image_path=target_image,
         prompt="extract now",
         model="gemini-flash-hf-tuned",
+        system_prompt="system exact",
         temperature=0.2,
         enable_thinking=True,
         thinking_level="high",
@@ -579,6 +635,7 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
     }
     request_payload = seen["json"]
     assert request_payload["contents"][0]["role"] == "user"
+    assert request_payload["systemInstruction"] == {"parts": [{"text": "system exact"}]}
     assert request_payload["generationConfig"] == {"temperature": 0.2}
     assert request_payload["contents"][0]["parts"][0]["inlineData"]["mimeType"] == "image/png"
     assert isinstance(request_payload["contents"][0]["parts"][0]["inlineData"]["data"], str)
@@ -590,6 +647,7 @@ def test_generate_content_from_image_uses_vertex_endpoint_backend(tmp_path: Path
     log_dir = log_dirs[0]
     request_log = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
     assert request_log["backend"] == "vertex_generate_content"
+    assert request_log["system_prompt"] == "system exact"
     assert request_log["temperature"] == 0.2
     assert request_log["request_summary"]["requested_temperature"] == 0.2
     assert request_log["image_resize"] == {
@@ -771,6 +829,7 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
             image_path=target_image,
             prompt="extract stream",
             model="gemini-flash-hf-tuned",
+            system_prompt="system exact",
             temperature=0.15,
             enable_thinking=True,
             thinking_level="high",
@@ -785,6 +844,7 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
         "Content-Type": "application/json",
     }
     request_payload = seen["json"]
+    assert request_payload["systemInstruction"] == {"parts": [{"text": "system exact"}]}
     assert request_payload["generationConfig"] == {"temperature": 0.15}
     assert "resized image" in request_payload["contents"][0]["parts"][1]["text"]
     assert "extract stream" in request_payload["contents"][0]["parts"][1]["text"]
@@ -799,6 +859,7 @@ def test_stream_content_from_image_uses_vertex_stream_backend(tmp_path: Path, mo
 
     assert len(chunk_events) == 2
     assert request_log["backend"] == "vertex_stream_generate_content"
+    assert request_log["system_prompt"] == "system exact"
     assert request_log["temperature"] == 0.15
     assert request_log["request_summary"]["requested_temperature"] == 0.15
     assert request_log["exact_request"]["endpoint"] == "https://vertex.example/streamGenerateContent"

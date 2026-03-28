@@ -27,6 +27,7 @@ from ..vision_resize import (
     fallback_smart_resize_dimensions as _shared_fallback_smart_resize_dimensions,
     smart_resize_dimensions as _shared_smart_resize_dimensions,
 )
+from .bbox_even_quantization import quantize_xywh_bbox_to_even
 from .config import load_finetune_config
 from .dataset_builder import build_unsloth_chat_datasets
 from .duplicate_facts import assert_no_duplicate_facts
@@ -650,24 +651,17 @@ def _scale_bbox_text_payload(
             except Exception:
                 continue
             x, y, w, h, is_clamped = _clamp_bbox(x, y, w, h, image_w=new_w, image_h=new_h)
-            # Token-lean quantization for exported bbox:
-            # position rounds down; size rounds up to avoid under-covering the target region.
-            x_i = max(0, min(int(math.floor(x)), max(new_w - 1, 0)))
-            y_i = max(0, min(int(math.floor(y)), max(new_h - 1, 0)))
-            w_i = max(int(math.ceil(w)), int(_MIN_BBOX_SIZE))
-            h_i = max(int(math.ceil(h)), int(_MIN_BBOX_SIZE))
-            max_w = max(new_w - x_i, int(_MIN_BBOX_SIZE))
-            max_h = max(new_h - y_i, int(_MIN_BBOX_SIZE))
-            if w_i > max_w:
-                w_i = max_w
-                is_clamped = True
-            if h_i > max_h:
-                h_i = max_h
-                is_clamped = True
-
-            fact["bbox"] = [x_i, y_i, w_i, h_i]
+            bbox, was_adjusted = quantize_xywh_bbox_to_even(
+                x,
+                y,
+                w,
+                h,
+                image_width=new_w,
+                image_height=new_h,
+            )
+            fact["bbox"] = bbox
             updated += 1
-            if is_clamped:
+            if is_clamped or was_adjusted:
                 clamped += 1
 
     return json.dumps(payload, ensure_ascii=False), updated, clamped, 0
@@ -1000,7 +994,7 @@ def _dataset_for_push(dataset: DatasetDict) -> tuple[DatasetDict, list[str], lis
     return filtered, kept, dropped
 
 
-def push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True) -> str:
+def push_to_hf(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = False) -> str:
     api = HfApi(token=token)
     if repo_id is None:
         repo_id = _default_repo_id(api)
@@ -1095,7 +1089,7 @@ def push_train_validation_separately(
     *,
     token: str,
     base_repo_id: str,
-    private: bool = True,
+    private: bool = False,
     repo_id_train: str | None = None,
     repo_id_validation: str | None = None,
 ) -> dict[str, str]:
@@ -1151,7 +1145,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--token", default=None, help="HF token (or use FINETREE_HF_TOKEN/HF_TOKEN/Doppler)")
     parser.add_argument("--export-dir", default="artifacts/hf_dataset_export")
-    parser.add_argument("--public", action="store_true", help="Create/push dataset as public.")
+    parser.set_defaults(public=True)
+    parser.add_argument("--public", dest="public", action="store_true", help="Create/push dataset as public (default).")
+    parser.add_argument("--private", dest="public", action="store_false", help="Create/push dataset as private.")
     parser.add_argument("--min-pixels", type=int, default=None, help="Optional minimum image pixel budget for export.")
     parser.add_argument("--max-pixels", type=int, default=None, help="Optional maximum image pixel budget for export.")
     parser.add_argument(

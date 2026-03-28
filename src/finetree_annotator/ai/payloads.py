@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 from typing import Any, Optional
 
 from ..model_prompt_serialization import MODEL_PROMPT_MODE, build_single_page_payload, serialize_schema_mode_payload
@@ -19,9 +20,12 @@ PROMPTS_ROOT = REPO_ROOT / "prompts"
 DEFAULT_EXTRACTION_PROMPT_PATH = PROMPTS_ROOT / "extraction_prompt.txt"
 DEFAULT_GEMINI_FILL_PROMPT_PATH = PROMPTS_ROOT / "gemini_fill_prompt.txt"
 DEFAULT_GEMINI_AUTOCOMPLETE_PROMPT_PATH = PROMPTS_ROOT / "gemini_autocomplete_prompt.txt"
+DEFAULT_SYSTEM_PROMPT_PATH = PROMPTS_ROOT / "system_prompt.txt"
 LEGACY_EXTRACTION_PROMPT_PATH = REPO_ROOT / "prompt.txt"
-
-
+DEFAULT_SYSTEM_PROMPT_TEXT = (
+    "You are a precise financial statement extraction system. "
+    "Return only valid JSON that matches the required schema."
+)
 def _first_existing_path(candidates: list[Path]) -> Optional[Path]:
     seen: set[Path] = set()
     for path in candidates:
@@ -75,6 +79,18 @@ def resolve_gemini_autocomplete_prompt_path() -> Optional[Path]:
     return _first_existing_path(candidates)
 
 
+def resolve_system_prompt_path() -> Optional[Path]:
+    candidates: list[Path] = []
+    env_path = os.getenv("FINETREE_SYSTEM_PROMPT_PATH")
+    if env_path:
+        candidates.append(Path(env_path).expanduser())
+    candidates.extend([Path.cwd() / "prompts" / "system_prompt.txt", DEFAULT_SYSTEM_PROMPT_PATH, Path.cwd() / "system_prompt.txt"])
+    for parent in Path(__file__).resolve().parents:
+        candidates.append(parent / "prompts" / "system_prompt.txt")
+        candidates.append(parent / "system_prompt.txt")
+    return _first_existing_path(candidates)
+
+
 def load_prompt_template(path: Optional[Path], *, fallback_text: str) -> str:
     if path is None:
         return fallback_text
@@ -96,6 +112,10 @@ def gemini_autocomplete_prompt_template() -> str:
     )
 
 
+def system_prompt_template() -> str:
+    return load_prompt_template(resolve_system_prompt_path(), fallback_text=DEFAULT_SYSTEM_PROMPT_TEXT).strip()
+
+
 def build_extraction_prompt(
     template: str,
     page_image_path: Path,
@@ -110,6 +130,41 @@ def build_extraction_prompt(
         else "unknown"
     )
     return prompt.replace("{{IMAGE_DIMENSIONS}}", image_size)
+
+
+def build_gemini_bbox_only_prompt(
+    page_image_path: Path,
+    *,
+    image_dimensions: Optional[tuple[float, float]],
+) -> str:
+    base_prompt = build_extraction_prompt(
+        extraction_prompt_template(),
+        page_image_path,
+        image_dimensions=image_dimensions,
+    )
+    prompt = re.sub(
+        r'      "facts": \[\n        \{\n.*?\n        \}\n      \]',
+        '      "facts": [\n        {\n  "bbox": [<x>, <y>, <w>, <h>],\n  "value": "<string>"\n        }\n      ]',
+        base_prompt,
+        count=1,
+        flags=re.S,
+    )
+    prompt = prompt.replace(
+        "2. Include all listed `meta` keys and all listed fact keys in every emitted fact. Use JSON `null` for missing optional values.",
+        "2. Include all listed `meta` keys. In this mode, each emitted fact must include only `bbox` and `value`.",
+    )
+    bbox_only_rules = (
+        "BBox+value mode override:\n"
+        "- Keep the same overall JSON wrapper shape.\n"
+        "- For each fact, return only `bbox` and `value`.\n"
+        "- Do not include any other fact fields in this mode.\n"
+        "- Include all numerical entities that function as numeric cells/values.\n"
+        "- Include standalone \"-\" entries when they function as numeric placeholders/values.\n"
+        "- `bbox` must tightly cover the visible text only, in pixel coordinates of the original image.\n\n"
+        "In this mode, each fact object must have exactly this shape:\n"
+        "{\"bbox\": [x, y, w, h], \"value\": \"<string>\"}\n"
+    )
+    return f"{prompt.rstrip()}\n\n{bbox_only_rules}"
 
 
 def build_page_prompt_payload(

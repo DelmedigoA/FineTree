@@ -108,6 +108,7 @@ def build_custom_extraction_schema_preview(
     page_meta_keys: Sequence[str] | None = None,
     fact_keys: Sequence[str] | None = None,
     include_bbox: bool = True,
+    bbox_schema_line: str = '"bbox": [<x>, <y>, <w>, <h>]',
 ) -> str:
     selected_page_meta_keys = _selected_keys(page_meta_keys, PROMPT_PAGE_META_KEYS)
     selected_fact_keys = _selected_keys(fact_keys, PROMPT_FACT_KEYS)
@@ -115,7 +116,7 @@ def build_custom_extraction_schema_preview(
     meta_lines = [_PAGE_META_SCHEMA_LINES[key] for key in selected_page_meta_keys]
     fact_lines: list[str] = []
     if include_bbox:
-        fact_lines.append('"bbox": [<x>, <y>, <w>, <h>]')
+        fact_lines.append(str(bbox_schema_line))
     fact_lines.extend(_FACT_SCHEMA_LINES[key] for key in selected_fact_keys)
     meta_body = ",\n        ".join(meta_lines)
     fact_body = ",\n      ".join(fact_lines)
@@ -133,6 +134,19 @@ def build_custom_extraction_schema_preview(
         }}
         """
     ).strip()
+
+
+def build_gemini_bbox_page_schema_preview(
+    *,
+    page_meta_keys: Sequence[str] | None = None,
+    fact_keys: Sequence[str] | None = None,
+) -> str:
+    return build_custom_extraction_schema_preview(
+        page_meta_keys=page_meta_keys,
+        fact_keys=fact_keys,
+        include_bbox=True,
+        bbox_schema_line='"bbox": [<ymin>, <xmin>, <ymax>, <xmax>]',
+    )
 
 
 def build_custom_extraction_prompt_template(
@@ -435,6 +449,7 @@ __all__ = [
     "ROW_ROLE_VALUES",
     "VALUE_TYPE_VALUES",
     "VALUE_CONTEXT_VALUES",
+    "build_gemini_bbox_page_schema_preview",
     "build_gemini_fill_updates_schema",
     "default_gemini_autocomplete_prompt_template",
     "default_gemini_fill_prompt_template",

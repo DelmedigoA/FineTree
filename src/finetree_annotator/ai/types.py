@@ -13,6 +13,7 @@ class AIProvider(str, Enum):
 
 class AIActionKind(str, Enum):
     GROUND_TRUTH = "ground_truth"
+    BBOX_ONLY = "bbox_only"
     AUTO_COMPLETE = "auto_complete"
     FIX_SELECTED = "fix_selected"
 
@@ -104,6 +105,8 @@ class AIDialogDefaults:
 def action_label(action: AIActionKind) -> str:
     if action == AIActionKind.GROUND_TRUTH:
         return "Ground Truth"
+    if action == AIActionKind.BBOX_ONLY:
+        return "BBoxes + Values"
     if action == AIActionKind.AUTO_COMPLETE:
         return "Auto Complete"
     return "Fix"

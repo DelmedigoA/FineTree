@@ -6569,7 +6569,7 @@ class AnnotationWindow(QMainWindow):
             self._gemini_autocomplete_buffered_facts.append(normalized_payload)
             return True
 
-        if stream_source == "gemini" and self._gemini_stream_mode == "gt":
+        if stream_source == "gemini" and self._gemini_stream_mode in {"gt", "bbox_only"}:
             normalized_payload = self._normalized_stream_fact_payload(fact_payload)
             if normalized_payload is None:
                 return False

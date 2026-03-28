@@ -363,7 +363,7 @@ def push_to_hf_no_bbox(
     dataset: DatasetDict,
     token: str,
     repo_id: str | None,
-    private: bool = True,
+    private: bool = False,
     *,
     instruction_mode: InstructionMode = "source",
 ) -> str:
@@ -381,7 +381,7 @@ def push_train_validation_separately_no_bbox(
     token: str,
     *,
     base_repo_id: str,
-    private: bool = True,
+    private: bool = False,
     repo_id_train: str | None = None,
     repo_id_validation: str | None = None,
 ) -> dict[str, str]:
@@ -417,7 +417,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument("--token", default=None, help="HF token (or use FINETREE_HF_TOKEN/HF_TOKEN/Doppler)")
     parser.add_argument("--export-dir", default="artifacts/hf_dataset_export_no_bbox")
-    parser.add_argument("--public", action="store_true", help="Create/push dataset as public.")
+    parser.set_defaults(public=True)
+    parser.add_argument("--public", dest="public", action="store_true", help="Create/push dataset as public (default).")
+    parser.add_argument("--private", dest="public", action="store_false", help="Create/push dataset as private.")
     parser.add_argument(
         "--instruction-mode",
         default="source",

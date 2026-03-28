@@ -11,6 +11,7 @@ from finetree_annotator.schema_contract import (
     PROMPT_FACT_KEYS,
     REQUIRED_PROMPT_CANONICAL_KEYS,
     build_gemini_fill_updates_schema,
+    build_gemini_bbox_page_schema_preview,
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
     default_extraction_prompt_template,
@@ -103,6 +104,18 @@ def test_custom_no_bbox_prompt_omits_bbox_contract() -> None:
     assert '"bbox"' not in preview
     assert "`bbox` must use original-image pixel coordinates" not in prompt
     assert "Selected fact keys:\n- value, currency" in prompt
+
+
+def test_gemini_bbox_page_schema_preview_uses_normalized_yxyx() -> None:
+    preview = build_gemini_bbox_page_schema_preview(
+        page_meta_keys=("page_type", "title"),
+        fact_keys=("value", "currency"),
+    )
+
+    assert '"bbox": [<ymin>, <xmin>, <ymax>, <xmax>]' in preview
+    assert '"bbox": [<x>, <y>, <w>, <h>]' not in preview
+    assert '"meta"' in preview
+    assert '"facts"' in preview
 
 
 def test_equation_schema_is_present_in_model_prompts() -> None:

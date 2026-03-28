@@ -123,6 +123,37 @@ def test_gemini_stream_worker_forwards_temperature(monkeypatch, tmp_path: Path) 
     assert seen["temperature"] == 0.4
 
 
+def test_gemini_stream_worker_forwards_system_prompt(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
+
+    monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
+    monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.GeminiStreamWorker(
+        image_path=image_path,
+        prompt="extract",
+        model="gemini-3-flash-preview",
+        api_key="k",
+        system_prompt="system exact",
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["system_prompt"] == "system exact"
+
+
 def test_gemini_stream_worker_uses_json_mode_and_high_media_resolution_for_gt(monkeypatch, tmp_path: Path) -> None:
     image_path = tmp_path / "page.png"
     image_path.write_bytes(b"img")
@@ -145,6 +176,44 @@ def test_gemini_stream_worker_uses_json_mode_and_high_media_resolution_for_gt(mo
         prompt="extract",
         model="gemini-3-flash-preview",
         mode="gt",
+        api_key="k",
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["response_mime_type"] == "application/json"
+    assert seen["media_resolution"] == "high"
+
+
+def test_gemini_stream_worker_uses_json_mode_and_high_media_resolution_for_bbox_only(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield '{"facts":[{"bbox":[10,20,30,40]}]}'
+
+    class _BBoxOnlyParser:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
+        def feed(self, _chunk: str):
+            return None, []
+
+        def finalize(self):
+            return SimpleNamespace(meta={}, facts=[{"bbox": [10, 20, 30, 40]}])
+
+    monkeypatch.setattr(gemini_vlm, "StreamingBBoxOnlyParser", _BBoxOnlyParser)
+    monkeypatch.setattr(gemini_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.GeminiStreamWorker(
+        image_path=image_path,
+        prompt="extract bboxes",
+        model="gemini-3-flash-preview",
+        mode="bbox_only",
         api_key="k",
         enable_thinking=False,
     )

@@ -46,8 +46,8 @@ from .vision_resize import (
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
 VERTEX_TUNED_GEMINI_MODEL = "gemini-flash-hf-tuned"
 DEFAULT_VERTEX_PROJECT_ID = "gen-lang-client-0533315636"
-DEFAULT_VERTEX_ENDPOINT_ID = "2095335460762025984"
-DEFAULT_VERTEX_REGION = "us-central1"
+DEFAULT_VERTEX_ENDPOINT_ID = "4766539037060104192"
+DEFAULT_VERTEX_REGION = "europe-west4"
 DEFAULT_VERTEX_TUNED_MAX_PIXELS = 1_200_000
 DEFAULT_GEMINI_GT_RESPONSE_MIME_TYPE = "application/json"
 DEFAULT_GEMINI_GT_MEDIA_RESOLUTION = "high"
@@ -255,6 +255,7 @@ def _generation_config(
     *,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
+    system_prompt: Optional[str] = None,
     temperature: Optional[float] = None,
     response_mime_type: Optional[str] = None,
     response_json_schema: Any = None,
@@ -266,6 +267,9 @@ def _generation_config(
     thinking_config = _thinking_config_for_model(model_name, enable_thinking, thinking_level=thinking_level)
     if thinking_config is not None:
         config_kwargs["thinking_config"] = thinking_config
+    normalized_system_prompt = _normalize_system_prompt(system_prompt)
+    if normalized_system_prompt is not None:
+        config_kwargs["system_instruction"] = normalized_system_prompt
     normalized_temperature = _normalize_temperature(temperature)
     if normalized_temperature is not None:
         config_kwargs["temperature"] = normalized_temperature
@@ -279,6 +283,11 @@ def _generation_config(
     if not config_kwargs:
         return None
     return types.GenerateContentConfig(**config_kwargs)
+
+
+def _normalize_system_prompt(system_prompt: Optional[str]) -> str | None:
+    text = str(system_prompt or "").strip()
+    return text or None
 
 
 def _normalize_temperature(temperature: Optional[float]) -> float | None:
@@ -925,6 +934,7 @@ def _create_gemini_log_session(
     image_path: Path,
     prompt: str,
     mime_type: Optional[str],
+    system_prompt: Optional[str],
     temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
@@ -968,6 +978,7 @@ def _create_gemini_log_session(
         "operation": operation,
         "model": model,
         "prompt": prompt,
+        "system_prompt": _normalize_system_prompt(system_prompt),
         "image_path": str(image_path),
         "logged_image_path": target_copy_name,
         "image_summary": image_summary,
@@ -994,6 +1005,7 @@ def _create_gemini_log_session(
             "model": model,
             "image_path": str(image_path),
             "image_summary": image_summary,
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "temperature": _normalize_temperature(temperature),
             "enable_thinking": enable_thinking,
             "thinking_level": thinking_level,
@@ -1362,6 +1374,13 @@ def _build_logged_gemini_contents(session_dir: Path, prompt: str) -> list[Any]:
         }
     )
     return contents
+
+
+def _vertex_system_instruction_payload(system_prompt: Optional[str]) -> dict[str, Any] | None:
+    normalized_system_prompt = _normalize_system_prompt(system_prompt)
+    if normalized_system_prompt is None:
+        return None
+    return {"parts": [{"text": normalized_system_prompt}]}
 
 
 def _write_gemini_log_output(session_dir: Path, *, text: str, raw: Any) -> None:
@@ -1942,6 +1961,7 @@ def _build_logged_vertex_generate_content_request(
     *,
     prompt: str,
     session_dir: Path,
+    system_prompt: Optional[str] = None,
     generation_config: Optional[dict[str, Any]] = None,
 ) -> dict[str, Any]:
     request_payload = _read_gemini_log_request(session_dir)
@@ -1960,6 +1980,9 @@ def _build_logged_vertex_generate_content_request(
             }
         ],
     }
+    system_instruction = _vertex_system_instruction_payload(system_prompt)
+    if system_instruction is not None:
+        payload["systemInstruction"] = system_instruction
     if generation_config:
         payload["generationConfig"] = deepcopy(generation_config)
     return payload
@@ -2063,6 +2086,7 @@ def _stream_content_from_vertex_endpoint(
     prompt: str,
     model: str,
     mime_type: Optional[str],
+    system_prompt: Optional[str],
     temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
@@ -2094,11 +2118,15 @@ def _stream_content_from_vertex_endpoint(
     if normalized_temperature is not None:
         generation_config["temperature"] = normalized_temperature
     payload: dict[str, Any] = {"contents": contents}
+    system_instruction = _vertex_system_instruction_payload(system_prompt)
+    if system_instruction is not None:
+        payload["systemInstruction"] = deepcopy(system_instruction)
     if generation_config:
         payload["generationConfig"] = generation_config
     logged_payload = _build_logged_vertex_generate_content_request(
         prompt=effective_prompt,
         session_dir=session_dir,
+        system_prompt=system_prompt,
         generation_config=generation_config or None,
     )
     request_summary = _vertex_request_summary(
@@ -2112,6 +2140,7 @@ def _stream_content_from_vertex_endpoint(
         session_dir,
         {
             "backend": "vertex_stream_generate_content",
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "request_summary": request_summary,
             "image_resize": {
                 "max_pixels": DEFAULT_VERTEX_TUNED_MAX_PIXELS,
@@ -2265,6 +2294,7 @@ def _generate_content_from_vertex_endpoint(
     prompt: str,
     model: str,
     mime_type: Optional[str],
+    system_prompt: Optional[str],
     temperature: Optional[float],
     enable_thinking: Optional[bool],
     thinking_level: Optional[str],
@@ -2296,11 +2326,15 @@ def _generate_content_from_vertex_endpoint(
     if normalized_temperature is not None:
         generation_config["temperature"] = normalized_temperature
     payload: dict[str, Any] = {"contents": contents}
+    system_instruction = _vertex_system_instruction_payload(system_prompt)
+    if system_instruction is not None:
+        payload["systemInstruction"] = deepcopy(system_instruction)
     if generation_config:
         payload["generationConfig"] = generation_config
     logged_payload = _build_logged_vertex_generate_content_request(
         prompt=effective_prompt,
         session_dir=session_dir,
+        system_prompt=system_prompt,
         generation_config=generation_config or None,
     )
     request_summary = _vertex_request_summary(
@@ -2314,6 +2348,7 @@ def _generate_content_from_vertex_endpoint(
         session_dir,
         {
             "backend": "vertex_generate_content",
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "request_summary": request_summary,
             "image_resize": {
                 "max_pixels": DEFAULT_VERTEX_TUNED_MAX_PIXELS,
@@ -3400,12 +3435,69 @@ class StreamingPageExtractionParser:
             return extraction
 
 
+def _project_bbox_value_fact(raw_fact: Any) -> Optional[dict[str, Any]]:
+    if not isinstance(raw_fact, dict):
+        return None
+    bbox = _normalize_bbox(raw_fact.get("bbox") or raw_fact.get("box") or raw_fact.get("bounding_box"))
+    if bbox is None:
+        return None
+    return {
+        "bbox": bbox_to_list(bbox),
+        "value": _to_optional_str(raw_fact.get("value")),
+    }
+
+
+def _project_bbox_value_extraction(extraction: Any) -> Any:
+    from types import SimpleNamespace
+
+    extraction_meta = getattr(extraction, "meta", None)
+    if hasattr(extraction_meta, "model_dump"):
+        meta_payload = extraction_meta.model_dump(mode="json")
+    elif isinstance(extraction_meta, dict):
+        meta_payload = extraction_meta
+    else:
+        meta_payload = {}
+    extraction_facts = getattr(extraction, "facts", [])
+    if not isinstance(extraction_facts, list):
+        extraction_facts = []
+    facts_out = [
+        projected
+        for fact in extraction_facts
+        for projected in [_project_bbox_value_fact(fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact)]
+        if projected is not None
+    ]
+    return SimpleNamespace(meta=meta_payload, facts=facts_out)
+
+
+def parse_bbox_only_text(raw_text: str) -> list[dict[str, Any]]:
+    extraction = parse_page_extraction_text(raw_text)
+    return _project_bbox_value_extraction(extraction).facts
+
+
+class StreamingBBoxOnlyParser:
+    def __init__(self, *, image_path: Optional[Path] = None, session_dir: Optional[Path] = None) -> None:
+        self._delegate = StreamingPageExtractionParser(image_path=image_path, session_dir=session_dir)
+
+    @property
+    def buffer(self) -> str:
+        return self._delegate.buffer
+
+    def feed(self, text_chunk: str) -> tuple[Optional[dict[str, Any]], list[dict[str, Any]]]:
+        meta, facts = self._delegate.feed(text_chunk)
+        projected_facts = [projected for fact in facts for projected in [_project_bbox_value_fact(fact)] if projected is not None]
+        return meta, projected_facts
+
+    def finalize(self) -> Any:
+        return _project_bbox_value_extraction(self._delegate.finalize())
+
+
 def generate_content_from_image(
     image_path: Path,
     prompt: str,
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    system_prompt: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
@@ -3425,6 +3517,7 @@ def generate_content_from_image(
             image_path=image_path,
             prompt=prompt,
             mime_type=mime_type,
+            system_prompt=system_prompt,
             temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
@@ -3436,6 +3529,7 @@ def generate_content_from_image(
             prompt=prompt,
             model=resolved_model,
             mime_type=mime_type,
+            system_prompt=system_prompt,
             temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
@@ -3466,6 +3560,7 @@ def generate_content_from_image(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        system_prompt=system_prompt,
         temperature=temperature,
         response_mime_type=response_mime_type,
         media_resolution=media_resolution,
@@ -3483,6 +3578,7 @@ def generate_content_from_image(
         session_dir,
         {
             "request_summary": request_summary,
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "exact_request": {
                 "model": resolved_model,
                 "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -3514,6 +3610,7 @@ def stream_content_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    system_prompt: Optional[str] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
@@ -3532,6 +3629,7 @@ def stream_content_from_image(
             image_path=image_path,
             prompt=prompt,
             mime_type=mime_type,
+            system_prompt=system_prompt,
             temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
@@ -3543,6 +3641,7 @@ def stream_content_from_image(
             prompt=prompt,
             model=resolved_model,
             mime_type=mime_type,
+            system_prompt=system_prompt,
             temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
@@ -3580,6 +3679,7 @@ def stream_content_from_image(
             resolved_model,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
+            system_prompt=system_prompt,
             temperature=temperature,
             response_mime_type=response_mime_type,
             media_resolution=media_resolution,
@@ -3597,6 +3697,7 @@ def stream_content_from_image(
             session_dir,
             {
                 "request_summary": request_summary,
+                "system_prompt": _normalize_system_prompt(system_prompt),
                 "exact_request": {
                     "model": resolved_model,
                     "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -3675,6 +3776,7 @@ def stream_content_from_image(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        system_prompt=system_prompt,
         temperature=temperature,
         response_mime_type=response_mime_type,
         media_resolution=media_resolution,
@@ -3692,6 +3794,7 @@ def stream_content_from_image(
         session_dir,
         {
             "request_summary": request_summary,
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "exact_request": {
                 "model": resolved_model,
                 "contents": _build_logged_gemini_contents(session_dir, prompt),
@@ -3725,6 +3828,7 @@ def generate_structured_json_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    system_prompt: Optional[str] = None,
     temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
@@ -3740,6 +3844,7 @@ def generate_structured_json_from_image(
             model=resolved_model,
             mime_type=mime_type,
             api_key=api_key,
+            system_prompt=system_prompt,
             temperature=temperature,
             enable_thinking=enable_thinking,
             thinking_level=thinking_level,
@@ -3754,6 +3859,7 @@ def generate_structured_json_from_image(
         image_path=image_path,
         prompt=prompt,
         mime_type=mime_type,
+        system_prompt=system_prompt,
         temperature=temperature,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
@@ -3784,6 +3890,7 @@ def generate_structured_json_from_image(
         resolved_model,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
+        system_prompt=system_prompt,
         temperature=temperature,
         response_mime_type="application/json",
         response_json_schema=schema,
@@ -3799,6 +3906,7 @@ def generate_structured_json_from_image(
         session_dir,
         {
             "request_summary": request_summary,
+            "system_prompt": _normalize_system_prompt(system_prompt),
             "exact_request": {
                 "model": resolved_model,
                 "contents": [{"type": "image_file", "file": _read_gemini_log_request(session_dir)["logged_image_path"]}, prompt],
@@ -3836,6 +3944,7 @@ def generate_page_extraction_from_image(
     model: str = DEFAULT_GEMINI_MODEL,
     mime_type: Optional[str] = None,
     api_key: Optional[str] = None,
+    system_prompt: Optional[str] = None,
     temperature: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
     thinking_level: Optional[str] = None,
@@ -3847,6 +3956,7 @@ def generate_page_extraction_from_image(
         image_path=image_path,
         prompt=prompt,
         mime_type=mime_type,
+        system_prompt=system_prompt,
         temperature=temperature,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,
@@ -3860,6 +3970,7 @@ def generate_page_extraction_from_image(
         model=resolved_model,
         mime_type=mime_type,
         api_key=api_key,
+        system_prompt=system_prompt,
         temperature=temperature,
         enable_thinking=enable_thinking,
         thinking_level=thinking_level,

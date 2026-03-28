@@ -222,7 +222,7 @@ def test_push_view_builds_cli_args() -> None:
     assert "doc_reviewed_a" in argv
     assert "--repo-id" in argv
     assert "--token" in argv
-    assert "--public" in argv
+    assert "--private" not in argv
     assert "--approved-pages-only" in argv
     assert "--page-meta-keys" in argv
     assert "--fact-keys" in argv
@@ -245,6 +245,9 @@ def test_push_view_builds_cli_args() -> None:
     assert '"date"' not in view.schema_preview_view.toPlainText()
     assert "Selected fact keys" in view.prompt_preview_view.toPlainText()
     assert "Skipped non-approved pages: 1" in view.preview_summary_label.text()
+    view.public_check.setChecked(False)
+    argv_private = view._build_argv()
+    assert "--private" in argv_private
     view.close()
 
 

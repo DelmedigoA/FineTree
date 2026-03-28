@@ -217,10 +217,10 @@ def test_export_for_hf_rewrites_image_paths_resizes_and_scales_bbox(tmp_path: Pa
 
     out_payload = json.loads(out["text"])
     bbox = out_payload["pages"][0]["facts"][0]["bbox"]
-    assert bbox == [5, 10, 15, 20]
+    assert bbox == [4, 10, 16, 20]
 
 
-def test_export_for_hf_bbox_quantization_uses_floor_for_xy_and_ceil_for_wh(tmp_path: Path, monkeypatch) -> None:
+def test_export_for_hf_bbox_quantization_snaps_edges_to_outward_even_values(tmp_path: Path, monkeypatch) -> None:
     _install_fake_qwen_vl_utils(monkeypatch, scale=0.33)
 
     root = tmp_path
@@ -254,8 +254,9 @@ def test_export_for_hf_bbox_quantization_uses_floor_for_xy_and_ceil_for_wh(tmp_p
     out = json.loads((export_dir / "train.jsonl").read_text(encoding="utf-8").strip())
     out_payload = json.loads(out["text"])
     bbox = out_payload["pages"][0]["facts"][0]["bbox"]
-    assert bbox == [3, 3, 10, 11]
+    assert bbox == [2, 2, 12, 12]
     assert all(isinstance(v, int) for v in bbox)
+    assert all((v % 2) == 0 for v in bbox)
 
 
 def test_export_for_hf_minimal_instruction_is_fixed_line(tmp_path: Path) -> None:
@@ -798,8 +799,9 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
         return _empty_dataset(), 1, 0
 
     def _fake_push(dataset: DatasetDict, token: str, repo_id: str | None, private: bool = True):
-        _ = dataset, token, repo_id, private
+        _ = dataset, token, repo_id
         captured["pushed"] = True
+        captured["private"] = private
         return "asafd60/FineTree-annotated-pages"
 
     monkeypatch.setattr(push_mod, "build_dataset", _fake_build_dataset)
@@ -821,6 +823,7 @@ def test_main_uses_export_dataset_for_push(monkeypatch, tmp_path: Path) -> None:
 
     assert rc == 0
     assert captured.get("pushed") is True
+    assert captured.get("private") is False
     assert captured.get("build_from_export") == captured.get("export_dir")
     assert captured.get("compact_tokens") is False
     assert captured.get("aggressive_compact_tokens") is False
