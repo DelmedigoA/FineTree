@@ -1,0 +1,255 @@
+{
+  "page_name": "page_0002.png",
+  "gemini_count": 4,
+  "detector_count": 3,
+  "matched_count": 3,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        339.08,
+        694.48,
+        17.68,
+        32.09
+      ],
+      "value": "3",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דו\"ח רואה החשבון המבקר"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        339.08,
+        763.24,
+        17.68,
+        32.09
+      ],
+      "value": "4",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "מאזנים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        340.68,
+        825.12,
+        17.68,
+        32.09
+      ],
+      "value": "5",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דוחות רווח והפסד"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        335.86,
+        889.3,
+        40.17,
+        32.09
+      ],
+      "value": "6-9",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באורים לדוחות הכספיים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        346.0,
+        696.0,
+        21.0,
+        22.0
+      ],
+      "value": "3",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        346.0,
+        761.0,
+        21.0,
+        22.0
+      ],
+      "value": "4",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        351.0,
+        823.0,
+        18.0,
+        27.0
+      ],
+      "value": "5",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "3",
+      "detector_value": "3",
+      "match_key": "num:3"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "4",
+      "detector_value": "4",
+      "match_key": "num:4"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "5",
+      "detector_value": "5",
+      "match_key": "num:5"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    3
+  ],
+  "unmatched_detector_indices": []
+}

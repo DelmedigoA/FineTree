@@ -341,13 +341,162 @@ def build_gemini_autocomplete_prompt(
     )
 
 
+def build_gemini_fix_drawn_request_payload(
+    *,
+    page_name: str,
+    page_meta: dict[str, Any],
+    ordered_fact_payloads: list[dict[str, Any]],
+    hand_drawn_fact_nums: tuple[int, ...] | list[int],
+) -> dict[str, Any]:
+    hand_drawn_set = set(hand_drawn_fact_nums)
+    facts_out: list[dict[str, Any]] = []
+    for payload in ordered_fact_payloads:
+        fact_num = payload.get("fact_num")
+        if fact_num in hand_drawn_set:
+            facts_out.append({
+                "fact_num": fact_num,
+                "bbox": payload.get("bbox"),
+                **{k: None for k in payload if k not in ("fact_num", "bbox")},
+            })
+        else:
+            facts_out.append({
+                "fact_num": payload.get("fact_num"),
+                "bbox": payload.get("bbox"),
+                **{k: v for k, v in payload.items() if k not in ("fact_num", "bbox")},
+            })
+    return build_page_prompt_payload(page_name=page_name, page_meta=dict(page_meta or {}), facts=facts_out)
+
+
+def build_gemini_fix_drawn_prompt(
+    *,
+    request_payload: dict[str, Any],
+    hand_drawn_fact_nums: tuple[int, ...] | list[int],
+    image_dimensions: Optional[tuple[float, float]],
+) -> str:
+    request_json = serialize_schema_mode_payload(request_payload)
+    drawn_nums_str = ", ".join(str(n) for n in hand_drawn_fact_nums)
+    image_size = (
+        f"{int(image_dimensions[0])} x {int(image_dimensions[1])} pixels"
+        if image_dimensions is not None
+        else "unknown"
+    )
+    return (
+        "You are completing all annotation fields for newly-drawn bounding boxes on a financial page.\n\n"
+        "You receive:\n"
+        "1. The page image.\n"
+        "2. A JSON snapshot of ALL facts on the page.\n"
+        "   Facts with all-null fields (except bbox) are the newly-drawn ones that need completion.\n"
+        f"3. The fact_num values of drawn facts that need completion: {drawn_nums_str}.\n\n"
+        f"Current image size: {image_size}.\n\n"
+        "Existing (non-drawn) facts are authoritative context.\n"
+        "Use their patterns (path structure, periods, currencies, scales, value_types, etc.) "
+        "to infer fields for the drawn facts.\n\n"
+        f"Input snapshot JSON:\n{request_json}\n\n"
+        "Return ONLY valid JSON matching this exact schema:\n"
+        "{\n"
+        '  "meta_updates": {},\n'
+        '  "fact_updates": [\n'
+        "    {\n"
+        '      "fact_num": <integer matching a drawn fact>,\n'
+        '      "updates": {\n'
+        '        "value": "<string — read from image within the bbox area>",\n'
+        '        "path": ["<string>", "..."],\n'
+        '        "row_role": "detail|total",\n'
+        '        "natural_sign": "positive|negative|null",\n'
+        '        "value_type": "amount|percent|ratio|count|points|null",\n'
+        '        "value_context": "textual|tabular|mixed|null",\n'
+        '        "currency": "ILS|USD|EUR|GBP|null",\n'
+        '        "scale": 1|1000|1000000|null,\n'
+        '        "period_type": "instant|duration|expected|null",\n'
+        '        "period_start": "YYYY-MM-DD|null",\n'
+        '        "period_end": "YYYY-MM-DD|null",\n'
+        '        "duration_type": "recurrent|null",\n'
+        '        "recurring_period": "daily|quarterly|monthly|yearly|null",\n'
+        '        "note_flag": true|false,\n'
+        '        "note_name": "<string or null>",\n'
+        '        "note_num": "<integer or null>",\n'
+        '        "note_ref": "<string or null>",\n'
+        '        "comment_ref": "<string or null>",\n'
+        '        "path_source": "observed|inferred|null"\n'
+        "      }\n"
+        "    }\n"
+        "  ]\n"
+        "}\n\n"
+        "Rules:\n"
+        "1. Return patch-only JSON. No markdown, no code fences, no prose.\n"
+        f"2. Only return updates for the drawn facts (fact_nums: {drawn_nums_str}). Never update non-drawn facts.\n"
+        "3. Fill ALL annotation fields for each drawn fact. Read the value from the image within the drawn bbox.\n"
+        "4. Use existing facts as patterns for path, period, currency, scale, etc.\n"
+        "5. Do not include bbox in updates — it is already correct.\n"
+        "6. Keep value exactly as printed in the image within the bbox area.\n"
+        '7. natural_sign: parentheses / angle brackets / leading "-" => "negative", standalone "-" => null, otherwise "positive".\n'
+        '8. row_role must be "detail" or "total".\n'
+        "9. Use JSON null (not the string \"null\") for unknowns.\n"
+        '10. meta_updates must be {} (no meta changes in this mode).\n'
+    )
+
+
+def build_auto_annotate_enrich_seed_payload(
+    *,
+    page_name: str,
+    page_meta: dict[str, Any],
+    ordered_fact_payloads: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Build the seed input payload for Auto-Annotate enrich: each fact has only {fact_num, bbox, value}."""
+    seed_facts = [
+        {
+            "fact_num": i,
+            "bbox": payload.get("bbox"),
+            "value": payload.get("value"),
+        }
+        for i, payload in enumerate(ordered_fact_payloads, start=1)
+    ]
+    return build_page_prompt_payload(page_name=page_name, page_meta=page_meta, facts=seed_facts)
+
+
+def build_auto_annotate_enrich_prompt(
+    *,
+    seed_payload: dict[str, Any],
+    image_dimensions: Optional[tuple[float, float]],
+) -> str:
+    """Build the prompt for Auto-Annotate enrich mode.
+
+    Instructs Gemini to fill in all annotation fields for pre-detected facts,
+    preserving the given bbox and value exactly.
+    """
+    seed_json = serialize_schema_mode_payload(seed_payload)
+    image_size = (
+        f"{int(image_dimensions[0])} x {int(image_dimensions[1])} pixels"
+        if image_dimensions is not None
+        else "unknown"
+    )
+    return (
+        "Auto-Annotate enrich mode.\n"
+        f"Image size: {image_size}.\n\n"
+        "You are given existing numeric detections (fact_num, bbox, value) for this financial page.\n"
+        "For each fact:\n"
+        "- Preserve the given bbox and value exactly as provided.\n"
+        "- Fill in all remaining annotation fields: path, row_role, value_type, value_context,\n"
+        "  currency, scale, natural_sign, note_flag, note_name, note_num, note_ref, comment_ref,\n"
+        "  period_type, period_start, period_end, duration_type, recurring_period, path_source.\n"
+        "Also fill in the page meta fields (entity_name, page_num, page_type, statement_type, title).\n"
+        "Return facts in the same order as the input (by fact_num).\n\n"
+        "Existing detections:\n"
+        f"{seed_json}"
+    )
+
+
 __all__ = [
+    "build_auto_annotate_enrich_prompt",
+    "build_auto_annotate_enrich_seed_payload",
     "build_extraction_prompt",
     "build_gemini_autocomplete_prompt",
     "build_gemini_bbox_only_prompt",
     "build_gemini_autocomplete_request_payload",
     "build_gemini_fill_prompt",
     "build_gemini_fill_request_payload",
+    "build_gemini_fix_drawn_prompt",
+    "build_gemini_fix_drawn_request_payload",
     "build_page_prompt_payload",
     "build_qwen_bbox_only_prompt",
     "extraction_prompt_template",

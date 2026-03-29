@@ -155,9 +155,10 @@ def test_extracted_fact_rejects_noninteger_note_num() -> None:
         ExtractedFact.model_validate(_fact_payload(note_flag=True, note_num="2ה׳"))
 
 
-def test_extracted_fact_rejects_note_num_without_is_note() -> None:
-    with pytest.raises(ValidationError):
-        ExtractedFact.model_validate(_fact_payload(note_flag=False, note_num=7))
+def test_extracted_fact_allows_note_num_without_is_note() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(note_flag=False, note_num=7))
+    assert fact.note_flag is False
+    assert fact.note_num == 7
 
 
 def test_extracted_fact_rejects_noncanonical_date() -> None:

@@ -1,0 +1,50 @@
+{
+  "backend": "fine_tuned",
+  "image_path": "/private/var/folders/zj/vcffcfjn4tb4v987bwqkl3680000gn/T/pytest-of-delmedigo/pytest-703/test_extract_numeric_bbox_fact0/page.png",
+  "candidates": [
+    {
+      "bbox": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "value": "1",
+      "source": "fine_tuned",
+      "score": 0.9,
+      "confidence": 0.9
+    },
+    {
+      "bbox": [
+        30,
+        10,
+        10,
+        10
+      ],
+      "value": "2",
+      "source": "fine_tuned",
+      "score": 0.8,
+      "confidence": 0.8
+    }
+  ],
+  "facts": [
+    {
+      "bbox": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "value": "1"
+    },
+    {
+      "bbox": [
+        30,
+        10,
+        10,
+        10
+      ],
+      "value": "2"
+    }
+  ]
+}

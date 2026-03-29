@@ -1,0 +1,211 @@
+{
+  "page_name": "page_0002.png",
+  "gemini_count": 6,
+  "detector_count": 0,
+  "matched_count": 0,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        420.37,
+        804.62,
+        18.2,
+        37.42
+      ],
+      "value": "2",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דוח רואה החשבון המבקר"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        420.37,
+        921.57,
+        18.2,
+        37.42
+      ],
+      "value": "3",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "מאזנים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        418.71,
+        1033.84,
+        19.86,
+        37.42
+      ],
+      "value": "4",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דוחות על הפעילויות"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        422.02,
+        1150.79,
+        18.2,
+        37.42
+      ],
+      "value": "5",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דוחות על השינויים בנכסים נטו"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        407.13,
+        1265.4,
+        47.99,
+        37.42
+      ],
+      "value": "6-7",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "דוחות על תזרימי המזומנים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        402.17,
+        1377.67,
+        67.86,
+        37.42
+      ],
+      "value": "8-16",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באורים לדוחות הכספיים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "count",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [],
+  "matches": [],
+  "unmatched_gemini_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "unmatched_detector_indices": []
+}

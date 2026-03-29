@@ -15,7 +15,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QRegularExpression
+from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QRegularExpression, QDateTime
 from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeyEvent, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform, QRegularExpressionValidator
 from PyQt5.QtWidgets import (
     QAction,
@@ -114,7 +114,7 @@ from .fact_ordering import canonical_fact_order_indices, compact_document_meta, 
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
 from .gemini_vlm import DEFAULT_GEMINI_MODEL
-from .local_doctr import local_detector_model_name
+from .local_doctr import DEFAULT_DOCTR_LOG_DIR, local_detector_model_name
 from .gemini_few_shot import (
     DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
@@ -927,6 +927,7 @@ class AnnotRectItem(QGraphicsRectItem):
         self.setFlag(QGraphicsRectItem.ItemSendsGeometryChanges, True)
         self.setAcceptHoverEvents(True)
         self.setCursor(Qt.OpenHandCursor)
+        self._hand_drawn: bool = False
         self._active_handle: Optional[str] = None
         self._resize_start_rect: Optional[QRectF] = None
         self._resize_start_scene_pos: Optional[QPointF] = None
@@ -974,6 +975,10 @@ class AnnotRectItem(QGraphicsRectItem):
         elif self._equation_match_ok:
             pen_color = QColor("#14804a")
             pen_width = 2
+        elif self._hand_drawn:
+            pen_color = QColor("#e67e22")
+            pen_width = 2
+            pen_style = Qt.DotLine
         pen = QPen(pen_color)
         pen.setWidth(pen_width)
         pen.setStyle(pen_style)
@@ -1681,6 +1686,7 @@ class AnnotationScene(QGraphicsScene):
             self._draw_start = None
             if rect.width() >= 4 and rect.height() >= 4:
                 item = AnnotRectItem(rect)
+                item._hand_drawn = True
                 self.addItem(item)
                 self.clearSelection()
                 item.setSelected(True)
@@ -1869,6 +1875,9 @@ class AnnotationWindow(QMainWindow):
     annotations_saved = pyqtSignal(object)
     annotations_save_status = pyqtSignal(object)
     document_issues_changed = pyqtSignal(object)
+    document_auto_annotate_page_completed = pyqtSignal(str, int)
+    document_auto_annotate_page_failed = pyqtSignal(str, str)
+    document_auto_annotate_page_stopped = pyqtSignal(str, str)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -1958,9 +1967,14 @@ class AnnotationWindow(QMainWindow):
         self._local_doctr_buffered_facts: list[dict[str, Any]] = []
         self._auto_annotate_active = False
         self._auto_annotate_phase = "idle"
+        self._auto_annotate_mode = "detector"
         self._auto_annotate_target_page: Optional[str] = None
         self._auto_annotate_original_state: Optional[PageState] = None
+        self._auto_annotate_restore_on_finish = False
         self._auto_annotate_gemini_payloads: list[dict[str, Any]] = []
+        self._auto_annotate_enrich_original_ordered_payloads: list[dict[str, Any]] = []
+        self._auto_annotate_last_match_debug: dict[str, Any] = {}
+        self._document_auto_annotate_locked = False
         self._ai_controller = AIWorkflowController(
             self,
             thinking_levels=GEMINI_THINKING_LEVEL_OPTIONS,
@@ -2138,7 +2152,8 @@ class AnnotationWindow(QMainWindow):
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
             (self.detect_bbox_btn, "Detect bbox", "Run local bbox detection on the current page", None),
-            (self.auto_annotate_btn, "Auto-Annotate", "Run tuned Gemini ground truth, then replace matching bboxes with detector output", None),
+            (self.auto_annotate_btn, "Annotate", "Run Gemini ground truth with the 2-shot preset", None),
+            (self.align_bboxes_btn, "Align bboxes", "Replace matched Gemini bboxes with local detector output", None),
             (self.ai_btn, "AI", "Open AI actions", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
@@ -2207,7 +2222,8 @@ class AnnotationWindow(QMainWindow):
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
         self.detect_bbox_btn = QPushButton("Detect bbox")
-        self.auto_annotate_btn = QPushButton("Auto-Annotate")
+        self.auto_annotate_btn = QPushButton("Annotate")
+        self.align_bboxes_btn = QPushButton("Align bboxes")
         self.ai_btn = QPushButton("AI")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
@@ -2232,6 +2248,7 @@ class AnnotationWindow(QMainWindow):
             self.import_btn,
             self.detect_bbox_btn,
             self.auto_annotate_btn,
+            self.align_bboxes_btn,
             self.ai_btn,
             self.delete_nav_btn,
             self.zoom_out_btn,
@@ -2284,6 +2301,7 @@ class AnnotationWindow(QMainWindow):
         gt_layout.setSpacing(4)
         gt_layout.addWidget(self.detect_bbox_btn)
         gt_layout.addWidget(self.auto_annotate_btn)
+        gt_layout.addWidget(self.align_bboxes_btn)
         gt_layout.addWidget(self.ai_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self._toolbar_group("Generation", gt_layout))
@@ -3110,7 +3128,8 @@ class AnnotationWindow(QMainWindow):
         self.save_btn.clicked.connect(self._trigger_save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.detect_bbox_btn.clicked.connect(self.detect_local_bboxes)
-        self.auto_annotate_btn.clicked.connect(self.auto_annotate_current_page)
+        self.auto_annotate_btn.clicked.connect(self.annotate_current_page)
+        self.align_bboxes_btn.clicked.connect(self.align_bboxes_current_page)
         self.ai_btn.clicked.connect(self.open_ai_dialog)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
@@ -6209,6 +6228,13 @@ class AnnotationWindow(QMainWindow):
             if fact_num is not None
         ]
         ordered_fact_payloads = [deepcopy(self._fact_payload_from_item(item)) for item in ordered_items]
+        hand_drawn_fact_nums = tuple(
+            fact_num
+            for item in ordered_items
+            if getattr(item, "_hand_drawn", False)
+            for fact_num in [self._fact_num_for_item(item)]
+            if fact_num is not None
+        )
         return AIPageContext(
             page_path=page_path,
             page_name=page_name,
@@ -6220,7 +6246,35 @@ class AnnotationWindow(QMainWindow):
             existing_fact_count=len(ordered_fact_payloads),
             selected_fact_count=len(selected_fact_nums),
             image_dimensions=self._image_dimensions_for_page(page_name),
+            hand_drawn_fact_nums=hand_drawn_fact_nums,
         )
+
+    def _ensure_document_editable(self, action_label: str) -> bool:
+        if not self._document_auto_annotate_locked:
+            return True
+        QMessageBox.information(
+            self,
+            "Document busy",
+            f"{action_label} is unavailable while this document is Auto-Annotating.",
+        )
+        return False
+
+    def set_document_auto_annotate_locked(self, locked: bool) -> None:
+        self._document_auto_annotate_locked = bool(locked)
+        central = self.centralWidget()
+        if central is not None:
+            central.setEnabled(not self._document_auto_annotate_locked)
+        if self._document_auto_annotate_locked:
+            self.statusBar().showMessage("Document is locked while Auto-Annotate is running.", 5000)
+
+    def is_document_auto_annotate_locked(self) -> bool:
+        return bool(self._document_auto_annotate_locked)
+
+    def start_document_auto_annotate_page(self, page_name: str) -> bool:
+        return bool(self._ai_controller.start_document_auto_annotate_page(page_name))
+
+    def start_align_bboxes_for_page(self, page_name: str) -> bool:
+        return bool(self._ai_controller.start_align_bboxes_for_page(page_name, mode="align"))
 
     def open_ai_dialog(
         self,
@@ -6229,6 +6283,8 @@ class AnnotationWindow(QMainWindow):
         provider: AIProvider | None = None,
         action: AIActionKind | None = None,
     ) -> None:
+        if not self._ensure_document_editable("AI actions"):
+            return
         self._ai_controller.open_dialog(provider=provider, action=action)
 
     def _refresh_ai_dialog_state(self) -> None:
@@ -6487,21 +6543,72 @@ class AnnotationWindow(QMainWindow):
             for payload, resequenced_fact in zip(ordered_payloads, resequenced_facts)
         ]
 
+    def _align_bboxes_match_key(self, payload: dict[str, Any]) -> str:
+        raw_value = normalize_fact_data(payload).get("value") or ""
+        text = normalize_angle_bracketed_numeric_text(raw_value)
+        text = str(text or "").strip()
+        if not text:
+            return ""
+
+        text = (
+            text.replace("\u2212", "-")
+            .replace("\u2013", "-")
+            .replace("\u2014", "-")
+            .replace("\u2009", " ")
+            .replace("\xa0", " ")
+        )
+        compact = re.sub(r"\s+", "", text)
+        compact = compact.replace("$", "").replace("€", "").replace("£", "").replace("₪", "")
+        compact = compact.strip(".,:;")
+        if compact == "-":
+            return "num:-"
+
+        suffix = ""
+        negative = False
+        if compact.endswith("%"):
+            suffix = "%"
+            compact = compact[:-1]
+        if compact.startswith("(") and compact.endswith(")"):
+            negative = True
+            compact = compact[1:-1]
+        if compact.startswith("+"):
+            compact = compact[1:]
+        elif compact.startswith("-"):
+            negative = True
+            compact = compact[1:]
+        compact = compact.strip(".,:;")
+        compact = compact.replace(",", "")
+        if compact and re.fullmatch(r"\d+(?:\.\d+)?", compact):
+            try:
+                normalized_number = Decimal(compact)
+                if negative:
+                    normalized_number = -normalized_number
+                return f"num:{_format_decimal_plain(normalized_number)}{suffix}"
+            except InvalidOperation:
+                pass
+        prefix = "-" if negative else ""
+        lowered = re.sub(r"[^0-9a-zA-Z%+\-().]", "", compact).lower()
+        return f"text:{prefix}{lowered}{suffix}"
+
+    def _write_align_bboxes_debug_log(self, page_name: str, payload: dict[str, Any]) -> None:
+        try:
+            DEFAULT_DOCTR_LOG_DIR.mkdir(parents=True, exist_ok=True)
+            timestamp = QDateTime.currentDateTimeUtc().toString("yyyyMMdd-HHmmss-zzz")
+            log_path = DEFAULT_DOCTR_LOG_DIR / f"{timestamp}_{Path(page_name).stem}_align.json"
+            log_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+        except Exception:
+            return
+
     def _merge_auto_annotate_bbox_payloads(
         self,
+        page_name: str,
         gemini_payloads: list[dict[str, Any]],
         detector_payloads: list[dict[str, Any]],
-    ) -> list[dict[str, Any]]:
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         ordered_gemini_payloads = self._ordered_fact_payloads_by_geometry(gemini_payloads)
         ordered_detector_payloads = self._ordered_fact_payloads_by_geometry(detector_payloads)
-        gemini_values = [
-            normalize_angle_bracketed_numeric_text(normalize_fact_data(payload).get("value") or "")
-            for payload in ordered_gemini_payloads
-        ]
-        detector_values = [
-            normalize_angle_bracketed_numeric_text(normalize_fact_data(payload).get("value") or "")
-            for payload in ordered_detector_payloads
-        ]
+        gemini_values = [self._align_bboxes_match_key(payload) for payload in ordered_gemini_payloads]
+        detector_values = [self._align_bboxes_match_key(payload) for payload in ordered_detector_payloads]
         lcs: list[list[int]] = [
             [0 for _ in range(len(ordered_detector_payloads) + 1)]
             for _ in range(len(ordered_gemini_payloads) + 1)
@@ -6535,7 +6642,119 @@ class AnnotationWindow(QMainWindow):
                 detector_payload = ordered_detector_payloads[detector_match_index]
                 merged_payload["bbox"] = bbox_to_list(detector_payload.get("bbox"))
             merged_payloads.append(merged_payload)
-        return merged_payloads
+        matches = [
+            {
+                "gemini_index": gemini_index,
+                "detector_index": detector_index,
+                "gemini_value": normalize_fact_data(ordered_gemini_payloads[gemini_index]).get("value"),
+                "detector_value": normalize_fact_data(ordered_detector_payloads[detector_index]).get("value"),
+                "match_key": gemini_values[gemini_index],
+            }
+            for gemini_index, detector_index in sorted(matched_detector_indices_by_gemini_index.items())
+        ]
+        unmatched_gemini_indices = [
+            index for index in range(len(ordered_gemini_payloads)) if index not in matched_detector_indices_by_gemini_index
+        ]
+        matched_detector_indices = set(matched_detector_indices_by_gemini_index.values())
+        unmatched_detector_indices = [
+            index for index in range(len(ordered_detector_payloads)) if index not in matched_detector_indices
+        ]
+        debug_payload = {
+            "page_name": page_name,
+            "gemini_count": len(ordered_gemini_payloads),
+            "detector_count": len(ordered_detector_payloads),
+            "matched_count": len(matches),
+            "ordered_gemini_payloads": [deepcopy(payload) for payload in ordered_gemini_payloads],
+            "ordered_detector_payloads": [deepcopy(payload) for payload in ordered_detector_payloads],
+            "matches": matches,
+            "unmatched_gemini_indices": unmatched_gemini_indices,
+            "unmatched_detector_indices": unmatched_detector_indices,
+        }
+        self._write_align_bboxes_debug_log(page_name, debug_payload)
+        return merged_payloads, debug_payload
+
+    def _apply_auto_annotate_enrich_results(
+        self,
+        page_name: str,
+        model_payloads: list[dict[str, Any]],
+    ) -> None:
+        """Merge model-enriched fields onto original ordered facts, protecting bbox/value/equations.
+
+        Matching is done primarily by sequential fact_num (as assigned in the seed payload),
+        with LCS value-order matching as a robust fallback. Unmatched originals are kept as-is.
+        """
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return
+
+        original_ordered = self._auto_annotate_enrich_original_ordered_payloads
+        if not original_ordered:
+            return
+
+        # Fields we never overwrite from the model output
+        PROTECTED: frozenset[str] = frozenset({"bbox", "value", "equations", "fact_num"})
+
+        # Primary matching: sequential fact_num assigned during seed construction (1..N)
+        model_by_factnum: dict[int, dict[str, Any]] = {}
+        for payload in model_payloads:
+            fn = payload.get("fact_num")
+            if isinstance(fn, int) and fn > 0:
+                model_by_factnum[fn] = payload
+
+        # Fallback: LCS value-order matching (handles model fact_num mismatches)
+        model_values = [
+            normalize_angle_bracketed_numeric_text(normalize_fact_data(p).get("value") or "")
+            for p in model_payloads
+        ]
+        original_values = [
+            normalize_angle_bracketed_numeric_text(normalize_fact_data(p).get("value") or "")
+            for p in original_ordered
+        ]
+        n_orig = len(original_ordered)
+        n_model = len(model_payloads)
+        lcs: list[list[int]] = [[0] * (n_model + 1) for _ in range(n_orig + 1)]
+        for oi in range(n_orig - 1, -1, -1):
+            for mi in range(n_model - 1, -1, -1):
+                if original_values[oi] == model_values[mi]:
+                    lcs[oi][mi] = 1 + lcs[oi + 1][mi + 1]
+                else:
+                    lcs[oi][mi] = max(lcs[oi + 1][mi], lcs[oi][mi + 1])
+        lcs_match_by_orig_idx: dict[int, int] = {}
+        oi_cur, mi_cur = 0, 0
+        while oi_cur < n_orig and mi_cur < n_model:
+            if original_values[oi_cur] == model_values[mi_cur]:
+                lcs_match_by_orig_idx[oi_cur] = mi_cur
+                oi_cur += 1
+                mi_cur += 1
+            elif lcs[oi_cur + 1][mi_cur] >= lcs[oi_cur][mi_cur + 1]:
+                oi_cur += 1
+            else:
+                mi_cur += 1
+
+        # Merge: overlay non-protected model fields onto each original fact
+        merged_payloads: list[dict[str, Any]] = []
+        for oi, original_payload in enumerate(original_ordered):
+            fact_num = oi + 1  # sequential, matching how seed was constructed
+            merged = deepcopy(original_payload)
+
+            model_match = model_by_factnum.get(fact_num)
+            if model_match is None:
+                lcs_mi = lcs_match_by_orig_idx.get(oi)
+                if lcs_mi is not None:
+                    model_match = model_payloads[lcs_mi]
+
+            if model_match is not None:
+                for key, val in normalize_fact_data(model_match).items():
+                    if key not in PROTECTED:
+                        merged[key] = val
+
+            merged_payloads.append(merged)
+
+        state = self.page_states.get(page_name, self._default_state(page_idx))
+        merged_records = self._build_box_records_from_fact_payloads(merged_payloads)
+        self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+        self._gemini_stream_fact_count = len(merged_records)
+        self._apply_page_state_to_scene(page_name)
 
     def _restore_page_state_snapshot(self, page_name: str, state: PageState | None) -> None:
         page_idx = self._page_index_by_name(page_name)
@@ -6547,9 +6766,13 @@ class AnnotationWindow(QMainWindow):
     def _reset_auto_annotate_state(self) -> None:
         self._auto_annotate_active = False
         self._auto_annotate_phase = "idle"
+        self._auto_annotate_mode = "detector"
         self._auto_annotate_target_page = None
         self._auto_annotate_original_state = None
+        self._auto_annotate_restore_on_finish = False
         self._auto_annotate_gemini_payloads = []
+        self._auto_annotate_enrich_original_ordered_payloads = []
+        self._auto_annotate_last_match_debug = {}
         self._gemini_gt_live_updates_enabled = True
 
     def _render_gemini_gt_live_buffer(
@@ -6922,9 +7145,13 @@ class AnnotationWindow(QMainWindow):
         QMessageBox.information(self, title, "\n\n".join(messages))
 
     def generate_gemini_fill_selected_fields(self) -> None:
+        if not self._ensure_document_editable("Gemini Fix"):
+            return
         self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.FIX_SELECTED)
 
     def detect_local_bboxes(self) -> None:
+        if not self._ensure_document_editable("Detect bbox"):
+            return
         backend = LocalDetectorBackend.MERGED
         self._ai_controller.start_request(
             AIWorkflowRequest(
@@ -6936,8 +7163,18 @@ class AnnotationWindow(QMainWindow):
             )
         )
 
+    def annotate_current_page(self) -> None:
+        if not self._ensure_document_editable("Annotate"):
+            return
+        self._ai_controller.start_annotate()
+
     def auto_annotate_current_page(self) -> None:
-        self._ai_controller.start_auto_annotate()
+        self.annotate_current_page()
+
+    def align_bboxes_current_page(self) -> None:
+        if not self._ensure_document_editable("Align bboxes"):
+            return
+        self._ai_controller.start_align_bboxes()
 
     def _cancel_gemini_fill(self) -> None:
         if self._gemini_fill_worker is not None:
@@ -7017,6 +7254,7 @@ class AnnotationWindow(QMainWindow):
 
         for item, updated_fact in staged_fact_updates:
             item.fact_data = updated_fact
+            item._hand_drawn = False
         if staged_meta_updates:
             self._apply_stream_meta(page_name, staged_meta_updates)
         if staged_fact_updates or staged_meta_updates:
@@ -8144,7 +8382,14 @@ class AnnotationWindow(QMainWindow):
                 return True
         return super().event(event)
 
-    def save_annotations(self) -> bool:
+    def save_annotations(self, *, allow_locked: bool = False) -> bool:
+        if self._document_auto_annotate_locked and not allow_locked:
+            QMessageBox.information(
+                self,
+                "Document busy",
+                "Save is unavailable while this document is Auto-Annotating.",
+            )
+            return False
         try:
             payload, equation_findings, format_warning_findings = self._build_live_annotations_payload()
         except ValidationError as exc:

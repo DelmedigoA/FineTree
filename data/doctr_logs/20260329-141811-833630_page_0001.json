@@ -1,0 +1,55 @@
+{
+  "backend": "merged",
+  "image_path": "data/pdf_images/דוח_כספי_2023_-_אגודת_כדוריד_ראשון_לציון_ע-ר/page_0001.png",
+  "old_candidates": [
+    {
+      "bbox": [
+        846,
+        725,
+        163,
+        49
+      ],
+      "score": 0.4792107343673706,
+      "value": "79172",
+      "confidence": 0.36159732937812805,
+      "source": "old"
+    }
+  ],
+  "fine_candidates": [
+    {
+      "bbox": [
+        70,
+        420,
+        5,
+        4
+      ],
+      "score": 0.31736505031585693,
+      "value": "-",
+      "confidence": 0.8121116161346436,
+      "source": "fine_tuned"
+    }
+  ],
+  "merged_candidates": [
+    {
+      "bbox": [
+        70,
+        420,
+        5,
+        4
+      ],
+      "value": "-",
+      "source": "fine_tuned"
+    }
+  ],
+  "facts": [
+    {
+      "bbox": [
+        70,
+        420,
+        5,
+        4
+      ],
+      "value": "-"
+    }
+  ]
+}

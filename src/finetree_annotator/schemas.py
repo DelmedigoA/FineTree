@@ -828,8 +828,6 @@ class Fact(BaseModel):
 
     @model_validator(mode="after")
     def _validate_note_num_requires_note_flag(self) -> "Fact":
-        if self.note_num is not None and not self.note_flag:
-            raise ValueError("note_num requires note_flag=true.")
         if self.period_type == PeriodType.duration:
             has_period_start = self.period_start is not None
             has_period_end = self.period_end is not None

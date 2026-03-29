@@ -384,4 +384,51 @@ class AIDialog(QDialog):
             self.run_btn.setEnabled(enabled)
 
 
-__all__ = ["AIDialog"]
+class AnnotateProgressDialog(QDialog):
+    stop_requested = pyqtSignal()
+
+    def __init__(self, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.setModal(False)
+        self.setWindowModality(Qt.NonModal)
+        self.setWindowTitle("Annotate")
+        self.setFixedSize(320, 144)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(12, 12, 12, 12)
+        root.setSpacing(10)
+
+        title = QLabel("Annotate")
+        title.setObjectName("subtitleLabel")
+        root.addWidget(title)
+
+        self.status_label = QLabel("Idle.")
+        self.status_label.setWordWrap(True)
+        root.addWidget(self.status_label)
+
+        self.fact_count_label = QLabel("Parsed facts: 0")
+        self.fact_count_label.setObjectName("monoLabel")
+        root.addWidget(self.fact_count_label)
+
+        actions = QHBoxLayout()
+        self.stop_btn = QPushButton("Stop")
+        self.close_btn = QPushButton("Close")
+        self.stop_btn.setProperty("variant", "danger")
+        actions.addWidget(self.stop_btn)
+        actions.addStretch(1)
+        actions.addWidget(self.close_btn)
+        root.addLayout(actions)
+
+        self.stop_btn.clicked.connect(self.stop_requested.emit)
+        self.close_btn.clicked.connect(self.hide)
+
+    def set_status(self, text: str, *, fact_count: int) -> None:
+        self.status_label.setText(text)
+        self.fact_count_label.setText(f"Parsed facts: {int(fact_count)}")
+
+    def set_running(self, running: bool) -> None:
+        self.stop_btn.setEnabled(running)
+        self.close_btn.setEnabled(not running)
+
+
+__all__ = ["AIDialog", "AnnotateProgressDialog"]

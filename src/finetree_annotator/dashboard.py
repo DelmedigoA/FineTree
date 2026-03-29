@@ -7,7 +7,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Callable, Optional
 
 from PyQt5.QtCore import QObject, QSize, Qt, QThread, QTimer, pyqtSignal
 from PyQt5.QtGui import QCloseEvent, QColor, QFont, QIcon, QPainter, QPixmap, QTextCursor
@@ -210,16 +210,77 @@ class PushPipelineWorker(QObject):
             self.finished.emit()
 
 
+@dataclass
+class AutoAnnotateProgress:
+    doc_id: str
+    stage: str
+    total_pages: int
+    completed_pages: int = 0
+    fact_count: int = 0
+    current_page: Optional[str] = None
+
+    @property
+    def progress_pct(self) -> int:
+        if self.total_pages <= 0:
+            return 0
+        return max(0, min(100, int(round((self.completed_pages / self.total_pages) * 100))))
+
+    @property
+    def status_label(self) -> str:
+        if self.stage == "preparing":
+            return "Preparing"
+        return "Auto-Annotating"
+
+    @property
+    def progress_text(self) -> str:
+        if self.stage == "preparing":
+            return "Preparing PDF..."
+        return (
+            f"{self.progress_pct}% • {self.completed_pages}/{self.total_pages} pages • "
+            f"{_format_metric_int(self.fact_count)} facts"
+        )
+
+
+@dataclass
+class AutoAnnotateRun:
+    context: DocumentContext
+    window: AnnotationWindow
+    page_names: list[str]
+    next_page_index: int = 0
+    completed_pages: int = 0
+    fact_count: int = 0
+    current_page: Optional[str] = None
+    stage: str = "annotating"
+    cancel_requested: bool = False
+
+    def progress(self) -> AutoAnnotateProgress:
+        return AutoAnnotateProgress(
+            doc_id=self.context.doc_id,
+            stage=self.stage,
+            total_pages=len(self.page_names),
+            completed_pages=self.completed_pages,
+            fact_count=self.fact_count,
+            current_page=self.current_page,
+        )
+
+
 class HomeDocumentCard(QFrame):
     open_requested = pyqtSignal(str)
     prepare_requested = pyqtSignal(str)
+    auto_annotate_requested = pyqtSignal(str)
     checked_toggled = pyqtSignal(str, bool)
     review_toggled = pyqtSignal(str, bool)
     delete_requested = pyqtSignal(str)
 
-    def __init__(self, summary: WorkspaceDocumentSummary, parent: Optional[QWidget] = None) -> None:
+    def __init__(
+        self,
+        summary: WorkspaceDocumentSummary,
+        runtime_progress: Optional[AutoAnnotateProgress] = None,
+        parent: Optional[QWidget] = None,
+    ) -> None:
         super().__init__(parent)
         self.summary = summary
+        self.runtime_progress = runtime_progress
         self.setObjectName("docCard")
         self.setProperty("statusTone", _status_tone(summary.status))
 
@@ -293,12 +354,14 @@ class HomeDocumentCard(QFrame):
         actions = QHBoxLayout()
         actions.setSpacing(8)
         self.action_btn = _set_button_variant(QPushButton("Open"), "primary")
+        self.auto_annotate_btn = _set_button_variant(QPushButton("Auto-Annotate"), "ghost")
         self.checked_btn = _set_button_variant(QPushButton("Mark Checked"), "ghost")
         self.checked_btn.setCheckable(True)
         self.review_btn = _set_button_variant(QPushButton("Mark Reviewed"), "ghost")
         self.review_btn.setCheckable(True)
         self.delete_btn = _set_button_variant(QPushButton("Remove"), "danger")
         actions.addWidget(self.action_btn)
+        actions.addWidget(self.auto_annotate_btn)
         actions.addWidget(self.checked_btn)
         actions.addWidget(self.review_btn)
         actions.addWidget(self.delete_btn)
@@ -306,11 +369,12 @@ class HomeDocumentCard(QFrame):
         body.addLayout(actions)
 
         self.action_btn.clicked.connect(lambda: self.open_requested.emit(self.summary.doc_id))
+        self.auto_annotate_btn.clicked.connect(lambda: self.auto_annotate_requested.emit(self.summary.doc_id))
         self.checked_btn.toggled.connect(self._emit_checked_toggled)
         self.review_btn.toggled.connect(self._emit_review_toggled)
         self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.summary.doc_id))
 
-        self.refresh(summary)
+        self.refresh(summary, runtime_progress=runtime_progress)
 
     def _emit_checked_toggled(self, checked: bool) -> None:
         self.checked_toggled.emit(self.summary.doc_id, bool(checked))
@@ -318,8 +382,14 @@ class HomeDocumentCard(QFrame):
     def _emit_review_toggled(self, checked: bool) -> None:
         self.review_toggled.emit(self.summary.doc_id, bool(checked))
 
-    def refresh(self, summary: WorkspaceDocumentSummary) -> None:
+    def refresh(
+        self,
+        summary: WorkspaceDocumentSummary,
+        *,
+        runtime_progress: Optional[AutoAnnotateProgress] = None,
+    ) -> None:
         self.summary = summary
+        self.runtime_progress = runtime_progress
         self.setProperty("statusTone", _status_tone(summary.status))
         self.style().unpolish(self)
         self.style().polish(self)
@@ -347,12 +417,15 @@ class HomeDocumentCard(QFrame):
         )
         self.facts_label.setText(f"Facts {_format_metric_int(int(summary.fact_count or 0))}")
         self.updated_label.setText(f"Updated {_format_timestamp(summary.updated_at)}")
-        self.progress.setValue(summary.progress_pct)
-        self.progress.setFormat(f"{summary.progress_pct}%")
-        self.status_label.setText(summary.status)
+        effective_status = runtime_progress.status_label if runtime_progress is not None else summary.status
+        effective_progress = runtime_progress.progress_pct if runtime_progress is not None else summary.progress_pct
+        progress_text = runtime_progress.progress_text if runtime_progress is not None else f"{summary.progress_pct}%"
+        self.progress.setValue(effective_progress)
+        self.progress.setFormat(progress_text)
+        self.status_label.setText(effective_status)
         self.status_label.setProperty(
             "tone",
-            "ok" if summary.status == "Complete" else ("accent" if summary.status in {"Ready", "In progress"} else "warn"),
+            "ok" if effective_status == "Complete" else ("accent" if effective_status in {"Ready", "In progress", "Auto-Annotating"} else "warn"),
         )
         self.status_label.style().unpolish(self.status_label)
         self.status_label.style().polish(self.status_label)
@@ -386,6 +459,14 @@ class HomeDocumentCard(QFrame):
         except TypeError:
             pass
         self.action_btn.clicked.connect(lambda: target_signal.emit(self.summary.doc_id))
+        auto_annotate_enabled = summary.source_pdf is not None and runtime_progress is None
+        self.auto_annotate_btn.setEnabled(auto_annotate_enabled)
+        if runtime_progress is not None:
+            self.auto_annotate_btn.setToolTip(runtime_progress.progress_text)
+        elif summary.source_pdf is None:
+            self.auto_annotate_btn.setToolTip("Managed source PDF not found for this document.")
+        else:
+            self.auto_annotate_btn.setToolTip("Prepare, annotate, and align every page in the background.")
         checked_allowed = summary.page_count > 0 and summary.annotated_page_count >= summary.page_count
         checked_enabled = bool(summary.checked) or checked_allowed
         self.checked_btn.blockSignals(True)
@@ -441,6 +522,7 @@ class HomeView(QWidget):
     reset_approved_requested = pyqtSignal()
     open_document_requested = pyqtSignal(str)
     prepare_document_requested = pyqtSignal(str)
+    auto_annotate_document_requested = pyqtSignal(str)
     checked_document_requested = pyqtSignal(str, bool)
     review_document_requested = pyqtSignal(str, bool)
     delete_document_requested = pyqtSignal(str)
@@ -450,6 +532,7 @@ class HomeView(QWidget):
         self.setObjectName("homeView")
         self._documents: list[WorkspaceDocumentSummary] = []
         self._cards: dict[str, HomeDocumentCard] = {}
+        self._runtime_progress_by_doc_id: dict[str, AutoAnnotateProgress] = {}
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -526,12 +609,17 @@ class HomeView(QWidget):
         self._documents = list(documents)
         self._render_documents()
 
+    def set_runtime_auto_annotate_progress(self, progress_by_doc_id: dict[str, AutoAnnotateProgress]) -> None:
+        self._runtime_progress_by_doc_id = dict(progress_by_doc_id)
+        self._render_documents()
+
     def _clear_layout_cards(self) -> None:
         while self.cards_layout.count():
             item = self.cards_layout.takeAt(0)
             widget = item.widget()
             if widget is not None:
                 widget.setParent(None)
+                widget.deleteLater()
 
     def _stat_card(self, title: str, value: str, caption: str) -> QFrame:
         card = QFrame()
@@ -562,6 +650,7 @@ class HomeView(QWidget):
             widget = item.widget()
             if widget is not None:
                 widget.setParent(None)
+                widget.deleteLater()
         total_docs = len(self._documents)
         total_pages = sum(doc.page_count for doc in self._documents)
         total_approved_pages = sum(int(doc.approved_page_count or 0) for doc in self._documents)
@@ -655,9 +744,13 @@ class HomeView(QWidget):
             visible_docs.append(document)
         visible_docs = self._sorted_visible_documents(visible_docs)
         for document in visible_docs:
-            card = HomeDocumentCard(document)
+            card = HomeDocumentCard(
+                document,
+                runtime_progress=self._runtime_progress_by_doc_id.get(document.doc_id),
+            )
             card.open_requested.connect(self.open_document_requested.emit)
             card.prepare_requested.connect(self.prepare_document_requested.emit)
+            card.auto_annotate_requested.connect(self.auto_annotate_document_requested.emit)
             card.checked_toggled.connect(self.checked_document_requested.emit)
             card.review_toggled.connect(self.review_document_requested.emit)
             card.delete_requested.connect(self.delete_document_requested.emit)
@@ -688,6 +781,9 @@ class AnnotatorHost(QWidget):
     document_saved = pyqtSignal(object)
     current_document_changed = pyqtSignal(object)
     document_issues_changed = pyqtSignal(object, object)
+    document_auto_annotate_page_completed = pyqtSignal(object, str, int)
+    document_auto_annotate_page_failed = pyqtSignal(object, str, str)
+    document_auto_annotate_page_stopped = pyqtSignal(object, str, str)
 
     def __init__(self, parent: Optional[QWidget] = None) -> None:
         super().__init__(parent)
@@ -728,7 +824,7 @@ class AnnotatorHost(QWidget):
             return None
         return self._windows.get(self._current_key)
 
-    def open_document(self, context: DocumentContext) -> AnnotationWindow:
+    def open_document(self, context: DocumentContext, *, activate: bool = True) -> AnnotationWindow:
         key = context.cache_key
         if key not in self._windows:
             window = AnnotationWindow(images_dir=context.images_dir, annotations_path=context.annotations_path)
@@ -741,12 +837,37 @@ class AnnotatorHost(QWidget):
                 window.document_issues_changed.connect(
                     lambda summary, ctx=context: self.document_issues_changed.emit(ctx, summary)
                 )
+            if hasattr(window, "document_auto_annotate_page_completed"):
+                window.document_auto_annotate_page_completed.connect(
+                    lambda page_name, fact_count, ctx=context: self.document_auto_annotate_page_completed.emit(
+                        ctx,
+                        page_name,
+                        fact_count,
+                    )
+                )
+            if hasattr(window, "document_auto_annotate_page_failed"):
+                window.document_auto_annotate_page_failed.connect(
+                    lambda page_name, message, ctx=context: self.document_auto_annotate_page_failed.emit(
+                        ctx,
+                        page_name,
+                        message,
+                    )
+                )
+            if hasattr(window, "document_auto_annotate_page_stopped"):
+                window.document_auto_annotate_page_stopped.connect(
+                    lambda page_name, message, ctx=context: self.document_auto_annotate_page_stopped.emit(
+                        ctx,
+                        page_name,
+                        message,
+                    )
+                )
             self._windows[key] = window
             self._contexts[key] = context
             self.stack.addWidget(window)
-        self._current_key = key
-        self.stack.setCurrentWidget(self._windows[key])
-        self.current_document_changed.emit(context)
+        if activate or self._current_key is None:
+            self._current_key = key
+            self.stack.setCurrentWidget(self._windows[key])
+            self.current_document_changed.emit(context)
         return self._windows[key]
 
     def close_document(self, doc_id: str) -> bool:
@@ -1746,7 +1867,11 @@ class DashboardWindow(QMainWindow):
         self.import_dpi = int(dpi)
         self._import_thread: Optional[QThread] = None
         self._import_worker: Optional[WorkspaceImportWorker] = None
+        self._import_success_callback: Optional[Callable[[Optional[WorkspaceImportResult]], None]] = None
+        self._import_failure_callback: Optional[Callable[[str], None]] = None
         self._documents_by_id: dict[str, WorkspaceDocumentSummary] = {}
+        self._auto_annotate_runs: dict[str, AutoAnnotateRun] = {}
+        self._runtime_auto_annotate_progress: dict[str, AutoAnnotateProgress] = {}
         self._current_theme = load_theme_choice()
         self._nav_visible = bool(app_settings().value(NAV_VISIBLE_SETTING_KEY, True, type=bool))
 
@@ -1847,12 +1972,16 @@ class DashboardWindow(QMainWindow):
         self.home_view.reset_approved_requested.connect(self.reset_all_approved_pages)
         self.home_view.open_document_requested.connect(self.open_workspace_document)
         self.home_view.prepare_document_requested.connect(self.prepare_workspace_document)
+        self.home_view.auto_annotate_document_requested.connect(self.auto_annotate_workspace_document)
         self.home_view.checked_document_requested.connect(self.set_document_checked)
         self.home_view.review_document_requested.connect(self.set_document_reviewed)
         self.home_view.delete_document_requested.connect(self.delete_workspace_document)
         self.annotator_host.document_saved.connect(self._on_document_saved)
         self.annotator_host.current_document_changed.connect(self._on_current_document_changed)
         self.annotator_host.document_issues_changed.connect(self._on_document_issues_changed)
+        self.annotator_host.document_auto_annotate_page_completed.connect(self._on_document_auto_annotate_page_completed)
+        self.annotator_host.document_auto_annotate_page_failed.connect(self._on_document_auto_annotate_page_failed)
+        self.annotator_host.document_auto_annotate_page_stopped.connect(self._on_document_auto_annotate_page_stopped)
 
         self._apply_nav_visibility()
         self.statusBar().showMessage("Ready")
@@ -1981,6 +2110,7 @@ class DashboardWindow(QMainWindow):
             )
         self._documents_by_id = {doc.doc_id: doc for doc in merged_documents}
         self.home_view.set_documents(merged_documents)
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
         self.push_view.set_documents(merged_documents)
 
     def show_home(self) -> None:
@@ -2039,6 +2169,209 @@ class DashboardWindow(QMainWindow):
             return
         self._start_import(summary.source_pdf, open_after=False)
         self.statusBar().showMessage(f"Preparing {doc_id} ...", 5000)
+
+    def auto_annotate_workspace_document(self, doc_id: str) -> None:
+        if doc_id in self._auto_annotate_runs:
+            QMessageBox.information(self, "Auto-Annotate", f"{doc_id} is already auto-annotating.")
+            return
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        if summary.source_pdf is None:
+            QMessageBox.warning(self, "Auto-Annotate failed", "Managed source PDF not found for this document.")
+            return
+
+        self._runtime_auto_annotate_progress[doc_id] = AutoAnnotateProgress(
+            doc_id=doc_id,
+            stage="preparing" if summary.status == "Needs extraction" else "annotating",
+            total_pages=max(int(summary.page_count or 0), 0),
+        )
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+
+        if summary.status == "Needs extraction":
+            started = self._start_import(
+                summary.source_pdf,
+                open_after=False,
+                success_callback=lambda _result, target_doc_id=doc_id: self._continue_auto_annotate_workspace_document(target_doc_id),
+                failure_callback=lambda message, target_doc_id=doc_id: self._fail_auto_annotate_run(
+                    target_doc_id,
+                    f"Prepare failed: {message}",
+                    show_warning=False,
+                ),
+            )
+            if not started:
+                self._runtime_auto_annotate_progress.pop(doc_id, None)
+                self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+                return
+            self.statusBar().showMessage(f"Preparing {doc_id} for Auto-Annotate ...", 5000)
+            return
+
+        self._continue_auto_annotate_workspace_document(doc_id)
+
+    def _continue_auto_annotate_workspace_document(self, doc_id: str) -> None:
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        context = DocumentContext.from_summary(summary)
+        try:
+            window = self.annotator_host.open_document(context, activate=False)
+        except Exception as exc:
+            self._fail_auto_annotate_run(doc_id, str(exc))
+            return
+
+        has_unsaved_changes = getattr(window, "has_unsaved_changes", None)
+        if callable(has_unsaved_changes) and has_unsaved_changes():
+            self._fail_auto_annotate_run(
+                doc_id,
+                "Save or discard open changes before starting Auto-Annotate for this PDF.",
+                show_warning=True,
+                title="Auto-Annotate blocked",
+            )
+            return
+
+        page_names = [page_path.name for page_path in getattr(window, "page_images", [])]
+        if not page_names:
+            self._fail_auto_annotate_run(doc_id, "No prepared page images are available for this document.")
+            return
+
+        window.set_document_auto_annotate_locked(True)
+        run = AutoAnnotateRun(context=context, window=window, page_names=page_names)
+        self._auto_annotate_runs[doc_id] = run
+        self._runtime_auto_annotate_progress[doc_id] = run.progress()
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        self.statusBar().showMessage(f"Auto-Annotating {doc_id} ...", 5000)
+        QTimer.singleShot(0, lambda target_doc_id=doc_id: self._start_next_auto_annotate_page(target_doc_id))
+
+    def _start_next_auto_annotate_page(self, doc_id: str) -> None:
+        run = self._auto_annotate_runs.get(doc_id)
+        if run is None:
+            return
+        if run.cancel_requested:
+            self._stop_auto_annotate_run(doc_id, "Auto-Annotate stopped.")
+            return
+        ai_controller = getattr(run.window, "_ai_controller", None)
+        if ai_controller is not None and callable(getattr(ai_controller, "is_running", None)) and ai_controller.is_running():
+            QTimer.singleShot(50, lambda target_doc_id=doc_id: self._start_next_auto_annotate_page(target_doc_id))
+            return
+        if run.next_page_index >= len(run.page_names):
+            self._complete_auto_annotate_run(doc_id)
+            return
+        page_name = run.page_names[run.next_page_index]
+        run.stage = "annotating"
+        run.current_page = page_name
+        self._runtime_auto_annotate_progress[doc_id] = run.progress()
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        started = run.window.start_document_auto_annotate_page(page_name)
+        if not started:
+            self._fail_auto_annotate_run(
+                doc_id,
+                f"Could not start Auto-Annotate for {page_name}.",
+            )
+            return
+        self.statusBar().showMessage(
+            f"Auto-Annotating {doc_id}: {page_name} ({run.completed_pages}/{len(run.page_names)} pages complete) ...",
+            4000,
+        )
+
+    def _complete_auto_annotate_run(self, doc_id: str) -> None:
+        run = self._auto_annotate_runs.get(doc_id)
+        if run is None:
+            return
+        run.window.save_annotations(allow_locked=True)
+        run.window.set_document_auto_annotate_locked(False)
+        self._auto_annotate_runs.pop(doc_id, None)
+        self._runtime_auto_annotate_progress.pop(doc_id, None)
+        self.reload_workspace()
+        self.statusBar().showMessage(
+            f"Auto-Annotate complete for {doc_id}. Annotated {run.completed_pages} page(s) and {_format_metric_int(run.fact_count)} fact(s).",
+            7000,
+        )
+
+    def _fail_auto_annotate_run(
+        self,
+        doc_id: str,
+        message: str,
+        *,
+        show_warning: bool = True,
+        title: str = "Auto-Annotate failed",
+    ) -> None:
+        run = self._auto_annotate_runs.pop(doc_id, None)
+        if run is not None:
+            run.window.save_annotations(allow_locked=True)
+            run.window.set_document_auto_annotate_locked(False)
+        self._runtime_auto_annotate_progress.pop(doc_id, None)
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        self.reload_workspace()
+        self.statusBar().showMessage(f"{title}: {message}", 7000)
+        if show_warning:
+            QMessageBox.warning(self, title, message)
+
+    def _stop_auto_annotate_run(self, doc_id: str, message: str) -> None:
+        run = self._auto_annotate_runs.pop(doc_id, None)
+        if run is not None:
+            run.window.save_annotations(allow_locked=True)
+            run.window.set_document_auto_annotate_locked(False)
+        self._runtime_auto_annotate_progress.pop(doc_id, None)
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        self.reload_workspace()
+        self.statusBar().showMessage(message, 7000)
+
+    def _cancel_auto_annotate_run(self, doc_id: str) -> None:
+        run = self._auto_annotate_runs.get(doc_id)
+        if run is None:
+            return
+        run.cancel_requested = True
+        if getattr(run.window, "_ai_controller", None) is not None:
+            run.window._ai_controller.stop_active_generation()
+
+    def _on_document_auto_annotate_page_completed(
+        self,
+        context: Optional[DocumentContext],
+        page_name: str,
+        fact_count: int,
+    ) -> None:
+        if context is None:
+            return
+        run = self._auto_annotate_runs.get(context.doc_id)
+        if run is None:
+            return
+        run.completed_pages += 1
+        run.next_page_index += 1
+        run.fact_count += max(0, int(fact_count))
+        run.current_page = page_name
+        run.window.save_annotations(allow_locked=True)
+        self._runtime_auto_annotate_progress[context.doc_id] = run.progress()
+        self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        if run.next_page_index >= len(run.page_names):
+            self._complete_auto_annotate_run(context.doc_id)
+            return
+        QTimer.singleShot(0, lambda target_doc_id=context.doc_id: self._start_next_auto_annotate_page(target_doc_id))
+
+    def _on_document_auto_annotate_page_failed(
+        self,
+        context: Optional[DocumentContext],
+        page_name: str,
+        message: str,
+    ) -> None:
+        if context is None:
+            return
+        self._fail_auto_annotate_run(
+            context.doc_id,
+            f"{page_name}: {message}",
+        )
+
+    def _on_document_auto_annotate_page_stopped(
+        self,
+        context: Optional[DocumentContext],
+        page_name: str,
+        message: str,
+    ) -> None:
+        if context is None:
+            return
+        self._stop_auto_annotate_run(
+            context.doc_id,
+            f"{page_name}: {message}",
+        )
 
     def set_document_checked(self, doc_id: str, checked: bool) -> None:
         summary = self._documents_by_id.get(doc_id)
@@ -2206,10 +2539,17 @@ class DashboardWindow(QMainWindow):
             return
         self._start_import(Path(path))
 
-    def _start_import(self, pdf_path: Path, *, open_after: bool = True) -> None:
+    def _start_import(
+        self,
+        pdf_path: Path,
+        *,
+        open_after: bool = True,
+        success_callback: Optional[Callable[[Optional[WorkspaceImportResult]], None]] = None,
+        failure_callback: Optional[Callable[[str], None]] = None,
+    ) -> bool:
         if self._import_thread is not None:
             QMessageBox.information(self, "Import in progress", "A PDF import is already running.")
-            return
+            return False
         worker = WorkspaceImportWorker(pdf_path, dpi=self.import_dpi)
         thread = QThread(self)
         worker.moveToThread(thread)
@@ -2222,13 +2562,18 @@ class DashboardWindow(QMainWindow):
         thread.finished.connect(self._on_import_finished)
         self._import_worker = worker
         self._import_thread = thread
+        self._import_success_callback = success_callback
+        self._import_failure_callback = failure_callback
         self.statusBar().showMessage(f"Importing {pdf_path.name} ...")
         thread.start()
+        return True
 
     def _on_import_completed(self, result_obj: object, *, open_after: bool = True) -> None:
         result = result_obj if isinstance(result_obj, WorkspaceImportResult) else None
         if result is None:
             self.reload_workspace()
+            if self._import_success_callback is not None:
+                self._import_success_callback(None)
             return
         self.reload_workspace()
         if open_after:
@@ -2248,14 +2593,20 @@ class DashboardWindow(QMainWindow):
                 f"Imported {result.document.doc_id} ({result.document.page_count} page(s)).",
                 5000,
             )
+        if self._import_success_callback is not None:
+            self._import_success_callback(result)
 
     def _on_import_failed(self, message: str) -> None:
         QMessageBox.warning(self, "Import failed", message)
         self.statusBar().showMessage("Import failed.", 5000)
+        if self._import_failure_callback is not None:
+            self._import_failure_callback(message)
 
     def _on_import_finished(self) -> None:
         self._import_worker = None
         self._import_thread = None
+        self._import_success_callback = None
+        self._import_failure_callback = None
 
     def _on_document_saved(self, payload: object) -> None:
         self.reload_workspace()

@@ -1866,12 +1866,16 @@ def _build_generation_contents(
 
         example_mime = _infer_mime_type(example_image_path, None)
         example_bytes = example_image_path.read_bytes()
+        input_json = str(raw_example.get("input_json") or "").strip()
+        example_user_text = (
+            f"Example input page.\n\n{input_json}" if input_json else "Example input page."
+        )
         contents.append(
             {
                 "role": "user",
                 "parts": [
                     types.Part.from_bytes(data=example_bytes, mime_type=example_mime),
-                    _part_from_text("Example input page."),
+                    _part_from_text(example_user_text),
                 ],
             }
         )

@@ -33,6 +33,9 @@ def _stub_dashboard_workspace(monkeypatch) -> None:
 
 class _FakeAnnotationWindow(QWidget):
     annotations_saved = pyqtSignal(object)
+    document_auto_annotate_page_completed = pyqtSignal(str, int)
+    document_auto_annotate_page_failed = pyqtSignal(str, str)
+    document_auto_annotate_page_stopped = pyqtSignal(str, str)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -41,8 +44,9 @@ class _FakeAnnotationWindow(QWidget):
         self.confirm_close_result = True
         self.confirm_close_calls: list[bool] = []
 
-    def save_annotations(self) -> None:
+    def save_annotations(self, *, allow_locked: bool = False) -> bool:
         self.annotations_saved.emit(self.annotations_path)
+        return True
 
     def show_help_dialog(self) -> None:
         return None
@@ -53,6 +57,15 @@ class _FakeAnnotationWindow(QWidget):
 
     def cancel_pending_close(self) -> None:
         return None
+
+    def has_unsaved_changes(self) -> bool:
+        return False
+
+    def set_document_auto_annotate_locked(self, locked: bool) -> None:
+        return None
+
+    def start_document_auto_annotate_page(self, page_name: str) -> bool:
+        return True
 
 
 class _FakeSettings:
@@ -460,10 +473,134 @@ def test_home_document_card_shows_prepare_for_unprepared_pdf(tmp_path: Path) -> 
     assert card.status_label.isVisible()
     assert card.action_btn.text() == "Prepare"
     assert card.action_btn.isEnabled()
+    assert card.auto_annotate_btn.isEnabled()
 
     card.action_btn.click()
     assert prepared == ["doc"]
     card.close()
+
+
+def test_home_document_card_emits_auto_annotate_request(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=3,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+
+    card = dashboard.HomeDocumentCard(summary)
+    requested: list[str] = []
+    card.auto_annotate_requested.connect(requested.append)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.auto_annotate_btn.text() == "Auto-Annotate"
+    card.auto_annotate_btn.click()
+
+    assert requested == ["doc"]
+    card.close()
+
+
+def test_home_document_card_shows_runtime_auto_annotate_progress(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=10,
+        annotated_page_count=2,
+        progress_pct=20,
+        status="In progress",
+        updated_at=None,
+    )
+
+    progress = dashboard.AutoAnnotateProgress(
+        doc_id="doc",
+        stage="annotating",
+        total_pages=10,
+        completed_pages=4,
+        fact_count=125,
+        current_page="page_0005.png",
+    )
+    card = dashboard.HomeDocumentCard(summary, runtime_progress=progress)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.status_label.text() == "Auto-Annotating"
+    assert card.progress.value() == 40
+    assert card.progress.format() == "40% • 4/10 pages • 125 facts"
+    assert not card.auto_annotate_btn.isEnabled()
+    card.close()
+
+
+def test_home_view_refresh_deletes_old_cards_without_detaching_windows(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+
+    first = WorkspaceDocumentSummary(
+        doc_id="doc-one",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    second = WorkspaceDocumentSummary(
+        doc_id="doc-two",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+
+    view = dashboard.HomeView()
+    view.show()
+    view.set_documents([first])
+    _qt_app().processEvents()
+
+    old_card = view._cards["doc-one"]
+    assert old_card.isVisible() is True
+    assert old_card.parent() is not None
+
+    view.set_documents([second])
+    _qt_app().processEvents()
+
+    assert "doc-two" in view._cards
+    assert old_card.parent() is None
+    assert old_card.isVisible() is False
+    view.close()
 
 
 def test_home_document_card_emits_delete_request(tmp_path: Path) -> None:
@@ -958,6 +1095,207 @@ def test_dashboard_prepare_workspace_document_uses_background_import(tmp_path: P
     window.prepare_workspace_document("doc")
 
     assert calls == [(source_pdf, False)]
+    window.close()
+
+
+def test_dashboard_auto_annotate_document_chains_prepare_and_starts_first_page(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=tmp_path / "doc",
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=0,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Needs extraction",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    class _RunWindow:
+        def __init__(self) -> None:
+            self.page_images = [tmp_path / "page_0001.png", tmp_path / "page_0002.png"]
+            self.lock_calls: list[bool] = []
+            self.started_pages: list[str] = []
+
+        def has_unsaved_changes(self) -> bool:
+            return False
+
+        def set_document_auto_annotate_locked(self, locked: bool) -> None:
+            self.lock_calls.append(bool(locked))
+
+        def start_document_auto_annotate_page(self, page_name: str) -> bool:
+            self.started_pages.append(page_name)
+            return True
+
+        def save_annotations(self, *, allow_locked: bool = False) -> bool:
+            return True
+
+    run_window = _RunWindow()
+    monkeypatch.setattr(window.annotator_host, "open_document", lambda context, activate=False: run_window)
+
+    import_calls: list[tuple[Path, bool]] = []
+
+    def _fake_start_import(
+        pdf_path: Path,
+        *,
+        open_after: bool = True,
+        success_callback=None,
+        failure_callback=None,
+    ) -> bool:
+        import_calls.append((pdf_path, open_after))
+        if success_callback is not None:
+            success_callback(None)
+        return True
+
+    window._start_import = _fake_start_import  # type: ignore[method-assign]
+
+    window.auto_annotate_workspace_document("doc")
+    _qt_app().processEvents()
+
+    assert import_calls == [(source_pdf, False)]
+    assert run_window.lock_calls == [True]
+    assert run_window.started_pages == ["page_0001.png"]
+    progress = window._runtime_auto_annotate_progress["doc"]
+    assert progress.stage == "annotating"
+    assert progress.total_pages == 2
+    window.close()
+
+
+def test_dashboard_auto_annotate_progress_advances_and_unlocks_on_completion(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=2,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    class _RunWindow:
+        def __init__(self) -> None:
+            self.page_images = [images_dir / "page_0001.png", images_dir / "page_0002.png"]
+            self.lock_calls: list[bool] = []
+            self.started_pages: list[str] = []
+            self.save_calls: list[bool] = []
+
+        def has_unsaved_changes(self) -> bool:
+            return False
+
+        def set_document_auto_annotate_locked(self, locked: bool) -> None:
+            self.lock_calls.append(bool(locked))
+
+        def start_document_auto_annotate_page(self, page_name: str) -> bool:
+            self.started_pages.append(page_name)
+            return True
+
+        def save_annotations(self, *, allow_locked: bool = False) -> bool:
+            self.save_calls.append(bool(allow_locked))
+            return True
+
+    run_window = _RunWindow()
+    monkeypatch.setattr(window.annotator_host, "open_document", lambda context, activate=False: run_window)
+    reloads: list[str] = []
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window.auto_annotate_workspace_document("doc")
+    _qt_app().processEvents()
+
+    context = dashboard.DocumentContext.from_summary(summary)
+    window._on_document_auto_annotate_page_completed(context, "page_0001.png", 7)
+    _qt_app().processEvents()
+
+    assert run_window.started_pages == ["page_0001.png", "page_0002.png"]
+    progress = window._runtime_auto_annotate_progress["doc"]
+    assert progress.completed_pages == 1
+    assert progress.fact_count == 7
+    assert progress.progress_pct == 50
+
+    window._on_document_auto_annotate_page_completed(context, "page_0002.png", 9)
+    _qt_app().processEvents()
+
+    assert window._runtime_auto_annotate_progress == {}
+    assert run_window.lock_calls == [True, False]
+    assert run_window.save_calls == [True, True, True]
+    assert reloads == ["reload"]
+    window.close()
+
+
+def test_dashboard_auto_annotate_waits_for_runner_to_become_idle_before_next_page(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=2,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    class _BusyController:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def is_running(self) -> bool:
+            self.calls += 1
+            return self.calls == 1
+
+    class _RunWindow:
+        def __init__(self) -> None:
+            self.page_images = [images_dir / "page_0001.png", images_dir / "page_0002.png"]
+            self._ai_controller = _BusyController()
+            self.started_pages: list[str] = []
+
+        def has_unsaved_changes(self) -> bool:
+            return False
+
+        def set_document_auto_annotate_locked(self, locked: bool) -> None:
+            return None
+
+        def start_document_auto_annotate_page(self, page_name: str) -> bool:
+            self.started_pages.append(page_name)
+            return True
+
+        def save_annotations(self, *, allow_locked: bool = False) -> bool:
+            return True
+
+    run_window = _RunWindow()
+    monkeypatch.setattr(window.annotator_host, "open_document", lambda context, activate=False: run_window)
+
+    window.auto_annotate_workspace_document("doc")
+    _qt_app().processEvents()
+    _qt_app().processEvents()
+
+    assert run_window.started_pages == ["page_0001.png"]
     window.close()
 
 

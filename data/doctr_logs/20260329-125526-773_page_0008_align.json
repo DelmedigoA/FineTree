@@ -1,0 +1,331 @@
+{
+  "page_name": "page_0008.png",
+  "gemini_count": 6,
+  "detector_count": 3,
+  "matched_count": 3,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        611.0,
+        663.0,
+        35.0,
+        17.0
+      ],
+      "value": "10%",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ד. רכוש קבוע",
+        "שיפורים במושכר"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        1118.78,
+        1267.74,
+        94.33,
+        42.1
+      ],
+      "value": "0.69%",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ב. שינויים בכוח הקניה הכללי של המטבע הישראלי:"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "textual"
+    },
+    {
+      "bbox": [
+        852.33,
+        1267.74,
+        77.78,
+        42.1
+      ],
+      "value": "2.8%",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2021-01-01",
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ב. שינויים בכוח הקניה הכללי של המטבע הישראלי:"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "textual"
+    },
+    {
+      "bbox": [
+        1014.51,
+        1588.18,
+        57.92,
+        39.76
+      ],
+      "value": "33%",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ד. רכוש קבוע",
+        "מחשבים וציוד נלווה"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        1011.21,
+        1625.61,
+        59.58,
+        39.76
+      ],
+      "value": "15%",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ד. רכוש קבוע",
+        "מסכי לדים"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": [
+        994.65,
+        1665.37,
+        99.3,
+        42.1
+      ],
+      "value": "15%-7%",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "באור 2 - מדיניות חשבונאית",
+        "ד. רכוש קבוע",
+        "רהוט וציוד משרדי"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        1046.0,
+        1548.0,
+        57.0,
+        28.0
+      ],
+      "value": "10%",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1051.0,
+        1587.0,
+        55.0,
+        27.0
+      ],
+      "value": "33%",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1042.0,
+        1628.0,
+        55.0,
+        28.0
+      ],
+      "value": "15%",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "10%",
+      "detector_value": "10%",
+      "match_key": "num:10%"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 1,
+      "gemini_value": "33%",
+      "detector_value": "33%",
+      "match_key": "num:33%"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 2,
+      "gemini_value": "15%",
+      "detector_value": "15%",
+      "match_key": "num:15%"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    1,
+    2,
+    5
+  ],
+  "unmatched_detector_indices": []
+}

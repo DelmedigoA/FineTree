@@ -872,7 +872,7 @@ def test_detect_local_bboxes_dispatches_to_local_worker(tmp_path: Path, monkeypa
     window.close()
 
 
-def test_auto_annotate_toolbar_button_dispatches_to_controller(tmp_path: Path, monkeypatch) -> None:
+def test_annotate_toolbar_button_dispatches_to_controller(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -883,11 +883,11 @@ def test_auto_annotate_toolbar_button_dispatches_to_controller(tmp_path: Path, m
     captured: dict[str, bool] = {}
     monkeypatch.setattr(
         window._ai_controller,
-        "start_auto_annotate",
+        "start_annotate",
         lambda: captured.update({"started": True}),
     )
 
-    assert window.auto_annotate_btn.text() == "Auto-Annotate"
+    assert window.auto_annotate_btn.text() == "Annotate"
     window.auto_annotate_btn.click()
 
     assert captured == {"started": True}
@@ -895,7 +895,30 @@ def test_auto_annotate_toolbar_button_dispatches_to_controller(tmp_path: Path, m
     window.close()
 
 
-def test_auto_annotate_starts_tuned_gemini_ground_truth(tmp_path: Path, monkeypatch) -> None:
+def test_align_bboxes_toolbar_button_dispatches_to_controller(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    captured: dict[str, bool] = {}
+    monkeypatch.setattr(
+        window._ai_controller,
+        "start_align_bboxes",
+        lambda: captured.update({"started": True}),
+    )
+
+    assert window.align_bboxes_btn.text() == "Align bboxes"
+    window.align_bboxes_btn.click()
+
+    assert captured == {"started": True}
+
+    window.close()
+
+
+def test_annotate_starts_gemini_ground_truth_with_two_shot(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -909,21 +932,132 @@ def test_auto_annotate_starts_tuned_gemini_ground_truth(tmp_path: Path, monkeypa
         "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
         lambda _model_name, explicit_api_key=None: (None, None),
     )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_gemini_few_shot_examples",
+        lambda request: [{"preset": request.few_shot_preset}],
+    )
     monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
 
-    window._ai_controller.start_auto_annotate()
+    window._ai_controller.start_annotate()
+    _qt_app().processEvents()
 
     assert window._auto_annotate_active is True
     assert window._auto_annotate_phase == "gemini"
+    assert window._auto_annotate_mode == "annotate"
     assert window._auto_annotate_target_page == "page_0001.png"
     assert window._gemini_gt_live_updates_enabled is False
-    assert captured_stream_kwargs["model_name"] == "gemini-flash-hf-tuned"
-    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
-    assert captured_stream_kwargs["system_prompt"] == system_prompt_template()
-    assert captured_stream_kwargs["few_shot_examples"] is None
+    assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
+    assert captured_stream_kwargs["temperature"] is None
+    assert captured_stream_kwargs["system_prompt"] is None
+    assert captured_stream_kwargs["few_shot_examples"] == [{"preset": app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT}]
     assert captured_stream_kwargs["apply_meta"] is False
     assert "Current image size: 32 x 32 pixels." in captured_stream_kwargs["prompt_text"]
+    assert window._ai_controller.annotate_progress_dialog is not None
+    assert window._ai_controller.annotate_progress_dialog.isVisible()
 
+    window.close()
+
+
+def test_document_auto_annotate_page_starts_without_progress_dialog(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: (None, None),
+    )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_gemini_few_shot_examples",
+        lambda request: [{"preset": request.few_shot_preset}],
+    )
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    started = window.start_document_auto_annotate_page("page_0001.png")
+    _qt_app().processEvents()
+
+    assert started is True
+    assert window._auto_annotate_active is True
+    assert window._auto_annotate_phase == "gemini"
+    assert window._auto_annotate_mode == "document"
+    assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
+    assert window._ai_controller.annotate_progress_dialog is None
+
+    window.close()
+
+
+def test_align_bboxes_starts_merged_detector_with_current_annotations(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=100)
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    page_name = window.page_images[0].name
+    window.page_states[page_name] = PageState(
+        meta=default_page_meta(),
+        facts=[
+            app_mod.BoxRecord(
+                bbox={"x": 20.0, "y": 10.0, "w": 20.0, "h": 20.0},
+                fact={"value": "10", "path": ["Revenue"]},
+            )
+        ],
+    )
+    window.show_page(0)
+    _qt_app().processEvents()
+
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(window._ai_controller, "_start_local_doctr_worker", lambda **kwargs: captured.update(kwargs))
+
+    window._ai_controller.start_align_bboxes()
+
+    assert window._auto_annotate_active is True
+    assert window._auto_annotate_phase == "detector"
+    assert window._auto_annotate_mode == "align"
+    assert captured["backend"] == LocalDetectorBackend.MERGED
+    assert captured["page_name"] == page_name
+
+    window.close()
+
+
+def test_document_auto_annotate_detector_completion_emits_page_completed(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    page_name = window.page_images[0].name
+    window._auto_annotate_active = True
+    window._auto_annotate_phase = "detector"
+    window._auto_annotate_mode = "document"
+    window._auto_annotate_target_page = page_name
+    window._auto_annotate_gemini_payloads = [
+        {"bbox": [20, 10, 20, 20], "value": "10", "path": ["Revenue"]},
+    ]
+    window._local_doctr_target_page = page_name
+
+    completed: list[tuple[str, int]] = []
+    window.document_auto_annotate_page_completed.connect(lambda emitted_page, count: completed.append((emitted_page, count)))
+
+    extraction = SimpleNamespace(
+        facts=[
+            {"bbox": [40, 10, 20, 20], "value": "10"},
+        ]
+    )
+
+    window._ai_controller._on_local_doctr_completed(extraction)
+    assert completed == []
+    window._ai_controller._on_local_doctr_finished()
+
+    assert completed == [(page_name, 1)]
     window.close()
 
 
@@ -1011,7 +1145,7 @@ def test_local_doctr_completed_merges_bbox_facts(tmp_path: Path) -> None:
     window.close()
 
 
-def test_auto_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monkeypatch) -> None:
+def test_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -1021,6 +1155,7 @@ def test_auto_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monk
     window.page_states[page_name] = PageState(meta=default_page_meta(), facts=[])
     window._auto_annotate_active = True
     window._auto_annotate_phase = "gemini"
+    window._auto_annotate_mode = "annotate"
     window._auto_annotate_target_page = page_name
     window._gemini_stream_target_page = page_name
     window._gemini_stream_mode = "gt"
@@ -1028,6 +1163,7 @@ def test_auto_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monk
     window._gemini_stream_fact_count = 0
     window._gemini_gt_buffered_facts = []
     window._gemini_gt_live_updates_enabled = False
+    progress_dialog = window._ai_controller.ensure_annotate_progress_dialog()
     live_updates: list[str] = []
     monkeypatch.setattr(window, "_update_gemini_gt_live_stream", lambda _page_name: live_updates.append(_page_name))
 
@@ -1036,52 +1172,56 @@ def test_auto_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monk
     assert live_updates == []
     assert len(window._gemini_gt_buffered_facts) == 1
     assert len(window._fact_items) == 0
+    assert progress_dialog.fact_count_label.text() == "Parsed facts: 1"
 
     window.close()
 
 
-def test_auto_annotate_bbox_merge_matches_by_order_and_exact_value(tmp_path: Path) -> None:
+def test_align_bboxes_merge_matches_by_geometry_order_and_fuzzy_numeric_value(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
     _write_test_png(images_dir / "page_0001.png", width=300, height=100)
     window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
 
-    merged_payloads = window._merge_auto_annotate_bbox_payloads(
-        [
+    merged_payloads, debug_payload = window._merge_auto_annotate_bbox_payloads(
+        page_name="page_0001.png",
+        gemini_payloads=[
             {"bbox": [60, 10, 20, 20], "value": "10", "path": ["B"]},
-            {"bbox": [20, 10, 20, 20], "value": "5", "path": ["A"]},
+            {"bbox": [20, 10, 20, 20], "value": "(5)", "path": ["A"]},
             {"bbox": [100, 10, 20, 20], "value": "7", "path": ["C"]},
         ],
-        [
-            {"bbox": [200, 10, 15, 20], "value": "5"},
+        detector_payloads=[
+            {"bbox": [200, 10, 15, 20], "value": "-5"},
             {"bbox": [220, 10, 15, 20], "value": "999"},
             {"bbox": [240, 10, 15, 20], "value": "77"},
             {"bbox": [260, 10, 15, 20], "value": "extra"},
         ],
     )
 
-    assert [payload["value"] for payload in merged_payloads] == ["5", "10", "7"]
+    assert [payload["value"] for payload in merged_payloads] == ["(5)", "10", "7"]
     assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
     assert merged_payloads[1]["bbox"] == [60.0, 10.0, 20.0, 20.0]
     assert merged_payloads[2]["bbox"] == [100.0, 10.0, 20.0, 20.0]
+    assert debug_payload["matched_count"] == 1
 
     window.close()
 
 
-def test_auto_annotate_bbox_merge_keeps_remaining_gemini_boxes_when_detector_is_shorter(tmp_path: Path) -> None:
+def test_align_bboxes_merge_keeps_remaining_gemini_boxes_when_detector_is_shorter(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
     _write_test_png(images_dir / "page_0001.png", width=300, height=100)
     window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
 
-    merged_payloads = window._merge_auto_annotate_bbox_payloads(
-        [
+    merged_payloads, _debug_payload = window._merge_auto_annotate_bbox_payloads(
+        page_name="page_0001.png",
+        gemini_payloads=[
             {"bbox": [20, 10, 20, 20], "value": "5", "path": ["A"]},
             {"bbox": [60, 10, 20, 20], "value": "10", "path": ["B"]},
         ],
-        [
+        detector_payloads=[
             {"bbox": [200, 10, 15, 20], "value": "5"},
         ],
     )
@@ -1092,34 +1232,110 @@ def test_auto_annotate_bbox_merge_keeps_remaining_gemini_boxes_when_detector_is_
     window.close()
 
 
-def test_auto_annotate_bbox_merge_allows_detector_extras_before_later_exact_value_match(tmp_path: Path) -> None:
+def test_align_bboxes_merge_allows_detector_extras_before_later_value_match(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
     _write_test_png(images_dir / "page_0001.png", width=300, height=100)
     window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
 
-    merged_payloads = window._merge_auto_annotate_bbox_payloads(
-        [
+    merged_payloads, debug_payload = window._merge_auto_annotate_bbox_payloads(
+        page_name="page_0001.png",
+        gemini_payloads=[
             {"bbox": [20, 10, 20, 20], "value": "5", "path": ["A"]},
             {"bbox": [60, 10, 20, 20], "value": "10", "path": ["B"]},
             {"bbox": [100, 10, 20, 20], "value": "15", "path": ["C"]},
         ],
-        [
+        detector_payloads=[
             {"bbox": [200, 10, 15, 20], "value": "5"},
             {"bbox": [220, 10, 15, 20], "value": "999"},
-            {"bbox": [240, 10, 15, 20], "value": "15"},
+            {"bbox": [240, 10, 15, 20], "value": "15.0"},
         ],
     )
 
     assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
     assert merged_payloads[1]["bbox"] == [60.0, 10.0, 20.0, 20.0]
     assert merged_payloads[2]["bbox"] == [240.0, 10.0, 15.0, 20.0]
+    assert debug_payload["matched_count"] == 2
 
     window.close()
 
 
-def test_auto_annotate_starts_detector_after_gemini_gt_success(tmp_path: Path, monkeypatch) -> None:
+def test_align_bboxes_match_corpus_reaches_95_percent(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=600, height=120)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    gemini_payloads = [
+        {"bbox": [20 + (idx * 25), 10, 20, 20], "value": value, "path": [f"Row {idx}"]}
+        for idx, value in enumerate(
+            [
+                "100",
+                "(200)",
+                "300",
+                "1,000",
+                "50.0",
+                "75",
+                "125",
+                "1,250",
+                "88",
+                "990",
+                "410",
+                "620",
+                "730",
+                "840",
+                "950",
+                "1,060",
+                "1,170",
+                "1,280",
+                "1,390",
+                "1,500",
+            ]
+        )
+    ]
+    detector_payloads = [
+        {"bbox": [300 + (idx * 12), 12, 14, 18], "value": value}
+        for idx, value in enumerate(
+            [
+                "100.0",
+                "-200",
+                "300",
+                "1000",
+                "50",
+                "75.00",
+                "125",
+                "1250",
+                "88",
+                "990",
+                "410",
+                "620",
+                "730",
+                "840",
+                "950",
+                "1060",
+                "1170",
+                "1280",
+                "1390",
+                "not-a-match",
+            ]
+        )
+    ]
+
+    _merged_payloads, debug_payload = window._merge_auto_annotate_bbox_payloads(
+        page_name="page_0001.png",
+        gemini_payloads=gemini_payloads,
+        detector_payloads=detector_payloads,
+    )
+
+    match_rate = debug_payload["matched_count"] / debug_payload["gemini_count"]
+    assert match_rate >= 0.95
+
+    window.close()
+
+
+def test_annotate_completion_applies_final_gt_without_starting_detector(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -1128,6 +1344,7 @@ def test_auto_annotate_starts_detector_after_gemini_gt_success(tmp_path: Path, m
     page_name = window.page_images[0].name
     window._auto_annotate_active = True
     window._auto_annotate_phase = "gemini"
+    window._auto_annotate_mode = "annotate"
     window._auto_annotate_target_page = page_name
     window._auto_annotate_original_state = app_mod.deepcopy(window.page_states.get(page_name, window._default_state(0)))
     window._gemini_stream_target_page = page_name
@@ -1136,9 +1353,9 @@ def test_auto_annotate_starts_detector_after_gemini_gt_success(tmp_path: Path, m
     window._gemini_gt_buffered_facts = []
     window._gemini_stream_seen_facts = set()
     window._gemini_stream_fact_count = 0
-    started_detector: dict[str, str] = {}
     monkeypatch.setattr(window, "_resolve_autocomplete_bbox_mode", lambda _page_name, payloads: (payloads, app_mod.BBOX_MODE_PIXEL_AS_IS))
-    monkeypatch.setattr(window._ai_controller, "_start_auto_annotate_detector", lambda target_page: started_detector.update({"page_name": target_page}))
+    history_calls: list[bool] = []
+    monkeypatch.setattr(window, "_record_history_snapshot", lambda: history_calls.append(True))
 
     extraction = SimpleNamespace(
         meta=SimpleNamespace(
@@ -1163,15 +1380,135 @@ def test_auto_annotate_starts_detector_after_gemini_gt_success(tmp_path: Path, m
 
     window._ai_controller._on_gemini_stream_completed(extraction)
 
-    assert started_detector == {"page_name": page_name}
     assert window.page_states[page_name].meta["entity_name"] == "ACME"
     assert len(window.page_states[page_name].facts) == 1
-    assert window._auto_annotate_gemini_payloads[0]["value"] == "10"
+    assert window.page_states[page_name].facts[0].fact["value"] == "10"
+    assert window._auto_annotate_active is False
+    assert history_calls == [True]
 
     window.close()
 
 
-def test_auto_annotate_detector_failure_keeps_gemini_gt_page_state(tmp_path: Path, monkeypatch) -> None:
+def test_annotate_completion_keeps_large_finalized_gt_after_finished_cleanup(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=200)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    page_name = window.page_images[0].name
+    original_state = PageState(
+        meta={"entity_name": "Before"},
+        facts=[
+            app_mod.BoxRecord(
+                bbox={"x": 5.0, "y": 5.0, "w": 10.0, "h": 10.0},
+                fact={"value": "old", "path": ["Old"]},
+            )
+        ],
+    )
+    window.page_states[page_name] = app_mod.deepcopy(original_state)
+    window._auto_annotate_active = True
+    window._auto_annotate_phase = "gemini"
+    window._auto_annotate_mode = "annotate"
+    window._auto_annotate_target_page = page_name
+    window._auto_annotate_original_state = app_mod.deepcopy(original_state)
+    window._auto_annotate_restore_on_finish = True
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_apply_meta = False
+    window._gemini_gt_buffered_facts = []
+    window._gemini_stream_seen_facts = set()
+    window._gemini_stream_fact_count = 0
+    monkeypatch.setattr(window, "_resolve_autocomplete_bbox_mode", lambda _page_name, payloads: (payloads, app_mod.BBOX_MODE_PIXEL_AS_IS))
+    history_calls: list[bool] = []
+    monkeypatch.setattr(window, "_record_history_snapshot", lambda: history_calls.append(True))
+
+    finalized_fact_count = 45
+    extraction = SimpleNamespace(
+        meta=SimpleNamespace(
+            model_dump=lambda mode="json": {
+                "entity_name": "ACME",
+                "page_num": "45",
+                "page_type": "statements",
+                "statement_type": "notes_to_financial_statements",
+                "title": "Large Notes",
+            }
+        ),
+        facts=[
+            SimpleNamespace(
+                model_dump=lambda mode="json", index=index: {
+                    "bbox": [10 + (index % 9) * 20, 10 + (index // 9) * 25, 16, 12],
+                    "value": str(index + 1),
+                    "path": [f"Row {index + 1}"],
+                    "note_flag": False,
+                    "note_num": index + 100 if index % 5 == 0 else None,
+                }
+            )
+            for index in range(finalized_fact_count)
+        ],
+    )
+
+    window._ai_controller._on_gemini_stream_completed(extraction)
+
+    assert history_calls == [True]
+    assert window._auto_annotate_active is False
+    assert len(window.page_states[page_name].facts) == finalized_fact_count
+    assert window.page_states[page_name].meta["entity_name"] == "ACME"
+    assert sum(1 for fact in window.page_states[page_name].facts if fact.fact.get("note_num") is not None) == 9
+
+    window._ai_controller._on_gemini_stream_finished()
+
+    assert len(window.page_states[page_name].facts) == finalized_fact_count
+    assert window.page_states[page_name].meta["entity_name"] == "ACME"
+    assert window.page_states[page_name] != original_state
+
+    window.close()
+
+
+def test_annotate_finished_after_cancel_restores_original_snapshot(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    page_name = window.page_images[0].name
+    original_state = PageState(
+        meta={"entity_name": "Before"},
+        facts=[
+            app_mod.BoxRecord(
+                bbox={"x": 5.0, "y": 5.0, "w": 10.0, "h": 10.0},
+                fact={"value": "old", "path": ["Old"]},
+            )
+        ],
+    )
+    window.page_states[page_name] = PageState(
+        meta={"entity_name": "After"},
+        facts=[
+            app_mod.BoxRecord(
+                bbox={"x": 25.0, "y": 15.0, "w": 12.0, "h": 8.0},
+                fact={"value": "new", "path": ["New"]},
+            )
+        ],
+    )
+    window._auto_annotate_active = True
+    window._auto_annotate_phase = "gemini"
+    window._auto_annotate_mode = "annotate"
+    window._auto_annotate_target_page = page_name
+    window._auto_annotate_original_state = app_mod.deepcopy(original_state)
+    window._auto_annotate_restore_on_finish = True
+    window._gemini_stream_target_page = page_name
+    window._gemini_stream_mode = "gt"
+    window._gemini_stream_cancel_requested = True
+    window._gemini_stream_fact_count = 3
+
+    window._ai_controller._on_gemini_stream_finished()
+
+    assert window.page_states[page_name] == original_state
+    assert window._auto_annotate_active is False
+
+    window.close()
+
+
+def test_align_bboxes_detector_failure_keeps_existing_page_state(tmp_path: Path, monkeypatch) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -1185,6 +1522,7 @@ def test_auto_annotate_detector_failure_keeps_gemini_gt_page_state(tmp_path: Pat
     before_state = app_mod.deepcopy(window.page_states[page_name])
     window._auto_annotate_active = True
     window._auto_annotate_phase = "detector"
+    window._auto_annotate_mode = "align"
     window._local_doctr_backend = LocalDetectorBackend.MERGED
     history_calls: list[bool] = []
     warning_calls: list[tuple[str, str]] = []
@@ -1199,8 +1537,8 @@ def test_auto_annotate_detector_failure_keeps_gemini_gt_page_state(tmp_path: Pat
 
     assert history_calls == [True]
     assert window.page_states[page_name] == before_state
-    assert warning_calls[0][0] == "Auto-Annotate warning"
-    assert "Kept Gemini ground truth results on the page." in warning_calls[0][1]
+    assert warning_calls[0][0] == "Align bboxes warning"
+    assert "Kept the current annotations on the page." in warning_calls[0][1]
 
     window.close()
 

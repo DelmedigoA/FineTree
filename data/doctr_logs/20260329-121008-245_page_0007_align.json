@@ -1,0 +1,430 @@
+{
+  "page_name": "page_0007.png",
+  "gemini_count": 6,
+  "detector_count": 6,
+  "matched_count": 4,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 701.12,
+        "y": 1124.4,
+        "w": 67.81,
+        "h": 29.28
+      },
+      "value": "4,000",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2018-01-01",
+      "period_end": "2018-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "הוצאות לשלם"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 466.0,
+        "y": 1134.0,
+        "w": 11.0,
+        "h": 11.0
+      },
+      "value": "-",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2017-01-01",
+      "period_end": "2017-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "הוצאות לשלם"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 685.0,
+        "y": 1151.0,
+        "w": 84.0,
+        "h": 34.0
+      },
+      "value": "30,855",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2018-01-01",
+      "period_end": "2018-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "זכאים שונים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 401.0,
+        "y": 1151.0,
+        "w": 80.0,
+        "h": 28.0
+      },
+      "value": "62,955",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2017-01-01",
+      "period_end": "2017-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "זכאים שונים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 683.0,
+        "y": 1183.0,
+        "w": 86.0,
+        "h": 34.0
+      },
+      "value": "34,855",
+      "fact_num": 5,
+      "equations": [
+        {
+          "equation": "4,000 + 30,855",
+          "fact_equation": "f1 + f3"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2018-01-01",
+      "period_end": "2018-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 395.31,
+        "y": 1188.72,
+        "w": 86.01,
+        "h": 32.76
+      },
+      "value": "62,955",
+      "fact_num": 6,
+      "equations": [
+        {
+          "equation": "0 + 62,955",
+          "fact_equation": "f2 + f4"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "זכאים ויתרות זכות",
+      "note_num": 3,
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2017-01-01",
+      "period_end": "2017-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        1405.0,
+        728.0,
+        45.0,
+        28.0
+      ],
+      "value": "2.2",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        466.0,
+        1134.0,
+        11.0,
+        11.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        685.0,
+        1151.0,
+        84.0,
+        34.0
+      ],
+      "value": "30,855",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        401.0,
+        1151.0,
+        80.0,
+        28.0
+      ],
+      "value": "62,955",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        683.0,
+        1183.0,
+        86.0,
+        34.0
+      ],
+      "value": "34,855",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        395.0,
+        1179.0,
+        93.0,
+        36.0
+      ],
+      "value": "62.955",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "-",
+      "detector_value": "-",
+      "match_key": "num:-"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "30,855",
+      "detector_value": "30,855",
+      "match_key": "num:30855"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 3,
+      "gemini_value": "62,955",
+      "detector_value": "62,955",
+      "match_key": "num:62955"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 4,
+      "gemini_value": "34,855",
+      "detector_value": "34,855",
+      "match_key": "num:34855"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    0,
+    5
+  ],
+  "unmatched_detector_indices": [
+    0,
+    5
+  ]
+}

@@ -17,6 +17,7 @@ class AIActionKind(str, Enum):
     BBOX_ONLY = "bbox_only"
     AUTO_COMPLETE = "auto_complete"
     FIX_SELECTED = "fix_selected"
+    FIX_DRAWN = "fix_drawn"
 
 
 class LocalDetectorBackend(str, Enum):
@@ -61,6 +62,7 @@ class AIActionCapabilities:
     supports_statement_type_toggle: bool = False
     requires_existing_facts: bool = False
     requires_selected_facts: bool = False
+    requires_hand_drawn_facts: bool = False
     replaces_existing_page_facts: bool = False
 
 
@@ -76,6 +78,7 @@ class AIPageContext:
     existing_fact_count: int
     selected_fact_count: int
     image_dimensions: Optional[tuple[float, float]]
+    hand_drawn_fact_nums: tuple[int, ...] = ()
 
 
 @dataclass
@@ -117,6 +120,8 @@ def action_label(action: AIActionKind) -> str:
         return "BBoxes + Values"
     if action == AIActionKind.AUTO_COMPLETE:
         return "Auto Complete"
+    if action == AIActionKind.FIX_DRAWN:
+        return "Fix Drawn"
     return "Fix"
 
 

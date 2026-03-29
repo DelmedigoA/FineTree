@@ -1665,16 +1665,18 @@ def test_parse_page_extraction_text_drops_invalid_facts_and_writes_issue_summary
         if line.strip()
     ]
 
-    assert len(extraction.facts) == 1
+    assert len(extraction.facts) == 2
     assert extraction.facts[0].value == "10"
+    assert extraction.facts[1].value == "20"
+    assert extraction.facts[1].note_flag is False
+    assert extraction.facts[1].note_num == 5
     assert summary is not None
-    assert summary["status"] == "warning"
-    assert summary["kept_fact_count"] == 1
-    assert summary["dropped_fact_count"] == 1
-    assert summary["validation_failure_groups"][0]["code"] == "note_num_without_note_flag"
-    assert summary["validation_failure_groups"][0]["count"] == 1
+    assert summary["status"] == "ok"
+    assert summary["kept_fact_count"] == 2
+    assert summary["dropped_fact_count"] == 0
+    assert summary["validation_failure_groups"] == []
     assert any(row["source_stage"] == "final_validated" for row in trace_rows)
-    assert any(row["source_stage"] == "final_dropped" for row in trace_rows)
+    assert not any(row["source_stage"] == "final_dropped" for row in trace_rows)
 
 
 def test_streaming_parser_records_fact_lineage_across_stream_and_finalize(tmp_path: Path) -> None:
@@ -1718,15 +1720,15 @@ def test_streaming_parser_records_fact_lineage_across_stream_and_finalize(tmp_pa
     ]
     stages = {row["source_stage"] for row in trace_rows}
 
-    assert len(extraction.facts) == 1
+    assert len(extraction.facts) == 2
     assert stages >= {
         "stream_partial",
         "stream_normalized",
         "final_parse",
         "final_resolved",
         "final_validated",
-        "final_dropped",
     }
+    assert "final_dropped" not in stages
 
 
 def test_parse_page_extraction_text_latest_bad_log_writes_grouped_issue_summary(tmp_path: Path) -> None:
@@ -1737,21 +1739,20 @@ def test_parse_page_extraction_text_latest_bad_log_writes_grouped_issue_summary(
     raw_text = (session_dir / "output.txt").read_text(encoding="utf-8")
     image_path = session_dir / "input_target.png"
 
-    with pytest.raises(ValueError, match=r"Kept 0 valid fact\(s\), dropped 24 invalid fact\(s\)\."):
-        gemini_vlm.parse_page_extraction_text(
-            raw_text,
-            image_path=image_path,
-            session_dir=session_dir,
-        )
+    extraction = gemini_vlm.parse_page_extraction_text(
+        raw_text,
+        image_path=image_path,
+        session_dir=session_dir,
+    )
 
     summary = gemini_vlm.load_issue_summary(session_dir)
 
     assert summary is not None
-    assert summary["status"] == "error"
-    assert summary["kept_fact_count"] == 0
-    assert summary["dropped_fact_count"] == 24
-    assert summary["validation_failure_groups"][0]["code"] == "note_num_without_note_flag"
-    assert summary["validation_failure_groups"][0]["count"] == 24
+    assert len(extraction.facts) == 24
+    assert summary["status"] == "ok"
+    assert summary["kept_fact_count"] == 24
+    assert summary["dropped_fact_count"] == 0
+    assert summary["validation_failure_groups"] == []
     assert (session_dir / "issue_summary.json").is_file()
     assert (session_dir / "fact_trace.jsonl").is_file()
 

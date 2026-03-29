@@ -1,0 +1,153 @@
+{
+  "backend": "merged",
+  "image_path": "data/pdf_images/דוח_כספי_2023_-_אגודת_כדוריד_ראשון_לציון_ע-ר/page_0002.png",
+  "old_candidates": [
+    {
+      "bbox": [
+        346,
+        696,
+        21,
+        22
+      ],
+      "score": 0.3808561861515045,
+      "value": "3",
+      "confidence": 0.9881500005722046,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        346,
+        761,
+        21,
+        22
+      ],
+      "score": 0.36371609568595886,
+      "value": "4",
+      "confidence": 0.9959523677825928,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        351,
+        823,
+        18,
+        27
+      ],
+      "score": 0.37311023473739624,
+      "value": "5",
+      "confidence": 0.9999376535415649,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        810,
+        2036,
+        15,
+        23
+      ],
+      "score": 0.3607666790485382,
+      "value": "2",
+      "confidence": 0.9999668598175049,
+      "source": "old"
+    }
+  ],
+  "fine_candidates": [
+    {
+      "bbox": [
+        340,
+        684,
+        40,
+        47
+      ],
+      "score": 0.4458371698856354,
+      "value": "3",
+      "confidence": 0.9997915625572205,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        340,
+        752,
+        44,
+        44
+      ],
+      "score": 0.4569781720638275,
+      "value": "4",
+      "confidence": 0.9297928810119629,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        340,
+        814,
+        44,
+        45
+      ],
+      "score": 0.4172686040401459,
+      "value": "5",
+      "confidence": 0.9726751446723938,
+      "source": "fine_tuned"
+    }
+  ],
+  "merged_candidates": [
+    {
+      "bbox": [
+        346,
+        696,
+        21,
+        22
+      ],
+      "value": "3",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        346,
+        761,
+        21,
+        22
+      ],
+      "value": "4",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        351,
+        823,
+        18,
+        27
+      ],
+      "value": "5",
+      "source": "matched"
+    }
+  ],
+  "facts": [
+    {
+      "bbox": [
+        346,
+        696,
+        21,
+        22
+      ],
+      "value": "3"
+    },
+    {
+      "bbox": [
+        346,
+        761,
+        21,
+        22
+      ],
+      "value": "4"
+    },
+    {
+      "bbox": [
+        351,
+        823,
+        18,
+        27
+      ],
+      "value": "5"
+    }
+  ]
+}
