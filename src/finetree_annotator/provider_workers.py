@@ -266,20 +266,30 @@ class QwenStreamWorker(QObject):
         image_path: Path,
         prompt: str,
         model: str,
+        mode: str = "gt",
         config_path: Optional[str] = None,
         max_new_tokens: int = DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
         enable_thinking: bool = False,
+        prepared_image: Optional[Any] = None,
+        prepared_size: Optional[tuple[int, int]] = None,
+        original_size: Optional[tuple[float, float]] = None,
+        bbox_max_pixels: Optional[int] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
         self.image_path = image_path
         self.prompt = prompt
         self.model = model
+        self.mode = str(mode or "gt").strip().lower()
         self.config_path = config_path
         self.max_new_tokens = int(max_new_tokens)
         self.few_shot_examples = few_shot_examples
         self.enable_thinking = bool(enable_thinking)
+        self.prepared_image = prepared_image
+        self.prepared_size = tuple(prepared_size) if prepared_size is not None else None
+        self.original_size = tuple(original_size) if original_size is not None else None
+        self.bbox_max_pixels = int(bbox_max_pixels) if bbox_max_pixels is not None else None
         self._cancel_requested = False
 
     def request_cancel(self) -> None:
@@ -287,10 +297,14 @@ class QwenStreamWorker(QObject):
 
     def run(self) -> None:
         try:
-            from .gemini_vlm import StreamingPageExtractionParser
+            from .gemini_vlm import StreamingBBoxOnlyParser, StreamingPageExtractionParser
             from .qwen_vlm import stream_content_from_image
 
-            parser = StreamingPageExtractionParser(image_path=self.image_path)
+            parser = (
+                StreamingBBoxOnlyParser(image_path=self.image_path)
+                if self.mode == "bbox_only"
+                else StreamingPageExtractionParser(image_path=self.image_path)
+            )
             for chunk in stream_content_from_image(
                 image_path=self.image_path,
                 prompt=self.prompt,
@@ -299,6 +313,11 @@ class QwenStreamWorker(QObject):
                 max_new_tokens=self.max_new_tokens,
                 few_shot_examples=self.few_shot_examples,
                 enable_thinking=self.enable_thinking,
+                prepared_image=self.prepared_image,
+                prepared_size=self.prepared_size,
+                original_size=self.original_size,
+                bbox_max_pixels=self.bbox_max_pixels,
+                require_prepared_resize=(self.mode == "bbox_only"),
             ):
                 if self._cancel_requested:
                     break
@@ -320,9 +339,69 @@ class QwenStreamWorker(QObject):
             self.finished.emit()
 
 
+class LocalDocTRBBoxWorker(QObject):
+    fact_received = pyqtSignal(dict)
+    completed = pyqtSignal(object)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        *,
+        image_path: Path,
+        max_facts: int = 0,
+        backend: Any = "fine_tuned",
+        parent: Optional[QObject] = None,
+    ) -> None:
+        super().__init__(parent)
+        self.image_path = image_path
+        self.max_facts = max(0, int(max_facts))
+        self.backend = backend
+        self._cancel_requested = False
+
+    def request_cancel(self) -> None:
+        self._cancel_requested = True
+
+    def run(self) -> None:
+        try:
+            from .local_doctr import extract_numeric_bbox_facts
+
+            fact_payloads = extract_numeric_bbox_facts(
+                self.image_path,
+                max_facts=self.max_facts,
+                cancel_requested=lambda: self._cancel_requested,
+                backend=self.backend,
+            )
+            if self._cancel_requested:
+                return
+            for payload in fact_payloads:
+                if self._cancel_requested:
+                    return
+                self.fact_received.emit(payload)
+            self.completed.emit(
+                SimpleNamespace(
+                    meta=SimpleNamespace(
+                        model_dump=lambda mode="json": {
+                            "entity_name": None,
+                            "page_num": None,
+                            "page_type": "other",
+                            "statement_type": None,
+                            "title": None,
+                        }
+                    ),
+                    facts=fact_payloads,
+                )
+            )
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
 __all__ = [
     "DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS",
     "GeminiFillWorker",
     "GeminiStreamWorker",
+    "LocalDocTRBBoxWorker",
     "QwenStreamWorker",
 ]

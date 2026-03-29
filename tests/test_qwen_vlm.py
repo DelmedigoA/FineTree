@@ -6,6 +6,7 @@ import types
 from pathlib import Path
 
 import pytest
+from PIL import Image
 
 from finetree_annotator import qwen_vlm
 from finetree_annotator.finetune.config import FinetuneConfig
@@ -248,6 +249,69 @@ def test_qwen_request_summary_detects_effective_thinking_transport() -> None:
     assert summary["effective_enable_thinking"] is True
     assert summary["requested_mode"] == "default"
     assert summary["thinking_transport"] == "enable_thinking"
+
+
+def test_stream_content_from_image_uses_prepared_image_for_hosted_backends(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (200, 100), color=(255, 255, 255)).save(image_path)
+
+    seen: dict[str, object] = {}
+
+    def _fake_flash_stream(**kwargs):
+        seen["image_path"] = kwargs["image_path"]
+        yield "ok"
+
+    monkeypatch.setattr(qwen_vlm, "_stream_content_from_qwen_flash_endpoint", _fake_flash_stream)
+
+    output = "".join(
+        qwen_vlm.stream_content_from_image(
+            image_path=image_path,
+            prompt="extract",
+            model="qwen-flash-gt",
+            prepared_size=(140, 84),
+            original_size=(200.0, 100.0),
+            bbox_max_pixels=1_400_000,
+            require_prepared_resize=True,
+        )
+    )
+
+    assert output == "ok"
+    runtime_image_path = seen["image_path"]  # type: ignore[assignment]
+    assert isinstance(runtime_image_path, Path)
+    with Image.open(runtime_image_path) as prepared_image:
+        assert prepared_image.size == (140, 84)
+
+    log_dir = next((tmp_path / "qwen_logs").iterdir())
+    request_payload = json.loads((log_dir / "request.json").read_text(encoding="utf-8"))
+    assert request_payload["uses_prepared_image"] is True
+    assert request_payload["original_image_size"] == {"width": 200, "height": 100}
+    assert request_payload["prepared_image_size"] == {"width": 140, "height": 84}
+    assert request_payload["bbox_max_pixels"] == 1_400_000
+    assert request_payload["logged_image_path"] == "input_target_prepared.png"
+
+
+def test_prepare_inputs_requires_do_resize_false_support_for_bbox_only(tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (40, 20), color=(255, 255, 255)).save(image_path)
+
+    class _Processor:
+        @staticmethod
+        def apply_chat_template(messages, **kwargs):
+            _ = messages, kwargs
+            return "chat"
+
+        def __call__(self, **kwargs):
+            raise TypeError("unexpected keyword argument 'do_resize'")
+
+    with pytest.raises(RuntimeError, match="do_resize=False"):
+        qwen_vlm._prepare_inputs(
+            _Processor(),
+            image_path=image_path,
+            prompt="extract",
+            enable_thinking=False,
+            require_prepared_resize=True,
+        )
 
 
 def test_generate_page_extraction_parses_output(tmp_path: Path, monkeypatch) -> None:

@@ -9,13 +9,16 @@ from PyQt5.QtWidgets import QMessageBox
 
 from ..annotation_core import PageState
 from ..gemini_vlm import (
+    VERTEX_TUNED_GEMINI_MODEL,
     format_issue_summary_brief,
     is_vertex_gemini_model_requested,
     load_issue_summary,
     resolve_supported_gemini_model_name,
 )
-from ..provider_workers import GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
-from ..qwen_vlm import current_qwen_gt_model_choices
+from ..local_doctr import LOCAL_DOCTR_MODEL_NAME
+from ..provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenStreamWorker
+from ..qwen_vlm import DEFAULT_QWEN_BBOX_MAX_PIXELS, current_qwen_gt_model_choices
+from ..vision_resize import prepared_dimensions_for_max_pixels
 from .bbox import (
     BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
     BBOX_MODE_PIXEL_AS_IS,
@@ -29,6 +32,7 @@ from .payloads import (
     build_gemini_autocomplete_request_payload,
     build_gemini_fill_prompt,
     build_gemini_fill_request_payload,
+    build_qwen_bbox_only_prompt,
     extraction_prompt_template,
     gemini_autocomplete_prompt_template,
     gemini_fill_prompt_template,
@@ -44,6 +48,8 @@ from .types import (
     FEW_SHOT_PRESET_2015_TWO_SHOT,
     FEW_SHOT_PRESET_CHOICES,
     FEW_SHOT_PRESET_CLASSIC,
+    LocalDetectorBackend,
+    local_detector_backend_label,
     provider_label,
 )
 
@@ -161,6 +167,7 @@ class AIWorkflowController:
         return any(
             thread is not None
             for thread in (
+                self.host._local_doctr_thread,
                 self.host._gemini_stream_thread,
                 self.host._gemini_fill_thread,
                 self.host._qwen_stream_thread,
@@ -168,6 +175,16 @@ class AIWorkflowController:
         )
 
     def stop_active_generation(self) -> None:
+        if self.host._local_doctr_thread is not None and self.host._local_doctr_worker is not None:
+            self.host._local_doctr_cancel_requested = True
+            self.host._local_doctr_worker.request_cancel()
+            backend_label = local_detector_backend_label(self.host._local_doctr_backend)
+            self._set_status(
+                f"Stopping local detector ({backend_label})...",
+                fact_count=self.host._local_doctr_fact_count,
+                running=True,
+            )
+            return
         if self.host._gemini_stream_thread is not None and self.host._gemini_stream_worker is not None:
             self.host._gemini_stream_cancel_requested = True
             self.host._gemini_stream_worker.request_cancel()
@@ -223,6 +240,9 @@ class AIWorkflowController:
             self.refresh_dialog_state()
             return
 
+        if request.provider == AIProvider.DOCTR and request.action == AIActionKind.BBOX_ONLY:
+            self._run_local_doctr_bbox_only(request, context)
+            return
         if request.provider == AIProvider.GEMINI and request.action == AIActionKind.GROUND_TRUTH:
             self._run_gemini_ground_truth(request, context)
             return
@@ -238,8 +258,75 @@ class AIWorkflowController:
         if request.provider == AIProvider.QWEN and request.action == AIActionKind.GROUND_TRUTH:
             self._run_qwen_ground_truth(request, context)
             return
+        if request.provider == AIProvider.QWEN and request.action == AIActionKind.BBOX_ONLY:
+            self._run_qwen_bbox_only(request, context)
+            return
         QMessageBox.warning(self.host, "AI", "That provider/action combination is not supported.")
         self.refresh_dialog_state()
+
+    def start_auto_annotate(self) -> None:
+        if self.is_running():
+            QMessageBox.information(self.host, "AI", "An AI action is already running.")
+            return
+
+        self.host._capture_current_state()
+        context = self.host._ai_page_context()
+        if context is None:
+            QMessageBox.warning(self.host, "AI", "No current page is loaded.")
+            self.refresh_dialog_state()
+            return
+
+        prompt_text = self._build_prompt_for_dialog(
+            AIProvider.GEMINI,
+            AIActionKind.GROUND_TRUTH,
+            context,
+        ).strip()
+        if not prompt_text:
+            QMessageBox.warning(self.host, "AI", "Auto-Annotate prompt cannot be empty.")
+            return
+
+        system_prompt = system_prompt_template()
+        if not system_prompt:
+            QMessageBox.warning(self.host, "AI", "System prompt cannot be empty.")
+            return
+
+        try:
+            from ..gemini_vlm import ensure_gemini_backend_credentials
+        except Exception as exc:
+            QMessageBox.warning(self.host, "AI", f"Gemini backend is unavailable:\n{exc}")
+            return
+
+        gemini_api_key, auth_error = ensure_gemini_backend_credentials(VERTEX_TUNED_GEMINI_MODEL)
+        if auth_error:
+            QMessageBox.warning(self.host, "AI", auth_error)
+            return
+
+        current_state = deepcopy(
+            self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
+        )
+        self.host._auto_annotate_active = True
+        self.host._auto_annotate_phase = "gemini"
+        self.host._auto_annotate_target_page = context.page_name
+        self.host._auto_annotate_original_state = current_state
+        self.host._auto_annotate_gemini_payloads = []
+        self.host._gemini_gt_live_updates_enabled = False
+
+        self._start_gemini_stream(
+            page_path=context.page_path,
+            page_name=context.page_name,
+            prompt_text=prompt_text,
+            model_name=VERTEX_TUNED_GEMINI_MODEL,
+            gemini_api_key=gemini_api_key,
+            system_prompt=system_prompt,
+            temperature=0.0,
+            enable_thinking=bool(self.host._gemini_enable_thinking),
+            thinking_level=self.host._gemini_thinking_level,
+            few_shot_examples=None,
+            mode="gt",
+            max_facts=0,
+            apply_meta=False,
+            initial_seen_facts=set(),
+        )
 
     def _run_gemini_ground_truth(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
         current_state = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
@@ -449,6 +536,42 @@ class AIWorkflowController:
             initial_seen_facts=set(),
         )
 
+    def _run_local_doctr_bbox_only(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        backend_label = local_detector_backend_label(request.local_detector_backend)
+        current_state = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
+        if current_state.facts:
+            answer = QMessageBox.question(
+                self.host,
+                "Replace current annotations?",
+                (
+                    f"Current page already has {len(current_state.facts)} bbox(es).\n"
+                    f"Run the local detector ({backend_label}) and replace this page annotations?"
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if answer != QMessageBox.Yes:
+                return
+
+        existing_meta = current_state.meta or {}
+        self.host.page_states[context.page_name] = PageState(
+            meta={**self.host._default_meta(context.page_index), **existing_meta},
+            facts=[],
+        )
+        was_restoring = self.host._is_restoring_history
+        self.host._is_restoring_history = True
+        try:
+            self.host.show_page(context.page_index)
+        finally:
+            self.host._is_restoring_history = was_restoring
+
+        self._start_local_doctr_worker(
+            image_path=context.page_path,
+            page_name=context.page_name,
+            backend=request.local_detector_backend,
+            max_facts=request.max_facts,
+        )
+
     def _run_gemini_fix(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
         if not request.selected_fact_fields and not request.include_statement_type:
             QMessageBox.warning(self.host, "AI", "Choose at least one fact field or statement_type.")
@@ -515,15 +638,81 @@ class AIWorkflowController:
         self.host.statusBar().showMessage(f"Running Gemini Fix for {context.page_name}...", 3000)
         thread.start()
 
+    def _start_local_doctr_worker(
+        self,
+        *,
+        image_path: Path,
+        page_name: str,
+        backend: LocalDetectorBackend,
+        max_facts: int,
+    ) -> None:
+        backend_label = local_detector_backend_label(backend)
+        self.host._local_doctr_target_page = page_name
+        self.host._local_doctr_seen_facts = set()
+        self.host._local_doctr_fact_count = 0
+        self.host._local_doctr_cancel_requested = False
+        self.host._local_doctr_buffered_facts = []
+        self.host._local_doctr_backend = backend
+
+        worker = LocalDocTRBBoxWorker(
+            image_path=image_path,
+            max_facts=max_facts,
+            backend=backend,
+        )
+        thread = QThread(self.host)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.fact_received.connect(self._on_local_doctr_fact)
+        worker.completed.connect(self._on_local_doctr_completed)
+        worker.failed.connect(self._on_local_doctr_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_local_doctr_finished)
+
+        self.host._local_doctr_worker = worker
+        self.host._local_doctr_thread = thread
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+            self._set_status("Auto-Annotate: running local detectors...", fact_count=0, running=True)
+            self.host.statusBar().showMessage(f"Auto-Annotate: running local detectors for {page_name}...", 3000)
+        elif backend == LocalDetectorBackend.MERGED:
+            self._set_status("Running local detectors (stock + fine-tuned)...", fact_count=0, running=True)
+            self.host.statusBar().showMessage(
+                f"Running local detectors (stock + fine-tuned) for {page_name}...",
+                3000,
+            )
+        else:
+            self._set_status(
+                f"Running local detector ({backend_label}) BBoxes + Values...",
+                fact_count=0,
+                running=True,
+            )
+            self.host.statusBar().showMessage(
+                f"Running local detector ({backend_label}) for {page_name}...",
+                3000,
+            )
+        thread.start()
+
     def _run_qwen_ground_truth(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        self._run_qwen_stream(request, context, mode="gt")
+
+    def _run_qwen_bbox_only(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        self._run_qwen_stream(request, context, mode="bbox_only")
+
+    def _run_qwen_stream(self, request: AIWorkflowRequest, context: AIPageContext, *, mode: str) -> None:
         current_state = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
+        replace_message = (
+            "Generate AI ground truth and replace this page annotations?"
+            if mode == "gt"
+            else "Extract Qwen bounding boxes + values and replace this page annotations?"
+        )
         if current_state.facts:
             answer = QMessageBox.question(
                 self.host,
                 "Replace current annotations?",
                 (
                     f"Current page already has {len(current_state.facts)} bbox(es).\n"
-                    "Generate AI ground truth and replace this page annotations?"
+                    f"{replace_message}"
                 ),
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.No,
@@ -573,11 +762,38 @@ class AIWorkflowController:
         self.host._qwen_enable_thinking = request.enable_thinking
         few_shot_examples: Optional[list[dict[str, Any]]] = None
         if request.use_few_shot and is_qwen_flash:
-            few_shot_examples = self._load_qwen_few_shot_examples(request)
+            few_shot_examples = (
+                self._load_qwen_bbox_only_few_shot_examples(request)
+                if mode == "bbox_only"
+                else self._load_qwen_few_shot_examples(request)
+            )
         elif request.use_few_shot:
             self.host.statusBar().showMessage(
                 "Qwen few-shot is currently enabled only for hosted Qwen 3.5 DashScope models; running standard mode.",
                 7000,
+            )
+        prepared_size: tuple[int, int] | None = None
+        bbox_original_size: tuple[float, float] | None = None
+        if mode == "bbox_only":
+            image_dimensions = context.image_dimensions
+            if image_dimensions is None:
+                QMessageBox.warning(self.host, "AI", "Current image dimensions are unavailable for Qwen bbox-only mode.")
+                return
+            prepared_h, prepared_w = prepared_dimensions_for_max_pixels(
+                original_width=float(image_dimensions[0]),
+                original_height=float(image_dimensions[1]),
+                max_pixels=DEFAULT_QWEN_BBOX_MAX_PIXELS,
+            )
+            prepared_size = (int(prepared_w), int(prepared_h))
+            bbox_original_size = (float(image_dimensions[0]), float(image_dimensions[1]))
+            QMessageBox.information(
+                self.host,
+                "Qwen BBoxes + Values",
+                (
+                    "Current bundled FineTree Qwen checkpoints were trained on no-bbox targets.\n\n"
+                    "Qwen BBoxes + Values is experimental unless the selected model was separately trained "
+                    "for bbox output."
+                ),
             )
 
         existing_meta = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index)).meta or {}
@@ -596,14 +812,27 @@ class AIWorkflowController:
         self.host._qwen_stream_seen_facts = set()
         self.host._qwen_stream_fact_count = 0
         self.host._qwen_stream_cancel_requested = False
+        self.host._qwen_stream_mode = mode
+        self.host._qwen_bbox_buffered_facts = []
+        self.host._qwen_bbox_original_size = None
+        self.host._qwen_bbox_prepared_size = None
+        self.host._qwen_bbox_max_pixels = None
+        if mode == "bbox_only":
+            self.host._qwen_bbox_original_size = bbox_original_size
+            self.host._qwen_bbox_prepared_size = prepared_size
+            self.host._qwen_bbox_max_pixels = int(DEFAULT_QWEN_BBOX_MAX_PIXELS)
 
         worker = QwenStreamWorker(
             image_path=context.page_path,
             prompt=prompt_text,
             model=model_name,
+            mode=mode,
             config_path=str(qwen_config_path) if qwen_config_path is not None else None,
             few_shot_examples=few_shot_examples,
             enable_thinking=request.enable_thinking,
+            prepared_size=prepared_size,
+            original_size=bbox_original_size,
+            bbox_max_pixels=self.host._qwen_bbox_max_pixels,
         )
         thread = QThread(self.host)
         worker.moveToThread(thread)
@@ -620,8 +849,23 @@ class AIWorkflowController:
 
         self.host._qwen_stream_worker = worker
         self.host._qwen_stream_thread = thread
-        self._set_status(f"Streaming Qwen GT from {model_name}...", fact_count=0, running=True)
-        self.host.statusBar().showMessage(f"Streaming Qwen GT for {context.page_name}...", 3000)
+        self._set_status(
+            (
+                f"Running Qwen BBoxes + Values from {model_name}..."
+                if mode == "bbox_only"
+                else f"Streaming Qwen GT from {model_name}..."
+            ),
+            fact_count=0,
+            running=True,
+        )
+        self.host.statusBar().showMessage(
+            (
+                f"Running Qwen BBoxes + Values for {context.page_name}..."
+                if mode == "bbox_only"
+                else f"Streaming Qwen GT for {context.page_name}..."
+            ),
+            3000,
+        )
         thread.start()
 
     def _start_gemini_stream(
@@ -800,15 +1044,79 @@ class AIWorkflowController:
         )
         return None
 
+    def _load_qwen_bbox_only_few_shot_examples(self, request: AIWorkflowRequest) -> Optional[list[dict[str, Any]]]:
+        loaded_examples = self._load_qwen_few_shot_examples(request)
+        if not loaded_examples:
+            return None
+        transformed: list[dict[str, Any]] = []
+        invalid_count = 0
+        for raw_example in loaded_examples:
+            if not isinstance(raw_example, dict):
+                invalid_count += 1
+                continue
+            expected_json = str(raw_example.get("expected_json") or "").strip()
+            if not expected_json:
+                invalid_count += 1
+                continue
+            try:
+                import json
+
+                payload = json.loads(expected_json)
+            except Exception:
+                invalid_count += 1
+                continue
+            pages = payload.get("pages") if isinstance(payload, dict) else None
+            if not isinstance(pages, list):
+                invalid_count += 1
+                continue
+            projected_pages: list[dict[str, Any]] = []
+            for raw_page in pages:
+                if not isinstance(raw_page, dict):
+                    continue
+                raw_facts = raw_page.get("facts") if isinstance(raw_page.get("facts"), list) else []
+                projected_pages.append(
+                    {
+                        "image": raw_page.get("image"),
+                        "meta": raw_page.get("meta") if isinstance(raw_page.get("meta"), dict) else {},
+                        "facts": [
+                            {
+                                "bbox": fact.get("bbox"),
+                                "value": fact.get("value"),
+                            }
+                            for fact in raw_facts
+                            if isinstance(fact, dict) and fact.get("bbox") is not None
+                        ],
+                    }
+                )
+            transformed.append(
+                {
+                    **raw_example,
+                    "expected_json": json.dumps({"pages": projected_pages}, ensure_ascii=False, separators=(",", ":")),
+                }
+            )
+        if invalid_count:
+            self.host.statusBar().showMessage(
+                f"Qwen BBoxes + Values few-shot skipped {invalid_count} invalid example(s).",
+                6000,
+            )
+        return transformed or None
+
     def _actions_for_provider(self, provider: AIProvider) -> list[AIActionKind]:
+        if provider == AIProvider.DOCTR:
+            return [AIActionKind.BBOX_ONLY]
         if provider == AIProvider.QWEN:
-            return [AIActionKind.GROUND_TRUTH]
+            return [AIActionKind.GROUND_TRUTH, AIActionKind.BBOX_ONLY]
         return [AIActionKind.GROUND_TRUTH, AIActionKind.BBOX_ONLY, AIActionKind.AUTO_COMPLETE, AIActionKind.FIX_SELECTED]
 
     def _first_action_for_provider(self, provider: AIProvider) -> AIActionKind:
         return self._actions_for_provider(provider)[0]
 
     def _capabilities_for(self, provider: AIProvider, action: AIActionKind) -> AIActionCapabilities:
+        if provider == AIProvider.DOCTR:
+            return AIActionCapabilities(
+                supports_max_facts=True,
+                replaces_existing_page_facts=True,
+            )
         if provider == AIProvider.QWEN:
             return AIActionCapabilities(
                 supports_thinking=True,
@@ -859,15 +1167,29 @@ class AIWorkflowController:
             for field_name, checked_default in self.fix_field_choices
             if checked_default
         }
+        if provider == AIProvider.DOCTR:
+            return AIDialogDefaults(
+                provider=provider,
+                action=AIActionKind.BBOX_ONLY,
+                model=LOCAL_DOCTR_MODEL_NAME,
+                temperature=None,
+                enable_thinking=False,
+                thinking_level="minimal",
+                use_few_shot=False,
+                few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
+                max_facts=0,
+                selected_fact_fields=default_fix_fields,
+                include_statement_type=False,
+            )
         if provider == AIProvider.QWEN:
             return AIDialogDefaults(
                 provider=provider,
-                action=AIActionKind.GROUND_TRUTH,
+                action=action,
                 model=self.host._qwen_model_name,
                 temperature=None,
                 enable_thinking=bool(self.host._qwen_enable_thinking),
                 thinking_level="high" if self.host._qwen_enable_thinking else "minimal",
-                use_few_shot=True,
+                use_few_shot=(action == AIActionKind.BBOX_ONLY),
                 few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
                 max_facts=0,
                 selected_fact_fields=default_fix_fields,
@@ -902,6 +1224,8 @@ class AIWorkflowController:
         )
 
     def _model_choices_for(self, provider: AIProvider) -> list[str]:
+        if provider == AIProvider.DOCTR:
+            return [LOCAL_DOCTR_MODEL_NAME]
         if provider == AIProvider.QWEN:
             config_path = self.host._resolve_qwen_config_path()
             return list(current_qwen_gt_model_choices(str(config_path) if config_path is not None else None))
@@ -938,6 +1262,39 @@ class AIWorkflowController:
     ) -> str:
         if context is None:
             return ""
+        if provider == AIProvider.DOCTR:
+            image_size = (
+                f"{int(context.image_dimensions[0])} x {int(context.image_dimensions[1])} pixels"
+                if context.image_dimensions is not None
+                else "unknown"
+            )
+            return (
+                "Local detector bbox-only mode:\n"
+                f"- Current image size: {image_size}.\n"
+                "- Runs the fine-tuned detector locally on the current page image.\n"
+                "- Crop-recognizes detected boxes locally to fill `value` when possible.\n"
+                "- Keeps empty values when crop recognition fails.\n"
+                "- Filters out exact `31` and exact years from 2000 through 2026.\n"
+                "- Emits only `bbox` and `value` per fact.\n"
+                "- Uses original-image pixel coordinates in `[x, y, w, h]` format.\n"
+                "- Prompt customization is informational only in this mode."
+            )
+        if provider == AIProvider.QWEN and action == AIActionKind.BBOX_ONLY:
+            image_dimensions = context.image_dimensions
+            prepared_dimensions: tuple[int, int] | None = None
+            if image_dimensions is not None:
+                prepared_h, prepared_w = prepared_dimensions_for_max_pixels(
+                    original_width=float(image_dimensions[0]),
+                    original_height=float(image_dimensions[1]),
+                    max_pixels=DEFAULT_QWEN_BBOX_MAX_PIXELS,
+                )
+                prepared_dimensions = (int(prepared_w), int(prepared_h))
+            return build_qwen_bbox_only_prompt(
+                context.page_path,
+                image_dimensions=image_dimensions,
+                prepared_dimensions=prepared_dimensions,
+                max_pixels=DEFAULT_QWEN_BBOX_MAX_PIXELS,
+            )
         if provider == AIProvider.QWEN or action == AIActionKind.GROUND_TRUTH:
             return build_extraction_prompt(
                 extraction_prompt_template(),
@@ -1073,6 +1430,151 @@ class AIWorkflowController:
             return f"{base_detail}\n{retain_line}"
         return retain_line
 
+    def _start_auto_annotate_detector(self, page_name: str) -> None:
+        page_idx = self.host._page_index_by_name(page_name)
+        if page_idx < 0:
+            self._on_local_doctr_failed("Target page is unavailable.")
+            return
+        self.host._auto_annotate_phase = "detector"
+        self._start_local_doctr_worker(
+            image_path=self.host.images_dir / page_name,
+            page_name=page_name,
+            backend=LocalDetectorBackend.MERGED,
+            max_facts=0,
+        )
+
+    def _on_local_doctr_fact(self, fact_payload: dict[str, Any]) -> None:
+        page_name = self.host._local_doctr_target_page
+        if page_name is None:
+            return
+        added = self.host._apply_stream_fact(
+            page_name,
+            fact_payload,
+            seen_facts=self.host._local_doctr_seen_facts,
+            stream_source="local_doctr",
+        )
+        if added:
+            self.host._local_doctr_fact_count += 1
+            status = (
+                f"Auto-Annotate: detector parsed {self.host._local_doctr_fact_count} fact(s)..."
+                if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector"
+                else f"Extracting local bbox+value facts... {self.host._local_doctr_fact_count} parsed"
+            )
+            self._set_status(status, fact_count=self.host._local_doctr_fact_count, running=True)
+
+    def _on_local_doctr_completed(self, extraction_obj: Any) -> None:
+        page_name = self.host._local_doctr_target_page
+        if page_name is None:
+            return
+        try:
+            finalized_payloads: list[dict[str, Any]] = []
+            for fact in getattr(extraction_obj, "facts", []) or []:
+                payload = fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact
+                if not isinstance(payload, dict):
+                    continue
+                normalized_payload = self.host._normalized_stream_fact_payload(payload)
+                if normalized_payload is None:
+                    continue
+                finalized_payloads.append(normalized_payload)
+            self.host._local_doctr_buffered_facts = finalized_payloads
+            self.host._local_doctr_seen_facts = {
+                self.host._fact_uniqueness_key(payload)
+                for payload in finalized_payloads
+            }
+            self.host._local_doctr_fact_count = len(finalized_payloads)
+
+            page_idx = self.host._page_index_by_name(page_name)
+            if page_idx < 0:
+                self._on_local_doctr_failed("Target page is unavailable.")
+                return
+            state = self.host.page_states.get(page_name, self.host._default_state(page_idx))
+            if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+                merged_payloads = self.host._merge_auto_annotate_bbox_payloads(
+                    self.host._auto_annotate_gemini_payloads,
+                    finalized_payloads,
+                )
+                self.host.page_states[page_name] = PageState(
+                    meta=dict(state.meta or {}),
+                    facts=self.host._build_box_records_from_fact_payloads(merged_payloads),
+                )
+            else:
+                self.host.page_states[page_name] = PageState(
+                    meta=dict(state.meta or {}),
+                    facts=self.host._build_box_records_from_fact_payloads(finalized_payloads),
+                )
+            self.host._apply_page_state_to_scene(page_name)
+        except Exception as exc:
+            self._on_local_doctr_failed(f"Final parse failed: {exc}")
+            return
+
+        self.host._record_history_snapshot()
+        backend_label = local_detector_backend_label(self.host._local_doctr_backend)
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+            message = f"Auto-Annotate complete. Detector parsed {self.host._local_doctr_fact_count} fact(s)."
+        elif self.host._local_doctr_backend == LocalDetectorBackend.MERGED:
+            message = f"Local detectors merged. Parsed {self.host._local_doctr_fact_count} fact(s)."
+        else:
+            message = (
+                f"Local detector ({backend_label}) BBoxes + Values complete. "
+                f"Parsed {self.host._local_doctr_fact_count} fact(s)."
+            )
+        self._set_status(message, fact_count=self.host._local_doctr_fact_count, running=False)
+        self.host.statusBar().showMessage(message, 6000)
+
+    def _on_local_doctr_failed(self, message: str) -> None:
+        backend_label = local_detector_backend_label(self.host._local_doctr_backend)
+        self._set_status(
+            f"Error ({backend_label}): {message}",
+            fact_count=self.host._local_doctr_fact_count,
+            running=False,
+        )
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+            self.host._record_history_snapshot()
+            QMessageBox.warning(
+                self.host,
+                "Auto-Annotate warning",
+                f"Local detector ({backend_label}) failed:\n{message}\n\nKept Gemini ground truth results on the page.",
+            )
+            return
+        QMessageBox.warning(
+            self.host,
+            "AI failed",
+            f"Local detector ({backend_label}) failed:\n{message}\n\nNo buffered facts were applied to the page.",
+        )
+
+    def _on_local_doctr_finished(self) -> None:
+        if self.host._local_doctr_cancel_requested:
+            backend_label = local_detector_backend_label(self.host._local_doctr_backend)
+            if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+                self.host._record_history_snapshot()
+                stopped = (
+                    f"Auto-Annotate stopped during detector step "
+                    f"({self.host._local_doctr_fact_count} fact(s) parsed, Gemini GT kept)."
+                )
+            elif self.host._local_doctr_backend == LocalDetectorBackend.MERGED:
+                stopped = (
+                    f"Local detectors stopped ({self.host._local_doctr_fact_count} fact(s) parsed, "
+                    "no changes applied)."
+                )
+            else:
+                stopped = (
+                    f"Local detector ({backend_label}) BBoxes + Values stopped "
+                    f"({self.host._local_doctr_fact_count} fact(s) parsed, "
+                    "no changes applied)."
+                )
+            self._set_status(stopped, fact_count=self.host._local_doctr_fact_count, running=False)
+            self.host.statusBar().showMessage(stopped, 5000)
+        self.host._local_doctr_thread = None
+        self.host._local_doctr_worker = None
+        self.host._local_doctr_target_page = None
+        self.host._local_doctr_backend = LocalDetectorBackend.MERGED
+        self.host._local_doctr_seen_facts = set()
+        self.host._local_doctr_buffered_facts = []
+        self.host._local_doctr_cancel_requested = False
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
+            self.host._reset_auto_annotate_state()
+        self.refresh_dialog_state()
+
     def _on_gemini_stream_chunk(self, text: str) -> None:
         _ = text
 
@@ -1085,7 +1587,14 @@ class AIWorkflowController:
             return
         if self.host._gemini_stream_apply_meta:
             self.host._apply_stream_meta(page_name, meta_payload)
-        status = "Meta received. Streaming facts..." if self.host._gemini_stream_apply_meta else "Locked context loaded. Streaming missing facts..."
+        if self.host._gemini_stream_apply_meta:
+            status = "Meta received. Streaming facts..."
+        elif self.host._auto_annotate_active and self.host._auto_annotate_phase == "gemini":
+            status = "Auto-Annotate: streaming Gemini ground truth..."
+        elif self.host._gemini_stream_mode == "gt":
+            status = "Streaming facts..."
+        else:
+            status = "Locked context loaded. Streaming missing facts..."
         self._set_status(status, fact_count=self.host._gemini_stream_fact_count, running=True)
 
     def _on_gemini_stream_fact(self, fact_payload: dict[str, Any]) -> None:
@@ -1100,7 +1609,7 @@ class AIWorkflowController:
         )
         if added:
             self.host._gemini_stream_fact_count += 1
-            if self.host._gemini_stream_mode == "gt":
+            if self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_updates_enabled:
                 self.host._update_gemini_gt_live_stream(page_name)
             progress_text = (
                 f"Streaming missing facts... {self.host._gemini_stream_fact_count} parsed"
@@ -1161,6 +1670,30 @@ class AIWorkflowController:
                     self._on_gemini_stream_failed(error_message or "Auto Complete could not merge results.")
                     return
             elif self.host._gemini_stream_mode == "gt":
+                if self.host._auto_annotate_active and self.host._auto_annotate_phase == "gemini":
+                    resolved_payloads, bbox_mode = self.host._resolve_autocomplete_bbox_mode(
+                        page_name,
+                        self.host._gemini_gt_buffered_facts,
+                    )
+                    self.host._gemini_gt_last_bbox_mode = bbox_mode
+                    self.host._gemini_gt_last_bbox_scores = dict(
+                        self.host._gemini_autocomplete_last_bbox_scores
+                        or {
+                            BBOX_MODE_PIXEL_AS_IS: 0.0,
+                            BBOX_MODE_NORMALIZED_1000_TO_PIXEL: 0.0,
+                        }
+                    )
+                    self.host._auto_annotate_gemini_payloads = [deepcopy(payload) for payload in resolved_payloads]
+                    self.host._apply_stream_meta(page_name, meta_payload)
+                    merged_records = self.host._build_box_records_from_fact_payloads(resolved_payloads)
+                    page_idx = self.host._page_index_by_name(page_name)
+                    state = self.host.page_states.get(page_name, self.host._default_state(page_idx))
+                    self.host.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+                    self.host._gemini_stream_fact_count = len(merged_records)
+                    self.host._gemini_gt_live_applied = False
+                    self.host._apply_page_state_to_scene(page_name)
+                    self._start_auto_annotate_detector(page_name)
+                    return
                 summary, _session_dir = self._current_gemini_stream_issue_summary()
                 finalized_gt_count = len(self.host._gemini_gt_buffered_facts)
                 retain_live, streamed_count, kept_count = self._gt_should_retain_live_result(
@@ -1226,6 +1759,11 @@ class AIWorkflowController:
     def _on_gemini_stream_failed(self, message: str) -> None:
         title = "AI failed"
         self._set_status(f"Error: {message}", fact_count=self.host._gemini_stream_fact_count, running=False)
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "gemini":
+            page_name = self.host._auto_annotate_target_page
+            if page_name is not None:
+                self.host._restore_page_state_snapshot(page_name, self.host._auto_annotate_original_state)
+            title = "Auto-Annotate failed"
         summary, session_dir = self._current_gemini_stream_issue_summary()
         if summary is not None:
             detail = format_issue_summary_brief(
@@ -1277,8 +1815,14 @@ class AIWorkflowController:
         self.host._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self.host._gemini_gt_live_bbox_mode_locked = False
         self.host._gemini_gt_live_applied = False
+        self.host._gemini_gt_live_updates_enabled = True
         self._gemini_gt_finalize_retained_live = False
         self._gemini_gt_finalize_retained_counts = None
+        if self.host._auto_annotate_active and self.host._auto_annotate_phase == "gemini":
+            page_name = self.host._auto_annotate_target_page
+            if page_name is not None:
+                self.host._restore_page_state_snapshot(page_name, self.host._auto_annotate_original_state)
+            self.host._reset_auto_annotate_state()
         self.refresh_dialog_state()
 
     def _gemini_stream_completion_text(self) -> tuple[str, str]:
@@ -1344,6 +1888,8 @@ class AIWorkflowController:
         page_name = self.host._qwen_stream_target_page
         if page_name is None:
             return
+        if self.host._qwen_stream_mode == "bbox_only":
+            return
         self.host._apply_stream_meta(page_name, meta_payload)
         self._set_status("Meta received. Streaming facts...", fact_count=self.host._qwen_stream_fact_count, running=True)
 
@@ -1360,7 +1906,11 @@ class AIWorkflowController:
         if added:
             self.host._qwen_stream_fact_count += 1
             self._set_status(
-                f"Streaming facts... {self.host._qwen_stream_fact_count} parsed",
+                (
+                    f"Extracting bbox+value facts... {self.host._qwen_stream_fact_count} parsed"
+                    if self.host._qwen_stream_mode == "bbox_only"
+                    else f"Streaming facts... {self.host._qwen_stream_fact_count} parsed"
+                ),
                 fact_count=self.host._qwen_stream_fact_count,
                 running=True,
             )
@@ -1370,41 +1920,80 @@ class AIWorkflowController:
         if page_name is None:
             return
         try:
-            meta_payload = extraction_obj.meta.model_dump(mode="json")
-            self.host._apply_stream_meta(page_name, meta_payload)
-            for fact in extraction_obj.facts:
-                payload = fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact
-                if not isinstance(payload, dict):
-                    continue
-                added = self.host._apply_stream_fact(
-                    page_name,
-                    payload,
-                    seen_facts=self.host._qwen_stream_seen_facts,
-                    stream_source="qwen",
-                )
-                if added:
-                    self.host._qwen_stream_fact_count += 1
+            if self.host._qwen_stream_mode != "bbox_only":
+                meta_payload = extraction_obj.meta.model_dump(mode="json")
+                self.host._apply_stream_meta(page_name, meta_payload)
+                for fact in extraction_obj.facts:
+                    payload = fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact
+                    if not isinstance(payload, dict):
+                        continue
+                    added = self.host._apply_stream_fact(
+                        page_name,
+                        payload,
+                        seen_facts=self.host._qwen_stream_seen_facts,
+                        stream_source="qwen",
+                    )
+                    if added:
+                        self.host._qwen_stream_fact_count += 1
+            else:
+                finalized_payloads: list[dict[str, Any]] = []
+                for fact in getattr(extraction_obj, "facts", []) or []:
+                    payload = fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact
+                    if not isinstance(payload, dict):
+                        continue
+                    normalized_payload = self.host._normalized_stream_fact_payload(payload)
+                    if normalized_payload is None:
+                        continue
+                    finalized_payloads.append(normalized_payload)
+                self.host._qwen_bbox_buffered_facts = finalized_payloads
+                self.host._qwen_stream_seen_facts = {
+                    self.host._fact_uniqueness_key(payload)
+                    for payload in finalized_payloads
+                }
+                self.host._qwen_stream_fact_count = len(finalized_payloads)
+                merged, error_message = self.host._merge_qwen_bbox_buffered_facts(page_name)
+                if not merged:
+                    self._on_qwen_stream_failed(error_message or "Qwen BBoxes + Values could not merge results.")
+                    return
         except Exception as exc:
             self._on_qwen_stream_failed(f"Final parse failed: {exc}")
             return
 
         self.host._record_history_snapshot()
-        message = f"Qwen GT complete. Parsed {self.host._qwen_stream_fact_count} fact(s)."
+        message = (
+            f"Qwen BBoxes + Values complete. Parsed {self.host._qwen_stream_fact_count} fact(s)."
+            if self.host._qwen_stream_mode == "bbox_only"
+            else f"Qwen GT complete. Parsed {self.host._qwen_stream_fact_count} fact(s)."
+        )
         self._set_status(message, fact_count=self.host._qwen_stream_fact_count, running=False)
         self.host.statusBar().showMessage(message, 6000)
 
     def _on_qwen_stream_failed(self, message: str) -> None:
         self._set_status(f"Error: {message}", fact_count=self.host._qwen_stream_fact_count, running=False)
-        QMessageBox.warning(self.host, "AI failed", f"{message}\n\nAny facts already streamed remain on the page.")
+        details = (
+            "No buffered facts were applied to the page."
+            if self.host._qwen_stream_mode == "bbox_only"
+            else "Any facts already streamed remain on the page."
+        )
+        QMessageBox.warning(self.host, "AI failed", f"{message}\n\n{details}")
 
     def _on_qwen_stream_finished(self) -> None:
         if self.host._qwen_stream_cancel_requested:
-            stopped = f"Qwen GT stopped ({self.host._qwen_stream_fact_count} fact(s) parsed)."
+            stopped = (
+                f"Qwen BBoxes + Values stopped ({self.host._qwen_stream_fact_count} fact(s) parsed, no changes applied)."
+                if self.host._qwen_stream_mode == "bbox_only"
+                else f"Qwen GT stopped ({self.host._qwen_stream_fact_count} fact(s) parsed)."
+            )
             self._set_status(stopped, fact_count=self.host._qwen_stream_fact_count, running=False)
             self.host.statusBar().showMessage(stopped, 5000)
         self.host._qwen_stream_thread = None
         self.host._qwen_stream_worker = None
         self.host._qwen_stream_target_page = None
+        self.host._qwen_stream_mode = "gt"
+        self.host._qwen_bbox_buffered_facts = []
+        self.host._qwen_bbox_original_size = None
+        self.host._qwen_bbox_prepared_size = None
+        self.host._qwen_bbox_max_pixels = None
         self.refresh_dialog_state()
 
 

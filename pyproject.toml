@@ -31,6 +31,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+ocr = [
+  "python-doctr",
+]
 train = [
   "unsloth; platform_system == 'Linux'",
 ]

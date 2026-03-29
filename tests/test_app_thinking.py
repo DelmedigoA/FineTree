@@ -433,6 +433,48 @@ def test_qwen_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path
     assert seen["enable_thinking"] is True
 
 
+def test_qwen_stream_worker_uses_bbox_only_parser_and_prepared_resize(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield '{"facts":[{"bbox":[10,20,30,40],"value":"12"}]}'
+
+    class _BBoxOnlyParser:
+        def __init__(self, *args, **kwargs) -> None:
+            _ = args, kwargs
+
+        def feed(self, _chunk: str):
+            return None, []
+
+        def finalize(self):
+            return SimpleNamespace(meta={}, facts=[{"bbox": [10, 20, 30, 40], "value": "12"}])
+
+    monkeypatch.setattr(gemini_vlm, "StreamingBBoxOnlyParser", _BBoxOnlyParser)
+    monkeypatch.setattr(qwen_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.QwenStreamWorker(
+        image_path=image_path,
+        prompt="extract bbox values",
+        model="local-qwen",
+        mode="bbox_only",
+        config_path="cfg.yaml",
+        enable_thinking=False,
+        prepared_size=(140, 84),
+        original_size=(200.0, 120.0),
+        bbox_max_pixels=1_400_000,
+    )
+
+    worker.run()
+
+    assert seen["require_prepared_resize"] is True
+    assert seen["prepared_size"] == (140, 84)
+    assert seen["bbox_max_pixels"] == 1_400_000
+
+
 def test_gemini_fill_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path) -> None:
     image_path = tmp_path / "page.png"
     image_path.write_bytes(b"img")

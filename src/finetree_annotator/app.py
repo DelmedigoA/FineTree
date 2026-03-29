@@ -78,10 +78,12 @@ from .ai.types import (
     AIActionKind,
     AIPageContext,
     AIProvider,
+    AIWorkflowRequest,
     FEW_SHOT_PRESET_2015_TWO_SHOT,
     FEW_SHOT_PRESET_CLASSIC,
     FEW_SHOT_PRESET_EXTENDED,
     FEW_SHOT_PRESET_ONE_SHOT,
+    LocalDetectorBackend,
 )
 from .annotation_core import (
     BoxRecord,
@@ -112,6 +114,7 @@ from .fact_ordering import canonical_fact_order_indices, compact_document_meta, 
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
 from .gemini_vlm import DEFAULT_GEMINI_MODEL
+from .local_doctr import local_detector_model_name
 from .gemini_few_shot import (
     DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
@@ -122,7 +125,7 @@ from .gemini_few_shot import (
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
-from .provider_workers import GeminiFillWorker, GeminiStreamWorker, QwenStreamWorker
+from .provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenStreamWorker
 from .schema_contract import (
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
@@ -137,7 +140,7 @@ from .startup import (
     default_annotations_path as _default_annotations_path_impl,
     resolve_startup_context as _resolve_startup_context_impl,
 )
-from .vision_resize import prepared_dimensions_for_max_pixels
+from .vision_resize import prepared_dimensions_for_max_pixels, restore_bbox_from_resized_pixels
 from . import workspace as workspace_mod
 from .workspace import page_has_annotation
 
@@ -1920,6 +1923,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_gt_live_bbox_mode = BBOX_MODE_PIXEL_AS_IS
         self._gemini_gt_live_bbox_mode_locked = False
         self._gemini_gt_live_applied = False
+        self._gemini_gt_live_updates_enabled = True
         self._gemini_fill_thread: Optional[QThread] = None
         self._gemini_fill_worker: Optional[GeminiFillWorker] = None
         self._gemini_fill_cancel_requested = False
@@ -1937,8 +1941,26 @@ class AnnotationWindow(QMainWindow):
         self._qwen_stream_seen_facts: set[tuple[Any, ...]] = set()
         self._qwen_stream_fact_count = 0
         self._qwen_stream_cancel_requested = False
+        self._qwen_stream_mode = "gt"
+        self._qwen_bbox_buffered_facts: list[dict[str, Any]] = []
+        self._qwen_bbox_original_size: tuple[float, float] | None = None
+        self._qwen_bbox_prepared_size: tuple[int, int] | None = None
+        self._qwen_bbox_max_pixels: int | None = None
         self._qwen_model_name = self._initial_qwen_model_name()
         self._qwen_enable_thinking = self._initial_qwen_enable_thinking()
+        self._local_doctr_thread: Optional[QThread] = None
+        self._local_doctr_worker: Optional[LocalDocTRBBoxWorker] = None
+        self._local_doctr_backend = LocalDetectorBackend.MERGED
+        self._local_doctr_target_page: Optional[str] = None
+        self._local_doctr_seen_facts: set[tuple[Any, ...]] = set()
+        self._local_doctr_fact_count = 0
+        self._local_doctr_cancel_requested = False
+        self._local_doctr_buffered_facts: list[dict[str, Any]] = []
+        self._auto_annotate_active = False
+        self._auto_annotate_phase = "idle"
+        self._auto_annotate_target_page: Optional[str] = None
+        self._auto_annotate_original_state: Optional[PageState] = None
+        self._auto_annotate_gemini_payloads: list[dict[str, Any]] = []
         self._ai_controller = AIWorkflowController(
             self,
             thinking_levels=GEMINI_THINKING_LEVEL_OPTIONS,
@@ -2115,6 +2137,8 @@ class AnnotationWindow(QMainWindow):
             (self.undo_btn, "Undo", "Undo", None),
             (self.redo_btn, "Redo", "Redo", None),
             (self.import_btn, "Import", "Import annotations JSON", None),
+            (self.detect_bbox_btn, "Detect bbox", "Run local bbox detection on the current page", None),
+            (self.auto_annotate_btn, "Auto-Annotate", "Run tuned Gemini ground truth, then replace matching bboxes with detector output", None),
             (self.ai_btn, "AI", "Open AI actions", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
@@ -2182,6 +2206,8 @@ class AnnotationWindow(QMainWindow):
         self.undo_btn = QPushButton("Undo")
         self.redo_btn = QPushButton("Redo")
         self.import_btn = QPushButton("Import JSON")
+        self.detect_bbox_btn = QPushButton("Detect bbox")
+        self.auto_annotate_btn = QPushButton("Auto-Annotate")
         self.ai_btn = QPushButton("AI")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
@@ -2204,6 +2230,8 @@ class AnnotationWindow(QMainWindow):
             self.undo_btn,
             self.redo_btn,
             self.import_btn,
+            self.detect_bbox_btn,
+            self.auto_annotate_btn,
             self.ai_btn,
             self.delete_nav_btn,
             self.zoom_out_btn,
@@ -2254,6 +2282,8 @@ class AnnotationWindow(QMainWindow):
 
         gt_layout = QHBoxLayout()
         gt_layout.setSpacing(4)
+        gt_layout.addWidget(self.detect_bbox_btn)
+        gt_layout.addWidget(self.auto_annotate_btn)
         gt_layout.addWidget(self.ai_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self._toolbar_group("Generation", gt_layout))
@@ -3079,6 +3109,8 @@ class AnnotationWindow(QMainWindow):
         self.exit_btn.clicked.connect(self.request_application_exit)
         self.save_btn.clicked.connect(self._trigger_save_annotations)
         self.import_btn.clicked.connect(self.import_annotations_json)
+        self.detect_bbox_btn.clicked.connect(self.detect_local_bboxes)
+        self.auto_annotate_btn.clicked.connect(self.auto_annotate_current_page)
         self.ai_btn.clicked.connect(self.open_ai_dialog)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
@@ -6377,6 +6409,45 @@ class AnnotationWindow(QMainWindow):
         self._apply_page_state_to_scene(page_name)
         return True, None
 
+    def _restore_qwen_bbox_payloads_to_original_pixels(
+        self,
+        fact_payloads: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        original_size = self._qwen_bbox_original_size
+        max_pixels = self._qwen_bbox_max_pixels
+        if original_size is None or max_pixels is None:
+            return [deepcopy(payload) for payload in fact_payloads]
+        restored_payloads: list[dict[str, Any]] = []
+        for payload in fact_payloads:
+            restored_payload = deepcopy(payload)
+            restored_payload["bbox"] = restore_bbox_from_resized_pixels(
+                payload.get("bbox"),
+                original_width=float(original_size[0]),
+                original_height=float(original_size[1]),
+                max_pixels=int(max_pixels),
+            )
+            restored_payloads.append(restored_payload)
+        return restored_payloads
+
+    def _merge_qwen_bbox_buffered_facts(self, page_name: str) -> tuple[bool, str | None]:
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return False, "Target page is unavailable."
+        if not self._qwen_bbox_buffered_facts:
+            self._qwen_stream_fact_count = 0
+            state = self.page_states.get(page_name, self._default_state(page_idx))
+            self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=[])
+            self._apply_page_state_to_scene(page_name)
+            return True, None
+
+        restored_payloads = self._restore_qwen_bbox_payloads_to_original_pixels(self._qwen_bbox_buffered_facts)
+        merged_records = self._build_box_records_from_fact_payloads(restored_payloads)
+        state = self.page_states.get(page_name, self._default_state(page_idx))
+        self.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+        self._qwen_stream_fact_count = len(merged_records)
+        self._apply_page_state_to_scene(page_name)
+        return True, None
+
     def _gemini_gt_payloads_for_bbox_mode(
         self,
         *,
@@ -6415,6 +6486,71 @@ class AnnotationWindow(QMainWindow):
             )
             for payload, resequenced_fact in zip(ordered_payloads, resequenced_facts)
         ]
+
+    def _merge_auto_annotate_bbox_payloads(
+        self,
+        gemini_payloads: list[dict[str, Any]],
+        detector_payloads: list[dict[str, Any]],
+    ) -> list[dict[str, Any]]:
+        ordered_gemini_payloads = self._ordered_fact_payloads_by_geometry(gemini_payloads)
+        ordered_detector_payloads = self._ordered_fact_payloads_by_geometry(detector_payloads)
+        gemini_values = [
+            normalize_angle_bracketed_numeric_text(normalize_fact_data(payload).get("value") or "")
+            for payload in ordered_gemini_payloads
+        ]
+        detector_values = [
+            normalize_angle_bracketed_numeric_text(normalize_fact_data(payload).get("value") or "")
+            for payload in ordered_detector_payloads
+        ]
+        lcs: list[list[int]] = [
+            [0 for _ in range(len(ordered_detector_payloads) + 1)]
+            for _ in range(len(ordered_gemini_payloads) + 1)
+        ]
+        for gemini_index in range(len(ordered_gemini_payloads) - 1, -1, -1):
+            for detector_index in range(len(ordered_detector_payloads) - 1, -1, -1):
+                if gemini_values[gemini_index] == detector_values[detector_index]:
+                    lcs[gemini_index][detector_index] = 1 + lcs[gemini_index + 1][detector_index + 1]
+                else:
+                    lcs[gemini_index][detector_index] = max(
+                        lcs[gemini_index + 1][detector_index],
+                        lcs[gemini_index][detector_index + 1],
+                    )
+        matched_detector_indices_by_gemini_index: dict[int, int] = {}
+        gemini_index = 0
+        detector_index = 0
+        while gemini_index < len(ordered_gemini_payloads) and detector_index < len(ordered_detector_payloads):
+            if gemini_values[gemini_index] == detector_values[detector_index]:
+                matched_detector_indices_by_gemini_index[gemini_index] = detector_index
+                gemini_index += 1
+                detector_index += 1
+            elif lcs[gemini_index + 1][detector_index] >= lcs[gemini_index][detector_index + 1]:
+                gemini_index += 1
+            else:
+                detector_index += 1
+        merged_payloads: list[dict[str, Any]] = []
+        for index, gemini_payload in enumerate(ordered_gemini_payloads):
+            merged_payload = deepcopy(gemini_payload)
+            detector_match_index = matched_detector_indices_by_gemini_index.get(index)
+            if detector_match_index is not None:
+                detector_payload = ordered_detector_payloads[detector_match_index]
+                merged_payload["bbox"] = bbox_to_list(detector_payload.get("bbox"))
+            merged_payloads.append(merged_payload)
+        return merged_payloads
+
+    def _restore_page_state_snapshot(self, page_name: str, state: PageState | None) -> None:
+        page_idx = self._page_index_by_name(page_name)
+        if page_idx < 0:
+            return
+        self.page_states[page_name] = deepcopy(state) if state is not None else self._default_state(page_idx)
+        self._apply_page_state_to_scene(page_name)
+
+    def _reset_auto_annotate_state(self) -> None:
+        self._auto_annotate_active = False
+        self._auto_annotate_phase = "idle"
+        self._auto_annotate_target_page = None
+        self._auto_annotate_original_state = None
+        self._auto_annotate_gemini_payloads = []
+        self._gemini_gt_live_updates_enabled = True
 
     def _render_gemini_gt_live_buffer(
         self,
@@ -6574,6 +6710,20 @@ class AnnotationWindow(QMainWindow):
             if normalized_payload is None:
                 return False
             self._gemini_gt_buffered_facts.append(normalized_payload)
+            return True
+
+        if stream_source == "qwen" and self._qwen_stream_mode == "bbox_only":
+            normalized_payload = self._normalized_stream_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._qwen_bbox_buffered_facts.append(normalized_payload)
+            return True
+
+        if stream_source == "local_doctr":
+            normalized_payload = self._normalized_stream_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._local_doctr_buffered_facts.append(normalized_payload)
             return True
 
         normalized_payload = self._normalized_stream_fact_payload(fact_payload)
@@ -6773,6 +6923,21 @@ class AnnotationWindow(QMainWindow):
 
     def generate_gemini_fill_selected_fields(self) -> None:
         self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.FIX_SELECTED)
+
+    def detect_local_bboxes(self) -> None:
+        backend = LocalDetectorBackend.MERGED
+        self._ai_controller.start_request(
+            AIWorkflowRequest(
+                provider=AIProvider.DOCTR,
+                action=AIActionKind.BBOX_ONLY,
+                model=local_detector_model_name(backend),
+                prompt_text="",
+                local_detector_backend=backend,
+            )
+        )
+
+    def auto_annotate_current_page(self) -> None:
+        self._ai_controller.start_auto_annotate()
 
     def _cancel_gemini_fill(self) -> None:
         if self._gemini_fill_worker is not None:
@@ -8154,6 +8319,7 @@ class AnnotationWindow(QMainWindow):
             "- Use the Go to page spinner in the top bar\n"
             "- Scroll and click the Pages thumbnail strip on the left\n"
             "- Toggle Lens in the top bar for magnified cursor inspection\n"
+            "- Use Detect bbox in the top bar to run the merged local bbox detectors on the current page\n"
             "\n"
             "Selection and editing\n"
             "- Ctrl/Cmd+A: Select all bboxes on the current page when the page view is focused\n"

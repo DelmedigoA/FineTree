@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 
 class AIProvider(str, Enum):
+    DOCTR = "doctr"
     GEMINI = "gemini"
     QWEN = "qwen"
 
@@ -16,6 +17,12 @@ class AIActionKind(str, Enum):
     BBOX_ONLY = "bbox_only"
     AUTO_COMPLETE = "auto_complete"
     FIX_SELECTED = "fix_selected"
+
+
+class LocalDetectorBackend(str, Enum):
+    FINE_TUNED = "fine_tuned"
+    DOCTR_PRETRAINED = "doctr_pretrained"
+    MERGED = "merged"
 
 
 FEW_SHOT_PRESET_ONE_SHOT = "test_1"
@@ -85,6 +92,7 @@ class AIWorkflowRequest:
     max_facts: int = 0
     selected_fact_fields: set[str] = field(default_factory=set)
     include_statement_type: bool = False
+    local_detector_backend: LocalDetectorBackend = LocalDetectorBackend.MERGED
 
 
 @dataclass(frozen=True)
@@ -113,7 +121,19 @@ def action_label(action: AIActionKind) -> str:
 
 
 def provider_label(provider: AIProvider) -> str:
-    return "Gemini" if provider == AIProvider.GEMINI else "Qwen"
+    if provider == AIProvider.DOCTR:
+        return "Local detector"
+    if provider == AIProvider.GEMINI:
+        return "Gemini"
+    return "Qwen"
+
+
+def local_detector_backend_label(backend: LocalDetectorBackend) -> str:
+    if backend == LocalDetectorBackend.MERGED:
+        return "stock + fine-tuned"
+    if backend == LocalDetectorBackend.DOCTR_PRETRAINED:
+        return "stock docTR"
+    return "fine-tuned"
 
 
 __all__ = [
@@ -130,6 +150,8 @@ __all__ = [
     "FEW_SHOT_PRESET_HELP_TEXT",
     "FEW_SHOT_PRESET_ONE_SHOT",
     "FEW_SHOT_PRESET_SUMMARY",
+    "LocalDetectorBackend",
     "action_label",
+    "local_detector_backend_label",
     "provider_label",
 ]

@@ -19,11 +19,13 @@ from typing import Any, Callable, Iterator, Optional, Tuple
 from .finetune.config import FinetuneConfig, load_finetune_config
 from .inference.auth import resolve_hf_token_from_env
 from .schema_contract import default_extraction_prompt_template
+from .vision_resize import prepared_dimensions_for_max_pixels
 
 _DEFAULT_CONFIG_PATH = Path("configs/finetune_qwen35a3_vl.yaml")
 _DEFAULT_QWEN_FLASH_BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 _DEFAULT_QWEN_FLASH_MODEL = "qwen3.5-flash"
 _DEFAULT_QWEN_MAX_NEW_TOKENS = 10_000
+DEFAULT_QWEN_BBOX_MAX_PIXELS = 1_400_000
 _DEFAULT_EXTRACTION_PROMPT_PATH = Path("prompts/extraction_prompt.txt")
 _HOSTED_QWEN_GT_MODELS: tuple[str, ...] = (
     "qwen3.5-flash",
@@ -75,6 +77,47 @@ def _serialize_qwen_log_value(value: Any) -> Any:
 def _copy_qwen_log_image(source_path: Path, target_path: Path) -> None:
     target_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source_path, target_path)
+
+
+def _save_qwen_log_image(
+    source_path: Path,
+    target_path: Path,
+    *,
+    prepared_image: Optional[Any] = None,
+    prepared_size: Optional[tuple[int, int]] = None,
+) -> tuple[int, int]:
+    from PIL import Image
+
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+
+    if isinstance(prepared_image, Path):
+        image = Image.open(prepared_image).convert("RGB")
+    elif prepared_image is not None:
+        if not hasattr(prepared_image, "copy") or not hasattr(prepared_image, "save"):
+            raise TypeError("prepared_image must be a PIL image or filesystem path.")
+        image = prepared_image.copy()
+    else:
+        image = Image.open(source_path).convert("RGB")
+
+    if prepared_size is not None and image.size != tuple(prepared_size):
+        image = image.resize(tuple(prepared_size), Image.Resampling.BICUBIC)
+    image.save(target_path, format="PNG")
+    return int(image.size[0]), int(image.size[1])
+
+
+def _image_dimensions_from_path(image_path: Path) -> tuple[int, int]:
+    from PIL import Image
+
+    with Image.open(image_path) as image:
+        width, height = image.size
+    return int(width), int(height)
+
+
+def _try_image_dimensions_from_path(image_path: Path) -> tuple[int, int] | None:
+    try:
+        return _image_dimensions_from_path(image_path)
+    except Exception:
+        return None
 
 
 def _append_qwen_log_event(session_dir: Path, event: str, payload: dict[str, Any]) -> None:
@@ -224,6 +267,11 @@ def _create_qwen_log_session(
     enable_thinking: Optional[bool],
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     extra_request: Optional[dict[str, Any]] = None,
+    prepared_image: Optional[Any] = None,
+    prepared_size: Optional[tuple[int, int]] = None,
+    original_size: Optional[tuple[float, float]] = None,
+    bbox_max_pixels: Optional[int] = None,
+    require_prepared_image: bool = False,
 ) -> Path:
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ")
     session_dir = _qwen_logs_dir() / (
@@ -231,8 +279,32 @@ def _create_qwen_log_session(
     )
     session_dir.mkdir(parents=True, exist_ok=True)
 
-    target_copy_name = f"input_target{image_path.suffix.lower() or '.bin'}"
-    _copy_qwen_log_image(image_path, session_dir / target_copy_name)
+    original_image_size = (
+        (int(round(float(original_size[0]))), int(round(float(original_size[1]))))
+        if original_size is not None
+        else _try_image_dimensions_from_path(image_path)
+    )
+    uses_prepared_image = bool(require_prepared_image or prepared_image is not None or prepared_size is not None)
+
+    if uses_prepared_image:
+        original_copy_name = f"input_original{image_path.suffix.lower() or '.bin'}"
+        _copy_qwen_log_image(image_path, session_dir / original_copy_name)
+        target_copy_name = "input_target_prepared.png"
+        prepared_width, prepared_height = _save_qwen_log_image(
+            image_path,
+            session_dir / target_copy_name,
+            prepared_image=prepared_image,
+            prepared_size=prepared_size,
+        )
+        logged_image_mime_type = "image/png"
+    else:
+        target_copy_name = f"input_target{image_path.suffix.lower() or '.bin'}"
+        _copy_qwen_log_image(image_path, session_dir / target_copy_name)
+        if original_image_size is None:
+            prepared_width, prepared_height = (0, 0)
+        else:
+            prepared_width, prepared_height = original_image_size
+        logged_image_mime_type = mimetypes.guess_type(str(image_path))[0] or "image/png"
 
     logged_examples: list[dict[str, Any]] = []
     for index, raw_example in enumerate(few_shot_examples or [], start=1):
@@ -257,7 +329,22 @@ def _create_qwen_log_session(
         "model": str(model or ""),
         "prompt": prompt,
         "image_path": str(image_path),
+        "original_image_size": (
+            {
+                "width": int(original_image_size[0]),
+                "height": int(original_image_size[1]),
+            }
+            if original_image_size is not None
+            else None
+        ),
+        "prepared_image_size": {
+            "width": int(prepared_width),
+            "height": int(prepared_height),
+        },
+        "bbox_max_pixels": int(bbox_max_pixels) if bbox_max_pixels is not None else None,
+        "uses_prepared_image": uses_prepared_image,
         "logged_image_path": target_copy_name,
+        "logged_image_mime_type": logged_image_mime_type,
         "enable_thinking": enable_thinking,
         "few_shot_examples": logged_examples,
     }
@@ -934,7 +1021,14 @@ def _apply_chat_template_with_thinking_control(processor: Any, messages: list[di
         return processor.apply_chat_template(messages, **base_kwargs)
 
 
-def _prepare_inputs(processor: Any, image_path: Path, prompt: str, enable_thinking: bool) -> dict[str, Any]:
+def _prepare_inputs(
+    processor: Any,
+    image_path: Path,
+    prompt: str,
+    enable_thinking: bool,
+    *,
+    require_prepared_resize: bool = False,
+) -> dict[str, Any]:
     from PIL import Image
 
     image = Image.open(image_path).convert("RGB")
@@ -953,11 +1047,23 @@ def _prepare_inputs(processor: Any, image_path: Path, prompt: str, enable_thinki
         messages=messages,
         enable_thinking=enable_thinking,
     )
-    inputs = processor(
-        text=[chat_text],
-        images=[image],
-        return_tensors="pt",
-    )
+    processor_kwargs: dict[str, Any] = {
+        "text": [chat_text],
+        "images": [image],
+        "return_tensors": "pt",
+    }
+    if require_prepared_resize:
+        try:
+            return processor(
+                **processor_kwargs,
+                do_resize=False,
+            )
+        except TypeError as exc:
+            raise RuntimeError(
+                "Qwen bbox-only requires processor(..., do_resize=False) support "
+                "so prepared-image pixel coordinates remain stable."
+            ) from exc
+    inputs = processor(**processor_kwargs)
     return inputs
 
 
@@ -1551,6 +1657,7 @@ def _stream_content_local(
     temperature: Optional[float] = None,
     top_p: Optional[float] = None,
     enable_thinking: Optional[bool] = None,
+    require_prepared_resize: bool = False,
     log_event: Optional[Callable[[str, dict[str, Any]], None]] = None,
 ) -> Iterator[str]:
     model_obj, processor = _load_model_bundle(cfg, model_override=model_override)
@@ -1565,6 +1672,7 @@ def _stream_content_local(
         image_path=image_path,
         prompt=prompt,
         enable_thinking=bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking),
+        require_prepared_resize=require_prepared_resize,
     )
 
     device = _resolve_input_device(model_obj)
@@ -1628,9 +1736,35 @@ def stream_content_from_image(
     top_p: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     enable_thinking: Optional[bool] = None,
+    prepared_image: Optional[Any] = None,
+    prepared_size: Optional[tuple[int, int]] = None,
+    original_size: Optional[tuple[float, float]] = None,
+    bbox_max_pixels: Optional[int] = None,
+    require_prepared_resize: bool = False,
 ) -> Iterator[str]:
     if not image_path.is_file():
         raise FileNotFoundError(f"Image not found: {image_path}")
+
+    resolved_original_size = (
+        (float(original_size[0]), float(original_size[1]))
+        if original_size is not None
+        else (
+            tuple(float(value) for value in detected_size)
+            if (detected_size := _try_image_dimensions_from_path(image_path)) is not None
+            else None
+        )
+    )
+    resolved_bbox_max_pixels = int(bbox_max_pixels) if bbox_max_pixels is not None else None
+    resolved_prepared_size = prepared_size
+    if require_prepared_resize and resolved_prepared_size is None:
+        if resolved_original_size is None:
+            raise RuntimeError("Qwen bbox-only requires a valid image so the prepared resize dimensions can be computed.")
+        prepared_h, prepared_w = prepared_dimensions_for_max_pixels(
+            original_width=resolved_original_size[0],
+            original_height=resolved_original_size[1],
+            max_pixels=resolved_bbox_max_pixels or DEFAULT_QWEN_BBOX_MAX_PIXELS,
+        )
+        resolved_prepared_size = (int(prepared_w), int(prepared_h))
 
     session_dir = _create_qwen_log_session(
         operation="stream_content",
@@ -1646,7 +1780,15 @@ def stream_content_from_image(
             "temperature": temperature,
             "top_p": top_p,
         },
+        prepared_image=prepared_image,
+        prepared_size=resolved_prepared_size,
+        original_size=resolved_original_size,
+        bbox_max_pixels=resolved_bbox_max_pixels,
+        require_prepared_image=require_prepared_resize,
     )
+    request_payload = _read_qwen_log_request(session_dir)
+    runtime_image_path = session_dir / str(request_payload["logged_image_path"])
+    runtime_image_mime_type = str(request_payload.get("logged_image_mime_type") or mimetypes.guess_type(str(runtime_image_path))[0] or "image/png")
     observed_thinking_signal_path: Optional[str] = None
     active_backend = "unknown"
 
@@ -1700,7 +1842,7 @@ def stream_content_from_image(
             _update_qwen_log_request(session_dir, {"exact_request": exact_request, "request_summary": request_summary})
             _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
             generator = _stream_content_from_qwen_flash_endpoint(
-                image_path=image_path,
+                image_path=runtime_image_path,
                 prompt=prompt,
                 model_override=model,
                 max_new_tokens=max_new_tokens,
@@ -1744,7 +1886,7 @@ def stream_content_from_image(
                 _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_from_runpod_endpoint(
                     cfg=cfg,
-                    image_path=image_path,
+                    image_path=runtime_image_path,
                     prompt=prompt,
                     model_override=model,
                     max_new_tokens=max_new_tokens,
@@ -1761,10 +1903,9 @@ def stream_content_from_image(
                 effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
                 effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
                 effective_enable_thinking = bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking)
-                request_payload = _read_qwen_log_request(session_dir)
                 queue_input: dict[str, Any] = {
                     "image_file": request_payload["logged_image_path"],
-                    "image_mime_type": mimetypes.guess_type(str(image_path))[0] or "image/png",
+                    "image_mime_type": runtime_image_mime_type,
                     "response_mode": "text",
                     "prompt": prompt,
                     "chat_template_kwargs": {"enable_thinking": effective_enable_thinking},
@@ -1791,7 +1932,7 @@ def stream_content_from_image(
                 _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_from_runpod_queue(
                     cfg=cfg,
-                    image_path=image_path,
+                    image_path=runtime_image_path,
                     prompt=prompt,
                     model_override=model,
                     max_new_tokens=max_new_tokens,
@@ -1807,7 +1948,6 @@ def stream_content_from_image(
                 effective_temperature = float(cfg.inference.temperature) if temperature is None else float(temperature)
                 effective_top_p = float(cfg.inference.top_p) if top_p is None else float(top_p)
                 effective_enable_thinking = bool(cfg.inference.enable_thinking) if enable_thinking is None else bool(enable_thinking)
-                request_payload = _read_qwen_log_request(session_dir)
                 exact_request = {
                     "backend": "local",
                     "input": {
@@ -1833,7 +1973,7 @@ def stream_content_from_image(
                 _append_qwen_log_event(session_dir, "thinking_request_summary", request_summary)
                 generator = _stream_content_local(
                     cfg=cfg,
-                    image_path=image_path,
+                    image_path=runtime_image_path,
                     prompt=prompt,
                     model_override=model,
                     max_new_tokens=max_new_tokens,
@@ -1841,6 +1981,7 @@ def stream_content_from_image(
                     temperature=temperature,
                     top_p=top_p,
                     enable_thinking=enable_thinking,
+                    require_prepared_resize=require_prepared_resize,
                     log_event=_log_event,
                 )
 
@@ -1876,6 +2017,11 @@ def generate_content_from_image(
     top_p: Optional[float] = None,
     few_shot_examples: Optional[list[dict[str, Any]]] = None,
     enable_thinking: Optional[bool] = None,
+    prepared_image: Optional[Any] = None,
+    prepared_size: Optional[tuple[int, int]] = None,
+    original_size: Optional[tuple[float, float]] = None,
+    bbox_max_pixels: Optional[int] = None,
+    require_prepared_resize: bool = False,
 ) -> str:
     return "".join(
         stream_content_from_image(
@@ -1889,6 +2035,11 @@ def generate_content_from_image(
             top_p=top_p,
             few_shot_examples=few_shot_examples,
             enable_thinking=enable_thinking,
+            prepared_image=prepared_image,
+            prepared_size=prepared_size,
+            original_size=original_size,
+            bbox_max_pixels=bbox_max_pixels,
+            require_prepared_resize=require_prepared_resize,
         )
     )
 
@@ -1979,6 +2130,7 @@ def main(argv: Optional[list[str]] = None) -> int:
 
 
 __all__ = [
+    "DEFAULT_QWEN_BBOX_MAX_PIXELS",
     "current_qwen_gt_model_choices",
     "generate_content_from_image",
     "generate_page_extraction_from_image",

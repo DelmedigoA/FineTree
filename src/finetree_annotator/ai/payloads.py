@@ -142,17 +142,7 @@ def build_gemini_bbox_only_prompt(
         page_image_path,
         image_dimensions=image_dimensions,
     )
-    prompt = re.sub(
-        r'      "facts": \[\n        \{\n.*?\n        \}\n      \]',
-        '      "facts": [\n        {\n  "bbox": [<x>, <y>, <w>, <h>],\n  "value": "<string>"\n        }\n      ]',
-        base_prompt,
-        count=1,
-        flags=re.S,
-    )
-    prompt = prompt.replace(
-        "2. Include all listed `meta` keys and all listed fact keys in every emitted fact. Use JSON `null` for missing optional values.",
-        "2. Include all listed `meta` keys. In this mode, each emitted fact must include only `bbox` and `value`.",
-    )
+    prompt = _bbox_only_prompt_from_extraction_prompt(base_prompt)
     bbox_only_rules = (
         "BBox+value mode override:\n"
         "- Keep the same overall JSON wrapper shape.\n"
@@ -165,6 +155,65 @@ def build_gemini_bbox_only_prompt(
         "{\"bbox\": [x, y, w, h], \"value\": \"<string>\"}\n"
     )
     return f"{prompt.rstrip()}\n\n{bbox_only_rules}"
+
+
+def build_qwen_bbox_only_prompt(
+    page_image_path: Path,
+    *,
+    image_dimensions: Optional[tuple[float, float]],
+    prepared_dimensions: Optional[tuple[int, int]],
+    max_pixels: int,
+) -> str:
+    base_prompt = build_extraction_prompt(
+        extraction_prompt_template(),
+        page_image_path,
+        image_dimensions=image_dimensions,
+    )
+    prompt = _bbox_only_prompt_from_extraction_prompt(base_prompt)
+    prompt = prompt.replace(
+        "4. `bbox` must tightly cover the value text only, in original image pixel coordinates `[x, y, w, h]`.",
+        "4. `bbox` must tightly cover the value text only, in prepared image pixel coordinates `[x, y, w, h]`.",
+    )
+    original_size = (
+        f"{int(image_dimensions[0])} x {int(image_dimensions[1])} pixels"
+        if image_dimensions is not None
+        else "unknown"
+    )
+    prepared_size = (
+        f"{int(prepared_dimensions[0])} x {int(prepared_dimensions[1])} pixels"
+        if prepared_dimensions is not None
+        else "unknown"
+    )
+    bbox_only_rules = (
+        "Qwen bbox+value mode override:\n"
+        f"- The original page image size is {original_size}.\n"
+        f"- The prepared image sent to Qwen is {prepared_size}.\n"
+        f"- The prepared image was resized under a max pixel budget of {int(max_pixels)}.\n"
+        "- Keep the same overall JSON wrapper shape.\n"
+        "- For each fact, return only `bbox` and `value`.\n"
+        "- Do not include any other fact fields in this mode.\n"
+        "- Include all numerical entities that function as numeric cells/values.\n"
+        "- Include standalone \"-\" entries when they function as numeric placeholders/values.\n"
+        "- Return bbox coordinates in prepared-image pixels, not original-image pixels.\n"
+        "- Each bbox must tightly cover the visible value text only.\n\n"
+        "In this mode, each fact object must have exactly this shape:\n"
+        "{\"bbox\": [x, y, w, h], \"value\": \"<string>\"}\n"
+    )
+    return f"{prompt.rstrip()}\n\n{bbox_only_rules}"
+
+
+def _bbox_only_prompt_from_extraction_prompt(base_prompt: str) -> str:
+    prompt = re.sub(
+        r'      "facts": \[\n        \{\n.*?\n        \}\n      \]',
+        '      "facts": [\n        {\n  "bbox": [<x>, <y>, <w>, <h>],\n  "value": "<string>"\n        }\n      ]',
+        base_prompt,
+        count=1,
+        flags=re.S,
+    )
+    return prompt.replace(
+        "2. Include all listed `meta` keys and all listed fact keys in every emitted fact. Use JSON `null` for missing optional values.",
+        "2. Include all listed `meta` keys. In this mode, each emitted fact must include only `bbox` and `value`.",
+    )
 
 
 def build_page_prompt_payload(
@@ -295,10 +344,12 @@ def build_gemini_autocomplete_prompt(
 __all__ = [
     "build_extraction_prompt",
     "build_gemini_autocomplete_prompt",
+    "build_gemini_bbox_only_prompt",
     "build_gemini_autocomplete_request_payload",
     "build_gemini_fill_prompt",
     "build_gemini_fill_request_payload",
     "build_page_prompt_payload",
+    "build_qwen_bbox_only_prompt",
     "extraction_prompt_template",
     "gemini_autocomplete_prompt_template",
     "gemini_fill_prompt_template",
