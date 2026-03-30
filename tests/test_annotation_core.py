@@ -111,7 +111,7 @@ def test_load_page_states_supports_flat_and_nested_fact_shapes() -> None:
     assert state.facts[0].fact["currency"] == "ILS"
     assert state.facts[0].fact["comment_ref"] == "*estimated"
     assert state.facts[0].fact["note_flag"] is True
-    assert state.facts[0].fact["note_num"] == 5
+    assert state.facts[0].fact["note_num"] == "5"
     assert state.facts[0].fact["note_ref"] == "A1"
     assert state.facts[0].fact["scale"] == 1000
     assert state.facts[1].bbox["w"] == 1.0
@@ -155,7 +155,7 @@ def test_build_annotations_payload_applies_defaults_for_missing_pages() -> None:
     assert page_1["facts"][0]["fact_num"] == 1
     assert page_1["facts"][0]["equations"] == [{"equation": "1,000 + 193", "fact_equation": None}]
     assert page_1["facts"][0]["note_flag"] is True
-    assert page_1["facts"][0]["note_num"] == 5
+    assert page_1["facts"][0]["note_num"] == "5"
     assert page_1["facts"][0]["note_ref"] == "row-12"
     assert page_1["facts"][0]["bbox"] == [10.0, 20.0, 30.0, 40.0]
     assert page_2["meta"]["page_type"] == "other"

@@ -8,7 +8,7 @@ Refresh command:
 PYTHONPATH=src ./.env/bin/python scripts/sync_page_level_predicted_schema.py
 ```
 
-Schema version: `3`
+Schema version: `4`
 
 Selected page meta keys:
 - `entity_name`
@@ -29,7 +29,6 @@ Selected fact keys:
 - `note_name`
 - `note_num`
 - `note_ref`
-- `date`
 - `period_type`
 - `period_start`
 - `period_end`
@@ -68,7 +67,7 @@ Exact page-level schema:
       "comment_ref": "<string or null>",
       "note_flag": <true|false>,
       "note_name": "<string or null>",
-      "note_num": "<integer or null>",
+      "note_num": "<string or null>",
       "note_ref": "<string or null>",
       "period_type": "instant|duration|expected|null",
       "period_start": "<YYYY-MM-DD|null>",

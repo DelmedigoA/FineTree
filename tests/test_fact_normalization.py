@@ -27,8 +27,32 @@ def test_normalize_fact_payload_maps_legacy_keys_to_canonical() -> None:
     assert normalized["value"] == "1,234"
     assert normalized["comment_ref"] == "*free text"
     assert normalized["note_flag"] is False
-    assert normalized["note_num"] == 19
+    assert normalized["note_num"] == "19"
     assert normalized["note_ref"] == "2ה׳"
+
+
+def test_normalize_fact_payload_preserves_textual_note_num_and_warns_when_not_numeric_only() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "1,234",
+            "note_num": "16אב׳",
+            "path": ["assets", "cash"],
+        }
+    )
+    assert normalized["note_num"] == "16אב׳"
+    assert "nonnumeric_note_num" in warnings
+
+
+def test_normalize_fact_payload_accepts_numeric_string_note_num_without_warning() -> None:
+    normalized, warnings = normalize_fact_payload(
+        {
+            "value": "1,234",
+            "note_num": "16",
+            "path": ["assets", "cash"],
+        }
+    )
+    assert normalized["note_num"] == "16"
+    assert "nonnumeric_note_num" not in warnings
 
 
 def test_normalize_date_accepts_year_year_month_and_converts_dmy() -> None:
@@ -370,7 +394,7 @@ def test_normalize_annotation_payload_reports_issues() -> None:
     }
     normalized, findings = normalize_annotation_payload(payload)
     assert normalized["pages"][0]["facts"][0]["comment_ref"] == "legacy free text"
-    assert normalized["pages"][0]["facts"][0]["note_num"] == 7
+    assert normalized["pages"][0]["facts"][0]["note_num"] == "7"
     assert normalized["pages"][0]["facts"][0]["note_flag"] is False
     assert normalized["pages"][0]["facts"][0]["date"] == "2024-12-31"
     assert normalized["pages"][0]["facts"][0]["value"] == "-123"

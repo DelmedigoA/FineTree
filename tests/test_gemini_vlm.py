@@ -1669,7 +1669,7 @@ def test_parse_page_extraction_text_drops_invalid_facts_and_writes_issue_summary
     assert extraction.facts[0].value == "10"
     assert extraction.facts[1].value == "20"
     assert extraction.facts[1].note_flag is False
-    assert extraction.facts[1].note_num == 5
+    assert extraction.facts[1].note_num == "5"
     assert summary is not None
     assert summary["status"] == "ok"
     assert summary["kept_fact_count"] == 2
@@ -1982,7 +1982,7 @@ def test_parse_selected_field_patch_text_accepts_value_and_structural_updates() 
             "updates": {
                 "value": "(123)",
                 "note_flag": True,
-                "note_num": 7,
+                "note_num": "7",
                 "path": ["assets", "current"],
             },
         }

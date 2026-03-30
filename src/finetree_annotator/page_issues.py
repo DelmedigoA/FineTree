@@ -225,8 +225,8 @@ def _validate_page_issue_lists(page_states: Sequence[tuple[str, PageState]]) -> 
                 issues_by_page.append(
                     PageIssue(
                         severity="warning",
-                        code="noninteger_note_num",
-                        message=f"Fact #{fact_index + 1} has a non-integer note_num.",
+                        code="nonnumeric_note_num",
+                        message=f"Fact #{fact_index + 1} has a note_num containing non-digit characters.",
                         page_image=page_image,
                         fact_index=fact_index,
                         field_name="note_num",

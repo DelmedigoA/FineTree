@@ -75,7 +75,7 @@ def test_fix_fact_schema_format_script_rewrites_with_backup(tmp_path: Path) -> N
     assert fact["value"] == "-123"
     assert fact["comment_ref"] == "free text"
     assert fact["note_flag"] is False
-    assert fact["note_num"] == 9
+    assert fact["note_num"] == "9"
     assert fact["note_ref"] == "2ה׳"
     assert fact["date"] == "2024-12-31"
 

@@ -157,6 +157,28 @@ def build_gemini_bbox_only_prompt(
     return f"{prompt.rstrip()}\n\n{bbox_only_rules}"
 
 
+def build_gemini_no_bbox_prompt(
+    page_image_path: Path,
+    *,
+    image_dimensions: Optional[tuple[float, float]],
+) -> str:
+    base_prompt = build_extraction_prompt(
+        extraction_prompt_template(),
+        page_image_path,
+        image_dimensions=image_dimensions,
+    )
+    # Remove the bbox line from the facts schema block
+    prompt = re.sub(r'  "bbox": \[<x>, <y>, <w>, <h>\],\n', "", base_prompt)
+    no_bbox_override = (
+        "No-bbox test mode override:\n"
+        "- Do NOT include a `bbox` field in any fact object. Omit `bbox` entirely.\n"
+        "- Include all other fact fields exactly as specified.\n"
+        "- Extract all visible numeric facts even if you cannot tightly localize them.\n"
+        "- Do not skip facts due to spatial localization uncertainty.\n"
+    )
+    return f"{prompt.rstrip()}\n\n{no_bbox_override}"
+
+
 def build_qwen_bbox_only_prompt(
     page_image_path: Path,
     *,
@@ -414,7 +436,7 @@ def build_gemini_fix_drawn_prompt(
         '        "recurring_period": "daily|quarterly|monthly|yearly|null",\n'
         '        "note_flag": true|false,\n'
         '        "note_name": "<string or null>",\n'
-        '        "note_num": "<integer or null>",\n'
+        '        "note_num": "<string or null>",\n'
         '        "note_ref": "<string or null>",\n'
         '        "comment_ref": "<string or null>",\n'
         '        "path_source": "observed|inferred|null"\n'
@@ -492,6 +514,7 @@ __all__ = [
     "build_extraction_prompt",
     "build_gemini_autocomplete_prompt",
     "build_gemini_bbox_only_prompt",
+    "build_gemini_no_bbox_prompt",
     "build_gemini_autocomplete_request_payload",
     "build_gemini_fill_prompt",
     "build_gemini_fill_request_payload",

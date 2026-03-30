@@ -178,7 +178,7 @@ def test_validate_page_issues_warns_when_path_contains_note_name() -> None:
     assert "contains note_name" in overlap_issues[0].message
 
 
-def test_validate_page_issues_warns_on_noninteger_note_num() -> None:
+def test_validate_page_issues_warns_on_nonnumeric_note_num() -> None:
     summary = validate_page_issues(
         "page_0011c.png",
         PageState(
@@ -189,7 +189,7 @@ def test_validate_page_issues_warns_on_noninteger_note_num() -> None:
         ),
     )
     codes = {issue.code for issue in summary.issues}
-    assert "noninteger_note_num" in codes
+    assert "nonnumeric_note_num" in codes
     assert "note_flag_missing_note_num" not in codes
 
 

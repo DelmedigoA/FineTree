@@ -28,6 +28,7 @@ from .dialog import AIDialog, AnnotateProgressDialog
 from .payloads import (
     build_extraction_prompt,
     build_gemini_bbox_only_prompt,
+    build_gemini_no_bbox_prompt,
     build_gemini_autocomplete_prompt,
     build_gemini_autocomplete_request_payload,
     build_gemini_fill_prompt,
@@ -1233,6 +1234,136 @@ class AIWorkflowController:
             )
         return transformed or None
 
+    def _load_gemini_no_bbox_few_shot_examples(self, request: AIWorkflowRequest) -> Optional[list[dict[str, Any]]]:
+        """Load few-shot examples with bbox stripped from all fact outputs."""
+        loaded_examples = self._load_gemini_few_shot_examples(request)
+        if not loaded_examples:
+            return None
+        import json
+
+        transformed: list[dict[str, Any]] = []
+        invalid_count = 0
+        for raw_example in loaded_examples:
+            if not isinstance(raw_example, dict):
+                invalid_count += 1
+                continue
+            expected_json = str(raw_example.get("expected_json") or "").strip()
+            if not expected_json:
+                invalid_count += 1
+                continue
+            try:
+                payload = json.loads(expected_json)
+            except Exception:
+                invalid_count += 1
+                continue
+            pages = payload.get("pages") if isinstance(payload, dict) else None
+            if not isinstance(pages, list):
+                invalid_count += 1
+                continue
+            projected_pages: list[dict[str, Any]] = []
+            for raw_page in pages:
+                if not isinstance(raw_page, dict):
+                    continue
+                raw_facts = raw_page.get("facts") if isinstance(raw_page.get("facts"), list) else []
+                projected_pages.append(
+                    {
+                        "image": raw_page.get("image"),
+                        "meta": raw_page.get("meta") if isinstance(raw_page.get("meta"), dict) else {},
+                        "facts": [
+                            {k: v for k, v in fact.items() if k != "bbox"}
+                            for fact in raw_facts
+                            if isinstance(fact, dict)
+                        ],
+                    }
+                )
+            transformed.append(
+                {
+                    **raw_example,
+                    "expected_json": json.dumps({"pages": projected_pages}, ensure_ascii=False, separators=(",", ":")),
+                }
+            )
+        if invalid_count:
+            self.host.statusBar().showMessage(
+                f"No-bbox test few-shot skipped {invalid_count} invalid example(s).",
+                6000,
+            )
+        return transformed or None
+
+    def start_test_no_bbox(self) -> None:
+        """Run Gemini with no-bbox prompt/few-shots, then auto-run align bboxes to test matching."""
+        context = self.host._ai_page_context()
+        if context is None:
+            QMessageBox.warning(self.host, "AI", "No current page is loaded.")
+            return
+        if self.is_running():
+            QMessageBox.information(self.host, "AI", "An AI action is already running.")
+            return
+
+        try:
+            from ..gemini_vlm import ensure_gemini_backend_credentials
+        except Exception as exc:
+            QMessageBox.warning(self.host, "AI", f"Gemini backend is unavailable:\n{exc}")
+            return
+
+        model_name = DEFAULT_GEMINI_MODEL
+        if is_vertex_gemini_model_requested(model_name):
+            QMessageBox.warning(
+                self.host,
+                "AI",
+                "No-bbox test supports standard Gemini models only.",
+            )
+            return
+        gemini_api_key, auth_error = ensure_gemini_backend_credentials(model_name)
+        if auth_error:
+            QMessageBox.warning(self.host, "AI", auth_error)
+            return
+
+        prompt_text = build_gemini_no_bbox_prompt(
+            context.page_path,
+            image_dimensions=context.image_dimensions,
+        ).strip()
+
+        request = AIWorkflowRequest(
+            provider=AIProvider.GEMINI,
+            action=AIActionKind.GROUND_TRUTH,
+            model=model_name,
+            prompt_text=prompt_text,
+            use_few_shot=True,
+            few_shot_preset=FEW_SHOT_PRESET_2015_TWO_SHOT,
+        )
+        few_shot_examples = self._load_gemini_no_bbox_few_shot_examples(request)
+
+        existing_meta = self.host.page_states.get(
+            context.page_name, self.host._default_state(context.page_index)
+        ).meta or {}
+        self.host.page_states[context.page_name] = PageState(
+            meta={**self.host._default_meta(context.page_index), **existing_meta},
+            facts=[],
+        )
+        was_restoring = self.host._is_restoring_history
+        self.host._is_restoring_history = True
+        try:
+            self.host.show_page(context.page_index)
+        finally:
+            self.host._is_restoring_history = was_restoring
+
+        self._start_gemini_stream(
+            page_path=context.page_path,
+            page_name=context.page_name,
+            prompt_text=prompt_text,
+            model_name=model_name,
+            gemini_api_key=gemini_api_key,
+            system_prompt=None,
+            temperature=None,
+            enable_thinking=False,
+            thinking_level="minimal",
+            few_shot_examples=few_shot_examples,
+            mode="no_bbox_test",
+            max_facts=0,
+            apply_meta=False,
+            initial_seen_facts=set(),
+        )
+
     def _load_qwen_few_shot_examples(self, request: AIWorkflowRequest) -> Optional[list[dict[str, Any]]]:
         loaded_examples, warnings = self.host._load_gemini_few_shot_examples(preset=request.few_shot_preset)
         if loaded_examples:
@@ -1598,6 +1729,8 @@ class AIWorkflowController:
                 continue
             if mode == "autocomplete":
                 normalized_payload = self.host._normalized_autocomplete_generated_fact_payload(fact_payload)
+            elif mode == "no_bbox_test":
+                normalized_payload = self.host._normalized_no_bbox_fact_payload(fact_payload)
             else:
                 normalized_payload = self.host._normalized_stream_fact_payload(fact_payload)
             if normalized_payload is None:
@@ -1610,7 +1743,7 @@ class AIWorkflowController:
         self.host._gemini_stream_fact_count = len(finalized_payloads)
         if mode == "autocomplete":
             self.host._gemini_autocomplete_buffered_facts = finalized_payloads
-        elif mode in {"gt", "bbox_only"}:
+        elif mode in {"gt", "bbox_only", "no_bbox_test"}:
             self.host._gemini_gt_buffered_facts = finalized_payloads
 
     def _gt_finalize_counts(
@@ -1935,7 +2068,7 @@ class AIWorkflowController:
             extraction_facts = getattr(extraction_obj, "facts", [])
             if not isinstance(extraction_facts, list):
                 extraction_facts = []
-            if self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only"}:
+            if self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only", "no_bbox_test"}:
                 self._apply_finalized_gemini_stream_payloads(extraction_facts)
             else:
                 for fact in extraction_facts:
@@ -2021,6 +2154,40 @@ class AIWorkflowController:
                 if not merged:
                     self._on_gemini_stream_failed(error_message or "BBoxes + Values could not merge results.")
                     return
+            elif self.host._gemini_stream_mode == "no_bbox_test":
+                page_idx = self.host._page_index_by_name(page_name)
+                if page_idx < 0:
+                    self._on_gemini_stream_failed("Target page is unavailable.")
+                    return
+                buffered = self.host._gemini_gt_buffered_facts
+                if not buffered:
+                    self._on_gemini_stream_failed("No-bbox test: Gemini returned no facts.")
+                    return
+                # Apply facts directly to page (bypassing bbox-mode resolution which drops null bboxes)
+                merged_records = self.host._build_box_records_from_fact_payloads(buffered)
+                state = self.host.page_states.get(page_name, self.host._default_state(page_idx))
+                self.host.page_states[page_name] = PageState(meta=dict(state.meta or {}), facts=merged_records)
+                self.host._gemini_stream_fact_count = len(merged_records)
+                self.host._apply_page_state_to_scene(page_name)
+                self.host._auto_annotate_gemini_payloads = [
+                    deepcopy(payload) for payload in buffered
+                ]
+                self.host._auto_annotate_active = True
+                self.host._auto_annotate_phase = "detector"
+                self.host._auto_annotate_mode = "align"
+                self.host._auto_annotate_target_page = page_name
+                self.host._auto_annotate_original_state = deepcopy(
+                    self.host.page_states.get(page_name, self.host._default_state(page_idx))
+                )
+                self.host._auto_annotate_restore_on_finish = False
+                self.host._gemini_gt_live_updates_enabled = True
+                count = self.host._gemini_stream_fact_count
+                self.host._record_history_snapshot()
+                msg = f"No-bbox test: Gemini parsed {count} fact(s). Starting local detector..."
+                self._set_status(msg, fact_count=count, running=True)
+                self.host.statusBar().showMessage(msg, 4000)
+                self._start_auto_annotate_detector(page_name)
+                return
         except Exception as exc:
             self._on_gemini_stream_failed(f"Final parse failed: {exc}")
             return
@@ -2077,11 +2244,11 @@ class AIWorkflowController:
                 summary,
                 session_dir=session_dir,
                 streamed_live_facts_remain=(self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_applied),
-                no_changes_applied=self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only"} and not self.host._gemini_gt_live_applied,
+                no_changes_applied=self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only", "no_bbox_test"} and not self.host._gemini_gt_live_applied,
             )
         elif self.host._gemini_stream_mode == "gt" and self.host._gemini_gt_live_applied:
             detail = f"{message}\n\nSome streamed facts were rendered live and remain on the page."
-        elif self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only"}:
+        elif self.host._gemini_stream_mode in {"autocomplete", "gt", "bbox_only", "no_bbox_test"}:
             detail = f"{message}\n\nNo changes were applied."
         else:
             detail = f"{message}\n\nAny facts already streamed remain on the page."
@@ -2108,6 +2275,10 @@ class AIWorkflowController:
             elif self.host._gemini_stream_mode == "bbox_only":
                 stopped_message = (
                     f"BBoxes + Values stopped ({self.host._gemini_stream_fact_count} fact(s) parsed, no changes applied)."
+                )
+            elif self.host._gemini_stream_mode == "no_bbox_test":
+                stopped_message = (
+                    f"No-bbox test stopped ({self.host._gemini_stream_fact_count} fact(s) parsed, no changes applied)."
                 )
             else:
                 stopped_message = f"Auto Complete stopped ({self.host._gemini_stream_fact_count} fact(s) parsed)."

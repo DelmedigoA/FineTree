@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -3181,6 +3182,33 @@ def test_note_num_clear_sets_null(tmp_path: Path) -> None:
     window._on_fact_editor_field_edited("note_num")
 
     assert item.fact_data["note_num"] is None
+    window.close()
+
+
+def test_note_num_text_is_preserved_and_save_reports_warning(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    save_statuses: list[dict[str, object]] = []
+    window.annotations_save_status.connect(lambda payload: save_statuses.append(dict(payload)))
+    item = AnnotRectItem(QRectF(10, 10, 20, 20), {"value": "100", "note_flag": False, "note_num": "16אב׳"})
+    window.scene.addItem(item)
+    window.refresh_facts_list()
+    window.show()
+    item.setSelected(True)
+    _qt_app().processEvents()
+
+    assert window.fact_beur_num_edit.text() == "16אב׳"
+    assert window.save_annotations() is True
+    assert save_statuses
+    assert save_statuses[-1]["warning_count"] >= 1
+    assert save_statuses[-1]["format_warning_count"] >= 1
+    saved = json.loads(annotations_path.read_text(encoding="utf-8"))
+    assert saved["pages"][0]["facts"][0]["note_num"] == "16אב׳"
     window.close()
 
 

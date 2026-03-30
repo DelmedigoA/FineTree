@@ -76,6 +76,34 @@ class GeminiStreamWorker(QObject):
         ]
         return SimpleNamespace(meta=meta_obj, facts=fact_objs)
 
+    def _recover_no_bbox_facts_from_buffer(self, parser: Any) -> None:
+        """Parse the raw JSON buffer to extract facts without requiring bbox."""
+        import json
+
+        raw_text = getattr(parser, "buffer", "") or ""
+        if not raw_text.strip():
+            return
+        try:
+            parsed = json.loads(raw_text)
+        except Exception:
+            return
+        pages = parsed.get("pages") if isinstance(parsed, dict) else None
+        if isinstance(pages, list):
+            for page in pages:
+                if not isinstance(page, dict):
+                    continue
+                if isinstance(page.get("meta"), dict) and self._latest_meta_payload is None:
+                    self._latest_meta_payload = page["meta"]
+                for fact in page.get("facts") or []:
+                    if isinstance(fact, dict) and fact.get("value") is not None:
+                        self._emitted_facts.append(fact)
+        elif isinstance(parsed, dict):
+            if isinstance(parsed.get("meta"), dict) and self._latest_meta_payload is None:
+                self._latest_meta_payload = parsed["meta"]
+            for fact in parsed.get("facts") or []:
+                if isinstance(fact, dict) and fact.get("value") is not None:
+                    self._emitted_facts.append(fact)
+
     def _build_partial_extraction(self) -> Any:
         meta_payload = self._latest_meta_payload or {
             "entity_name": None,
@@ -140,8 +168,8 @@ class GeminiStreamWorker(QObject):
                 temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 thinking_level=self.thinking_level,
-                response_mime_type="application/json" if self.mode in {"gt", "bbox_only"} else None,
-                media_resolution="high" if self.mode in {"gt", "bbox_only"} else None,
+                response_mime_type="application/json" if self.mode in {"gt", "bbox_only", "no_bbox_test"} else None,
+                media_resolution="high" if self.mode in {"gt", "bbox_only", "no_bbox_test"} else None,
                 session_dir=self.session_dir,
             ):
                 if self._cancel_requested:
@@ -166,6 +194,12 @@ class GeminiStreamWorker(QObject):
 
             if self._limit_reached:
                 self.completed.emit(self._build_partial_extraction())
+            elif not self._cancel_requested and self.mode == "no_bbox_test":
+                # Bypass ExtractedFact validation (which requires bbox).
+                # Parse complete JSON from raw buffer to recover all facts (the streaming
+                # parser drops facts without bbox, so _emitted_facts may be empty).
+                self._recover_no_bbox_facts_from_buffer(parser)
+                self.completed.emit(self._build_lenient_stream_result())
             elif not self._cancel_requested:
                 try:
                     extraction = parser.finalize()

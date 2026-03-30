@@ -26,7 +26,7 @@ def _fact_payload(**overrides):
 
 def test_extracted_fact_accepts_integer_note_num() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(note_flag=True, note_num=7))
-    assert fact.note_num == 7
+    assert fact.note_num == "7"
 
 
 def test_extracted_fact_accepts_points_value_type() -> None:
@@ -150,15 +150,15 @@ def test_extracted_fact_accepts_legacy_note_reference_alias() -> None:
     assert fact.ref_note == "legacy-ref"
 
 
-def test_extracted_fact_rejects_noninteger_note_num() -> None:
-    with pytest.raises(ValidationError):
-        ExtractedFact.model_validate(_fact_payload(note_flag=True, note_num="2ה׳"))
+def test_extracted_fact_accepts_textual_note_num() -> None:
+    fact = ExtractedFact.model_validate(_fact_payload(note_flag=True, note_num="2ה׳"))
+    assert fact.note_num == "2ה׳"
 
 
 def test_extracted_fact_allows_note_num_without_is_note() -> None:
     fact = ExtractedFact.model_validate(_fact_payload(note_flag=False, note_num=7))
     assert fact.note_flag is False
-    assert fact.note_num == 7
+    assert fact.note_num == "7"
 
 
 def test_extracted_fact_rejects_noncanonical_date() -> None:

@@ -40,6 +40,7 @@ _ROW_TOTAL_MARKERS: tuple[str, ...] = (
     "net",
 )
 DEFAULT_ANNOTATIONS_GLOB = "data/annotations/*.json"
+_SOFT_WARNING_ISSUE_CODES = {"nonnumeric_note_num"}
 
 
 def _to_optional_text(value: Any) -> str | None:
@@ -330,22 +331,22 @@ def _normalize_path_source(value: Any) -> str | None:
     return lowered if lowered in {"observed", "inferred"} else None
 
 
-def normalize_note_num(raw_note_num: Any) -> tuple[int | None, list[str]]:
+def normalize_note_num(raw_note_num: Any) -> tuple[str | None, list[str]]:
     if raw_note_num in ("", None):
         return None, []
     if isinstance(raw_note_num, bool):
-        return None, ["noninteger_note_num"]
+        return None, ["nonnumeric_note_num"]
     if isinstance(raw_note_num, int):
-        return raw_note_num, []
+        return str(raw_note_num), []
     if isinstance(raw_note_num, float) and float(raw_note_num).is_integer():
-        return int(raw_note_num), []
+        return str(int(raw_note_num)), []
 
     text = str(raw_note_num).strip()
     if not text:
         return None, []
     if text.isdigit():
-        return int(text), []
-    return None, ["noninteger_note_num"]
+        return text, []
+    return text, ["nonnumeric_note_num"]
 
 
 def _coerce_note_flag(value: Any) -> tuple[bool, list[str]]:
@@ -452,7 +453,7 @@ def normalize_fact_payload(
     if note_flag_raw in ("", None):
         note_flag_raw = payload.get("is_beur", payload.get("beur"))
     note_flag, bool_warnings = _coerce_note_flag(note_flag_raw)
-    note_num, _note_num_warnings = normalize_note_num(note_num_raw)
+    note_num, note_num_warnings = normalize_note_num(note_num_raw)
 
     value, value_warnings = normalize_value(value_input)
     natural_sign = _derive_natural_sign_from_value(value)
@@ -541,8 +542,8 @@ def normalize_fact_payload(
     if include_bbox and "bbox" in payload:
         normalized["bbox"] = payload.get("bbox")
 
-    # Non-integer note_num is treated as a live/page warning, not a format-audit failure.
-    warnings = bool_warnings + date_warnings + value_warnings
+    # Non-numeric note_num is treated as a live/page warning, not a format-audit failure.
+    warnings = bool_warnings + note_num_warnings + date_warnings + value_warnings
     return normalized, warnings
 
 
@@ -725,13 +726,20 @@ def fact_format_report(
         facts_scanned += page_facts
 
         for finding in payload_findings:
-            facts_with_issues += 1
             findings.append(
                 {
                     "file": str(file_path.relative_to(root)),
                     **finding,
                 }
             )
+            issue_codes = {
+                str(code).strip()
+                for code in finding.get("issue_codes", [])
+                if str(code).strip()
+            }
+            hard_issue_codes = issue_codes - _SOFT_WARNING_ISSUE_CODES
+            if hard_issue_codes:
+                facts_with_issues += 1
 
     return {
         "annotations_glob": annotations_glob,

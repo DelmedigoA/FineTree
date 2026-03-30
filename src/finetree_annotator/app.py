@@ -15,8 +15,8 @@ from typing import Any, Callable, Dict, List, Optional
 
 from pydantic import ValidationError
 from PyQt5 import sip
-from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QRegularExpression, QDateTime
-from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeyEvent, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform, QRegularExpressionValidator
+from PyQt5.QtCore import QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt, QThread, QTimer, QItemSelectionModel, QEvent, pyqtSignal, QDateTime
+from PyQt5.QtGui import QBrush, QColor, QCloseEvent, QFont, QIcon, QImage, QIntValidator, QKeyEvent, QKeySequence, QPainter, QPainterPath, QPen, QPixmap, QResizeEvent, QShowEvent, QTextCursor, QTextDocument, QTransform
 from PyQt5.QtWidgets import (
     QAction,
     QAbstractItemView,
@@ -2155,6 +2155,7 @@ class AnnotationWindow(QMainWindow):
             (self.detect_bbox_btn, "Detect bbox", "Run local bbox detection on the current page", None),
             (self.auto_annotate_btn, "Annotate", "Run Gemini ground truth with the 2-shot preset", None),
             (self.align_bboxes_btn, "Align bboxes", "Replace matched Gemini bboxes with local detector output", None),
+            (self.test_no_bbox_btn, "Test No-Bbox", "Run Gemini without bboxes then auto-align with local detector (pipeline test)", None),
             (self.ai_btn, "AI", "Open AI actions", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.delete_nav_btn, "Delete", "Delete selected bounding box", None),
             (self.zoom_out_btn, "Zoom -", "Zoom out", None),
@@ -2225,6 +2226,7 @@ class AnnotationWindow(QMainWindow):
         self.detect_bbox_btn = QPushButton("Detect bbox")
         self.auto_annotate_btn = QPushButton("Annotate")
         self.align_bboxes_btn = QPushButton("Align bboxes")
+        self.test_no_bbox_btn = QPushButton("Test No-Bbox")
         self.ai_btn = QPushButton("AI")
         self.delete_nav_btn = QPushButton("Delete BBox")
         self.zoom_out_btn = QPushButton("Zoom -")
@@ -2250,6 +2252,7 @@ class AnnotationWindow(QMainWindow):
             self.detect_bbox_btn,
             self.auto_annotate_btn,
             self.align_bboxes_btn,
+            self.test_no_bbox_btn,
             self.ai_btn,
             self.delete_nav_btn,
             self.zoom_out_btn,
@@ -2303,6 +2306,7 @@ class AnnotationWindow(QMainWindow):
         gt_layout.addWidget(self.detect_bbox_btn)
         gt_layout.addWidget(self.auto_annotate_btn)
         gt_layout.addWidget(self.align_bboxes_btn)
+        gt_layout.addWidget(self.test_no_bbox_btn)
         gt_layout.addWidget(self.ai_btn)
         gt_layout.addWidget(self.apply_entity_all_btn)
         nav.addWidget(self._toolbar_group("Generation", gt_layout))
@@ -2609,8 +2613,6 @@ class AnnotationWindow(QMainWindow):
         self.fact_note_name_edit.setMinimumWidth(fact_field_min_width)
         self.fact_is_beur_combo.setMinimumWidth(112)
         self.fact_beur_num_edit.setMinimumWidth(fact_field_min_width)
-        # Empty must stay acceptable so clearing note_num can be committed as null.
-        self.fact_beur_num_edit.setValidator(QRegularExpressionValidator(QRegularExpression(r"^\d*$"), self))
         self.fact_refference_edit.setMinimumWidth(fact_field_min_width)
         self.fact_date_edit.setMinimumWidth(fact_field_min_width)
         self.fact_period_type_combo.setMinimumWidth(112)
@@ -2877,7 +2879,6 @@ class AnnotationWindow(QMainWindow):
         self.batch_set_is_beur_btn = QPushButton("Apply note_flag")
         self.batch_clear_is_beur_btn = QPushButton("Set note_flag false")
         self.batch_beur_num_edit = QLineEdit()
-        self.batch_beur_num_edit.setValidator(QIntValidator(0, 1_000_000_000, self))
         self.batch_beur_num_edit.setPlaceholderText("Note number for selected bboxes")
         self.batch_set_beur_num_btn = QPushButton("Set Note Num")
         self.batch_clear_beur_num_btn = QPushButton("Clear Note Num")
@@ -3131,6 +3132,7 @@ class AnnotationWindow(QMainWindow):
         self.detect_bbox_btn.clicked.connect(self.detect_local_bboxes)
         self.auto_annotate_btn.clicked.connect(self.annotate_current_page)
         self.align_bboxes_btn.clicked.connect(self.align_bboxes_current_page)
+        self.test_no_bbox_btn.clicked.connect(self.test_no_bbox_pipeline_current_page)
         self.ai_btn.clicked.connect(self.open_ai_dialog)
         self.delete_nav_btn.clicked.connect(self.delete_selected_fact)
         self.dup_fact_btn.clicked.connect(self.duplicate_selected_fact)
@@ -4134,7 +4136,7 @@ class AnnotationWindow(QMainWindow):
             return
 
         def _transform(fact: Dict[str, Any]) -> Dict[str, Any]:
-            fact["note_num"] = int(beur_num)
+            fact["note_num"] = beur_num
             return fact
 
         self._batch_update_selected_facts(_transform, "Updated note_num")
@@ -5209,7 +5211,7 @@ class AnnotationWindow(QMainWindow):
             "comment_ref": self.fact_note_edit.text().strip() or None,
             "note_name": self.fact_note_name_edit.text().strip() or None,
             "note_flag": is_beur_value,
-            "note_num": int(self.fact_beur_num_edit.text().strip()) if self.fact_beur_num_edit.text().strip() else None,
+            "note_num": self.fact_beur_num_edit.text().strip() or None,
             "note_ref": self.fact_refference_edit.text().strip() or None,
             "date": self.fact_date_edit.text().strip() or None,
             "period_type": self.fact_period_type_combo.currentText().strip() or None,
@@ -5374,7 +5376,7 @@ class AnnotationWindow(QMainWindow):
             note_num_text = self.fact_beur_num_edit.text().strip()
             self._apply_fact_field_to_selected_items(
                 "note_num",
-                int(note_num_text) if note_num_text else None,
+                note_num_text or None,
                 widget=self.fact_beur_num_edit,
             )
             return
@@ -6294,6 +6296,13 @@ class AnnotationWindow(QMainWindow):
     def _normalized_stream_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
         return normalize_ai_fact_payload(fact_payload)
 
+    def _normalized_no_bbox_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
+        """Normalize a fact payload that intentionally has no bbox (bbox=null is accepted)."""
+        fact_data = normalize_fact_data(fact_payload)
+        if not fact_data.get("value"):
+            return None
+        return {"bbox": None, **fact_data}
+
     def _normalized_autocomplete_generated_fact_payload(self, fact_payload: Dict[str, Any]) -> Dict[str, Any] | None:
         return normalize_ai_fact_payload(fact_payload, clear_fact_num=True)
 
@@ -6929,6 +6938,13 @@ class AnnotationWindow(QMainWindow):
             self._gemini_autocomplete_buffered_facts.append(normalized_payload)
             return True
 
+        if stream_source == "gemini" and self._gemini_stream_mode == "no_bbox_test":
+            normalized_payload = self._normalized_no_bbox_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._gemini_gt_buffered_facts.append(normalized_payload)
+            return True
+
         if stream_source == "gemini" and self._gemini_stream_mode in {"gt", "bbox_only"}:
             normalized_payload = self._normalized_stream_fact_payload(fact_payload)
             if normalized_payload is None:
@@ -7176,6 +7192,11 @@ class AnnotationWindow(QMainWindow):
         if not self._ensure_document_editable("Align bboxes"):
             return
         self._ai_controller.start_align_bboxes()
+
+    def test_no_bbox_pipeline_current_page(self) -> None:
+        if not self._ensure_document_editable("Test No-Bbox"):
+            return
+        self._ai_controller.start_test_no_bbox()
 
     def _cancel_gemini_fill(self) -> None:
         if self._gemini_fill_worker is not None:
@@ -8323,7 +8344,10 @@ class AnnotationWindow(QMainWindow):
         format_warning_findings = [
             finding
             for finding in format_findings
-            if any(code in {"noncanonical_date", "placeholder_value", "noncanonical_value"} for code in finding.get("issue_codes", []))
+            if any(
+                code in {"noncanonical_date", "placeholder_value", "noncanonical_value", "nonnumeric_note_num"}
+                for code in finding.get("issue_codes", [])
+            )
         ]
         return payload, equation_findings, format_warning_findings
 

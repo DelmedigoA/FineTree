@@ -1,0 +1,95 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 3,
+  "detector_count": 3,
+  "matched_count": 2,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    },
+    {
+      "bbox": [
+        100,
+        10,
+        20,
+        20
+      ],
+      "value": "15",
+      "path": [
+        "C"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        200,
+        10,
+        15,
+        20
+      ],
+      "value": "5"
+    },
+    {
+      "bbox": [
+        220,
+        10,
+        15,
+        20
+      ],
+      "value": "999"
+    },
+    {
+      "bbox": [
+        240,
+        10,
+        15,
+        20
+      ],
+      "value": "15.0"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "5",
+      "detector_value": "5",
+      "match_key": "num:5"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "15",
+      "detector_value": "15.0",
+      "match_key": "num:15"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    1
+  ],
+  "unmatched_detector_indices": [
+    1
+  ]
+}

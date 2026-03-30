@@ -8,7 +8,7 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field, field_validator
 from .date_normalization import normalize_date
 from .numeric_text import derive_natural_sign_from_value_text
 
-CURRENT_SCHEMA_VERSION = 3
+CURRENT_SCHEMA_VERSION = 4
 
 
 def _normalize_note_reference_value(value: Any) -> str | None:
@@ -78,19 +78,17 @@ def _normalize_fact_num_value(value: Any) -> int | None:
     raise ValueError("fact_num must be an integer >= 1 or null.")
 
 
-def _normalize_note_num_value(value: Any) -> int | None:
+def _normalize_note_num_value(value: Any) -> str | None:
     if value in ("", None):
         return None
     if isinstance(value, bool):
-        raise ValueError("note_num must be an integer or null.")
+        raise ValueError("note_num must be a string or null.")
     if isinstance(value, int):
-        return value
+        return str(value)
     if isinstance(value, float) and float(value).is_integer():
-        return int(value)
+        return str(int(value))
     text = str(value).strip()
-    if text.isdigit():
-        return int(text)
-    raise ValueError("note_num must be an integer or null.")
+    return text or None
 
 
 def _normalize_path_value(value: Any) -> list[str]:
@@ -657,7 +655,7 @@ class Fact(BaseModel):
         validation_alias=AliasChoices("note_flag", "is_note", "is_beur", "beur"),
     )
     note_name: Optional[str] = Field(default=None, validation_alias=AliasChoices("note_name", "beur_name"))
-    note_num: Optional[int] = Field(
+    note_num: Optional[str] = Field(
         default=None,
         validation_alias=AliasChoices("note_num", "note", "beur_num", "beur_number"),
     )
@@ -763,7 +761,7 @@ class Fact(BaseModel):
 
     @field_validator("note_num", mode="before")
     @classmethod
-    def _normalize_note_num(cls, value: Any) -> int | None:
+    def _normalize_note_num(cls, value: Any) -> str | None:
         return _normalize_note_num_value(value)
 
     @field_validator("path", mode="before")

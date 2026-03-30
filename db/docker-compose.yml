@@ -1,0 +1,26 @@
+services:
+  sqlpad:
+    image: sqlpad/sqlpad:latest
+    ports:
+      - "3000:3000"
+    environment:
+      # Disable login for local exploration
+      SQLPAD_AUTH_DISABLED: "true"
+      SQLPAD_AUTH_DISABLED_DEFAULT_ROLE: "admin"
+
+      # SQLPad internal storage
+      SQLPAD_DB_PATH: /var/lib/sqlpad
+
+      # Pre-configure the FineTree SQLite connection
+      SQLPAD_CONNECTIONS__finetree__name: "FineTree"
+      SQLPAD_CONNECTIONS__finetree__driver: sqlite
+      SQLPAD_CONNECTIONS__finetree__filename: /data/finetree.db
+
+    volumes:
+      # Mount the db/ directory so sqlpad can read finetree.db
+      - ./:/data:ro
+      # Persist sqlpad's own state (saved queries, etc.)
+      - sqlpad_data:/var/lib/sqlpad
+
+volumes:
+  sqlpad_data:

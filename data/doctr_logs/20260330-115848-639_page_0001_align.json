@@ -1,0 +1,56 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 1,
+  "matched_count": 1,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        200,
+        10,
+        15,
+        20
+      ],
+      "value": "5"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "5",
+      "detector_value": "5",
+      "match_key": "num:5"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    1
+  ],
+  "unmatched_detector_indices": []
+}

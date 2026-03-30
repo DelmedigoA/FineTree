@@ -65,7 +65,7 @@ _FACT_SCHEMA_LINES: dict[str, str] = {
     "duration_type": '"duration_type": "recurrent|null"',
     "recurring_period": '"recurring_period": "daily|quarterly|monthly|yearly|null"',
     "note_flag": '"note_flag": <true|false>',
-    "note_num": '"note_num": "<integer or null>"',
+    "note_num": '"note_num": "<string or null>"',
     "note_name": '"note_name": "<string or null>"',
     "path": '"path": ["<string>", "..."]',
     "path_source": f'"path_source": "{"|".join(PATH_SOURCE_VALUES)}|null"',

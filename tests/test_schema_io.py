@@ -42,10 +42,29 @@ def test_load_any_schema_normalizes_legacy_payload_to_canonical() -> None:
     fact = page["facts"][0]
     assert fact["comment_ref"] == "legacy comment"
     assert fact["note_ref"] == "N1"
-    assert fact["note_num"] == 5
+    assert fact["note_num"] == "5"
     assert "comment" not in fact
     assert "note_reference" not in fact
     assert "beur_num" not in fact
+
+
+def test_load_any_schema_rewrites_numeric_note_num_to_string_under_new_schema_version() -> None:
+    payload = {
+        "schema_version": 3,
+        "images_dir": "data/pdf_images/test",
+        "metadata": {},
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"page_type": "other", "statement_type": None},
+                "facts": [{"bbox": [1, 2, 3, 4], "value": "12", "note_num": 5, "path": []}],
+            }
+        ],
+    }
+
+    out = load_any_schema(payload)
+    assert out["schema_version"] == CURRENT_SCHEMA_VERSION
+    assert out["pages"][0]["facts"][0]["note_num"] == "5"
 
 
 def test_save_canonical_emits_schema_version_and_canonical_keys_only() -> None:
