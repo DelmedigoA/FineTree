@@ -1,0 +1,33 @@
+{
+  "backend": "merged",
+  "image_path": "data/pdf_images/דוח_כספי_2023_-_-אפרת-_-_אגודה_למתן_יעוץ_וסיוע_לנשים_הרות_במצוקה_ע-ר/page_0001.png",
+  "old_candidates": [
+    {
+      "bbox": [
+        1154,
+        879,
+        29,
+        23
+      ],
+      "score": 0.3090638816356659,
+      "value": "-",
+      "confidence": 0.7855722308158875,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1225,
+        2189,
+        105,
+        27
+      ],
+      "score": 0.4862532615661621,
+      "value": "01377",
+      "confidence": 0.6419222950935364,
+      "source": "old"
+    }
+  ],
+  "fine_candidates": [],
+  "merged_candidates": [],
+  "facts": []
+}

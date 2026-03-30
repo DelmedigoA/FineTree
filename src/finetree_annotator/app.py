@@ -1941,6 +1941,7 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
         self._gemini_model_name = DEFAULT_GEMINI_MODEL
+        self._gemini_max_facts = 0
         self._gemini_temperature: Optional[float] = None
         self._gemini_enable_thinking = False
         self._gemini_thinking_level = "minimal"

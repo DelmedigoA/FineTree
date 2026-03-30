@@ -788,6 +788,7 @@ def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatc
     assert dialog is not None
     dialog.model_combo.setCurrentText("gemini-3-flash-preview")
     dialog.temperature_spin.setValue(0.35)
+    dialog.max_facts_spin.setValue(4)
     dialog.few_shot_check.setChecked(True)
     dialog.prompt_edit.setPlainText("custom gt prompt")
     window._ai_controller.run_from_dialog()
@@ -797,6 +798,7 @@ def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatc
     assert captured_stream_kwargs["system_prompt"] is None
     assert captured_stream_kwargs["temperature"] == pytest.approx(0.35)
     assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
+    assert captured_stream_kwargs["max_facts"] == 4
     assert captured_stream_kwargs["prompt_text"] == "custom gt prompt"
 
     window.close()
@@ -828,6 +830,7 @@ def test_gemini_bbox_only_run_uses_selected_model_and_mode(tmp_path: Path, monke
     assert dialog is not None
     dialog.model_combo.setCurrentText("gemini-2.5-flash")
     dialog.temperature_spin.setValue(0.15)
+    dialog.max_facts_spin.setValue(3)
     dialog.few_shot_check.setChecked(True)
     window._ai_controller.run_from_dialog()
 
@@ -837,6 +840,7 @@ def test_gemini_bbox_only_run_uses_selected_model_and_mode(tmp_path: Path, monke
     assert captured_stream_kwargs["system_prompt"] is None
     assert captured_stream_kwargs["few_shot_examples"] == [{"image_path": Path("/tmp/example.png"), "expected_json": "{\"pages\":[]}"}]
     assert captured_stream_kwargs["temperature"] == pytest.approx(0.15)
+    assert captured_stream_kwargs["max_facts"] == 3
     assert "all numerical entities" in captured_stream_kwargs["prompt_text"]
     assert '"value"' in captured_stream_kwargs["prompt_text"]
 
@@ -926,6 +930,7 @@ def test_annotate_starts_gemini_ground_truth_with_two_shot(tmp_path: Path, monke
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
+    window._gemini_max_facts = 6
 
     captured_stream_kwargs: dict[str, object] = {}
     monkeypatch.setattr(
@@ -951,6 +956,7 @@ def test_annotate_starts_gemini_ground_truth_with_two_shot(tmp_path: Path, monke
     assert captured_stream_kwargs["temperature"] is None
     assert captured_stream_kwargs["system_prompt"] is None
     assert captured_stream_kwargs["few_shot_examples"] == [{"preset": app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT}]
+    assert captured_stream_kwargs["max_facts"] == 6
     assert captured_stream_kwargs["apply_meta"] is False
     assert "Current image size: 32 x 32 pixels." in captured_stream_kwargs["prompt_text"]
     assert window._ai_controller.annotate_progress_dialog is not None
@@ -967,6 +973,7 @@ def test_document_auto_annotate_page_starts_without_progress_dialog(tmp_path: Pa
     annotations_path = tmp_path / "annotations.json"
 
     window = AnnotationWindow(images_dir, annotations_path)
+    window._gemini_max_facts = 5
 
     captured_stream_kwargs: dict[str, object] = {}
     monkeypatch.setattr(
@@ -988,6 +995,7 @@ def test_document_auto_annotate_page_starts_without_progress_dialog(tmp_path: Pa
     assert window._auto_annotate_phase == "gemini"
     assert window._auto_annotate_mode == "document"
     assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
+    assert captured_stream_kwargs["max_facts"] == 5
     assert window._ai_controller.annotate_progress_dialog is None
 
     window.close()

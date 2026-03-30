@@ -86,6 +86,7 @@ class AIWorkflowController:
                 fix_field_choices=self.fix_field_choices,
             )
             dialog.state_changed.connect(self._on_dialog_state_changed)
+            dialog.max_facts_spin.valueChanged.connect(self._on_dialog_max_facts_changed)
             dialog.run_requested.connect(self.run_from_dialog)
             dialog.stop_requested.connect(self.stop_active_generation)
             self.dialog = dialog
@@ -130,6 +131,8 @@ class AIWorkflowController:
         dialog = self.dialog
         if dialog is None:
             return
+        if not self._dialog_refresh_in_progress:
+            self._remember_dialog_generation_defaults()
 
         self._dialog_refresh_in_progress = True
         try:
@@ -172,7 +175,21 @@ class AIWorkflowController:
     def _on_dialog_state_changed(self) -> None:
         if self._dialog_refresh_in_progress:
             return
+        self._remember_dialog_generation_defaults()
         self.refresh_dialog_state()
+
+    def _on_dialog_max_facts_changed(self, _value: int) -> None:
+        self._remember_dialog_generation_defaults()
+
+    def _remember_dialog_generation_defaults(self) -> None:
+        dialog = self.dialog
+        if dialog is None or not dialog.provider_combo.count() or not dialog.action_combo.count():
+            return
+        provider = dialog.current_provider()
+        action = dialog.current_action()
+        capabilities = self._capabilities_for(provider, action)
+        if provider == AIProvider.GEMINI and capabilities.supports_max_facts:
+            self.host._gemini_max_facts = max(0, int(dialog.max_facts_spin.value()))
 
     def is_running(self) -> bool:
         return any(
@@ -241,6 +258,8 @@ class AIWorkflowController:
         self.host._capture_current_state()
         context = self.host._ai_page_context()
         capabilities = self._capabilities_for(request.provider, request.action)
+        if request.provider == AIProvider.GEMINI and capabilities.supports_max_facts:
+            self.host._gemini_max_facts = max(0, int(request.max_facts))
         validation_message = self._validation_message(capabilities, context)
         if validation_message:
             QMessageBox.information(self.host, "AI", validation_message)
@@ -321,6 +340,7 @@ class AIWorkflowController:
             prompt_text=self._build_prompt_for_dialog(AIProvider.GEMINI, AIActionKind.GROUND_TRUTH, context),
             use_few_shot=True,
             few_shot_preset=FEW_SHOT_PRESET_2015_TWO_SHOT,
+            max_facts=max(0, int(getattr(self.host, "_gemini_max_facts", 0))),
         )
         prompt_text = request.prompt_text.strip()
         if not prompt_text:
@@ -365,7 +385,7 @@ class AIWorkflowController:
             thinking_level="minimal",
             few_shot_examples=few_shot_examples,
             mode="gt",
-            max_facts=0,
+            max_facts=request.max_facts,
             apply_meta=False,
             initial_seen_facts=set(),
         )
@@ -1370,7 +1390,7 @@ class AIWorkflowController:
                 thinking_level="minimal",
                 use_few_shot=False,
                 few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
-                max_facts=0,
+                max_facts=max(0, int(getattr(self.host, "_gemini_max_facts", 0))),
                 selected_fact_fields=default_fix_fields,
                 include_statement_type=False,
             )
