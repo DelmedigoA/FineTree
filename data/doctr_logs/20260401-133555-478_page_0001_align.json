@@ -1,0 +1,491 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 4,
+  "detector_count": 6,
+  "matched_count": 4,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "42,295,758",
+      "fact_num": 31,
+      "path": [
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "1,006,233",
+      "fact_num": 32,
+      "path": [
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2023-12-31"
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "42,724,005",
+      "fact_num": 33,
+      "path": [
+        "התחייבויות ונכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        44,
+        72,
+        28
+      ],
+      "value": "9,216,410",
+      "fact_num": 34,
+      "path": [
+        "התחייבויות ונכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2023-12-31"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        320,
+        1400,
+        20,
+        18
+      ],
+      "value": "1,006,233"
+    },
+    {
+      "bbox": [
+        360,
+        1400,
+        20,
+        18
+      ],
+      "value": "42,295,758"
+    },
+    {
+      "bbox": [
+        348,
+        1448,
+        6,
+        5
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        368,
+        1450,
+        7,
+        5
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        320,
+        1480,
+        20,
+        18
+      ],
+      "value": "9,216,410"
+    },
+    {
+      "bbox": [
+        360,
+        1480,
+        20,
+        18
+      ],
+      "value": "42,724,005"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "42,295,758",
+      "fact_num": 31,
+      "path": [
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "1,006,233",
+      "fact_num": 32,
+      "path": [
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2023-12-31"
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "42,724,005",
+      "fact_num": 33,
+      "path": [
+        "התחייבויות ונכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        44,
+        72,
+        28
+      ],
+      "value": "9,216,410",
+      "fact_num": 34,
+      "path": [
+        "התחייבויות ונכסים נטו",
+        "סה\"כ"
+      ],
+      "period_end": "2023-12-31"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 1,
+      "gemini_value": "42,295,758",
+      "detector_value": "42,295,758",
+      "match_key": "num:42295758"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 0,
+      "gemini_value": "1,006,233",
+      "detector_value": "1,006,233",
+      "match_key": "num:1006233"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 5,
+      "gemini_value": "42,724,005",
+      "detector_value": "42,724,005",
+      "match_key": "num:42724005"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 4,
+      "gemini_value": "9,216,410",
+      "detector_value": "9,216,410",
+      "match_key": "num:9216410"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ignored_detector_indices": [
+    2,
+    3
+  ],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "42,295,758"
+      ],
+      "match_keys": [
+        "num:42295758"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "1,006,233"
+      ],
+      "match_keys": [
+        "num:1006233"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "42,724,005"
+      ],
+      "match_keys": [
+        "num:42724005"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "9,216,410"
+      ],
+      "match_keys": [
+        "num:9216410"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0,
+        1
+      ],
+      "values": [
+        "1,006,233",
+        "42,295,758"
+      ],
+      "column_indices": [
+        0,
+        2
+      ],
+      "bboxes": [
+        [
+          320.0,
+          1400.0,
+          20.0,
+          18.0
+        ],
+        [
+          360.0,
+          1400.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        2,
+        3
+      ],
+      "values": [
+        "-",
+        "-"
+      ],
+      "column_indices": [
+        1,
+        2
+      ],
+      "bboxes": [
+        [
+          348.0,
+          1448.0,
+          6.0,
+          5.0
+        ],
+        [
+          368.0,
+          1450.0,
+          7.0,
+          5.0
+        ]
+      ],
+      "is_tiny_dash_noise": true
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        4,
+        5
+      ],
+      "values": [
+        "9,216,410",
+        "42,724,005"
+      ],
+      "column_indices": [
+        0,
+        2
+      ],
+      "bboxes": [
+        [
+          320.0,
+          1480.0,
+          20.0,
+          18.0
+        ],
+        [
+          360.0,
+          1480.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 216.0,
+      "import_start_index": 0,
+      "import_end_index": 2,
+      "import_indices": [
+        0,
+        1
+      ],
+      "import_values": [
+        "42,295,758",
+        "1,006,233"
+      ],
+      "detector_row_index": 0,
+      "detector_row_indices": [
+        0
+      ],
+      "detector_values": [
+        "1,006,233",
+        "42,295,758"
+      ],
+      "matched_count": 2,
+      "exact_overlap_count": 2,
+      "anchor_match_count": 2,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 0,
+          "detector_index": 1,
+          "import_value": "42,295,758",
+          "detector_value": "42,295,758"
+        },
+        {
+          "import_index": 1,
+          "detector_index": 0,
+          "import_value": "1,006,233",
+          "detector_value": "1,006,233"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 216.0,
+      "import_start_index": 2,
+      "import_end_index": 4,
+      "import_indices": [
+        2,
+        3
+      ],
+      "import_values": [
+        "42,724,005",
+        "9,216,410"
+      ],
+      "detector_row_index": 2,
+      "detector_row_indices": [
+        2
+      ],
+      "detector_values": [
+        "9,216,410",
+        "42,724,005"
+      ],
+      "matched_count": 2,
+      "exact_overlap_count": 2,
+      "anchor_match_count": 2,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 2,
+          "detector_index": 5,
+          "import_value": "42,724,005",
+          "detector_value": "42,724,005"
+        },
+        {
+          "import_index": 3,
+          "detector_index": 4,
+          "import_value": "9,216,410",
+          "detector_value": "9,216,410"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    }
+  ],
+  "skipped_detector_rows": [
+    {
+      "detector_row_index": 1,
+      "reason": "tiny_dash_noise",
+      "values": [
+        "-",
+        "-"
+      ],
+      "indices": [
+        2,
+        3
+      ]
+    }
+  ],
+  "column_clusters": [
+    {
+      "column_index": 0,
+      "avg_cx": 330.0,
+      "count": 2
+    },
+    {
+      "column_index": 1,
+      "avg_cx": 351.0,
+      "count": 1
+    },
+    {
+      "column_index": 2,
+      "avg_cx": 370.5,
+      "count": 3
+    }
+  ],
+  "row_match_strategy": "qwen_row_monotonic_dp",
+  "reading_direction": "ltr",
+  "segment_size_slack": 2,
+  "placeholder_count": 0
+}

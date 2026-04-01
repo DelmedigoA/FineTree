@@ -1,0 +1,208 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 2,
+  "matched_count": 2,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 2,
+      "path": [
+        "A"
+      ],
+      "period_end": "2023-12-31"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        250,
+        10,
+        20,
+        18
+      ],
+      "value": "247,368"
+    },
+    {
+      "bbox": [
+        220,
+        10,
+        20,
+        18
+      ],
+      "value": "247,368"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ],
+      "period_end": "2024-12-31"
+    },
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 2,
+      "path": [
+        "A"
+      ],
+      "period_end": "2023-12-31"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "247,368",
+      "detector_value": "247,368",
+      "match_key": "num:247368"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "247,368",
+      "detector_value": "247,368",
+      "match_key": "num:247368"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "247,368"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "247,368"
+      ],
+      "matched_count": 1,
+      "match_key": "num:247368",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "247,368"
+      ],
+      "detector_indices": [
+        1
+      ],
+      "detector_values": [
+        "247,368"
+      ],
+      "matched_count": 1,
+      "match_key": "num:247368",
+      "ordered_detector_pool_index": 0
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "rtl",
+  "placeholder_count": 0,
+  "detector_index_by_gemini_index": {
+    "0": 0,
+    "1": 1
+  }
+}

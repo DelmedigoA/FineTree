@@ -1,0 +1,165 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 1,
+  "matched_count": 1,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        200,
+        10,
+        15,
+        20
+      ],
+      "value": "5"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "5",
+      "detector_value": "5",
+      "match_key": "num:5"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    1
+  ],
+  "unmatched_detector_indices": [],
+  "ambiguous_gemini_indices": [
+    1
+  ],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "5"
+      ],
+      "match_keys": [
+        "num:5"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "5"
+      ],
+      "match_keys": [
+        "num:5"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "unique_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "5"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "5"
+      ],
+      "matched_count": 1,
+      "match_key": "num:5"
+    },
+    {
+      "matched": false,
+      "reason": "ambiguous_value",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "10"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "num:10"
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "unique_value_match",
+  "reading_direction": "ltr",
+  "placeholder_count": 1
+}

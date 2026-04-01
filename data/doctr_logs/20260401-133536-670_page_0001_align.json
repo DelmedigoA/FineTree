@@ -1,0 +1,257 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 2,
+  "matched_count": 1,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "200",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        220,
+        10,
+        20,
+        18
+      ],
+      "value": "200"
+    },
+    {
+      "bbox": [
+        220,
+        40,
+        20,
+        18
+      ],
+      "value": "100"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "200",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 1,
+      "detector_index": 0,
+      "gemini_value": "200",
+      "detector_value": "200",
+      "match_key": "num:200"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    0
+  ],
+  "unmatched_detector_indices": [
+    1
+  ],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "100"
+      ],
+      "match_keys": [
+        "num:100"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "200"
+      ],
+      "match_keys": [
+        "num:200"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "200"
+      ],
+      "column_indices": [
+        0
+      ],
+      "bboxes": [
+        [
+          220.0,
+          10.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "100"
+      ],
+      "column_indices": [
+        0
+      ],
+      "bboxes": [
+        [
+          220.0,
+          40.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 0,
+      "import_end_index": 1,
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "100"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        0
+      ],
+      "unmatched_import_values": [
+        "100"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 108.0,
+      "import_start_index": 1,
+      "import_end_index": 2,
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "200"
+      ],
+      "detector_row_index": 0,
+      "detector_row_indices": [
+        0
+      ],
+      "detector_values": [
+        "200"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 1,
+          "detector_index": 0,
+          "import_value": "200",
+          "detector_value": "200"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    }
+  ],
+  "skipped_detector_rows": [
+    {
+      "detector_row_index": 1,
+      "reason": "monotonic_skip",
+      "values": [
+        "100"
+      ],
+      "indices": [
+        1
+      ]
+    }
+  ],
+  "column_clusters": [
+    {
+      "column_index": 0,
+      "avg_cx": 230.0,
+      "count": 2
+    }
+  ],
+  "row_match_strategy": "qwen_row_monotonic_dp",
+  "reading_direction": "ltr",
+  "segment_size_slack": 2,
+  "placeholder_count": 1
+}

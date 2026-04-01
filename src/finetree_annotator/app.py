@@ -11,7 +11,7 @@ from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, Sequence
 
 from pydantic import ValidationError
 from PyQt5 import sip
@@ -102,6 +102,7 @@ from .annotation_core import (
     default_page_meta,
     extract_document_meta,
     load_page_states,
+    make_placeholder_bbox,
     parse_import_payload,
     parse_import_json_text,
     normalize_bbox_data,
@@ -126,6 +127,7 @@ from .gemini_few_shot import (
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
 from .provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenStreamWorker
+from .qwen_import_matcher import match_qwen_import_payloads, normalize_bbox_match_value
 from .schema_contract import (
     default_gemini_autocomplete_prompt_template,
     default_gemini_fill_prompt_template,
@@ -1725,7 +1727,7 @@ class JsonImportDialog(QDialog):
             'or legacy {"meta": {...}, "facts": [...]} / {"image": "...", "meta": {...}, "facts": [...]}.\n'
             f'If "image" is omitted, current page "{default_page_name}" is used.\n'
             "Choose how incoming bbox coordinates should be interpreted before the annotator stores them "
-            "as original-image pixels."
+            "as original-image pixels. For model outputs with missing or unreliable boxes, run automatic bbox alignment after import."
         )
         hint.setWordWrap(True)
         root.addWidget(hint)
@@ -1739,8 +1741,14 @@ class JsonImportDialog(QDialog):
         self.max_pixels_spin.setValue(1_400_000)
         self.max_pixels_spin.setSingleStep(100_000)
         self.max_pixels_spin.setEnabled(False)
+        self.align_after_import_check = QCheckBox("Align bounding boxes after import")
+        self.align_after_import_check.setChecked(True)
+        self.align_after_import_check.setToolTip(
+            "Recommended for JSONs with missing or unreliable bounding boxes."
+        )
         options_form.addRow("BBox mode", self.bbox_mode_combo)
         options_form.addRow("Max pixels", self.max_pixels_spin)
+        options_form.addRow("", self.align_after_import_check)
         root.addLayout(options_form)
 
         self.text_edit = QPlainTextEdit()
@@ -1792,6 +1800,9 @@ class JsonImportDialog(QDialog):
         if self.selected_bbox_mode() != IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS:
             return None
         return int(self.max_pixels_spin.value())
+
+    def run_align_bboxes_after_import(self) -> bool:
+        return bool(self.align_after_import_check.isChecked())
 
 
 class PageJsonDialog(QDialog):
@@ -1878,6 +1889,9 @@ class AnnotationWindow(QMainWindow):
     document_auto_annotate_page_completed = pyqtSignal(str, int)
     document_auto_annotate_page_failed = pyqtSignal(str, str)
     document_auto_annotate_page_stopped = pyqtSignal(str, str)
+    import_align_bboxes_page_completed = pyqtSignal(str, int)
+    import_align_bboxes_page_failed = pyqtSignal(str, str)
+    import_align_bboxes_page_stopped = pyqtSignal(str, str)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -1975,12 +1989,21 @@ class AnnotationWindow(QMainWindow):
         self._auto_annotate_gemini_payloads: list[dict[str, Any]] = []
         self._auto_annotate_enrich_original_ordered_payloads: list[dict[str, Any]] = []
         self._auto_annotate_last_match_debug: dict[str, Any] = {}
+        self._import_align_pending_pages: list[str] = []
+        self._import_align_total_pages = 0
+        self._import_align_completed_pages: list[str] = []
+        self._import_align_failed_pages: dict[str, str] = {}
+        self._import_align_summary: dict[str, int] = {"matched": 0, "unmatched": 0}
+        self._import_align_last_result: dict[str, Any] = {}
         self._document_auto_annotate_locked = False
         self._ai_controller = AIWorkflowController(
             self,
             thinking_levels=GEMINI_THINKING_LEVEL_OPTIONS,
             fix_field_choices=GEMINI_AUTO_FIX_FIELD_CHOICES,
         )
+        self.import_align_bboxes_page_completed.connect(self._on_import_align_page_completed)
+        self.import_align_bboxes_page_failed.connect(self._on_import_align_page_failed)
+        self.import_align_bboxes_page_stopped.connect(self._on_import_align_page_stopped)
         self._page_issue_summaries: Dict[str, PageIssueSummary] = {}
         self._last_document_issue_signature: Optional[tuple[int, int, int, int]] = None
         self._last_saved_content: Dict[str, Any] = {"page_states": {}, "metadata": {}}
@@ -6276,8 +6299,8 @@ class AnnotationWindow(QMainWindow):
     def start_document_auto_annotate_page(self, page_name: str) -> bool:
         return bool(self._ai_controller.start_document_auto_annotate_page(page_name))
 
-    def start_align_bboxes_for_page(self, page_name: str) -> bool:
-        return bool(self._ai_controller.start_align_bboxes_for_page(page_name, mode="align"))
+    def start_align_bboxes_for_page(self, page_name: str, *, mode: str = "align") -> bool:
+        return bool(self._ai_controller.start_align_bboxes_for_page(page_name, mode=mode))
 
     def open_ai_dialog(
         self,
@@ -6555,50 +6578,7 @@ class AnnotationWindow(QMainWindow):
 
     def _align_bboxes_match_key(self, payload: dict[str, Any]) -> str:
         raw_value = normalize_fact_data(payload).get("value") or ""
-        text = normalize_angle_bracketed_numeric_text(raw_value)
-        text = str(text or "").strip()
-        if not text:
-            return ""
-
-        text = (
-            text.replace("\u2212", "-")
-            .replace("\u2013", "-")
-            .replace("\u2014", "-")
-            .replace("\u2009", " ")
-            .replace("\xa0", " ")
-        )
-        compact = re.sub(r"\s+", "", text)
-        compact = compact.replace("$", "").replace("€", "").replace("£", "").replace("₪", "")
-        compact = compact.strip(".,:;")
-        if compact == "-":
-            return "num:-"
-
-        suffix = ""
-        negative = False
-        if compact.endswith("%"):
-            suffix = "%"
-            compact = compact[:-1]
-        if compact.startswith("(") and compact.endswith(")"):
-            negative = True
-            compact = compact[1:-1]
-        if compact.startswith("+"):
-            compact = compact[1:]
-        elif compact.startswith("-"):
-            negative = True
-            compact = compact[1:]
-        compact = compact.strip(".,:;")
-        compact = compact.replace(",", "")
-        if compact and re.fullmatch(r"\d+(?:\.\d+)?", compact):
-            try:
-                normalized_number = Decimal(compact)
-                if negative:
-                    normalized_number = -normalized_number
-                return f"num:{_format_decimal_plain(normalized_number)}{suffix}"
-            except InvalidOperation:
-                pass
-        prefix = "-" if negative else ""
-        lowered = re.sub(r"[^0-9a-zA-Z%+\-().]", "", compact).lower()
-        return f"text:{prefix}{lowered}{suffix}"
+        return normalize_bbox_match_value(raw_value)
 
     def _write_align_bboxes_debug_log(self, page_name: str, payload: dict[str, Any]) -> None:
         try:
@@ -6616,70 +6596,29 @@ class AnnotationWindow(QMainWindow):
         detector_payloads: list[dict[str, Any]],
     ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
         ordered_gemini_payloads = self._ordered_fact_payloads_by_geometry(gemini_payloads)
-        ordered_detector_payloads = self._ordered_fact_payloads_by_geometry(detector_payloads)
-        gemini_values = [self._align_bboxes_match_key(payload) for payload in ordered_gemini_payloads]
-        detector_values = [self._align_bboxes_match_key(payload) for payload in ordered_detector_payloads]
-        lcs: list[list[int]] = [
-            [0 for _ in range(len(ordered_detector_payloads) + 1)]
-            for _ in range(len(ordered_gemini_payloads) + 1)
-        ]
-        for gemini_index in range(len(ordered_gemini_payloads) - 1, -1, -1):
-            for detector_index in range(len(ordered_detector_payloads) - 1, -1, -1):
-                if gemini_values[gemini_index] == detector_values[detector_index]:
-                    lcs[gemini_index][detector_index] = 1 + lcs[gemini_index + 1][detector_index + 1]
-                else:
-                    lcs[gemini_index][detector_index] = max(
-                        lcs[gemini_index + 1][detector_index],
-                        lcs[gemini_index][detector_index + 1],
-                    )
-        matched_detector_indices_by_gemini_index: dict[int, int] = {}
-        gemini_index = 0
-        detector_index = 0
-        while gemini_index < len(ordered_gemini_payloads) and detector_index < len(ordered_detector_payloads):
-            if gemini_values[gemini_index] == detector_values[detector_index]:
-                matched_detector_indices_by_gemini_index[gemini_index] = detector_index
-                gemini_index += 1
-                detector_index += 1
-            elif lcs[gemini_index + 1][detector_index] >= lcs[gemini_index][detector_index + 1]:
-                gemini_index += 1
-            else:
-                detector_index += 1
-        merged_payloads: list[dict[str, Any]] = []
-        for index, gemini_payload in enumerate(ordered_gemini_payloads):
-            merged_payload = deepcopy(gemini_payload)
-            detector_match_index = matched_detector_indices_by_gemini_index.get(index)
-            if detector_match_index is not None:
-                detector_payload = ordered_detector_payloads[detector_match_index]
-                merged_payload["bbox"] = bbox_to_list(detector_payload.get("bbox"))
-            merged_payloads.append(merged_payload)
-        matches = [
-            {
-                "gemini_index": gemini_index,
-                "detector_index": detector_index,
-                "gemini_value": normalize_fact_data(ordered_gemini_payloads[gemini_index]).get("value"),
-                "detector_value": normalize_fact_data(ordered_detector_payloads[detector_index]).get("value"),
-                "match_key": gemini_values[gemini_index],
-            }
-            for gemini_index, detector_index in sorted(matched_detector_indices_by_gemini_index.items())
-        ]
-        unmatched_gemini_indices = [
-            index for index in range(len(ordered_gemini_payloads)) if index not in matched_detector_indices_by_gemini_index
-        ]
-        matched_detector_indices = set(matched_detector_indices_by_gemini_index.values())
-        unmatched_detector_indices = [
-            index for index in range(len(ordered_detector_payloads)) if index not in matched_detector_indices
-        ]
-        debug_payload = {
-            "page_name": page_name,
-            "gemini_count": len(ordered_gemini_payloads),
-            "detector_count": len(ordered_detector_payloads),
-            "matched_count": len(matches),
-            "ordered_gemini_payloads": [deepcopy(payload) for payload in ordered_gemini_payloads],
-            "ordered_detector_payloads": [deepcopy(payload) for payload in ordered_detector_payloads],
-            "matches": matches,
-            "unmatched_gemini_indices": unmatched_gemini_indices,
-            "unmatched_detector_indices": unmatched_detector_indices,
-        }
+        merged_payloads, debug_payload = match_qwen_import_payloads(
+            page_name=page_name,
+            imported_payloads=ordered_gemini_payloads,
+            detector_payloads=detector_payloads,
+            reading_direction=self._active_reading_direction(),
+            placeholder_bbox_factory=make_placeholder_bbox,
+        )
+        self._write_align_bboxes_debug_log(page_name, debug_payload)
+        return merged_payloads, debug_payload
+
+    def _merge_qwen_import_bbox_payloads(
+        self,
+        page_name: str,
+        imported_payloads: list[dict[str, Any]],
+        detector_payloads: list[dict[str, Any]],
+    ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+        merged_payloads, debug_payload = match_qwen_import_payloads(
+            page_name=page_name,
+            imported_payloads=imported_payloads,
+            detector_payloads=detector_payloads,
+            reading_direction=self._active_reading_direction(),
+            placeholder_bbox_factory=make_placeholder_bbox,
+        )
         self._write_align_bboxes_debug_log(page_name, debug_payload)
         return merged_payloads, debug_payload
 
@@ -6783,6 +6722,93 @@ class AnnotationWindow(QMainWindow):
         self._auto_annotate_gemini_payloads = []
         self._auto_annotate_enrich_original_ordered_payloads = []
         self._auto_annotate_last_match_debug = {}
+
+    def _reset_import_align_state(self) -> None:
+        self._import_align_pending_pages = []
+        self._import_align_total_pages = 0
+        self._import_align_completed_pages = []
+        self._import_align_failed_pages = {}
+        self._import_align_summary = {"matched": 0, "unmatched": 0}
+        self._import_align_last_result = {}
+
+    def _start_import_align_queue(self, page_names: Sequence[str]) -> None:
+        pending_pages = [page_name for page_name in page_names if self._page_index_by_name(page_name) >= 0]
+        if not pending_pages:
+            return
+        self._reset_import_align_state()
+        self._import_align_pending_pages = list(pending_pages)
+        self._import_align_total_pages = len(pending_pages)
+        self.statusBar().showMessage(
+            f"Imported {len(pending_pages)} page(s). Running Align BBox after import...",
+            5000,
+        )
+        self._start_next_import_align_page()
+
+    def _start_next_import_align_page(self) -> None:
+        while self._import_align_pending_pages:
+            page_name = self._import_align_pending_pages[0]
+            page_number = len(self._import_align_completed_pages) + len(self._import_align_failed_pages) + 1
+            self.statusBar().showMessage(
+                f"Align BBox after import: page {page_number}/{self._import_align_total_pages} ({page_name})...",
+                5000,
+            )
+            if self.start_align_bboxes_for_page(page_name, mode="qwen_import"):
+                return
+            self._import_align_failed_pages[page_name] = "Could not start Align BBox for the imported page."
+            self._import_align_pending_pages.pop(0)
+        self._finish_import_align_queue()
+
+    def _finish_import_align_queue(self) -> None:
+        total_pages = int(self._import_align_total_pages or 0)
+        if total_pages <= 0:
+            self._reset_import_align_state()
+            return
+        completed_pages = len(self._import_align_completed_pages)
+        failed_pages = len(self._import_align_failed_pages)
+        matched_count = int(self._import_align_summary.get("matched") or 0)
+        unmatched_count = int(self._import_align_summary.get("unmatched") or 0)
+        message = (
+            f"Qwen import alignment finished for {completed_pages}/{total_pages} page(s); "
+            f"matched {matched_count} fact(s), left {unmatched_count} placeholder bbox(es) for manual placement."
+        )
+        if failed_pages:
+            message = (
+                f"{message[:-1]} {failed_pages} page(s) kept imported placeholders because alignment failed."
+            )
+        self.statusBar().showMessage(message, 8000)
+        self._reset_import_align_state()
+
+    def _consume_import_align_page(self, page_name: str) -> None:
+        if self._import_align_pending_pages and self._import_align_pending_pages[0] == page_name:
+            self._import_align_pending_pages.pop(0)
+            return
+        if page_name in self._import_align_pending_pages:
+            self._import_align_pending_pages.remove(page_name)
+
+    def _on_import_align_page_completed(self, page_name: str, _fact_count: int) -> None:
+        if self._import_align_total_pages <= 0:
+            return
+        self._consume_import_align_page(page_name)
+        self._import_align_completed_pages.append(page_name)
+        result = dict(self._import_align_last_result or {})
+        if result.get("page_name") == page_name:
+            self._import_align_summary["matched"] += int(result.get("matched_count") or 0)
+            self._import_align_summary["unmatched"] += int(result.get("unmatched_count") or 0)
+        QTimer.singleShot(0, self._start_next_import_align_page)
+
+    def _on_import_align_page_failed(self, page_name: str, message: str) -> None:
+        if self._import_align_total_pages <= 0:
+            return
+        self._consume_import_align_page(page_name)
+        self._import_align_failed_pages[page_name] = str(message)
+        QTimer.singleShot(0, self._start_next_import_align_page)
+
+    def _on_import_align_page_stopped(self, page_name: str, message: str) -> None:
+        if self._import_align_total_pages <= 0:
+            return
+        self._consume_import_align_page(page_name)
+        self._import_align_failed_pages[page_name] = str(message)
+        QTimer.singleShot(0, self._start_next_import_align_page)
         self._gemini_gt_live_updates_enabled = True
 
     def _render_gemini_gt_live_buffer(
@@ -7004,45 +7030,68 @@ class AnnotationWindow(QMainWindow):
             return
 
         try:
-            parse_result = parse_import_json_text(raw_text)
+            self.import_annotations_json_text(
+                raw_text,
+                bbox_mode=dialog.selected_bbox_mode(),
+                max_pixels=dialog.import_max_pixels(),
+                run_align_after_import=dialog.run_align_bboxes_after_import(),
+                default_page_name=default_page_name,
+            )
         except Exception as exc:
-            QMessageBox.warning(self, "Invalid JSON", str(exc))
-            return
+            QMessageBox.warning(self, "Import error", str(exc))
+
+    def import_annotations_json_text(
+        self,
+        raw_text: str,
+        *,
+        bbox_mode: str = IMPORT_BBOX_MODE_ORIGINAL_PIXELS,
+        max_pixels: int | None = None,
+        run_align_after_import: bool = False,
+        default_page_name: str | None = None,
+        show_info_messages: bool = True,
+    ) -> dict[str, Any]:
+        if not self.page_images:
+            raise ValueError("No pages are loaded.")
+
+        resolved_default_page_name = (
+            str(default_page_name).strip()
+            if isinstance(default_page_name, str) and str(default_page_name).strip()
+            else self.page_images[self.current_index if self.current_index >= 0 else 0].name
+        )
+        raw_text = str(raw_text or "").strip()
+        if not raw_text:
+            raise ValueError("No JSON text was provided.")
+
+        parse_result = parse_import_json_text(raw_text)
         payload = parse_result.payload
         imported_document_meta = extract_document_meta(payload)
+        parsed_page_count = self._parsed_import_page_count(payload)
+        extra_page_count = max(parsed_page_count - len(self.page_images), 0)
 
         imported_states = parse_import_payload(
             payload,
             [p.name for p in self.page_images],
-            default_page_image_name=default_page_name,
+            default_page_image_name=resolved_default_page_name,
         )
         if not imported_states:
-            QMessageBox.warning(
-                self,
-                "Import did not match any pages",
-                "No importable pages were found. Check 'image' names or use a current-page shape.",
+            raise ValueError(
+                "No importable pages were found. Check page order, page count, or include explicit image names."
             )
-            return
 
-        bbox_mode = dialog.selected_bbox_mode()
-        max_pixels = dialog.import_max_pixels()
         page_dimensions = {
             page_name: self._image_dimensions_for_page(page_name)
             for page_name in imported_states.keys()
         }
-        try:
-            normalized_states, conversion_stats = convert_imported_page_states(
-                imported_states,
-                page_dimensions,
-                bbox_mode=bbox_mode,
-                max_pixels=max_pixels,
-            )
-        except ValueError as exc:
-            QMessageBox.warning(self, "Import error", str(exc))
-            return
+        normalized_states, conversion_stats = convert_imported_page_states(
+            imported_states,
+            page_dimensions,
+            bbox_mode=bbox_mode,
+            max_pixels=max_pixels,
+        )
 
         self._capture_current_state()
         imported_count = 0
+        imported_page_names: list[str] = []
         for page_name, imported_state in normalized_states.items():
             page_idx = self._page_index_by_name(page_name)
             if page_idx < 0:
@@ -7050,10 +7099,10 @@ class AnnotationWindow(QMainWindow):
             normalized_meta = {**self._default_meta(page_idx), **(imported_state.meta or {})}
             self.page_states[page_name] = PageState(meta=normalized_meta, facts=list(imported_state.facts))
             imported_count += 1
+            imported_page_names.append(page_name)
 
         if imported_count == 0:
-            QMessageBox.warning(self, "Import skipped", "Imported JSON did not match any existing page images.")
-            return
+            raise ValueError("Imported JSON did not match any existing page images.")
 
         if compact_document_meta(imported_document_meta):
             self.document_meta = imported_document_meta
@@ -7085,7 +7134,33 @@ class AnnotationWindow(QMainWindow):
             bbox_mode=bbox_mode,
             max_pixels=max_pixels,
         )
-        self._show_import_info_messages(parse_result=parse_result, sanity_message=sanity_message)
+        if show_info_messages:
+            self._show_import_info_messages(
+                parse_result=parse_result,
+                sanity_message=sanity_message,
+                extra_page_count=extra_page_count,
+            )
+        if run_align_after_import and imported_page_names:
+            self._start_import_align_queue(imported_page_names)
+        return {
+            "imported_count": imported_count,
+            "parsed_page_count": parsed_page_count,
+            "extra_page_count": extra_page_count,
+            "imported_page_names": imported_page_names,
+            "conversion_stats": conversion_stats,
+            "parse_result": parse_result,
+            "sanity_message": sanity_message,
+        }
+
+    @staticmethod
+    def _parsed_import_page_count(payload: Any) -> int:
+        if isinstance(payload, dict) and isinstance(payload.get("pages"), list):
+            return len([page for page in payload.get("pages", []) if isinstance(page, dict)])
+        if isinstance(payload, dict):
+            return 1 if (isinstance(payload.get("meta"), dict) or isinstance(payload.get("facts"), list)) else 0
+        if isinstance(payload, list):
+            return len(payload)
+        return 0
 
     @staticmethod
     def _import_status_message(imported_count: int, stats: ImportBBoxConversionStats) -> str:
@@ -7145,10 +7220,15 @@ class AnnotationWindow(QMainWindow):
         *,
         parse_result: ImportJsonParseResult,
         sanity_message: str | None,
+        extra_page_count: int = 0,
     ) -> None:
         messages: list[str] = []
         if parse_result.recovered and parse_result.message:
             messages.append(parse_result.message)
+        if extra_page_count > 0:
+            messages.append(
+                f"Ignored {extra_page_count} imported page(s) beyond this PDF's page count."
+            )
         if sanity_message:
             messages.append(sanity_message)
         if not messages:

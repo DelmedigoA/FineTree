@@ -1,0 +1,257 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 2,
+  "matched_count": 2,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        230,
+        10,
+        20,
+        18
+      ],
+      "value": "247,368"
+    },
+    {
+      "bbox": [
+        230,
+        40,
+        20,
+        18
+      ],
+      "value": "247,368"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "247,368",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "247,368",
+      "detector_value": "247,368",
+      "match_key": "num:247368"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "247,368",
+      "detector_value": "247,368",
+      "match_key": "num:247368"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "247,368"
+      ],
+      "match_keys": [
+        "num:247368"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "247,368"
+      ],
+      "column_indices": [
+        0
+      ],
+      "bboxes": [
+        [
+          230.0,
+          10.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "247,368"
+      ],
+      "column_indices": [
+        0
+      ],
+      "bboxes": [
+        [
+          230.0,
+          40.0,
+          20.0,
+          18.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 108.0,
+      "import_start_index": 0,
+      "import_end_index": 1,
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "247,368"
+      ],
+      "detector_row_index": 0,
+      "detector_row_indices": [
+        0
+      ],
+      "detector_values": [
+        "247,368"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 0,
+          "detector_index": 0,
+          "import_value": "247,368",
+          "detector_value": "247,368"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 108.0,
+      "import_start_index": 1,
+      "import_end_index": 2,
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "247,368"
+      ],
+      "detector_row_index": 1,
+      "detector_row_indices": [
+        1
+      ],
+      "detector_values": [
+        "247,368"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 1,
+          "detector_index": 1,
+          "import_value": "247,368",
+          "detector_value": "247,368"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    }
+  ],
+  "skipped_detector_rows": [],
+  "column_clusters": [
+    {
+      "column_index": 0,
+      "avg_cx": 240.0,
+      "count": 2
+    }
+  ],
+  "row_match_strategy": "qwen_row_monotonic_dp",
+  "reading_direction": "ltr",
+  "segment_size_slack": 2,
+  "placeholder_count": 0
+}

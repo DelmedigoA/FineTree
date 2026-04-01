@@ -282,29 +282,27 @@ def _row_tolerance(
     return max(float(row_tolerance_min_px), float(median(height_list)) * float(row_tolerance_ratio))
 
 
-def canonical_fact_order_indices(
+def canonical_fact_geometry_rows(
     facts: list[dict[str, Any]],
     *,
     direction: Direction,
     row_tolerance_ratio: float = DEFAULT_ROW_TOLERANCE_RATIO,
     row_tolerance_min_px: float = DEFAULT_ROW_TOLERANCE_MIN_PX,
-) -> list[int]:
-    if len(facts) <= 1:
-        return list(range(len(facts)))
+) -> list[dict[str, Any]]:
+    if not facts:
+        return []
 
-    entries: list[dict[str, float | int]] = []
-    invalid_indexes: list[int] = []
+    entries: list[dict[str, float | int | dict[str, float]]] = []
     for idx, fact in enumerate(facts):
         if not isinstance(fact, dict):
-            invalid_indexes.append(idx)
             continue
         bbox = _normalize_bbox(fact.get("bbox"))
         if bbox is None:
-            invalid_indexes.append(idx)
             continue
         entries.append(
             {
                 "idx": idx,
+                "bbox": bbox,
                 "cx": bbox["x"] + (bbox["w"] / 2.0),
                 "cy": bbox["y"] + (bbox["h"] / 2.0),
                 "h": bbox["h"],
@@ -312,7 +310,7 @@ def canonical_fact_order_indices(
         )
 
     if not entries:
-        return list(range(len(facts)))
+        return []
 
     tolerance = _row_tolerance(
         (float(e["h"]) for e in entries),
@@ -321,8 +319,8 @@ def canonical_fact_order_indices(
     )
     by_y = sorted(entries, key=lambda item: (float(item["cy"]), int(item["idx"])))
 
-    rows: list[list[dict[str, float | int]]] = []
-    current: list[dict[str, float | int]] = []
+    grouped_rows: list[list[dict[str, float | int | dict[str, float]]]] = []
+    current: list[dict[str, float | int | dict[str, float]]] = []
     current_anchor = 0.0
     for item in by_y:
         item_cy = float(item["cy"])
@@ -334,19 +332,70 @@ def canonical_fact_order_indices(
             current.append(item)
             current_anchor = sum(float(v["cy"]) for v in current) / float(len(current))
             continue
-        rows.append(current)
+        grouped_rows.append(current)
         current = [item]
         current_anchor = item_cy
     if current:
-        rows.append(current)
+        grouped_rows.append(current)
+
+    rows: list[dict[str, Any]] = []
+    for row_index, row in enumerate(grouped_rows):
+        if direction == "ltr":
+            ordered_entries = sorted(row, key=lambda item: (float(item["cx"]), float(item["cy"]), int(item["idx"])))
+        else:
+            ordered_entries = sorted(row, key=lambda item: (-float(item["cx"]), float(item["cy"]), int(item["idx"])))
+        heights = [float(item["h"]) for item in ordered_entries] or [0.0]
+        rows.append(
+            {
+                "row_index": row_index,
+                "indices": [int(item["idx"]) for item in ordered_entries],
+                "cy": sum(float(item["cy"]) for item in ordered_entries) / float(len(ordered_entries)),
+                "median_height": median(heights),
+                "entries": [
+                    {
+                        "idx": int(item["idx"]),
+                        "bbox": dict(item["bbox"]),
+                        "cx": float(item["cx"]),
+                        "cy": float(item["cy"]),
+                        "h": float(item["h"]),
+                    }
+                    for item in ordered_entries
+                ],
+            }
+        )
+    return rows
+
+
+def canonical_fact_order_indices(
+    facts: list[dict[str, Any]],
+    *,
+    direction: Direction,
+    row_tolerance_ratio: float = DEFAULT_ROW_TOLERANCE_RATIO,
+    row_tolerance_min_px: float = DEFAULT_ROW_TOLERANCE_MIN_PX,
+) -> list[int]:
+    if len(facts) <= 1:
+        return list(range(len(facts)))
+
+    invalid_indexes: list[int] = []
+    for idx, fact in enumerate(facts):
+        if not isinstance(fact, dict):
+            invalid_indexes.append(idx)
+            continue
+        bbox = _normalize_bbox(fact.get("bbox"))
+        if bbox is None:
+            invalid_indexes.append(idx)
+    rows = canonical_fact_geometry_rows(
+        facts,
+        direction=direction,
+        row_tolerance_ratio=row_tolerance_ratio,
+        row_tolerance_min_px=row_tolerance_min_px,
+    )
+    if not rows:
+        return list(range(len(facts)))
 
     ordered_indexes: list[int] = []
     for row in rows:
-        if direction == "ltr":
-            row_sorted = sorted(row, key=lambda item: (float(item["cx"]), float(item["cy"]), int(item["idx"])))
-        else:
-            row_sorted = sorted(row, key=lambda item: (-float(item["cx"]), float(item["cy"]), int(item["idx"])))
-        ordered_indexes.extend(int(item["idx"]) for item in row_sorted)
+        ordered_indexes.extend(int(idx) for idx in (row.get("indices") or []))
 
     seen = set(ordered_indexes)
     ordered_indexes.extend(idx for idx in invalid_indexes if idx not in seen)

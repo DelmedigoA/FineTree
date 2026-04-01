@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -17,6 +18,7 @@ from finetree_annotator.annotation_core import (
     denormalize_bbox_from_1000,
     extract_document_meta,
     load_page_states,
+    make_placeholder_bbox,
     parse_import_json_text,
     parse_import_payload,
     normalize_bbox_data,
@@ -43,7 +45,7 @@ def test_normalize_fact_data_coerces_path_currency_and_scale() -> None:
     assert fact["value"] == "123"
     assert fact["comment_ref"] == "*without debt insurance"
     assert fact["note_flag"] is True
-    assert fact["note_num"] is None
+    assert fact["note_num"] == "2ה׳"
     assert fact["note_ref"] == "ref-001"
     assert fact["path"] == ["assets", "cash", "2024"]
     assert fact["currency"] == "ILS"
@@ -395,6 +397,82 @@ def test_parse_import_payload_supports_full_document_shape() -> None:
     assert states["page_0001.png"].meta["statement_type"] == "notes_to_financial_statements"
 
 
+def test_parse_import_payload_without_bbox_assigns_visible_placeholder_and_normalizes_fact() -> None:
+    payload = {
+        "meta": {"page_num": "4"},
+        "facts": [{"value": "10", "note_num": 2, "path": []}],
+    }
+
+    states = parse_import_payload(payload, ["page_0001.png"], "page_0001.png")
+
+    record = states["page_0001.png"].facts[0]
+    assert record.bbox == make_placeholder_bbox(0)
+    assert record.fact["note_num"] == "2"
+
+
+def test_parse_import_json_text_supports_list_of_page_json_strings() -> None:
+    raw = json.dumps(
+        [
+            json.dumps({"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]}),
+            json.dumps({"meta": {"page_num": "2"}, "facts": [{"value": "20", "path": []}]}),
+        ]
+    )
+
+    result = parse_import_json_text(raw)
+
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 2
+    assert result.payload["pages"][0]["meta"]["page_num"] == "1"
+    assert result.payload["pages"][1]["facts"][0]["value"] == "20"
+
+
+def test_parse_import_payload_maps_page_sequence_by_order_and_ignores_extras() -> None:
+    payload = {
+        "pages": [
+            {"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]},
+            {"meta": {"page_num": "2"}, "facts": [{"value": "20", "path": []}]},
+            {"meta": {"page_num": "3"}, "facts": [{"value": "30", "path": []}]},
+        ]
+    }
+
+    states = parse_import_payload(payload, ["page_0001.png", "page_0002.png"], "page_0001.png")
+
+    assert set(states.keys()) == {"page_0001.png", "page_0002.png"}
+    assert states["page_0001.png"].meta["page_num"] == "1"
+    assert states["page_0002.png"].meta["page_num"] == "2"
+
+
+def test_parse_import_json_text_rejects_invalid_page_string_inside_list() -> None:
+    raw = json.dumps(
+        [
+            json.dumps({"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]}),
+            '{"meta":{"page_num":"2"},"facts":[{"value":"20","path":[]}',
+        ]
+    )
+
+    with pytest.raises(ValueError, match="Could not parse page 2 JSON string"):
+        parse_import_json_text(raw)
+
+
+def test_parse_import_payload_tolerates_invalid_meta_and_malformed_bbox() -> None:
+    payload = {
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {"page_num": "7", "annotation_status": "not-valid"},
+                "facts": [{"bbox": {"x": "oops"}, "value": "10", "path": []}],
+            }
+        ]
+    }
+
+    states = parse_import_payload(payload, ["page_0001.png"], "page_0001.png")
+
+    state = states["page_0001.png"]
+    assert state.meta["page_num"] == "7"
+    assert state.meta["annotation_status"] is None
+    assert state.facts[0].bbox == make_placeholder_bbox(0)
+
+
 def test_parse_import_json_text_recovers_complete_facts_from_truncated_single_page_payload() -> None:
     raw = (
         '{"meta":{"page_num":"3","page_type":"statements"},'
@@ -439,6 +517,31 @@ def test_convert_imported_page_states_normalized_1000_mode_scales_bbox() -> None
         "w": 200.0,
         "h": 150.0,
     }
+
+
+def test_convert_imported_page_states_keeps_placeholder_bbox_in_original_pixels() -> None:
+    imported_states = {
+        "page_0001.png": PageState(
+            meta={},
+            facts=[
+                BoxRecord(
+                    bbox=make_placeholder_bbox(0),
+                    fact={"value": "10", "path": [], "__ft_import_placeholder_bbox__": True},
+                )
+            ],
+        )
+    }
+
+    converted_states, stats = convert_imported_page_states(
+        imported_states,
+        {"page_0001.png": (2000.0, 3000.0)},
+        bbox_mode=IMPORT_BBOX_MODE_NORMALIZED_1000,
+    )
+
+    assert stats.converted == 0
+    assert stats.clamped == 0
+    assert stats.skipped == 0
+    assert converted_states["page_0001.png"].facts[0].bbox == make_placeholder_bbox(0)
 
 
 def test_convert_imported_page_states_resized_pixels_mode_uses_max_pixels(monkeypatch) -> None:

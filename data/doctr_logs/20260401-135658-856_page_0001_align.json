@@ -1,0 +1,132 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 1,
+  "detector_count": 1,
+  "matched_count": 1,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "Revenue"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        40.0,
+        10.0,
+        20.0,
+        20.0
+      ],
+      "value": "10",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "Revenue"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "10",
+      "detector_value": "10",
+      "match_key": "num:10"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "unique_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "10"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "10"
+      ],
+      "matched_count": 1,
+      "match_key": "num:10"
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "unique_value_match",
+  "reading_direction": "ltr",
+  "placeholder_count": 0
+}

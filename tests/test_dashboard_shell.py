@@ -43,10 +43,41 @@ class _FakeAnnotationWindow(QWidget):
         self.annotations_path = Path(annotations_path)
         self.confirm_close_result = True
         self.confirm_close_calls: list[bool] = []
+        self.import_calls: list[dict[str, object]] = []
+        self.save_calls: list[bool] = []
 
     def save_annotations(self, *, allow_locked: bool = False) -> bool:
+        self.save_calls.append(bool(allow_locked))
         self.annotations_saved.emit(self.annotations_path)
         return True
+
+    def import_annotations_json_text(
+        self,
+        raw_text: str,
+        *,
+        bbox_mode: str = "original_pixels",
+        max_pixels=None,
+        run_align_after_import: bool = False,
+        default_page_name=None,
+        show_info_messages: bool = True,
+    ) -> dict[str, object]:
+        self.import_calls.append(
+            {
+                "raw_text": raw_text,
+                "bbox_mode": bbox_mode,
+                "max_pixels": max_pixels,
+                "run_align_after_import": run_align_after_import,
+                "default_page_name": default_page_name,
+                "show_info_messages": show_info_messages,
+            }
+        )
+        return {
+            "imported_count": 1,
+            "parsed_page_count": 1,
+            "extra_page_count": 0,
+            "parse_result": SimpleNamespace(recovered=False, message=None),
+            "sanity_message": None,
+        }
 
     def show_help_dialog(self) -> None:
         return None
@@ -511,6 +542,104 @@ def test_home_document_card_emits_auto_annotate_request(tmp_path: Path) -> None:
 
     assert requested == ["doc"]
     card.close()
+
+
+def test_home_document_card_emits_push_hf_request(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=3,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+
+    card = dashboard.HomeDocumentCard(summary)
+    requested: list[str] = []
+    card.push_hf_requested.connect(requested.append)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.push_hf_btn.text() == "Push to HF"
+    assert card.push_hf_btn.isEnabled()
+    card.push_hf_btn.click()
+
+    assert requested == ["doc"]
+    card.close()
+
+
+def test_home_document_card_emits_load_entire_json_request(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "doc.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=3,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+
+    card = dashboard.HomeDocumentCard(summary)
+    requested: list[str] = []
+    card.load_entire_json_requested.connect(requested.append)
+    card.show()
+    _qt_app().processEvents()
+
+    assert card.load_entire_json_btn.text() == "Load Entire JSON"
+    assert card.load_entire_json_btn.isEnabled()
+    card.load_entire_json_btn.click()
+
+    assert requested == ["doc"]
+    card.close()
+
+
+def test_inference_push_dialog_defaults_match_full_training_schema() -> None:
+    _qt_app()
+    dialog = dashboard.InferencePushDialog("pdf_7")
+    dialog.show()
+    _qt_app().processEvents()
+
+    options = dialog.options()
+    assert options.max_pixels == dashboard.push_inference_dataset.DEFAULT_MAX_PIXELS
+    assert options.page_meta_keys == dashboard.push_inference_dataset.DEFAULT_PAGE_META_KEYS
+    assert options.fact_keys == dashboard.push_inference_dataset.DEFAULT_FACT_KEYS
+    assert dashboard.push_inference_dataset.inference_dataset_name("pdf_7", options.max_pixels) in dialog.dataset_name_label.text()
+    assert '"date"' not in dialog.schema_preview.toPlainText()
+    assert '"bbox"' not in dialog.schema_preview.toPlainText()
+    dialog.close()
+
+
+def test_load_entire_json_dialog_reports_detected_pages() -> None:
+    _qt_app()
+    dialog = dashboard.LoadEntireJsonDialog(doc_title="doc", page_count=2)
+    dialog.show()
+    dialog.text_edit.setPlainText(
+        '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]},{"meta":{"page_num":"2"},"facts":[{"value":"20","path":[]}]}]'
+    )
+    _qt_app().processEvents()
+
+    assert "Detected imported pages: 2" in dialog.status_label.text()
+    assert "Workspace pages: 2" in dialog.status_label.text()
+    dialog.close()
 
 
 def test_home_document_card_shows_runtime_auto_annotate_progress(tmp_path: Path) -> None:
@@ -1095,6 +1224,141 @@ def test_dashboard_prepare_workspace_document_uses_background_import(tmp_path: P
     window.prepare_workspace_document("doc")
 
     assert calls == [(source_pdf, False)]
+    window.close()
+
+
+def test_dashboard_load_entire_json_imports_and_saves_document(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=2,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    class _FakeDialog:
+        def __init__(self, *, doc_title: str, page_count: int, parent=None) -> None:
+            _ = doc_title, page_count, parent
+
+        def exec_(self) -> int:
+            return dashboard.QDialog.Accepted
+
+        def json_text(self) -> str:
+            return '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]'
+
+    class _RunWindow:
+        def __init__(self) -> None:
+            self.import_calls: list[dict[str, object]] = []
+            self.save_calls = 0
+
+        def import_annotations_json_text(self, raw_text: str, **kwargs) -> dict[str, object]:
+            self.import_calls.append({"raw_text": raw_text, **kwargs})
+            return {
+                "imported_count": 1,
+                "parsed_page_count": 1,
+                "extra_page_count": 0,
+                "parse_result": SimpleNamespace(recovered=False, message=None),
+                "sanity_message": None,
+            }
+
+        def save_annotations(self) -> bool:
+            self.save_calls += 1
+            return True
+
+    run_window = _RunWindow()
+    info_calls: list[tuple[str, str]] = []
+    reloads: list[str] = []
+    monkeypatch.setattr(dashboard, "LoadEntireJsonDialog", _FakeDialog)
+    monkeypatch.setattr(window.annotator_host, "open_document", lambda context, activate=False: run_window)
+    monkeypatch.setattr(
+        dashboard.QMessageBox,
+        "information",
+        lambda _parent, title, text: info_calls.append((title, text)),
+    )
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window.load_workspace_document_entire_json("doc")
+
+    assert len(run_window.import_calls) == 1
+    assert run_window.import_calls[0]["raw_text"] == '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]'
+    assert run_window.import_calls[0]["bbox_mode"] == "original_pixels"
+    assert run_window.import_calls[0]["run_align_after_import"] is False
+    assert run_window.import_calls[0]["show_info_messages"] is False
+    assert run_window.save_calls == 1
+    assert reloads == ["reload"]
+    assert info_calls
+    assert info_calls[-1][0] == "Load Entire JSON complete"
+    assert "Imported pages: 1/1" in info_calls[-1][1]
+    window.close()
+
+
+def test_dashboard_load_entire_json_prepares_before_import(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=tmp_path / "doc",
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=0,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Needs extraction",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+
+    class _FakeDialog:
+        def __init__(self, *, doc_title: str, page_count: int, parent=None) -> None:
+            _ = doc_title, page_count, parent
+
+        def exec_(self) -> int:
+            return dashboard.QDialog.Accepted
+
+        def json_text(self) -> str:
+            return '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]'
+
+    calls: list[tuple[Path, bool]] = []
+
+    def _fake_start_import(
+        pdf_path: Path,
+        *,
+        open_after: bool = True,
+        success_callback=None,
+        failure_callback=None,
+    ) -> bool:
+        _ = failure_callback
+        calls.append((pdf_path, open_after))
+        if callable(success_callback):
+            success_callback(None)
+        return True
+
+    continued: list[tuple[str, str]] = []
+    monkeypatch.setattr(dashboard, "LoadEntireJsonDialog", _FakeDialog)
+    window._start_import = _fake_start_import  # type: ignore[method-assign]
+    window._continue_load_workspace_document_entire_json = lambda doc_id, raw_text: continued.append((doc_id, raw_text))  # type: ignore[method-assign]
+
+    window.load_workspace_document_entire_json("doc")
+
+    assert calls == [(source_pdf, False)]
+    assert continued == [("doc", '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]')]
     window.close()
 
 

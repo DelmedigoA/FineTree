@@ -1,0 +1,345 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 4,
+  "detector_count": 4,
+  "matched_count": 4,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "2023",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "2024",
+      "fact_num": 2,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "90",
+      "fact_num": 3,
+      "path": [
+        "B"
+      ]
+    },
+    {
+      "bbox": [
+        88,
+        44,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 4,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        200,
+        10,
+        20,
+        20
+      ],
+      "value": "2023"
+    },
+    {
+      "bbox": [
+        230,
+        10,
+        20,
+        20
+      ],
+      "value": "2024"
+    },
+    {
+      "bbox": [
+        200,
+        40,
+        20,
+        20
+      ],
+      "value": "90"
+    },
+    {
+      "bbox": [
+        230,
+        40,
+        20,
+        20
+      ],
+      "value": "100"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        88,
+        8,
+        72,
+        28
+      ],
+      "value": "2024",
+      "fact_num": 2,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "2023",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        88,
+        44,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 4,
+      "path": [
+        "B"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "90",
+      "fact_num": 3,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "2023",
+      "detector_value": "2023",
+      "match_key": "num:2023"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "2024",
+      "detector_value": "2024",
+      "match_key": "num:2024"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "90",
+      "detector_value": "90",
+      "match_key": "num:90"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 3,
+      "gemini_value": "100",
+      "detector_value": "100",
+      "match_key": "num:100"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0,
+        1
+      ],
+      "values": [
+        "2023",
+        "2024"
+      ],
+      "fact_nums": [
+        1,
+        2
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        2,
+        3
+      ],
+      "values": [
+        "90",
+        "100"
+      ],
+      "fact_nums": [
+        3,
+        4
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0,
+        1
+      ],
+      "values": [
+        "2023",
+        "2024"
+      ],
+      "bboxes": [
+        [
+          200.0,
+          10.0,
+          20.0,
+          20.0
+        ],
+        [
+          230.0,
+          10.0,
+          20.0,
+          20.0
+        ]
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        2,
+        3
+      ],
+      "values": [
+        "90",
+        "100"
+      ],
+      "bboxes": [
+        [
+          200.0,
+          40.0,
+          20.0,
+          20.0
+        ],
+        [
+          230.0,
+          40.0,
+          20.0,
+          20.0
+        ]
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "import_row_index": 0,
+      "import_indices": [
+        0,
+        1
+      ],
+      "detector_row_indices": [
+        0,
+        1
+      ],
+      "matched": true,
+      "reason": "row_multiset_match",
+      "import_values": [
+        "2023",
+        "2024"
+      ],
+      "detector_values": [
+        "2023",
+        "2024"
+      ],
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 0,
+          "detector_index": 0,
+          "import_value": "2023",
+          "detector_value": "2023"
+        },
+        {
+          "import_index": 1,
+          "detector_index": 1,
+          "import_value": "2024",
+          "detector_value": "2024"
+        }
+      ]
+    },
+    {
+      "import_row_index": 1,
+      "import_indices": [
+        2,
+        3
+      ],
+      "detector_row_indices": [
+        2,
+        3
+      ],
+      "matched": true,
+      "reason": "row_multiset_match",
+      "import_values": [
+        "90",
+        "100"
+      ],
+      "detector_values": [
+        "90",
+        "100"
+      ],
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 2,
+          "detector_index": 2,
+          "import_value": "90",
+          "detector_value": "90"
+        },
+        {
+          "import_index": 3,
+          "detector_index": 3,
+          "import_value": "100",
+          "detector_value": "100"
+        }
+      ]
+    }
+  ],
+  "row_match_strategy": "row_aware",
+  "placeholder_count": 0
+}

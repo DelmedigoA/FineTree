@@ -29,6 +29,13 @@ SCALE_OPTIONS = list(SCALE_VALUES)
 IMPORT_BBOX_MODE_ORIGINAL_PIXELS = "original_pixels"
 IMPORT_BBOX_MODE_NORMALIZED_1000 = "normalized_1000"
 IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS = "resized_pixels_via_max_pixels"
+IMPORT_PLACEHOLDER_BBOX_WIDTH = 72.0
+IMPORT_PLACEHOLDER_BBOX_HEIGHT = 28.0
+_IMPORT_PLACEHOLDER_BBOX_PADDING = 8.0
+_IMPORT_PLACEHOLDER_BBOX_X_STEP = 80.0
+_IMPORT_PLACEHOLDER_BBOX_Y_STEP = 36.0
+_IMPORT_PLACEHOLDER_BBOX_COLUMNS = 2
+_IMPORT_PLACEHOLDER_BBOX_FLAG = "__ft_import_placeholder_bbox__"
 
 
 @dataclass
@@ -94,7 +101,8 @@ def normalize_fact_data(data: Optional[Dict[str, Any]]) -> Dict[str, Any]:
     merged = {**default_fact_data(), **normalized}
     return merged
 
-def default_page_meta(index: int) -> Dict[str, Any]:
+
+def default_page_meta(index: int = 0) -> Dict[str, Any]:
     return {
         "entity_name": None,
         "page_num": None,
@@ -112,7 +120,60 @@ def _coerce_raw_fact(raw_fact: Dict[str, Any]) -> Dict[str, Any]:
     return normalize_fact_data(raw_fact)
 
 
-def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -> Dict[str, PageState]:
+def make_placeholder_bbox(index: int = 0) -> Dict[str, float]:
+    safe_index = max(int(index), 0)
+    col = safe_index % _IMPORT_PLACEHOLDER_BBOX_COLUMNS
+    row = safe_index // _IMPORT_PLACEHOLDER_BBOX_COLUMNS
+    return normalize_bbox_data(
+        {
+            "x": _IMPORT_PLACEHOLDER_BBOX_PADDING + (col * _IMPORT_PLACEHOLDER_BBOX_X_STEP),
+            "y": _IMPORT_PLACEHOLDER_BBOX_PADDING + (row * _IMPORT_PLACEHOLDER_BBOX_Y_STEP),
+            "w": IMPORT_PLACEHOLDER_BBOX_WIDTH,
+            "h": IMPORT_PLACEHOLDER_BBOX_HEIGHT,
+        }
+    )
+
+
+def _normalize_import_page_meta(raw_meta: Any, page_index: int) -> Dict[str, Any]:
+    defaults = default_page_meta(page_index)
+    meta = raw_meta if isinstance(raw_meta, dict) else {}
+    try:
+        return PageMeta.model_validate({**defaults, **meta}).model_dump(mode="json")
+    except ValidationError:
+        normalized_meta = dict(defaults)
+        for key, value in meta.items():
+            try:
+                normalized_meta = PageMeta.model_validate(
+                    {**defaults, **normalized_meta, key: value}
+                ).model_dump(mode="json")
+            except ValidationError:
+                continue
+        return PageMeta.model_validate({**defaults, **normalized_meta}).model_dump(mode="json")
+
+
+def _normalize_import_bbox_or_placeholder(
+    raw_bbox: Any,
+    *,
+    placeholder_index: int,
+) -> tuple[Dict[str, float], bool]:
+    if isinstance(raw_bbox, dict):
+        bbox_candidate: Any = raw_bbox
+    elif isinstance(raw_bbox, (list, tuple)) and len(raw_bbox) >= 4:
+        bbox_candidate = raw_bbox
+    else:
+        return make_placeholder_bbox(placeholder_index), True
+    try:
+        return normalize_bbox_data(bbox_candidate), False
+    except Exception:
+        return make_placeholder_bbox(placeholder_index), True
+
+
+def load_page_states(
+    payload: Dict[str, Any],
+    page_image_names: Iterable[str],
+    *,
+    placeholder_missing_bboxes: bool = False,
+) -> Dict[str, PageState]:
     page_names = list(page_image_names)
     available = set(page_names)
     index_map = {name: idx for idx, name in enumerate(page_names)}
@@ -129,18 +190,27 @@ def load_page_states(payload: Dict[str, Any], page_image_names: Iterable[str]) -
             continue
 
         raw_meta = page.get("meta")
-        meta = raw_meta if isinstance(raw_meta, dict) else {}
         page_index = index_map.get(str(page_name), 0)
-        meta_model = PageMeta(**{**default_page_meta(page_index), **meta})
+        meta_model = _normalize_import_page_meta(raw_meta, page_index)
         raw_facts = page.get("facts", [])
         facts: List[BoxRecord] = []
         if isinstance(raw_facts, list):
             raw_fact_dicts = [fact for fact in raw_facts if isinstance(fact, dict)]
             normalized_facts = _assign_missing_fact_numbers([_coerce_raw_fact(fact) for fact in raw_fact_dicts])
-            for raw_fact, normalized_fact in zip(raw_fact_dicts, normalized_facts):
-                bbox = normalize_bbox_data(raw_fact.get("bbox"))
-                facts.append(BoxRecord(bbox=bbox, fact=normalized_fact))
-        states[str(page_name)] = PageState(meta=meta_model.model_dump(mode="json"), facts=facts)
+            for fact_index, (raw_fact, normalized_fact) in enumerate(zip(raw_fact_dicts, normalized_facts)):
+                if placeholder_missing_bboxes:
+                    bbox, used_placeholder = _normalize_import_bbox_or_placeholder(
+                        raw_fact.get("bbox"),
+                        placeholder_index=fact_index,
+                    )
+                    fact_payload = dict(normalized_fact)
+                    if used_placeholder:
+                        fact_payload[_IMPORT_PLACEHOLDER_BBOX_FLAG] = True
+                else:
+                    bbox = normalize_bbox_data(raw_fact.get("bbox"))
+                    fact_payload = normalized_fact
+                facts.append(BoxRecord(bbox=bbox, fact=fact_payload))
+        states[str(page_name)] = PageState(meta=meta_model, facts=facts)
     return states
 
 
@@ -149,13 +219,18 @@ def parse_import_payload(
     page_image_names: Sequence[str],
     default_page_image_name: Optional[str],
 ) -> Dict[str, PageState]:
+    if isinstance(payload, dict) and isinstance(payload.get("pages"), list):
+        payload = _assign_page_images_by_order(
+            payload,
+            page_image_names=page_image_names,
+            default_page_image_name=default_page_image_name,
+        )
+        return load_page_states(payload, page_image_names, placeholder_missing_bboxes=True)
+
     if isinstance(payload, list):
         payload = {"meta": {}, "facts": payload}
     if not isinstance(payload, dict):
         return {}
-
-    if isinstance(payload.get("pages"), list):
-        return load_page_states(payload, page_image_names)
 
     default_image = default_page_image_name or (page_image_names[0] if page_image_names else None)
     if not default_image:
@@ -170,7 +245,7 @@ def parse_import_payload(
         "meta": payload.get("meta", {}),
         "facts": payload.get("facts", []),
     }
-    return load_page_states({"pages": [page_obj]}, page_image_names)
+    return load_page_states({"pages": [page_obj]}, page_image_names, placeholder_missing_bboxes=True)
 
 
 def _clean_json_candidate(candidate: str) -> str:
@@ -373,13 +448,100 @@ def _salvage_pages_payload_from_text(text: str) -> dict[str, Any] | None:
     return payload
 
 
+def _looks_like_page_payload(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    if isinstance(item.get("pages"), list):
+        return True
+    return any(key in item for key in ("image", "meta", "facts"))
+
+
+def _normalize_page_sequence_payload(payload: list[Any]) -> dict[str, Any] | None:
+    is_page_sequence = any(isinstance(item, str) for item in payload) or any(
+        _looks_like_page_payload(item) for item in payload
+    )
+    if not is_page_sequence:
+        return None
+
+    pages: list[dict[str, Any]] = []
+    for index, item in enumerate(payload, start=1):
+        parsed_item = item
+        if isinstance(item, str):
+            text = str(item).strip()
+            if not text:
+                continue
+            try:
+                parsed_item = _parse_json_like(text)
+            except Exception as exc:
+                raise ValueError(f"Could not parse page {index} JSON string.") from exc
+        if isinstance(parsed_item, dict) and isinstance(parsed_item.get("pages"), list):
+            pages.extend(page for page in parsed_item.get("pages", []) if isinstance(page, dict))
+            continue
+        if _looks_like_page_payload(parsed_item):
+            pages.append(dict(parsed_item))
+            continue
+        raise ValueError(f"List item {index} is not a page JSON object.")
+
+    if not pages:
+        raise ValueError("No importable pages were found in the pasted list.")
+    return {"pages": pages}
+
+
+def _normalize_top_level_import_payload(payload: Any) -> Any:
+    if isinstance(payload, list):
+        normalized = _normalize_page_sequence_payload(payload)
+        if normalized is not None:
+            return normalized
+    return payload
+
+
+def _assign_page_images_by_order(
+    payload: dict[str, Any],
+    *,
+    page_image_names: Sequence[str],
+    default_page_image_name: Optional[str],
+) -> dict[str, Any]:
+    pages = payload.get("pages")
+    if not isinstance(pages, list):
+        return payload
+
+    available = set(page_image_names)
+    assigned_pages: list[dict[str, Any]] = []
+    for index, page in enumerate(pages):
+        if not isinstance(page, dict):
+            continue
+        assigned = dict(page)
+        image_name = assigned.get("image")
+        if not isinstance(image_name, str) or not image_name.strip() or image_name not in available:
+            if index < len(page_image_names):
+                assigned["image"] = page_image_names[index]
+        assigned_pages.append(assigned)
+    return {**payload, "pages": assigned_pages}
+
+
 def parse_import_json_text(text: str) -> ImportJsonParseResult:
     stripped = str(text or "").strip()
     if not stripped:
         raise ValueError("No JSON text was provided.")
     try:
-        return ImportJsonParseResult(payload=json.loads(stripped), recovered=False, message=None)
-    except Exception as exc:
+        parsed = json.loads(stripped)
+        return ImportJsonParseResult(
+            payload=_normalize_top_level_import_payload(parsed),
+            recovered=False,
+            message=None,
+        )
+    except Exception:
+        try:
+            parsed = _parse_json_like(stripped)
+        except Exception as exc:
+            parsed = None
+        else:
+            return ImportJsonParseResult(
+                payload=_normalize_top_level_import_payload(parsed),
+                recovered=False,
+                message=None,
+            )
+
         pages_payload = _salvage_pages_payload_from_text(stripped)
         if pages_payload is not None:
             imported_pages = pages_payload.get("pages") if isinstance(pages_payload, dict) else None
@@ -408,7 +570,7 @@ def parse_import_json_text(text: str) -> ImportJsonParseResult:
                     f"Imported {len(page_payload['facts'])} complete fact(s); ignored trailing incomplete content."
                 ),
             )
-        raise ValueError(str(exc)) from exc
+        raise ValueError("Could not parse the pasted JSON text.") from exc
 
 
 def _clamp_bbox_to_image_bounds(
@@ -468,10 +630,18 @@ def convert_imported_page_states(
     for page_name, imported_state in imported_states.items():
         image_dims = page_image_dimensions.get(page_name)
         converted_facts: list[BoxRecord] = []
-        for record in imported_state.facts:
-            bbox = normalize_bbox_data(record.bbox)
+        for fact_index, record in enumerate(imported_state.facts):
+            fact_data = dict(record.fact or {})
+            use_placeholder_bbox = bool(fact_data.pop(_IMPORT_PLACEHOLDER_BBOX_FLAG, False))
+            bbox = normalize_bbox_data(record.bbox) if not use_placeholder_bbox else make_placeholder_bbox(fact_index)
             clamped = False
-            if normalized_mode == IMPORT_BBOX_MODE_NORMALIZED_1000:
+            if use_placeholder_bbox and image_dims is not None:
+                bbox, _placeholder_clamped = _clamp_bbox_to_image_bounds(
+                    bbox,
+                    image_width=image_dims[0],
+                    image_height=image_dims[1],
+                )
+            if normalized_mode == IMPORT_BBOX_MODE_NORMALIZED_1000 and not use_placeholder_bbox:
                 if image_dims is None:
                     skipped_count += 1
                 else:
@@ -486,7 +656,7 @@ def convert_imported_page_states(
                         image_height=image_dims[1],
                     )
                     converted_count += 1
-            elif normalized_mode == IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS:
+            elif normalized_mode == IMPORT_BBOX_MODE_RESIZED_PIXELS_VIA_MAX_PIXELS and not use_placeholder_bbox:
                 if image_dims is None:
                     raise ValueError(f"Original image dimensions unavailable for imported page '{page_name}'.")
                 bbox, clamped = restore_bbox_from_resized_pixels_with_stats(
@@ -502,7 +672,7 @@ def convert_imported_page_states(
             converted_facts.append(
                 BoxRecord(
                     bbox=bbox,
-                    fact=normalize_fact_data(record.fact),
+                    fact=normalize_fact_data(fact_data),
                 )
             )
         converted_states[str(page_name)] = PageState(

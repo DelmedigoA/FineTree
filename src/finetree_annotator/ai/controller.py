@@ -7,7 +7,7 @@ from typing import Any, Optional
 from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QMessageBox
 
-from ..annotation_core import PageState
+from ..annotation_core import PageState, normalize_fact_data
 from ..gemini_vlm import (
     DEFAULT_GEMINI_MODEL,
     format_issue_summary_brief,
@@ -419,7 +419,17 @@ class AIWorkflowController:
             QMessageBox.information(self.host, "AI", "An AI action is already running.")
             return False
 
-        ordered_fact_payloads = self.host._ordered_fact_payloads_by_geometry(context.ordered_fact_payloads)
+        if mode == "qwen_import":
+            current_state = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
+            ordered_fact_payloads = [
+                {"bbox": dict(record.bbox or {}), **normalize_fact_data(record.fact)}
+                for record in list(current_state.facts or [])
+            ]
+            fact_nums = [payload.get("fact_num") for payload in ordered_fact_payloads]
+            if fact_nums and all(isinstance(fact_num, int) and fact_num >= 1 for fact_num in fact_nums):
+                ordered_fact_payloads.sort(key=lambda payload: int(payload.get("fact_num") or 0))
+        else:
+            ordered_fact_payloads = self.host._ordered_fact_payloads_by_geometry(context.ordered_fact_payloads)
         if not ordered_fact_payloads:
             QMessageBox.warning(self.host, "AI", "No current annotations are available to align.")
             return False
@@ -1857,12 +1867,28 @@ class AIWorkflowController:
                 return
             state = self.host.page_states.get(page_name, self.host._default_state(page_idx))
             if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
-                merged_payloads, match_debug = self.host._merge_auto_annotate_bbox_payloads(
-                    page_name=page_name,
-                    gemini_payloads=self.host._auto_annotate_gemini_payloads,
-                    detector_payloads=finalized_payloads,
-                )
+                auto_mode = getattr(self.host, "_auto_annotate_mode", "")
+                if auto_mode == "qwen_import":
+                    merged_payloads, match_debug = self.host._merge_qwen_import_bbox_payloads(
+                        page_name=page_name,
+                        imported_payloads=self.host._auto_annotate_gemini_payloads,
+                        detector_payloads=finalized_payloads,
+                    )
+                else:
+                    merged_payloads, match_debug = self.host._merge_auto_annotate_bbox_payloads(
+                        page_name=page_name,
+                        gemini_payloads=self.host._auto_annotate_gemini_payloads,
+                        detector_payloads=finalized_payloads,
+                    )
                 self.host._auto_annotate_last_match_debug = match_debug
+                if auto_mode == "qwen_import":
+                    self.host._import_align_last_result = {
+                        "page_name": page_name,
+                        "matched_count": int(match_debug.get("matched_count") or 0),
+                        "unmatched_count": len(match_debug.get("unmatched_gemini_indices") or []),
+                        "placeholder_count": int(match_debug.get("placeholder_count") or 0),
+                        "detector_count": self.host._local_doctr_fact_count,
+                    }
                 self.host.page_states[page_name] = PageState(
                     meta=dict(state.meta or {}),
                     facts=self.host._build_box_records_from_fact_payloads(merged_payloads),
@@ -1883,9 +1909,17 @@ class AIWorkflowController:
             match_debug = getattr(self.host, "_auto_annotate_last_match_debug", {}) or {}
             matched_count = int(match_debug.get("matched_count") or 0)
             gemini_count = int(match_debug.get("gemini_count") or 0)
-            if getattr(self.host, "_auto_annotate_mode", "") == "align":
+            auto_mode = getattr(self.host, "_auto_annotate_mode", "")
+            if auto_mode == "align":
                 message = (
                     f"Align bboxes complete. Matched {matched_count}/{gemini_count} fact(s); "
+                    f"detector parsed {self.host._local_doctr_fact_count} fact(s)."
+                )
+            elif auto_mode == "qwen_import":
+                unmatched_count = len(match_debug.get("unmatched_gemini_indices") or [])
+                message = (
+                    f"Import align complete. Matched {matched_count}/{gemini_count} fact(s); "
+                    f"left {unmatched_count} placeholder bbox(es) for manual placement; "
                     f"detector parsed {self.host._local_doctr_fact_count} fact(s)."
                 )
             else:
@@ -1900,7 +1934,7 @@ class AIWorkflowController:
         self._set_status(message, fact_count=self.host._local_doctr_fact_count, running=False)
         self.host.statusBar().showMessage(message, 6000)
         if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
-            if getattr(self.host, "_auto_annotate_mode", "") == "document":
+            if getattr(self.host, "_auto_annotate_mode", "") in {"document", "qwen_import"}:
                 final_state = self.host.page_states.get(page_name, self.host._default_state(page_idx))
                 self._document_auto_annotate_pending_completion = (page_name, len(final_state.facts))
 
@@ -1913,10 +1947,15 @@ class AIWorkflowController:
             running=False,
         )
         if self.host._auto_annotate_active and self.host._auto_annotate_phase == "detector":
-            if getattr(self.host, "_auto_annotate_mode", "") == "document":
+            auto_mode = getattr(self.host, "_auto_annotate_mode", "")
+            if auto_mode == "document":
                 page_name = self.host._auto_annotate_target_page or self.host._local_doctr_target_page or ""
                 self.host._record_history_snapshot()
                 self.host.document_auto_annotate_page_failed.emit(page_name, message)
+                return
+            if auto_mode == "qwen_import":
+                page_name = self.host._auto_annotate_target_page or self.host._local_doctr_target_page or ""
+                self.host.import_align_bboxes_page_failed.emit(page_name, message)
                 return
             title = "Align bboxes warning" if getattr(self.host, "_auto_annotate_mode", "") == "align" else "Auto-Annotate warning"
             kept_text = (
@@ -1971,10 +2010,13 @@ class AIWorkflowController:
             if (
                 self.host._auto_annotate_active
                 and self.host._auto_annotate_phase == "detector"
-                and getattr(self.host, "_auto_annotate_mode", "") == "document"
             ):
                 page_name = self.host._auto_annotate_target_page or ""
-                self.host.document_auto_annotate_page_stopped.emit(page_name, stopped)
+                auto_mode = getattr(self.host, "_auto_annotate_mode", "")
+                if auto_mode == "document":
+                    self.host.document_auto_annotate_page_stopped.emit(page_name, stopped)
+                elif auto_mode == "qwen_import":
+                    self.host.import_align_bboxes_page_stopped.emit(page_name, stopped)
         self.host._local_doctr_thread = None
         self.host._local_doctr_worker = None
         self.host._local_doctr_target_page = None
@@ -1987,7 +2029,10 @@ class AIWorkflowController:
             self.host._reset_auto_annotate_state()
         if pending_completion is not None and not self.host._local_doctr_cancel_requested:
             page_name, fact_count = pending_completion
-            self.host.document_auto_annotate_page_completed.emit(page_name, fact_count)
+            if getattr(self.host, "_import_align_total_pages", 0) > 0:
+                self.host.import_align_bboxes_page_completed.emit(page_name, fact_count)
+            else:
+                self.host.document_auto_annotate_page_completed.emit(page_name, fact_count)
         self.refresh_dialog_state()
 
     def _on_gemini_stream_chunk(self, text: str) -> None:

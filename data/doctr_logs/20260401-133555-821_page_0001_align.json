@@ -1,0 +1,293 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 3,
+  "detector_count": 3,
+  "matched_count": 2,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    },
+    {
+      "bbox": [
+        100,
+        10,
+        20,
+        20
+      ],
+      "value": "15",
+      "path": [
+        "C"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        200,
+        10,
+        15,
+        20
+      ],
+      "value": "5"
+    },
+    {
+      "bbox": [
+        220,
+        10,
+        15,
+        20
+      ],
+      "value": "999"
+    },
+    {
+      "bbox": [
+        240,
+        10,
+        15,
+        20
+      ],
+      "value": "15.0"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "5",
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        60,
+        10,
+        20,
+        20
+      ],
+      "value": "10",
+      "path": [
+        "B"
+      ]
+    },
+    {
+      "bbox": [
+        100,
+        10,
+        20,
+        20
+      ],
+      "value": "15",
+      "path": [
+        "C"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "5",
+      "detector_value": "5",
+      "match_key": "num:5"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "15",
+      "detector_value": "15.0",
+      "match_key": "num:15"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    1
+  ],
+  "unmatched_detector_indices": [
+    1
+  ],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "5"
+      ],
+      "match_keys": [
+        "num:5"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "15"
+      ],
+      "match_keys": [
+        "num:15"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0,
+        1,
+        2
+      ],
+      "values": [
+        "5",
+        "999",
+        "15.0"
+      ],
+      "column_indices": [
+        0,
+        1,
+        2
+      ],
+      "bboxes": [
+        [
+          200.0,
+          10.0,
+          15.0,
+          20.0
+        ],
+        [
+          220.0,
+          10.0,
+          15.0,
+          20.0
+        ],
+        [
+          240.0,
+          10.0,
+          15.0,
+          20.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 172.0,
+      "import_start_index": 0,
+      "import_end_index": 3,
+      "import_indices": [
+        0,
+        1,
+        2
+      ],
+      "import_values": [
+        "5",
+        "10",
+        "15"
+      ],
+      "detector_row_index": 0,
+      "detector_row_indices": [
+        0
+      ],
+      "detector_values": [
+        "5",
+        "999",
+        "15.0"
+      ],
+      "matched_count": 2,
+      "exact_overlap_count": 2,
+      "anchor_match_count": 2,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 0,
+          "detector_index": 0,
+          "import_value": "5",
+          "detector_value": "5"
+        },
+        {
+          "import_index": 2,
+          "detector_index": 2,
+          "import_value": "15",
+          "detector_value": "15.0"
+        }
+      ],
+      "unmatched_import_indices": [
+        1
+      ],
+      "unmatched_import_values": [
+        "10"
+      ],
+      "unmatched_detector_indices": [
+        1
+      ],
+      "unmatched_detector_values": [
+        "999"
+      ]
+    }
+  ],
+  "skipped_detector_rows": [],
+  "column_clusters": [
+    {
+      "column_index": 0,
+      "avg_cx": 207.5,
+      "count": 1
+    },
+    {
+      "column_index": 1,
+      "avg_cx": 227.5,
+      "count": 1
+    },
+    {
+      "column_index": 2,
+      "avg_cx": 247.5,
+      "count": 1
+    }
+  ],
+  "row_match_strategy": "qwen_row_monotonic_dp",
+  "reading_direction": "ltr",
+  "segment_size_slack": 2,
+  "placeholder_count": 1
+}

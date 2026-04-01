@@ -5,6 +5,7 @@ from pathlib import Path
 
 from finetree_annotator.fact_ordering import (
     assert_fact_order,
+    canonical_fact_geometry_rows,
     canonical_fact_order_indices,
     compact_document_meta,
     resolve_reading_direction,
@@ -85,6 +86,21 @@ def test_canonical_fact_order_groups_rows_with_tolerance() -> None:
     )
     assert idxs_rtl == [0, 1, 2, 3]
     assert idxs_ltr == [1, 0, 3, 2]
+
+
+def test_canonical_fact_geometry_rows_reuses_row_grouping_and_direction() -> None:
+    facts = [
+        {"bbox": {"x": 90, "y": 10, "w": 10, "h": 20}, "value": "top-right"},
+        {"bbox": {"x": 10, "y": 12, "w": 10, "h": 20}, "value": "top-left"},
+        {"bbox": {"x": 90, "y": 100, "w": 10, "h": 20}, "value": "bottom-right"},
+        {"bbox": {"x": 10, "y": 102, "w": 10, "h": 20}, "value": "bottom-left"},
+    ]
+
+    rows_rtl = canonical_fact_geometry_rows(facts, direction="rtl")
+    rows_ltr = canonical_fact_geometry_rows(facts, direction="ltr")
+
+    assert [row["indices"] for row in rows_rtl] == [[0, 1], [2, 3]]
+    assert [row["indices"] for row in rows_ltr] == [[1, 0], [3, 2]]
 
 
 def test_canonical_fact_order_is_stable_on_equal_positions() -> None:

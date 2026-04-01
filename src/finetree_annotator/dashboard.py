@@ -18,6 +18,8 @@ from PyQt5.QtWidgets import (
     QListWidgetItem,
     QCheckBox,
     QComboBox,
+    QDialog,
+    QDialogButtonBox,
     QFileDialog,
     QFormLayout,
     QFrame,
@@ -41,7 +43,8 @@ from PyQt5.QtWidgets import (
 )
 
 from .app import AnnotationWindow
-from .finetune import push_dataset_hub
+from .annotation_core import parse_import_json_text
+from .finetune import push_dataset_hub, push_inference_dataset
 from .schema_contract import (
     PROMPT_FACT_KEYS,
     PROMPT_PAGE_META_KEYS,
@@ -59,6 +62,7 @@ from .workspace import (
     discover_workspace_documents,
     delete_workspace_document as delete_workspace_document_files,
     import_pdf_to_workspace,
+    page_image_paths,
     reset_document_approved_pages,
     set_document_checked as set_workspace_document_checked,
     set_document_reviewed as set_workspace_document_reviewed,
@@ -191,16 +195,17 @@ class PushPipelineWorker(QObject):
     failed = pyqtSignal(str)
     finished = pyqtSignal()
 
-    def __init__(self, argv: list[str]) -> None:
+    def __init__(self, argv: list[str], *, run_fn: Callable[[list[str] | None], int] | None = None) -> None:
         super().__init__()
         self.argv = list(argv)
+        self.run_fn = run_fn or push_dataset_hub.main
 
     def run(self) -> None:
         stream = SignalTextStream(self.log_emitted.emit)
         captured = io.StringIO()
         try:
             with redirect_stdout(stream), redirect_stderr(stream):
-                exit_code = push_dataset_hub.main(self.argv)
+                exit_code = self.run_fn(self.argv)
             summary = {"exit_code": int(exit_code), "lines": []}
             self.completed.emit(summary)
         except Exception as exc:
@@ -264,10 +269,240 @@ class AutoAnnotateRun:
         )
 
 
+@dataclass(frozen=True)
+class InferencePushOptions:
+    max_pixels: int
+    page_meta_keys: tuple[str, ...]
+    fact_keys: tuple[str, ...]
+
+
+class InferencePushDialog(QDialog):
+    def __init__(self, doc_id: str, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.doc_id = str(doc_id or "").strip()
+        self.setWindowTitle("Push PDF to Hugging Face")
+        self.resize(720, 540)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
+
+        intro = QLabel(
+            "Create a per-PDF inference dataset with page images, the current system prompt, and a schema-driven instruction."
+        )
+        intro.setWordWrap(True)
+        root.addWidget(intro)
+
+        form = QFormLayout()
+        form.setContentsMargins(0, 0, 0, 0)
+        form.setHorizontalSpacing(12)
+        form.setVerticalSpacing(10)
+        self.max_pixels_spin = QSpinBox()
+        self.max_pixels_spin.setRange(1, 10_000_000)
+        self.max_pixels_spin.setValue(push_inference_dataset.DEFAULT_MAX_PIXELS)
+        self.max_pixels_spin.setToolTip(
+            "Total image area budget, not width/height. Example: 1400000 is about a 1.4MP target."
+        )
+        form.addRow("Max pixels", self.max_pixels_spin)
+        root.addLayout(form)
+
+        self.dataset_name_label = QLabel()
+        self.dataset_name_label.setObjectName("monoLabel")
+        self.dataset_name_label.setWordWrap(True)
+        root.addWidget(self.dataset_name_label)
+
+        schema_lists = QWidget()
+        schema_lists_layout = QHBoxLayout(schema_lists)
+        schema_lists_layout.setContentsMargins(0, 0, 0, 0)
+        schema_lists_layout.setSpacing(12)
+        self.page_meta_keys_list = QListWidget()
+        self.page_meta_keys_list.setMinimumHeight(150)
+        self.fact_keys_list = QListWidget()
+        self.fact_keys_list.setMinimumHeight(220)
+        schema_lists_layout.addWidget(self._labeled_panel("Page Meta Fields", self.page_meta_keys_list), 1)
+        schema_lists_layout.addWidget(self._labeled_panel("Fact Fields", self.fact_keys_list), 1)
+        root.addWidget(schema_lists, 1)
+
+        self.schema_preview = QPlainTextEdit()
+        self.schema_preview.setReadOnly(True)
+        self.schema_preview.setMinimumHeight(150)
+        root.addWidget(self.schema_preview, 1)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
+        root.addWidget(self.button_box)
+
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.max_pixels_spin.valueChanged.connect(self._update_preview)
+        self.page_meta_keys_list.itemChanged.connect(self._update_preview)
+        self.fact_keys_list.itemChanged.connect(self._update_preview)
+        self._populate_schema_lists()
+        self._update_preview()
+
+    def _labeled_panel(self, title: str, widget: QWidget) -> QWidget:
+        shell = QWidget()
+        layout = QVBoxLayout(shell)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(6)
+        title_label = QLabel(title)
+        title_label.setObjectName("subtitleLabel")
+        layout.addWidget(title_label)
+        layout.addWidget(widget, 1)
+        return shell
+
+    def _set_check_list_items(
+        self,
+        list_widget: QListWidget,
+        *,
+        keys: tuple[str, ...],
+        selected: set[str],
+        locked: set[str] | None = None,
+    ) -> None:
+        locked_keys = set(locked or set())
+        list_widget.blockSignals(True)
+        list_widget.clear()
+        for key in keys:
+            item = QListWidgetItem(key)
+            item.setData(Qt.UserRole, key)
+            item.setFlags(item.flags() | Qt.ItemIsUserCheckable | Qt.ItemIsEnabled)
+            item.setCheckState(Qt.Checked if key in selected else Qt.Unchecked)
+            if key in locked_keys:
+                item.setFlags(item.flags() & ~Qt.ItemIsUserCheckable)
+                item.setText(f"{key} (required)")
+            list_widget.addItem(item)
+        list_widget.blockSignals(False)
+
+    def _populate_schema_lists(self) -> None:
+        self._set_check_list_items(
+            self.page_meta_keys_list,
+            keys=tuple(PROMPT_PAGE_META_KEYS),
+            selected=set(push_inference_dataset.DEFAULT_PAGE_META_KEYS),
+        )
+        self._set_check_list_items(
+            self.fact_keys_list,
+            keys=tuple(PROMPT_FACT_KEYS),
+            selected=set(push_inference_dataset.DEFAULT_FACT_KEYS),
+            locked={"value"},
+        )
+
+    def selected_page_meta_keys(self) -> tuple[str, ...]:
+        selected: list[str] = []
+        for index in range(self.page_meta_keys_list.count()):
+            item = self.page_meta_keys_list.item(index)
+            if item is None or item.checkState() != Qt.Checked:
+                continue
+            key = str(item.data(Qt.UserRole) or "").strip()
+            if key:
+                selected.append(key)
+        return tuple(selected)
+
+    def selected_fact_keys(self) -> tuple[str, ...]:
+        selected: list[str] = []
+        for index in range(self.fact_keys_list.count()):
+            item = self.fact_keys_list.item(index)
+            if item is None:
+                continue
+            key = str(item.data(Qt.UserRole) or "").strip()
+            if not key:
+                continue
+            if item.checkState() == Qt.Checked or key == "value":
+                selected.append(key)
+        return tuple(selected)
+
+    def options(self) -> InferencePushOptions:
+        return InferencePushOptions(
+            max_pixels=int(self.max_pixels_spin.value()),
+            page_meta_keys=self.selected_page_meta_keys(),
+            fact_keys=self.selected_fact_keys(),
+        )
+
+    def _update_preview(self) -> None:
+        options = self.options()
+        self.dataset_name_label.setText(
+            f"Dataset name: {push_inference_dataset.inference_dataset_name(self.doc_id, options.max_pixels)}"
+        )
+        self.schema_preview.setPlainText(
+            build_custom_extraction_schema_preview(
+                page_meta_keys=options.page_meta_keys,
+                fact_keys=options.fact_keys,
+                include_bbox=False,
+            )
+        )
+
+
+class LoadEntireJsonDialog(QDialog):
+    def __init__(self, *, doc_title: str, page_count: int, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.doc_title = str(doc_title or "").strip() or "PDF"
+        self.page_count = max(int(page_count), 0)
+        self.setWindowTitle("Load Entire JSON")
+        self.resize(860, 620)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(16, 16, 16, 16)
+        root.setSpacing(12)
+
+        hint = QLabel(
+            "Paste the full notebook inference output for this PDF.\n"
+            "Supported shapes: a wrapped `{\"pages\": [...]}` payload, a list of page JSON dicts, "
+            "or a list of page JSON strings like `all_json_outputs`.\n"
+            "When page image names are missing, pages are mapped by output order to this PDF's page order."
+        )
+        hint.setWordWrap(True)
+        root.addWidget(hint)
+
+        self.status_label = QLabel()
+        self.status_label.setObjectName("monoLabel")
+        self.status_label.setWordWrap(True)
+        root.addWidget(self.status_label)
+
+        self.text_edit = QPlainTextEdit()
+        self.text_edit.setPlaceholderText("Paste the full model output here")
+        root.addWidget(self.text_edit, 1)
+
+        self.button_box = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        root.addWidget(self.button_box)
+
+        self.button_box.accepted.connect(self.accept)
+        self.button_box.rejected.connect(self.reject)
+        self.text_edit.textChanged.connect(self._update_status)
+        self._update_status()
+
+    def json_text(self) -> str:
+        return self.text_edit.toPlainText()
+
+    def _update_status(self) -> None:
+        raw_text = self.json_text().strip()
+        if not raw_text:
+            self.status_label.setText(
+                f"Target PDF: {self.doc_title}  |  Workspace pages: {self.page_count}  |  Paste JSON to validate."
+            )
+            return
+        try:
+            parse_result = parse_import_json_text(raw_text)
+            detected_pages = AnnotationWindow._parsed_import_page_count(parse_result.payload)
+            extra_pages = max(detected_pages - self.page_count, 0)
+            message = (
+                f"Target PDF: {self.doc_title}  |  Detected imported pages: {detected_pages}  |  "
+                f"Workspace pages: {self.page_count}"
+            )
+            if parse_result.recovered and parse_result.message:
+                message += f"\nRecovery: {parse_result.message}"
+            if extra_pages > 0:
+                message += f"\nExtra imported pages beyond this PDF will be ignored: {extra_pages}"
+            self.status_label.setText(message)
+        except Exception as exc:
+            self.status_label.setText(
+                f"Target PDF: {self.doc_title}  |  Workspace pages: {self.page_count}\nParse check failed: {exc}"
+            )
+
+
 class HomeDocumentCard(QFrame):
     open_requested = pyqtSignal(str)
     prepare_requested = pyqtSignal(str)
     auto_annotate_requested = pyqtSignal(str)
+    push_hf_requested = pyqtSignal(str)
+    load_entire_json_requested = pyqtSignal(str)
     checked_toggled = pyqtSignal(str, bool)
     review_toggled = pyqtSignal(str, bool)
     delete_requested = pyqtSignal(str)
@@ -355,6 +590,8 @@ class HomeDocumentCard(QFrame):
         actions.setSpacing(8)
         self.action_btn = _set_button_variant(QPushButton("Open"), "primary")
         self.auto_annotate_btn = _set_button_variant(QPushButton("Auto-Annotate"), "ghost")
+        self.push_hf_btn = _set_button_variant(QPushButton("Push to HF"), "ghost")
+        self.load_entire_json_btn = _set_button_variant(QPushButton("Load Entire JSON"), "ghost")
         self.checked_btn = _set_button_variant(QPushButton("Mark Checked"), "ghost")
         self.checked_btn.setCheckable(True)
         self.review_btn = _set_button_variant(QPushButton("Mark Reviewed"), "ghost")
@@ -362,6 +599,8 @@ class HomeDocumentCard(QFrame):
         self.delete_btn = _set_button_variant(QPushButton("Remove"), "danger")
         actions.addWidget(self.action_btn)
         actions.addWidget(self.auto_annotate_btn)
+        actions.addWidget(self.push_hf_btn)
+        actions.addWidget(self.load_entire_json_btn)
         actions.addWidget(self.checked_btn)
         actions.addWidget(self.review_btn)
         actions.addWidget(self.delete_btn)
@@ -370,6 +609,8 @@ class HomeDocumentCard(QFrame):
 
         self.action_btn.clicked.connect(lambda: self.open_requested.emit(self.summary.doc_id))
         self.auto_annotate_btn.clicked.connect(lambda: self.auto_annotate_requested.emit(self.summary.doc_id))
+        self.push_hf_btn.clicked.connect(lambda: self.push_hf_requested.emit(self.summary.doc_id))
+        self.load_entire_json_btn.clicked.connect(lambda: self.load_entire_json_requested.emit(self.summary.doc_id))
         self.checked_btn.toggled.connect(self._emit_checked_toggled)
         self.review_btn.toggled.connect(self._emit_review_toggled)
         self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.summary.doc_id))
@@ -467,6 +708,21 @@ class HomeDocumentCard(QFrame):
             self.auto_annotate_btn.setToolTip("Managed source PDF not found for this document.")
         else:
             self.auto_annotate_btn.setToolTip("Prepare, annotate, and align every page in the background.")
+        push_hf_enabled = bool(summary.source_pdf is not None or can_open or summary.images_dir.is_dir())
+        self.push_hf_btn.setEnabled(push_hf_enabled)
+        if summary.status == "Needs extraction" and summary.source_pdf is not None:
+            self.push_hf_btn.setToolTip("Prepare page images first, then push this PDF as an inference dataset.")
+        elif push_hf_enabled:
+            self.push_hf_btn.setToolTip("Push this PDF's page images, system prompt, and instruction schema to Hugging Face.")
+        else:
+            self.push_hf_btn.setToolTip("This document has no prepared page images and no managed source PDF to prepare from.")
+        self.load_entire_json_btn.setEnabled(push_hf_enabled)
+        if summary.status == "Needs extraction" and summary.source_pdf is not None:
+            self.load_entire_json_btn.setToolTip("Prepare page images first, then paste the full document JSON for this PDF.")
+        elif push_hf_enabled:
+            self.load_entire_json_btn.setToolTip("Paste the full notebook inference output and replace imported pages for this PDF.")
+        else:
+            self.load_entire_json_btn.setToolTip("This document has no prepared page images and no managed source PDF to prepare from.")
         checked_allowed = summary.page_count > 0 and summary.annotated_page_count >= summary.page_count
         checked_enabled = bool(summary.checked) or checked_allowed
         self.checked_btn.blockSignals(True)
@@ -523,6 +779,8 @@ class HomeView(QWidget):
     open_document_requested = pyqtSignal(str)
     prepare_document_requested = pyqtSignal(str)
     auto_annotate_document_requested = pyqtSignal(str)
+    push_hf_document_requested = pyqtSignal(str)
+    load_entire_json_document_requested = pyqtSignal(str)
     checked_document_requested = pyqtSignal(str, bool)
     review_document_requested = pyqtSignal(str, bool)
     delete_document_requested = pyqtSignal(str)
@@ -751,6 +1009,8 @@ class HomeView(QWidget):
             card.open_requested.connect(self.open_document_requested.emit)
             card.prepare_requested.connect(self.prepare_document_requested.emit)
             card.auto_annotate_requested.connect(self.auto_annotate_document_requested.emit)
+            card.push_hf_requested.connect(self.push_hf_document_requested.emit)
+            card.load_entire_json_requested.connect(self.load_entire_json_document_requested.emit)
             card.checked_toggled.connect(self.checked_document_requested.emit)
             card.review_toggled.connect(self.review_document_requested.emit)
             card.delete_requested.connect(self.delete_document_requested.emit)
@@ -1869,6 +2129,9 @@ class DashboardWindow(QMainWindow):
         self._import_worker: Optional[WorkspaceImportWorker] = None
         self._import_success_callback: Optional[Callable[[Optional[WorkspaceImportResult]], None]] = None
         self._import_failure_callback: Optional[Callable[[str], None]] = None
+        self._inference_push_thread: Optional[QThread] = None
+        self._inference_push_worker: Optional[PushPipelineWorker] = None
+        self._inference_push_log: list[str] = []
         self._documents_by_id: dict[str, WorkspaceDocumentSummary] = {}
         self._auto_annotate_runs: dict[str, AutoAnnotateRun] = {}
         self._runtime_auto_annotate_progress: dict[str, AutoAnnotateProgress] = {}
@@ -1973,6 +2236,8 @@ class DashboardWindow(QMainWindow):
         self.home_view.open_document_requested.connect(self.open_workspace_document)
         self.home_view.prepare_document_requested.connect(self.prepare_workspace_document)
         self.home_view.auto_annotate_document_requested.connect(self.auto_annotate_workspace_document)
+        self.home_view.push_hf_document_requested.connect(self.push_workspace_document_to_hf)
+        self.home_view.load_entire_json_document_requested.connect(self.load_workspace_document_entire_json)
         self.home_view.checked_document_requested.connect(self.set_document_checked)
         self.home_view.review_document_requested.connect(self.set_document_reviewed)
         self.home_view.delete_document_requested.connect(self.delete_workspace_document)
@@ -2208,6 +2473,164 @@ class DashboardWindow(QMainWindow):
 
         self._continue_auto_annotate_workspace_document(doc_id)
 
+    def push_workspace_document_to_hf(self, doc_id: str) -> None:
+        if self._inference_push_thread is not None:
+            QMessageBox.information(self, "Push to HF", "Another Hugging Face inference push is already running.")
+            return
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        dialog = InferencePushDialog(doc_id, self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+        options = dialog.options()
+        if summary.status == "Needs extraction" and summary.source_pdf is not None:
+            started = self._start_import(
+                summary.source_pdf,
+                open_after=False,
+                success_callback=lambda _result, target_doc_id=doc_id, target_options=options: self._continue_push_workspace_document_to_hf(
+                    target_doc_id,
+                    target_options,
+                ),
+                failure_callback=lambda message: QMessageBox.warning(self, "Push to HF failed", f"Prepare failed: {message}"),
+            )
+            if started:
+                self.statusBar().showMessage(f"Preparing {doc_id} for Hugging Face push ...", 5000)
+            return
+        self._continue_push_workspace_document_to_hf(doc_id, options)
+
+    def load_workspace_document_entire_json(self, doc_id: str) -> None:
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        dialog = LoadEntireJsonDialog(doc_title=summary.source_pdf.stem if summary.source_pdf is not None else doc_id, page_count=summary.page_count, parent=self)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+        raw_text = dialog.json_text().strip()
+        if not raw_text:
+            QMessageBox.information(self, "Load Entire JSON", "No JSON text was provided.")
+            return
+        if summary.status == "Needs extraction" and summary.source_pdf is not None:
+            started = self._start_import(
+                summary.source_pdf,
+                open_after=False,
+                success_callback=lambda _result, target_doc_id=doc_id, target_text=raw_text: self._continue_load_workspace_document_entire_json(
+                    target_doc_id,
+                    target_text,
+                ),
+                failure_callback=lambda message: QMessageBox.warning(self, "Load Entire JSON failed", f"Prepare failed: {message}"),
+            )
+            if started:
+                self.statusBar().showMessage(f"Preparing {doc_id} for full JSON import ...", 5000)
+            return
+        self._continue_load_workspace_document_entire_json(doc_id, raw_text)
+
+    def _continue_load_workspace_document_entire_json(self, doc_id: str, raw_text: str) -> None:
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        context = DocumentContext.from_summary(summary)
+        try:
+            window = self.annotator_host.open_document(context, activate=False)
+            import_summary = window.import_annotations_json_text(
+                raw_text,
+                bbox_mode="original_pixels",
+                max_pixels=None,
+                run_align_after_import=False,
+                show_info_messages=False,
+            )
+            window.save_annotations()
+        except Exception as exc:
+            QMessageBox.warning(self, "Load Entire JSON failed", str(exc))
+            return
+        self.reload_workspace()
+        info_lines = [
+            f"Imported pages: {import_summary['imported_count']}/{import_summary['parsed_page_count']}",
+        ]
+        extra_page_count = int(import_summary.get("extra_page_count") or 0)
+        if extra_page_count > 0:
+            info_lines.append(f"Ignored extra imported pages: {extra_page_count}")
+        parse_result = import_summary.get("parse_result")
+        if isinstance(parse_result, object) and getattr(parse_result, "recovered", False) and getattr(parse_result, "message", None):
+            info_lines.append(str(parse_result.message))
+        sanity_message = import_summary.get("sanity_message")
+        if isinstance(sanity_message, str) and sanity_message.strip():
+            info_lines.append(sanity_message.strip())
+        self.statusBar().showMessage(f"Loaded entire JSON into {doc_id}.", 6000)
+        QMessageBox.information(self, "Load Entire JSON complete", "\n\n".join(info_lines))
+
+    def _continue_push_workspace_document_to_hf(self, doc_id: str, options: InferencePushOptions) -> None:
+        if self._inference_push_thread is not None:
+            return
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        images_dir = Path(summary.images_dir)
+        if not images_dir.is_dir():
+            QMessageBox.warning(self, "Push to HF failed", f"Images directory not found: {images_dir}")
+            return
+        if not page_image_paths(images_dir):
+            QMessageBox.warning(self, "Push to HF failed", f"No page images found for {doc_id}.")
+            return
+        argv = [
+            "--doc-id",
+            doc_id,
+            "--images-dir",
+            str(images_dir),
+            "--max-pixels",
+            str(options.max_pixels),
+            "--page-meta-keys",
+            ",".join(options.page_meta_keys),
+            "--fact-keys",
+            ",".join(options.fact_keys),
+        ]
+        worker = PushPipelineWorker(argv, run_fn=push_inference_dataset.main)
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.log_emitted.connect(self._append_inference_push_log)
+        worker.completed.connect(self._on_inference_push_completed)
+        worker.failed.connect(self._on_inference_push_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_inference_push_finished)
+        self._inference_push_log = []
+        self._inference_push_worker = worker
+        self._inference_push_thread = thread
+        self.statusBar().showMessage(
+            f"Pushing {push_inference_dataset.inference_dataset_name(doc_id, options.max_pixels)} to Hugging Face ...",
+            5000,
+        )
+        thread.start()
+
+    def _append_inference_push_log(self, text: str) -> None:
+        if text:
+            self._inference_push_log.append(str(text))
+
+    def _on_inference_push_completed(self, _summary: dict[str, Any]) -> None:
+        lines = [line.strip() for line in "".join(self._inference_push_log).splitlines() if line.strip()]
+        dataset_name = next((line.split(":", 1)[1].strip() for line in lines if line.startswith("DATASET_NAME:")), "")
+        repo_id = next((line.split(":", 1)[1].strip() for line in lines if line.startswith("PUSHED:")), "")
+        export_dir = next((line.split(":", 1)[1].strip() for line in lines if line.startswith("EXPORT_DIR:")), "")
+        row_count = next((line.split(":", 1)[1].strip() for line in lines if line.startswith("ROWS:")), "")
+        message = (
+            f"Dataset: {dataset_name or 'unknown'}\n"
+            f"Repo: {repo_id or 'unknown'}\n"
+            f"Rows: {row_count or 'unknown'}\n"
+            f"Export: {export_dir or 'unknown'}"
+        )
+        self.statusBar().showMessage(f"Push to HF complete: {repo_id or dataset_name}", 7000)
+        QMessageBox.information(self, "Push to HF complete", message)
+
+    def _on_inference_push_failed(self, message: str) -> None:
+        self.statusBar().showMessage("Push to HF failed.", 7000)
+        QMessageBox.warning(self, "Push to HF failed", message)
+
+    def _on_inference_push_finished(self) -> None:
+        self._inference_push_worker = None
+        self._inference_push_thread = None
+
     def _continue_auto_annotate_workspace_document(self, doc_id: str) -> None:
         summary = self._documents_by_id.get(doc_id)
         if summary is None:
@@ -2251,7 +2674,7 @@ class DashboardWindow(QMainWindow):
             return
         ai_controller = getattr(run.window, "_ai_controller", None)
         if ai_controller is not None and callable(getattr(ai_controller, "is_running", None)) and ai_controller.is_running():
-            QTimer.singleShot(50, lambda target_doc_id=doc_id: self._start_next_auto_annotate_page(target_doc_id))
+            QTimer.singleShot(0, lambda target_doc_id=doc_id: self._start_next_auto_annotate_page(target_doc_id))
             return
         if run.next_page_index >= len(run.page_names):
             self._complete_auto_annotate_run(doc_id)
@@ -2644,7 +3067,6 @@ class DashboardWindow(QMainWindow):
     def _consume_startup_context(self) -> None:
         context = self.startup_context
         if context.mode == "home":
-            self.show_home()
             return
         if context.mode == "images-dir" and context.images_dir is not None and context.annotations_path is not None:
             self.open_ad_hoc_document(context.images_dir, context.annotations_path, pdf_path=context.pdf_path)

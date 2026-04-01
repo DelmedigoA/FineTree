@@ -1,0 +1,197 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 2,
+  "detector_count": 2,
+  "matched_count": 2,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "200",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        220,
+        10,
+        20,
+        18
+      ],
+      "value": "200"
+    },
+    {
+      "bbox": [
+        220,
+        40,
+        20,
+        18
+      ],
+      "value": "100"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        8,
+        8,
+        72,
+        28
+      ],
+      "value": "100",
+      "fact_num": 1,
+      "path": [
+        "A"
+      ]
+    },
+    {
+      "bbox": [
+        8,
+        44,
+        72,
+        28
+      ],
+      "value": "200",
+      "fact_num": 2,
+      "path": [
+        "B"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 1,
+      "gemini_value": "100",
+      "detector_value": "100",
+      "match_key": "num:100"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 0,
+      "gemini_value": "200",
+      "detector_value": "200",
+      "match_key": "num:200"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "100"
+      ],
+      "match_keys": [
+        "num:100"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "200"
+      ],
+      "match_keys": [
+        "num:200"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "200"
+      ],
+      "match_keys": [
+        "num:200"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "100"
+      ],
+      "match_keys": [
+        "num:100"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "unique_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "100"
+      ],
+      "detector_indices": [
+        1
+      ],
+      "detector_values": [
+        "100"
+      ],
+      "matched_count": 1,
+      "match_key": "num:100"
+    },
+    {
+      "matched": true,
+      "reason": "unique_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "200"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "200"
+      ],
+      "matched_count": 1,
+      "match_key": "num:200"
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "unique_value_match",
+  "reading_direction": "ltr",
+  "placeholder_count": 0
+}

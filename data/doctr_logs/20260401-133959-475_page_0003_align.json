@@ -1,0 +1,2455 @@
+{
+  "page_name": "page_0003.png",
+  "gemini_count": 14,
+  "detector_count": 17,
+  "matched_count": 8,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 558.28,
+        "y": 0.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "967,734",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "סה\"כ נכסים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 558.28,
+        "y": 0.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "45,749",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": "3",
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש קבוע"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "350,146",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "המחאות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 80.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "89,191",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 116.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "376,665",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 152.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "921,985",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 990.28,
+        "y": 349.58,
+        "w": 66.0,
+        "h": 32.0
+      },
+      "value": "4,368",
+      "fact_num": 7,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מזומנים בבנקים ובקופה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 788.28,
+        "y": 347.58,
+        "w": 92.0,
+        "h": 34.0
+      },
+      "value": "105,983",
+      "fact_num": 8,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מזומנים בבנקים ובקופה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 964.28,
+        "y": 379.58,
+        "w": 87.0,
+        "h": 27.0
+      },
+      "value": "313,098",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "המחאות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 978.28,
+        "y": 409.58,
+        "w": 73.0,
+        "h": 27.0
+      },
+      "value": "24,241",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 974.28,
+        "y": 436.58,
+        "w": 82.0,
+        "h": 27.0
+      },
+      "value": "50,815",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 962.28,
+        "y": 491.58,
+        "w": 91.0,
+        "h": 34.0
+      },
+      "value": "392,522",
+      "fact_num": 12,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 964.28,
+        "y": 726.58,
+        "w": 89.0,
+        "h": 28.0
+      },
+      "value": "304,674",
+      "fact_num": 13,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": "3",
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש קבוע"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 960.28,
+        "y": 811.58,
+        "w": 93.0,
+        "h": 27.0
+      },
+      "value": "697,196",
+      "fact_num": 14,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "סה\"כ נכסים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        520.0,
+        646.0,
+        66.0,
+        32.0
+      ],
+      "value": "4,368",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        318.0,
+        644.0,
+        92.0,
+        34.0
+      ],
+      "value": "105,983",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        494.0,
+        676.0,
+        87.0,
+        27.0
+      ],
+      "value": "313,098",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        318.0,
+        674.0,
+        92.0,
+        34.0
+      ],
+      "value": "350,146",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        508.0,
+        706.0,
+        73.0,
+        27.0
+      ],
+      "value": "24,241",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        332.0,
+        701.0,
+        78.0,
+        34.0
+      ],
+      "value": "89,191",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        504.0,
+        733.0,
+        82.0,
+        27.0
+      ],
+      "value": "50,815",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        316.0,
+        733.0,
+        94.0,
+        27.0
+      ],
+      "value": "376,665",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        492.0,
+        788.0,
+        91.0,
+        34.0
+      ],
+      "value": "392,522",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        318.0,
+        788.0,
+        92.0,
+        34.0
+      ],
+      "value": "921,985",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        576.0,
+        832.0,
+        5.0,
+        4.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        498.0,
+        834.0,
+        5.0,
+        5.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        402.0,
+        832.0,
+        5.0,
+        4.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        494.0,
+        1023.0,
+        89.0,
+        28.0
+      ],
+      "value": "304,674",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        332.0,
+        1023.0,
+        78.0,
+        28.0
+      ],
+      "value": "45,749",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        490.0,
+        1108.0,
+        93.0,
+        27.0
+      ],
+      "value": "697,196",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        316.0,
+        1108.0,
+        94.0,
+        27.0
+      ],
+      "value": "967,734",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": {
+        "x": 558.28,
+        "y": 0.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "967,734",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "סה\"כ נכסים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 558.28,
+        "y": 0.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "45,749",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": "3",
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש קבוע"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "350,146",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "המחאות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 80.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "89,191",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 116.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "376,665",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 152.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "921,985",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 990.28,
+        "y": 349.58,
+        "w": 66.0,
+        "h": 32.0
+      },
+      "value": "4,368",
+      "fact_num": 7,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מזומנים בבנקים ובקופה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 788.28,
+        "y": 347.58,
+        "w": 92.0,
+        "h": 34.0
+      },
+      "value": "105,983",
+      "fact_num": 8,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2021-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מזומנים בבנקים ובקופה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 964.28,
+        "y": 379.58,
+        "w": 87.0,
+        "h": 27.0
+      },
+      "value": "313,098",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "המחאות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 978.28,
+        "y": 409.58,
+        "w": 73.0,
+        "h": 27.0
+      },
+      "value": "24,241",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "מקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 974.28,
+        "y": 436.58,
+        "w": 82.0,
+        "h": 27.0
+      },
+      "value": "50,815",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 962.28,
+        "y": 491.58,
+        "w": 91.0,
+        "h": 34.0
+      },
+      "value": "392,522",
+      "fact_num": 12,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש שוטף",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 964.28,
+        "y": 726.58,
+        "w": 89.0,
+        "h": 28.0
+      },
+      "value": "304,674",
+      "fact_num": 13,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": "3",
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "נכסים",
+        "רכוש קבוע"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 960.28,
+        "y": 811.58,
+        "w": 93.0,
+        "h": 27.0
+      },
+      "value": "697,196",
+      "fact_num": 14,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2022-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "סה\"כ נכסים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 6,
+      "detector_index": 0,
+      "gemini_value": "4,368",
+      "detector_value": "4,368",
+      "match_key": "num:4368"
+    },
+    {
+      "gemini_index": 7,
+      "detector_index": 1,
+      "gemini_value": "105,983",
+      "detector_value": "105,983",
+      "match_key": "num:105983"
+    },
+    {
+      "gemini_index": 8,
+      "detector_index": 2,
+      "gemini_value": "313,098",
+      "detector_value": "313,098",
+      "match_key": "num:313098"
+    },
+    {
+      "gemini_index": 9,
+      "detector_index": 4,
+      "gemini_value": "24,241",
+      "detector_value": "24,241",
+      "match_key": "num:24241"
+    },
+    {
+      "gemini_index": 10,
+      "detector_index": 6,
+      "gemini_value": "50,815",
+      "detector_value": "50,815",
+      "match_key": "num:50815"
+    },
+    {
+      "gemini_index": 11,
+      "detector_index": 8,
+      "gemini_value": "392,522",
+      "detector_value": "392,522",
+      "match_key": "num:392522"
+    },
+    {
+      "gemini_index": 12,
+      "detector_index": 13,
+      "gemini_value": "304,674",
+      "detector_value": "304,674",
+      "match_key": "num:304674"
+    },
+    {
+      "gemini_index": 13,
+      "detector_index": 15,
+      "gemini_value": "697,196",
+      "detector_value": "697,196",
+      "match_key": "num:697196"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "unmatched_detector_indices": [
+    3,
+    5,
+    7,
+    9,
+    14,
+    16
+  ],
+  "ignored_detector_indices": [
+    10,
+    11,
+    12
+  ],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "967,734"
+      ],
+      "match_keys": [
+        "num:967734"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "45,749"
+      ],
+      "match_keys": [
+        "num:45749"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "350,146"
+      ],
+      "match_keys": [
+        "num:350146"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "89,191"
+      ],
+      "match_keys": [
+        "num:89191"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "376,665"
+      ],
+      "match_keys": [
+        "num:376665"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "921,985"
+      ],
+      "match_keys": [
+        "num:921985"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "4,368"
+      ],
+      "match_keys": [
+        "num:4368"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "105,983"
+      ],
+      "match_keys": [
+        "num:105983"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "313,098"
+      ],
+      "match_keys": [
+        "num:313098"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "24,241"
+      ],
+      "match_keys": [
+        "num:24241"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "50,815"
+      ],
+      "match_keys": [
+        "num:50815"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "392,522"
+      ],
+      "match_keys": [
+        "num:392522"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "304,674"
+      ],
+      "match_keys": [
+        "num:304674"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "697,196"
+      ],
+      "match_keys": [
+        "num:697196"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0,
+        1
+      ],
+      "values": [
+        "4,368",
+        "105,983"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          520.0,
+          646.0,
+          66.0,
+          32.0
+        ],
+        [
+          318.0,
+          644.0,
+          92.0,
+          34.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        2,
+        3
+      ],
+      "values": [
+        "313,098",
+        "350,146"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          494.0,
+          676.0,
+          87.0,
+          27.0
+        ],
+        [
+          318.0,
+          674.0,
+          92.0,
+          34.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        4,
+        5
+      ],
+      "values": [
+        "24,241",
+        "89,191"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          508.0,
+          706.0,
+          73.0,
+          27.0
+        ],
+        [
+          332.0,
+          701.0,
+          78.0,
+          34.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        6,
+        7
+      ],
+      "values": [
+        "50,815",
+        "376,665"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          504.0,
+          733.0,
+          82.0,
+          27.0
+        ],
+        [
+          316.0,
+          733.0,
+          94.0,
+          27.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        8,
+        9
+      ],
+      "values": [
+        "392,522",
+        "921,985"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          492.0,
+          788.0,
+          91.0,
+          34.0
+        ],
+        [
+          318.0,
+          788.0,
+          92.0,
+          34.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        10,
+        11,
+        12
+      ],
+      "values": [
+        "-",
+        "-",
+        "-"
+      ],
+      "column_indices": [
+        0,
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          576.0,
+          832.0,
+          5.0,
+          4.0
+        ],
+        [
+          498.0,
+          834.0,
+          5.0,
+          5.0
+        ],
+        [
+          402.0,
+          832.0,
+          5.0,
+          4.0
+        ]
+      ],
+      "is_tiny_dash_noise": true
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        13,
+        14
+      ],
+      "values": [
+        "304,674",
+        "45,749"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          494.0,
+          1023.0,
+          89.0,
+          28.0
+        ],
+        [
+          332.0,
+          1023.0,
+          78.0,
+          28.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        15,
+        16
+      ],
+      "values": [
+        "697,196",
+        "967,734"
+      ],
+      "column_indices": [
+        0,
+        1
+      ],
+      "bboxes": [
+        [
+          490.0,
+          1108.0,
+          93.0,
+          27.0
+        ],
+        [
+          316.0,
+          1108.0,
+          94.0,
+          27.0
+        ]
+      ],
+      "is_tiny_dash_noise": false
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 0,
+      "import_end_index": 1,
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "967,734"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        0
+      ],
+      "unmatched_import_values": [
+        "967,734"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 1,
+      "import_end_index": 2,
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "45,749"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        1
+      ],
+      "unmatched_import_values": [
+        "45,749"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 2,
+      "import_end_index": 3,
+      "import_indices": [
+        2
+      ],
+      "import_values": [
+        "350,146"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        2
+      ],
+      "unmatched_import_values": [
+        "350,146"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 3,
+      "import_end_index": 4,
+      "import_indices": [
+        3
+      ],
+      "import_values": [
+        "89,191"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        3
+      ],
+      "unmatched_import_values": [
+        "89,191"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 4,
+      "import_end_index": 5,
+      "import_indices": [
+        4
+      ],
+      "import_values": [
+        "376,665"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        4
+      ],
+      "unmatched_import_values": [
+        "376,665"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": false,
+      "reason": "unmatched_import",
+      "import_start_index": 5,
+      "import_end_index": 6,
+      "import_indices": [
+        5
+      ],
+      "import_values": [
+        "921,985"
+      ],
+      "detector_row_index": null,
+      "detector_row_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "exact_overlap_count": 0,
+      "anchor_match_count": 0,
+      "ignored_detector_indices": [],
+      "matched_pairs": [],
+      "unmatched_import_indices": [
+        5
+      ],
+      "unmatched_import_values": [
+        "921,985"
+      ],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 216.0,
+      "import_start_index": 6,
+      "import_end_index": 8,
+      "import_indices": [
+        6,
+        7
+      ],
+      "import_values": [
+        "4,368",
+        "105,983"
+      ],
+      "detector_row_index": 0,
+      "detector_row_indices": [
+        0
+      ],
+      "detector_values": [
+        "4,368",
+        "105,983"
+      ],
+      "matched_count": 2,
+      "exact_overlap_count": 2,
+      "anchor_match_count": 2,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 6,
+          "detector_index": 0,
+          "import_value": "4,368",
+          "detector_value": "4,368"
+        },
+        {
+          "import_index": 7,
+          "detector_index": 1,
+          "import_value": "105,983",
+          "detector_value": "105,983"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [],
+      "unmatched_detector_values": []
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 8,
+      "import_end_index": 9,
+      "import_indices": [
+        8
+      ],
+      "import_values": [
+        "313,098"
+      ],
+      "detector_row_index": 1,
+      "detector_row_indices": [
+        1
+      ],
+      "detector_values": [
+        "313,098",
+        "350,146"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 8,
+          "detector_index": 2,
+          "import_value": "313,098",
+          "detector_value": "313,098"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        3
+      ],
+      "unmatched_detector_values": [
+        "350,146"
+      ]
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 9,
+      "import_end_index": 10,
+      "import_indices": [
+        9
+      ],
+      "import_values": [
+        "24,241"
+      ],
+      "detector_row_index": 2,
+      "detector_row_indices": [
+        2
+      ],
+      "detector_values": [
+        "24,241",
+        "89,191"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 9,
+          "detector_index": 4,
+          "import_value": "24,241",
+          "detector_value": "24,241"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        5
+      ],
+      "unmatched_detector_values": [
+        "89,191"
+      ]
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 10,
+      "import_end_index": 11,
+      "import_indices": [
+        10
+      ],
+      "import_values": [
+        "50,815"
+      ],
+      "detector_row_index": 3,
+      "detector_row_indices": [
+        3
+      ],
+      "detector_values": [
+        "50,815",
+        "376,665"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 10,
+          "detector_index": 6,
+          "import_value": "50,815",
+          "detector_value": "50,815"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        7
+      ],
+      "unmatched_detector_values": [
+        "376,665"
+      ]
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 11,
+      "import_end_index": 12,
+      "import_indices": [
+        11
+      ],
+      "import_values": [
+        "392,522"
+      ],
+      "detector_row_index": 4,
+      "detector_row_indices": [
+        4
+      ],
+      "detector_values": [
+        "392,522",
+        "921,985"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 11,
+          "detector_index": 8,
+          "import_value": "392,522",
+          "detector_value": "392,522"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        9
+      ],
+      "unmatched_detector_values": [
+        "921,985"
+      ]
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 12,
+      "import_end_index": 13,
+      "import_indices": [
+        12
+      ],
+      "import_values": [
+        "304,674"
+      ],
+      "detector_row_index": 6,
+      "detector_row_indices": [
+        6
+      ],
+      "detector_values": [
+        "304,674",
+        "45,749"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 12,
+          "detector_index": 13,
+          "import_value": "304,674",
+          "detector_value": "304,674"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        14
+      ],
+      "unmatched_detector_values": [
+        "45,749"
+      ]
+    },
+    {
+      "matched": true,
+      "reason": "detector_row_segment_match",
+      "score": 87.0,
+      "import_start_index": 13,
+      "import_end_index": 14,
+      "import_indices": [
+        13
+      ],
+      "import_values": [
+        "697,196"
+      ],
+      "detector_row_index": 7,
+      "detector_row_indices": [
+        7
+      ],
+      "detector_values": [
+        "697,196",
+        "967,734"
+      ],
+      "matched_count": 1,
+      "exact_overlap_count": 1,
+      "anchor_match_count": 1,
+      "ignored_detector_indices": [],
+      "matched_pairs": [
+        {
+          "import_index": 13,
+          "detector_index": 15,
+          "import_value": "697,196",
+          "detector_value": "697,196"
+        }
+      ],
+      "unmatched_import_indices": [],
+      "unmatched_import_values": [],
+      "unmatched_detector_indices": [
+        16
+      ],
+      "unmatched_detector_values": [
+        "967,734"
+      ]
+    }
+  ],
+  "skipped_detector_rows": [
+    {
+      "detector_row_index": 5,
+      "reason": "tiny_dash_noise",
+      "values": [
+        "-",
+        "-",
+        "-"
+      ],
+      "indices": [
+        10,
+        11,
+        12
+      ]
+    }
+  ],
+  "column_clusters": [
+    {
+      "column_index": 0,
+      "avg_cx": 541.2777777777778,
+      "count": 9
+    },
+    {
+      "column_index": 1,
+      "avg_cx": 370.5625,
+      "count": 8
+    }
+  ],
+  "row_match_strategy": "qwen_row_monotonic_dp",
+  "reading_direction": "rtl",
+  "segment_size_slack": 2,
+  "placeholder_count": 6
+}

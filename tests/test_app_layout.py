@@ -11,12 +11,13 @@ from PyQt5.QtGui import QColor, QImage, QKeyEvent, QPainter
 from PyQt5.QtTest import QTest
 from PyQt5.QtWidgets import QApplication
 
-from finetree_annotator.annotation_core import PageState, default_page_meta
+from finetree_annotator.annotation_core import PageState, default_page_meta, make_placeholder_bbox
 from finetree_annotator.ai.payloads import system_prompt_template
 from finetree_annotator.ai.types import AIWorkflowRequest, LocalDetectorBackend
 import finetree_annotator.app as app_mod
 from finetree_annotator.app import AnnotRectItem, AnnotationWindow, item_scene_rect
 from finetree_annotator.local_doctr import MERGED_DETECTOR_MODEL_NAME
+from finetree_annotator.qwen_import_matcher import match_qwen_import_payloads, normalize_bbox_match_value
 
 _APP: QApplication | None = None
 
@@ -46,6 +47,11 @@ def _write_test_png(
             painter.fillRect(x, y, w, h, QColor("#101010"))
         painter.end()
     assert image.save(str(path), "PNG")
+
+
+def _load_qwen_import_align_log(name: str) -> dict[str, object]:
+    path = Path(__file__).resolve().parents[1] / "data" / "doctr_logs" / name
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 class _SceneMouseEvent:
@@ -1020,7 +1026,9 @@ def test_align_bboxes_starts_merged_detector_with_current_annotations(tmp_path: 
             )
         ],
     )
+    window._is_restoring_history = True
     window.show_page(0)
+    window._is_restoring_history = False
     _qt_app().processEvents()
 
     captured: dict[str, object] = {}
@@ -1186,7 +1194,7 @@ def test_annotate_streamed_gt_facts_do_not_render_live(tmp_path: Path, monkeypat
     window.close()
 
 
-def test_align_bboxes_merge_matches_by_geometry_order_and_fuzzy_numeric_value(tmp_path: Path) -> None:
+def test_align_bboxes_merge_matches_by_unique_normalized_value(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -1210,14 +1218,15 @@ def test_align_bboxes_merge_matches_by_geometry_order_and_fuzzy_numeric_value(tm
 
     assert [payload["value"] for payload in merged_payloads] == ["(5)", "10", "7"]
     assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
-    assert merged_payloads[1]["bbox"] == [60.0, 10.0, 20.0, 20.0]
-    assert merged_payloads[2]["bbox"] == [100.0, 10.0, 20.0, 20.0]
+    assert merged_payloads[1]["bbox"] == [8.0, 8.0, 72.0, 28.0]
+    assert merged_payloads[2]["bbox"] == [88.0, 8.0, 72.0, 28.0]
     assert debug_payload["matched_count"] == 1
+    assert debug_payload["placeholder_count"] == 2
 
     window.close()
 
 
-def test_align_bboxes_merge_keeps_remaining_gemini_boxes_when_detector_is_shorter(tmp_path: Path) -> None:
+def test_align_bboxes_merge_places_placeholder_when_detector_is_shorter(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -1236,8 +1245,428 @@ def test_align_bboxes_merge_keeps_remaining_gemini_boxes_when_detector_is_shorte
     )
 
     assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
-    assert merged_payloads[1]["bbox"] == [60.0, 10.0, 20.0, 20.0]
+    assert merged_payloads[1]["bbox"] == [8.0, 8.0, 72.0, 28.0]
 
+    window.close()
+
+
+def test_qwen_import_merge_keeps_unmatched_facts_with_placeholder_bbox(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [20, 10, 20, 20], "value": "5", "path": ["A"]},
+            {"bbox": [60, 10, 20, 20], "value": "10", "path": ["B"]},
+        ],
+        detector_payloads=[
+            {"bbox": [200, 10, 15, 20], "value": "5"},
+        ],
+    )
+
+    assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
+    assert merged_payloads[1]["bbox"] == [8.0, 8.0, 72.0, 28.0]
+    assert debug_payload["matched_count"] == 1
+    assert debug_payload["placeholder_count"] == 1
+
+    window.close()
+
+
+def test_qwen_import_merge_uses_fact_num_order_instead_of_placeholder_geometry(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [88, 8, 72, 28], "value": "2024", "fact_num": 2, "path": ["A"]},
+            {"bbox": [8, 8, 72, 28], "value": "2023", "fact_num": 1, "path": ["A"]},
+            {"bbox": [88, 44, 72, 28], "value": "100", "fact_num": 4, "path": ["B"]},
+            {"bbox": [8, 44, 72, 28], "value": "90", "fact_num": 3, "path": ["B"]},
+        ],
+        detector_payloads=[
+            {"bbox": [200, 10, 20, 20], "value": "2023"},
+            {"bbox": [230, 10, 20, 20], "value": "2024"},
+            {"bbox": [200, 40, 20, 20], "value": "90"},
+            {"bbox": [230, 40, 20, 20], "value": "100"},
+        ],
+    )
+
+    assert [payload["fact_num"] for payload in merged_payloads] == [1, 2, 3, 4]
+    assert [payload["value"] for payload in merged_payloads] == ["2023", "2024", "90", "100"]
+    assert merged_payloads[0]["bbox"] == [200.0, 10.0, 20.0, 20.0]
+    assert merged_payloads[1]["bbox"] == [230.0, 10.0, 20.0, 20.0]
+    assert merged_payloads[2]["bbox"] == [200.0, 40.0, 20.0, 20.0]
+    assert merged_payloads[3]["bbox"] == [230.0, 40.0, 20.0, 20.0]
+    assert debug_payload["matched_count"] == 4
+    assert debug_payload["placeholder_count"] == 0
+
+    window.close()
+
+
+def test_qwen_import_merge_matches_pair_swapped_detector_rows(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=120)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "745,384", "fact_num": 1, "path": ["A"], "period_end": "2024-12-31"},
+            {"bbox": [88, 8, 72, 28], "value": "851,625", "fact_num": 2, "path": ["A"], "period_end": "2023-12-31"},
+            {"bbox": [8, 44, 72, 28], "value": "322,816", "fact_num": 3, "path": ["B"], "period_end": "2024-12-31"},
+            {"bbox": [88, 44, 72, 28], "value": "537,962", "fact_num": 4, "path": ["B"], "period_end": "2023-12-31"},
+        ],
+        detector_payloads=[
+            {"bbox": [220, 10, 20, 18], "value": "851,625"},
+            {"bbox": [250, 10, 20, 18], "value": "745,384"},
+            {"bbox": [220, 40, 20, 18], "value": "537,962"},
+            {"bbox": [250, 40, 20, 18], "value": "322,816"},
+        ],
+    )
+
+    assert [payload["bbox"] for payload in merged_payloads] == [
+        [250.0, 10.0, 20.0, 18.0],
+        [220.0, 10.0, 20.0, 18.0],
+        [250.0, 40.0, 20.0, 18.0],
+        [220.0, 40.0, 20.0, 18.0],
+    ]
+    assert debug_payload["matched_count"] == 4
+    assert debug_payload["placeholder_count"] == 0
+    assert debug_payload["row_match_strategy"] == "ordered_pool_value_match"
+
+    window.close()
+
+
+def test_qwen_import_merge_matches_duplicate_values_in_same_row(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=80)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "247,368", "fact_num": 1, "path": ["A"], "period_end": "2024-12-31"},
+            {"bbox": [88, 8, 72, 28], "value": "247,368", "fact_num": 2, "path": ["A"], "period_end": "2023-12-31"},
+        ],
+        detector_payloads=[
+            {"bbox": [220, 10, 20, 18], "value": "247,368"},
+            {"bbox": [250, 10, 20, 18], "value": "247,368"},
+        ],
+    )
+
+    assert [payload["bbox"] for payload in merged_payloads] == [
+        [220.0, 10.0, 20.0, 18.0],
+        [250.0, 10.0, 20.0, 18.0],
+    ]
+    assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 0
+
+    window.close()
+
+
+def test_qwen_import_merge_matches_repeated_identical_values_across_rows_monotonically(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=120)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "247,368", "fact_num": 1, "path": ["A"]},
+            {"bbox": [8, 44, 72, 28], "value": "247,368", "fact_num": 2, "path": ["B"]},
+        ],
+        detector_payloads=[
+            {"bbox": [230, 10, 20, 18], "value": "247,368"},
+            {"bbox": [230, 40, 20, 18], "value": "247,368"},
+        ],
+    )
+
+    assert merged_payloads[0]["bbox"] == [230.0, 10.0, 20.0, 18.0]
+    assert merged_payloads[1]["bbox"] == [230.0, 40.0, 20.0, 18.0]
+    assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 0
+
+    window.close()
+
+
+def test_qwen_import_merge_matches_unique_values_even_if_rows_are_swapped(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=320, height=120)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "100", "fact_num": 1, "path": ["A"]},
+            {"bbox": [8, 44, 72, 28], "value": "200", "fact_num": 2, "path": ["B"]},
+        ],
+        detector_payloads=[
+            {"bbox": [220, 10, 20, 18], "value": "200"},
+            {"bbox": [220, 40, 20, 18], "value": "100"},
+        ],
+    )
+
+    assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 0
+    assert merged_payloads[0]["bbox"] == [220.0, 40.0, 20.0, 18.0]
+    assert merged_payloads[1]["bbox"] == [220.0, 10.0, 20.0, 18.0]
+
+    window.close()
+
+
+def test_qwen_import_merge_consumes_duplicate_values_in_rtl_pool_order(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=320, height=80)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.document_meta["reading_direction"] = "rtl"
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "247,368", "fact_num": 1, "path": ["A"], "period_end": "2024-12-31"},
+            {"bbox": [88, 8, 72, 28], "value": "247,368", "fact_num": 2, "path": ["A"], "period_end": "2023-12-31"},
+        ],
+        detector_payloads=[
+            {"bbox": [220, 10, 20, 18], "value": "247,368"},
+            {"bbox": [250, 10, 20, 18], "value": "247,368"},
+        ],
+    )
+
+    assert merged_payloads[0]["bbox"] == [250.0, 10.0, 20.0, 18.0]
+    assert merged_payloads[1]["bbox"] == [220.0, 10.0, 20.0, 18.0]
+    assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 0
+
+    window.close()
+
+
+def test_qwen_import_merge_consumes_duplicate_values_in_ltr_pool_order(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=320, height=80)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    window.document_meta["reading_direction"] = "ltr"
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "247,368", "fact_num": 1, "path": ["A"], "period_end": "2023-12-31"},
+            {"bbox": [88, 8, 72, 28], "value": "247,368", "fact_num": 2, "path": ["A"], "period_end": "2024-12-31"},
+        ],
+        detector_payloads=[
+            {"bbox": [220, 10, 20, 18], "value": "247,368"},
+            {"bbox": [250, 10, 20, 18], "value": "247,368"},
+        ],
+    )
+
+    assert merged_payloads[0]["bbox"] == [220.0, 10.0, 20.0, 18.0]
+    assert merged_payloads[1]["bbox"] == [250.0, 10.0, 20.0, 18.0]
+    assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 0
+
+    window.close()
+
+
+def test_qwen_import_merge_ignores_tiny_dash_noise_before_final_totals(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=600, height=1800)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0001.png",
+        imported_payloads=[
+            {"bbox": [8, 8, 72, 28], "value": "42,295,758", "fact_num": 31, "path": ["נכסים נטו", "סה\"כ"], "period_end": "2024-12-31"},
+            {"bbox": [88, 8, 72, 28], "value": "1,006,233", "fact_num": 32, "path": ["נכסים נטו", "סה\"כ"], "period_end": "2023-12-31"},
+            {"bbox": [8, 44, 72, 28], "value": "42,724,005", "fact_num": 33, "path": ["התחייבויות ונכסים נטו", "סה\"כ"], "period_end": "2024-12-31"},
+            {"bbox": [88, 44, 72, 28], "value": "9,216,410", "fact_num": 34, "path": ["התחייבויות ונכסים נטו", "סה\"כ"], "period_end": "2023-12-31"},
+        ],
+        detector_payloads=[
+            {"bbox": [320, 1400, 20, 18], "value": "1,006,233"},
+            {"bbox": [360, 1400, 20, 18], "value": "42,295,758"},
+            {"bbox": [348, 1448, 6, 5], "value": "-"},
+            {"bbox": [368, 1450, 7, 5], "value": "-"},
+            {"bbox": [320, 1480, 20, 18], "value": "9,216,410"},
+            {"bbox": [360, 1480, 20, 18], "value": "42,724,005"},
+        ],
+    )
+
+    assert [payload["bbox"] for payload in merged_payloads] == [
+        [360.0, 1400.0, 20.0, 18.0],
+        [320.0, 1400.0, 20.0, 18.0],
+        [360.0, 1480.0, 20.0, 18.0],
+        [320.0, 1480.0, 20.0, 18.0],
+    ]
+    assert debug_payload["matched_count"] == 4
+    assert debug_payload["placeholder_count"] == 0
+    assert sorted(debug_payload["unmatched_detector_indices"]) == [2, 3]
+
+    window.close()
+
+
+def test_normalize_bbox_match_value_collapses_repeated_dashes() -> None:
+    assert normalize_bbox_match_value("-") == "num:-"
+    assert normalize_bbox_match_value("--") == "num:-"
+    assert normalize_bbox_match_value("---") == "num:-"
+    assert normalize_bbox_match_value("————") == "num:-"
+
+
+def test_qwen_import_merge_acceptance_fixture_consumes_duplicates_in_ordered_pool(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0003.png", width=800, height=1800)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+
+    imported_rows = [
+        ("745,384", "851,625", ["רכוש", "רכוש שוטף", "מזומנים ושווי מזומנים"]),
+        ("322,816", "537,962", ["רכוש", "רכוש שוטף", "השקעות בניירות ערך"]),
+        ("6,644", "-", ["רכוש", "רכוש שוטף", "חייבים ויתרות חובה"]),
+        ("1,074,844", "1,389,587", ["רכוש", "רכוש שוטף", "סה\"כ"]),
+        ("40,006,913", "7,016,757", ["השקעות - פקדונות בבנקים"]),
+        ("1,642,248", "810,066", ["רכוש קבוע"]),
+        ("42,724,005", "9,216,410", ["סה\"כ"]),
+        ("43,125", "14,250", ["התחייבויות ונכסים נטו", "התחייבויות שוטפות", "המחאות לפירעון"]),
+        ("137,754", "84,159", ["התחייבויות ונכסים נטו", "התחייבויות שוטפות", "זכאים ויתרות זכות"]),
+        ("-", "7,864,400", ["התחייבויות ונכסים נטו", "התחייבויות שוטפות", "מקדמות על-חשבון מכירת מקרקעין"]),
+        ("180,879", "7,962,809", ["התחייבויות ונכסים נטו", "התחייבויות שוטפות", "סה\"כ"]),
+        ("247,368", "247,368", ["התחייבויות ונכסים נטו", "התחייבויות לזמן ארוך", "בנין סיום יחסי עובד-מעביד"]),
+        ("(1,537,213)", "(464,404)", ["התחייבויות ונכסים נטו", "נכסים נטו", "שלא יועדו ע\"י מוסדות המלכ\"ר"]),
+        ("42,190,723", "660,571", ["התחייבויות ונכסים נטו", "נכסים נטו", "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"]),
+        ("1,642,248", "810,066", ["התחייבויות ונכסים נטו", "נכסים נטו", "ששימשו לרכוש קבוע"]),
+        ("42,295,758", "1,006,233", ["התחייבויות ונכסים נטו", "נכסים נטו", "סה\"כ"]),
+        ("42,724,005", "9,216,410", ["התחייבויות ונכסים נטו", "סה\"כ"]),
+    ]
+    imported_payloads: list[dict[str, object]] = []
+    detector_payloads: list[dict[str, object]] = []
+    fact_num = 1
+    row_y = 100
+    for row_index, (value_2024, value_2023, path) in enumerate(imported_rows):
+        imported_payloads.append(
+            {"bbox": [8, 8 + (row_index * 36), 72, 28], "value": value_2024, "fact_num": fact_num, "path": path, "period_end": "2024-12-31"}
+        )
+        fact_num += 1
+        imported_payloads.append(
+            {"bbox": [88, 8 + (row_index * 36), 72, 28], "value": value_2023, "fact_num": fact_num, "path": path, "period_end": "2023-12-31"}
+        )
+        fact_num += 1
+        detector_payloads.append({"bbox": [320, row_y, 20, 18], "value": value_2023})
+        detector_payloads.append({"bbox": [360, row_y, 20, 18], "value": value_2024})
+        if row_index == 15:
+            detector_payloads.append({"bbox": [348, row_y + 48, 6, 5], "value": "-"})
+            detector_payloads.append({"bbox": [368, row_y + 50, 7, 5], "value": "-"})
+        row_y += 40
+
+    merged_payloads, debug_payload = window._merge_qwen_import_bbox_payloads(
+        page_name="page_0003.png",
+        imported_payloads=imported_payloads,
+        detector_payloads=detector_payloads,
+    )
+
+    assert len(merged_payloads) == 34
+    assert debug_payload["matched_count"] == 34
+    assert debug_payload["placeholder_count"] == 0
+    assert merged_payloads[0]["bbox"] == [360.0, 100.0, 20.0, 18.0]
+    assert merged_payloads[1]["bbox"] == [320.0, 100.0, 20.0, 18.0]
+    placeholder_count = sum(1 for payload in merged_payloads if payload["bbox"][2:] == [72.0, 28.0])
+    assert placeholder_count == 0
+    assert merged_payloads[22]["bbox"] == [320.0, 540.0, 20.0, 18.0]
+    assert merged_payloads[23]["bbox"] == [360.0, 540.0, 20.0, 18.0]
+
+    window.close()
+
+
+def test_qwen_import_align_starts_from_page_state_fact_num_order(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=300, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    page_name = window.page_images[0].name
+    window.page_states[page_name] = PageState(
+        meta=default_page_meta(0),
+        facts=[
+            app_mod.BoxRecord(
+                bbox={"x": 88.0, "y": 8.0, "w": 72.0, "h": 28.0},
+                fact={"value": "2024", "fact_num": 2, "path": ["A"]},
+            ),
+            app_mod.BoxRecord(
+                bbox={"x": 8.0, "y": 8.0, "w": 72.0, "h": 28.0},
+                fact={"value": "2023", "fact_num": 1, "path": ["A"]},
+            ),
+        ],
+    )
+    window._is_restoring_history = True
+    window.show_page(0)
+    window._is_restoring_history = False
+    _qt_app().processEvents()
+
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(window._ai_controller, "_start_local_doctr_worker", lambda **kwargs: captured.update(kwargs))
+
+    started = window.start_align_bboxes_for_page(page_name, mode="qwen_import")
+
+    assert started is True
+    assert [payload["fact_num"] for payload in window._auto_annotate_gemini_payloads] == [1, 2]
+    assert [payload["value"] for payload in window._auto_annotate_gemini_payloads] == ["2023", "2024"]
+    assert captured["page_name"] == page_name
+    window.close()
+
+
+def test_qwen_import_detector_failure_preserves_imported_facts(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png", width=200, height=100)
+    window = AnnotationWindow(images_dir, tmp_path / "annotations.json")
+    page_name = window.page_images[0].name
+    window.page_states[page_name] = PageState(
+        meta=default_page_meta(0),
+        facts=[
+            app_mod.BoxRecord(
+                bbox=make_placeholder_bbox(0),
+                fact={"value": "10", "path": []},
+            )
+        ],
+    )
+    window._is_restoring_history = True
+    window.show_page(0)
+    window._is_restoring_history = False
+    _qt_app().processEvents()
+    window._auto_annotate_active = True
+    window._auto_annotate_phase = "detector"
+    window._auto_annotate_mode = "qwen_import"
+    window._auto_annotate_target_page = page_name
+    window._local_doctr_target_page = page_name
+
+    failed: list[tuple[str, str]] = []
+    window.import_align_bboxes_page_failed.connect(lambda emitted_page, message: failed.append((emitted_page, message)))
+
+    window._ai_controller._on_local_doctr_failed("boom")
+
+    assert failed == [(page_name, "boom")]
+    assert window.page_states[page_name].facts[0].bbox == make_placeholder_bbox(0)
+    assert window.page_states[page_name].facts[0].fact["value"] == "10"
     window.close()
 
 
@@ -1263,9 +1692,10 @@ def test_align_bboxes_merge_allows_detector_extras_before_later_value_match(tmp_
     )
 
     assert merged_payloads[0]["bbox"] == [200.0, 10.0, 15.0, 20.0]
-    assert merged_payloads[1]["bbox"] == [60.0, 10.0, 20.0, 20.0]
+    assert merged_payloads[1]["bbox"] == [8.0, 8.0, 72.0, 28.0]
     assert merged_payloads[2]["bbox"] == [240.0, 10.0, 15.0, 20.0]
     assert debug_payload["matched_count"] == 2
+    assert debug_payload["placeholder_count"] == 1
 
     window.close()
 
