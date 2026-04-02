@@ -243,6 +243,128 @@ def test_parse_bbox_only_text_accepts_simple_facts_shape() -> None:
     ]
 
 
+def test_correct_page_json_hebrew_spelling_accepts_valid_text_only_changes(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (200, 200), color=(255, 255, 255)).save(image_path)
+    page_payload = {
+        "image": "page.png",
+        "meta": {
+            "entity_name": None,
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": "עלויות מרווחה",
+            "annotation_note": None,
+            "annotation_status": None,
+        },
+        "facts": [
+            {
+                "bbox": [1, 2, 3, 4],
+                "value": "מסים נדחם",
+                "path": ["התחייבויות מרווחה"],
+                "currency": "ILS",
+            }
+        ],
+    }
+
+    monkeypatch.setattr(
+        gemini_vlm,
+        "generate_content_from_image",
+        lambda **_kwargs: json.dumps(
+            {
+                "image": "page.png",
+                "meta": {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": "עלויות רווחה",
+                    "annotation_note": None,
+                    "annotation_status": None,
+                },
+                "facts": [
+                    {
+                        "bbox": [1, 2, 3, 4],
+                        "value": "מיסים נדחים",
+                        "path": ["התחייבויות רווחה"],
+                        "currency": "ILS",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+    )
+
+    result = gemini_vlm.correct_page_json_hebrew_spelling(image_path, page_payload)
+
+    assert result.audit["accepted"] is True
+    assert result.audit["fallback_reason"] is None
+    assert result.page_payload["meta"]["title"] == "עלויות רווחה"
+    assert result.page_payload["facts"][0]["value"] == "מיסים נדחים"
+    assert result.audit["changed_paths"] == ["meta.title", "facts[0].value", "facts[0].path[0]"]
+    session_dir = Path(str(result.audit["session_dir"]))
+    assert (session_dir / "page_correction_audit.json").is_file()
+
+
+def test_correct_page_json_hebrew_spelling_falls_back_on_forbidden_changes(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    Image.new("RGB", (200, 200), color=(255, 255, 255)).save(image_path)
+    page_payload = {
+        "image": "page.png",
+        "meta": {
+            "entity_name": None,
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": "עלויות מרווחה",
+            "annotation_note": None,
+            "annotation_status": None,
+        },
+        "facts": [
+            {
+                "bbox": [1, 2, 3, 4],
+                "value": "מסים נדחם",
+                "path": [],
+                "currency": "ILS",
+            }
+        ],
+    }
+
+    monkeypatch.setattr(
+        gemini_vlm,
+        "generate_content_from_image",
+        lambda **_kwargs: json.dumps(
+            {
+                "image": "page.png",
+                "meta": {
+                    "entity_name": None,
+                    "page_num": None,
+                    "page_type": "other",
+                    "statement_type": None,
+                    "title": "עלויות רווחה",
+                    "annotation_note": None,
+                    "annotation_status": None,
+                },
+                "facts": [
+                    {
+                        "bbox": [1, 2, 300, 4],
+                        "value": "מיסים נדחים",
+                        "path": [],
+                        "currency": "ILS",
+                    }
+                ],
+            },
+            ensure_ascii=False,
+        ),
+    )
+
+    result = gemini_vlm.correct_page_json_hebrew_spelling(image_path, page_payload)
+
+    assert result.audit["accepted"] is False
+    assert result.audit["fallback_reason"] == "Non-text value changed at facts[0].bbox[2]."
+    assert result.page_payload == page_payload
+
+
 def test_streaming_bbox_only_parser_emits_complete_bbox_objects_before_finalize() -> None:
     parser = gemini_vlm.StreamingBBoxOnlyParser()
 
@@ -496,6 +618,80 @@ def test_generate_content_from_image_writes_timestamped_log_folder(tmp_path: Pat
         "matches_source_image": True,
     }
     assert request_payload["temperature"] == 0.35
+
+
+def test_generate_content_from_image_falls_back_from_unavailable_flash_lite_preview(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.chdir(tmp_path)
+    target_image = tmp_path / "target.png"
+    Image.new("RGB", (32, 48), color=(255, 255, 255)).save(target_image)
+
+    class _FakePart:
+        @staticmethod
+        def from_bytes(*, data, mime_type):
+            return {"kind": "bytes", "size": len(data), "mime": mime_type}
+
+    class _FakeGenerateContentConfig:
+        def __init__(self, **kwargs):
+            self.kwargs = kwargs
+
+    class _FakeMediaResolution:
+        MEDIA_RESOLUTION_HIGH = "HIGH"
+
+    class _FakeTypes:
+        Part = _FakePart
+        GenerateContentConfig = _FakeGenerateContentConfig
+        MediaResolution = _FakeMediaResolution
+
+    class _FakeResponse:
+        text = '{"ok":true}'
+
+        def model_dump(self, mode="json"):
+            _ = mode
+            return {"text": self.text}
+
+    calls: list[str] = []
+
+    class _FakeModels:
+        def generate_content(self, **kwargs):
+            calls.append(str(kwargs["model"]))
+            if kwargs["model"] == "gemini-2.5-flash-lite-preview-09-2025":
+                raise RuntimeError(
+                    "404 NOT_FOUND. {'error': {'code': 404, 'message': 'models/gemini-2.5-flash-lite-preview-09-2025 not found for API version v1beta, or is not supported for generateContent.', 'status': 'NOT_FOUND'}}"
+                )
+            assert kwargs["model"] == "gemini-2.5-flash-lite"
+            return _FakeResponse()
+
+    class _FakeClient:
+        def __init__(self, api_key=None):
+            self.api_key = api_key
+            self.models = _FakeModels()
+
+    class _FakeGenAI:
+        Client = _FakeClient
+
+    monkeypatch.setattr(gemini_vlm, "genai", _FakeGenAI)
+    monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
+
+    text = gemini_vlm.generate_content_from_image(
+        image_path=target_image,
+        prompt="spell check",
+        model="gemini-3.1-flash-lite-preview",
+        api_key="k",
+        response_mime_type="application/json",
+        media_resolution="high",
+    )
+
+    assert text == '{"ok":true}'
+    assert calls == [
+        "gemini-2.5-flash-lite-preview-09-2025",
+        "gemini-2.5-flash-lite",
+    ]
+    log_dirs = list((tmp_path / "gemini_logs").iterdir())
+    assert len(log_dirs) == 1
+    events = [json.loads(line) for line in (log_dirs[0] / "events.jsonl").read_text(encoding="utf-8").splitlines()]
+    fallback_events = [event for event in events if event.get("event") == "model_fallback"]
+    assert len(fallback_events) == 1
+    assert fallback_events[0]["fallback_model"] == "gemini-2.5-flash-lite"
     assert request_payload["request_summary"]["model_family"] == "gemini_3"
     assert request_payload["request_summary"]["thinking_semantics"] == "thinking_level"
     assert request_payload["request_summary"]["effective_thinking_value"] == "HIGH"
@@ -1191,7 +1387,7 @@ def test_generation_config_supports_explicit_medium_level(monkeypatch) -> None:
     monkeypatch.setattr(gemini_vlm, "genai", object())
     monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
 
-    cfg = gemini_vlm._generation_config("gemini-3.1-flash-lite", thinking_level="medium")
+    cfg = gemini_vlm._generation_config("gemini-2.5-flash-lite", thinking_level="medium")
 
     assert isinstance(cfg, _FakeGenerateContentConfig)
     assert cfg.kwargs["thinking_config"].kwargs == {"thinking_level": "MEDIUM"}
@@ -1346,11 +1542,15 @@ def test_generation_config_rejects_unknown_thinking_level(monkeypatch) -> None:
     monkeypatch.setattr(gemini_vlm, "types", _FakeTypes)
 
     with pytest.raises(ValueError, match="thinking_level"):
-        gemini_vlm._generation_config("gemini-3.1-flash-lite", thinking_level="ultra")
+        gemini_vlm._generation_config("gemini-2.5-flash-lite", thinking_level="ultra")
 
 
 def test_resolve_supported_gemini_model_name_maps_generic_pro_alias() -> None:
     assert gemini_vlm.resolve_supported_gemini_model_name("Gemini Pro") == "gemini-3.1-pro-preview"
+
+
+def test_resolve_supported_gemini_model_name_maps_hebrew_fix_preview_alias() -> None:
+    assert gemini_vlm.resolve_supported_gemini_model_name("gemini-3.1-flash-lite-preview") == "gemini-2.5-flash-lite-preview-09-2025"
 
 
 def test_resolve_supported_gemini_model_name_preserves_supported_exact_model() -> None:
@@ -1452,6 +1652,26 @@ def test_parse_page_extraction_text_clears_note_flags_on_non_notes_pages() -> No
     assert extraction.meta.statement_type.value == "income_statement"
     assert extraction.facts[0].note_flag is False
     assert extraction.facts[0].note_num is None
+
+
+def test_normalize_page_extraction_payload_infers_declaration_page_type_from_statement_type() -> None:
+    payload = {
+        "pages": [
+            {
+                "image": "page_0001.png",
+                "meta": {
+                    "page_num": "3",
+                    "statement_type": "auditors_report",
+                },
+                "facts": [],
+            }
+        ]
+    }
+
+    normalized = gemini_vlm._normalize_page_extraction_payload(payload)
+
+    assert normalized["pages"][0]["meta"]["page_type"] == "declaration"
+    assert normalized["pages"][0]["meta"]["statement_type"] == "auditors_report"
 
 
 def test_parse_page_extraction_text_auto_resolves_normalized_bboxes_when_image_path_is_provided(tmp_path: Path) -> None:
@@ -1806,6 +2026,19 @@ def test_parse_selected_field_patch_text_valid_payload() -> None:
     assert parsed["fact_updates"][0]["fact_num"] == 2
     assert parsed["fact_updates"][0]["updates"]["row_role"] == "total"
     assert parsed["fact_updates"][0]["updates"]["period_type"] == "duration"
+
+
+def test_parse_selected_field_patch_text_accepts_declaration_statement_type() -> None:
+    payload = {
+        "meta_updates": {"statement_type": "auditors_report"},
+        "fact_updates": [],
+    }
+    parsed = gemini_vlm.parse_selected_field_patch_text(
+        json.dumps(payload),
+        allowed_fact_fields=set(),
+        allow_statement_type=True,
+    )
+    assert parsed["meta_updates"]["statement_type"] == "auditors_report"
 
 
 def test_parse_selected_field_patch_text_accepts_canonical_equations_updates() -> None:

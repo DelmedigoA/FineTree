@@ -43,7 +43,7 @@ from PyQt5.QtWidgets import (
 )
 
 from .app import AnnotationWindow
-from .annotation_core import parse_import_json_text
+from .annotation_core import normalize_import_payload_to_document, parse_import_json_text
 from .finetune import push_dataset_hub, push_inference_dataset
 from .schema_contract import (
     PROMPT_FACT_KEYS,
@@ -2518,10 +2518,10 @@ class DashboardWindow(QMainWindow):
                     target_doc_id,
                     target_text,
                 ),
-                failure_callback=lambda message: QMessageBox.warning(self, "Load Entire JSON failed", f"Prepare failed: {message}"),
+                failure_callback=lambda message: (
+                    QMessageBox.warning(self, "Load Entire JSON failed", f"Prepare failed: {message}"),
+                ),
             )
-            if started:
-                self.statusBar().showMessage(f"Preparing {doc_id} for full JSON import ...", 5000)
             return
         self._continue_load_workspace_document_entire_json(doc_id, raw_text)
 
@@ -2529,25 +2529,27 @@ class DashboardWindow(QMainWindow):
         summary = self._documents_by_id.get(doc_id)
         if summary is None:
             summary = build_document_summary(doc_id)
-        context = DocumentContext.from_summary(summary)
+        images_dir = Path(summary.images_dir)
+        page_paths = page_image_paths(images_dir)
+        if not page_paths:
+            QMessageBox.warning(self, "Load Entire JSON failed", f"No page images found for {doc_id}.")
+            return
+        window = self.annotator_host.open_document(DocumentContext.from_summary(summary), activate=False)
         try:
-            window = self.annotator_host.open_document(context, activate=False)
             import_summary = window.import_annotations_json_text(
                 raw_text,
                 bbox_mode="original_pixels",
                 max_pixels=None,
                 run_align_after_import=False,
-                show_info_messages=False,
+                show_info_messages=True,
             )
-            window.save_annotations()
         except Exception as exc:
             QMessageBox.warning(self, "Load Entire JSON failed", str(exc))
             return
-        self.reload_workspace()
+        extra_page_count = int(import_summary.get("extra_page_count") or 0)
         info_lines = [
             f"Imported pages: {import_summary['imported_count']}/{import_summary['parsed_page_count']}",
         ]
-        extra_page_count = int(import_summary.get("extra_page_count") or 0)
         if extra_page_count > 0:
             info_lines.append(f"Ignored extra imported pages: {extra_page_count}")
         parse_result = import_summary.get("parse_result")
@@ -2556,6 +2558,7 @@ class DashboardWindow(QMainWindow):
         sanity_message = import_summary.get("sanity_message")
         if isinstance(sanity_message, str) and sanity_message.strip():
             info_lines.append(sanity_message.strip())
+        self.reload_workspace()
         self.statusBar().showMessage(f"Loaded entire JSON into {doc_id}.", 6000)
         QMessageBox.information(self, "Load Entire JSON complete", "\n\n".join(info_lines))
 

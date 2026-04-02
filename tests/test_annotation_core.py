@@ -23,7 +23,9 @@ from finetree_annotator.annotation_core import (
     parse_import_payload,
     normalize_bbox_data,
     normalize_fact_data,
+    normalize_import_payload_to_document,
     serialize_annotations_json,
+    validate_page_text_correction,
 )
 
 
@@ -258,7 +260,140 @@ def test_parse_import_payload_supports_single_page_shape_without_image() -> None
     assert set(states.keys()) == {"page_0002.png"}
     assert states["page_0002.png"].meta["page_type"] == "statements"
     assert states["page_0002.png"].meta["statement_type"] == "income_statement"
-    assert states["page_0002.png"].facts[0].fact["note_ref"] == "5"
+
+
+def test_normalize_import_payload_to_document_assigns_images_by_order() -> None:
+    payload = [
+        {"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]},
+        {"meta": {"page_num": "2"}, "facts": [{"value": "20", "path": []}]},
+    ]
+
+    normalized = normalize_import_payload_to_document(
+        payload,
+        ["page_0001.png", "page_0002.png"],
+        "page_0001.png",
+    )
+
+    assert [page["image"] for page in normalized["pages"]] == ["page_0001.png", "page_0002.png"]
+
+
+def test_normalize_import_payload_to_document_assigns_single_page_to_default_image() -> None:
+    payload = {"pages": [{"meta": {"page_num": "2"}, "facts": [{"value": "10", "path": []}]}]}
+
+    normalized = normalize_import_payload_to_document(
+        payload,
+        ["page_0001.png", "page_0002.png", "page_0003.png"],
+        "page_0002.png",
+    )
+
+    assert [page["image"] for page in normalized["pages"]] == ["page_0002.png"]
+
+
+def test_parse_import_payload_supports_single_stringified_page_list_on_default_page() -> None:
+    text = """['{"meta": {"page_num": "2", "page_type": "statements", "statement_type": "balance_sheet", "title": "דוחות על המצב הכספי"}, "facts": [{"value": "10", "path": []}]}']"""
+
+    result = parse_import_json_text(text)
+    states = parse_import_payload(result.payload, ["page_0001.png", "page_0002.png"], "page_0002.png")
+
+    assert set(states.keys()) == {"page_0002.png"}
+    assert states["page_0002.png"].meta["page_num"] == "2"
+
+
+def test_parse_import_json_text_accepts_single_quoted_page_string_with_trailing_comma() -> None:
+    text = '\'{"meta": {"entity_name": "אמות - דלת לחיים חדשים (ע\\\\\\"ר)", "page_num": "6", "page_type": "statements", "statement_type": "notes_to_financial_statements", "title": "ביאורים לדוחות הכספיים ליום 31 בדצמבר 2024"}, "facts": []}\','
+
+    result = parse_import_json_text(text)
+
+    assert result.payload["meta"]["page_num"] == "6"
+    assert result.payload["meta"]["statement_type"] == "notes_to_financial_statements"
+    assert result.payload["facts"] == []
+
+
+def test_parse_import_json_text_recovers_malformed_page_string_inside_page_string_list() -> None:
+    text = """[
+      '{"meta": {"entity_name": "אמות - דלת לחיים חדשים (ע\\"ר)", "page_num": "6", "page_type": "statements", "statement_type": "notes_to_financial_statements", "title": "ביאורים לדוחות הכספיים ליום 31 בדצמבר 2024"}, "facts": []',
+      '{"meta": {"page_num": "7"}, "facts": []}'
+    ]"""
+
+    result = parse_import_json_text(text)
+
+    assert isinstance(result.payload, dict)
+    assert "pages" in result.payload
+    assert len(result.payload["pages"]) == 2
+    assert result.payload["pages"][0]["meta"]["page_num"] == "6"
+    assert result.payload["pages"][1]["meta"]["page_num"] == "7"
+
+
+def test_validate_page_text_correction_accepts_hebrew_text_changes_on_allowed_paths() -> None:
+    original = {
+        "image": "page_0001.png",
+        "meta": {
+            "entity_name": "חברה מרווחה",
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": "עלויות מרווחה",
+            "annotation_note": None,
+            "annotation_status": None,
+        },
+        "facts": [
+            {
+                "bbox": [1, 2, 3, 4],
+                "value": "מסים נדחם",
+                "path": ["התחייבויות מרווחה"],
+                "currency": "ILS",
+            }
+        ],
+    }
+    corrected = {
+        "image": "page_0001.png",
+        "meta": {
+            "entity_name": "חברה רווחה",
+            "page_num": None,
+            "page_type": "other",
+            "statement_type": None,
+            "title": "עלויות רווחה",
+            "annotation_note": None,
+            "annotation_status": None,
+        },
+        "facts": [
+            {
+                "bbox": [1, 2, 3, 4],
+                "value": "מיסים נדחים",
+                "path": ["התחייבויות רווחה"],
+                "currency": "ILS",
+            }
+        ],
+    }
+
+    result = validate_page_text_correction(original, corrected)
+
+    assert result.accepted is True
+    assert result.rejection_reason is None
+    assert set(result.changed_paths) == {
+        "meta.entity_name",
+        "meta.title",
+        "facts[0].value",
+        "facts[0].path[0]",
+    }
+
+
+def test_validate_page_text_correction_rejects_non_text_changes() -> None:
+    original = {
+        "image": "page_0001.png",
+        "meta": {"entity_name": "חברה", "page_num": None, "page_type": "other", "statement_type": None, "title": None, "annotation_note": None, "annotation_status": None},
+        "facts": [{"bbox": [1, 2, 3, 4], "value": "10", "path": []}],
+    }
+    corrected = {
+        "image": "page_0001.png",
+        "meta": {"entity_name": "חברה", "page_num": None, "page_type": "other", "statement_type": None, "title": None, "annotation_note": None, "annotation_status": None},
+        "facts": [{"bbox": [1, 2, 9, 4], "value": "10", "path": []}],
+    }
+
+    result = validate_page_text_correction(original, corrected)
+
+    assert result.accepted is False
+    assert result.rejection_reason == "Non-text value changed at facts[0].bbox[2]."
 
 
 def test_load_page_states_preserves_equation_field() -> None:
@@ -426,6 +561,26 @@ def test_parse_import_json_text_supports_list_of_page_json_strings() -> None:
     assert result.payload["pages"][1]["facts"][0]["value"] == "20"
 
 
+def test_parse_import_json_text_flattens_nested_page_string_lists() -> None:
+    raw = json.dumps(
+        [
+            json.dumps(
+                [
+                    {"meta": {"page_num": "1"}, "facts": []},
+                    {"meta": {"page_num": "2"}, "facts": []},
+                ]
+            ),
+            json.dumps({"meta": {"page_num": "3"}, "facts": []}),
+        ]
+    )
+
+    result = parse_import_json_text(raw)
+
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 3
+    assert [page["meta"]["page_num"] for page in result.payload["pages"]] == ["1", "2", "3"]
+
+
 def test_parse_import_payload_maps_page_sequence_by_order_and_ignores_extras() -> None:
     payload = {
         "pages": [
@@ -442,7 +597,7 @@ def test_parse_import_payload_maps_page_sequence_by_order_and_ignores_extras() -
     assert states["page_0002.png"].meta["page_num"] == "2"
 
 
-def test_parse_import_json_text_rejects_invalid_page_string_inside_list() -> None:
+def test_parse_import_json_text_recovers_invalid_page_string_inside_list() -> None:
     raw = json.dumps(
         [
             json.dumps({"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]}),
@@ -450,8 +605,39 @@ def test_parse_import_json_text_rejects_invalid_page_string_inside_list() -> Non
         ]
     )
 
-    with pytest.raises(ValueError, match="Could not parse page 2 JSON string"):
-        parse_import_json_text(raw)
+    result = parse_import_json_text(raw)
+
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 2
+    assert [page["meta"]["page_num"] for page in result.payload["pages"]] == ["1", "2"]
+
+
+def test_parse_import_json_text_recovers_malformed_top_level_page_string_list() -> None:
+    raw = """[
+      '{"meta": {"page_num": "1"}, "facts": []}',
+      '{"meta": {"page_num": "2"}, "facts": []}',
+      '{"meta": {"page_num": "3"}, "facts": []}',
+      '{"meta": {"page_num": "4"}, "facts": []}'
+    """
+
+    result = parse_import_json_text(raw)
+
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 4
+    assert [page["meta"]["page_num"] for page in result.payload["pages"]] == ["1", "2", "3", "4"]
+
+
+def test_parse_import_json_text_recovers_line_wrapped_page_sequence_fixture() -> None:
+    raw = (Path(__file__).resolve().parents[1] / "some_output.txt").read_text(encoding="utf-8")
+
+    result = parse_import_json_text(raw)
+
+    assert result.recovered is True
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 16
+    assert result.payload["pages"][0]["meta"]["page_type"] == "title"
+    assert result.payload["pages"][3]["meta"]["page_num"] == "2"
+    assert result.payload["pages"][-1]["meta"]["page_num"] == "14"
 
 
 def test_parse_import_payload_tolerates_invalid_meta_and_malformed_bbox() -> None:
@@ -484,9 +670,10 @@ def test_parse_import_json_text_recovers_complete_facts_from_truncated_single_pa
 
     assert result.recovered is True
     assert result.message is not None
-    assert "Recovered import from invalid JSON" in result.message
-    assert result.payload["meta"]["page_num"] == "3"
-    assert result.payload["facts"] == [{"bbox": [1, 2, 3, 4], "value": "10", "path": []}]
+    assert "Recovered import from" in result.message
+    assert isinstance(result.payload, dict)
+    assert result.payload["pages"][0]["meta"]["page_num"] == "3"
+    assert result.payload["pages"][0]["facts"] == [{"bbox": [1, 2, 3, 4], "value": "10", "path": []}]
 
 
 def test_convert_imported_page_states_normalized_1000_mode_scales_bbox() -> None:

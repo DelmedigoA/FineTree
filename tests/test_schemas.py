@@ -241,13 +241,28 @@ def test_page_meta_accepts_other_declaration_statement_type() -> None:
         {
             "entity_name": None,
             "page_num": None,
-            "page_type": "statements",
+            "page_type": "declaration",
             "statement_type": "other_declaration",
             "title": None,
         }
     )
+    assert meta.page_type.value == "declaration"
     assert meta.statement_type is not None
     assert meta.statement_type.value == "other_declaration"
+
+
+def test_page_meta_infers_declaration_page_type_from_statement_type() -> None:
+    meta = PageMeta.model_validate({"statement_type": "auditors_report"})
+    assert meta.page_type.value == "declaration"
+    assert meta.statement_type is not None
+    assert meta.statement_type.value == "auditors_report"
+
+
+def test_page_meta_rejects_incompatible_page_type_statement_type_pair() -> None:
+    with pytest.raises(ValidationError):
+        PageMeta.model_validate({"page_type": "declaration", "statement_type": "balance_sheet"})
+    with pytest.raises(ValidationError):
+        PageMeta.model_validate({"page_type": "other", "statement_type": "income_statement"})
 
 
 def test_page_meta_accepts_annotation_note() -> None:

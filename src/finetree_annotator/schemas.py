@@ -404,10 +404,10 @@ _LEGACY_PAGE_TYPE_MAPPING: dict[str, tuple[str, str | None]] = {
     "statement_of_activities": ("statements", "statement_of_activities"),
     "notes": ("statements", "notes_to_financial_statements"),
     "notes_to_financial_statements": ("statements", "notes_to_financial_statements"),
-    "board_of_directors_report": ("statements", "board_of_directors_report"),
-    "auditor_report": ("statements", "auditors_report"),
-    "auditors_report": ("statements", "auditors_report"),
-    "other_declaration": ("statements", "other_declaration"),
+    "board_of_directors_report": ("declaration", "board_of_directors_report"),
+    "auditor_report": ("declaration", "auditors_report"),
+    "auditors_report": ("declaration", "auditors_report"),
+    "other_declaration": ("declaration", "other_declaration"),
     "statement_of_changes_in_equity": ("statements", "statement_of_changes_in_equity"),
     "other": ("other", None),
 }
@@ -443,6 +443,40 @@ class StatementType(str, Enum):
     auditors_report = "auditors_report"
     statement_of_activities = "statement_of_activities"
     other_declaration = "other_declaration"
+
+
+DECLARATION_STATEMENT_TYPE_VALUES: frozenset[str] = frozenset(
+    {
+        StatementType.board_of_directors_report.value,
+        StatementType.auditors_report.value,
+        StatementType.other_declaration.value,
+    }
+)
+
+
+def infer_page_type_from_statement_type(value: Any) -> str | None:
+    normalized = _normalize_statement_type_value(value)
+    if normalized is None:
+        return None
+    if normalized in DECLARATION_STATEMENT_TYPE_VALUES:
+        return PageType.declaration.value
+    return PageType.statements.value
+
+
+def _validate_page_type_statement_type_pair(page_type: str, statement_type: str | None) -> None:
+    if page_type == PageType.declaration.value:
+        if statement_type not in DECLARATION_STATEMENT_TYPE_VALUES:
+            allowed = ", ".join(sorted(DECLARATION_STATEMENT_TYPE_VALUES))
+            raise ValueError(f"declaration pages must use statement_type {allowed}.")
+        return
+    if statement_type is None:
+        return
+    required_page_type = infer_page_type_from_statement_type(statement_type)
+    if required_page_type == page_type:
+        return
+    if required_page_type == PageType.declaration.value:
+        raise ValueError("board, auditor, and other declaration statement types require page_type='declaration'.")
+    raise ValueError("financial statement statement_type values require page_type='statements'.")
 
 
 class ValueType(str, Enum):
@@ -595,7 +629,7 @@ class PageMeta(BaseModel):
             else:
                 data["page_type"] = page_type
         elif raw_statement_type not in ("", None):
-            data["page_type"] = PageType.statements.value
+            data["page_type"] = infer_page_type_from_statement_type(raw_statement_type) or PageType.statements.value
 
         if raw_statement_type in ("", None) and raw_legacy_type not in ("", None) and raw_page_type in ("", None, PageType.other.value):
             if is_legacy_page_type_value(raw_legacy_type):
@@ -635,6 +669,14 @@ class PageMeta(BaseModel):
     @classmethod
     def _normalize_annotation_status(cls, value: Any) -> str | None:
         return _normalize_page_annotation_status_value(value)
+
+    @model_validator(mode="after")
+    def _validate_page_type_statement_type(self) -> "PageMeta":
+        _validate_page_type_statement_type_pair(
+            self.page_type.value,
+            self.statement_type.value if self.statement_type is not None else None,
+        )
+        return self
 
     @property
     def type(self) -> StatementType | PageType:

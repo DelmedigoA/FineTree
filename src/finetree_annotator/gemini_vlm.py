@@ -17,6 +17,7 @@ import re
 import shutil
 import subprocess
 import sys
+from textwrap import dedent
 import tomllib
 from pathlib import Path
 from typing import Any, Iterator, Optional
@@ -32,10 +33,18 @@ except Exception:  # pragma: no cover
     types = None
 
 from .bbox_utils import bbox_to_list, denormalize_bbox_from_1000
+from .annotation_core import validate_page_text_correction
 from .fact_normalization import normalize_fact_payload, normalize_note_num
 from .fact_ordering import normalize_document_meta
 from .schema_registry import SchemaRegistry
-from .schemas import ExtractedFact, Fact, PageExtraction, PageMeta, split_legacy_page_type
+from .schemas import (
+    ExtractedFact,
+    Fact,
+    PageExtraction,
+    PageMeta,
+    infer_page_type_from_statement_type,
+    split_legacy_page_type,
+)
 from .vision_resize import (
     DEFAULT_QWEN_VISION_FACTOR,
     fallback_smart_resize_dimensions as _shared_fallback_smart_resize_dimensions,
@@ -44,6 +53,7 @@ from .vision_resize import (
 
 
 DEFAULT_GEMINI_MODEL = "gemini-3-flash-preview"
+DEFAULT_GEMINI_PAGE_SPELLING_MODEL = "gemini-3.1-flash-lite-preview"
 VERTEX_TUNED_GEMINI_MODEL = "gemini-flash-hf-tuned"
 DEFAULT_VERTEX_PROJECT_ID = "gen-lang-client-0533315636"
 DEFAULT_VERTEX_ENDPOINT_ID = "4766539037060104192"
@@ -57,7 +67,9 @@ _BBOX_MODE_SWITCH_MARGIN = 0.08
 _VERTEX_OAUTH_SCOPE = "https://www.googleapis.com/auth/cloud-platform"
 SUPPORTED_GEMINI_MODELS: tuple[str, ...] = (
     "gemini-3-flash-preview",
-    "gemini-3.1-flash-lite",
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash-lite-preview-09-2025",
+    "gemini-3.1-flash-lite-preview",
     "gemini-3.1-pro-preview",
     "gemini-2.5-flash",
     "gemini-2.5-pro",
@@ -117,6 +129,7 @@ _PROMPT_IMAGE_SIZE_RE = re.compile(
 )
 _FACT_TRACE_FILE_NAME = "fact_trace.jsonl"
 _ISSUE_SUMMARY_FILE_NAME = "issue_summary.json"
+_PAGE_CORRECTION_AUDIT_FILE_NAME = "page_correction_audit.json"
 
 
 def _normalize_gemini_model_name(model_name: Optional[str]) -> str:
@@ -141,6 +154,8 @@ def resolve_supported_gemini_model_name(model_name: Optional[str]) -> str:
         return DEFAULT_GEMINI_MODEL
     if normalized == VERTEX_TUNED_GEMINI_MODEL:
         return VERTEX_TUNED_GEMINI_MODEL
+    if normalized == "gemini-3.1-flash-lite-preview":
+        return "gemini-2.5-flash-lite-preview-09-2025"
     direct = _SUPPORTED_GEMINI_MODEL_MAP.get(normalized)
     if direct is not None:
         return direct
@@ -150,9 +165,11 @@ def resolve_supported_gemini_model_name(model_name: Optional[str]) -> str:
         return "gemini-3.1-pro-preview"
     if "flash" in normalized:
         if "2.5" in normalized:
+            if "preview" in normalized:
+                return "gemini-2.5-flash-lite-preview-09-2025"
             return "gemini-2.5-flash"
         if "lite" in normalized or "3.1" in normalized:
-            return "gemini-3.1-flash-lite"
+            return "gemini-2.5-flash-lite-preview-09-2025" if "preview" in normalized else "gemini-2.5-flash-lite"
         return "gemini-3-flash-preview"
     return str(model_name or "").strip() or DEFAULT_GEMINI_MODEL
 
@@ -167,6 +184,16 @@ def _is_gemini_3_pro_model(model_name: Optional[str]) -> bool:
     if not normalized.startswith("gemini-3"):
         return False
     return "pro" in normalized and "flash" not in normalized
+
+
+def _fallback_model_for_not_found_gemini_preview(model_name: Optional[str], exc: Exception) -> str | None:
+    normalized = _normalize_gemini_model_name(model_name)
+    if normalized != "gemini-2.5-flash-lite-preview-09-2025":
+        return None
+    message = str(exc).lower()
+    if "404" not in message and "not_found" not in message and "not found" not in message:
+        return None
+    return "gemini-2.5-flash-lite"
 
 
 def _normalize_thinking_level(thinking_level: Optional[str]) -> str | None:
@@ -551,6 +578,69 @@ class _PreparedGeminiImage:
             self.original_width != self.prepared_width
             or self.original_height != self.prepared_height
         )
+
+
+@dataclass(frozen=True)
+class PageJsonCorrectionResult:
+    page_payload: dict[str, Any]
+    audit: dict[str, Any]
+    session_dir: Path | None = None
+
+
+def _default_page_json_hebrew_correction_prompt_template() -> str:
+    return dedent(
+        """
+        You are correcting Hebrew spelling mistakes in a single page JSON object using the page image as ground truth.
+
+        You receive:
+        1. The page image.
+        2. One page JSON object.
+
+        Return ONLY valid JSON for that same page object.
+        Do NOT return markdown, code fences, comments, prose, or extra keys.
+
+        Hard rules:
+        1. Return the same page JSON object structure exactly.
+        2. Never add, remove, rename, or reorder array items.
+        3. Never change `image`, any `bbox`, numbers, booleans, nulls, enums, dates, equations, or any other machine-structured values.
+        4. Only make minimal Hebrew spelling corrections in human-readable text fields inside `meta` and `facts`.
+        5. If the page image itself contains the misspelling, keep the misspelling exactly as shown on the image.
+        6. Never rewrite wording, improve style, normalize phrasing, or improve Qwen semantics.
+        7. If no correction is needed, return the input page JSON unchanged.
+
+        Input page JSON:
+        {{PAGE_JSON}}
+        """
+    ).strip()
+
+
+def _resolve_page_json_hebrew_correction_prompt_path() -> Path | None:
+    candidates = [
+        Path.cwd() / "prompts" / "gemini_page_json_spelling_prompt.txt",
+        Path(__file__).resolve().parents[2] / "prompts" / "gemini_page_json_spelling_prompt.txt",
+    ]
+    seen: set[Path] = set()
+    for path in candidates:
+        resolved = path.resolve()
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        if resolved.is_file():
+            return resolved
+    return None
+
+
+def _page_json_hebrew_correction_prompt_template() -> str:
+    path = _resolve_page_json_hebrew_correction_prompt_path()
+    if path is None:
+        return _default_page_json_hebrew_correction_prompt_template()
+    return path.read_text(encoding="utf-8")
+
+
+def _build_page_json_hebrew_correction_prompt(page_payload: dict[str, Any], *, template: str | None = None) -> str:
+    prompt_template = template or _page_json_hebrew_correction_prompt_template()
+    page_json = json.dumps(page_payload, ensure_ascii=False, indent=2)
+    return prompt_template.replace("{{PAGE_JSON}}", page_json)
 
 
 def _fallback_smart_resize_dimensions(
@@ -1034,6 +1124,16 @@ def _update_gemini_log_request(session_dir: Path, updates: dict[str, Any]) -> No
     payload.update(updates)
     (session_dir / "request.json").write_text(
         json.dumps(payload, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
+
+
+def _write_page_correction_audit(session_dir: Path | None, payload: dict[str, Any]) -> None:
+    if session_dir is None:
+        return
+    audit_path = session_dir / _PAGE_CORRECTION_AUDIT_FILE_NAME
+    audit_path.write_text(
+        json.dumps(_serialize_gemini_log_value(payload), ensure_ascii=False, indent=2, default=str),
         encoding="utf-8",
     )
 
@@ -2756,16 +2856,16 @@ def _normalize_page_extraction_payload(payload: Any) -> dict[str, Any]:
     if raw_page_type in ("", None) and raw_statement_type in ("", None):
         page_type, statement_type = split_legacy_page_type(legacy_type)
     else:
-        page_type = _to_optional_str(raw_page_type) or "statements"
         statement_type = _to_optional_str(raw_statement_type)
-        if page_type not in _VALID_PAGE_TYPES:
-            page_type, inferred_statement_type = split_legacy_page_type(page_type)
-            if statement_type is None:
-                statement_type = inferred_statement_type
         if statement_type is not None:
             statement_type = statement_type.strip()
         if statement_type not in _VALID_STATEMENT_TYPES:
             statement_type = None
+        page_type = _to_optional_str(raw_page_type) or infer_page_type_from_statement_type(statement_type) or "statements"
+        if page_type not in _VALID_PAGE_TYPES:
+            page_type, inferred_statement_type = split_legacy_page_type(page_type)
+            if statement_type is None:
+                statement_type = inferred_statement_type
 
     if page_type not in _VALID_PAGE_TYPES:
         page_type = "other"
@@ -3591,7 +3691,52 @@ def generate_content_from_image(
         },
     )
     _append_gemini_log_event(session_dir, "thinking_request_summary", request_summary)
-    response = client.models.generate_content(**request_kwargs)
+    active_model = resolved_model
+    try:
+        response = client.models.generate_content(**request_kwargs)
+    except Exception as exc:
+        fallback_model = _fallback_model_for_not_found_gemini_preview(resolved_model, exc)
+        if fallback_model is None:
+            raise
+        _append_gemini_log_event(
+            session_dir,
+            "model_fallback",
+            {
+                "requested_model": resolved_model,
+                "fallback_model": fallback_model,
+                "reason": str(exc),
+            },
+        )
+        active_model = fallback_model
+        fallback_key = resolve_gemini_api_key_for_model(fallback_model, explicit_api_key=api_key)
+        fallback_client = _create_genai_client_for_model(fallback_model, fallback_key)
+        request_kwargs["model"] = fallback_model
+        fallback_config = _generation_config(
+            fallback_model,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            system_prompt=system_prompt,
+            temperature=temperature,
+            response_mime_type=response_mime_type,
+            media_resolution=media_resolution,
+        )
+        if fallback_config is not None:
+            request_kwargs["config"] = fallback_config
+        else:
+            request_kwargs.pop("config", None)
+        fallback_summary = _thinking_request_summary(
+            fallback_model,
+            enable_thinking=enable_thinking,
+            thinking_level=thinking_level,
+            temperature=temperature,
+            config=fallback_config,
+        )
+        _append_gemini_log_event(
+            session_dir,
+            "thinking_request_summary_retry",
+            fallback_summary,
+        )
+        response = fallback_client.models.generate_content(**request_kwargs)
     text = response.text or ""
     response_summary = _response_thinking_summary(response)
     _append_gemini_log_event(
@@ -3602,7 +3747,14 @@ def generate_content_from_image(
             "raw": _serialize_gemini_log_value(response),
         },
     )
-    _append_gemini_log_event(session_dir, "thinking_response_summary", response_summary)
+    _append_gemini_log_event(
+        session_dir,
+        "thinking_response_summary",
+        {
+            **response_summary,
+            "effective_model": active_model,
+        },
+    )
     _write_gemini_log_output(session_dir, text=text, raw=response)
     _finalize_bbox_diagnostics(session_dir)
     return text
@@ -3942,6 +4094,105 @@ def generate_structured_json_from_image(
     return text
 
 
+def correct_page_json_hebrew_spelling(
+    image_path: Path,
+    page_payload: dict[str, Any],
+    model: str = DEFAULT_GEMINI_PAGE_SPELLING_MODEL,
+    *,
+    api_key: Optional[str] = None,
+    prompt_template: Optional[str] = None,
+    temperature: float = 0.0,
+) -> PageJsonCorrectionResult:
+    original_page = deepcopy(page_payload if isinstance(page_payload, dict) else {})
+    resolved_model = resolve_supported_gemini_model_name(model)
+    prompt = _build_page_json_hebrew_correction_prompt(
+        original_page,
+        template=prompt_template,
+    )
+    session_dir: Path | None = None
+    fallback_reason: str | None = None
+    raw_text = ""
+    model_output_payload: Any = None
+    corrected_page = deepcopy(original_page)
+    changed_paths: list[str] = []
+    changed_fields: list[dict[str, Any]] = []
+
+    try:
+        session_dir = _create_gemini_log_session(
+            operation="page_json_hebrew_correction",
+            model=resolved_model,
+            image_path=image_path,
+            prompt=prompt,
+            mime_type=None,
+            system_prompt=None,
+            temperature=temperature,
+            enable_thinking=False,
+            thinking_level="minimal",
+            extra_request={
+                "page_payload": _serialize_gemini_log_value(original_page),
+                "page_image_name": original_page.get("image"),
+            },
+        )
+        raw_text = generate_content_from_image(
+            image_path=image_path,
+            prompt=prompt,
+            model=resolved_model,
+            mime_type=None,
+            api_key=api_key,
+            system_prompt=None,
+            temperature=temperature,
+            enable_thinking=False,
+            thinking_level="minimal",
+            response_mime_type="application/json",
+            media_resolution=DEFAULT_GEMINI_GT_MEDIA_RESOLUTION,
+            session_dir=session_dir,
+        )
+        model_output_payload = _parse_llm_json(raw_text)
+        if not isinstance(model_output_payload, dict):
+            raise ValueError("Gemini page correction output must be a JSON object.")
+        validation = validate_page_text_correction(original_page, model_output_payload)
+        if not validation.accepted:
+            fallback_reason = validation.rejection_reason or "Page correction validation failed."
+        else:
+            corrected_page = deepcopy(model_output_payload)
+            changed_paths = list(validation.changed_paths)
+            changed_fields = [dict(entry) for entry in validation.changed_fields]
+    except Exception as exc:
+        fallback_reason = str(exc).strip() or exc.__class__.__name__
+
+    audit = {
+        "model": resolved_model,
+        "image_path": str(image_path),
+        "page_image_name": original_page.get("image"),
+        "raw_model_text": raw_text,
+        "original_page_payload": deepcopy(original_page),
+        "model_output_page_payload": deepcopy(model_output_payload) if isinstance(model_output_payload, dict) else model_output_payload,
+        "corrected_page_payload": deepcopy(corrected_page),
+        "changed_paths": changed_paths,
+        "changed_fields": changed_fields,
+        "accepted": fallback_reason is None,
+        "fallback_reason": fallback_reason,
+        "session_dir": str(session_dir) if session_dir is not None else None,
+    }
+    if session_dir is not None:
+        _append_gemini_log_event(session_dir, "page_correction_audit", audit)
+        _update_gemini_log_request(
+            session_dir,
+            {
+                "page_correction_audit_file": _PAGE_CORRECTION_AUDIT_FILE_NAME,
+                "page_correction_accepted": fallback_reason is None,
+                "page_correction_fallback_reason": fallback_reason,
+                "page_correction_changed_paths": changed_paths,
+            },
+        )
+        _write_page_correction_audit(session_dir, audit)
+    return PageJsonCorrectionResult(
+        page_payload=deepcopy(corrected_page),
+        audit=audit,
+        session_dir=session_dir,
+    )
+
+
 def generate_page_extraction_from_image(
     image_path: Path,
     prompt: str,
@@ -4149,12 +4400,13 @@ def parse_selected_field_patch_text(
         if unknown_meta_keys:
             raise ValueError(f"meta_updates contains unknown keys: {', '.join(unknown_meta_keys)}.")
         if allow_statement_type and "statement_type" in raw_meta_updates:
+            normalized_statement_type = raw_meta_updates.get("statement_type")
             normalized_meta = PageMeta.model_validate(
                 {
                     "entity_name": None,
                     "page_num": None,
-                    "page_type": "statements",
-                    "statement_type": raw_meta_updates.get("statement_type"),
+                    "page_type": infer_page_type_from_statement_type(normalized_statement_type) or "statements",
+                    "statement_type": normalized_statement_type,
                     "title": None,
                 }
             ).model_dump(mode="json")

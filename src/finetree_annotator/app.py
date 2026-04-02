@@ -43,6 +43,7 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QPushButton,
     QPlainTextEdit,
+    QProgressBar,
     QShortcut,
     QScrollArea,
     QSpinBox,
@@ -114,7 +115,7 @@ from .equation_integrity import audit_and_rebuild_financial_facts, resequence_fa
 from .fact_ordering import canonical_fact_order_indices, compact_document_meta, normalize_document_meta, resolve_reading_direction
 from .fact_normalization import normalize_annotation_payload
 from .finetune.config import load_finetune_config
-from .gemini_vlm import DEFAULT_GEMINI_MODEL
+from .gemini_vlm import DEFAULT_GEMINI_MODEL, DEFAULT_GEMINI_PAGE_SPELLING_MODEL, correct_page_json_hebrew_spelling
 from .local_doctr import DEFAULT_DOCTR_LOG_DIR, local_detector_model_name
 from .gemini_few_shot import (
     DEFAULT_2015_TWO_SHOT_SELECTIONS,
@@ -1882,7 +1883,86 @@ class PageJsonDialog(QDialog):
         return self.text_view.find(needle, flags)
 
 
+class PageGeminiFixProgressDialog(QDialog):
+    def __init__(self, *, parent: Optional[QWidget] = None) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("Gemini Hebrew Fix")
+        self.setModal(True)
+        self.setWindowModality(Qt.ApplicationModal)
+        self.setFixedSize(380, 150)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(16, 14, 16, 14)
+        root.setSpacing(8)
+
+        title = QLabel("Correcting Hebrew spelling on the current page")
+        title.setObjectName("sectionTitle")
+        title.setWordWrap(True)
+        root.addWidget(title)
+
+        self.stage_label = QLabel("Starting...")
+        self.stage_label.setWordWrap(True)
+        root.addWidget(self.stage_label)
+
+        counters = QHBoxLayout()
+        counters.setContentsMargins(0, 0, 0, 0)
+        counters.setSpacing(8)
+        self.fact_count_label = QLabel("Facts: -")
+        self.changed_count_label = QLabel("Changed text fields: -")
+        counters.addWidget(self.fact_count_label)
+        counters.addWidget(self.changed_count_label)
+        counters.addStretch(1)
+        root.addLayout(counters)
+
+        self.progress = QProgressBar()
+        self.progress.setRange(0, 0)
+        self.progress.setTextVisible(False)
+        root.addWidget(self.progress)
+
+    def set_stage(self, stage: str) -> None:
+        self.stage_label.setText(str(stage or "").strip() or "Working...")
+
+    def set_counters(self, *, fact_count: int | None = None, changed_text_fields: int | None = None) -> None:
+        self.fact_count_label.setText(
+            f"Facts: {int(fact_count):,}" if fact_count is not None else "Facts: -"
+        )
+        self.changed_count_label.setText(
+            f"Changed text fields: {int(changed_text_fields):,}"
+            if changed_text_fields is not None
+            else "Changed text fields: -"
+        )
+
+
+class PageGeminiFixWorker(QObject):
+    completed = pyqtSignal(object)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        image_path: Path,
+        page_payload: dict[str, Any],
+        *,
+        model: str = DEFAULT_GEMINI_PAGE_SPELLING_MODEL,
+    ) -> None:
+        super().__init__()
+        self.image_path = Path(image_path)
+        self.page_payload = dict(page_payload or {})
+        self.model = str(model or DEFAULT_GEMINI_PAGE_SPELLING_MODEL)
+
+    def run(self) -> None:
+        try:
+            result = correct_page_json_hebrew_spelling(self.image_path, self.page_payload, model=self.model)
+            self.completed.emit(result)
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
 class AnnotationWindow(QMainWindow):
+    _INSPECTOR_FONT_POINT_DELTA = 2
+
     annotations_saved = pyqtSignal(object)
     annotations_save_status = pyqtSignal(object)
     document_issues_changed = pyqtSignal(object)
@@ -1892,6 +1972,7 @@ class AnnotationWindow(QMainWindow):
     import_align_bboxes_page_completed = pyqtSignal(str, int)
     import_align_bboxes_page_failed = pyqtSignal(str, str)
     import_align_bboxes_page_stopped = pyqtSignal(str, str)
+    import_align_bboxes_queue_finished = pyqtSignal(object)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -1954,6 +2035,11 @@ class AnnotationWindow(QMainWindow):
         self._gemini_fill_snapshot: Optional[dict[str, Any]] = None
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
+        self._page_gemini_fix_thread: Optional[QThread] = None
+        self._page_gemini_fix_worker: Optional[PageGeminiFixWorker] = None
+        self._page_gemini_fix_target_page: Optional[str] = None
+        self._page_gemini_fix_snapshot: Optional[dict[str, Any]] = None
+        self._page_gemini_fix_progress_dialog: Optional[PageGeminiFixProgressDialog] = None
         self._gemini_model_name = DEFAULT_GEMINI_MODEL
         self._gemini_max_facts = 0
         self._gemini_temperature: Optional[float] = None
@@ -2177,6 +2263,7 @@ class AnnotationWindow(QMainWindow):
             (self.import_btn, "Import", "Import annotations JSON", None),
             (self.detect_bbox_btn, "Detect bbox", "Run local bbox detection on the current page", None),
             (self.auto_annotate_btn, "Annotate", "Run Gemini ground truth with the 2-shot preset", None),
+            (self.gemini_fix_btn, "Gemini Fix", "Correct Hebrew spelling on the current page", self._load_repo_icon(GEMINI_BUTTON_ICON)),
             (self.align_bboxes_btn, "Align bboxes", "Replace matched Gemini bboxes with local detector output", None),
             (self.test_no_bbox_btn, "Test No-Bbox", "Run Gemini without bboxes then auto-align with local detector (pipeline test)", None),
             (self.ai_btn, "AI", "Open AI actions", self._load_repo_icon(GEMINI_BUTTON_ICON)),
@@ -2248,6 +2335,7 @@ class AnnotationWindow(QMainWindow):
         self.import_btn = QPushButton("Import JSON")
         self.detect_bbox_btn = QPushButton("Detect bbox")
         self.auto_annotate_btn = QPushButton("Annotate")
+        self.gemini_fix_btn = QPushButton("Gemini Fix")
         self.align_bboxes_btn = QPushButton("Align bboxes")
         self.test_no_bbox_btn = QPushButton("Test No-Bbox")
         self.ai_btn = QPushButton("AI")
@@ -2274,6 +2362,7 @@ class AnnotationWindow(QMainWindow):
             self.import_btn,
             self.detect_bbox_btn,
             self.auto_annotate_btn,
+            self.gemini_fix_btn,
             self.align_bboxes_btn,
             self.test_no_bbox_btn,
             self.ai_btn,
@@ -2295,7 +2384,7 @@ class AnnotationWindow(QMainWindow):
         self._apply_top_nav_icons()
         self.ai_btn.setProperty("variant", "primary")
         self.save_btn.setProperty("variant", "primary")
-        for button in (self.import_btn, self.page_json_btn, self.help_btn, self.apply_entity_all_btn, self.exit_btn):
+        for button in (self.import_btn, self.page_json_btn, self.help_btn, self.apply_entity_all_btn, self.exit_btn, self.gemini_fix_btn):
             button.setProperty("variant", "ghost")
         self.page_flag_btn.setProperty("variant", "ghost")
 
@@ -2328,6 +2417,7 @@ class AnnotationWindow(QMainWindow):
         gt_layout.setSpacing(4)
         gt_layout.addWidget(self.detect_bbox_btn)
         gt_layout.addWidget(self.auto_annotate_btn)
+        gt_layout.addWidget(self.gemini_fix_btn)
         gt_layout.addWidget(self.align_bboxes_btn)
         gt_layout.addWidget(self.test_no_bbox_btn)
         gt_layout.addWidget(self.ai_btn)
@@ -2417,6 +2507,7 @@ class AnnotationWindow(QMainWindow):
         splitter.addWidget(self.view)
 
         right = QWidget()
+        self.inspector_panel = right
         right.setObjectName("inspectorPanel")
         right.setMinimumWidth(320)
         right_layout = QVBoxLayout(right)
@@ -3120,6 +3211,7 @@ class AnnotationWindow(QMainWindow):
         right_scroll.setWidgetResizable(True)
         right_scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         right_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self._apply_inspector_ui_sizing()
         right_scroll.setWidget(right)
         splitter.addWidget(right_scroll)
         splitter.setChildrenCollapsible(False)
@@ -3154,6 +3246,7 @@ class AnnotationWindow(QMainWindow):
         self.import_btn.clicked.connect(self.import_annotations_json)
         self.detect_bbox_btn.clicked.connect(self.detect_local_bboxes)
         self.auto_annotate_btn.clicked.connect(self.annotate_current_page)
+        self.gemini_fix_btn.clicked.connect(self.gemini_hebrew_fix_current_page)
         self.align_bboxes_btn.clicked.connect(self.align_bboxes_current_page)
         self.test_no_bbox_btn.clicked.connect(self.test_no_bbox_pipeline_current_page)
         self.ai_btn.clicked.connect(self.open_ai_dialog)
@@ -3352,6 +3445,19 @@ class AnnotationWindow(QMainWindow):
         if base_font.pointSize() < 11:
             base_font.setPointSize(11)
         self.setFont(base_font)
+
+    def _apply_inspector_ui_sizing(self) -> None:
+        inspector_panel = getattr(self, "inspector_panel", None)
+        if not isinstance(inspector_panel, QWidget):
+            return
+        inspector_font = QFont(self.font())
+        point_size = inspector_font.pointSizeF()
+        if point_size <= 0:
+            point_size = float(max(self.font().pointSize(), 11))
+        inspector_font.setPointSizeF(point_size + float(self._INSPECTOR_FONT_POINT_DELTA))
+        inspector_panel.setFont(inspector_font)
+        for child in inspector_panel.findChildren(QWidget):
+            child.setFont(inspector_font)
 
     def _path_tone_brushes(self, tone: Optional[str]) -> tuple[QBrush, QBrush] | None:
         if tone is None:
@@ -6776,6 +6882,16 @@ class AnnotationWindow(QMainWindow):
                 f"{message[:-1]} {failed_pages} page(s) kept imported placeholders because alignment failed."
             )
         self.statusBar().showMessage(message, 8000)
+        self.import_align_bboxes_queue_finished.emit(
+            {
+                "total_pages": total_pages,
+                "completed_pages": completed_pages,
+                "failed_pages": failed_pages,
+                "matched_count": matched_count,
+                "unmatched_count": unmatched_count,
+                "message": message,
+            }
+        )
         self._reset_import_align_state()
 
     def _consume_import_align_page(self, page_name: str) -> None:
@@ -7245,6 +7361,181 @@ class AnnotationWindow(QMainWindow):
         if not self._ensure_document_editable("Gemini Fix"):
             return
         self.open_ai_dialog(provider=AIProvider.GEMINI, action=AIActionKind.FIX_SELECTED)
+
+    def _current_page_payload_for_gemini_fix(self) -> tuple[dict[str, Any], int]:
+        payload, _equation_findings, _format_warning_findings = self._build_live_annotations_payload()
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            raise ValueError("No current page is loaded.")
+        pages = payload.get("pages")
+        if not isinstance(pages, list) or self.current_index >= len(pages):
+            raise ValueError("Could not build the current page JSON.")
+        page_payload = pages[self.current_index]
+        if not isinstance(page_payload, dict):
+            raise ValueError("Could not build the current page JSON.")
+        facts = page_payload.get("facts")
+        fact_count = len(facts) if isinstance(facts, list) else 0
+        return deepcopy(page_payload), fact_count
+
+    @staticmethod
+    def _page_payload_fingerprint(page_payload: dict[str, Any]) -> str:
+        return json.dumps(page_payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+    def _show_page_gemini_fix_progress(
+        self,
+        stage: str,
+        *,
+        fact_count: int | None = None,
+        changed_text_fields: int | None = None,
+    ) -> None:
+        dialog = self._page_gemini_fix_progress_dialog
+        if dialog is None:
+            dialog = PageGeminiFixProgressDialog(parent=self)
+            self._page_gemini_fix_progress_dialog = dialog
+        dialog.set_stage(stage)
+        dialog.set_counters(fact_count=fact_count, changed_text_fields=changed_text_fields)
+        dialog.show()
+        dialog.raise_()
+        dialog.activateWindow()
+        self.statusBar().showMessage(str(stage or "").strip(), 3000)
+
+    def _close_page_gemini_fix_progress(self) -> None:
+        dialog = self._page_gemini_fix_progress_dialog
+        if dialog is None:
+            return
+        dialog.close()
+        dialog.deleteLater()
+        self._page_gemini_fix_progress_dialog = None
+
+    def gemini_hebrew_fix_current_page(self) -> None:
+        if not self._ensure_document_editable("Gemini Hebrew Fix"):
+            return
+        if self._page_gemini_fix_thread is not None:
+            QMessageBox.information(self, "Gemini Hebrew Fix", "A page correction is already running.")
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            QMessageBox.warning(self, "Gemini Hebrew Fix", "No current page is loaded.")
+            return
+
+        self._show_page_gemini_fix_progress("Parsing current page JSON...", fact_count=None, changed_text_fields=0)
+        try:
+            page_payload, fact_count = self._current_page_payload_for_gemini_fix()
+        except Exception as exc:
+            self._close_page_gemini_fix_progress()
+            QMessageBox.warning(self, "Gemini Hebrew Fix failed", str(exc))
+            return
+
+        page_name = str(page_payload.get("image") or self.page_images[self.current_index].name)
+        image_path = self.images_dir / page_name
+        if not image_path.exists():
+            self._close_page_gemini_fix_progress()
+            QMessageBox.warning(self, "Gemini Hebrew Fix failed", f"Page image not found: {page_name}")
+            return
+
+        self._page_gemini_fix_target_page = page_name
+        self._page_gemini_fix_snapshot = deepcopy(page_payload)
+        self._show_page_gemini_fix_progress("Gemini working on page...", fact_count=fact_count, changed_text_fields=0)
+
+        worker = PageGeminiFixWorker(image_path, page_payload)
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.completed.connect(self._on_page_gemini_fix_completed)
+        worker.failed.connect(self._on_page_gemini_fix_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_page_gemini_fix_finished)
+        self._page_gemini_fix_worker = worker
+        self._page_gemini_fix_thread = thread
+        thread.start()
+
+    def _on_page_gemini_fix_completed(self, result_obj: object) -> None:
+        page_name = self._page_gemini_fix_target_page
+        snapshot = self._page_gemini_fix_snapshot
+        if page_name is None or snapshot is None:
+            self._on_page_gemini_fix_failed("Gemini fix state was lost. Please rerun.")
+            return
+        if self.current_index < 0 or self.current_index >= len(self.page_images):
+            self._on_page_gemini_fix_failed("No current page is loaded.")
+            return
+        current_page_name = self.page_images[self.current_index].name
+        if current_page_name != page_name:
+            self._on_page_gemini_fix_failed("Current page changed while Gemini was running. Please rerun.")
+            return
+
+        try:
+            current_payload, current_fact_count = self._current_page_payload_for_gemini_fix()
+        except Exception as exc:
+            self._on_page_gemini_fix_failed(str(exc))
+            return
+        if self._page_payload_fingerprint(current_payload) != self._page_payload_fingerprint(snapshot):
+            self._on_page_gemini_fix_failed("Current page changed while Gemini was running. Please rerun.")
+            return
+
+        audit = getattr(result_obj, "audit", {})
+        corrected_payload = getattr(result_obj, "page_payload", None)
+        if not isinstance(corrected_payload, dict):
+            self._on_page_gemini_fix_failed("Gemini returned an invalid page payload.")
+            return
+        if str(corrected_payload.get("image") or "").strip() not in {"", page_name}:
+            self._on_page_gemini_fix_failed("Gemini changed the current page image name. Please rerun.")
+            return
+
+        fallback_reason = str(audit.get("fallback_reason") or "").strip() if isinstance(audit, dict) else ""
+        if fallback_reason:
+            self._close_page_gemini_fix_progress()
+            QMessageBox.warning(self, "Gemini Hebrew Fix failed", fallback_reason)
+            self.statusBar().showMessage("Gemini Hebrew Fix rejected the current page.", 5000)
+            return
+
+        corrected_states = load_page_states({"pages": [corrected_payload]}, [page_name], placeholder_missing_bboxes=False)
+        corrected_state = corrected_states.get(page_name)
+        if corrected_state is None:
+            self._on_page_gemini_fix_failed("Gemini returned a page that could not be applied.")
+            return
+
+        changed_text_fields = len(audit.get("changed_paths") or []) if isinstance(audit, dict) else 0
+        self._show_page_gemini_fix_progress(
+            "Applying corrected page...",
+            fact_count=current_fact_count,
+            changed_text_fields=changed_text_fields,
+        )
+
+        self.page_states[page_name] = corrected_state
+        was_restoring = self._is_restoring_history
+        self._is_restoring_history = True
+        try:
+            self.show_page(self.current_index)
+        finally:
+            self._is_restoring_history = was_restoring
+        self._populate_page_thumbnails()
+        self._record_history_snapshot()
+        self._close_page_gemini_fix_progress()
+        self.statusBar().showMessage(
+            f"Gemini Hebrew Fix applied to {page_name} ({changed_text_fields} text field(s) changed).",
+            6000,
+        )
+        QMessageBox.information(
+            self,
+            "Gemini Hebrew Fix",
+            (
+                "Applied Hebrew spelling corrections to the current page.\n"
+                f"Changed text fields: {changed_text_fields}."
+            ),
+        )
+
+    def _on_page_gemini_fix_failed(self, message: str) -> None:
+        self._close_page_gemini_fix_progress()
+        self._page_gemini_fix_snapshot = None
+        self._page_gemini_fix_target_page = None
+        QMessageBox.warning(self, "Gemini Hebrew Fix failed", message)
+        self.statusBar().showMessage("Gemini Hebrew Fix failed.", 5000)
+
+    def _on_page_gemini_fix_finished(self) -> None:
+        self._page_gemini_fix_thread = None
+        self._page_gemini_fix_worker = None
+        self._page_gemini_fix_snapshot = None
+        self._page_gemini_fix_target_page = None
 
     def detect_local_bboxes(self) -> None:
         if not self._ensure_document_editable("Detect bbox"):

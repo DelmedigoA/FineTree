@@ -136,6 +136,12 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert not window.ai_btn.icon().isNull()
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
+    assert window.inspector_panel.objectName() == "inspectorPanel"
+    assert window.inspector_panel.font().pointSize() > window.font().pointSize()
+    assert window.facts_list.font().pointSize() == window.inspector_panel.font().pointSize()
+    assert window.page_issues_list.font().pointSize() == window.inspector_panel.font().pointSize()
+    assert window.fact_path_list.font().pointSize() == window.inspector_panel.font().pointSize()
+    assert window.page_thumb_list.font().pointSize() == window.font().pointSize()
     assert window.facts_list.objectName() == "factsList"
     assert window.facts_list.maximumHeight() == 176
     assert window.fact_editor_box.objectName() == "inspectorSubsection"
@@ -344,7 +350,8 @@ def test_ai_fix_dialog_uses_supported_gemini_model_dropdown(tmp_path: Path) -> N
     assert dialog is not None
     options = [dialog.model_combo.itemText(index) for index in range(dialog.model_combo.count())]
     assert "gemini-3-flash-preview" in options
-    assert "gemini-3.1-flash-lite" in options
+    assert "gemini-2.5-flash-lite" in options
+    assert "gemini-3.1-flash-lite-preview" in options
     assert "gemini-2.5-pro" in options
     assert "gemini-flash-hf-tuned" in options
     dialog.close()
@@ -923,6 +930,29 @@ def test_align_bboxes_toolbar_button_dispatches_to_controller(tmp_path: Path, mo
 
     assert window.align_bboxes_btn.text() == "Align bboxes"
     window.align_bboxes_btn.click()
+
+    assert captured == {"started": True}
+
+    window.close()
+
+
+def test_gemini_fix_toolbar_button_dispatches_to_current_page_action(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    captured: dict[str, bool] = {}
+    monkeypatch.setattr(
+        app_mod.AnnotationWindow,
+        "gemini_hebrew_fix_current_page",
+        lambda self: captured.update({"started": True}),
+    )
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    assert window.gemini_fix_btn.text() == "Gemini Fix"
+    window.gemini_fix_btn.click()
 
     assert captured == {"started": True}
 

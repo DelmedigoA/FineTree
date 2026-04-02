@@ -64,6 +64,14 @@ class ImportJsonParseResult:
     message: str | None = None
 
 
+@dataclass(frozen=True)
+class PageTextCorrectionValidationResult:
+    accepted: bool
+    changed_paths: tuple[str, ...] = ()
+    changed_fields: tuple[dict[str, Any], ...] = ()
+    rejection_reason: str | None = None
+
+
 def default_fact_data() -> Dict[str, Any]:
     return {
         "value": "",
@@ -219,33 +227,12 @@ def parse_import_payload(
     page_image_names: Sequence[str],
     default_page_image_name: Optional[str],
 ) -> Dict[str, PageState]:
-    if isinstance(payload, dict) and isinstance(payload.get("pages"), list):
-        payload = _assign_page_images_by_order(
-            payload,
-            page_image_names=page_image_names,
-            default_page_image_name=default_page_image_name,
-        )
-        return load_page_states(payload, page_image_names, placeholder_missing_bboxes=True)
-
-    if isinstance(payload, list):
-        payload = {"meta": {}, "facts": payload}
-    if not isinstance(payload, dict):
-        return {}
-
-    default_image = default_page_image_name or (page_image_names[0] if page_image_names else None)
-    if not default_image:
-        return {}
-
-    image_name = payload.get("image")
-    if not isinstance(image_name, str) or not image_name.strip():
-        image_name = default_image
-
-    page_obj = {
-        "image": image_name,
-        "meta": payload.get("meta", {}),
-        "facts": payload.get("facts", []),
-    }
-    return load_page_states({"pages": [page_obj]}, page_image_names, placeholder_missing_bboxes=True)
+    document_payload = normalize_import_payload_to_document(
+        payload,
+        page_image_names=page_image_names,
+        default_page_image_name=default_page_image_name,
+    )
+    return load_page_states(document_payload, page_image_names, placeholder_missing_bboxes=True)
 
 
 def _clean_json_candidate(candidate: str) -> str:
@@ -289,13 +276,35 @@ def _extract_balanced_block_from_index(text: str, start_idx: int, open_char: str
 
 
 def _parse_json_like(candidate: str) -> Any:
+    variants: list[str] = []
     for variant in (candidate, _clean_json_candidate(candidate)):
+        if variant not in variants:
+            variants.append(variant)
+        trimmed = variant.rstrip().rstrip(",").strip()
+        if trimmed and trimmed not in variants:
+            variants.append(trimmed)
+    for variant in variants:
         try:
-            return json.loads(variant)
+            parsed = json.loads(variant)
+            if isinstance(parsed, str):
+                nested = str(parsed).strip()
+                if nested and nested != variant:
+                    try:
+                        return _parse_json_like(nested)
+                    except Exception:
+                        pass
+            return parsed
         except Exception:
             pass
         try:
             parsed = ast.literal_eval(variant)
+            if isinstance(parsed, str):
+                nested = str(parsed).strip()
+                if nested and nested != variant:
+                    try:
+                        return _parse_json_like(nested)
+                    except Exception:
+                        pass
             if isinstance(parsed, (dict, list)):
                 return parsed
         except Exception:
@@ -358,6 +367,65 @@ def _extract_key_string(text: str, key: str) -> str | None:
     return None
 
 
+def _extract_key_object_by_anchor(text: str, key: str, next_keys: Sequence[str]) -> dict[str, Any] | None:
+    for token in (f'"{key}"', f"'{key}'"):
+        idx = text.find(token)
+        if idx < 0:
+            continue
+        colon = text.find(":", idx + len(token))
+        if colon < 0:
+            continue
+        brace = text.find("{", colon + 1)
+        if brace < 0:
+            continue
+        end = len(text)
+        for next_key in next_keys:
+            for next_token in (f'"{next_key}"', f"'{next_key}'"):
+                next_idx = text.find(next_token, brace + 1)
+                if next_idx > 0:
+                    end = min(end, next_idx)
+        candidate = text[brace:end].rstrip().rstrip(",")
+        if candidate and not candidate.endswith("}"):
+            candidate = candidate + "}"
+        try:
+            parsed = _parse_json_like(candidate)
+        except Exception:
+            repaired_candidate = candidate.replace(r'\\\\\"', r'\\\"')
+            if repaired_candidate != candidate:
+                try:
+                    parsed = _parse_json_like(repaired_candidate)
+                except Exception:
+                    continue
+            else:
+                continue
+        if isinstance(parsed, dict):
+            return parsed
+    return None
+
+
+def _extract_page_meta_from_text(text: str) -> dict[str, Any] | None:
+    meta_match = re.search(
+        r'"meta"\s*:\s*(\{.*?\})\s*,\s*"(?:facts|image|metadata|document_meta)"\s*:',
+        text,
+        re.S,
+    )
+    if not meta_match:
+        return None
+
+    meta_candidate = meta_match.group(1)
+    for variant in (
+        meta_candidate,
+        meta_candidate.replace(r'\\\\\"', r'\\\"'),
+    ):
+        try:
+            parsed_meta = _parse_json_like(variant)
+        except Exception:
+            continue
+        if isinstance(parsed_meta, dict):
+            return parsed_meta
+    return None
+
+
 def _extract_object_blocks_from_array(
     text: str,
     array_start: int,
@@ -407,7 +475,29 @@ def _salvage_facts_from_text(text: str) -> list[dict[str, Any]]:
 
 def _salvage_single_page_payload_from_text(text: str) -> dict[str, Any] | None:
     image_name = _extract_key_string(text, "image")
-    meta = _extract_key_object(text, "meta") or {}
+    meta = _extract_key_object(text, "meta")
+    if meta is None:
+        meta_match = re.search(
+            r'"meta"\s*:\s*(\{.*?\})\s*,\s*"(?:facts|image|metadata|document_meta)"\s*:',
+            text,
+            re.S,
+        )
+        if meta_match:
+            meta_candidate = meta_match.group(1)
+            for variant in (
+                meta_candidate,
+                meta_candidate.replace(r'\\\\\"', r'\\\"'),
+            ):
+                try:
+                    parsed_meta = _parse_json_like(variant)
+                except Exception:
+                    continue
+                if isinstance(parsed_meta, dict):
+                    meta = parsed_meta
+                    break
+    if meta is None:
+        meta = _extract_key_object_by_anchor(text, "meta", ("facts", "image", "metadata", "document_meta"))
+    meta = meta or {}
     facts = _salvage_facts_from_text(text)
     if image_name is None and not meta and not facts:
         return None
@@ -448,12 +538,193 @@ def _salvage_pages_payload_from_text(text: str) -> dict[str, Any] | None:
     return payload
 
 
+def _salvage_page_sequence_payload_from_text(text: str) -> dict[str, Any] | None:
+    line_items = _split_line_wrapped_list_items(text)
+    if line_items:
+        pages: list[dict[str, Any]] = []
+        for index, item_text in enumerate(line_items, start=1):
+            try:
+                pages.extend(_coerce_page_payload_items(item_text, index=index))
+            except ValueError:
+                continue
+        if pages:
+            return {"pages": pages}
+
+    top_level_items = _split_top_level_list_items(text)
+    if top_level_items:
+        pages: list[dict[str, Any]] = []
+        for index, item_text in enumerate(top_level_items, start=1):
+            try:
+                pages.extend(_coerce_page_payload_items(item_text, index=index))
+            except ValueError:
+                continue
+        if pages:
+            return {"pages": pages}
+
+    pages: list[dict[str, Any]] = []
+    pos = 0
+    while pos < len(text):
+        brace = text.find("{", pos)
+        if brace < 0:
+            break
+        block = _extract_balanced_block_from_index(text, brace, "{", "}")
+        if not block:
+            fragment_end_candidates = [
+                idx for idx in (
+                    text.find("\n", brace + 1),
+                    text.find("',", brace + 1),
+                    text.find("']", brace + 1),
+                )
+                if idx >= 0
+            ]
+            fragment_end = min(fragment_end_candidates) if fragment_end_candidates else len(text)
+            salvaged_fragment = _salvage_single_page_payload_from_text(text[brace:fragment_end])
+            if salvaged_fragment is not None:
+                pages.append(salvaged_fragment)
+                pos = fragment_end + 1
+                continue
+            pos = brace + 1
+            continue
+        try:
+            parsed = _parse_json_like(block)
+        except Exception:
+            pos = brace + 1
+            continue
+        if isinstance(parsed, dict) and isinstance(parsed.get("pages"), list):
+            pages.extend(page for page in parsed.get("pages", []) if isinstance(page, dict))
+            pos = brace + len(block)
+            continue
+        if _looks_like_page_payload(parsed):
+            pages.append(dict(parsed))
+            pos = brace + len(block)
+            continue
+        pos = brace + 1
+    if not pages:
+        return None
+    return {"pages": pages}
+
+
 def _looks_like_page_payload(item: Any) -> bool:
     if not isinstance(item, dict):
         return False
     if isinstance(item.get("pages"), list):
         return True
     return any(key in item for key in ("image", "meta", "facts"))
+
+
+def _coerce_page_payload_items(item: Any, *, index: int) -> list[dict[str, Any]]:
+    if isinstance(item, str):
+        text = str(item).strip()
+        if not text:
+            return []
+        try:
+            parsed_item = _parse_json_like(text)
+        except Exception:
+            salvaged_page = _salvage_single_page_payload_from_text(text)
+            if salvaged_page is not None:
+                if not salvaged_page.get("meta"):
+                    page_meta = _extract_page_meta_from_text(text)
+                    if page_meta:
+                        salvaged_page = {**salvaged_page, "meta": page_meta}
+                return [salvaged_page]
+            salvaged_pages = _salvage_page_sequence_payload_from_text(text)
+            if salvaged_pages is not None and isinstance(salvaged_pages.get("pages"), list):
+                pages = [page for page in salvaged_pages.get("pages", []) if isinstance(page, dict)]
+                if pages:
+                    if len(pages) == 1 and not pages[0].get("meta"):
+                        page_meta = _extract_page_meta_from_text(text)
+                        if page_meta:
+                            pages = [{**pages[0], "meta": page_meta}]
+                    return pages
+            raise ValueError(f"Could not parse page {index} JSON string.")
+        return _coerce_page_payload_items(parsed_item, index=index)
+
+    if isinstance(item, list):
+        normalized = _normalize_page_sequence_payload(item)
+        if normalized is not None:
+            return [page for page in normalized.get("pages", []) if isinstance(page, dict)]
+        raise ValueError(f"List item {index} is not a page JSON object.")
+
+    if isinstance(item, dict):
+        if isinstance(item.get("pages"), list):
+            nested_pages: list[dict[str, Any]] = []
+            for nested_index, nested_item in enumerate(item.get("pages", []), start=1):
+                nested_pages.extend(_coerce_page_payload_items(nested_item, index=nested_index))
+            return nested_pages
+        if _looks_like_page_payload(item):
+            return [dict(item)]
+
+    raise ValueError(f"List item {index} is not a page JSON object.")
+
+
+def _split_top_level_list_items(text: str) -> list[str] | None:
+    list_start = text.find("[")
+    if list_start < 0:
+        return None
+    block = _extract_balanced_block_from_index(text, list_start, "[", "]")
+    if block:
+        inner = block[1:-1]
+    else:
+        inner = text[list_start + 1 :]
+    items: list[str] = []
+    start = 0
+    depth = 0
+    in_str = False
+    quote_char = ""
+    esc = False
+    for idx, ch in enumerate(inner):
+        if in_str:
+            if esc:
+                esc = False
+            elif ch == "\\":
+                esc = True
+            elif ch == quote_char:
+                in_str = False
+            continue
+        if ch in {"'", '"'}:
+            in_str = True
+            quote_char = ch
+            continue
+        if ch in "[{(":
+            depth += 1
+            continue
+        if ch in "]})":
+            if depth > 0:
+                depth -= 1
+            continue
+        if ch == "," and depth == 0:
+            item = inner[start:idx].strip()
+            if item:
+                items.append(item)
+            start = idx + 1
+    tail = inner[start:].strip()
+    if tail:
+        items.append(tail)
+    return items
+
+
+def _split_line_wrapped_list_items(text: str) -> list[str] | None:
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if len(lines) < 2:
+        return None
+
+    items: list[str] = []
+    for index, line in enumerate(lines):
+        candidate = line
+        if index == 0 and candidate.startswith("["):
+            candidate = candidate[1:].lstrip()
+        if index == len(lines) - 1 and candidate.endswith("]"):
+            candidate = candidate[:-1].rstrip()
+        candidate = candidate.rstrip(",").strip()
+        if not candidate:
+            continue
+        if candidate[0] not in {"'", '"', "{", "["}:
+            return None
+        items.append(candidate)
+
+    if len(items) < 2:
+        return None
+    return items
 
 
 def _normalize_page_sequence_payload(payload: list[Any]) -> dict[str, Any] | None:
@@ -465,22 +736,7 @@ def _normalize_page_sequence_payload(payload: list[Any]) -> dict[str, Any] | Non
 
     pages: list[dict[str, Any]] = []
     for index, item in enumerate(payload, start=1):
-        parsed_item = item
-        if isinstance(item, str):
-            text = str(item).strip()
-            if not text:
-                continue
-            try:
-                parsed_item = _parse_json_like(text)
-            except Exception as exc:
-                raise ValueError(f"Could not parse page {index} JSON string.") from exc
-        if isinstance(parsed_item, dict) and isinstance(parsed_item.get("pages"), list):
-            pages.extend(page for page in parsed_item.get("pages", []) if isinstance(page, dict))
-            continue
-        if _looks_like_page_payload(parsed_item):
-            pages.append(dict(parsed_item))
-            continue
-        raise ValueError(f"List item {index} is not a page JSON object.")
+        pages.extend(_coerce_page_payload_items(item, index=index))
 
     if not pages:
         raise ValueError("No importable pages were found in the pasted list.")
@@ -488,6 +744,13 @@ def _normalize_page_sequence_payload(payload: list[Any]) -> dict[str, Any] | Non
 
 
 def _normalize_top_level_import_payload(payload: Any) -> Any:
+    if isinstance(payload, str):
+        text = str(payload).strip()
+        if text:
+            try:
+                return _normalize_top_level_import_payload(_parse_json_like(text))
+            except Exception:
+                return payload
     if isinstance(payload, list):
         normalized = _normalize_page_sequence_payload(payload)
         if normalized is not None:
@@ -506,6 +769,14 @@ def _assign_page_images_by_order(
         return payload
 
     available = set(page_image_names)
+    single_page_target = (
+        str(default_page_image_name).strip()
+        if isinstance(default_page_image_name, str)
+        and str(default_page_image_name).strip()
+        and str(default_page_image_name).strip() in available
+        and len(pages) == 1
+        else None
+    )
     assigned_pages: list[dict[str, Any]] = []
     for index, page in enumerate(pages):
         if not isinstance(page, dict):
@@ -513,10 +784,50 @@ def _assign_page_images_by_order(
         assigned = dict(page)
         image_name = assigned.get("image")
         if not isinstance(image_name, str) or not image_name.strip() or image_name not in available:
-            if index < len(page_image_names):
+            if single_page_target is not None:
+                assigned["image"] = single_page_target
+            elif index < len(page_image_names):
                 assigned["image"] = page_image_names[index]
         assigned_pages.append(assigned)
     return {**payload, "pages": assigned_pages}
+
+
+def normalize_import_payload_to_document(
+    payload: Any,
+    page_image_names: Sequence[str],
+    default_page_image_name: Optional[str],
+) -> dict[str, Any]:
+    normalized_payload = _normalize_top_level_import_payload(payload)
+    if isinstance(normalized_payload, dict) and isinstance(normalized_payload.get("pages"), list):
+        return _assign_page_images_by_order(
+            normalized_payload,
+            page_image_names=page_image_names,
+            default_page_image_name=default_page_image_name,
+        )
+
+    if isinstance(normalized_payload, list):
+        normalized_payload = {"meta": {}, "facts": normalized_payload}
+    if not isinstance(normalized_payload, dict):
+        return {"pages": []}
+
+    default_image = default_page_image_name or (page_image_names[0] if page_image_names else None)
+    if not default_image:
+        return {"pages": []}
+
+    image_name = normalized_payload.get("image")
+    if not isinstance(image_name, str) or not image_name.strip():
+        image_name = default_image
+
+    page_obj = {
+        "image": image_name,
+        "meta": normalized_payload.get("meta", {}),
+        "facts": normalized_payload.get("facts", []),
+    }
+    document_payload: dict[str, Any] = {"pages": [page_obj]}
+    for key in ("images_dir", "metadata", "document_meta"):
+        if key in normalized_payload:
+            document_payload[key] = normalized_payload.get(key)
+    return document_payload
 
 
 def parse_import_json_text(text: str) -> ImportJsonParseResult:
@@ -533,14 +844,18 @@ def parse_import_json_text(text: str) -> ImportJsonParseResult:
     except Exception:
         try:
             parsed = _parse_json_like(stripped)
+            try:
+                normalized_payload = _normalize_top_level_import_payload(parsed)
+            except Exception:
+                normalized_payload = None
+            else:
+                return ImportJsonParseResult(
+                    payload=normalized_payload,
+                    recovered=False,
+                    message=None,
+                )
         except Exception as exc:
             parsed = None
-        else:
-            return ImportJsonParseResult(
-                payload=_normalize_top_level_import_payload(parsed),
-                recovered=False,
-                message=None,
-            )
 
         pages_payload = _salvage_pages_payload_from_text(stripped)
         if pages_payload is not None:
@@ -560,6 +875,23 @@ def parse_import_json_text(text: str) -> ImportJsonParseResult:
                     "ignored trailing incomplete content."
                 ),
             )
+        page_sequence_payload = _salvage_page_sequence_payload_from_text(stripped)
+        if page_sequence_payload is not None:
+            imported_pages = page_sequence_payload.get("pages") if isinstance(page_sequence_payload, dict) else None
+            recovered_page_count = len(imported_pages) if isinstance(imported_pages, list) else 0
+            recovered_fact_count = 0
+            if isinstance(imported_pages, list):
+                for page in imported_pages:
+                    if isinstance(page, dict) and isinstance(page.get("facts"), list):
+                        recovered_fact_count += len([fact for fact in page["facts"] if isinstance(fact, dict)])
+            return ImportJsonParseResult(
+                payload=page_sequence_payload,
+                recovered=True,
+                message=(
+                    "Recovered import from malformed page string sequence. "
+                    f"Imported {recovered_page_count} page(s) and {recovered_fact_count} complete fact(s)."
+                ),
+            )
         page_payload = _salvage_single_page_payload_from_text(stripped)
         if page_payload is not None and isinstance(page_payload.get("facts"), list):
             return ImportJsonParseResult(
@@ -571,6 +903,105 @@ def parse_import_json_text(text: str) -> ImportJsonParseResult:
                 ),
             )
         raise ValueError("Could not parse the pasted JSON text.") from exc
+
+
+_EDITABLE_META_TEXT_KEYS = frozenset({"entity_name", "title", "annotation_note"})
+_EDITABLE_FACT_TEXT_KEYS = frozenset({"value", "comment_ref", "note_name", "note_ref"})
+_HEBREW_CHAR_RE = re.compile(r"[\u0590-\u05FF]")
+
+
+def _format_page_path(path_parts: Sequence[Any]) -> str:
+    out: list[str] = []
+    for part in path_parts:
+        if isinstance(part, int):
+            if not out:
+                out.append(f"[{part}]")
+            else:
+                out[-1] = f"{out[-1]}[{part}]"
+            continue
+        text = str(part)
+        out.append(text if not out else f".{text}")
+    return "".join(out) or "$"
+
+
+def _page_string_path_is_editable(path_parts: Sequence[Any]) -> bool:
+    if len(path_parts) == 2 and path_parts[0] == "meta":
+        return str(path_parts[1]) in _EDITABLE_META_TEXT_KEYS
+    if len(path_parts) == 4 and path_parts[0] == "facts" and isinstance(path_parts[1], int):
+        if path_parts[2] == "path" and isinstance(path_parts[3], int):
+            return True
+    if len(path_parts) == 3 and path_parts[0] == "facts" and isinstance(path_parts[1], int):
+        return str(path_parts[2]) in _EDITABLE_FACT_TEXT_KEYS
+    return False
+
+
+def validate_page_text_correction(
+    original_page: Any,
+    corrected_page: Any,
+) -> PageTextCorrectionValidationResult:
+    changed_paths: list[str] = []
+    changed_fields: list[dict[str, Any]] = []
+
+    def _reject(reason: str) -> PageTextCorrectionValidationResult:
+        return PageTextCorrectionValidationResult(
+            accepted=False,
+            changed_paths=tuple(changed_paths),
+            changed_fields=tuple(changed_fields),
+            rejection_reason=reason,
+        )
+
+    def _walk(original: Any, corrected: Any, path_parts: list[Any]) -> PageTextCorrectionValidationResult | None:
+        if type(original) is not type(corrected):
+            return _reject(
+                f"Type changed at {_format_page_path(path_parts)}: "
+                f"{type(original).__name__} -> {type(corrected).__name__}."
+            )
+        if isinstance(original, dict):
+            if set(original.keys()) != set(corrected.keys()):
+                return _reject(f"Object keys changed at {_format_page_path(path_parts)}.")
+            for key in original.keys():
+                failure = _walk(original.get(key), corrected.get(key), [*path_parts, str(key)])
+                if failure is not None:
+                    return failure
+            return None
+        if isinstance(original, list):
+            if len(original) != len(corrected):
+                return _reject(f"Array length changed at {_format_page_path(path_parts)}.")
+            for index, (left, right) in enumerate(zip(original, corrected)):
+                failure = _walk(left, right, [*path_parts, index])
+                if failure is not None:
+                    return failure
+            return None
+        if isinstance(original, str):
+            if original == corrected:
+                return None
+            path_text = _format_page_path(path_parts)
+            if not _page_string_path_is_editable(path_parts):
+                return _reject(f"String changed at non-editable path {path_text}.")
+            if not (_HEBREW_CHAR_RE.search(original) or _HEBREW_CHAR_RE.search(corrected)):
+                return _reject(f"String changed without Hebrew text at {path_text}.")
+            changed_paths.append(path_text)
+            changed_fields.append(
+                {
+                    "path": path_text,
+                    "original": original,
+                    "corrected": corrected,
+                }
+            )
+            return None
+        if original != corrected:
+            return _reject(f"Non-text value changed at {_format_page_path(path_parts)}.")
+        return None
+
+    failure = _walk(original_page, corrected_page, [])
+    if failure is not None:
+        return failure
+    return PageTextCorrectionValidationResult(
+        accepted=True,
+        changed_paths=tuple(changed_paths),
+        changed_fields=tuple(changed_fields),
+        rejection_reason=None,
+    )
 
 
 def _clamp_bbox_to_image_bounds(
@@ -817,10 +1248,13 @@ __all__ = [
     "default_page_meta",
     "extract_document_meta",
     "load_page_states",
+    "normalize_import_payload_to_document",
     "parse_import_payload",
     "normalize_bbox_data",
     "normalize_fact_data",
     "parse_import_json_text",
+    "PageTextCorrectionValidationResult",
+    "validate_page_text_correction",
     "apply_entity_name_to_pages",
     "apply_entity_name_to_missing_pages",
     "serialize_annotations_json",

@@ -36,6 +36,7 @@ class _FakeAnnotationWindow(QWidget):
     document_auto_annotate_page_completed = pyqtSignal(str, int)
     document_auto_annotate_page_failed = pyqtSignal(str, str)
     document_auto_annotate_page_stopped = pyqtSignal(str, str)
+    import_align_bboxes_queue_finished = pyqtSignal(object)
 
     def __init__(self, images_dir: Path, annotations_path: Path) -> None:
         super().__init__()
@@ -1227,7 +1228,7 @@ def test_dashboard_prepare_workspace_document_uses_background_import(tmp_path: P
     window.close()
 
 
-def test_dashboard_load_entire_json_imports_and_saves_document(monkeypatch, tmp_path: Path) -> None:
+def test_dashboard_load_entire_json_imports_directly_without_align_or_save(monkeypatch, tmp_path: Path) -> None:
     _qt_app()
     ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
     window = dashboard.DashboardWindow(ctx, dpi=200)
@@ -1235,13 +1236,14 @@ def test_dashboard_load_entire_json_imports_and_saves_document(monkeypatch, tmp_
     source_pdf.write_bytes(b"%PDF-1.4")
     images_dir = tmp_path / "doc"
     images_dir.mkdir()
+    assert dashboard.QPixmap(32, 32).save(str(images_dir / "page_0001.png"), "PNG")
     summary = WorkspaceDocumentSummary(
         doc_id="doc",
         source_pdf=source_pdf,
         images_dir=images_dir,
         annotations_path=tmp_path / "doc.json",
         thumbnail_path=None,
-        page_count=2,
+        page_count=1,
         annotated_page_count=0,
         progress_pct=0,
         status="Ready",
@@ -1296,8 +1298,8 @@ def test_dashboard_load_entire_json_imports_and_saves_document(monkeypatch, tmp_
     assert run_window.import_calls[0]["raw_text"] == '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]'
     assert run_window.import_calls[0]["bbox_mode"] == "original_pixels"
     assert run_window.import_calls[0]["run_align_after_import"] is False
-    assert run_window.import_calls[0]["show_info_messages"] is False
-    assert run_window.save_calls == 1
+    assert run_window.import_calls[0]["show_info_messages"] is True
+    assert run_window.save_calls == 0
     assert reloads == ["reload"]
     assert info_calls
     assert info_calls[-1][0] == "Load Entire JSON complete"
@@ -1359,6 +1361,58 @@ def test_dashboard_load_entire_json_prepares_before_import(monkeypatch, tmp_path
 
     assert calls == [(source_pdf, False)]
     assert continued == [("doc", '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]')]
+    window.close()
+
+
+def test_dashboard_load_entire_json_does_not_wait_for_align_queue(monkeypatch, tmp_path: Path) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+    source_pdf = tmp_path / "doc.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "doc"
+    images_dir.mkdir()
+    run_window = _FakeAnnotationWindow(images_dir, tmp_path / "doc.json")
+    summary = WorkspaceDocumentSummary(
+        doc_id="doc",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=tmp_path / "doc.json",
+        thumbnail_path=None,
+        page_count=1,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    window._documents_by_id = {"doc": summary}
+    info_calls: list[tuple[str, str]] = []
+    reloads: list[str] = []
+    class _FakeDialog:
+        def __init__(self, *, doc_title: str, page_count: int, parent=None) -> None:
+            _ = doc_title, page_count, parent
+
+        def exec_(self) -> int:
+            return dashboard.QDialog.Accepted
+
+        def json_text(self) -> str:
+            return '[{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}]'
+
+    monkeypatch.setattr(dashboard, "LoadEntireJsonDialog", _FakeDialog)
+    monkeypatch.setattr(window.annotator_host, "open_document", lambda context, activate=False: run_window)
+    monkeypatch.setattr(
+        dashboard.QMessageBox,
+        "information",
+        lambda _parent, title, text: info_calls.append((title, text)),
+    )
+    window.reload_workspace = lambda: reloads.append("reload")  # type: ignore[method-assign]
+
+    window.load_workspace_document_entire_json("doc")
+
+    assert run_window.save_calls == 0
+    assert reloads == ["reload"]
+    assert run_window.import_calls[0]["run_align_after_import"] is False
+    assert info_calls[-1][0] == "Load Entire JSON complete"
     window.close()
 
 

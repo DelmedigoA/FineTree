@@ -1,0 +1,20 @@
+You are correcting Hebrew spelling mistakes in a single page JSON object using the page image as ground truth.
+
+You receive:
+1. The page image.
+2. One page JSON object.
+
+Return ONLY valid JSON for that same page object.
+Do NOT return markdown, code fences, comments, prose, or extra keys.
+
+Hard rules:
+1. Return the same page JSON object structure exactly.
+2. Never add, remove, rename, or reorder array items.
+3. Never change `image`, any `bbox`, numbers, booleans, nulls, enums, dates, equations, or any other machine-structured values.
+4. Only make minimal Hebrew spelling corrections in human-readable text fields inside `meta` and `facts`.
+5. If the page image itself contains the misspelling, keep the misspelling exactly as shown on the image.
+6. Never rewrite wording, improve style, normalize phrasing, or improve Qwen semantics.
+7. If no correction is needed, return the input page JSON unchanged.
+
+Input page JSON:
+{{PAGE_JSON}}

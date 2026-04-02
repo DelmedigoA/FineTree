@@ -42,11 +42,47 @@ CREATE TABLE IF NOT EXISTS pages (
     image             TEXT,
     entity_name       TEXT,
     page_num          TEXT,
-    page_type         TEXT,
-    statement_type    TEXT,
+    page_type         TEXT CHECK (
+        page_type IS NULL OR page_type IN ('title', 'contents', 'declaration', 'statements', 'other')
+    ),
+    statement_type    TEXT CHECK (
+        statement_type IS NULL OR statement_type IN (
+            'balance_sheet',
+            'income_statement',
+            'cash_flow_statement',
+            'statement_of_changes_in_equity',
+            'notes_to_financial_statements',
+            'board_of_directors_report',
+            'auditors_report',
+            'statement_of_activities',
+            'other_declaration'
+        )
+    ),
     title             TEXT,
     annotation_note   TEXT,
-    annotation_status TEXT
+    annotation_status TEXT,
+    CHECK (
+        page_type != 'declaration'
+        OR statement_type IN ('board_of_directors_report', 'auditors_report', 'other_declaration')
+    ),
+    CHECK (
+        statement_type IS NULL
+        OR (
+            statement_type IN ('board_of_directors_report', 'auditors_report', 'other_declaration')
+            AND page_type = 'declaration'
+        )
+        OR (
+            statement_type IN (
+                'balance_sheet',
+                'income_statement',
+                'cash_flow_statement',
+                'statement_of_changes_in_equity',
+                'notes_to_financial_statements',
+                'statement_of_activities'
+            )
+            AND page_type = 'statements'
+        )
+    )
 );
 
 CREATE TABLE IF NOT EXISTS facts (
