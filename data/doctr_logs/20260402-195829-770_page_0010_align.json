@@ -1,0 +1,2138 @@
+{
+  "page_name": "page_0010.png",
+  "gemini_count": 13,
+  "detector_count": 16,
+  "matched_count": 12,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 620.78,
+        "y": 1169.84,
+        "w": 75.95,
+        "h": 39.7
+      },
+      "value": "7-33",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "ריהוט וציוד"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 643.89,
+        "y": 1207.19,
+        "w": 39.62,
+        "h": 42.03
+      },
+      "value": "15",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "כלי רכב"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 647.19,
+        "y": 1242.22,
+        "w": 34.67,
+        "h": 37.36
+      },
+      "value": "10",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "שיפורים במושכר"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 473.84,
+        "y": 1800.29,
+        "w": 122.17,
+        "h": 44.37
+      },
+      "value": "370,956",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "לווי כספים מהגמ\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 241.05,
+        "y": 1804.95,
+        "w": 120.52,
+        "h": 44.37
+      },
+      "value": "206,824",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "לווי כספים מהגמ\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 450.72,
+        "y": 1839.98,
+        "w": 145.29,
+        "h": 44.37
+      },
+      "value": "4,054,741",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 219.58,
+        "y": 1842.32,
+        "w": 138.68,
+        "h": 44.37
+      },
+      "value": "1,587,584",
+      "fact_num": 7,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 493.65,
+        "y": 1877.34,
+        "w": 102.36,
+        "h": 44.37
+      },
+      "value": "351,393",
+      "fact_num": 8,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הוצאות מראש ומקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 241.05,
+        "y": 1879.67,
+        "w": 117.22,
+        "h": 44.37
+      },
+      "value": "398,061",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הוצאות מראש ומקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 521.72,
+        "y": 1917.04,
+        "w": 74.3,
+        "h": 39.7
+      },
+      "value": "2,864",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "המחאות לגבייה וכרטיסי אשראי"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 255.91,
+        "y": 1919.37,
+        "w": 102.36,
+        "h": 39.7
+      },
+      "value": "51,791",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "המחאות לגבייה וכרטיסי אשראי"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 450.72,
+        "y": 1977.74,
+        "w": 145.29,
+        "h": 44.37
+      },
+      "value": "4,779,954",
+      "fact_num": 12,
+      "equations": [
+        {
+          "equation": "370,956 + 4,054,741 + 351,393 + 2,864",
+          "fact_equation": "f4 + f6 + f8 + f10"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 216.28,
+        "y": 1977.74,
+        "w": 141.99,
+        "h": 44.37
+      },
+      "value": "2,244,260",
+      "fact_num": 13,
+      "equations": [
+        {
+          "equation": "206,824 + 1,587,584 + 398,061 + 51,791",
+          "fact_equation": "f5 + f7 + f9 + f11"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        1329.0,
+        385.0,
+        46.0,
+        30.0
+      ],
+      "value": "2.5",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1331.0,
+        558.0,
+        46.0,
+        32.0
+      ],
+      "value": "2.6",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1331.0,
+        700.0,
+        46.0,
+        31.0
+      ],
+      "value": "2.7",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        638.0,
+        1197.0,
+        37.0,
+        32.0
+      ],
+      "value": "15",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        638.0,
+        1229.0,
+        37.0,
+        29.0
+      ],
+      "value": "10",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1334.0,
+        1292.0,
+        45.0,
+        30.0
+      ],
+      "value": "2.8",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        508.0,
+        1805.0,
+        107.0,
+        35.0
+      ],
+      "value": "370,956",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        241.0,
+        1805.0,
+        107.0,
+        35.0
+      ],
+      "value": "206,824",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        485.0,
+        1840.0,
+        128.0,
+        34.0
+      ],
+      "value": "4,054,741",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        218.0,
+        1837.0,
+        130.0,
+        41.0
+      ],
+      "value": "1,587,584",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        510.0,
+        1874.0,
+        105.0,
+        34.0
+      ],
+      "value": "351,393",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        241.0,
+        1874.0,
+        105.0,
+        36.0
+      ],
+      "value": "398,061",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        540.0,
+        1910.0,
+        77.0,
+        35.0
+      ],
+      "value": "2,864",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        257.0,
+        1910.0,
+        89.0,
+        37.0
+      ],
+      "value": "51,791",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        485.0,
+        1976.0,
+        130.0,
+        35.0
+      ],
+      "value": "4,779,954",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        218.0,
+        1979.0,
+        130.0,
+        34.0
+      ],
+      "value": "2,244,260",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": {
+        "x": 620.78,
+        "y": 1169.84,
+        "w": 75.95,
+        "h": 39.7
+      },
+      "value": "7-33",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "ריהוט וציוד"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 643.89,
+        "y": 1207.19,
+        "w": 39.62,
+        "h": 42.03
+      },
+      "value": "15",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "כלי רכב"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 647.19,
+        "y": 1242.22,
+        "w": 34.67,
+        "h": 37.36
+      },
+      "value": "10",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "2.7",
+      "note_ref": null,
+      "date": null,
+      "period_type": "expected",
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "רכוש קבוע",
+        "שיעורי הפחת השנתיים הינם:",
+        "שיפורים במושכר"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 473.84,
+        "y": 1800.29,
+        "w": 122.17,
+        "h": 44.37
+      },
+      "value": "370,956",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "לווי כספים מהגמ\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 241.05,
+        "y": 1804.95,
+        "w": 120.52,
+        "h": 44.37
+      },
+      "value": "206,824",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "לווי כספים מהגמ\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 450.72,
+        "y": 1839.98,
+        "w": 145.29,
+        "h": 44.37
+      },
+      "value": "4,054,741",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 219.58,
+        "y": 1842.32,
+        "w": 138.68,
+        "h": 44.37
+      },
+      "value": "1,587,584",
+      "fact_num": 7,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הכנסות לקבל"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 493.65,
+        "y": 1877.34,
+        "w": 102.36,
+        "h": 44.37
+      },
+      "value": "351,393",
+      "fact_num": 8,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הוצאות מראש ומקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 241.05,
+        "y": 1879.67,
+        "w": 117.22,
+        "h": 44.37
+      },
+      "value": "398,061",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "הוצאות מראש ומקדמות לספקים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 521.72,
+        "y": 1917.04,
+        "w": 74.3,
+        "h": 39.7
+      },
+      "value": "2,864",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "המחאות לגבייה וכרטיסי אשראי"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 255.91,
+        "y": 1919.37,
+        "w": 102.36,
+        "h": 39.7
+      },
+      "value": "51,791",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "המחאות לגבייה וכרטיסי אשראי"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 450.72,
+        "y": 1977.74,
+        "w": 145.29,
+        "h": 44.37
+      },
+      "value": "4,779,954",
+      "fact_num": 12,
+      "equations": [
+        {
+          "equation": "370,956 + 4,054,741 + 351,393 + 2,864",
+          "fact_equation": "f4 + f6 + f8 + f10"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2024-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 216.28,
+        "y": 1977.74,
+        "w": 141.99,
+        "h": 44.37
+      },
+      "value": "2,244,260",
+      "fact_num": 13,
+      "equations": [
+        {
+          "equation": "206,824 + 1,587,584 + 398,061 + 51,791",
+          "fact_equation": "f5 + f7 + f9 + f11"
+        }
+      ],
+      "natural_sign": "positive",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2023-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "חייבים ויתרות חובה",
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 1,
+      "detector_index": 3,
+      "gemini_value": "15",
+      "detector_value": "15",
+      "match_key": "num:15"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 4,
+      "gemini_value": "10",
+      "detector_value": "10",
+      "match_key": "num:10"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 6,
+      "gemini_value": "370,956",
+      "detector_value": "370,956",
+      "match_key": "num:370956"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 7,
+      "gemini_value": "206,824",
+      "detector_value": "206,824",
+      "match_key": "num:206824"
+    },
+    {
+      "gemini_index": 5,
+      "detector_index": 8,
+      "gemini_value": "4,054,741",
+      "detector_value": "4,054,741",
+      "match_key": "num:4054741"
+    },
+    {
+      "gemini_index": 6,
+      "detector_index": 9,
+      "gemini_value": "1,587,584",
+      "detector_value": "1,587,584",
+      "match_key": "num:1587584"
+    },
+    {
+      "gemini_index": 7,
+      "detector_index": 10,
+      "gemini_value": "351,393",
+      "detector_value": "351,393",
+      "match_key": "num:351393"
+    },
+    {
+      "gemini_index": 8,
+      "detector_index": 11,
+      "gemini_value": "398,061",
+      "detector_value": "398,061",
+      "match_key": "num:398061"
+    },
+    {
+      "gemini_index": 9,
+      "detector_index": 12,
+      "gemini_value": "2,864",
+      "detector_value": "2,864",
+      "match_key": "num:2864"
+    },
+    {
+      "gemini_index": 10,
+      "detector_index": 13,
+      "gemini_value": "51,791",
+      "detector_value": "51,791",
+      "match_key": "num:51791"
+    },
+    {
+      "gemini_index": 11,
+      "detector_index": 14,
+      "gemini_value": "4,779,954",
+      "detector_value": "4,779,954",
+      "match_key": "num:4779954"
+    },
+    {
+      "gemini_index": 12,
+      "detector_index": 15,
+      "gemini_value": "2,244,260",
+      "detector_value": "2,244,260",
+      "match_key": "num:2244260"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    0
+  ],
+  "unmatched_detector_indices": [
+    0,
+    1,
+    2,
+    5
+  ],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "7-33"
+      ],
+      "match_keys": [
+        "text:7-33"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "15"
+      ],
+      "match_keys": [
+        "num:15"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "370,956"
+      ],
+      "match_keys": [
+        "num:370956"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "206,824"
+      ],
+      "match_keys": [
+        "num:206824"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "4,054,741"
+      ],
+      "match_keys": [
+        "num:4054741"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "1,587,584"
+      ],
+      "match_keys": [
+        "num:1587584"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "351,393"
+      ],
+      "match_keys": [
+        "num:351393"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "398,061"
+      ],
+      "match_keys": [
+        "num:398061"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "2,864"
+      ],
+      "match_keys": [
+        "num:2864"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "51,791"
+      ],
+      "match_keys": [
+        "num:51791"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "4,779,954"
+      ],
+      "match_keys": [
+        "num:4779954"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "2,244,260"
+      ],
+      "match_keys": [
+        "num:2244260"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "2.5"
+      ],
+      "match_keys": [
+        "num:2.5"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "2.6"
+      ],
+      "match_keys": [
+        "num:2.6"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "2.7"
+      ],
+      "match_keys": [
+        "num:2.7"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "15"
+      ],
+      "match_keys": [
+        "num:15"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "10"
+      ],
+      "match_keys": [
+        "num:10"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "2.8"
+      ],
+      "match_keys": [
+        "num:2.8"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "370,956"
+      ],
+      "match_keys": [
+        "num:370956"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "206,824"
+      ],
+      "match_keys": [
+        "num:206824"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "4,054,741"
+      ],
+      "match_keys": [
+        "num:4054741"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "1,587,584"
+      ],
+      "match_keys": [
+        "num:1587584"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "351,393"
+      ],
+      "match_keys": [
+        "num:351393"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "398,061"
+      ],
+      "match_keys": [
+        "num:398061"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "2,864"
+      ],
+      "match_keys": [
+        "num:2864"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "51,791"
+      ],
+      "match_keys": [
+        "num:51791"
+      ]
+    },
+    {
+      "row_index": 14,
+      "indices": [
+        14
+      ],
+      "values": [
+        "4,779,954"
+      ],
+      "match_keys": [
+        "num:4779954"
+      ]
+    },
+    {
+      "row_index": 15,
+      "indices": [
+        15
+      ],
+      "values": [
+        "2,244,260"
+      ],
+      "match_keys": [
+        "num:2244260"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "2.5"
+      ],
+      "match_keys": [
+        "num:2.5"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "2.6"
+      ],
+      "match_keys": [
+        "num:2.6"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "2.7"
+      ],
+      "match_keys": [
+        "num:2.7"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "2.8"
+      ],
+      "match_keys": [
+        "num:2.8"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": false,
+      "reason": "detector_missing",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "7-33"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "text:7-33"
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "15"
+      ],
+      "detector_indices": [
+        3
+      ],
+      "detector_values": [
+        "15"
+      ],
+      "matched_count": 1,
+      "match_key": "num:15",
+      "ordered_detector_pool_index": 3
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        2
+      ],
+      "import_values": [
+        "10"
+      ],
+      "detector_indices": [
+        4
+      ],
+      "detector_values": [
+        "10"
+      ],
+      "matched_count": 1,
+      "match_key": "num:10",
+      "ordered_detector_pool_index": 3
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        3
+      ],
+      "import_values": [
+        "370,956"
+      ],
+      "detector_indices": [
+        6
+      ],
+      "detector_values": [
+        "370,956"
+      ],
+      "matched_count": 1,
+      "match_key": "num:370956",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        4
+      ],
+      "import_values": [
+        "206,824"
+      ],
+      "detector_indices": [
+        7
+      ],
+      "detector_values": [
+        "206,824"
+      ],
+      "matched_count": 1,
+      "match_key": "num:206824",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        5
+      ],
+      "import_values": [
+        "4,054,741"
+      ],
+      "detector_indices": [
+        8
+      ],
+      "detector_values": [
+        "4,054,741"
+      ],
+      "matched_count": 1,
+      "match_key": "num:4054741",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        6
+      ],
+      "import_values": [
+        "1,587,584"
+      ],
+      "detector_indices": [
+        9
+      ],
+      "detector_values": [
+        "1,587,584"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1587584",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        7
+      ],
+      "import_values": [
+        "351,393"
+      ],
+      "detector_indices": [
+        10
+      ],
+      "detector_values": [
+        "351,393"
+      ],
+      "matched_count": 1,
+      "match_key": "num:351393",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        8
+      ],
+      "import_values": [
+        "398,061"
+      ],
+      "detector_indices": [
+        11
+      ],
+      "detector_values": [
+        "398,061"
+      ],
+      "matched_count": 1,
+      "match_key": "num:398061",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        9
+      ],
+      "import_values": [
+        "2,864"
+      ],
+      "detector_indices": [
+        12
+      ],
+      "detector_values": [
+        "2,864"
+      ],
+      "matched_count": 1,
+      "match_key": "num:2864",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        10
+      ],
+      "import_values": [
+        "51,791"
+      ],
+      "detector_indices": [
+        13
+      ],
+      "detector_values": [
+        "51,791"
+      ],
+      "matched_count": 1,
+      "match_key": "num:51791",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        11
+      ],
+      "import_values": [
+        "4,779,954"
+      ],
+      "detector_indices": [
+        14
+      ],
+      "detector_values": [
+        "4,779,954"
+      ],
+      "matched_count": 1,
+      "match_key": "num:4779954",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        12
+      ],
+      "import_values": [
+        "2,244,260"
+      ],
+      "detector_indices": [
+        15
+      ],
+      "detector_values": [
+        "2,244,260"
+      ],
+      "matched_count": 1,
+      "match_key": "num:2244260",
+      "ordered_detector_pool_index": 4
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "rtl",
+  "placeholder_count": 1,
+  "detector_index_by_gemini_index": {
+    "1": 3,
+    "2": 4,
+    "3": 6,
+    "4": 7,
+    "5": 8,
+    "6": 9,
+    "7": 10,
+    "8": 11,
+    "9": 12,
+    "10": 13,
+    "11": 14,
+    "12": 15
+  }
+}

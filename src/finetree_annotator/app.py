@@ -1961,7 +1961,7 @@ class PageGeminiFixWorker(QObject):
 
 
 class AnnotationWindow(QMainWindow):
-    _INSPECTOR_FONT_POINT_DELTA = 2
+    _INSPECTOR_FONT_SCALE = 1.15
 
     annotations_saved = pyqtSignal(object)
     annotations_save_status = pyqtSignal(object)
@@ -3454,7 +3454,7 @@ class AnnotationWindow(QMainWindow):
         point_size = inspector_font.pointSizeF()
         if point_size <= 0:
             point_size = float(max(self.font().pointSize(), 11))
-        inspector_font.setPointSizeF(point_size + float(self._INSPECTOR_FONT_POINT_DELTA))
+        inspector_font.setPointSizeF(point_size * float(self._INSPECTOR_FONT_SCALE))
         inspector_panel.setFont(inspector_font)
         for child in inspector_panel.findChildren(QWidget):
             child.setFont(inspector_font)

@@ -137,7 +137,7 @@ def test_annotation_window_defaults_to_hidden_batch_panel_and_text_toolbar(tmp_p
     assert window.page_thumb_list.iconSize().width() == 82
     assert window.thumb_panel.maximumWidth() == 152
     assert window.inspector_panel.objectName() == "inspectorPanel"
-    assert window.inspector_panel.font().pointSize() > window.font().pointSize()
+    assert window.inspector_panel.font().pointSizeF() == pytest.approx(window.font().pointSizeF() * 1.15, rel=0.001)
     assert window.facts_list.font().pointSize() == window.inspector_panel.font().pointSize()
     assert window.page_issues_list.font().pointSize() == window.inspector_panel.font().pointSize()
     assert window.fact_path_list.font().pointSize() == window.inspector_panel.font().pointSize()
