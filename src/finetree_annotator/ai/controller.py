@@ -51,6 +51,7 @@ from .types import (
     FEW_SHOT_PRESET_2015_TWO_SHOT,
     FEW_SHOT_PRESET_CHOICES,
     FEW_SHOT_PRESET_CLASSIC,
+    FEW_SHOT_SOURCE_PRESET,
     LocalDetectorBackend,
     local_detector_backend_label,
     provider_label,
@@ -163,13 +164,19 @@ class AIWorkflowController:
 
             capabilities = self._capabilities_for(target_provider, current_action)
             dialog.set_capabilities(capabilities)
+            dialog.set_few_shot_context(
+                provider=target_provider,
+                action=current_action,
+                supports_few_shot=capabilities.supports_few_shot,
+            )
             context = self.host._ai_page_context()
+            request = self._request_from_dialog(dialog)
             dialog.set_context_summary(self._context_summary(context))
-            dialog.set_validation_message(self._validation_message(capabilities, context))
+            dialog.set_validation_message(self._validation_message(capabilities, context, request=request))
             dialog.set_prompt_text(self._build_prompt_for_dialog(target_provider, current_action, context))
             dialog.set_status(self._status_text, fact_count=self._status_fact_count)
             dialog.set_running(self.is_running())
-            dialog.set_run_enabled(self._can_run(capabilities, context) and not self.is_running())
+            dialog.set_run_enabled(self._can_run(capabilities, context, request=request) and not self.is_running())
         finally:
             self._dialog_refresh_in_progress = False
 
@@ -229,11 +236,8 @@ class AIWorkflowController:
             self.host._gemini_fill_worker.request_cancel()
             self._set_status("Stopping Fix...", fact_count=0, running=True)
 
-    def run_from_dialog(self) -> None:
-        dialog = self.dialog
-        if dialog is None:
-            return
-        request = AIWorkflowRequest(
+    def _request_from_dialog(self, dialog: AIDialog) -> AIWorkflowRequest:
+        return AIWorkflowRequest(
             provider=dialog.current_provider(),
             action=dialog.current_action(),
             model=dialog.current_model(),
@@ -243,10 +247,19 @@ class AIWorkflowController:
             thinking_level=dialog.thinking_level_combo.currentText().strip().lower() or "minimal",
             use_few_shot=dialog.few_shot_check.isChecked(),
             few_shot_preset=str(dialog.few_shot_preset_combo.currentData() or FEW_SHOT_PRESET_CLASSIC),
+            few_shot_source=dialog.current_few_shot_source(),
+            few_shot_previous_count=dialog.current_few_shot_previous_count(),
+            few_shot_page_spec=dialog.current_few_shot_page_spec(),
             max_facts=int(dialog.max_facts_spin.value()),
             selected_fact_fields=dialog.selected_fix_fields(),
             include_statement_type=dialog.statement_type_check.isChecked(),
         )
+
+    def run_from_dialog(self) -> None:
+        dialog = self.dialog
+        if dialog is None:
+            return
+        request = self._request_from_dialog(dialog)
         self.start_request(request)
         if self.is_running():
             dialog.close()
@@ -261,7 +274,7 @@ class AIWorkflowController:
         capabilities = self._capabilities_for(request.provider, request.action)
         if request.provider == AIProvider.GEMINI and capabilities.supports_max_facts:
             self.host._gemini_max_facts = max(0, int(request.max_facts))
-        validation_message = self._validation_message(capabilities, context)
+        validation_message = self._validation_message(capabilities, context, request=request)
         if validation_message:
             QMessageBox.information(self.host, "AI", validation_message)
             self.refresh_dialog_state()
@@ -341,6 +354,9 @@ class AIWorkflowController:
             prompt_text=self._build_prompt_for_dialog(AIProvider.GEMINI, AIActionKind.GROUND_TRUTH, context),
             use_few_shot=True,
             few_shot_preset=FEW_SHOT_PRESET_2015_TWO_SHOT,
+            few_shot_source=FEW_SHOT_SOURCE_PRESET,
+            few_shot_previous_count=2,
+            few_shot_page_spec="",
             max_facts=max(0, int(getattr(self.host, "_gemini_max_facts", 0))),
         )
         prompt_text = request.prompt_text.strip()
@@ -1175,7 +1191,18 @@ class AIWorkflowController:
     def _load_gemini_few_shot_examples(self, request: AIWorkflowRequest) -> Optional[list[dict[str, Any]]]:
         if not request.use_few_shot:
             return None
-        loaded_examples, warnings = self.host._load_gemini_few_shot_examples(preset=request.few_shot_preset)
+        if request.action == AIActionKind.GROUND_TRUTH and request.few_shot_source != FEW_SHOT_SOURCE_PRESET:
+            loaded_examples, warnings, error_message = self.host._load_current_document_gemini_few_shot_examples(
+                source=request.few_shot_source,
+                current_page_index=self.host.current_index,
+                previous_count=request.few_shot_previous_count,
+                page_spec=request.few_shot_page_spec,
+            )
+            if error_message:
+                self.host.statusBar().showMessage(f"Few-shot fallback to standard mode: {error_message}", 7000)
+                return None
+        else:
+            loaded_examples, warnings = self.host._load_gemini_few_shot_examples(preset=request.few_shot_preset)
         if loaded_examples:
             if warnings:
                 self.host.statusBar().showMessage(
@@ -1531,6 +1558,9 @@ class AIWorkflowController:
                 thinking_level="minimal",
                 use_few_shot=False,
                 few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
+                few_shot_source=FEW_SHOT_SOURCE_PRESET,
+                few_shot_previous_count=2,
+                few_shot_page_spec="",
                 max_facts=max(0, int(getattr(self.host, "_gemini_max_facts", 0))),
                 selected_fact_fields=default_fix_fields,
                 include_statement_type=False,
@@ -1545,6 +1575,9 @@ class AIWorkflowController:
                 thinking_level="high" if self.host._qwen_enable_thinking else "minimal",
                 use_few_shot=(action == AIActionKind.BBOX_ONLY),
                 few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
+                few_shot_source=FEW_SHOT_SOURCE_PRESET,
+                few_shot_previous_count=2,
+                few_shot_page_spec="",
                 max_facts=0,
                 selected_fact_fields=default_fix_fields,
                 include_statement_type=False,
@@ -1572,6 +1605,9 @@ class AIWorkflowController:
             thinking_level=self.host._gemini_thinking_level,
             use_few_shot=use_few_shot,
             few_shot_preset=few_shot_default,
+            few_shot_source=FEW_SHOT_SOURCE_PRESET,
+            few_shot_previous_count=2,
+            few_shot_page_spec="",
             max_facts=0,
             selected_fact_fields=default_fix_fields,
             include_statement_type=False,
@@ -1599,7 +1635,13 @@ class AIWorkflowController:
             summary += f" | Hand-drawn: {len(context.hand_drawn_fact_nums)}"
         return summary
 
-    def _validation_message(self, capabilities: AIActionCapabilities, context: Optional[AIPageContext]) -> str:
+    def _validation_message(
+        self,
+        capabilities: AIActionCapabilities,
+        context: Optional[AIPageContext],
+        *,
+        request: Optional[AIWorkflowRequest] = None,
+    ) -> str:
         if context is None:
             return "Load a page to run AI."
         if capabilities.requires_existing_facts and context.existing_fact_count <= 0:
@@ -1608,10 +1650,31 @@ class AIWorkflowController:
             return "Select one or more facts before running Fix."
         if capabilities.requires_hand_drawn_facts and not context.hand_drawn_fact_nums:
             return "Draw one or more bboxes on the page before running Fix Drawn."
+        if (
+            request is not None
+            and request.provider == AIProvider.GEMINI
+            and request.action == AIActionKind.GROUND_TRUTH
+            and request.use_few_shot
+            and request.few_shot_source != FEW_SHOT_SOURCE_PRESET
+        ):
+            _examples, _warnings, error_message = self.host._load_current_document_gemini_few_shot_examples(
+                source=request.few_shot_source,
+                current_page_index=context.page_index,
+                previous_count=request.few_shot_previous_count,
+                page_spec=request.few_shot_page_spec,
+            )
+            if error_message:
+                return error_message
         return ""
 
-    def _can_run(self, capabilities: AIActionCapabilities, context: Optional[AIPageContext]) -> bool:
-        return context is not None and not self._validation_message(capabilities, context)
+    def _can_run(
+        self,
+        capabilities: AIActionCapabilities,
+        context: Optional[AIPageContext],
+        *,
+        request: Optional[AIWorkflowRequest] = None,
+    ) -> bool:
+        return context is not None and not self._validation_message(capabilities, context, request=request)
 
     def _build_prompt_for_dialog(
         self,

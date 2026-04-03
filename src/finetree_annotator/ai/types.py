@@ -30,6 +30,9 @@ FEW_SHOT_PRESET_ONE_SHOT = "test_1"
 FEW_SHOT_PRESET_2015_TWO_SHOT = "2015_2"
 FEW_SHOT_PRESET_CLASSIC = "classic_4"
 FEW_SHOT_PRESET_EXTENDED = "extended_7"
+FEW_SHOT_SOURCE_PRESET = "preset"
+FEW_SHOT_SOURCE_PREVIOUS_PAGES = "previous_pages"
+FEW_SHOT_SOURCE_CUSTOM_PAGES = "custom_pages"
 
 FEW_SHOT_PRESET_CHOICES: tuple[tuple[str, str], ...] = (
     (FEW_SHOT_PRESET_ONE_SHOT, "Test 1-shot"),
@@ -48,6 +51,12 @@ FEW_SHOT_PRESET_SUMMARY: dict[str, str] = {
 FEW_SHOT_PRESET_HELP_TEXT = " | ".join(
     FEW_SHOT_PRESET_SUMMARY.get(preset_id, preset_id)
     for preset_id, _label in FEW_SHOT_PRESET_CHOICES
+)
+
+FEW_SHOT_SOURCE_CHOICES: tuple[tuple[str, str], ...] = (
+    (FEW_SHOT_SOURCE_PRESET, "Preset"),
+    (FEW_SHOT_SOURCE_PREVIOUS_PAGES, "Previous pages"),
+    (FEW_SHOT_SOURCE_CUSTOM_PAGES, "Custom pages"),
 )
 
 
@@ -92,6 +101,9 @@ class AIWorkflowRequest:
     thinking_level: str = "minimal"
     use_few_shot: bool = False
     few_shot_preset: str = ""
+    few_shot_source: str = FEW_SHOT_SOURCE_PRESET
+    few_shot_previous_count: int = 2
+    few_shot_page_spec: str = ""
     max_facts: int = 0
     selected_fact_fields: set[str] = field(default_factory=set)
     include_statement_type: bool = False
@@ -108,6 +120,9 @@ class AIDialogDefaults:
     thinking_level: str
     use_few_shot: bool
     few_shot_preset: str
+    few_shot_source: str
+    few_shot_previous_count: int
+    few_shot_page_spec: str
     max_facts: int
     selected_fact_fields: set[str]
     include_statement_type: bool
@@ -155,6 +170,10 @@ __all__ = [
     "FEW_SHOT_PRESET_HELP_TEXT",
     "FEW_SHOT_PRESET_ONE_SHOT",
     "FEW_SHOT_PRESET_SUMMARY",
+    "FEW_SHOT_SOURCE_CHOICES",
+    "FEW_SHOT_SOURCE_CUSTOM_PAGES",
+    "FEW_SHOT_SOURCE_PRESET",
+    "FEW_SHOT_SOURCE_PREVIOUS_PAGES",
     "LocalDetectorBackend",
     "action_label",
     "local_detector_backend_label",

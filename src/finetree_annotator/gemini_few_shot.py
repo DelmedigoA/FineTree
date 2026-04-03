@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Any, Iterable, Optional, Sequence
 
+from .annotation_core import PageState, build_annotations_payload_with_findings, default_page_meta
 from .bbox_utils import bbox_to_list
 from .fact_normalization import normalize_fact_payload
 from .schema_contract import PROMPT_FACT_KEYS, PROMPT_PAGE_META_KEYS
 from .schemas import PageMeta
+from .workspace import page_is_approved
 
 DEFAULT_TEST_FEW_SHOT_PAGES: tuple[str, ...] = (
     "page_0001.png",
@@ -29,6 +32,7 @@ DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS: tuple[tuple[str, str], ...] = (
     ("pdf_3", "page_0023.png"),
     ("pdf_2", "page_0008.png"),
 )
+_CUSTOM_PAGE_SPEC_RE = re.compile(r"^\s*(\d+)(?:\s*-\s*(\d+))?\s*$")
 
 
 def build_repo_roots(*, cwd: Optional[Path] = None, anchor_file: Optional[Path] = None) -> list[Path]:
@@ -352,6 +356,134 @@ def load_complex_few_shot_examples(
     return examples, warnings
 
 
+def parse_document_few_shot_page_spec(
+    page_spec: str,
+    *,
+    page_count: int,
+    current_page_index: int,
+) -> tuple[list[int], str | None]:
+    raw_spec = str(page_spec or "").strip()
+    if not raw_spec:
+        return [], "Enter a custom page like `3` or `1-3`."
+    match = _CUSTOM_PAGE_SPEC_RE.fullmatch(raw_spec)
+    if match is None:
+        return [], "Custom pages must be a single page like `3` or a range like `1-3`."
+
+    start = int(match.group(1))
+    end = int(match.group(2) or start)
+    if start <= 0 or end <= 0:
+        return [], "Custom pages must be 1-based page numbers greater than 0."
+    if end < start:
+        return [], "Custom page ranges must be ascending, for example `1-3`."
+    if start > page_count or end > page_count:
+        return [], f"Custom pages must be within this document's range: 1-{page_count}."
+
+    selected_indices = list(range(start - 1, end))
+    if current_page_index in selected_indices:
+        current_page_num = current_page_index + 1
+        return [], f"Custom few-shot pages cannot include the current page ({current_page_num})."
+    return selected_indices, None
+
+
+def load_document_few_shot_examples(
+    *,
+    images_dir: Path,
+    page_images: Sequence[Path],
+    page_states: dict[str, PageState],
+    current_page_index: int,
+    source: str,
+    previous_count: int = 2,
+    page_spec: str = "",
+    document_meta: Optional[dict[str, Any]] = None,
+) -> tuple[list[dict[str, Any]], list[str], str | None]:
+    page_count = len(page_images)
+    if page_count <= 0:
+        return [], [], "Load a document before using document-based few-shot examples."
+    if current_page_index < 0 or current_page_index >= page_count:
+        return [], [], "The current page is unavailable for document-based few-shot examples."
+
+    selected_indices: list[int] = []
+    warnings: list[str] = []
+
+    if source == "previous_pages":
+        requested = max(int(previous_count), 0)
+        if requested < 1:
+            return [], [], "Previous pages count must be at least 1."
+        selected_desc: list[int] = []
+        for page_index in range(current_page_index - 1, -1, -1):
+            page_name = page_images[page_index].name
+            state = page_states.get(page_name, PageState(meta=default_page_meta(page_index), facts=[]))
+            if not page_is_approved(state):
+                continue
+            selected_desc.append(page_index)
+            if len(selected_desc) >= requested:
+                break
+        if not selected_desc:
+            return [], [], "No approved previous pages are available for few-shot."
+        selected_indices = list(reversed(selected_desc))
+        if len(selected_indices) < requested:
+            warnings.append(
+                f"Requested {requested} previous approved page(s), found {len(selected_indices)}."
+            )
+    elif source == "custom_pages":
+        selected_indices, error_message = parse_document_few_shot_page_spec(
+            page_spec,
+            page_count=page_count,
+            current_page_index=current_page_index,
+        )
+        if error_message:
+            return [], [], error_message
+        approved_indices: list[int] = []
+        skipped_pages: list[int] = []
+        for page_index in selected_indices:
+            page_name = page_images[page_index].name
+            state = page_states.get(page_name, PageState(meta=default_page_meta(page_index), facts=[]))
+            if page_is_approved(state):
+                approved_indices.append(page_index)
+            else:
+                skipped_pages.append(page_index + 1)
+        if not approved_indices:
+            return [], [], "No approved pages were found in the custom few-shot selection."
+        if skipped_pages:
+            skipped_text = ", ".join(str(page_num) for page_num in skipped_pages)
+            warnings.append(f"Skipped unapproved custom page(s): {skipped_text}.")
+        selected_indices = approved_indices
+    else:
+        return [], [], f"Unsupported document few-shot source: {source}"
+
+    payload, _findings = build_annotations_payload_with_findings(
+        Path(images_dir),
+        page_images,
+        page_states,
+        document_meta=document_meta,
+    )
+    raw_pages = payload.get("pages")
+    if not isinstance(raw_pages, list):
+        return [], [], "Live annotations payload is missing pages for few-shot examples."
+    page_payload_map = _page_payload_map(raw_pages)
+
+    examples: list[dict[str, Any]] = []
+    for page_index in selected_indices:
+        page_path = page_images[page_index]
+        page_payload = page_payload_map.get(page_path.name)
+        if page_payload is None:
+            warnings.append(f"Few-shot page payload missing for page {page_index + 1}.")
+            continue
+        examples.append(
+            {
+                "image_path": page_path.resolve(),
+                "expected_json": json.dumps(
+                    _expected_payload_from_page(page_payload),
+                    ensure_ascii=False,
+                    separators=(",", ":"),
+                ),
+            }
+        )
+    if not examples:
+        return [], warnings, "No eligible few-shot examples could be prepared from the current document."
+    return examples, warnings, None
+
+
 __all__ = [
     "DEFAULT_2015_TWO_SHOT_SELECTIONS",
     "DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS",
@@ -360,6 +492,8 @@ __all__ = [
     "build_repo_roots",
     "load_auto_annotate_enrich_few_shot_examples",
     "load_complex_few_shot_examples",
+    "load_document_few_shot_examples",
     "load_test_pdf_few_shot_examples",
+    "parse_document_few_shot_page_spec",
     "resolve_repo_relative_path",
 ]

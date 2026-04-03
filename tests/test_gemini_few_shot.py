@@ -3,13 +3,16 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from finetree_annotator.annotation_core import BoxRecord, PageState, default_page_meta
 from finetree_annotator.gemini_few_shot import (
     DEFAULT_2015_TWO_SHOT_SELECTIONS,
     DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS,
     DEFAULT_TEST_ONE_SHOT_PAGE,
     DEFAULT_TEST_FEW_SHOT_PAGES,
     load_complex_few_shot_examples,
+    load_document_few_shot_examples,
     load_test_pdf_few_shot_examples,
+    parse_document_few_shot_page_spec,
     resolve_repo_relative_path,
 )
 from finetree_annotator.schema_contract import PROMPT_FACT_KEYS, PROMPT_PAGE_META_KEYS
@@ -244,3 +247,154 @@ def test_load_complex_few_shot_examples_reads_2015_two_shot_selection(tmp_path: 
 
 def test_default_complex_few_shot_selection_has_seven_items() -> None:
     assert len(DEFAULT_COMPLEX_FEW_SHOT_SELECTIONS) == 7
+
+
+def _page_state(*, approved: bool, value: str) -> PageState:
+    meta = default_page_meta()
+    meta["annotation_status"] = "approved" if approved else None
+    return PageState(
+        meta=meta,
+        facts=[BoxRecord(bbox={"x": 1.0, "y": 2.0, "w": 3.0, "h": 4.0}, fact={"value": value, "path": []})],
+    )
+
+
+def test_parse_document_few_shot_page_spec_accepts_single_page_and_range() -> None:
+    page_indices, error = parse_document_few_shot_page_spec("3", page_count=6, current_page_index=5)
+    assert error is None
+    assert page_indices == [2]
+
+    page_indices, error = parse_document_few_shot_page_spec("1-3", page_count=6, current_page_index=5)
+    assert error is None
+    assert page_indices == [0, 1, 2]
+
+
+def test_parse_document_few_shot_page_spec_rejects_invalid_inputs() -> None:
+    _, error = parse_document_few_shot_page_spec("0", page_count=6, current_page_index=5)
+    assert error == "Custom pages must be 1-based page numbers greater than 0."
+
+    _, error = parse_document_few_shot_page_spec("3-1", page_count=6, current_page_index=5)
+    assert error == "Custom page ranges must be ascending, for example `1-3`."
+
+    _, error = parse_document_few_shot_page_spec("a-b", page_count=6, current_page_index=5)
+    assert error == "Custom pages must be a single page like `3` or a range like `1-3`."
+
+    _, error = parse_document_few_shot_page_spec("8", page_count=6, current_page_index=5)
+    assert error == "Custom pages must be within this document's range: 1-6."
+
+    _, error = parse_document_few_shot_page_spec("5-6", page_count=6, current_page_index=4)
+    assert error == "Custom few-shot pages cannot include the current page (5)."
+
+
+def test_load_document_few_shot_examples_selects_nearest_approved_previous_pages(tmp_path: Path) -> None:
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    page_images = []
+    for page_num in range(1, 6):
+        image_path = images_dir / f"page_{page_num:04d}.png"
+        image_path.write_bytes(b"img")
+        page_images.append(image_path)
+
+    page_states = {
+        "page_0001.png": _page_state(approved=True, value="10"),
+        "page_0002.png": _page_state(approved=False, value="20"),
+        "page_0003.png": _page_state(approved=True, value="30"),
+        "page_0004.png": _page_state(approved=False, value="40"),
+    }
+
+    examples, warnings, error = load_document_few_shot_examples(
+        images_dir=images_dir,
+        page_images=page_images,
+        page_states=page_states,
+        current_page_index=4,
+        source="previous_pages",
+        previous_count=2,
+    )
+
+    assert error is None
+    assert warnings == []
+    assert [Path(example["image_path"]).name for example in examples] == ["page_0001.png", "page_0003.png"]
+
+
+def test_load_document_few_shot_examples_custom_range_uses_approved_pages_only(tmp_path: Path) -> None:
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    page_images = []
+    for page_num in range(1, 6):
+        image_path = images_dir / f"page_{page_num:04d}.png"
+        image_path.write_bytes(b"img")
+        page_images.append(image_path)
+
+    page_states = {
+        "page_0001.png": _page_state(approved=True, value="10"),
+        "page_0002.png": _page_state(approved=False, value="20"),
+        "page_0003.png": _page_state(approved=True, value="30"),
+        "page_0004.png": _page_state(approved=False, value="40"),
+    }
+
+    examples, warnings, error = load_document_few_shot_examples(
+        images_dir=images_dir,
+        page_images=page_images,
+        page_states=page_states,
+        current_page_index=4,
+        source="custom_pages",
+        page_spec="1-4",
+    )
+
+    assert error is None
+    assert warnings == ["Skipped unapproved custom page(s): 2, 4."]
+    assert [Path(example["image_path"]).name for example in examples] == ["page_0001.png", "page_0003.png"]
+
+
+def test_load_document_few_shot_examples_returns_error_when_no_approved_previous_pages_exist(tmp_path: Path) -> None:
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    page_images = []
+    for page_num in range(1, 4):
+        image_path = images_dir / f"page_{page_num:04d}.png"
+        image_path.write_bytes(b"img")
+        page_images.append(image_path)
+
+    page_states = {
+        "page_0001.png": _page_state(approved=False, value="10"),
+        "page_0002.png": _page_state(approved=False, value="20"),
+    }
+
+    examples, warnings, error = load_document_few_shot_examples(
+        images_dir=images_dir,
+        page_images=page_images,
+        page_states=page_states,
+        current_page_index=2,
+        source="previous_pages",
+        previous_count=2,
+    )
+
+    assert examples == []
+    assert warnings == []
+    assert error == "No approved previous pages are available for few-shot."
+
+
+def test_load_document_few_shot_examples_warns_when_previous_pages_are_partial(tmp_path: Path) -> None:
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    page_images = []
+    for page_num in range(1, 5):
+        image_path = images_dir / f"page_{page_num:04d}.png"
+        image_path.write_bytes(b"img")
+        page_images.append(image_path)
+
+    page_states = {
+        "page_0002.png": _page_state(approved=True, value="20"),
+    }
+
+    examples, warnings, error = load_document_few_shot_examples(
+        images_dir=images_dir,
+        page_images=page_images,
+        page_states=page_states,
+        current_page_index=3,
+        source="previous_pages",
+        previous_count=3,
+    )
+
+    assert error is None
+    assert [Path(example["image_path"]).name for example in examples] == ["page_0002.png"]
+    assert warnings == ["Requested 3 previous approved page(s), found 1."]

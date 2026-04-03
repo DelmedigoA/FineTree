@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
+    QLineEdit,
     QPushButton,
     QPlainTextEdit,
     QSpinBox,
@@ -22,7 +23,17 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from .types import AIActionCapabilities, AIActionKind, AIDialogDefaults, AIProvider, action_label, provider_label
+from .types import (
+    AIActionCapabilities,
+    AIActionKind,
+    AIDialogDefaults,
+    AIProvider,
+    FEW_SHOT_SOURCE_CUSTOM_PAGES,
+    FEW_SHOT_SOURCE_PRESET,
+    FEW_SHOT_SOURCE_PREVIOUS_PAGES,
+    action_label,
+    provider_label,
+)
 
 
 class AIDialog(QDialog):
@@ -93,9 +104,18 @@ class AIDialog(QDialog):
         self.thinking_level_combo = QComboBox()
         self.thinking_level_combo.addItems(list(thinking_levels))
         self.few_shot_check = QCheckBox("Use few-shot examples")
+        self.few_shot_source_combo = QComboBox()
+        self.few_shot_source_combo.addItem("Preset", FEW_SHOT_SOURCE_PRESET)
+        self.few_shot_source_combo.addItem("Previous pages", FEW_SHOT_SOURCE_PREVIOUS_PAGES)
+        self.few_shot_source_combo.addItem("Custom pages", FEW_SHOT_SOURCE_CUSTOM_PAGES)
         self.few_shot_preset_combo = QComboBox()
         for preset_id, preset_label in few_shot_presets:
             self.few_shot_preset_combo.addItem(preset_label, preset_id)
+        self.few_shot_previous_count_spin = QSpinBox()
+        self.few_shot_previous_count_spin.setRange(1, 999)
+        self.few_shot_previous_count_spin.setValue(2)
+        self.few_shot_page_spec_edit = QLineEdit()
+        self.few_shot_page_spec_edit.setPlaceholderText("1-3")
         self.temperature_spin = QDoubleSpinBox()
         self.temperature_spin.setDecimals(2)
         self.temperature_spin.setSingleStep(0.05)
@@ -107,7 +127,10 @@ class AIDialog(QDialog):
         options_layout.addRow("Thinking", self.thinking_check)
         options_layout.addRow("Thinking level", self.thinking_level_combo)
         options_layout.addRow("Few-shot", self.few_shot_check)
+        options_layout.addRow("Few-shot source", self.few_shot_source_combo)
         options_layout.addRow("Few-shot preset", self.few_shot_preset_combo)
+        options_layout.addRow("Previous count", self.few_shot_previous_count_spin)
+        options_layout.addRow("Custom pages", self.few_shot_page_spec_edit)
         options_layout.addRow("Temperature", self.temperature_spin)
         options_layout.addRow("Max facts", self.max_facts_spin)
         root.addWidget(self.options_box)
@@ -193,7 +216,10 @@ class AIDialog(QDialog):
         self.temperature_spin.valueChanged.connect(lambda _value: self.state_changed.emit())
         self.max_facts_spin.valueChanged.connect(lambda _value: self.state_changed.emit())
         self.thinking_level_combo.currentTextChanged.connect(self.state_changed.emit)
+        self.few_shot_source_combo.currentTextChanged.connect(self._on_few_shot_source_changed)
         self.few_shot_preset_combo.currentTextChanged.connect(self.state_changed.emit)
+        self.few_shot_previous_count_spin.valueChanged.connect(lambda _value: self.state_changed.emit())
+        self.few_shot_page_spec_edit.textChanged.connect(lambda _value: self.state_changed.emit())
         self.statement_type_check.toggled.connect(self.state_changed.emit)
         self.run_btn.clicked.connect(self.run_requested.emit)
         self.stop_btn.clicked.connect(self.stop_requested.emit)
@@ -206,6 +232,7 @@ class AIDialog(QDialog):
 
         self._on_thinking_toggled(self.thinking_check.isChecked())
         self._on_few_shot_toggled(self.few_shot_check.isChecked())
+        self._update_few_shot_fields_visibility()
 
     def _on_prompt_toggled(self, checked: bool) -> None:
         self.prompt_frame.setVisible(checked)
@@ -215,8 +242,39 @@ class AIDialog(QDialog):
         self.state_changed.emit()
 
     def _on_few_shot_toggled(self, checked: bool) -> None:
-        self.few_shot_preset_combo.setEnabled(bool(checked))
+        enabled = bool(checked)
+        self.few_shot_source_combo.setEnabled(enabled)
+        self.few_shot_preset_combo.setEnabled(enabled)
+        self.few_shot_previous_count_spin.setEnabled(enabled)
+        self.few_shot_page_spec_edit.setEnabled(enabled)
+        self._update_few_shot_fields_visibility()
         self.state_changed.emit()
+
+    def _on_few_shot_source_changed(self, _text: str) -> None:
+        self._update_few_shot_fields_visibility()
+        self.state_changed.emit()
+
+    def _set_form_row_visible(self, field: QWidget, visible: bool) -> None:
+        label = self.options_box.layout().labelForField(field)
+        if label is not None:
+            label.setVisible(visible)
+        field.setVisible(visible)
+
+    def _update_few_shot_fields_visibility(self) -> None:
+        use_few_shot = self.few_shot_check.isChecked()
+        supports = getattr(self, "_supports_few_shot", False)
+        dynamic_gt = getattr(self, "_dynamic_gt_few_shot", False)
+        source = self.current_few_shot_source()
+
+        show_source = supports and dynamic_gt and use_few_shot
+        show_preset = supports and ((not dynamic_gt and use_few_shot) or (dynamic_gt and use_few_shot and source == FEW_SHOT_SOURCE_PRESET))
+        show_previous = supports and dynamic_gt and use_few_shot and source == FEW_SHOT_SOURCE_PREVIOUS_PAGES
+        show_custom = supports and dynamic_gt and use_few_shot and source == FEW_SHOT_SOURCE_CUSTOM_PAGES
+
+        self._set_form_row_visible(self.few_shot_source_combo, show_source)
+        self._set_form_row_visible(self.few_shot_preset_combo, show_preset)
+        self._set_form_row_visible(self.few_shot_previous_count_spin, show_previous)
+        self._set_form_row_visible(self.few_shot_page_spec_edit, show_custom)
 
     def _select_all_fix_fields(self) -> None:
         for checkbox in self._fix_field_checks.values():
@@ -244,6 +302,15 @@ class AIDialog(QDialog):
         if self.temperature_spin.value() <= self.temperature_spin.minimum():
             return None
         return float(self.temperature_spin.value())
+
+    def current_few_shot_source(self) -> str:
+        return str(self.few_shot_source_combo.currentData() or FEW_SHOT_SOURCE_PRESET)
+
+    def current_few_shot_previous_count(self) -> int:
+        return int(self.few_shot_previous_count_spin.value())
+
+    def current_few_shot_page_spec(self) -> str:
+        return self.few_shot_page_spec_edit.text().strip()
 
     def selected_fix_fields(self) -> set[str]:
         return {
@@ -297,6 +364,7 @@ class AIDialog(QDialog):
         self.fact_count_label.setText(f"Parsed facts: {int(fact_count)}")
 
     def set_capabilities(self, capabilities: AIActionCapabilities) -> None:
+        self._supports_few_shot = capabilities.supports_few_shot
         self.thinking_check.setVisible(capabilities.supports_thinking)
         self.thinking_level_combo.setVisible(capabilities.supports_thinking_level)
         thinking_level_label = self.options_box.layout().labelForField(self.thinking_level_combo)
@@ -304,13 +372,10 @@ class AIDialog(QDialog):
             thinking_level_label.setVisible(capabilities.supports_thinking_level)
 
         self.few_shot_check.setVisible(capabilities.supports_few_shot)
-        self.few_shot_preset_combo.setVisible(capabilities.supports_few_shot)
         few_shot_label = self.options_box.layout().labelForField(self.few_shot_check)
         if few_shot_label is not None:
             few_shot_label.setVisible(capabilities.supports_few_shot)
-        few_shot_preset_label = self.options_box.layout().labelForField(self.few_shot_preset_combo)
-        if few_shot_preset_label is not None:
-            few_shot_preset_label.setVisible(capabilities.supports_few_shot)
+        self._update_few_shot_fields_visibility()
 
         self.temperature_spin.setVisible(capabilities.supports_temperature)
         temperature_label = self.options_box.layout().labelForField(self.temperature_spin)
@@ -333,6 +398,11 @@ class AIDialog(QDialog):
         self._on_thinking_toggled(self.thinking_check.isChecked())
         self._on_few_shot_toggled(self.few_shot_check.isChecked())
 
+    def set_few_shot_context(self, *, provider: AIProvider, action: AIActionKind, supports_few_shot: bool) -> None:
+        self._supports_few_shot = bool(supports_few_shot)
+        self._dynamic_gt_few_shot = provider == AIProvider.GEMINI and action == AIActionKind.GROUND_TRUTH
+        self._update_few_shot_fields_visibility()
+
     def apply_defaults(self, defaults: AIDialogDefaults) -> None:
         provider_index = self.provider_combo.findData(defaults.provider.value)
         if provider_index >= 0:
@@ -343,9 +413,14 @@ class AIDialog(QDialog):
         if level_index >= 0:
             self.thinking_level_combo.setCurrentIndex(level_index)
         self.few_shot_check.setChecked(bool(defaults.use_few_shot))
+        source_index = self.few_shot_source_combo.findData(defaults.few_shot_source)
+        if source_index >= 0:
+            self.few_shot_source_combo.setCurrentIndex(source_index)
         preset_index = self.few_shot_preset_combo.findData(defaults.few_shot_preset)
         if preset_index >= 0:
             self.few_shot_preset_combo.setCurrentIndex(preset_index)
+        self.few_shot_previous_count_spin.setValue(max(1, int(defaults.few_shot_previous_count)))
+        self.few_shot_page_spec_edit.setText(str(defaults.few_shot_page_spec or ""))
         self.max_facts_spin.setValue(max(0, int(defaults.max_facts)))
         for field_name, checkbox in self._fix_field_checks.items():
             checkbox.setChecked(field_name in defaults.selected_fact_fields)
@@ -364,7 +439,10 @@ class AIDialog(QDialog):
             self.thinking_check,
             self.thinking_level_combo,
             self.few_shot_check,
+            self.few_shot_source_combo,
             self.few_shot_preset_combo,
+            self.few_shot_previous_count_spin,
+            self.few_shot_page_spec_edit,
             self.temperature_spin,
             self.max_facts_spin,
             self.statement_type_check,

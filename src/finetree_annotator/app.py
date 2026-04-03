@@ -84,6 +84,9 @@ from .ai.types import (
     FEW_SHOT_PRESET_CLASSIC,
     FEW_SHOT_PRESET_EXTENDED,
     FEW_SHOT_PRESET_ONE_SHOT,
+    FEW_SHOT_SOURCE_CUSTOM_PAGES,
+    FEW_SHOT_SOURCE_PRESET,
+    FEW_SHOT_SOURCE_PREVIOUS_PAGES,
     LocalDetectorBackend,
 )
 from .annotation_core import (
@@ -124,6 +127,7 @@ from .gemini_few_shot import (
     DEFAULT_TEST_FEW_SHOT_PAGES,
     build_repo_roots,
     load_complex_few_shot_examples,
+    load_document_few_shot_examples,
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
@@ -6194,6 +6198,26 @@ class AnnotationWindow(QMainWindow):
             page_names=DEFAULT_TEST_FEW_SHOT_PAGES,
         )
 
+    def _load_current_document_gemini_few_shot_examples(
+        self,
+        *,
+        source: str,
+        current_page_index: int,
+        previous_count: int = 2,
+        page_spec: str = "",
+    ) -> tuple[list[dict[str, Any]], list[str], str | None]:
+        self._capture_current_state()
+        return load_document_few_shot_examples(
+            images_dir=self.images_dir,
+            page_images=self.page_images,
+            page_states=self.page_states,
+            current_page_index=current_page_index,
+            source=source,
+            previous_count=previous_count,
+            page_spec=page_spec,
+            document_meta=self.document_meta,
+        )
+
     def _resolve_qwen_config_path(self) -> Optional[Path]:
         candidates: List[Path] = []
         env_path = os.getenv("FINETREE_QWEN_CONFIG")
@@ -6341,6 +6365,12 @@ class AnnotationWindow(QMainWindow):
             signature.append(self._fact_uniqueness_key(self._fact_payload_from_item(item)))
         return signature
 
+    def _validated_page_meta_for_state(self, page_index: int, raw_meta: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+        meta = {**self._default_meta(page_index), **(raw_meta or {})}
+        if meta.get("statement_type") not in (None, "") and meta.get("page_type") in (None, "", PageType.other.value):
+            meta["page_type"] = PageType.statements.value
+        return PageMeta.model_validate(meta).model_dump(mode="json")
+
     def _ai_page_context(self) -> AIPageContext | None:
         if self.current_index < 0 or self.current_index >= len(self.page_images):
             return None
@@ -6348,9 +6378,7 @@ class AnnotationWindow(QMainWindow):
         page_name = page_path.name
         ordered_items = self._sorted_fact_items()
         state = self.page_states.get(page_name, self._default_state(self.current_index))
-        page_meta = PageMeta.model_validate(
-            {**self._default_meta(self.current_index), **(state.meta or {})}
-        ).model_dump(mode="json")
+        page_meta = self._validated_page_meta_for_state(self.current_index, state.meta)
         selected_ids = {id(item) for item in self._selected_fact_items()}
         selected_fact_nums = [
             fact_num
@@ -6998,7 +7026,7 @@ class AnnotationWindow(QMainWindow):
     ) -> Dict[str, Any]:
         page_idx = self._page_index_by_name(page_name)
         state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
-        page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
+        page_meta = self._validated_page_meta_for_state(max(page_idx, 0), state.meta)
         return build_ai_gemini_fill_request_payload(
             page_name=page_name,
             page_meta=page_meta,
@@ -7016,7 +7044,7 @@ class AnnotationWindow(QMainWindow):
     ) -> Dict[str, Any]:
         page_idx = self._page_index_by_name(page_name)
         state = self.page_states.get(page_name, self._default_state(max(page_idx, 0)))
-        page_meta = PageMeta.model_validate({**self._default_meta(max(page_idx, 0)), **(state.meta or {})}).model_dump(mode="json")
+        page_meta = self._validated_page_meta_for_state(max(page_idx, 0), state.meta)
         return build_ai_gemini_autocomplete_request_payload(
             page_name=page_name,
             page_meta=page_meta,

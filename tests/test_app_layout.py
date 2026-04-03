@@ -452,7 +452,70 @@ def test_ai_ground_truth_dialog_defaults_to_gemini_flash_preview(tmp_path: Path)
     assert dialog.thinking_check.isChecked() is False
     assert dialog.thinking_level_combo.currentText().lower() == "minimal"
     assert dialog.few_shot_check.isChecked() is False
+    assert dialog.current_few_shot_source() == app_mod.FEW_SHOT_SOURCE_PRESET
+    assert dialog.current_few_shot_previous_count() == 2
+    assert dialog.current_few_shot_page_spec() == ""
     assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
+    dialog.close()
+    window.close()
+
+
+def test_ai_ground_truth_dialog_shows_dynamic_few_shot_controls_only_when_enabled(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+
+    assert dialog.few_shot_source_combo.isVisible() is False
+    assert dialog.few_shot_previous_count_spin.isVisible() is False
+    assert dialog.few_shot_page_spec_edit.isVisible() is False
+
+    dialog.few_shot_check.setChecked(True)
+    assert dialog.few_shot_source_combo.isVisible() is True
+    assert dialog.few_shot_preset_combo.isVisible() is True
+
+    dialog.few_shot_source_combo.setCurrentIndex(
+        dialog.few_shot_source_combo.findData(app_mod.FEW_SHOT_SOURCE_PREVIOUS_PAGES)
+    )
+    assert dialog.few_shot_previous_count_spin.isVisible() is True
+    assert dialog.few_shot_preset_combo.isVisible() is False
+    assert dialog.few_shot_page_spec_edit.isVisible() is False
+
+    dialog.few_shot_source_combo.setCurrentIndex(
+        dialog.few_shot_source_combo.findData(app_mod.FEW_SHOT_SOURCE_CUSTOM_PAGES)
+    )
+    assert dialog.few_shot_page_spec_edit.isVisible() is True
+    assert dialog.few_shot_preset_combo.isVisible() is False
+    assert dialog.few_shot_previous_count_spin.isVisible() is False
+
+    dialog.close()
+    window.close()
+
+
+def test_ai_bbox_only_dialog_keeps_preset_only_few_shot_controls(tmp_path: Path) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.BBOX_ONLY)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+
+    assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_preset_combo.isVisible() is True
+    assert dialog.few_shot_source_combo.isVisible() is False
+    assert dialog.few_shot_previous_count_spin.isVisible() is False
+    assert dialog.few_shot_page_spec_edit.isVisible() is False
+
     dialog.close()
     window.close()
 
@@ -815,6 +878,77 @@ def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatc
     assert captured_stream_kwargs["max_facts"] == 4
     assert captured_stream_kwargs["prompt_text"] == "custom gt prompt"
 
+    window.close()
+
+
+def test_gemini_gt_dynamic_previous_pages_passes_document_examples(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+
+    captured_stream_kwargs: dict[str, object] = {}
+    monkeypatch.setattr(
+        "finetree_annotator.gemini_vlm.ensure_gemini_backend_credentials",
+        lambda _model_name, explicit_api_key=None: ("test-key", None),
+    )
+    monkeypatch.setattr(
+        window,
+        "_load_current_document_gemini_few_shot_examples",
+        lambda **kwargs: ([{"image_path": Path("/tmp/doc-example.png"), "expected_json": "{\"pages\":[]}"}], [], None),
+    )
+    monkeypatch.setattr(window._ai_controller, "_start_gemini_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.model_combo.setCurrentText("gemini-3-flash-preview")
+    dialog.few_shot_check.setChecked(True)
+    dialog.few_shot_source_combo.setCurrentIndex(
+        dialog.few_shot_source_combo.findData(app_mod.FEW_SHOT_SOURCE_PREVIOUS_PAGES)
+    )
+    dialog.few_shot_previous_count_spin.setValue(3)
+    dialog.prompt_edit.setPlainText("custom gt prompt")
+    window._ai_controller.run_from_dialog()
+
+    assert captured_stream_kwargs["few_shot_examples"] == [
+        {"image_path": Path("/tmp/doc-example.png"), "expected_json": "{\"pages\":[]}"}
+    ]
+    assert captured_stream_kwargs["prompt_text"] == "custom gt prompt"
+
+    window.close()
+
+
+def test_ai_ground_truth_dialog_blocks_invalid_custom_few_shot_selection(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    monkeypatch.setattr(
+        window,
+        "_load_current_document_gemini_few_shot_examples",
+        lambda **kwargs: ([], [], "Custom few-shot pages cannot include the current page (1)."),
+    )
+
+    window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.few_shot_check.setChecked(True)
+    dialog.few_shot_source_combo.setCurrentIndex(
+        dialog.few_shot_source_combo.findData(app_mod.FEW_SHOT_SOURCE_CUSTOM_PAGES)
+    )
+    dialog.few_shot_page_spec_edit.setText("1")
+
+    assert dialog.validation_label.text() == "Custom few-shot pages cannot include the current page (1)."
+    assert dialog.run_btn.isEnabled() is False
+
+    dialog.close()
     window.close()
 
 
