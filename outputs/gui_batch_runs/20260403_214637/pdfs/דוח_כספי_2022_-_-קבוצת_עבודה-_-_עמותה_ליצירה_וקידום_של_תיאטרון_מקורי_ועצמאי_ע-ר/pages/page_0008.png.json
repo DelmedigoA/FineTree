@@ -1,0 +1,491 @@
+{
+  "doc_id": "דוח_כספי_2022_-_-קבוצת_עבודה-_-_עמותה_ליצירה_וקידום_של_תיאטרון_מקורי_ועצמאי_ע-ר",
+  "page_index": 8,
+  "page_name": "page_0008.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 23,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"קבוצת עבודה - עמותה ליצירה וקידום תיאטרון מקורי ועמאי (ע\\\"ר)\", \"page_num\": \"7\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים (בשקלים חדשים)\"}, \"facts\": [{\"value\": \"15,000\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"חייבים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"42,255\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"חייבים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"523\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"15,000\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"42,778\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,490\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,490\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,548\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-01-01\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,718\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-01-01\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,826\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"פחת שנצבר\", \"תוספות במשך השנה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,830\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"פחת שנצבר\", \"תוספות במשך השנה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,374\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 31 בדצמבר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,548\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 31 בדצמבר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"116\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"עלות מופחתת ליום 31 בדצמבר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,942\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"עלות מופחתת ליום 31 בדצמבר 2022\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"33-6\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"שיעורי הפחת\", \"ריהוט וציוד\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"2,121\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"מוסדות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"11,257\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מוסדות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"56,583\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"60,474\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"58,704\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2022-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"71,731\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0008.png",
+    "meta": {
+      "entity_name": "קבוצת עבודה - עמותה ליצירה וקידום תיאטרון מקורי ועמאי (ע\"ר)",
+      "page_num": "7",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים (בשקלים חדשים)"
+    },
+    "facts": [
+      {
+        "value": "15,000",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "חייבים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "42,255",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "חייבים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "523",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "15,000",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "42,778",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,490",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,490",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,548",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-01-01",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 1 בינואר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,718",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-01-01",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 1 בינואר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,826",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "פחת שנצבר",
+          "תוספות במשך השנה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,830",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "פחת שנצבר",
+          "תוספות במשך השנה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,374",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 31 בדצמבר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,548",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 31 בדצמבר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "116",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "עלות מופחתת ליום 31 בדצמבר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,942",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "עלות מופחתת ליום 31 בדצמבר 2022"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "33-6",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "שיעורי הפחת",
+          "ריהוט וציוד"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,121",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "מוסדות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "11,257",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מוסדות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "56,583",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "60,474",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "58,704",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2022-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "71,731",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

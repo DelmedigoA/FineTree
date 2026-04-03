@@ -1,0 +1,553 @@
+{
+  "doc_id": "דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר",
+  "page_index": 6,
+  "page_name": "page_0006.png",
+  "page_type": "statements",
+  "statement_type": "statement_of_changes_in_equity",
+  "fact_count": 25,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"א.בן. - סיוע בנגב ובדרום (ע\\\"ר)\", \"page_num\": \"6/8\", \"page_type\": \"statements\", \"statement_type\": \"statement_of_changes_in_equity\", \"title\": \"דו״ח על השינויים בנכסים נטו\"}, \"facts\": [{\"value\": \"-25,611\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2017-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2017\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2017-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2017\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-25,611\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2017-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2017\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-15,692\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2018-01-01\", \"period_end\": \"2018-12-31\", \"path\": [\"תוספות במהלך שנת 2018\", \"הכנסות נטו (גירעון) השנה\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-15,692\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2018-01-01\", \"period_end\": \"2018-12-31\", \"path\": [\"תוספות במהלך שנת 2018\", \"הכנסות נטו (גירעון) השנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2018-01-01\", \"period_end\": \"2018-12-31\", \"path\": [\"גרעונות במהלך שנת 2018\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-41,303\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2018-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2018\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2018-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2018\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-41,303\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2018-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2018\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"54,513\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"תוספות במהלך שנת 2019\", \"הכנסות נטו (גירעון) השנה\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"54,513\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"תוספות במהלך שנת 2019\", \"הכנסות נטו (גירעון) השנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"גרעונות במהלך שנת 2019\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"13,210\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2019\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2019\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"13,210\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2019\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"65,404\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תוספות במהלך שנת 2020\", \"הכנסות נטו (גירעון) השנה\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"65,404\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תוספות במהלך שנת 2020\", \"הכנסות נטו (גירעון) השנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"גרעונות במהלך שנת 2020\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-2,919\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת סכומים ששימשו לרכוש קבוע\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,919\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת סכומים ששימשו לרכוש קבוע\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת סכומים ששימשו לרכוש קבוע\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"319\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת פחת והפרחת השנה\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-319\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת פחת והפרחת השנה\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"העברת פחת והפרחת השנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"76,014\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2020\", \"שלא קיימת הגבלה ששימשו לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,600\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2020\", \"שלא קיימת הגבלה ששימשו לרכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1,",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "א.בן. - סיוע בנגב ובדרום (ע\"ר)",
+      "page_num": "6/8",
+      "page_type": "statements",
+      "statement_type": "statement_of_changes_in_equity",
+      "title": "דו״ח על השינויים בנכסים נטו"
+    },
+    "facts": [
+      {
+        "value": "-25,611",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2017-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2017",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2017-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2017",
+          "שלא קיימת הגבלה ששימשו לרכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-25,611",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2017-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2017",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-15,692",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2018-01-01",
+        "period_end": "2018-12-31",
+        "path": [
+          "תוספות במהלך שנת 2018",
+          "הכנסות נטו (גירעון) השנה",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-15,692",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2018-01-01",
+        "period_end": "2018-12-31",
+        "path": [
+          "תוספות במהלך שנת 2018",
+          "הכנסות נטו (גירעון) השנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2018-01-01",
+        "period_end": "2018-12-31",
+        "path": [
+          "גרעונות במהלך שנת 2018",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-41,303",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2018-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2018",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2018-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2018",
+          "שלא קיימת הגבלה ששימשו לרכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-41,303",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2018-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2018",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "54,513",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "תוספות במהלך שנת 2019",
+          "הכנסות נטו (גירעון) השנה",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "54,513",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "תוספות במהלך שנת 2019",
+          "הכנסות נטו (גירעון) השנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "גרעונות במהלך שנת 2019",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "13,210",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2019",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2019",
+          "שלא קיימת הגבלה ששימשו לרכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "13,210",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2019",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "65,404",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תוספות במהלך שנת 2020",
+          "הכנסות נטו (גירעון) השנה",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "65,404",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תוספות במהלך שנת 2020",
+          "הכנסות נטו (גירעון) השנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "גרעונות במהלך שנת 2020",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-2,919",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת סכומים ששימשו לרכוש קבוע",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,919",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת סכומים ששימשו לרכוש קבוע",
+          "שלא קיימת הגבלה ששימשו לרכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת סכומים ששימשו לרכוש קבוע",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "319",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת פחת והפרחת השנה",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-319",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת פחת והפרחת השנה",
+          "שלא קיימת הגבלה ששימשו לרכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "העברת פחת והפרחת השנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "76,014",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2020",
+          "שלא קיימת הגבלה ששימשו לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0006.png"
+  }
+}

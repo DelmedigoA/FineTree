@@ -1,0 +1,440 @@
+{
+  "doc_id": "דוח_כספי_2016_-_15_דקות_-_ארגון_צרכני_תחבורה_ציבורית_בישראל_ע-ר",
+  "page_index": 4,
+  "page_name": "page_0004.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 20,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"page_num\": \"3\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"דוחות על המצב הכספי\"}, \"facts\": [{\"value\": \"10,387\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"נכסים שוטפים\", \"מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"152,716\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"נכסים שוטפים\", \"מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"51,629\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"נכסים שוטפים\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"נכסים שוטפים\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"62,016\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"נכסים שוטפים\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"152,716\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"נכסים שוטפים\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,592\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"התחייבויות שוטפות\", \"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"התחייבויות שוטפות\", \"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"69,734\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"התחייבויות שוטפות\", \"זכאים ותרומות זכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"108,119\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"התחייבויות שוטפות\", \"זכאים ותרומות זכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"71,326\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"התחייבויות שוטפות\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"108,119\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"התחייבויות שוטפות\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"התחייבויות לא שוטפות\", \"התחייבויות בשל סיום יחסי עובד-מעביד, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"התחייבויות לא שוטפות\", \"התחייבויות בשל סיום יחסי עובד-מעביד, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(9,310)\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"נכסים נטו שלא קיימים לגביה הגבלה\", \"לשימוש לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"44,597\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"נכסים נטו שלא קיימים לגביה הגבלה\", \"לשימוש לפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(9,310)\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"נכסים נטו שלא קיימים לגביה הגבלה\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"44,597\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"נכסים נטו שלא קיימים לגביה הגבלה\", \"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"62,016\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"סה\\\"כ התחייבויות ונכסים נטו\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"152,716\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"סה\\\"כ התחייבויות ונכסים נטו\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0004.png",
+    "meta": {
+      "entity_name": "ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+      "page_num": "3",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "דוחות על המצב הכספי"
+    },
+    "facts": [
+      {
+        "value": "10,387",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "152,716",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "51,629",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "62,016",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "152,716",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "נכסים שוטפים",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,592",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "69,734",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "זכאים ותרומות זכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "108,119",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "זכאים ותרומות זכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "71,326",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "108,119",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "התחייבויות לא שוטפות",
+          "התחייבויות בשל סיום יחסי עובד-מעביד, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "התחייבויות לא שוטפות",
+          "התחייבויות בשל סיום יחסי עובד-מעביד, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(9,310)",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "נכסים נטו שלא קיימים לגביה הגבלה",
+          "לשימוש לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "44,597",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "נכסים נטו שלא קיימים לגביה הגבלה",
+          "לשימוש לפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(9,310)",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "נכסים נטו שלא קיימים לגביה הגבלה",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "44,597",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "נכסים נטו שלא קיימים לגביה הגבלה",
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "62,016",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "סה\"כ התחייבויות ונכסים נטו"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "152,716",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דוקת - ארגון צרכני תחבורה ציבורית בישראל (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "סה\"כ התחייבויות ונכסים נטו"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

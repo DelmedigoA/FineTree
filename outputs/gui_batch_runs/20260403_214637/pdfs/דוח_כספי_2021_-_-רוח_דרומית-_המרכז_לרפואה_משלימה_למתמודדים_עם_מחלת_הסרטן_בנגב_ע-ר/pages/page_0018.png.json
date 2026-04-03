@@ -1,0 +1,462 @@
+{
+  "doc_id": "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר",
+  "page_index": 18,
+  "page_name": "page_0018.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 22,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"\\\"רות דרומית\\\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\\\"ר)\", \"page_num\": \"17\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"ביאורים לדוחות הכספיים לשנה שנסתיימה ביום 31 בדצמבר (שקלים חדשים)\"}, \"facts\": [{\"value\": \"245,799\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"שכר הנהלה ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"246,309\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"שכר הנהלה ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"20,810\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"משרדיות ואחזקת משרד\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,663\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"משרדיות ואחזקת משרד\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"13,117\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"שרותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"11,091\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"שרותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,679\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"אחזקת רכב הנהלה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"9,676\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"אחזקת רכב הנהלה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,082\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"דואר ותקשורת ושונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,427\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"דואר ותקשורת ושונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,505\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מיסים ואגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,511\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מיסים ואגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"6,237\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"פחת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,232\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"פחת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"297,229\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"סך הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"284,909\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"סך הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"6,213\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"ריביות ועמלות בנקאיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,665\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"ריביות ועמלות בנקאיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(1,197)\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"ריבית בגין 3(ט) הלוואות לעובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(1,053)\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"ריבית בגין 3(ט) הלוואות לעובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,016\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"סך הוצאות מימון, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"4,612\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות מימון, נטו\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"סך הוצאות מימון, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0018.png",
+    "meta": {
+      "entity_name": "\"רות דרומית\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\"ר)",
+      "page_num": "17",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "ביאורים לדוחות הכספיים לשנה שנסתיימה ביום 31 בדצמבר (שקלים חדשים)"
+    },
+    "facts": [
+      {
+        "value": "245,799",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "שכר הנהלה ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "246,309",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "שכר הנהלה ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "20,810",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "משרדיות ואחזקת משרד"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,663",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "משרדיות ואחזקת משרד"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "13,117",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "שרותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "11,091",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "שרותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,679",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "אחזקת רכב הנהלה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "9,676",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "אחזקת רכב הנהלה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,082",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "דואר ותקשורת ושונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,427",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "דואר ותקשורת ושונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,505",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מיסים ואגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,511",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מיסים ואגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "6,237",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "פחת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,232",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "פחת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "297,229",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "סך הוצאות הנהלה וכלליות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "284,909",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "סך הוצאות הנהלה וכלליות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "6,213",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "ריביות ועמלות בנקאיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,665",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "ריביות ועמלות בנקאיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(1,197)",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "ריבית בגין 3(ט) הלוואות לעובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(1,053)",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "ריבית בגין 3(ט) הלוואות לעובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,016",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "סך הוצאות מימון, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "4,612",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות מימון, נטו",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "סך הוצאות מימון, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

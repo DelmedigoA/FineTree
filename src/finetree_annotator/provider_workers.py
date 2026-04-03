@@ -287,6 +287,64 @@ class GeminiFillWorker(QObject):
             self.finished.emit()
 
 
+class QwenFillWorker(QObject):
+    completed = pyqtSignal(dict)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        *,
+        image_path: Path,
+        prompt: str,
+        model: str,
+        config_path: Optional[str],
+        allowed_fact_fields: set[str],
+        allow_statement_type: bool,
+        enable_thinking: bool,
+        parent: Optional[QObject] = None,
+    ) -> None:
+        super().__init__(parent)
+        self.image_path = image_path
+        self.prompt = prompt
+        self.model = model
+        self.config_path = config_path
+        self.allowed_fact_fields = set(allowed_fact_fields)
+        self.allow_statement_type = bool(allow_statement_type)
+        self.enable_thinking = bool(enable_thinking)
+        self._cancel_requested = False
+
+    def request_cancel(self) -> None:
+        self._cancel_requested = True
+
+    def run(self) -> None:
+        try:
+            from .gemini_vlm import parse_selected_field_patch_text
+            from .qwen_vlm import generate_content_from_image
+
+            raw_text = generate_content_from_image(
+                image_path=self.image_path,
+                prompt=self.prompt,
+                model=self.model,
+                config_path=self.config_path,
+                enable_thinking=self.enable_thinking,
+            )
+            if self._cancel_requested:
+                return
+            parsed = parse_selected_field_patch_text(
+                raw_text,
+                allowed_fact_fields=self.allowed_fact_fields,
+                allow_statement_type=self.allow_statement_type,
+            )
+            if self._cancel_requested:
+                return
+            self.completed.emit(parsed)
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
 class QwenStreamWorker(QObject):
     chunk_received = pyqtSignal(str)
     meta_received = pyqtSignal(dict)
@@ -437,5 +495,6 @@ __all__ = [
     "GeminiFillWorker",
     "GeminiStreamWorker",
     "LocalDocTRBBoxWorker",
+    "QwenFillWorker",
     "QwenStreamWorker",
 ]

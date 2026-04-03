@@ -1,0 +1,422 @@
+{
+  "doc_id": "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר",
+  "page_index": 17,
+  "page_name": "page_0017.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 20,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"\\\"רות דרומית\\\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\\\"ר)\", \"page_num\": \"16\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"ביאורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"211,786\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"שכר עבודה ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"136,855\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"שכר עבודה ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"747,132\", \"fact_num\": 3, \"comment_ref\": \"העמותה מקבלת תרומות בשווי כסף ובנוסף קיימים מטפלים מתנדבים המהווים את ליבת הפעילות של העמותה. המתנדבים בעמותה מורכבים ממטפלים שערך שעת עבודה שלהם מוערך בכ - 140 ש\\\"ח ומתנדבים בעבודות התפעול של העמותה שערך שעת עבודה שלהם מוערך לפי שכר מינימום. סך שעות התנדבות בעמותה בשנת 2021 הסתכמו ב- 7,076 שעות. ראה גם ביאור 8.\", \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מתנדבים ופעילות בשווי כסף\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"403,337\", \"fact_num\": 4, \"comment_ref\": \"העמותה מקבלת תרומות בשווי כסף ובנוסף קיימים מטפלים מתנדבים המהווים את ליבת הפעילות של העמותה. המתנדבים בעמותה מורכבים ממטפלים שערך שעת עבודה שלהם מוערך בכ - 140 ש\\\"ח ומתנדבים בעבודות התפעול של העמותה שערך שעת עבודה שלהם מוערך לפי שכר מינימום. סך שעות התנדבות בעמותה בשנת 2021 הסתכמו ב- 7,076 שעות. ראה גם ביאור 8.\", \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מתנדבים ופעילות בשווי כסף\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"144,630\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הפקות אירועים ופעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"18,722\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הפקות אירועים ופעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"102,141\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"שכירות ואחזקת מרכז טיפולים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"104,965\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"שכירות ואחזקת מרכז טיפולים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"92,793\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"ניהול פרוייקטים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"90,769\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"ניהול פרוייקטים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"30,636\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"אחזקת רכב ונסיעות לטיפולים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"48,382\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"אחזקת רכב ונסיעות לטיפולים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"22,928\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תיאום וטיפול רפואה משלימה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"31,447\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תיאום וטיפול רפואה משלימה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,137\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"גיוס מטופלים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"16,172\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"גיוס מטופלים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,583\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"ביטוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,177\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"ביטוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,372,766\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"סך עלות הפעילות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"857,826\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"סך עלות הפעילות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0017.png",
+    "meta": {
+      "entity_name": "\"רות דרומית\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\"ר)",
+      "page_num": "16",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "ביאורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "211,786",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "שכר עבודה ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "136,855",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "שכר עבודה ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "747,132",
+        "fact_num": 3,
+        "comment_ref": "העמותה מקבלת תרומות בשווי כסף ובנוסף קיימים מטפלים מתנדבים המהווים את ליבת הפעילות של העמותה. המתנדבים בעמותה מורכבים ממטפלים שערך שעת עבודה שלהם מוערך בכ - 140 ש\"ח ומתנדבים בעבודות התפעול של העמותה שערך שעת עבודה שלהם מוערך לפי שכר מינימום. סך שעות התנדבות בעמותה בשנת 2021 הסתכמו ב- 7,076 שעות. ראה גם ביאור 8.",
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מתנדבים ופעילות בשווי כסף"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "403,337",
+        "fact_num": 4,
+        "comment_ref": "העמותה מקבלת תרומות בשווי כסף ובנוסף קיימים מטפלים מתנדבים המהווים את ליבת הפעילות של העמותה. המתנדבים בעמותה מורכבים ממטפלים שערך שעת עבודה שלהם מוערך בכ - 140 ש\"ח ומתנדבים בעבודות התפעול של העמותה שערך שעת עבודה שלהם מוערך לפי שכר מינימום. סך שעות התנדבות בעמותה בשנת 2021 הסתכמו ב- 7,076 שעות. ראה גם ביאור 8.",
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מתנדבים ופעילות בשווי כסף"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "144,630",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הפקות אירועים ופעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "18,722",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הפקות אירועים ופעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "102,141",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "שכירות ואחזקת מרכז טיפולים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "104,965",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "שכירות ואחזקת מרכז טיפולים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "92,793",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "ניהול פרוייקטים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "90,769",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "ניהול פרוייקטים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "30,636",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "אחזקת רכב ונסיעות לטיפולים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "48,382",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "אחזקת רכב ונסיעות לטיפולים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "22,928",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תיאום וטיפול רפואה משלימה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "31,447",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תיאום וטיפול רפואה משלימה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,137",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "גיוס מטופלים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "16,172",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "גיוס מטופלים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,583",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "ביטוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,177",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "ביטוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,372,766",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "סך עלות הפעילות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "857,826",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "סך עלות הפעילות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

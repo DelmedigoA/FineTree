@@ -1,0 +1,382 @@
+{
+  "doc_id": "דוח_כספי_2024_-_א.מ.י._-_אגודת_אמני_ישראל_ע-ר",
+  "page_index": 11,
+  "page_name": "page_0011.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 18,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"א.מ.י. - אגודת אמוני ישראל ע\\\"ר\", \"page_num\": \"9\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"481,619\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"מפעל הפיס\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"101,846\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"מפעל הפיס\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"קרן תל אביב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"27,000\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"קרן תל אביב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,000\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עיריית תל אביב - יפו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,000\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"עיריית תל אביב - יפו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"ועדת העיזבונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,481\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"ועדת העיזבונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"491,619\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"158,327\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"תמיכות מגופים ממונים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 11, \"comment_ref\": \"הכנסות בגין פעילות תרבות אשר הופקו בסייעה של העמותה. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 100 שעות בשנת 2023.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"שווי מתנדבים - אירועי תרבות (א)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,987\", \"fact_num\": 12, \"comment_ref\": \"הכנסות בגין פעילות תרבות אשר הופקו בסייעה של העמותה. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 100 שעות בשנת 2023.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"שווי מתנדבים - אירועי תרבות (א)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 13, \"comment_ref\": \"הכנסות בגין התנדבות וסיוע לאמנים במצוקה, פעילות זו כוללת ביקורי בית ולוווי אמנים נזקקים. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 1,500 שעות בשנת 2023.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"שווי מתנדבים - תמיכה באמנים (ב)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"43,703\", \"fact_num\": 14, \"comment_ref\": \"הכנסות בגין התנדבות וסיוע לאמנים במצוקה, פעילות זו כוללת ביקורי בית ולוווי אמנים נזקקים. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 1,500 שעות בשנת 2023.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"שווי מתנדבים - תמיכה באמנים (ב)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,680\", \"fact_num\": 15, \"comment_ref\": \"העמותה קיבלה מענק בגין ארנונה מעיריית תל אביב - יפו.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"שווי בגין ארנונה (ג)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"17,892\", \"fact_num\": 16, \"comment_ref\": \"העמותה קיבלה מענק בגין ארנונה מעיריית תל אביב - יפו.\", \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"שווי בגין ארנונה (ג)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,680\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"64,582\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"שירותים שהתקבלו ללא תמורה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0011.png",
+    "meta": {
+      "entity_name": "א.מ.י. - אגודת אמוני ישראל ע\"ר",
+      "page_num": "9",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "481,619",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "מפעל הפיס"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "101,846",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "מפעל הפיס"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "קרן תל אביב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "27,000",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "קרן תל אביב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,000",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עיריית תל אביב - יפו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,000",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "עיריית תל אביב - יפו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "ועדת העיזבונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,481",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "ועדת העיזבונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "491,619",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "158,327",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "תמיכות מגופים ממונים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 11,
+        "comment_ref": "הכנסות בגין פעילות תרבות אשר הופקו בסייעה של העמותה. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 100 שעות בשנת 2023.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "שווי מתנדבים - אירועי תרבות (א)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,987",
+        "fact_num": 12,
+        "comment_ref": "הכנסות בגין פעילות תרבות אשר הופקו בסייעה של העמותה. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 100 שעות בשנת 2023.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "שווי מתנדבים - אירועי תרבות (א)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 13,
+        "comment_ref": "הכנסות בגין התנדבות וסיוע לאמנים במצוקה, פעילות זו כוללת ביקורי בית ולוווי אמנים נזקקים. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 1,500 שעות בשנת 2023.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "שווי מתנדבים - תמיכה באמנים (ב)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "43,703",
+        "fact_num": 14,
+        "comment_ref": "הכנסות בגין התנדבות וסיוע לאמנים במצוקה, פעילות זו כוללת ביקורי בית ולוווי אמנים נזקקים. במסגרת פעילות זו התבצעו פעולות התנדבות של אמנים שונים בסך כולל של 1,500 שעות בשנת 2023.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "שווי מתנדבים - תמיכה באמנים (ב)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,680",
+        "fact_num": 15,
+        "comment_ref": "העמותה קיבלה מענק בגין ארנונה מעיריית תל אביב - יפו.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "שווי בגין ארנונה (ג)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "17,892",
+        "fact_num": 16,
+        "comment_ref": "העמותה קיבלה מענק בגין ארנונה מעיריית תל אביב - יפו.",
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "שווי בגין ארנונה (ג)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,680",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "64,582",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "שירותים שהתקבלו ללא תמורה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

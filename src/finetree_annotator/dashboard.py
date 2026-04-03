@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import io
+import json
 import os
+import time
 import traceback
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass, replace
@@ -25,6 +27,7 @@ from PyQt5.QtWidgets import (
     QFrame,
     QGridLayout,
     QHBoxLayout,
+    QInputDialog,
     QLabel,
     QLineEdit,
     QMainWindow,
@@ -44,6 +47,14 @@ from PyQt5.QtWidgets import (
 
 from .app import AnnotationWindow
 from .annotation_core import normalize_import_payload_to_document, parse_import_json_text
+from .batch_qwen_inference import (
+    BatchQwenDocumentResult,
+    BatchQwenPageProgress,
+    build_batch_jobs_for_doc_ids,
+    resolve_batch_qwen_base_url,
+    resolve_batch_qwen_settings,
+    run_batch_qwen_inference,
+)
 from .finetune import push_dataset_hub, push_inference_dataset
 from .schema_contract import (
     PROMPT_FACT_KEYS,
@@ -64,6 +75,7 @@ from .workspace import (
     import_pdf_to_workspace,
     page_image_paths,
     reset_document_approved_pages,
+    sanitize_doc_id,
     set_document_checked as set_workspace_document_checked,
     set_document_reviewed as set_workspace_document_reviewed,
 )
@@ -77,6 +89,11 @@ def _set_button_variant(button: QPushButton, variant: str) -> QPushButton:
 
 
 NAV_VISIBLE_SETTING_KEY = "ui/nav_visible"
+BATCH_QWEN_URL_SETTING_KEY = "batch_qwen/base_url"
+BATCH_QWEN_MODEL_SETTING_KEY = "batch_qwen/model"
+DEFAULT_BATCH_QWEN_URL = "https://d35d-34-158-68-130.ngrok-free.app"
+DEFAULT_BATCH_QWEN_MODEL = "asafd60/FineTree-27B-v2.9-merged"
+DEFAULT_BATCH_QWEN_LOG_ROOT = Path("outputs/gui_batch_runs")
 TOKEN_TARGET = 1_000_000
 _SUSPICIOUS_RESIZE_BUDGET = 100_000
 
@@ -215,6 +232,39 @@ class PushPipelineWorker(QObject):
             self.finished.emit()
 
 
+class BatchQwenInferenceWorker(QObject):
+    progress = pyqtSignal(object)
+    completed = pyqtSignal(object)
+    failed = pyqtSignal(str)
+    finished = pyqtSignal()
+
+    def __init__(
+        self,
+        jobs: list[Any],
+        *,
+        settings: Any,
+        max_workers: Optional[int] = None,
+    ) -> None:
+        super().__init__()
+        self.jobs = list(jobs)
+        self.settings = settings
+        self.max_workers = max_workers
+
+    def run(self) -> None:
+        try:
+            results = run_batch_qwen_inference(
+                self.jobs,
+                settings=self.settings,
+                progress_callback=self.progress.emit,
+                max_workers=self.max_workers,
+            )
+            self.completed.emit(results)
+        except Exception as exc:
+            self.failed.emit(str(exc))
+        finally:
+            self.finished.emit()
+
+
 @dataclass
 class AutoAnnotateProgress:
     doc_id: str
@@ -244,6 +294,44 @@ class AutoAnnotateProgress:
             f"{self.progress_pct}% • {self.completed_pages}/{self.total_pages} pages • "
             f"{_format_metric_int(self.fact_count)} facts"
         )
+
+
+@dataclass
+class BatchInferenceProgress:
+    doc_id: str
+    total_pages: int
+    completed_pages: int = 0
+    failed_pages: int = 0
+    fact_count: int = 0
+    received_tokens: int = 0
+    current_page: Optional[str] = None
+    stage: str = "running"
+
+    @property
+    def progress_pct(self) -> int:
+        if self.total_pages <= 0:
+            return 0
+        return max(0, min(100, int(round((self.completed_pages / self.total_pages) * 100))))
+
+    @property
+    def status_label(self) -> str:
+        if self.stage == "completed":
+            return "Batch Complete"
+        if self.stage == "failed":
+            return "Batch Failed"
+        return "Batch Inferring"
+
+    @property
+    def progress_text(self) -> str:
+        details = (
+            f"{self.progress_pct}% • {self.completed_pages}/{self.total_pages} pages • "
+            f"{_format_metric_int(self.received_tokens)} tokens received"
+        )
+        if self.failed_pages > 0:
+            details += f" • {self.failed_pages} failed"
+        if self.current_page:
+            details += f" • {self.current_page}"
+        return details
 
 
 @dataclass
@@ -445,7 +533,7 @@ class LoadEntireJsonDialog(QDialog):
         hint = QLabel(
             "Paste the full notebook inference output for this PDF.\n"
             "Supported shapes: a wrapped `{\"pages\": [...]}` payload, a list of page JSON dicts, "
-            "or a list of page JSON strings like `all_json_outputs`.\n"
+            "a list of page JSON strings like `all_json_outputs`, or copied `results.jsonl` row(s) from batch inference.\n"
             "When page image names are missing, pages are mapped by output order to this PDF's page order."
         )
         hint.setWordWrap(True)
@@ -503,6 +591,7 @@ class HomeDocumentCard(QFrame):
     auto_annotate_requested = pyqtSignal(str)
     push_hf_requested = pyqtSignal(str)
     load_entire_json_requested = pyqtSignal(str)
+    batch_selected_toggled = pyqtSignal(str, bool)
     checked_toggled = pyqtSignal(str, bool)
     review_toggled = pyqtSignal(str, bool)
     delete_requested = pyqtSignal(str)
@@ -510,7 +599,9 @@ class HomeDocumentCard(QFrame):
     def __init__(
         self,
         summary: WorkspaceDocumentSummary,
-        runtime_progress: Optional[AutoAnnotateProgress] = None,
+        runtime_progress: Optional[Any] = None,
+        *,
+        batch_selected: bool = False,
         parent: Optional[QWidget] = None,
     ) -> None:
         super().__init__(parent)
@@ -588,6 +679,7 @@ class HomeDocumentCard(QFrame):
 
         actions = QHBoxLayout()
         actions.setSpacing(8)
+        self.batch_select_check = QCheckBox("Batch")
         self.action_btn = _set_button_variant(QPushButton("Open"), "primary")
         self.auto_annotate_btn = _set_button_variant(QPushButton("Auto-Annotate"), "ghost")
         self.push_hf_btn = _set_button_variant(QPushButton("Push to HF"), "ghost")
@@ -597,6 +689,7 @@ class HomeDocumentCard(QFrame):
         self.review_btn = _set_button_variant(QPushButton("Mark Reviewed"), "ghost")
         self.review_btn.setCheckable(True)
         self.delete_btn = _set_button_variant(QPushButton("Remove"), "danger")
+        actions.addWidget(self.batch_select_check)
         actions.addWidget(self.action_btn)
         actions.addWidget(self.auto_annotate_btn)
         actions.addWidget(self.push_hf_btn)
@@ -611,11 +704,15 @@ class HomeDocumentCard(QFrame):
         self.auto_annotate_btn.clicked.connect(lambda: self.auto_annotate_requested.emit(self.summary.doc_id))
         self.push_hf_btn.clicked.connect(lambda: self.push_hf_requested.emit(self.summary.doc_id))
         self.load_entire_json_btn.clicked.connect(lambda: self.load_entire_json_requested.emit(self.summary.doc_id))
+        self.batch_select_check.toggled.connect(self._emit_batch_selected_toggled)
         self.checked_btn.toggled.connect(self._emit_checked_toggled)
         self.review_btn.toggled.connect(self._emit_review_toggled)
         self.delete_btn.clicked.connect(lambda: self.delete_requested.emit(self.summary.doc_id))
 
-        self.refresh(summary, runtime_progress=runtime_progress)
+        self.refresh(summary, runtime_progress=runtime_progress, batch_selected=batch_selected)
+
+    def _emit_batch_selected_toggled(self, checked: bool) -> None:
+        self.batch_selected_toggled.emit(self.summary.doc_id, bool(checked))
 
     def _emit_checked_toggled(self, checked: bool) -> None:
         self.checked_toggled.emit(self.summary.doc_id, bool(checked))
@@ -627,7 +724,8 @@ class HomeDocumentCard(QFrame):
         self,
         summary: WorkspaceDocumentSummary,
         *,
-        runtime_progress: Optional[AutoAnnotateProgress] = None,
+        runtime_progress: Optional[Any] = None,
+        batch_selected: bool = False,
     ) -> None:
         self.summary = summary
         self.runtime_progress = runtime_progress
@@ -656,7 +754,14 @@ class HomeDocumentCard(QFrame):
         self.pages_label.setText(
             f"Approved {summary.approved_page_count}/{summary.page_count or 0} pages"
         )
-        self.facts_label.setText(f"Facts {_format_metric_int(int(summary.fact_count or 0))}")
+        runtime_fact_count = int(getattr(runtime_progress, "fact_count", summary.fact_count or 0)) if runtime_progress is not None else int(summary.fact_count or 0)
+        runtime_token_count = int(getattr(runtime_progress, "received_tokens", 0)) if runtime_progress is not None else 0
+        if runtime_progress is not None and runtime_token_count > 0:
+            self.facts_label.setText(
+                f"Facts {_format_metric_int(runtime_fact_count)} • Tokens recv {_format_metric_int(runtime_token_count)}"
+            )
+        else:
+            self.facts_label.setText(f"Facts {_format_metric_int(int(summary.fact_count or 0))}")
         self.updated_label.setText(f"Updated {_format_timestamp(summary.updated_at)}")
         effective_status = runtime_progress.status_label if runtime_progress is not None else summary.status
         effective_progress = runtime_progress.progress_pct if runtime_progress is not None else summary.progress_pct
@@ -666,7 +771,7 @@ class HomeDocumentCard(QFrame):
         self.status_label.setText(effective_status)
         self.status_label.setProperty(
             "tone",
-            "ok" if effective_status == "Complete" else ("accent" if effective_status in {"Ready", "In progress", "Auto-Annotating"} else "warn"),
+            "ok" if effective_status in {"Complete", "Batch Complete"} else ("accent" if effective_status in {"Ready", "In progress", "Auto-Annotating", "Batch Inferring"} else "warn"),
         )
         self.status_label.style().unpolish(self.status_label)
         self.status_label.style().polish(self.status_label)
@@ -700,6 +805,15 @@ class HomeDocumentCard(QFrame):
         except TypeError:
             pass
         self.action_btn.clicked.connect(lambda: target_signal.emit(self.summary.doc_id))
+        can_batch = summary.page_count > 0 or summary.source_pdf is not None
+        self.batch_select_check.blockSignals(True)
+        self.batch_select_check.setChecked(bool(batch_selected) and can_batch)
+        self.batch_select_check.blockSignals(False)
+        self.batch_select_check.setEnabled(can_batch)
+        if can_batch:
+            self.batch_select_check.setToolTip("Include this PDF in the next batch inference run.")
+        else:
+            self.batch_select_check.setToolTip("This document has no managed PDF and no prepared page images for batch inference.")
         auto_annotate_enabled = summary.source_pdf is not None and runtime_progress is None
         self.auto_annotate_btn.setEnabled(auto_annotate_enabled)
         if runtime_progress is not None:
@@ -775,6 +889,8 @@ class HomeDocumentCard(QFrame):
 
 class HomeView(QWidget):
     import_pdf_requested = pyqtSignal()
+    batch_qwen_requested = pyqtSignal()
+    batch_qwen_selected_requested = pyqtSignal(object)
     reset_approved_requested = pyqtSignal()
     open_document_requested = pyqtSignal(str)
     prepare_document_requested = pyqtSignal(str)
@@ -791,6 +907,8 @@ class HomeView(QWidget):
         self._documents: list[WorkspaceDocumentSummary] = []
         self._cards: dict[str, HomeDocumentCard] = {}
         self._runtime_progress_by_doc_id: dict[str, AutoAnnotateProgress] = {}
+        self._runtime_batch_progress_by_doc_id: dict[str, BatchInferenceProgress] = {}
+        self._selected_batch_doc_ids: set[str] = set()
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -818,9 +936,14 @@ class HomeView(QWidget):
         title_row.addLayout(header_text, 1)
         actions = QHBoxLayout()
         actions.setSpacing(8)
+        self.send_batch_qwen_btn = _set_button_variant(QPushButton("Send to Batch Inference"), "primary")
+        self.send_batch_qwen_btn.setEnabled(False)
+        self.batch_qwen_btn = _set_button_variant(QPushButton("Upload + Batch Infer PDFs"), "primary")
         self.reset_approved_btn = _set_button_variant(QPushButton("Reset all approved"), "ghost")
         self.reset_approved_btn.setEnabled(False)
-        self.import_btn = _set_button_variant(QPushButton("Import PDF"), "primary")
+        self.import_btn = _set_button_variant(QPushButton("Import PDF"), "ghost")
+        actions.addWidget(self.send_batch_qwen_btn, 0, Qt.AlignTop)
+        actions.addWidget(self.batch_qwen_btn, 0, Qt.AlignTop)
         actions.addWidget(self.reset_approved_btn, 0, Qt.AlignTop)
         actions.addWidget(self.import_btn, 0, Qt.AlignTop)
         title_row.addLayout(actions, 0)
@@ -857,6 +980,10 @@ class HomeView(QWidget):
         self.scroll.setWidget(scroll_body)
         root.addWidget(self.scroll, 3)
 
+        self.send_batch_qwen_btn.clicked.connect(
+            lambda: self.batch_qwen_selected_requested.emit(self.selected_batch_doc_ids())
+        )
+        self.batch_qwen_btn.clicked.connect(self.batch_qwen_requested.emit)
         self.import_btn.clicked.connect(self.import_pdf_requested.emit)
         self.reset_approved_btn.clicked.connect(self.reset_approved_requested.emit)
         self.search_edit.textChanged.connect(self._render_documents)
@@ -865,11 +992,36 @@ class HomeView(QWidget):
 
     def set_documents(self, documents: list[WorkspaceDocumentSummary]) -> None:
         self._documents = list(documents)
+        existing_doc_ids = {document.doc_id for document in self._documents}
+        self._selected_batch_doc_ids = {
+            doc_id for doc_id in self._selected_batch_doc_ids if doc_id in existing_doc_ids
+        }
         self._render_documents()
+
+    def selected_batch_doc_ids(self) -> list[str]:
+        return [
+            document.doc_id
+            for document in self._documents
+            if document.doc_id in self._selected_batch_doc_ids
+            and (document.page_count > 0 or document.source_pdf is not None)
+        ]
 
     def set_runtime_auto_annotate_progress(self, progress_by_doc_id: dict[str, AutoAnnotateProgress]) -> None:
         self._runtime_progress_by_doc_id = dict(progress_by_doc_id)
         self._render_documents()
+
+    def set_runtime_batch_inference_progress(
+        self,
+        progress_by_doc_id: dict[str, BatchInferenceProgress],
+    ) -> None:
+        self._runtime_batch_progress_by_doc_id = dict(progress_by_doc_id)
+        self._render_documents()
+
+    def _effective_runtime_progress(self, doc_id: str) -> Optional[Any]:
+        batch_progress = self._runtime_batch_progress_by_doc_id.get(doc_id)
+        if batch_progress is not None:
+            return batch_progress
+        return self._runtime_progress_by_doc_id.get(doc_id)
 
     def _clear_layout_cards(self) -> None:
         while self.cards_layout.count():
@@ -878,6 +1030,24 @@ class HomeView(QWidget):
             if widget is not None:
                 widget.setParent(None)
                 widget.deleteLater()
+
+    def _update_batch_selection_controls(self) -> None:
+        selected_count = len(self.selected_batch_doc_ids())
+        self.send_batch_qwen_btn.setEnabled(selected_count > 0)
+        if selected_count > 0:
+            self.send_batch_qwen_btn.setText(f"Send to Batch Inference ({selected_count})")
+        else:
+            self.send_batch_qwen_btn.setText("Send to Batch Inference")
+
+    def _on_batch_selected_toggled(self, doc_id: str, selected: bool) -> None:
+        normalized_doc_id = str(doc_id or "").strip()
+        if not normalized_doc_id:
+            return
+        if selected:
+            self._selected_batch_doc_ids.add(normalized_doc_id)
+        else:
+            self._selected_batch_doc_ids.discard(normalized_doc_id)
+        self._update_batch_selection_controls()
 
     def _stat_card(self, title: str, value: str, caption: str) -> QFrame:
         card = QFrame()
@@ -1004,13 +1174,15 @@ class HomeView(QWidget):
         for document in visible_docs:
             card = HomeDocumentCard(
                 document,
-                runtime_progress=self._runtime_progress_by_doc_id.get(document.doc_id),
+                runtime_progress=self._effective_runtime_progress(document.doc_id),
+                batch_selected=document.doc_id in self._selected_batch_doc_ids,
             )
             card.open_requested.connect(self.open_document_requested.emit)
             card.prepare_requested.connect(self.prepare_document_requested.emit)
             card.auto_annotate_requested.connect(self.auto_annotate_document_requested.emit)
             card.push_hf_requested.connect(self.push_hf_document_requested.emit)
             card.load_entire_json_requested.connect(self.load_entire_json_document_requested.emit)
+            card.batch_selected_toggled.connect(self._on_batch_selected_toggled)
             card.checked_toggled.connect(self.checked_document_requested.emit)
             card.review_toggled.connect(self.review_document_requested.emit)
             card.delete_requested.connect(self.delete_document_requested.emit)
@@ -1035,6 +1207,7 @@ class HomeView(QWidget):
             self.cards_layout.addWidget(empty)
         self.cards_layout.addStretch(1)
         self._refresh_stats(visible_docs)
+        self._update_batch_selection_controls()
 
 
 class AnnotatorHost(QWidget):
@@ -1124,7 +1297,7 @@ class AnnotatorHost(QWidget):
             self._windows[key] = window
             self._contexts[key] = context
             self.stack.addWidget(window)
-        if activate or self._current_key is None:
+        if activate:
             self._current_key = key
             self.stack.setCurrentWidget(self._windows[key])
             self.current_document_changed.emit(context)
@@ -2132,9 +2305,31 @@ class DashboardWindow(QMainWindow):
         self._inference_push_thread: Optional[QThread] = None
         self._inference_push_worker: Optional[PushPipelineWorker] = None
         self._inference_push_log: list[str] = []
+        self._batch_qwen_thread: Optional[QThread] = None
+        self._batch_qwen_worker: Optional[BatchQwenInferenceWorker] = None
         self._documents_by_id: dict[str, WorkspaceDocumentSummary] = {}
         self._auto_annotate_runs: dict[str, AutoAnnotateRun] = {}
         self._runtime_auto_annotate_progress: dict[str, AutoAnnotateProgress] = {}
+        self._runtime_batch_inference_progress: dict[str, BatchInferenceProgress] = {}
+        self._pending_batch_progress_updates: dict[str, BatchInferenceProgress] = {}
+        self._last_batch_status_message: str = ""
+        self._batch_progress_flush_timer = QTimer(self)
+        self._batch_progress_flush_timer.setSingleShot(True)
+        self._batch_progress_flush_timer.setInterval(200)
+        self._batch_progress_flush_timer.timeout.connect(self._flush_batch_qwen_progress_updates)
+        self._batch_qwen_import_queue: list[Path] = []
+        self._batch_qwen_imported_doc_ids: list[str] = []
+        self._batch_qwen_import_failures: list[str] = []
+        self._batch_log_dir: Optional[Path] = None
+        self._batch_log_progress_path: Optional[Path] = None
+        self._batch_log_events_path: Optional[Path] = None
+        self._batch_log_summary_path: Optional[Path] = None
+        self._batch_log_requests_path: Optional[Path] = None
+        self._batch_log_started_at: float = 0.0
+        self._batch_log_last_written_at: float = 0.0
+        self._batch_log_last_total_tokens: int = 0
+        self._batch_log_base_url: str = ""
+        self._batch_log_model: str = ""
         self._current_theme = load_theme_choice()
         self._nav_visible = bool(app_settings().value(NAV_VISIBLE_SETTING_KEY, True, type=bool))
 
@@ -2232,6 +2427,8 @@ class DashboardWindow(QMainWindow):
         self.hide_nav_btn.clicked.connect(lambda: self.set_nav_visible(False))
         self.show_nav_btn.clicked.connect(lambda: self.set_nav_visible(True))
         self.home_view.import_pdf_requested.connect(self._choose_pdf_for_import)
+        self.home_view.batch_qwen_requested.connect(self._choose_pdfs_for_batch_qwen)
+        self.home_view.batch_qwen_selected_requested.connect(self._send_selected_documents_to_batch_qwen)
         self.home_view.reset_approved_requested.connect(self.reset_all_approved_pages)
         self.home_view.open_document_requested.connect(self.open_workspace_document)
         self.home_view.prepare_document_requested.connect(self.prepare_workspace_document)
@@ -2257,12 +2454,15 @@ class DashboardWindow(QMainWindow):
         file_menu = menu.addMenu("File")
         self.import_action = QAction("Import PDF", self)
         self.import_action.triggered.connect(self._choose_pdf_for_import)
+        self.batch_infer_action = QAction("Upload + Batch Infer PDFs", self)
+        self.batch_infer_action.triggered.connect(self._choose_pdfs_for_batch_qwen)
         self.save_action = QAction("Save Current", self)
         self.save_action.triggered.connect(self.save_current_document)
         self.save_action.setEnabled(False)
         self.exit_action = QAction("Exit", self)
         self.exit_action.triggered.connect(self.close)
         file_menu.addAction(self.import_action)
+        file_menu.addAction(self.batch_infer_action)
         file_menu.addAction(self.save_action)
         file_menu.addSeparator()
         file_menu.addAction(self.exit_action)
@@ -2376,6 +2576,7 @@ class DashboardWindow(QMainWindow):
         self._documents_by_id = {doc.doc_id: doc for doc in merged_documents}
         self.home_view.set_documents(merged_documents)
         self.home_view.set_runtime_auto_annotate_progress(self._runtime_auto_annotate_progress)
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
         self.push_view.set_documents(merged_documents)
 
     def show_home(self) -> None:
@@ -2959,11 +3160,879 @@ class DashboardWindow(QMainWindow):
             return
         self.show_annotate()
 
+    def _classify_pdf_import_action(self, pdf_path: Path) -> tuple[str, str]:
+        doc_id = sanitize_doc_id(pdf_path.stem)
+        summary = self._documents_by_id.get(doc_id)
+        if summary is None:
+            summary = build_document_summary(doc_id)
+        has_existing_workspace_data = bool(
+            summary.source_pdf is not None
+            or summary.images_dir.is_dir()
+            or summary.annotations_path.is_file()
+        )
+        if not has_existing_workspace_data:
+            return "import", doc_id
+        is_prepared = summary.page_count > 0 and summary.status != "Needs extraction"
+        if is_prepared:
+            return "reuse", doc_id
+        return "replace", doc_id
+
+    def _resolve_pdf_import_action(self, pdf_path: Path) -> tuple[str, str]:
+        action, doc_id = self._classify_pdf_import_action(pdf_path)
+        if action != "replace":
+            return action, doc_id
+        answer = QMessageBox.question(
+            self,
+            "Replace existing PDF",
+            (
+                f"A managed PDF already exists for `{doc_id}`.\n\n"
+                f"Replace it with {pdf_path.name}?\n\n"
+                "This will delete the existing extracted images and annotations for this document before import."
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        if answer != QMessageBox.Yes:
+            return "abort", doc_id
+        if not self.annotator_host.confirm_close_document(doc_id):
+            return "abort", doc_id
+        try:
+            delete_workspace_document_files(doc_id)
+        except Exception as exc:
+            QMessageBox.warning(self, "Replace failed", str(exc))
+            return "abort", doc_id
+        self.annotator_host.close_document(doc_id)
+        self.reload_workspace()
+        return "import", doc_id
+
+    def _prompt_batch_qwen_base_url(self) -> Optional[str]:
+        settings = app_settings()
+        remembered = str(settings.value(BATCH_QWEN_URL_SETTING_KEY, "", type=str) or "").strip()
+        default_url = remembered or DEFAULT_BATCH_QWEN_URL
+        if not default_url:
+            try:
+                default_url = resolve_batch_qwen_base_url()
+            except Exception:
+                default_url = ""
+        entered, accepted = QInputDialog.getText(
+            self,
+            "Batch Inference URL",
+            "OpenAI-compatible base URL:",
+            QLineEdit.Normal,
+            default_url,
+        )
+        if not accepted:
+            return None
+        base_url = str(entered or "").strip()
+        if not base_url:
+            QMessageBox.warning(self, "Batch inference blocked", "No endpoint URL was provided.")
+            return None
+        settings.setValue(BATCH_QWEN_URL_SETTING_KEY, base_url)
+        return base_url
+
+    def _prompt_batch_qwen_model(self) -> Optional[str]:
+        settings = app_settings()
+        remembered = str(settings.value(BATCH_QWEN_MODEL_SETTING_KEY, "", type=str) or "").strip()
+        entered, accepted = QInputDialog.getText(
+            self,
+            "Batch Inference Model",
+            "Model id (leave blank to use /v1/models):",
+            QLineEdit.Normal,
+            remembered or DEFAULT_BATCH_QWEN_MODEL,
+        )
+        if not accepted:
+            return None
+        model = str(entered or "").strip()
+        settings.setValue(BATCH_QWEN_MODEL_SETTING_KEY, model)
+        return model
+
     def _choose_pdf_for_import(self) -> None:
         path, _ = QFileDialog.getOpenFileName(self, "Choose PDF", str(Path.cwd()), "PDF Files (*.pdf)")
         if not path:
             return
-        self._start_import(Path(path))
+        pdf_path = Path(path).expanduser().resolve()
+        action, doc_id = self._resolve_pdf_import_action(pdf_path)
+        if action == "abort":
+            return
+        if action == "reuse":
+            self.statusBar().showMessage(f"Reusing existing prepared PDF {doc_id}.", 5000)
+            self.open_workspace_document(doc_id)
+            return
+        self._start_import(pdf_path)
+
+    def _choose_pdfs_for_batch_qwen(self) -> None:
+        if self._batch_qwen_thread is not None:
+            QMessageBox.information(self, "Batch inference running", "A batch inference run is already in progress.")
+            return
+        paths, _ = QFileDialog.getOpenFileNames(
+            self,
+            "Choose PDFs for batch inference",
+            str(Path.cwd()),
+            "PDF Files (*.pdf)",
+        )
+        normalized_paths = [Path(path).expanduser().resolve() for path in paths if str(path).strip()]
+        if not normalized_paths:
+            return
+        self._start_batch_qwen_import(normalized_paths)
+
+    def _send_selected_documents_to_batch_qwen(self, doc_ids_obj: object) -> None:
+        if self._batch_qwen_thread is not None:
+            QMessageBox.information(self, "Batch inference running", "A batch inference run is already in progress.")
+            return
+        raw_doc_ids = doc_ids_obj if isinstance(doc_ids_obj, (list, tuple, set)) else []
+        selected_doc_ids: list[str] = []
+        seen_doc_ids: set[str] = set()
+        for raw_doc_id in raw_doc_ids:
+            normalized_doc_id = str(raw_doc_id or "").strip()
+            if not normalized_doc_id or normalized_doc_id in seen_doc_ids:
+                continue
+            seen_doc_ids.add(normalized_doc_id)
+            selected_doc_ids.append(normalized_doc_id)
+        if not selected_doc_ids:
+            QMessageBox.information(self, "Batch inference", "Select one or more PDFs on the Home page first.")
+            return
+
+        initial_doc_ids: list[str] = []
+        initial_failures: list[str] = []
+        pdf_paths: list[Path] = []
+        seen_paths: set[Path] = set()
+        for doc_id in selected_doc_ids:
+            summary = self._documents_by_id.get(doc_id)
+            if summary is None:
+                summary = build_document_summary(doc_id)
+            is_prepared = summary.page_count > 0 and summary.status != "Needs extraction"
+            source_pdf = summary.source_pdf
+            if is_prepared:
+                initial_doc_ids.append(doc_id)
+                continue
+            if source_pdf is not None and source_pdf.is_file():
+                resolved_pdf = source_pdf.resolve()
+                if resolved_pdf not in seen_paths:
+                    seen_paths.add(resolved_pdf)
+                    pdf_paths.append(resolved_pdf)
+                continue
+            if summary.page_count > 0:
+                initial_doc_ids.append(doc_id)
+                continue
+            if source_pdf is not None:
+                initial_failures.append(f"{doc_id}: source PDF not found at {source_pdf}")
+            else:
+                initial_failures.append(f"{doc_id}: no managed PDF is available for batch inference")
+
+        if not pdf_paths and not initial_doc_ids:
+            QMessageBox.warning(
+                self,
+                "Batch inference blocked",
+                "\n".join(initial_failures[:20]) if initial_failures else "No selected PDFs are available for batch inference.",
+            )
+            return
+        if pdf_paths:
+            self._start_batch_qwen_import(
+                pdf_paths,
+                initial_doc_ids=initial_doc_ids,
+                initial_failures=initial_failures,
+            )
+            return
+        if initial_failures:
+            QMessageBox.warning(self, "Batch inference selection", "\n".join(initial_failures[:20]))
+        self._start_batch_qwen_for_doc_ids(initial_doc_ids)
+
+    def _start_batch_qwen_import(
+        self,
+        paths: list[Path],
+        *,
+        initial_doc_ids: Optional[list[str]] = None,
+        initial_failures: Optional[list[str]] = None,
+    ) -> None:
+        if self._import_thread is not None:
+            QMessageBox.information(self, "Import in progress", "A PDF import is already running.")
+            return
+        unique_paths: list[Path] = []
+        seen: set[Path] = set()
+        for path in paths:
+            resolved = Path(path).expanduser().resolve()
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            unique_paths.append(resolved)
+        initial_doc_ids = [str(doc_id).strip() for doc_id in (initial_doc_ids or []) if str(doc_id).strip()]
+        if not unique_paths and not initial_doc_ids:
+            return
+        self._batch_qwen_import_failures = [str(message) for message in (initial_failures or []) if str(message).strip()]
+        replace_candidates: list[tuple[Path, str]] = []
+        approved_paths: list[Path] = []
+        reused_doc_ids: list[str] = []
+        for pdf_path in unique_paths:
+            action, doc_id = self._classify_pdf_import_action(pdf_path)
+            if action == "reuse":
+                reused_doc_ids.append(doc_id)
+                continue
+            if action == "replace":
+                replace_candidates.append((pdf_path, doc_id))
+                continue
+            approved_paths.append(pdf_path)
+        if replace_candidates:
+            display_lines = "\n".join(f"• {pdf_path.name} -> {doc_id}" for pdf_path, doc_id in replace_candidates[:12])
+            extra_count = max(0, len(replace_candidates) - 12)
+            if extra_count > 0:
+                display_lines += f"\n• … and {extra_count} more"
+            answer = QMessageBox.question(
+                self,
+                "Replace existing PDFs",
+                (
+                    "The following PDFs already exist in the workspace and are not yet prepared:\n\n"
+                    f"{display_lines}\n\n"
+                    "Replace these existing workspace documents before batch inference?"
+                ),
+                QMessageBox.Yes | QMessageBox.No,
+                QMessageBox.No,
+            )
+            if answer == QMessageBox.Yes:
+                for pdf_path, doc_id in replace_candidates:
+                    if not self.annotator_host.confirm_close_document(doc_id):
+                        self._batch_qwen_import_failures.append(f"{pdf_path.name}: skipped because document could not be closed")
+                        continue
+                    try:
+                        delete_workspace_document_files(doc_id)
+                    except Exception as exc:
+                        self._batch_qwen_import_failures.append(f"{pdf_path.name}: {exc}")
+                        continue
+                    self.annotator_host.close_document(doc_id)
+                    approved_paths.append(pdf_path)
+                self.reload_workspace()
+            else:
+                self._batch_qwen_import_failures.extend(f"{pdf_path.name}: skipped by user" for pdf_path, _doc_id in replace_candidates)
+        self._batch_qwen_import_queue = approved_paths
+        self._batch_qwen_imported_doc_ids = list(dict.fromkeys([*initial_doc_ids, *reused_doc_ids]))
+        self.statusBar().showMessage(
+            f"Preparing {len(self._batch_qwen_import_queue)} PDF(s) for batch inference ...",
+            5000,
+        )
+        self._continue_batch_qwen_import_queue()
+
+    def _continue_batch_qwen_import_queue(self) -> None:
+        if not self._batch_qwen_import_queue:
+            imported_doc_ids = list(dict.fromkeys(self._batch_qwen_imported_doc_ids))
+            if not imported_doc_ids:
+                message = "\n".join(self._batch_qwen_import_failures) if self._batch_qwen_import_failures else "No PDFs were imported."
+                QMessageBox.warning(self, "Batch inference blocked", message)
+                return
+            self._start_batch_qwen_for_doc_ids(imported_doc_ids)
+            return
+
+        pdf_path = self._batch_qwen_import_queue.pop(0)
+        started = self._start_import(
+            pdf_path,
+            open_after=False,
+            success_callback=self._on_batch_qwen_import_success,
+            failure_callback=lambda message, failed_pdf=pdf_path: self._on_batch_qwen_import_failure(failed_pdf, message),
+        )
+        if not started:
+            self._batch_qwen_import_queue.insert(0, pdf_path)
+            return
+        remaining = len(self._batch_qwen_import_queue)
+        self.statusBar().showMessage(
+            f"Preparing {pdf_path.name} for batch inference ... {remaining} PDF(s) left in queue after this one.",
+            5000,
+        )
+
+    def _on_batch_qwen_import_success(self, result: Optional[WorkspaceImportResult]) -> None:
+        if result is not None:
+            self._batch_qwen_imported_doc_ids.append(result.document.doc_id)
+
+    def _on_batch_qwen_import_failure(self, pdf_path: Path, message: str) -> None:
+        self._batch_qwen_import_failures.append(f"{pdf_path.name}: {message}")
+
+    def _managed_window_for_doc_id(self, doc_id: str) -> Optional[AnnotationWindow]:
+        for context, window in self.annotator_host.managed_windows():
+            if context.doc_id == doc_id:
+                return window
+        return None
+
+    def _start_batch_run_logging(self, *, base_url: str, model: str, jobs: list[Any]) -> None:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_dir = (Path.cwd() / DEFAULT_BATCH_QWEN_LOG_ROOT / stamp).resolve()
+        log_dir.mkdir(parents=True, exist_ok=True)
+        self._batch_log_dir = log_dir
+        self._batch_log_progress_path = log_dir / "progress.json"
+        self._batch_log_events_path = log_dir / "events.jsonl"
+        self._batch_log_summary_path = log_dir / "summary.txt"
+        self._batch_log_requests_path = log_dir / "requests.jsonl"
+        self._batch_log_started_at = time.monotonic()
+        self._batch_log_last_written_at = self._batch_log_started_at
+        self._batch_log_last_total_tokens = 0
+        self._batch_log_base_url = str(base_url or "").strip()
+        self._batch_log_model = str(model or "").strip()
+        manifest = {
+            "started_at": datetime.now().isoformat(timespec="seconds"),
+            "base_url": self._batch_log_base_url,
+            "model": self._batch_log_model,
+            "job_count": len(jobs),
+            "jobs": [
+                {
+                    "doc_id": str(getattr(job, "doc_id", "") or ""),
+                    "images_dir": str(getattr(job, "images_dir", "") or ""),
+                    "page_count": len(tuple(getattr(job, "page_paths", ()) or ())),
+                }
+                for job in jobs
+            ],
+        }
+        (log_dir / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        self._append_batch_run_event("started", {"job_count": len(jobs)})
+        self._write_batch_run_progress(state="starting")
+
+    def _append_batch_run_event(self, event_type: str, payload: Optional[dict[str, Any]] = None) -> None:
+        if self._batch_log_events_path is None:
+            return
+        row = {
+            "ts": datetime.now().isoformat(timespec="seconds"),
+            "event": str(event_type or "").strip() or "event",
+        }
+        if payload:
+            row.update(payload)
+        try:
+            with self._batch_log_events_path.open("a", encoding="utf-8") as handle:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        except Exception:
+            pass
+
+    def _write_batch_run_progress(self, *, state: str) -> None:
+        if self._batch_log_progress_path is None:
+            return
+        now = time.monotonic()
+        elapsed_seconds = max(0.0, now - self._batch_log_started_at)
+        total_received_tokens = sum(progress.received_tokens for progress in self._runtime_batch_inference_progress.values())
+        total_completed_pages = sum(progress.completed_pages for progress in self._runtime_batch_inference_progress.values())
+        total_failed_pages = sum(progress.failed_pages for progress in self._runtime_batch_inference_progress.values())
+        total_pages = sum(progress.total_pages for progress in self._runtime_batch_inference_progress.values())
+        interval_seconds = max(0.0001, now - self._batch_log_last_written_at)
+        interval_token_delta = max(0, total_received_tokens - self._batch_log_last_total_tokens)
+        progress_payload = {
+            "updated_at": datetime.now().isoformat(timespec="seconds"),
+            "state": str(state or "").strip() or "running",
+            "base_url": self._batch_log_base_url,
+            "model": self._batch_log_model,
+            "log_dir": str(self._batch_log_dir) if self._batch_log_dir is not None else None,
+            "elapsed_seconds": round(elapsed_seconds, 3),
+            "total_tokens_received": int(total_received_tokens),
+            "overall_tokens_per_second": round((total_received_tokens / elapsed_seconds), 3) if elapsed_seconds > 0 else 0.0,
+            "recent_tokens_per_second": round((interval_token_delta / interval_seconds), 3),
+            "completed_pages": int(total_completed_pages),
+            "failed_pages": int(total_failed_pages),
+            "total_pages": int(total_pages),
+            "documents": {
+                doc_id: {
+                    "doc_id": progress.doc_id,
+                    "state": progress.stage,
+                    "current_page": progress.current_page,
+                    "completed_pages": int(progress.completed_pages),
+                    "failed_pages": int(progress.failed_pages),
+                    "total_pages": int(progress.total_pages),
+                    "fact_count": int(progress.fact_count),
+                    "tokens_received": int(progress.received_tokens),
+                    "overall_tokens_per_second": round((progress.received_tokens / elapsed_seconds), 3) if elapsed_seconds > 0 else 0.0,
+                }
+                for doc_id, progress in sorted(self._runtime_batch_inference_progress.items())
+            },
+        }
+        try:
+            self._batch_log_progress_path.write_text(
+                json.dumps(progress_payload, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            return
+        self._write_batch_run_summary(state=str(state or "").strip() or "running", progress_payload=progress_payload)
+        self._batch_log_last_written_at = now
+        self._batch_log_last_total_tokens = int(total_received_tokens)
+
+    def _write_batch_run_summary(
+        self,
+        *,
+        state: str,
+        progress_payload: dict[str, Any],
+        notes: Optional[list[str]] = None,
+    ) -> None:
+        if self._batch_log_summary_path is None:
+            return
+        documents = progress_payload.get("documents") if isinstance(progress_payload, dict) else None
+        doc_rows: list[str] = []
+        if isinstance(documents, dict):
+            for doc_id, doc in documents.items():
+                if not isinstance(doc, dict):
+                    continue
+                doc_rows.append(
+                    (
+                        f"- {doc_id}\n"
+                        f"  state: {doc.get('state')}\n"
+                        f"  page: {doc.get('current_page')}\n"
+                        f"  pages: {doc.get('completed_pages')}/{doc.get('total_pages')} failed={doc.get('failed_pages')}\n"
+                        f"  facts: {doc.get('fact_count')}\n"
+                        f"  estimated_output_tokens: {doc.get('tokens_received')}\n"
+                        f"  est_tokens_per_second: {doc.get('overall_tokens_per_second')}"
+                    )
+                )
+        lines = [
+            f"Batch state: {state}",
+            f"Updated: {progress_payload.get('updated_at')}",
+            f"Endpoint: {progress_payload.get('base_url')}",
+            f"Model: {progress_payload.get('model')}",
+            f"Elapsed seconds: {progress_payload.get('elapsed_seconds')}",
+            f"Pages: {progress_payload.get('completed_pages')}/{progress_payload.get('total_pages')} failed={progress_payload.get('failed_pages')}",
+            f"Estimated output tokens: {progress_payload.get('total_tokens_received')}",
+            f"Overall est tokens/s: {progress_payload.get('overall_tokens_per_second')}",
+            f"Recent est tokens/s: {progress_payload.get('recent_tokens_per_second')}",
+            f"Progress JSON: {self._batch_log_progress_path}",
+            f"Events JSONL: {self._batch_log_events_path}",
+            f"Requests JSONL: {self._batch_log_requests_path}",
+            "",
+            "Documents:",
+        ]
+        lines.extend(doc_rows or ["- none"])
+        if notes:
+            lines.extend(["", "Notes:"])
+            lines.extend(f"- {note}" for note in notes if str(note).strip())
+        try:
+            self._batch_log_summary_path.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+        except Exception:
+            return
+
+    def _write_batch_run_request_logs(self, results: dict[str, BatchQwenDocumentResult]) -> None:
+        if self._batch_log_requests_path is None or self._batch_log_dir is None:
+            return
+        pdfs_root = self._batch_log_dir / "pdfs"
+        pdfs_root.mkdir(parents=True, exist_ok=True)
+        with self._batch_log_requests_path.open("w", encoding="utf-8") as requests_handle:
+            for doc_id, result in results.items():
+                if not isinstance(result, BatchQwenDocumentResult):
+                    continue
+                doc_dir = pdfs_root / str(doc_id)
+                pages_dir = doc_dir / "pages"
+                doc_dir.mkdir(parents=True, exist_ok=True)
+                pages_dir.mkdir(parents=True, exist_ok=True)
+                doc_rows: list[dict[str, Any]] = []
+                for page_output in result.page_outputs:
+                    if not isinstance(page_output, dict):
+                        continue
+                    parsed_page = page_output.get("parsed_page") if isinstance(page_output.get("parsed_page"), dict) else None
+                    facts = parsed_page.get("facts") if isinstance(parsed_page, dict) else None
+                    page_meta = parsed_page.get("meta") if isinstance(parsed_page, dict) else None
+                    row = {
+                        "doc_id": doc_id,
+                        "page_index": int(page_output.get("page_index") or 0),
+                        "page_name": str(page_output.get("page_name") or ""),
+                        "page_type": (page_meta or {}).get("page_type") if isinstance(page_meta, dict) else None,
+                        "statement_type": (page_meta or {}).get("statement_type") if isinstance(page_meta, dict) else None,
+                        "fact_count": len([fact for fact in facts if isinstance(fact, dict)]) if isinstance(facts, list) else 0,
+                        "error": page_output.get("error"),
+                        "assistant_text": str(page_output.get("assistant_text") or ""),
+                        "parsed_page": parsed_page,
+                    }
+                    doc_rows.append(row)
+                    requests_handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+                    page_name = str(page_output.get("page_name") or "page").strip() or "page"
+                    page_path = pages_dir / f"{page_name}.json"
+                    page_path.write_text(json.dumps(row, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                (doc_dir / "requests.jsonl").write_text(
+                    "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in doc_rows),
+                    encoding="utf-8",
+                )
+                doc_summary = {
+                    "doc_id": doc_id,
+                    "total_pages": result.total_pages,
+                    "completed_pages": result.completed_pages,
+                    "failed_pages": result.failed_pages,
+                    "fact_count": result.fact_count,
+                    "estimated_output_tokens": result.received_tokens,
+                    "suspicious_reason": self._suspicious_batch_result_reason(result),
+                }
+                (doc_dir / "summary.json").write_text(
+                    json.dumps(doc_summary, ensure_ascii=False, indent=2) + "\n",
+                    encoding="utf-8",
+                )
+
+    def _suspicious_batch_result_reason(self, result: BatchQwenDocumentResult) -> Optional[str]:
+        if result.total_pages <= 0:
+            return "No pages were processed."
+        title_pages = 0
+        for page in result.imported_pages:
+            if not isinstance(page, dict):
+                continue
+            meta = page.get("meta")
+            if isinstance(meta, dict) and str(meta.get("page_type") or "").strip() == "title":
+                title_pages += 1
+        if result.fact_count <= 0:
+            return "Model returned zero facts across the entire document."
+        if result.total_pages > 1 and title_pages == result.total_pages:
+            return "Every page was classified as title."
+        return None
+
+    def _clear_batch_run_logging(self) -> None:
+        self._batch_log_dir = None
+        self._batch_log_progress_path = None
+        self._batch_log_events_path = None
+        self._batch_log_summary_path = None
+        self._batch_log_requests_path = None
+        self._batch_log_started_at = 0.0
+        self._batch_log_last_written_at = 0.0
+        self._batch_log_last_total_tokens = 0
+        self._batch_log_base_url = ""
+        self._batch_log_model = ""
+
+    def _confirm_batch_qwen_overwrite(self, doc_ids: list[str]) -> bool:
+        risky_docs: list[tuple[str, int, int]] = []
+        for doc_id in doc_ids:
+            summary = self._documents_by_id.get(doc_id)
+            if summary is None:
+                summary = build_document_summary(doc_id)
+            annotated_pages = int(summary.annotated_page_count or 0)
+            approved_pages = int(summary.approved_page_count or 0)
+            if annotated_pages <= 0 and approved_pages <= 0:
+                continue
+            display_name = summary.source_pdf.stem if summary.source_pdf is not None else summary.doc_id
+            risky_docs.append((display_name, annotated_pages, approved_pages))
+        if not risky_docs:
+            return True
+        display_lines = "\n".join(
+            f"• {name}: annotated {annotated_pages} page(s), approved {approved_pages} page(s)"
+            for name, annotated_pages, approved_pages in risky_docs[:12]
+        )
+        extra_count = max(0, len(risky_docs) - 12)
+        if extra_count > 0:
+            display_lines += f"\n• … and {extra_count} more"
+        answer = QMessageBox.question(
+            self,
+            "Existing annotations detected",
+            (
+                "Some selected PDFs already contain annotations or approved pages.\n\n"
+                f"{display_lines}\n\n"
+                "Continue and let batch inference overwrite the imported page annotations for these PDFs?"
+            ),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No,
+        )
+        return answer == QMessageBox.Yes
+
+    def _start_batch_qwen_for_doc_ids(self, doc_ids: list[str]) -> None:
+        if self._batch_qwen_thread is not None:
+            QMessageBox.information(self, "Batch inference running", "A batch inference run is already in progress.")
+            return
+        target_doc_ids = [str(doc_id).strip() for doc_id in doc_ids if str(doc_id).strip()]
+        if not target_doc_ids:
+            QMessageBox.warning(self, "Batch inference failed", "No imported documents are available to run.")
+            return
+
+        dirty_doc_ids: list[str] = []
+        for context, window in self.annotator_host.managed_windows():
+            if context.doc_id not in target_doc_ids:
+                continue
+            has_unsaved_changes = getattr(window, "has_unsaved_changes", None)
+            if callable(has_unsaved_changes) and has_unsaved_changes():
+                dirty_doc_ids.append(context.doc_id)
+        if dirty_doc_ids:
+            QMessageBox.warning(
+                self,
+                "Batch inference blocked",
+                "Save or discard open changes before batch inference for:\n" + "\n".join(sorted(set(dirty_doc_ids))),
+            )
+            return
+        active_auto_doc_ids = sorted(doc_id for doc_id in target_doc_ids if doc_id in self._auto_annotate_runs)
+        if active_auto_doc_ids:
+            QMessageBox.warning(
+                self,
+                "Batch inference blocked",
+                "Stop Auto-Annotate before batch inference for:\n" + "\n".join(active_auto_doc_ids),
+            )
+            return
+        if not self._confirm_batch_qwen_overwrite(target_doc_ids):
+            return
+        base_url = self._prompt_batch_qwen_base_url()
+        if base_url is None:
+            return
+        model = self._prompt_batch_qwen_model()
+        if model is None:
+            return
+        try:
+            batch_settings = resolve_batch_qwen_settings(
+                base_url_override=base_url,
+                model_override=model,
+            )
+        except Exception as exc:
+            QMessageBox.warning(self, "Batch inference failed", str(exc))
+            return
+
+        doc_summaries: list[tuple[str, Path]] = []
+        for doc_id in target_doc_ids:
+            summary = self._documents_by_id.get(doc_id)
+            if summary is None:
+                summary = build_document_summary(doc_id)
+            if not summary.images_dir.is_dir():
+                continue
+            doc_summaries.append((summary.doc_id, summary.images_dir))
+        jobs = build_batch_jobs_for_doc_ids(doc_summaries)
+        if not jobs:
+            QMessageBox.warning(self, "Batch inference failed", "No prepared page images were found for the selected PDFs.")
+            return
+
+        total_pages = sum(len(job.page_paths) for job in jobs)
+        self._runtime_batch_inference_progress = {
+            job.doc_id: BatchInferenceProgress(
+                doc_id=job.doc_id,
+                total_pages=len(job.page_paths),
+                stage="running",
+            )
+            for job in jobs
+        }
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
+        self._start_batch_run_logging(
+            base_url=batch_settings.base_url,
+            model=batch_settings.model,
+            jobs=jobs,
+        )
+
+        worker = BatchQwenInferenceWorker(
+            jobs,
+            settings=batch_settings,
+            max_workers=total_pages,
+        )
+        thread = QThread(self)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.progress.connect(self._on_batch_qwen_progress)
+        worker.completed.connect(self._on_batch_qwen_completed)
+        worker.failed.connect(self._on_batch_qwen_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_batch_qwen_finished)
+        self._batch_qwen_worker = worker
+        self._batch_qwen_thread = thread
+        self.statusBar().showMessage(
+            (
+                f"Batch inferring {len(jobs)} PDF(s), {total_pages} page(s) via {batch_settings.base_url} ... "
+                f"log: {self._batch_log_progress_path}"
+            ),
+            10000,
+        )
+        thread.start()
+
+    def _on_batch_qwen_progress(self, progress_obj: object) -> None:
+        if not isinstance(progress_obj, BatchQwenPageProgress):
+            return
+        current = self._runtime_batch_inference_progress.get(progress_obj.doc_id)
+        if current is None:
+            current = BatchInferenceProgress(
+                doc_id=progress_obj.doc_id,
+                total_pages=progress_obj.total_pages,
+            )
+        self._pending_batch_progress_updates[progress_obj.doc_id] = BatchInferenceProgress(
+            doc_id=progress_obj.doc_id,
+            total_pages=max(int(progress_obj.total_pages), 0),
+            completed_pages=max(int(progress_obj.completed_pages), 0),
+            failed_pages=max(int(progress_obj.failed_pages), 0),
+            fact_count=max(int(progress_obj.fact_count), 0),
+            received_tokens=max(int(progress_obj.received_tokens), 0),
+            current_page=progress_obj.page_name or current.current_page,
+            stage="running",
+        )
+        if not self._batch_progress_flush_timer.isActive():
+            self._batch_progress_flush_timer.start()
+
+    def _flush_batch_qwen_progress_updates(self) -> None:
+        if not self._pending_batch_progress_updates:
+            return
+        for doc_id, progress in self._pending_batch_progress_updates.items():
+            self._runtime_batch_inference_progress[doc_id] = progress
+        latest_progress = next(reversed(self._pending_batch_progress_updates.values()))
+        self._pending_batch_progress_updates = {}
+        total_received_tokens = sum(progress.received_tokens for progress in self._runtime_batch_inference_progress.values())
+        total_completed_pages = sum(progress.completed_pages for progress in self._runtime_batch_inference_progress.values())
+        total_pages = sum(progress.total_pages for progress in self._runtime_batch_inference_progress.values())
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
+        self._write_batch_run_progress(state="running")
+        self._append_batch_run_event(
+            "progress",
+            {
+                "doc_id": latest_progress.doc_id,
+                "current_page": latest_progress.current_page,
+                "total_tokens_received": int(total_received_tokens),
+                "total_pages": int(total_pages),
+                "completed_pages": int(total_completed_pages),
+            },
+        )
+        message = (
+            f"Batch inferring {latest_progress.doc_id} {latest_progress.current_page or ''} ... "
+            f"{total_completed_pages}/{total_pages} pages finished • "
+            f"{_format_metric_int(total_received_tokens)} tokens received"
+        ).strip()
+        if message != self._last_batch_status_message:
+            self._last_batch_status_message = message
+            self.statusBar().showMessage(message, 1500)
+
+    def _on_batch_qwen_completed(self, results_obj: object) -> None:
+        self._flush_batch_qwen_progress_updates()
+        results = results_obj if isinstance(results_obj, dict) else {}
+        if not results:
+            self._on_batch_qwen_failed("Batch inference returned no results.")
+            return
+        self._write_batch_run_request_logs(results)
+
+        imported_docs = 0
+        total_fact_count = 0
+        total_received_tokens = 0
+        total_failed_pages = 0
+        failure_lines: list[str] = list(self._batch_qwen_import_failures)
+        for doc_id, result in results.items():
+            if not isinstance(result, BatchQwenDocumentResult):
+                continue
+            current_progress = self._runtime_batch_inference_progress.get(doc_id)
+            self._runtime_batch_inference_progress[doc_id] = BatchInferenceProgress(
+                doc_id=doc_id,
+                total_pages=result.total_pages,
+                completed_pages=result.completed_pages,
+                failed_pages=result.failed_pages,
+                fact_count=result.fact_count,
+                received_tokens=result.received_tokens,
+                current_page=(current_progress.current_page if current_progress is not None else None),
+                stage="completed" if result.failed_pages == 0 else "failed",
+            )
+            total_fact_count += int(result.fact_count)
+            total_received_tokens += int(result.received_tokens)
+            total_failed_pages += int(result.failed_pages)
+            for failure in result.failures:
+                page_name = str(failure.get("page") or "").strip() or "unknown page"
+                error_message = str(failure.get("error") or "").strip() or "Unknown error"
+                failure_lines.append(f"{doc_id} {page_name}: {error_message}")
+            if not result.imported_pages:
+                continue
+            suspicious_reason = self._suspicious_batch_result_reason(result)
+            if suspicious_reason is not None:
+                failure_lines.append(f"{doc_id}: skipped import because the run looked invalid: {suspicious_reason}")
+                continue
+
+            summary = self._documents_by_id.get(doc_id)
+            if summary is None:
+                summary = build_document_summary(doc_id)
+            raw_text = json.dumps({"pages": list(result.imported_pages)}, ensure_ascii=False)
+            existing_window = self._managed_window_for_doc_id(doc_id)
+            temp_window: Optional[AnnotationWindow] = None
+            try:
+                window = existing_window
+                if window is None:
+                    window = AnnotationWindow(images_dir=summary.images_dir, annotations_path=summary.annotations_path)
+                    window.setWindowFlags(Qt.Widget)
+                    window.setAttribute(Qt.WA_DontShowOnScreen, True)
+                    temp_window = window
+                window.import_annotations_json_text(
+                    raw_text,
+                    bbox_mode="original_pixels",
+                    max_pixels=None,
+                    run_align_after_import=False,
+                    show_info_messages=False,
+                )
+                window.save_annotations(allow_locked=True)
+                imported_docs += 1
+            except Exception as exc:
+                failure_lines.append(f"{doc_id}: import failed: {exc}")
+            finally:
+                if temp_window is not None:
+                    temp_window.setParent(None)
+                    temp_window.deleteLater()
+
+        self._write_batch_run_progress(state="completed")
+        self._append_batch_run_event(
+            "completed",
+            {
+                "imported_docs": int(imported_docs),
+                "total_fact_count": int(total_fact_count),
+                "total_tokens_received": int(total_received_tokens),
+                "total_failed_pages": int(total_failed_pages),
+            },
+        )
+        self._write_batch_run_summary(
+            state="completed",
+            progress_payload={
+                "updated_at": datetime.now().isoformat(timespec="seconds"),
+                "base_url": self._batch_log_base_url,
+                "model": self._batch_log_model,
+                "elapsed_seconds": round(max(0.0, time.monotonic() - self._batch_log_started_at), 3),
+                "completed_pages": sum(progress.completed_pages for progress in self._runtime_batch_inference_progress.values()),
+                "failed_pages": sum(progress.failed_pages for progress in self._runtime_batch_inference_progress.values()),
+                "total_pages": sum(progress.total_pages for progress in self._runtime_batch_inference_progress.values()),
+                "total_tokens_received": int(total_received_tokens),
+                "overall_tokens_per_second": (
+                    round(
+                        total_received_tokens / max(0.001, time.monotonic() - self._batch_log_started_at),
+                        3,
+                    )
+                    if self._batch_log_started_at > 0
+                    else 0.0
+                ),
+                "recent_tokens_per_second": 0.0,
+                "documents": {
+                    doc_id: {
+                        "doc_id": progress.doc_id,
+                        "state": progress.stage,
+                        "current_page": progress.current_page,
+                        "completed_pages": int(progress.completed_pages),
+                        "failed_pages": int(progress.failed_pages),
+                        "total_pages": int(progress.total_pages),
+                        "fact_count": int(progress.fact_count),
+                        "tokens_received": int(progress.received_tokens),
+                        "overall_tokens_per_second": (
+                            round(
+                                progress.received_tokens / max(0.001, time.monotonic() - self._batch_log_started_at),
+                                3,
+                            )
+                            if self._batch_log_started_at > 0
+                            else 0.0
+                        ),
+                    }
+                    for doc_id, progress in sorted(self._runtime_batch_inference_progress.items())
+                },
+            },
+            notes=failure_lines[:50],
+        )
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
+        self.reload_workspace()
+        self._runtime_batch_inference_progress = {}
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
+
+        doc_count = len([result for result in results.values() if isinstance(result, BatchQwenDocumentResult)])
+        self.statusBar().showMessage(
+            (
+                f"Batch inference complete for {imported_docs}/{doc_count} document(s) • "
+                f"{_format_metric_int(total_fact_count)} facts • "
+                f"{_format_metric_int(total_received_tokens)} tokens received • "
+                f"{total_failed_pages} failed page(s)"
+            ),
+            9000,
+        )
+        if failure_lines:
+            QMessageBox.warning(
+                self,
+                "Batch inference completed with issues",
+                "\n".join(failure_lines[:50]),
+            )
+
+    def _on_batch_qwen_failed(self, message: str) -> None:
+        self._write_batch_run_progress(state="failed")
+        self._append_batch_run_event("failed", {"message": str(message or "")})
+        self._pending_batch_progress_updates = {}
+        self._runtime_batch_inference_progress = {}
+        self.home_view.set_runtime_batch_inference_progress(self._runtime_batch_inference_progress)
+        self.statusBar().showMessage("Batch inference failed.", 7000)
+        QMessageBox.warning(self, "Batch inference failed", message)
+
+    def _on_batch_qwen_finished(self) -> None:
+        self._pending_batch_progress_updates = {}
+        self._last_batch_status_message = ""
+        self._batch_qwen_worker = None
+        self._batch_qwen_thread = None
+        self._batch_qwen_import_queue = []
+        self._batch_qwen_imported_doc_ids = []
+        self._batch_qwen_import_failures = []
+        self._clear_batch_run_logging()
 
     def _start_import(
         self,
@@ -3023,16 +4092,23 @@ class DashboardWindow(QMainWindow):
             self._import_success_callback(result)
 
     def _on_import_failed(self, message: str) -> None:
-        QMessageBox.warning(self, "Import failed", message)
         self.statusBar().showMessage("Import failed.", 5000)
         if self._import_failure_callback is not None:
             self._import_failure_callback(message)
+            return
+        QMessageBox.warning(self, "Import failed", message)
 
     def _on_import_finished(self) -> None:
         self._import_worker = None
         self._import_thread = None
         self._import_success_callback = None
         self._import_failure_callback = None
+        if self._batch_qwen_thread is None and (
+            self._batch_qwen_import_queue
+            or self._batch_qwen_imported_doc_ids
+            or self._batch_qwen_import_failures
+        ):
+            QTimer.singleShot(0, self._continue_batch_qwen_import_queue)
 
     def _on_document_saved(self, payload: object) -> None:
         self.reload_workspace()

@@ -1,0 +1,582 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-יחד-_-_בשביל_ההצלחה_ע-ר",
+  "page_index": 7,
+  "page_name": "page_0007.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 28,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״יחד״ - בשביל ההצלחה (ע״ר)\", \"page_num\": \"5\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"232,950\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"בנק במט\\\"י\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"98,051\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"בנק במט\\\"י\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"138,349\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"מטבע חוץ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"מטבע חוץ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"371,299\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"סה\\\"כ מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"98,051\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"סה\\\"כ מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"902,931\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תרומות מחו\\\"ל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תרומות מחו\\\"ל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"24,916\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תרומות בשקלים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"127,014\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תרומות בשקלים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"97,050\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הכנסות ממתן שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הכנסות ממתן שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,024,897\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"סה\\\"כ מחזור הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"127,014\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"סה\\\"כ מחזור הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"300\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"מימון אבחונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,500\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"מימון אבחונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"40,550\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"קניית מוצרים לנזקקים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,000\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"קניית מוצרים לנזקקים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"56,642\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עבודות חוץ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"עבודות חוץ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"743,942\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תמיכה בנזקקים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תמיכה בנזקקים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"34,250\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"מלגות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"31,681\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"מלגות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"875,684\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"סה\\\"כ עלות הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"49,181\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עלות הפעילויות\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"סה\\\"כ עלות הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"ביטוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,335\", \"fact_num\": 28, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"ביטוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,206\", \"fact_num\": 29, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"202",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "״יחד״ - בשביל ההצלחה (ע״ר)",
+      "page_num": "5",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "232,950",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "בנק במט\"י"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "98,051",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "בנק במט\"י"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "138,349",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "מטבע חוץ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "מטבע חוץ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "371,299",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "סה\"כ מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "98,051",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "סה\"כ מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "902,931",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תרומות מחו\"ל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תרומות מחו\"ל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "24,916",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תרומות בשקלים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "127,014",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תרומות בשקלים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "97,050",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הכנסות ממתן שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הכנסות ממתן שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,024,897",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "סה\"כ מחזור הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "127,014",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "סה\"כ מחזור הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "300",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "מימון אבחונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,500",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "מימון אבחונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "40,550",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "קניית מוצרים לנזקקים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,000",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "קניית מוצרים לנזקקים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "56,642",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עבודות חוץ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "עבודות חוץ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "743,942",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תמיכה בנזקקים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תמיכה בנזקקים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "34,250",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "מלגות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "31,681",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "מלגות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "875,684",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "סה\"כ עלות הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "49,181",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עלות הפעילויות",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "סה\"כ עלות הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 27,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "ביטוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,335",
+        "fact_num": 28,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "ביטוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0007.png"
+  }
+}

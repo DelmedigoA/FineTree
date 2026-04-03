@@ -1,0 +1,558 @@
+{
+  "doc_id": "דוח_כספי_2022_-_-קבוצת_עבודה-_-_עמותה_ליצירה_וקידום_של_תיאטרון_מקורי_ועצמאי_ע-ר",
+  "page_index": 10,
+  "page_name": "page_0010.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 26,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"קבוצת עבודה - עמותה ליצירה וקידום תיאטרון מקורי ועממי (ע\\\"ר)\", \"page_num\": \"9\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים (בשקלים חדשים)\"}, \"facts\": [{\"value\": \"200,015\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הכנסות עצמיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"101,705\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות עצמיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"558,003\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הקצבות ממשרד התרבות והספורט - מינהל התרבות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"363,366\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הקצבות ממשרד התרבות והספורט - מינהל התרבות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"30,000\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"תמיכה מעיריית תל אביב - יפו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"26,000\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תמיכה מעיריית תל אביב - יפו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"13\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"מענק קורונה - רשות המסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,000\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מענק קורונה - רשות המסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"788,031\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"סה\\\"כ הכנסות\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"499,071\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"סה\\\"כ הכנסות\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"679,521\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"עלויות ישירות אחרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"479,958\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"עלויות ישירות אחרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"48,906\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"שירותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"37,617\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"שירותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,826\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"פחת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,830\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"פחת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"912\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"צרכי משרד\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,088\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"צרכי משרד\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,401\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"ביטוח הפקת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,533\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"ביטוח הפקת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"630\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"דמי חבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"667\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"דמי חבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,162\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"אגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,133\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"אגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"735,358\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2022-01-01\", \"period_end\": \"2022-12-31\", \"path\": [\"הוצאות\", \"סה\\\"כ הוצאות\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"524,826\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"סיווג הוצאות לפי מהות ההוצאות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות\", \"סה\\\"כ הוצאות\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"52,673\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\":",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "קבוצת עבודה - עמותה ליצירה וקידום תיאטרון מקורי ועממי (ע\"ר)",
+      "page_num": "9",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים (בשקלים חדשים)"
+    },
+    "facts": [
+      {
+        "value": "200,015",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הכנסות עצמיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "101,705",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות עצמיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "558,003",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הקצבות ממשרד התרבות והספורט - מינהל התרבות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "363,366",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הקצבות ממשרד התרבות והספורט - מינהל התרבות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "30,000",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "תמיכה מעיריית תל אביב - יפו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "26,000",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תמיכה מעיריית תל אביב - יפו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "13",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "מענק קורונה - רשות המסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,000",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מענק קורונה - רשות המסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "788,031",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "סה\"כ הכנסות"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "499,071",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "סה\"כ הכנסות"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "679,521",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "עלויות ישירות אחרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "479,958",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "עלויות ישירות אחרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "48,906",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "שירותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "37,617",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "שירותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,826",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "פחת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,830",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "פחת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "912",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "צרכי משרד"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,088",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "צרכי משרד"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,401",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "ביטוח הפקת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,533",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "ביטוח הפקת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "630",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "דמי חבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "667",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "דמי חבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,162",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "אגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,133",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "אגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "735,358",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2022-01-01",
+        "period_end": "2022-12-31",
+        "path": [
+          "הוצאות",
+          "סה\"כ הוצאות"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "524,826",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "סיווג הוצאות לפי מהות ההוצאות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות",
+          "סה\"כ הוצאות"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0010.png"
+  }
+}

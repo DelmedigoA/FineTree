@@ -1,0 +1,15 @@
+{
+  "base_url": "https://d35d-34-158-68-130.ngrok-free.app/v1",
+  "model": "asafd60/FineTree-27B-v2.9-merged",
+  "pdf": "/Users/delmedigo/Dev/FineTree/vllm_api_tests/pdfs/דוח כספי 2015 - -בית אל שביבה- מרכז קהילתי באקה אל גרבייה (ע-ר).pdf",
+  "total_pages": 18,
+  "page_start": 1,
+  "page_end": 18,
+  "dpi": 200,
+  "max_pixels": 1400000,
+  "max_tokens": 4096,
+  "temperature": 0.0,
+  "enable_thinking": false,
+  "output_dir": "/Users/delmedigo/Dev/FineTree/vllm_api_tests/outputs/דוח כספי 2015 - -בית אל שביבה- מרכז קהילתי באקה אל גרבייה (ע-ר)_20260403_202717",
+  "prompt_source": "artifacts/hf_finetree_2_9/train.jsonl"
+}

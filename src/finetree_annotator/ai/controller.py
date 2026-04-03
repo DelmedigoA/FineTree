@@ -16,8 +16,13 @@ from ..gemini_vlm import (
     resolve_supported_gemini_model_name,
 )
 from ..local_doctr import LOCAL_DOCTR_MODEL_NAME
-from ..provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenStreamWorker
-from ..qwen_vlm import DEFAULT_QWEN_BBOX_MAX_PIXELS, current_qwen_gt_model_choices
+from ..provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenFillWorker, QwenStreamWorker
+from ..qwen_vlm import (
+    DEFAULT_QWEN_BBOX_MAX_PIXELS,
+    current_qwen_gt_model_choices,
+    is_qwen_flash_model_requested,
+    resolve_qwen_flash_api_key,
+)
 from ..vision_resize import prepared_dimensions_for_max_pixels
 from .bbox import (
     BBOX_MODE_NORMALIZED_1000_TO_PIXEL,
@@ -307,6 +312,15 @@ class AIWorkflowController:
             return
         if request.provider == AIProvider.QWEN and request.action == AIActionKind.BBOX_ONLY:
             self._run_qwen_bbox_only(request, context)
+            return
+        if request.provider == AIProvider.QWEN and request.action == AIActionKind.AUTO_COMPLETE:
+            self._run_qwen_autocomplete(request, context)
+            return
+        if request.provider == AIProvider.QWEN and request.action == AIActionKind.FIX_SELECTED:
+            self._run_qwen_fix(request, context)
+            return
+        if request.provider == AIProvider.QWEN and request.action == AIActionKind.FIX_DRAWN:
+            self._run_qwen_fix_drawn(request, context)
             return
         QMessageBox.warning(self.host, "AI", "That provider/action combination is not supported.")
         self.refresh_dialog_state()
@@ -753,6 +767,7 @@ class AIWorkflowController:
         self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
+        self.host._ai_fill_provider = AIProvider.GEMINI
         self.host._gemini_fill_target_page = context.page_name
         self.host._gemini_fill_selected_fact_fields = set(request.selected_fact_fields)
         self.host._gemini_fill_include_statement_type = request.include_statement_type
@@ -824,6 +839,7 @@ class AIWorkflowController:
         self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
+        self.host._ai_fill_provider = AIProvider.GEMINI
         self.host._gemini_fill_target_page = context.page_name
         self.host._gemini_fill_selected_fact_fields = all_patch_fields
         self.host._gemini_fill_include_statement_type = False
@@ -931,6 +947,172 @@ class AIWorkflowController:
     def _run_qwen_bbox_only(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
         self._run_qwen_stream(request, context, mode="bbox_only")
 
+    def _run_qwen_autocomplete(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        prompt_text = request.prompt_text.strip()
+        if not prompt_text:
+            QMessageBox.warning(self.host, "AI", "Prompt cannot be empty.")
+            return
+
+        resolved_runtime = self._resolve_qwen_runtime(request)
+        if resolved_runtime is None:
+            return
+        model_name, qwen_config_path, is_qwen_flash = resolved_runtime
+        few_shot_examples = self._load_qwen_examples_for_mode(
+            request,
+            mode="autocomplete",
+            is_qwen_flash=is_qwen_flash,
+        )
+        initial_seen_facts = {
+            self.host._fact_uniqueness_key(payload)
+            for payload in context.ordered_fact_payloads
+        }
+        self.host._gemini_autocomplete_snapshot = {
+            "page_name": context.page_name,
+            "ordered_fact_signature": context.ordered_fact_signature,
+            "locked_fact_payloads": [deepcopy(payload) for payload in context.ordered_fact_payloads],
+        }
+        self._start_qwen_stream(
+            page_path=context.page_path,
+            page_name=context.page_name,
+            prompt_text=prompt_text,
+            model_name=model_name,
+            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
+            few_shot_examples=few_shot_examples,
+            enable_thinking=request.enable_thinking,
+            mode="autocomplete",
+            prepared_size=None,
+            original_size=None,
+            bbox_max_pixels=None,
+            initial_seen_facts=initial_seen_facts,
+        )
+
+    def _resolve_qwen_runtime(
+        self,
+        request: AIWorkflowRequest,
+    ) -> tuple[str, Path | None, bool] | None:
+        model_name = request.model.strip() or self.host._qwen_model_name
+        qwen_config_path = self.host._resolve_qwen_config_path()
+        is_qwen_flash = is_qwen_flash_model_requested(model_name)
+        if is_qwen_flash:
+            if not resolve_qwen_flash_api_key():
+                QMessageBox.warning(
+                    self.host,
+                    "AI",
+                    (
+                        "Qwen hosted API key not found.\n\n"
+                        "Set FINETREE_QWEN_FLASH_API_KEY, FINETREE_QWEN_API_KEY, "
+                        "QWEN_API_KEY, or DASHSCOPE_API_KEY."
+                    ),
+                )
+                return None
+        elif qwen_config_path is None:
+            QMessageBox.warning(
+                self.host,
+                "AI",
+                (
+                    "Could not find Qwen fine-tune config.\n"
+                    "Expected configs/qwen_ui_runpod_queue.yaml, "
+                    "configs/finetune_qwen35a3_vl.yaml, or FINETREE_QWEN_CONFIG."
+                ),
+            )
+            return None
+
+        self.host._qwen_model_name = model_name
+        self.host._qwen_enable_thinking = request.enable_thinking
+        return model_name, qwen_config_path, is_qwen_flash
+
+    def _load_qwen_examples_for_mode(
+        self,
+        request: AIWorkflowRequest,
+        *,
+        mode: str,
+        is_qwen_flash: bool,
+    ) -> Optional[list[dict[str, Any]]]:
+        if not request.use_few_shot:
+            return None
+        if not is_qwen_flash:
+            self.host.statusBar().showMessage(
+                "Qwen few-shot is currently enabled only for hosted Qwen 3.5 DashScope models; running standard mode.",
+                7000,
+            )
+            return None
+        if mode == "bbox_only":
+            return self._load_qwen_bbox_only_few_shot_examples(request)
+        return self._load_qwen_few_shot_examples(request)
+
+    def _start_qwen_stream(
+        self,
+        *,
+        page_path: Path,
+        page_name: str,
+        prompt_text: str,
+        model_name: str,
+        config_path: Optional[str],
+        few_shot_examples: Optional[list[dict[str, Any]]],
+        enable_thinking: bool,
+        mode: str,
+        prepared_size: tuple[int, int] | None,
+        original_size: tuple[float, float] | None,
+        bbox_max_pixels: int | None,
+        initial_seen_facts: set[tuple[Any, ...]],
+    ) -> None:
+        self.host._qwen_stream_target_page = page_name
+        self.host._qwen_stream_seen_facts = set(initial_seen_facts)
+        self.host._qwen_stream_fact_count = 0
+        self.host._qwen_stream_cancel_requested = False
+        self.host._qwen_stream_mode = mode
+        self.host._qwen_bbox_buffered_facts = []
+        self.host._qwen_bbox_original_size = None
+        self.host._qwen_bbox_prepared_size = None
+        self.host._qwen_bbox_max_pixels = None
+        self.host._gemini_autocomplete_buffered_facts = []
+        self.host._gemini_autocomplete_last_bbox_mode = BBOX_MODE_PIXEL_AS_IS
+        self.host._gemini_autocomplete_last_bbox_scores = {}
+        if mode == "bbox_only":
+            self.host._qwen_bbox_original_size = original_size
+            self.host._qwen_bbox_prepared_size = prepared_size
+            self.host._qwen_bbox_max_pixels = int(bbox_max_pixels) if bbox_max_pixels is not None else None
+
+        worker = QwenStreamWorker(
+            image_path=page_path,
+            prompt=prompt_text,
+            model=model_name,
+            mode=mode,
+            config_path=config_path,
+            few_shot_examples=few_shot_examples,
+            enable_thinking=enable_thinking,
+            prepared_size=prepared_size,
+            original_size=original_size,
+            bbox_max_pixels=self.host._qwen_bbox_max_pixels,
+        )
+        thread = QThread(self.host)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.chunk_received.connect(self._on_qwen_stream_chunk)
+        worker.meta_received.connect(self._on_qwen_stream_meta)
+        worker.fact_received.connect(self._on_qwen_stream_fact)
+        worker.completed.connect(self._on_qwen_stream_completed)
+        worker.failed.connect(self._on_qwen_stream_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_qwen_stream_finished)
+
+        self.host._qwen_stream_worker = worker
+        self.host._qwen_stream_thread = thread
+        if mode == "autocomplete":
+            status_text = f"Running Qwen Auto Complete from {model_name}..."
+            status_bar_text = f"Running Qwen Auto Complete for {page_name}..."
+        elif mode == "bbox_only":
+            status_text = f"Running Qwen BBoxes + Values from {model_name}..."
+            status_bar_text = f"Running Qwen BBoxes + Values for {page_name}..."
+        else:
+            status_text = f"Streaming Qwen GT from {model_name}..."
+            status_bar_text = f"Streaming Qwen GT for {page_name}..."
+        self._set_status(status_text, fact_count=0, running=True)
+        self.host.statusBar().showMessage(status_bar_text, 3000)
+        thread.start()
+
     def _run_qwen_stream(self, request: AIWorkflowRequest, context: AIPageContext, *, mode: str) -> None:
         current_state = self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
         replace_message = (
@@ -957,53 +1139,15 @@ class AIWorkflowController:
             QMessageBox.warning(self.host, "AI", "Prompt cannot be empty.")
             return
 
-        try:
-            from ..qwen_vlm import is_qwen_flash_model_requested, resolve_qwen_flash_api_key
-        except Exception as exc:
-            QMessageBox.warning(self.host, "AI", f"Qwen backend is unavailable:\n{exc}")
+        resolved_runtime = self._resolve_qwen_runtime(request)
+        if resolved_runtime is None:
             return
-
-        model_name = request.model.strip() or self.host._qwen_model_name
-        qwen_config_path = self.host._resolve_qwen_config_path()
-        is_qwen_flash = is_qwen_flash_model_requested(model_name)
-        if is_qwen_flash:
-            if not resolve_qwen_flash_api_key():
-                QMessageBox.warning(
-                    self.host,
-                    "AI",
-                    (
-                        "Qwen hosted API key not found.\n\n"
-                        "Set FINETREE_QWEN_FLASH_API_KEY, FINETREE_QWEN_API_KEY, "
-                        "QWEN_API_KEY, or DASHSCOPE_API_KEY."
-                    ),
-                )
-                return
-        elif qwen_config_path is None:
-            QMessageBox.warning(
-                self.host,
-                "AI",
-                (
-                    "Could not find Qwen fine-tune config.\n"
-                    "Expected configs/qwen_ui_runpod_queue.yaml, "
-                    "configs/finetune_qwen35a3_vl.yaml, or FINETREE_QWEN_CONFIG."
-                ),
-            )
-            return
-
-        self.host._qwen_model_name = model_name
-        self.host._qwen_enable_thinking = request.enable_thinking
-        few_shot_examples: Optional[list[dict[str, Any]]] = None
-        if request.use_few_shot and is_qwen_flash:
-            few_shot_examples = (
-                self._load_qwen_bbox_only_few_shot_examples(request)
-                if mode == "bbox_only"
-                else self._load_qwen_few_shot_examples(request)
-            )
-        elif request.use_few_shot:
-            self.host.statusBar().showMessage(
-                "Qwen few-shot is currently enabled only for hosted Qwen 3.5 DashScope models; running standard mode.",
-                7000,
-            )
+        model_name, qwen_config_path, is_qwen_flash = resolved_runtime
+        few_shot_examples = self._load_qwen_examples_for_mode(
+            request,
+            mode=mode,
+            is_qwen_flash=is_qwen_flash,
+        )
         prepared_size: tuple[int, int] | None = None
         bbox_original_size: tuple[float, float] | None = None
         if mode == "bbox_only":
@@ -1040,64 +1184,133 @@ class AIWorkflowController:
         finally:
             self.host._is_restoring_history = was_restoring
 
-        self.host._qwen_stream_target_page = context.page_name
-        self.host._qwen_stream_seen_facts = set()
-        self.host._qwen_stream_fact_count = 0
-        self.host._qwen_stream_cancel_requested = False
-        self.host._qwen_stream_mode = mode
-        self.host._qwen_bbox_buffered_facts = []
-        self.host._qwen_bbox_original_size = None
-        self.host._qwen_bbox_prepared_size = None
-        self.host._qwen_bbox_max_pixels = None
-        if mode == "bbox_only":
-            self.host._qwen_bbox_original_size = bbox_original_size
-            self.host._qwen_bbox_prepared_size = prepared_size
-            self.host._qwen_bbox_max_pixels = int(DEFAULT_QWEN_BBOX_MAX_PIXELS)
-
-        worker = QwenStreamWorker(
-            image_path=context.page_path,
-            prompt=prompt_text,
-            model=model_name,
-            mode=mode,
+        self._start_qwen_stream(
+            page_path=context.page_path,
+            page_name=context.page_name,
+            prompt_text=prompt_text,
+            model_name=model_name,
             config_path=str(qwen_config_path) if qwen_config_path is not None else None,
             few_shot_examples=few_shot_examples,
             enable_thinking=request.enable_thinking,
+            mode=mode,
             prepared_size=prepared_size,
             original_size=bbox_original_size,
-            bbox_max_pixels=self.host._qwen_bbox_max_pixels,
+            bbox_max_pixels=int(DEFAULT_QWEN_BBOX_MAX_PIXELS) if mode == "bbox_only" else None,
+            initial_seen_facts=set(),
+        )
+
+    def _run_qwen_fix(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        if not request.selected_fact_fields and not request.include_statement_type:
+            QMessageBox.warning(self.host, "AI", "Choose at least one fact field or statement_type.")
+            return
+        prompt_text = request.prompt_text.strip()
+        if not prompt_text:
+            QMessageBox.warning(self.host, "AI", "Prompt cannot be empty.")
+            return
+
+        resolved_runtime = self._resolve_qwen_runtime(request)
+        if resolved_runtime is None:
+            return
+        model_name, qwen_config_path, _is_qwen_flash = resolved_runtime
+
+        self.host._ai_fill_provider = AIProvider.QWEN
+        self.host._gemini_fill_target_page = context.page_name
+        self.host._gemini_fill_selected_fact_fields = set(request.selected_fact_fields)
+        self.host._gemini_fill_include_statement_type = request.include_statement_type
+        self.host._gemini_fill_snapshot = {
+            "page_name": context.page_name,
+            "selected_fact_nums": list(context.selected_fact_nums),
+            "ordered_fact_signature": context.ordered_fact_signature,
+        }
+        self.host._gemini_fill_cancel_requested = False
+
+        worker = QwenFillWorker(
+            image_path=context.page_path,
+            prompt=prompt_text,
+            model=model_name,
+            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
+            allowed_fact_fields=set(request.selected_fact_fields),
+            allow_statement_type=request.include_statement_type,
+            enable_thinking=request.enable_thinking,
         )
         thread = QThread(self.host)
         worker.moveToThread(thread)
         thread.started.connect(worker.run)
-        worker.chunk_received.connect(self._on_qwen_stream_chunk)
-        worker.meta_received.connect(self._on_qwen_stream_meta)
-        worker.fact_received.connect(self._on_qwen_stream_fact)
-        worker.completed.connect(self._on_qwen_stream_completed)
-        worker.failed.connect(self._on_qwen_stream_failed)
+        worker.completed.connect(self._on_gemini_fill_completed)
+        worker.failed.connect(self._on_gemini_fill_failed)
         worker.finished.connect(thread.quit)
         worker.finished.connect(worker.deleteLater)
         thread.finished.connect(thread.deleteLater)
-        thread.finished.connect(self._on_qwen_stream_finished)
+        thread.finished.connect(self._on_gemini_fill_finished)
 
-        self.host._qwen_stream_worker = worker
-        self.host._qwen_stream_thread = thread
+        self.host._gemini_fill_worker = worker
+        self.host._gemini_fill_thread = thread
         self._set_status(
-            (
-                f"Running Qwen BBoxes + Values from {model_name}..."
-                if mode == "bbox_only"
-                else f"Streaming Qwen GT from {model_name}..."
-            ),
+            f"Running Qwen Fix for {len(context.selected_fact_nums)} selected fact(s)...",
             fact_count=0,
             running=True,
         )
-        self.host.statusBar().showMessage(
-            (
-                f"Running Qwen BBoxes + Values for {context.page_name}..."
-                if mode == "bbox_only"
-                else f"Streaming Qwen GT for {context.page_name}..."
-            ),
-            3000,
+        self.host.statusBar().showMessage(f"Running Qwen Fix for {context.page_name}...", 3000)
+        thread.start()
+
+    def _run_qwen_fix_drawn(self, request: AIWorkflowRequest, context: AIPageContext) -> None:
+        if not context.hand_drawn_fact_nums:
+            QMessageBox.warning(self.host, "AI", "No hand-drawn bboxes to fix.")
+            return
+        prompt_text = request.prompt_text.strip()
+        if not prompt_text:
+            QMessageBox.warning(self.host, "AI", "Prompt cannot be empty.")
+            return
+
+        resolved_runtime = self._resolve_qwen_runtime(request)
+        if resolved_runtime is None:
+            return
+        model_name, qwen_config_path, _is_qwen_flash = resolved_runtime
+
+        from ..schema_contract import SchemaRegistry
+
+        all_patch_fields = set(SchemaRegistry.get_prompt_contract("gemini_fill")["fact_patch_fields"])
+        all_patch_fields.add("value")
+
+        self.host._ai_fill_provider = AIProvider.QWEN
+        self.host._gemini_fill_target_page = context.page_name
+        self.host._gemini_fill_selected_fact_fields = all_patch_fields
+        self.host._gemini_fill_include_statement_type = False
+        self.host._gemini_fill_snapshot = {
+            "page_name": context.page_name,
+            "selected_fact_nums": list(context.hand_drawn_fact_nums),
+            "ordered_fact_signature": context.ordered_fact_signature,
+        }
+        self.host._gemini_fill_cancel_requested = False
+
+        worker = QwenFillWorker(
+            image_path=context.page_path,
+            prompt=prompt_text,
+            model=model_name,
+            config_path=str(qwen_config_path) if qwen_config_path is not None else None,
+            allowed_fact_fields=all_patch_fields,
+            allow_statement_type=False,
+            enable_thinking=request.enable_thinking,
         )
+        thread = QThread(self.host)
+        worker.moveToThread(thread)
+        thread.started.connect(worker.run)
+        worker.completed.connect(self._on_gemini_fill_completed)
+        worker.failed.connect(self._on_gemini_fill_failed)
+        worker.finished.connect(thread.quit)
+        worker.finished.connect(worker.deleteLater)
+        thread.finished.connect(thread.deleteLater)
+        thread.finished.connect(self._on_gemini_fill_finished)
+
+        self.host._gemini_fill_worker = worker
+        self.host._gemini_fill_thread = thread
+        drawn_count = len(context.hand_drawn_fact_nums)
+        self._set_status(
+            f"Running Qwen Fix Drawn for {drawn_count} hand-drawn bbox(es)...",
+            fact_count=0,
+            running=True,
+        )
+        self.host.statusBar().showMessage(f"Running Qwen Fix Drawn for {context.page_name}...", 3000)
         thread.start()
 
     def _start_gemini_stream(
@@ -1478,7 +1691,13 @@ class AIWorkflowController:
         if provider == AIProvider.DOCTR:
             return [AIActionKind.BBOX_ONLY]
         if provider == AIProvider.QWEN:
-            return [AIActionKind.GROUND_TRUTH, AIActionKind.BBOX_ONLY]
+            return [
+                AIActionKind.GROUND_TRUTH,
+                AIActionKind.BBOX_ONLY,
+                AIActionKind.AUTO_COMPLETE,
+                AIActionKind.FIX_SELECTED,
+                AIActionKind.FIX_DRAWN,
+            ]
         return [AIActionKind.GROUND_TRUTH, AIActionKind.BBOX_ONLY, AIActionKind.AUTO_COMPLETE, AIActionKind.FIX_SELECTED, AIActionKind.FIX_DRAWN]
 
     def _first_action_for_provider(self, provider: AIProvider) -> AIActionKind:
@@ -1491,12 +1710,40 @@ class AIWorkflowController:
                 replaces_existing_page_facts=True,
             )
         if provider == AIProvider.QWEN:
+            if action == AIActionKind.GROUND_TRUTH:
+                return AIActionCapabilities(
+                    supports_thinking=True,
+                    supports_thinking_level=False,
+                    supports_few_shot=True,
+                    replaces_existing_page_facts=True,
+                )
+            if action == AIActionKind.BBOX_ONLY:
+                return AIActionCapabilities(
+                    supports_thinking=True,
+                    supports_thinking_level=False,
+                    supports_few_shot=True,
+                    replaces_existing_page_facts=True,
+                )
+            if action == AIActionKind.AUTO_COMPLETE:
+                return AIActionCapabilities(
+                    supports_thinking=True,
+                    supports_thinking_level=False,
+                    supports_few_shot=True,
+                    requires_existing_facts=True,
+                )
+            if action == AIActionKind.FIX_DRAWN:
+                return AIActionCapabilities(
+                    supports_thinking=True,
+                    supports_thinking_level=False,
+                    requires_existing_facts=True,
+                    requires_hand_drawn_facts=True,
+                )
             return AIActionCapabilities(
                 supports_thinking=True,
                 supports_thinking_level=False,
-                supports_few_shot=True,
-                supports_max_facts=False,
-                replaces_existing_page_facts=True,
+                supports_fix_fields=True,
+                supports_statement_type_toggle=True,
+                requires_selected_facts=True,
             )
         if action == AIActionKind.GROUND_TRUTH:
             return AIActionCapabilities(
@@ -1717,7 +1964,13 @@ class AIWorkflowController:
                 prepared_dimensions=prepared_dimensions,
                 max_pixels=DEFAULT_QWEN_BBOX_MAX_PIXELS,
             )
-        if provider == AIProvider.QWEN or action == AIActionKind.GROUND_TRUTH:
+        if provider == AIProvider.QWEN and action == AIActionKind.GROUND_TRUTH:
+            return build_extraction_prompt(
+                extraction_prompt_template(),
+                context.page_path,
+                image_dimensions=context.image_dimensions,
+            )
+        if action == AIActionKind.GROUND_TRUTH:
             return build_extraction_prompt(
                 extraction_prompt_template(),
                 context.page_path,
@@ -2492,7 +2745,7 @@ class AIWorkflowController:
         page_name = self.host._qwen_stream_target_page
         if page_name is None:
             return
-        if self.host._qwen_stream_mode == "bbox_only":
+        if self.host._qwen_stream_mode in {"bbox_only", "autocomplete"}:
             return
         self.host._apply_stream_meta(page_name, meta_payload)
         self._set_status("Meta received. Streaming facts...", fact_count=self.host._qwen_stream_fact_count, running=True)
@@ -2511,6 +2764,9 @@ class AIWorkflowController:
             self.host._qwen_stream_fact_count += 1
             self._set_status(
                 (
+                    f"Streaming missing facts... {self.host._qwen_stream_fact_count} parsed"
+                    if self.host._qwen_stream_mode == "autocomplete"
+                    else
                     f"Extracting bbox+value facts... {self.host._qwen_stream_fact_count} parsed"
                     if self.host._qwen_stream_mode == "bbox_only"
                     else f"Streaming facts... {self.host._qwen_stream_fact_count} parsed"
@@ -2524,7 +2780,25 @@ class AIWorkflowController:
         if page_name is None:
             return
         try:
-            if self.host._qwen_stream_mode != "bbox_only":
+            if self.host._qwen_stream_mode == "autocomplete":
+                for fact in extraction_obj.facts:
+                    payload = fact.model_dump(mode="json") if hasattr(fact, "model_dump") else fact
+                    if not isinstance(payload, dict):
+                        continue
+                    added = self.host._apply_stream_fact(
+                        page_name,
+                        payload,
+                        seen_facts=self.host._qwen_stream_seen_facts,
+                        stream_source="qwen",
+                    )
+                    if added:
+                        self.host._qwen_stream_fact_count += 1
+                merged, error_message = self.host._merge_autocomplete_buffered_facts(page_name)
+                self.host._qwen_stream_fact_count = int(self.host._gemini_stream_fact_count)
+                if not merged:
+                    self._on_qwen_stream_failed(error_message or "Qwen Auto Complete could not merge results.")
+                    return
+            elif self.host._qwen_stream_mode != "bbox_only":
                 meta_payload = extraction_obj.meta.model_dump(mode="json")
                 self.host._apply_stream_meta(page_name, meta_payload)
                 for fact in extraction_obj.facts:
@@ -2565,6 +2839,9 @@ class AIWorkflowController:
 
         self.host._record_history_snapshot()
         message = (
+            f"Qwen Auto Complete complete. Merged {self.host._qwen_stream_fact_count} new fact(s)."
+            if self.host._qwen_stream_mode == "autocomplete"
+            else
             f"Qwen BBoxes + Values complete. Parsed {self.host._qwen_stream_fact_count} fact(s)."
             if self.host._qwen_stream_mode == "bbox_only"
             else f"Qwen GT complete. Parsed {self.host._qwen_stream_fact_count} fact(s)."
@@ -2575,6 +2852,9 @@ class AIWorkflowController:
     def _on_qwen_stream_failed(self, message: str) -> None:
         self._set_status(f"Error: {message}", fact_count=self.host._qwen_stream_fact_count, running=False)
         details = (
+            "No new facts were merged into the page."
+            if self.host._qwen_stream_mode == "autocomplete"
+            else
             "No buffered facts were applied to the page."
             if self.host._qwen_stream_mode == "bbox_only"
             else "Any facts already streamed remain on the page."
@@ -2584,6 +2864,9 @@ class AIWorkflowController:
     def _on_qwen_stream_finished(self) -> None:
         if self.host._qwen_stream_cancel_requested:
             stopped = (
+                f"Qwen Auto Complete stopped ({self.host._qwen_stream_fact_count} fact(s) parsed)."
+                if self.host._qwen_stream_mode == "autocomplete"
+                else
                 f"Qwen BBoxes + Values stopped ({self.host._qwen_stream_fact_count} fact(s) parsed, no changes applied)."
                 if self.host._qwen_stream_mode == "bbox_only"
                 else f"Qwen GT stopped ({self.host._qwen_stream_fact_count} fact(s) parsed)."
@@ -2598,6 +2881,7 @@ class AIWorkflowController:
         self.host._qwen_bbox_original_size = None
         self.host._qwen_bbox_prepared_size = None
         self.host._qwen_bbox_max_pixels = None
+        self.host._gemini_autocomplete_buffered_facts = []
         self.refresh_dialog_state()
 
 

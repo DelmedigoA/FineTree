@@ -1,0 +1,63 @@
+Batch state: completed
+Updated: 2026-04-03T21:51:06
+Endpoint: https://03f2-34-158-68-130.ngrok-free.app/v1
+Model: asafd60/FineTree-27B-v2.9-merged
+Elapsed seconds: 268.979
+Pages: 71/71 failed=0
+Estimated output tokens: 128735
+Overall est tokens/s: 478.607
+Recent est tokens/s: 0.0
+Progress JSON: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260403_214637/progress.json
+Events JSONL: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260403_214637/events.jsonl
+Requests JSONL: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260403_214637/requests.jsonl
+
+Documents:
+- דוח_כספי_2016_-_15_דקות_-_ארגון_צרכני_תחבורה_ציבורית_בישראל_ע-ר
+  state: completed
+  page: page_0008.png
+  pages: 8/8 failed=0
+  facts: 72
+  estimated_output_tokens: 10616
+  est_tokens_per_second: 39.468
+- דוח_כספי_2019_-_-למדני-_-ייעוץ_וסיוע_לתלמידים_ע-ר
+  state: completed
+  page: page_0004.png
+  pages: 4/4 failed=0
+  facts: 34
+  estimated_output_tokens: 4842
+  est_tokens_per_second: 18.001
+- דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר
+  state: completed
+  page: page_0008.png
+  pages: 8/8 failed=0
+  facts: 108
+  estimated_output_tokens: 15362
+  est_tokens_per_second: 57.112
+- דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר
+  state: completed
+  page: page_0006.png
+  pages: 18/18 failed=0
+  facts: 212
+  estimated_output_tokens: 31107
+  est_tokens_per_second: 115.649
+- דוח_כספי_2022_-_-קבוצת_עבודה-_-_עמותה_ליצירה_וקידום_של_תיאטרון_מקורי_ועצמאי_ע-ר
+  state: completed
+  page: page_0011.png
+  pages: 11/11 failed=0
+  facts: 158
+  estimated_output_tokens: 22757
+  est_tokens_per_second: 84.605
+- דוח_כספי_2024_-_-יחד-_-_בשביל_ההצלחה_ע-ר
+  state: completed
+  page: page_0007.png
+  pages: 8/8 failed=0
+  facts: 74
+  estimated_output_tokens: 10477
+  est_tokens_per_second: 38.951
+- דוח_כספי_2024_-_א.מ.י._-_אגודת_אמני_ישראל_ע-ר
+  state: completed
+  page: page_0009.png
+  pages: 14/14 failed=0
+  facts: 234
+  estimated_output_tokens: 33574
+  est_tokens_per_second: 124.82

@@ -612,6 +612,68 @@ def test_parse_import_json_text_recovers_invalid_page_string_inside_list() -> No
     assert [page["meta"]["page_num"] for page in result.payload["pages"]] == ["1", "2"]
 
 
+def test_parse_import_json_text_supports_results_jsonl_rows() -> None:
+    raw = "\n".join(
+        [
+            json.dumps(
+                {
+                    "page": 1,
+                    "image_name": "page_0001.png",
+                    "assistant_text": '{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}',
+                    "parsed_json": {"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]},
+                    "json_valid": True,
+                },
+                ensure_ascii=False,
+            ),
+            json.dumps(
+                {
+                    "page": 2,
+                    "image_name": "page_0002.png",
+                    "assistant_text": '{"meta":{"page_num":"2"},"facts":[{"value":"20","path":[]}]}',
+                    "parsed_json": {"meta": {"page_num": "2"}, "facts": [{"value": "20", "path": []}]},
+                    "json_valid": True,
+                },
+                ensure_ascii=False,
+            ),
+        ]
+    )
+
+    result = parse_import_json_text(raw)
+
+    assert result.recovered is False
+    assert isinstance(result.payload, dict)
+    assert [page["image"] for page in result.payload["pages"]] == ["page_0001.png", "page_0002.png"]
+    assert [page["meta"]["page_num"] for page in result.payload["pages"]] == ["1", "2"]
+
+
+def test_parse_import_json_text_recovers_results_jsonl_with_incomplete_trailing_line() -> None:
+    raw = "\n".join(
+        [
+            json.dumps(
+                {
+                    "page": 1,
+                    "image_name": "page_0001.png",
+                    "assistant_text": '{"meta":{"page_num":"1"},"facts":[{"value":"10","path":[]}]}',
+                    "parsed_json": {"meta": {"page_num": "1"}, "facts": [{"value": "10", "path": []}]},
+                    "json_valid": True,
+                },
+                ensure_ascii=False,
+            ),
+            '{"page": 2, "image_name": "page_0002.png", "assistant_text": "{"meta"',
+        ]
+    )
+
+    result = parse_import_json_text(raw)
+
+    assert result.recovered is True
+    assert result.message is not None
+    assert "results.jsonl" in result.message
+    assert isinstance(result.payload, dict)
+    assert len(result.payload["pages"]) == 1
+    assert result.payload["pages"][0]["image"] == "page_0001.png"
+    assert result.payload["pages"][0]["meta"]["page_num"] == "1"
+
+
 def test_parse_import_json_text_recovers_malformed_top_level_page_string_list() -> None:
     raw = """[
       '{"meta": {"page_num": "1"}, "facts": []}',

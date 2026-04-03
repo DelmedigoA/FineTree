@@ -131,7 +131,7 @@ from .gemini_few_shot import (
     load_test_pdf_few_shot_examples,
 )
 from .page_issues import DocumentIssueSummary, PageIssue, PageIssueSummary, validate_document_issues
-from .provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenStreamWorker
+from .provider_workers import GeminiFillWorker, GeminiStreamWorker, LocalDocTRBBoxWorker, QwenFillWorker, QwenStreamWorker
 from .qwen_import_matcher import match_qwen_import_payloads, normalize_bbox_match_value
 from .schema_contract import (
     default_gemini_autocomplete_prompt_template,
@@ -2033,12 +2033,13 @@ class AnnotationWindow(QMainWindow):
         self._gemini_gt_live_applied = False
         self._gemini_gt_live_updates_enabled = True
         self._gemini_fill_thread: Optional[QThread] = None
-        self._gemini_fill_worker: Optional[GeminiFillWorker] = None
+        self._gemini_fill_worker: Optional[GeminiFillWorker | QwenFillWorker] = None
         self._gemini_fill_cancel_requested = False
         self._gemini_fill_target_page: Optional[str] = None
         self._gemini_fill_snapshot: Optional[dict[str, Any]] = None
         self._gemini_fill_selected_fact_fields: set[str] = set()
         self._gemini_fill_include_statement_type = False
+        self._ai_fill_provider = AIProvider.GEMINI
         self._page_gemini_fix_thread: Optional[QThread] = None
         self._page_gemini_fix_worker: Optional[PageGeminiFixWorker] = None
         self._page_gemini_fix_target_page: Optional[str] = None
@@ -5644,6 +5645,14 @@ class AnnotationWindow(QMainWindow):
         if hasattr(self, "_ai_controller"):
             self._ai_controller._set_status(f"{provider}: {status}", fact_count=int(fact_count), running=running)
 
+    def _ai_fill_provider_title(self) -> str:
+        if self._ai_fill_provider == AIProvider.QWEN:
+            return "Qwen"
+        return "Gemini"
+
+    def _ai_fill_task_title(self) -> str:
+        return f"{self._ai_fill_provider_title()} Auto-Fix"
+
     def _clear_gt_activity(self) -> None:
         if hasattr(self, "_ai_controller"):
             self._ai_controller._set_status("Idle.", fact_count=0, running=False)
@@ -7129,6 +7138,13 @@ class AnnotationWindow(QMainWindow):
             self._qwen_bbox_buffered_facts.append(normalized_payload)
             return True
 
+        if stream_source == "qwen" and self._qwen_stream_mode == "autocomplete":
+            normalized_payload = self._normalized_autocomplete_generated_fact_payload(fact_payload)
+            if normalized_payload is None:
+                return False
+            self._gemini_autocomplete_buffered_facts.append(normalized_payload)
+            return True
+
         if stream_source == "local_doctr":
             normalized_payload = self._normalized_stream_fact_payload(fact_payload)
             if normalized_payload is None:
@@ -7601,9 +7617,10 @@ class AnnotationWindow(QMainWindow):
         if self._gemini_fill_worker is not None:
             self._gemini_fill_cancel_requested = True
             self._gemini_fill_worker.request_cancel()
-            self._set_gt_activity("Gemini Auto-Fix", "Stopping auto-fix task...", fact_count=0, running=True)
+            self._set_gt_activity(self._ai_fill_task_title(), "Stopping auto-fix task...", fact_count=0, running=True)
 
     def _on_gemini_fill_completed(self, patch_payload: Dict[str, Any]) -> None:
+        task_title = self._ai_fill_task_title()
         page_name = self._gemini_fill_target_page
         snapshot = self._gemini_fill_snapshot or {}
         if page_name is None:
@@ -7683,48 +7700,51 @@ class AnnotationWindow(QMainWindow):
             self.refresh_facts_list()
             self._record_history_snapshot()
             self.statusBar().showMessage(
-                f"Gemini Auto-Fix complete ({updated_count} fact(s) updated).",
+                f"{task_title} complete ({updated_count} fact(s) updated).",
                 6000,
             )
             self._set_gt_activity(
-                "Gemini Auto-Fix",
-                f"Gemini Auto-Fix complete. Updated {updated_count} fact(s).",
+                task_title,
+                f"{task_title} complete. Updated {updated_count} fact(s).",
                 fact_count=updated_count,
                 running=False,
             )
             QMessageBox.information(
                 self,
-                "Gemini Auto-Fix",
-                f"Gemini Auto-Fix finished.\nUpdated {updated_count} fact(s).",
+                task_title,
+                f"{task_title} finished.\nUpdated {updated_count} fact(s).",
             )
         else:
             self._set_gt_activity(
-                "Gemini Auto-Fix",
-                "Gemini Auto-Fix complete. No changes returned.",
+                task_title,
+                f"{task_title} complete. No changes returned.",
                 fact_count=0,
                 running=False,
             )
-            self.statusBar().showMessage("Gemini Auto-Fix complete (no changes).", 5000)
+            self.statusBar().showMessage(f"{task_title} complete (no changes).", 5000)
             QMessageBox.information(
                 self,
-                "Gemini Auto-Fix",
-                "Gemini Auto-Fix finished.\nNo changes were applied.",
+                task_title,
+                f"{task_title} finished.\nNo changes were applied.",
             )
 
     def _on_gemini_fill_failed(self, message: str) -> None:
-        self._set_gt_activity("Gemini Auto-Fix", f"Error: {message}", fact_count=0, running=False)
-        QMessageBox.warning(self, "Gemini Auto-Fix failed", message)
+        task_title = self._ai_fill_task_title()
+        self._set_gt_activity(task_title, f"Error: {message}", fact_count=0, running=False)
+        QMessageBox.warning(self, f"{task_title} failed", message)
 
     def _on_gemini_fill_finished(self) -> None:
+        task_title = self._ai_fill_task_title()
         if self._gemini_fill_cancel_requested:
-            self._set_gt_activity("Gemini Auto-Fix", "Gemini Auto-Fix stopped.", fact_count=0, running=False)
-            self.statusBar().showMessage("Gemini Auto-Fix stopped.", 4000)
+            self._set_gt_activity(task_title, f"{task_title} stopped.", fact_count=0, running=False)
+            self.statusBar().showMessage(f"{task_title} stopped.", 4000)
         self._gemini_fill_thread = None
         self._gemini_fill_worker = None
         self._gemini_fill_target_page = None
         self._gemini_fill_snapshot = None
         self._gemini_fill_selected_fact_fields = set()
         self._gemini_fill_include_statement_type = False
+        self._ai_fill_provider = AIProvider.GEMINI
         if self._gemini_stream_thread is None and self._qwen_stream_thread is None:
             self._set_gt_buttons_enabled(True)
 

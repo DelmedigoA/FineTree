@@ -1,0 +1,222 @@
+{
+  "doc_id": "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר",
+  "page_index": 15,
+  "page_name": "page_0015.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 10,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"\\\"רות דרומית\\\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\\\"ר)\", \"page_num\": \"14\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"ביאורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"1,172\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"עובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,849\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"עובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"16,258\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מוסדות בגין שכר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"14,628\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"מוסדות בגין שכר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,600\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,038\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,030\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סך הזכאים ויתרות הזכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"25,515\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סך הזכאים ויתרות הזכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"4,665\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודה לפיצויים, נטו\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"עתודה לפיצויי פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"4,665\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודה לפיצויים, נטו\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"עתודה לפיצויי פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0015.png",
+    "meta": {
+      "entity_name": "\"רות דרומית\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\"ר)",
+      "page_num": "14",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "ביאורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "1,172",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "עובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,849",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "עובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "16,258",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מוסדות בגין שכר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "14,628",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "מוסדות בגין שכר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,600",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,038",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,030",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סך הזכאים ויתרות הזכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "25,515",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סך הזכאים ויתרות הזכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "4,665",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודה לפיצויים, נטו",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "עתודה לפיצויי פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "4,665",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודה לפיצויים, נטו",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "עתודה לפיצויי פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

@@ -4374,7 +4374,7 @@ def parse_selected_field_patch_text(
     allow_statement_type: bool,
 ) -> dict[str, Any]:
     if not str(raw_text).strip():
-        raise ValueError("Gemini returned an empty patch response.")
+        raise ValueError("Model returned an empty patch response.")
 
     parsed = _parse_llm_json(raw_text)
     if not isinstance(parsed, dict):

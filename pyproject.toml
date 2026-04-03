@@ -17,6 +17,7 @@ dependencies = [
   "transformers",
   "datasets",
   "httpx",
+  "openai",
   "trl",
   "peft",
   "fastapi",

@@ -1,0 +1,570 @@
+{
+  "doc_id": "דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר",
+  "page_index": 8,
+  "page_name": "page_0008.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 27,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"א.ב.ן. - סיוע בנגב ובדרום (ע\\\"ר)\", \"page_num\": \"8/8\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים ליום 31 בדצמבר 2020\"}, \"facts\": [{\"value\": \"2,919\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"ההיטים ואביזרים\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"319\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"ההיטים ואביזרים\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,600\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"ההיטים ואביזרים\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"ההיטים ואביזרים\", \"מספרי השוואה 31/12/2019\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,919\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"319\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,600\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\", \"מספרי השוואה 31/12/2019\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"18,434\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"מוסדות ממשלתיים אחרים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"17,420\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"מוסדות ממשלתיים אחרים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"14,508\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,658\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"32,942\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"26,078\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"46,511\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודות לזכויות עובדים בתע פרישה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"עתודה לפיצויים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"54,099\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודות לזכויות עובדים בתע פרישה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"עתודה לפיצויים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"46,511\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודות לזכויות עובדים בתע פרישה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"54,099\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עתודות לזכויות עובדים בתע פרישה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"סה\\\"כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"384,900\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"משכורות ושכר עבודה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"447,480\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"משכורות ושכר עבודה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"22,932\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"שירותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"17,076\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"שירותים מקצועיים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,492\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הוצאות אחזקה ותיקונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,303\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"הוצאות אחזקה ותיקונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"30,000\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"דמי שכירות וניהול נכסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"48,400\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"דמי שכירות וניהול נכסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מיסים ואגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,611\", \"fact_num\": 28, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2019-01-01\", \"period_end\": \"2019-12-31\", \"path\": [\"מיסים ואגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\":",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "א.ב.ן. - סיוע בנגב ובדרום (ע\"ר)",
+      "page_num": "8/8",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים ליום 31 בדצמבר 2020"
+    },
+    "facts": [
+      {
+        "value": "2,919",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "ההיטים ואביזרים",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "319",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "ההיטים ואביזרים",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,600",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "ההיטים ואביזרים",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "ההיטים ואביזרים",
+          "מספרי השוואה 31/12/2019"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,919",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "319",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,600",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ",
+          "מספרי השוואה 31/12/2019"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "18,434",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "מוסדות ממשלתיים אחרים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "17,420",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "מוסדות ממשלתיים אחרים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "14,508",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,658",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "32,942",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "26,078",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "46,511",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודות לזכויות עובדים בתע פרישה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "עתודה לפיצויים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "54,099",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודות לזכויות עובדים בתע פרישה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "עתודה לפיצויים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "46,511",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודות לזכויות עובדים בתע פרישה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "54,099",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עתודות לזכויות עובדים בתע פרישה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "סה\"כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "384,900",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "משכורות ושכר עבודה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "447,480",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "משכורות ושכר עבודה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "22,932",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "שירותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "17,076",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "שירותים מקצועיים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,492",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הוצאות אחזקה ותיקונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,303",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "הוצאות אחזקה ותיקונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "30,000",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "דמי שכירות וניהול נכסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "48,400",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2019-01-01",
+        "period_end": "2019-12-31",
+        "path": [
+          "דמי שכירות וניהול נכסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 27,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מיסים ואגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0008.png"
+  }
+}

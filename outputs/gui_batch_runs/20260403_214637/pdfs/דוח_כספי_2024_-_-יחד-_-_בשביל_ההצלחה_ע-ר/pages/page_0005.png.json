@@ -1,0 +1,246 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-יחד-_-_בשביל_ההצלחה_ע-ר",
+  "page_index": 5,
+  "page_name": "page_0005.png",
+  "page_type": "statements",
+  "statement_type": "balance_sheet",
+  "fact_count": 10,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״יחד״ - בשביל ההצלחה (ע״ר)\", \"page_num\": \"3\", \"page_type\": \"statements\", \"statement_type\": \"balance_sheet\", \"title\": \"דוח על השינויים בנכסים נטו\"}, \"facts\": [{\"value\": \"21,788\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-01-01\", \"path\": [\"יתרה ליום 01/01/2023\", \"שאין לגביהם הגבלה\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"21,788\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-01-01\", \"path\": [\"יתרה ליום 01/01/2023\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"76,263\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תוספות במהלך השנה\", \"הכנסות נטו (גרעון) לשנה\", \"שאין לגביהם הגבלה\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"76,263\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תוספות במהלך השנה\", \"הכנסות נטו (גרעון) לשנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"98,051\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"יתרה ליום 01/01/2024\", \"שאין לגביהם הגבלה\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"98,051\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"יתרה ליום 01/01/2024\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"123,249\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תוספות במהלך השנה\", \"הכנסות נטו (גרעון) לשנה\", \"שאין לגביהם הגבלה\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"123,249\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תוספות במהלך השנה\", \"הכנסות נטו (גרעון) לשנה\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"221,300\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"יתרה ליום 31/12/2024\", \"שאין לגביהם הגבלה\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"221,300\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"יתרה ליום 31/12/2024\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0005.png",
+    "meta": {
+      "entity_name": "״יחד״ - בשביל ההצלחה (ע״ר)",
+      "page_num": "3",
+      "page_type": "statements",
+      "statement_type": "balance_sheet",
+      "title": "דוח על השינויים בנכסים נטו"
+    },
+    "facts": [
+      {
+        "value": "21,788",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-01-01",
+        "path": [
+          "יתרה ליום 01/01/2023",
+          "שאין לגביהם הגבלה",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "21,788",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-01-01",
+        "path": [
+          "יתרה ליום 01/01/2023",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "76,263",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תוספות במהלך השנה",
+          "הכנסות נטו (גרעון) לשנה",
+          "שאין לגביהם הגבלה",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "76,263",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תוספות במהלך השנה",
+          "הכנסות נטו (גרעון) לשנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "98,051",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "יתרה ליום 01/01/2024",
+          "שאין לגביהם הגבלה",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "98,051",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "יתרה ליום 01/01/2024",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "123,249",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תוספות במהלך השנה",
+          "הכנסות נטו (גרעון) לשנה",
+          "שאין לגביהם הגבלה",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "123,249",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תוספות במהלך השנה",
+          "הכנסות נטו (גרעון) לשנה",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "221,300",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "יתרה ליום 31/12/2024",
+          "שאין לגביהם הגבלה",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "221,300",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "יתרה ליום 31/12/2024",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "doc_id": "דוח_כספי_2016_-_15_דקות_-_ארגון_צרכני_תחבורה_ציבורית_בישראל_ע-ר",
+  "page_index": 6,
+  "page_name": "page_0006.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 5,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"page_num\": \"5\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"דוחות על השינויים בנכסים נטו\"}, \"facts\": [{\"value\": \"49\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-01-01\", \"path\": [\"יתרה ליום 1 בינואר 2015\", \"נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\\\"ח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"44,548\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2015-01-01\", \"period_end\": \"2015-12-31\", \"path\": [\"הכנסות נטו לשנה\", \"נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\\\"ח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"44,597\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2015-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2015\", \"נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\\\"ח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(53,907)\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2016-01-01\", \"period_end\": \"2016-12-31\", \"path\": [\"גרעון נטו לשנה\", \"נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\\\"ח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(9,310)\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\\\"ר)\", \"note_num\": \"15\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2016-12-31\", \"path\": [\"יתרה ליום 31 בדצמבר 2016\", \"נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\\\"ח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0006.png",
+    "meta": {
+      "entity_name": "ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "page_num": "5",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "דוחות על השינויים בנכסים נטו"
+    },
+    "facts": [
+      {
+        "value": "49",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-01-01",
+        "path": [
+          "יתרה ליום 1 בינואר 2015",
+          "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "44,548",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2015-01-01",
+        "period_end": "2015-12-31",
+        "path": [
+          "הכנסות נטו לשנה",
+          "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "44,597",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2015-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2015",
+          "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(53,907)",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2016-01-01",
+        "period_end": "2016-12-31",
+        "path": [
+          "גרעון נטו לשנה",
+          "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(9,310)",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+        "note_num": "15",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2016-12-31",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2016",
+          "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

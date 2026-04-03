@@ -1,0 +1,44 @@
+{
+  "doc_id": "דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר",
+  "page_index": 7,
+  "page_name": "page_0007.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 1,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"א.ב.ן. - סיוע בנגב ובדרום (ע\\\"ר)\", \"page_num\": \"7/8\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים ליום 31 בדצמבר 2020\"}, \"facts\": [{\"value\": \"15,6\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מדיניות חשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"להלן שיעורי הפחת\", \"ריהוט וציוד משרדי\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"mixed\"}]}",
+  "parsed_page": {
+    "image": "page_0007.png",
+    "meta": {
+      "entity_name": "א.ב.ן. - סיוע בנגב ובדרום (ע\"ר)",
+      "page_num": "7/8",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים ליום 31 בדצמבר 2020"
+    },
+    "facts": [
+      {
+        "value": "15,6",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מדיניות חשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "להלן שיעורי הפחת",
+          "ריהוט וציוד משרדי"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "mixed"
+      }
+    ]
+  }
+}

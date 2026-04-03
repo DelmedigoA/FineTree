@@ -612,6 +612,100 @@ def _looks_like_page_payload(item: Any) -> bool:
     return any(key in item for key in ("image", "meta", "facts"))
 
 
+def _looks_like_results_jsonl_row(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    if _looks_like_page_payload(item):
+        return False
+    return any(key in item for key in ("parsed_json", "assistant_text", "json_valid", "image_name", "page"))
+
+
+def _pages_from_results_jsonl_row(item: dict[str, Any], *, index: int) -> list[dict[str, Any]]:
+    pages: list[dict[str, Any]] = []
+    parsed_json = item.get("parsed_json")
+    if parsed_json is not None:
+        try:
+            pages.extend(_coerce_page_payload_items(parsed_json, index=index))
+        except ValueError:
+            pass
+    if not pages:
+        assistant_text = item.get("assistant_text")
+        if isinstance(assistant_text, str) and assistant_text.strip():
+            try:
+                pages.extend(_coerce_page_payload_items(assistant_text, index=index))
+            except ValueError:
+                pass
+    image_name = item.get("image_name")
+    if isinstance(image_name, str) and image_name.strip():
+        normalized_pages: list[dict[str, Any]] = []
+        for page in pages:
+            assigned = dict(page)
+            if not isinstance(assigned.get("image"), str) or not str(assigned.get("image") or "").strip():
+                assigned["image"] = image_name.strip()
+            normalized_pages.append(assigned)
+        pages = normalized_pages
+    return pages
+
+
+def _normalize_results_jsonl_payload(payload: Any) -> dict[str, Any] | None:
+    if _looks_like_results_jsonl_row(payload):
+        pages = _pages_from_results_jsonl_row(payload, index=1)
+        if pages:
+            return {"pages": pages}
+        return None
+    if not isinstance(payload, list):
+        return None
+    if not payload or not any(_looks_like_results_jsonl_row(item) for item in payload):
+        return None
+
+    pages: list[dict[str, Any]] = []
+    for index, item in enumerate(payload, start=1):
+        if not _looks_like_results_jsonl_row(item):
+            continue
+        pages.extend(_pages_from_results_jsonl_row(item, index=index))
+    if not pages:
+        return None
+    return {"pages": pages}
+
+
+def _parse_results_jsonl_text(text: str) -> ImportJsonParseResult | None:
+    lines = [line.strip() for line in str(text or "").splitlines() if line.strip()]
+    if not lines:
+        return None
+
+    parsed_rows: list[Any] = []
+    ignored_lines = 0
+    for line in lines:
+        try:
+            parsed_rows.append(_parse_json_like(line))
+        except Exception:
+            ignored_lines += 1
+            continue
+    if not parsed_rows:
+        return None
+
+    payload = _normalize_results_jsonl_payload(parsed_rows)
+    if payload is None:
+        return None
+
+    imported_pages = payload.get("pages") if isinstance(payload, dict) else None
+    imported_page_count = len(imported_pages) if isinstance(imported_pages, list) else 0
+    if ignored_lines > 0:
+        return ImportJsonParseResult(
+            payload=payload,
+            recovered=True,
+            message=(
+                "Recovered import from results.jsonl rows. "
+                f"Imported {imported_page_count} page(s); ignored {ignored_lines} non-parseable line(s)."
+            ),
+        )
+    return ImportJsonParseResult(
+        payload=payload,
+        recovered=False,
+        message=None,
+    )
+
+
 def _coerce_page_payload_items(item: Any, *, index: int) -> list[dict[str, Any]]:
     if isinstance(item, str):
         text = str(item).strip()
@@ -751,6 +845,9 @@ def _normalize_top_level_import_payload(payload: Any) -> Any:
                 return _normalize_top_level_import_payload(_parse_json_like(text))
             except Exception:
                 return payload
+    results_jsonl_payload = _normalize_results_jsonl_payload(payload)
+    if results_jsonl_payload is not None:
+        return results_jsonl_payload
     if isinstance(payload, list):
         normalized = _normalize_page_sequence_payload(payload)
         if normalized is not None:
@@ -834,6 +931,9 @@ def parse_import_json_text(text: str) -> ImportJsonParseResult:
     stripped = str(text or "").strip()
     if not stripped:
         raise ValueError("No JSON text was provided.")
+    results_jsonl_result = _parse_results_jsonl_text(stripped)
+    if results_jsonl_result is not None:
+        return results_jsonl_result
     try:
         parsed = json.loads(stripped)
         return ImportJsonParseResult(

@@ -1,0 +1,881 @@
+{
+  "page_name": "page_0006.png",
+  "gemini_count": 5,
+  "detector_count": 7,
+  "matched_count": 4,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "44,548",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2015-01-01",
+      "period_end": "2015-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "הכנסות נטו לשנה",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "49",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2015-01-01",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 1 בינואר 2015",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "(53,907)",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2016-01-01",
+      "period_end": "2016-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "גרעון נטו לשנה",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "44,597",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2015-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 31 בדצמבר 2015",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 80.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "(9,310)",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2016-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 31 בדצמבר 2016",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        1540.0,
+        126.0,
+        7.0,
+        6.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        1616.0,
+        192.0,
+        6.0,
+        6.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        284.0,
+        549.0,
+        38.0,
+        31.0
+      ],
+      "value": "49",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        233.0,
+        595.0,
+        89.0,
+        38.0
+      ],
+      "value": "44,548",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        231.0,
+        643.0,
+        94.0,
+        36.0
+      ],
+      "value": "44,597",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        238.0,
+        739.0,
+        89.0,
+        36.0
+      ],
+      "value": "(9,310)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        391.0,
+        974.0,
+        8.0,
+        8.0
+      ],
+      "value": "-",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": null,
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "44,548",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2015-01-01",
+      "period_end": "2015-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "הכנסות נטו לשנה",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "49",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2015-01-01",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 1 בינואר 2015",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "(53,907)",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2016-01-01",
+      "period_end": "2016-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "גרעון נטו לשנה",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 44.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "44,597",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2015-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 31 בדצמבר 2015",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 80.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "(9,310)",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "דקות- ארגון צרכני תחבורה ציבורית בשרון (ע\"ר)",
+      "note_num": "15",
+      "note_ref": null,
+      "date": null,
+      "period_type": "instant",
+      "period_start": null,
+      "period_end": "2016-12-31",
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "יתרה ליום 31 בדצמבר 2016",
+        "נכסים נטו שלא קיימת לגביהם הגבלה לשימוש לפעילויות ש\"ח"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 3,
+      "gemini_value": "44,548",
+      "detector_value": "44,548",
+      "match_key": "num:44548"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 2,
+      "gemini_value": "49",
+      "detector_value": "49",
+      "match_key": "num:49"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 4,
+      "gemini_value": "44,597",
+      "detector_value": "44,597",
+      "match_key": "num:44597"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 5,
+      "gemini_value": "(9,310)",
+      "detector_value": "(9,310)",
+      "match_key": "num:-9310"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    2
+  ],
+  "unmatched_detector_indices": [
+    0,
+    1,
+    6
+  ],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "44,548"
+      ],
+      "match_keys": [
+        "num:44548"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "49"
+      ],
+      "match_keys": [
+        "num:49"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "(53,907)"
+      ],
+      "match_keys": [
+        "num:-53907"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "44,597"
+      ],
+      "match_keys": [
+        "num:44597"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "(9,310)"
+      ],
+      "match_keys": [
+        "num:-9310"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "49"
+      ],
+      "match_keys": [
+        "num:49"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "44,548"
+      ],
+      "match_keys": [
+        "num:44548"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "44,597"
+      ],
+      "match_keys": [
+        "num:44597"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "(9,310)"
+      ],
+      "match_keys": [
+        "num:-9310"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "-"
+      ],
+      "match_keys": [
+        "num:-"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "44,548"
+      ],
+      "detector_indices": [
+        3
+      ],
+      "detector_values": [
+        "44,548"
+      ],
+      "matched_count": 1,
+      "match_key": "num:44548",
+      "ordered_detector_pool_index": 3
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "49"
+      ],
+      "detector_indices": [
+        2
+      ],
+      "detector_values": [
+        "49"
+      ],
+      "matched_count": 1,
+      "match_key": "num:49",
+      "ordered_detector_pool_index": 2
+    },
+    {
+      "matched": false,
+      "reason": "detector_missing",
+      "import_indices": [
+        2
+      ],
+      "import_values": [
+        "(53,907)"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "num:-53907"
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        3
+      ],
+      "import_values": [
+        "44,597"
+      ],
+      "detector_indices": [
+        4
+      ],
+      "detector_values": [
+        "44,597"
+      ],
+      "matched_count": 1,
+      "match_key": "num:44597",
+      "ordered_detector_pool_index": 2
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        4
+      ],
+      "import_values": [
+        "(9,310)"
+      ],
+      "detector_indices": [
+        5
+      ],
+      "detector_values": [
+        "(9,310)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-9310",
+      "ordered_detector_pool_index": 2
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "rtl",
+  "placeholder_count": 1,
+  "detector_index_by_gemini_index": {
+    "0": 3,
+    "1": 2,
+    "3": 4,
+    "4": 5
+  }
+}

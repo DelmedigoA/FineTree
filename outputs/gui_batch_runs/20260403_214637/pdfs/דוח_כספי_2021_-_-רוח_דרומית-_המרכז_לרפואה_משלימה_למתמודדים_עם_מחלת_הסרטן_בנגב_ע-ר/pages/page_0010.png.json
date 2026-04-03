@@ -1,0 +1,142 @@
+{
+  "doc_id": "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר",
+  "page_index": 10,
+  "page_name": "page_0010.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 6,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"\\\"רות דרומית\\\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\\\"ר)\", \"page_num\": \"9\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"ביאורים לדוחות הכספיים לשנה שנסתיימה ביום 31 בדצמבר (שקלים חדשים)\"}, \"facts\": [{\"value\": \"102.6\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מדד המחירים לצרכן בנקודות\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"points\", \"value_context\": \"tabular\"}, {\"value\": \"100.1\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"מדד המחירים לצרכן בנקודות\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"points\", \"value_context\": \"tabular\"}, {\"value\": \"100.8\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"מדד המחירים לצרכן בנקודות\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"points\", \"value_context\": \"tabular\"}, {\"value\": \"3.11\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"דולר של ארה\\\"ב (בש\\\"ח ל- $1)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3.215\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"דולר של ארה\\\"ב (בש\\\"ח ל- $1)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3.456\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2019-12-31\", \"path\": [\"דולר של ארה\\\"ב (בש\\\"ח ל- $1)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0010.png",
+    "meta": {
+      "entity_name": "\"רות דרומית\" המרכז לרפואה משלימה למתמודדים עם מחלת הסרטן בנגב (ע\"ר)",
+      "page_num": "9",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "ביאורים לדוחות הכספיים לשנה שנסתיימה ביום 31 בדצמבר (שקלים חדשים)"
+    },
+    "facts": [
+      {
+        "value": "102.6",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מדד המחירים לצרכן בנקודות"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "points",
+        "value_context": "tabular"
+      },
+      {
+        "value": "100.1",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "מדד המחירים לצרכן בנקודות"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "points",
+        "value_context": "tabular"
+      },
+      {
+        "value": "100.8",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "מדד המחירים לצרכן בנקודות"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "points",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3.11",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "דולר של ארה\"ב (בש\"ח ל- $1)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3.215",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "דולר של ארה\"ב (בש\"ח ל- $1)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3.456",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2019-12-31",
+        "path": [
+          "דולר של ארה\"ב (בש\"ח ל- $1)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

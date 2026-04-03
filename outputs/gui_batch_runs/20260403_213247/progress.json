@@ -1,0 +1,93 @@
+{
+  "updated_at": "2026-04-03T21:33:18",
+  "state": "completed",
+  "base_url": "https://03f2-34-158-68-130.ngrok-free.app/v1",
+  "model": "asafd60/FineTree-27B-v2.9-merged",
+  "log_dir": "/Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260403_213247",
+  "elapsed_seconds": 30.609,
+  "total_tokens_received": 3266,
+  "overall_tokens_per_second": 106.701,
+  "recent_tokens_per_second": 0.0,
+  "completed_pages": 71,
+  "failed_pages": 0,
+  "total_pages": 71,
+  "documents": {
+    "דוח_כספי_2016_-_15_דקות_-_ארגון_צרכני_תחבורה_ציבורית_בישראל_ע-ר": {
+      "doc_id": "דוח_כספי_2016_-_15_דקות_-_ארגון_צרכני_תחבורה_ציבורית_בישראל_ע-ר",
+      "state": "completed",
+      "current_page": "page_0003.png",
+      "completed_pages": 8,
+      "failed_pages": 0,
+      "total_pages": 8,
+      "fact_count": 0,
+      "tokens_received": 368,
+      "overall_tokens_per_second": 12.023
+    },
+    "דוח_כספי_2019_-_-למדני-_-ייעוץ_וסיוע_לתלמידים_ע-ר": {
+      "doc_id": "דוח_כספי_2019_-_-למדני-_-ייעוץ_וסיוע_לתלמידים_ע-ר",
+      "state": "completed",
+      "current_page": "page_0004.png",
+      "completed_pages": 4,
+      "failed_pages": 0,
+      "total_pages": 4,
+      "fact_count": 0,
+      "tokens_received": 184,
+      "overall_tokens_per_second": 6.011
+    },
+    "דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר": {
+      "doc_id": "דוח_כספי_2020_-_א.ב.ן._-_סיוע_בנגב_ובדרום_ע-ר",
+      "state": "completed",
+      "current_page": "page_0003.png",
+      "completed_pages": 8,
+      "failed_pages": 0,
+      "total_pages": 8,
+      "fact_count": 0,
+      "tokens_received": 368,
+      "overall_tokens_per_second": 12.023
+    },
+    "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר": {
+      "doc_id": "דוח_כספי_2021_-_-רוח_דרומית-_המרכז_לרפואה_משלימה_למתמודדים_עם_מחלת_הסרטן_בנגב_ע-ר",
+      "state": "completed",
+      "current_page": "page_0004.png",
+      "completed_pages": 18,
+      "failed_pages": 0,
+      "total_pages": 18,
+      "fact_count": 0,
+      "tokens_received": 828,
+      "overall_tokens_per_second": 27.051
+    },
+    "דוח_כספי_2022_-_-קבוצת_עבודה-_-_עמותה_ליצירה_וקידום_של_תיאטרון_מקורי_ועצמאי_ע-ר": {
+      "doc_id": "דוח_כספי_2022_-_-קבוצת_עבודה-_-_עמותה_ליצירה_וקידום_של_תיאטרון_מקורי_ועצמאי_ע-ר",
+      "state": "completed",
+      "current_page": "page_0007.png",
+      "completed_pages": 11,
+      "failed_pages": 0,
+      "total_pages": 11,
+      "fact_count": 0,
+      "tokens_received": 506,
+      "overall_tokens_per_second": 16.531
+    },
+    "דוח_כספי_2024_-_-יחד-_-_בשביל_ההצלחה_ע-ר": {
+      "doc_id": "דוח_כספי_2024_-_-יחד-_-_בשביל_ההצלחה_ע-ר",
+      "state": "completed",
+      "current_page": "page_0007.png",
+      "completed_pages": 8,
+      "failed_pages": 0,
+      "total_pages": 8,
+      "fact_count": 0,
+      "tokens_received": 368,
+      "overall_tokens_per_second": 12.023
+    },
+    "דוח_כספי_2024_-_א.מ.י._-_אגודת_אמני_ישראל_ע-ר": {
+      "doc_id": "דוח_כספי_2024_-_א.מ.י._-_אגודת_אמני_ישראל_ע-ר",
+      "state": "completed",
+      "current_page": "page_0007.png",
+      "completed_pages": 14,
+      "failed_pages": 0,
+      "total_pages": 14,
+      "fact_count": 0,
+      "tokens_received": 644,
+      "overall_tokens_per_second": 21.04
+    }
+  }
+}

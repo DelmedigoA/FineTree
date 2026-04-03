@@ -271,7 +271,7 @@ def test_ai_dialog_includes_bbox_only_action_for_gemini(tmp_path: Path) -> None:
     window.close()
 
 
-def test_ai_dialog_includes_bbox_only_action_for_qwen(tmp_path: Path) -> None:
+def test_ai_dialog_includes_full_action_set_for_qwen(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -281,7 +281,7 @@ def test_ai_dialog_includes_bbox_only_action_for_qwen(tmp_path: Path) -> None:
     dialog = window._ai_controller.dialog
     assert dialog is not None
     actions = [dialog.action_combo.itemText(index) for index in range(dialog.action_combo.count())]
-    assert actions == ["Ground Truth", "BBoxes + Values"]
+    assert actions == ["Ground Truth", "BBoxes + Values", "Auto Complete", "Fix", "Fix Drawn"]
     prompt_text = dialog.current_prompt()
     assert "prepared image sent to Qwen is" in prompt_text
     assert "prepared-image pixels" in prompt_text

@@ -1979,3 +1979,168 @@ def test_dashboard_can_hide_nav_panel_and_persist_setting(monkeypatch) -> None:
     assert window.show_nav_action.isChecked()
     assert window.show_nav_btn.isHidden()
     window.close()
+
+
+def test_home_view_tracks_selected_batch_doc_ids(tmp_path: Path) -> None:
+    _qt_app()
+    source_pdf_a = tmp_path / "doc_a.pdf"
+    source_pdf_b = tmp_path / "doc_b.pdf"
+    source_pdf_a.write_bytes(b"%PDF-1.4")
+    source_pdf_b.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "annotations.json"
+
+    view = dashboard.HomeView()
+    view.set_documents(
+        [
+            WorkspaceDocumentSummary(
+                doc_id="doc_a",
+                source_pdf=source_pdf_a,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=2,
+                annotated_page_count=0,
+                progress_pct=0,
+                status="Ready",
+                updated_at=None,
+            ),
+            WorkspaceDocumentSummary(
+                doc_id="doc_b",
+                source_pdf=source_pdf_b,
+                images_dir=images_dir,
+                annotations_path=annotations_path,
+                thumbnail_path=None,
+                page_count=1,
+                annotated_page_count=0,
+                progress_pct=0,
+                status="Ready",
+                updated_at=None,
+            ),
+        ]
+    )
+    view.show()
+    _qt_app().processEvents()
+
+    assert view.selected_batch_doc_ids() == []
+    assert not view.send_batch_qwen_btn.isEnabled()
+
+    view._cards["doc_a"].batch_select_check.setChecked(True)
+    _qt_app().processEvents()
+    assert view.selected_batch_doc_ids() == ["doc_a"]
+    assert view.send_batch_qwen_btn.isEnabled()
+    assert view.send_batch_qwen_btn.text() == "Send to Batch Inference (1)"
+
+    view._cards["doc_b"].batch_select_check.setChecked(True)
+    _qt_app().processEvents()
+    assert view.selected_batch_doc_ids() == ["doc_a", "doc_b"]
+    assert view.send_batch_qwen_btn.text() == "Send to Batch Inference (2)"
+    view.close()
+
+
+def test_dashboard_selected_batch_documents_route_prepared_and_unprepared_docs(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+
+    ready_pdf = tmp_path / "ready.pdf"
+    needs_pdf = tmp_path / "needs.pdf"
+    ready_pdf.write_bytes(b"%PDF-1.4")
+    needs_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "annotations.json"
+
+    ready_summary = WorkspaceDocumentSummary(
+        doc_id="ready",
+        source_pdf=ready_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=3,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Ready",
+        updated_at=None,
+    )
+    needs_summary = WorkspaceDocumentSummary(
+        doc_id="needs",
+        source_pdf=needs_pdf,
+        images_dir=tmp_path / "needs_pages",
+        annotations_path=tmp_path / "needs.json",
+        thumbnail_path=None,
+        page_count=0,
+        annotated_page_count=0,
+        progress_pct=0,
+        status="Needs extraction",
+        updated_at=None,
+    )
+    window._documents_by_id = {
+        "ready": ready_summary,
+        "needs": needs_summary,
+    }
+
+    captured: dict[str, object] = {}
+
+    def _fake_start_batch_import(paths, *, initial_doc_ids=None, initial_failures=None):
+        captured["paths"] = list(paths)
+        captured["initial_doc_ids"] = list(initial_doc_ids or [])
+        captured["initial_failures"] = list(initial_failures or [])
+
+    monkeypatch.setattr(window, "_start_batch_qwen_import", _fake_start_batch_import)
+
+    window._send_selected_documents_to_batch_qwen(["ready", "needs"])
+
+    assert captured["paths"] == [needs_pdf.resolve()]
+    assert captured["initial_doc_ids"] == ["ready"]
+    assert captured["initial_failures"] == []
+    window.close()
+
+
+def test_start_batch_qwen_for_doc_ids_warns_on_existing_annotations(
+    monkeypatch,
+    tmp_path: Path,
+) -> None:
+    _qt_app()
+    ctx = app_mod.StartupContext(mode="home", images_dir=None, annotations_path=None)
+    window = dashboard.DashboardWindow(ctx, dpi=200)
+
+    source_pdf = tmp_path / "annotated.pdf"
+    source_pdf.write_bytes(b"%PDF-1.4")
+    images_dir = tmp_path / "annotated_pages"
+    images_dir.mkdir()
+    annotations_path = tmp_path / "annotated.json"
+    summary = WorkspaceDocumentSummary(
+        doc_id="annotated",
+        source_pdf=source_pdf,
+        images_dir=images_dir,
+        annotations_path=annotations_path,
+        thumbnail_path=None,
+        page_count=4,
+        annotated_page_count=3,
+        progress_pct=75,
+        status="In progress",
+        updated_at=None,
+        approved_page_count=1,
+    )
+    window._documents_by_id = {"annotated": summary}
+
+    prompts: list[tuple[str, str]] = []
+
+    def _fake_question(parent, title, text, buttons, default_button):
+        _ = parent, buttons, default_button
+        prompts.append((title, text))
+        return dashboard.QMessageBox.No
+
+    monkeypatch.setattr(dashboard.QMessageBox, "question", _fake_question)
+    monkeypatch.setattr(window, "_prompt_batch_qwen_base_url", lambda: (_ for _ in ()).throw(AssertionError("should not prompt for url")))
+
+    window._start_batch_qwen_for_doc_ids(["annotated"])
+
+    assert prompts and prompts[0][0] == "Existing annotations detected"
+    assert "annotated 3 page(s), approved 1 page(s)" in prompts[0][1]
+    window.close()
