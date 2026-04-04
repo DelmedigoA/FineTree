@@ -1,5 +1,6 @@
 /** Right sidebar inspector panel — document/page meta, facts list, fact editor. */
 
+import { useRef, useEffect } from "react";
 import { useDocumentStore } from "../../stores/documentStore";
 import { useSelectionStore } from "../../stores/selectionStore";
 import { DocumentMetaSection } from "./DocumentMetaSection";
@@ -14,6 +15,17 @@ export function InspectorPanel() {
   const { docId, pageStates, pageNames, currentPageIndex, documentMeta } =
     useDocumentStore();
   const { selectedIndices } = useSelectionStore();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to fact editor when selection changes.
+  useEffect(() => {
+    if (selectedIndices.size === 0) return;
+    const timer = setTimeout(() => {
+      editorRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [selectedIndices]);
 
   const pageName = pageNames[currentPageIndex] ?? null;
   const page: PageState | undefined = pageName
@@ -37,7 +49,7 @@ export function InspectorPanel() {
   }
 
   return (
-    <div style={panelStyle}>
+    <div ref={panelRef} style={panelStyle}>
       {/* Document metadata */}
       <Section title="Document">
         <DocumentMetaSection meta={documentMeta} />
@@ -69,18 +81,20 @@ export function InspectorPanel() {
 
       {/* Fact editor (when selected) */}
       {selectedFacts.length > 0 && (
-        <Section
-          title={
-            selectedFacts.length === 1
-              ? "Edit Fact"
-              : `Edit ${selectedFacts.length} Facts`
-          }
-        >
-          <FactEditorSection
-            selectedFacts={selectedFacts}
-            pageName={pageName}
-          />
-        </Section>
+        <div ref={editorRef}>
+          <Section
+            title={
+              selectedFacts.length === 1
+                ? "Edit Fact"
+                : `Edit ${selectedFacts.length} Facts`
+            }
+          >
+            <FactEditorSection
+              selectedFacts={selectedFacts}
+              pageName={pageName}
+            />
+          </Section>
+        </div>
       )}
 
       {/* Batch edit (multi-select only) */}
@@ -97,8 +111,8 @@ export function InspectorPanel() {
 }
 
 const panelStyle: React.CSSProperties = {
-  width: 340,
-  minWidth: 340,
+  width: 400,
+  minWidth: 400,
   background: "var(--surface)",
   borderLeft: "1px solid var(--surface-border)",
   overflowY: "auto",

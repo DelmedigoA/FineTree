@@ -57,6 +57,7 @@ export interface BBoxStyle {
   stroke: string;
   strokeWidth: number;
   roughness: number;
+  bowing?: number;
   strokeLineDash?: number[];
   fillStyle?: string;
 }

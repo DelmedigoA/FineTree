@@ -34,6 +34,7 @@ export class RoughBboxCache {
       existing.style.stroke === style.stroke &&
       existing.style.strokeWidth === style.strokeWidth &&
       existing.style.roughness === style.roughness &&
+      (existing.style.bowing ?? 0) === (style.bowing ?? 0) &&
       existing.zoom === zoom &&
       areDashesEqual(existing.style.strokeLineDash, style.strokeLineDash)
     ) {
@@ -55,6 +56,7 @@ export class RoughBboxCache {
         stroke: style.stroke,
         strokeWidth: style.strokeWidth,
         roughness: style.roughness,
+        bowing: style.bowing ?? 0,
         strokeLineDash: style.strokeLineDash,
         fill: "transparent",
         fillStyle: "solid",
