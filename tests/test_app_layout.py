@@ -369,6 +369,7 @@ def test_ai_ground_truth_dialog_defaults_max_facts_to_zero(tmp_path: Path) -> No
     assert dialog is not None
     assert dialog.max_facts_spin.isHidden() is False
     assert dialog.max_facts_spin.value() == 0
+    assert dialog.temperature_spin.isVisible() is False
     assert dialog.current_temperature() is None
     dialog.close()
     window.close()
@@ -411,7 +412,7 @@ def test_ai_dialog_running_state_disables_config_and_enables_stop(tmp_path: Path
     window.close()
 
 
-def test_ai_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_path: Path) -> None:
+def test_ai_autocomplete_dialog_defaults_few_shot_to_2015_two_shot(tmp_path: Path) -> None:
     _qt_app()
     images_dir = tmp_path / "pages"
     images_dir.mkdir(parents=True)
@@ -426,8 +427,8 @@ def test_ai_autocomplete_dialog_shows_few_shot_controls_disabled_by_default(tmp_
     window.open_ai_dialog(provider=app_mod.AIProvider.GEMINI, action=app_mod.AIActionKind.AUTO_COMPLETE)
     dialog = window._ai_controller.dialog
     assert dialog is not None
-    assert dialog.few_shot_check.isChecked() is False
-    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_CLASSIC
+    assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
     assert dialog.max_facts_spin.value() == 0
     dialog.close()
     window.close()
@@ -447,11 +448,11 @@ def test_ai_ground_truth_dialog_defaults_to_gemini_flash_preview(tmp_path: Path)
     assert dialog.current_provider() == app_mod.AIProvider.GEMINI
     assert dialog.current_action() == app_mod.AIActionKind.GROUND_TRUTH
     assert dialog.current_model() == "gemini-3-flash-preview"
-    assert dialog.temperature_spin.isVisible() is True
+    assert dialog.temperature_spin.isVisible() is False
     assert dialog.current_temperature() is None
     assert dialog.thinking_check.isChecked() is False
     assert dialog.thinking_level_combo.currentText().lower() == "minimal"
-    assert dialog.few_shot_check.isChecked() is False
+    assert dialog.few_shot_check.isChecked() is True
     assert dialog.current_few_shot_source() == app_mod.FEW_SHOT_SOURCE_PRESET
     assert dialog.current_few_shot_previous_count() == 2
     assert dialog.current_few_shot_page_spec() == ""
@@ -472,9 +473,14 @@ def test_ai_ground_truth_dialog_shows_dynamic_few_shot_controls_only_when_enable
     dialog = window._ai_controller.dialog
     assert dialog is not None
 
-    assert dialog.few_shot_source_combo.isVisible() is False
+    assert dialog.few_shot_source_combo.isVisible() is True
+    assert dialog.few_shot_preset_combo.isVisible() is True
     assert dialog.few_shot_previous_count_spin.isVisible() is False
     assert dialog.few_shot_page_spec_edit.isVisible() is False
+
+    dialog.few_shot_check.setChecked(False)
+    assert dialog.few_shot_source_combo.isVisible() is False
+    assert dialog.few_shot_preset_combo.isVisible() is False
 
     dialog.few_shot_check.setChecked(True)
     assert dialog.few_shot_source_combo.isVisible() is True
@@ -511,6 +517,7 @@ def test_ai_bbox_only_dialog_keeps_preset_only_few_shot_controls(tmp_path: Path)
     assert dialog is not None
 
     assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
     assert dialog.few_shot_preset_combo.isVisible() is True
     assert dialog.few_shot_source_combo.isVisible() is False
     assert dialog.few_shot_previous_count_spin.isVisible() is False
@@ -787,12 +794,11 @@ def test_gemini_autocomplete_passes_max_facts_to_stream(tmp_path: Path, monkeypa
     dialog = window._ai_controller.dialog
     assert dialog is not None
     dialog.prompt_edit.setPlainText("autocomplete prompt")
-    dialog.temperature_spin.setValue(0.35)
     dialog.max_facts_spin.setValue(2)
     window._ai_controller.run_from_dialog()
 
     assert captured_stream_kwargs["max_facts"] == 2
-    assert captured_stream_kwargs["temperature"] == pytest.approx(0.35)
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
     assert captured_stream_kwargs["mode"] == "autocomplete"
 
     window.close()
@@ -824,7 +830,6 @@ def test_gemini_gt_tuned_model_uses_training_prompt_and_no_standard_api_key(tmp_
     assert dialog is not None
     dialog.prompt_edit.setPlainText("vertex prompt")
     dialog.model_combo.setCurrentText("gemini-flash-hf-tuned")
-    dialog.temperature_spin.setValue(0.35)
     dialog.few_shot_check.setChecked(True)
     window._ai_controller.run_from_dialog()
 
@@ -864,7 +869,6 @@ def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatc
     dialog = window._ai_controller.dialog
     assert dialog is not None
     dialog.model_combo.setCurrentText("gemini-3-flash-preview")
-    dialog.temperature_spin.setValue(0.35)
     dialog.max_facts_spin.setValue(4)
     dialog.few_shot_check.setChecked(True)
     dialog.prompt_edit.setPlainText("custom gt prompt")
@@ -873,7 +877,7 @@ def test_gemini_gt_respects_non_tuned_model_selection(tmp_path: Path, monkeypatc
     assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
     assert captured_stream_kwargs["gemini_api_key"] == "test-key"
     assert captured_stream_kwargs["system_prompt"] is None
-    assert captured_stream_kwargs["temperature"] == pytest.approx(0.35)
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
     assert captured_stream_kwargs["few_shot_examples"] == [{"role": "user", "parts": ["example"]}]
     assert captured_stream_kwargs["max_facts"] == 4
     assert captured_stream_kwargs["prompt_text"] == "custom gt prompt"
@@ -977,7 +981,6 @@ def test_gemini_bbox_only_run_uses_selected_model_and_mode(tmp_path: Path, monke
     dialog = window._ai_controller.dialog
     assert dialog is not None
     dialog.model_combo.setCurrentText("gemini-2.5-flash")
-    dialog.temperature_spin.setValue(0.15)
     dialog.max_facts_spin.setValue(3)
     dialog.few_shot_check.setChecked(True)
     window._ai_controller.run_from_dialog()
@@ -987,7 +990,7 @@ def test_gemini_bbox_only_run_uses_selected_model_and_mode(tmp_path: Path, monke
     assert captured_stream_kwargs["gemini_api_key"] == "test-key"
     assert captured_stream_kwargs["system_prompt"] is None
     assert captured_stream_kwargs["few_shot_examples"] == [{"image_path": Path("/tmp/example.png"), "expected_json": "{\"pages\":[]}"}]
-    assert captured_stream_kwargs["temperature"] == pytest.approx(0.15)
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
     assert captured_stream_kwargs["max_facts"] == 3
     assert "all numerical entities" in captured_stream_kwargs["prompt_text"]
     assert '"value"' in captured_stream_kwargs["prompt_text"]
@@ -1124,7 +1127,7 @@ def test_annotate_starts_gemini_ground_truth_with_two_shot(tmp_path: Path, monke
     assert window._auto_annotate_target_page == "page_0001.png"
     assert window._gemini_gt_live_updates_enabled is False
     assert captured_stream_kwargs["model_name"] == "gemini-3-flash-preview"
-    assert captured_stream_kwargs["temperature"] is None
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
     assert captured_stream_kwargs["system_prompt"] is None
     assert captured_stream_kwargs["few_shot_examples"] == [{"preset": app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT}]
     assert captured_stream_kwargs["max_facts"] == 6
@@ -3683,7 +3686,48 @@ def test_ai_dialog_qwen_gt_accepts_thinking_controls(tmp_path: Path) -> None:
     assert dialog.temperature_spin.isVisible() is False
     assert dialog.thinking_check.isVisible() is True
     assert dialog.thinking_level_combo.isVisible() is False
+    assert dialog.thinking_check.isChecked() is False
+    assert dialog.few_shot_check.isChecked() is True
+    assert dialog.few_shot_preset_combo.currentData() == app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT
     dialog.close()
+    window.close()
+
+
+def test_qwen_ground_truth_run_forces_zero_temperature(tmp_path: Path, monkeypatch) -> None:
+    _qt_app()
+    images_dir = tmp_path / "pages"
+    images_dir.mkdir(parents=True)
+    _write_test_png(images_dir / "page_0001.png")
+    annotations_path = tmp_path / "annotations.json"
+
+    window = AnnotationWindow(images_dir, annotations_path)
+    captured_stream_kwargs: dict[str, object] = {}
+
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_resolve_qwen_runtime",
+        lambda _request: ("qwen-flash-gt", tmp_path / "cfg.yaml", True),
+    )
+    monkeypatch.setattr(
+        window._ai_controller,
+        "_load_qwen_examples_for_mode",
+        lambda request, *, mode, is_qwen_flash: [{"preset": request.few_shot_preset, "mode": mode, "flash": is_qwen_flash}],
+    )
+    monkeypatch.setattr(window._ai_controller, "_start_qwen_stream", lambda **kwargs: captured_stream_kwargs.update(kwargs))
+
+    window.open_ai_dialog(provider=app_mod.AIProvider.QWEN, action=app_mod.AIActionKind.GROUND_TRUTH)
+    dialog = window._ai_controller.dialog
+    assert dialog is not None
+    dialog.prompt_edit.setPlainText("qwen gt prompt")
+    window._ai_controller.run_from_dialog()
+
+    assert captured_stream_kwargs["model_name"] == "qwen-flash-gt"
+    assert captured_stream_kwargs["temperature"] == pytest.approx(0.0)
+    assert captured_stream_kwargs["few_shot_examples"] == [
+        {"preset": app_mod.FEW_SHOT_PRESET_2015_TWO_SHOT, "mode": "gt", "flash": True}
+    ]
+    assert captured_stream_kwargs["mode"] == "gt"
+
     window.close()
 
 

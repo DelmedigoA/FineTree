@@ -433,6 +433,37 @@ def test_qwen_stream_worker_forwards_enable_thinking(monkeypatch, tmp_path: Path
     assert seen["enable_thinking"] is True
 
 
+def test_qwen_stream_worker_forwards_temperature(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_stream_content_from_image(**kwargs):
+        seen.update(kwargs)
+        yield (
+            '{"images_dir":"data/pdf_images/doc1","metadata":{},'
+            '"pages":[{"image":"page_0001.png","meta":{"entity_name":null,"page_num":null,'
+            '"page_type":"other","statement_type":null,"title":null},"facts":[]}]}'
+        )
+
+    monkeypatch.setattr(gemini_vlm, "StreamingPageExtractionParser", _FakeParser)
+    monkeypatch.setattr(qwen_vlm, "stream_content_from_image", _fake_stream_content_from_image)
+
+    worker = app_mod.QwenStreamWorker(
+        image_path=image_path,
+        prompt="extract",
+        model="local-qwen",
+        config_path="cfg.yaml",
+        temperature=0.0,
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["temperature"] == 0.0
+
+
 def test_qwen_stream_worker_uses_bbox_only_parser_and_prepared_resize(monkeypatch, tmp_path: Path) -> None:
     image_path = tmp_path / "page.png"
     image_path.write_bytes(b"img")
@@ -528,3 +559,31 @@ def test_gemini_fill_worker_forwards_temperature(monkeypatch, tmp_path: Path) ->
     worker.run()
 
     assert seen["temperature"] == 0.25
+
+
+def test_qwen_fill_worker_forwards_temperature(monkeypatch, tmp_path: Path) -> None:
+    image_path = tmp_path / "page.png"
+    image_path.write_bytes(b"img")
+
+    seen: dict[str, object] = {}
+
+    def _fake_generate_content_from_image(**kwargs):
+        seen.update(kwargs)
+        return '{"meta_updates":{},"fact_updates":[]}'
+
+    monkeypatch.setattr(qwen_vlm, "generate_content_from_image", _fake_generate_content_from_image)
+
+    worker = app_mod.QwenFillWorker(
+        image_path=image_path,
+        prompt="fill",
+        model="local-qwen",
+        config_path="cfg.yaml",
+        allowed_fact_fields={"period_type"},
+        allow_statement_type=False,
+        temperature=0.0,
+        enable_thinking=False,
+    )
+
+    worker.run()
+
+    assert seen["temperature"] == 0.0

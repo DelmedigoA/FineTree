@@ -164,7 +164,7 @@ def test_stream_content_from_image_uses_qwen_flash_alias_with_few_shot(tmp_path:
     payload = seen["json"]  # type: ignore[assignment]
     assert payload["model"] == "qwen3.5-flash"
     assert payload["stream"] is True
-    assert payload["temperature"] == 0.7
+    assert payload["temperature"] == 0.0
     assert payload["top_p"] == 0.8
     assert len(payload["messages"]) == 3
     assert payload["messages"][0]["role"] == "user"
@@ -1157,7 +1157,7 @@ def test_stream_content_from_image_uses_runpod_endpoint_backend(tmp_path: Path, 
     assert seen["endpoint"] == "https://api.runpod.ai/v2/abc/openai/v1/chat/completions"
     payload = seen["json"]  # type: ignore[assignment]
     assert payload["max_tokens"] == 120
-    assert payload["temperature"] == 0.7
+    assert payload["temperature"] == 0.0
     assert payload["top_p"] == 0.8
     assert payload["chat_template_kwargs"] == {"enable_thinking": False}
 

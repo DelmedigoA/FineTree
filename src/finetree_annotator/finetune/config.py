@@ -148,7 +148,7 @@ class InferenceConfig(BaseModel):
     fallback_model_path: Optional[str] = None
     fallback_disable_adapter: bool = True
     max_new_tokens: int = 10000
-    temperature: float = 0.7
+    temperature: float = 0.0
     top_p: float = 0.8
     do_sample: bool = True
     enable_thinking: bool = False

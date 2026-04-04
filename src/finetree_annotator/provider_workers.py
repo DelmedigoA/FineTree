@@ -302,6 +302,7 @@ class QwenFillWorker(QObject):
         allowed_fact_fields: set[str],
         allow_statement_type: bool,
         enable_thinking: bool,
+        temperature: Optional[float] = None,
         parent: Optional[QObject] = None,
     ) -> None:
         super().__init__(parent)
@@ -311,6 +312,7 @@ class QwenFillWorker(QObject):
         self.config_path = config_path
         self.allowed_fact_fields = set(allowed_fact_fields)
         self.allow_statement_type = bool(allow_statement_type)
+        self.temperature = float(temperature) if temperature is not None else None
         self.enable_thinking = bool(enable_thinking)
         self._cancel_requested = False
 
@@ -327,6 +329,7 @@ class QwenFillWorker(QObject):
                 prompt=self.prompt,
                 model=self.model,
                 config_path=self.config_path,
+                temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
             )
             if self._cancel_requested:
@@ -362,6 +365,7 @@ class QwenStreamWorker(QObject):
         config_path: Optional[str] = None,
         max_new_tokens: int = DEFAULT_QWEN_STREAM_MAX_NEW_TOKENS,
         few_shot_examples: Optional[list[dict[str, Any]]] = None,
+        temperature: Optional[float] = None,
         enable_thinking: bool = False,
         prepared_image: Optional[Any] = None,
         prepared_size: Optional[tuple[int, int]] = None,
@@ -377,6 +381,7 @@ class QwenStreamWorker(QObject):
         self.config_path = config_path
         self.max_new_tokens = int(max_new_tokens)
         self.few_shot_examples = few_shot_examples
+        self.temperature = float(temperature) if temperature is not None else None
         self.enable_thinking = bool(enable_thinking)
         self.prepared_image = prepared_image
         self.prepared_size = tuple(prepared_size) if prepared_size is not None else None
@@ -404,6 +409,7 @@ class QwenStreamWorker(QObject):
                 config_path=self.config_path,
                 max_new_tokens=self.max_new_tokens,
                 few_shot_examples=self.few_shot_examples,
+                temperature=self.temperature,
                 enable_thinking=self.enable_thinking,
                 prepared_image=self.prepared_image,
                 prepared_size=self.prepared_size,

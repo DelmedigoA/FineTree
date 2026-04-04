@@ -62,6 +62,13 @@ from .types import (
     provider_label,
 )
 
+DESKTOP_AI_FIXED_TEMPERATURE = 0.0
+DESKTOP_AI_DEFAULT_ENABLE_THINKING = False
+DESKTOP_AI_DEFAULT_THINKING_LEVEL = "minimal"
+DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET = FEW_SHOT_PRESET_2015_TWO_SHOT
+DESKTOP_AI_DEFAULT_FEW_SHOT_SOURCE = FEW_SHOT_SOURCE_PRESET
+DESKTOP_AI_DEFAULT_FEW_SHOT_PREVIOUS_COUNT = 2
+
 
 class AIWorkflowController:
     def __init__(
@@ -251,7 +258,7 @@ class AIWorkflowController:
             enable_thinking=dialog.thinking_check.isChecked(),
             thinking_level=dialog.thinking_level_combo.currentText().strip().lower() or "minimal",
             use_few_shot=dialog.few_shot_check.isChecked(),
-            few_shot_preset=str(dialog.few_shot_preset_combo.currentData() or FEW_SHOT_PRESET_CLASSIC),
+            few_shot_preset=str(dialog.few_shot_preset_combo.currentData() or DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET),
             few_shot_source=dialog.current_few_shot_source(),
             few_shot_previous_count=dialog.current_few_shot_previous_count(),
             few_shot_page_spec=dialog.current_few_shot_page_spec(),
@@ -366,10 +373,13 @@ class AIWorkflowController:
             action=AIActionKind.GROUND_TRUTH,
             model=model_name,
             prompt_text=self._build_prompt_for_dialog(AIProvider.GEMINI, AIActionKind.GROUND_TRUTH, context),
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
+            enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+            thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
             use_few_shot=True,
-            few_shot_preset=FEW_SHOT_PRESET_2015_TWO_SHOT,
-            few_shot_source=FEW_SHOT_SOURCE_PRESET,
-            few_shot_previous_count=2,
+            few_shot_preset=DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET,
+            few_shot_source=DESKTOP_AI_DEFAULT_FEW_SHOT_SOURCE,
+            few_shot_previous_count=DESKTOP_AI_DEFAULT_FEW_SHOT_PREVIOUS_COUNT,
             few_shot_page_spec="",
             max_facts=max(0, int(getattr(self.host, "_gemini_max_facts", 0))),
         )
@@ -379,9 +389,9 @@ class AIWorkflowController:
             return False
         few_shot_examples = self._load_gemini_few_shot_examples(request)
         self.host._gemini_model_name = model_name
-        self.host._gemini_temperature = None
-        self.host._gemini_enable_thinking = False
-        self.host._gemini_thinking_level = "minimal"
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
+        self.host._gemini_enable_thinking = DESKTOP_AI_DEFAULT_ENABLE_THINKING
+        self.host._gemini_thinking_level = DESKTOP_AI_DEFAULT_THINKING_LEVEL
 
         current_state = deepcopy(
             self.host.page_states.get(context.page_name, self.host._default_state(context.page_index))
@@ -411,9 +421,9 @@ class AIWorkflowController:
             model_name=model_name,
             gemini_api_key=gemini_api_key,
             system_prompt=None,
-            temperature=None,
-            enable_thinking=False,
-            thinking_level="minimal",
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
+            enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+            thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
             few_shot_examples=few_shot_examples,
             mode="gt",
             max_facts=request.max_facts,
@@ -545,11 +555,11 @@ class AIWorkflowController:
             return
 
         few_shot_examples = None
-        effective_temperature = 0.0 if use_tuned_model else request.temperature
+        effective_temperature = DESKTOP_AI_FIXED_TEMPERATURE
+        self.host._gemini_model_name = model_name
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
         if not use_tuned_model:
             few_shot_examples = self._load_gemini_few_shot_examples(request)
-            self.host._gemini_model_name = model_name
-            self.host._gemini_temperature = request.temperature
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
 
@@ -602,7 +612,7 @@ class AIWorkflowController:
 
         few_shot_examples = self._load_gemini_few_shot_examples(request)
         self.host._gemini_model_name = model_name
-        self.host._gemini_temperature = request.temperature
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         initial_seen_facts = {
@@ -621,7 +631,7 @@ class AIWorkflowController:
             model_name=model_name,
             gemini_api_key=gemini_api_key,
             system_prompt=None,
-            temperature=request.temperature,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
             few_shot_examples=few_shot_examples,
@@ -673,7 +683,7 @@ class AIWorkflowController:
 
         few_shot_examples = self._load_gemini_bbox_only_few_shot_examples(request)
         self.host._gemini_model_name = model_name
-        self.host._gemini_temperature = request.temperature
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
 
@@ -696,7 +706,7 @@ class AIWorkflowController:
             model_name=model_name,
             gemini_api_key=gemini_api_key,
             system_prompt=None,
-            temperature=request.temperature,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
             few_shot_examples=few_shot_examples,
@@ -764,7 +774,7 @@ class AIWorkflowController:
             return
 
         self.host._gemini_model_name = model_name
-        self.host._gemini_temperature = request.temperature
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         self.host._ai_fill_provider = AIProvider.GEMINI
@@ -785,7 +795,7 @@ class AIWorkflowController:
             api_key=gemini_api_key,
             allowed_fact_fields=set(request.selected_fact_fields),
             allow_statement_type=request.include_statement_type,
-            temperature=request.temperature,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
         )
@@ -836,7 +846,7 @@ class AIWorkflowController:
         all_patch_fields.add("value")
 
         self.host._gemini_model_name = model_name
-        self.host._gemini_temperature = request.temperature
+        self.host._gemini_temperature = DESKTOP_AI_FIXED_TEMPERATURE
         self.host._gemini_enable_thinking = request.enable_thinking
         self.host._gemini_thinking_level = request.thinking_level
         self.host._ai_fill_provider = AIProvider.GEMINI
@@ -857,7 +867,7 @@ class AIWorkflowController:
             api_key=gemini_api_key,
             allowed_fact_fields=all_patch_fields,
             allow_statement_type=False,
-            temperature=request.temperature,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
             thinking_level=request.thinking_level,
         )
@@ -1049,6 +1059,7 @@ class AIWorkflowController:
         model_name: str,
         config_path: Optional[str],
         few_shot_examples: Optional[list[dict[str, Any]]],
+        temperature: Optional[float],
         enable_thinking: bool,
         mode: str,
         prepared_size: tuple[int, int] | None,
@@ -1080,6 +1091,7 @@ class AIWorkflowController:
             mode=mode,
             config_path=config_path,
             few_shot_examples=few_shot_examples,
+            temperature=temperature,
             enable_thinking=enable_thinking,
             prepared_size=prepared_size,
             original_size=original_size,
@@ -1191,6 +1203,7 @@ class AIWorkflowController:
             model_name=model_name,
             config_path=str(qwen_config_path) if qwen_config_path is not None else None,
             few_shot_examples=few_shot_examples,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
             mode=mode,
             prepared_size=prepared_size,
@@ -1231,6 +1244,7 @@ class AIWorkflowController:
             config_path=str(qwen_config_path) if qwen_config_path is not None else None,
             allowed_fact_fields=set(request.selected_fact_fields),
             allow_statement_type=request.include_statement_type,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
         )
         thread = QThread(self.host)
@@ -1290,6 +1304,7 @@ class AIWorkflowController:
             config_path=str(qwen_config_path) if qwen_config_path is not None else None,
             allowed_fact_fields=all_patch_fields,
             allow_statement_type=False,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
             enable_thinking=request.enable_thinking,
         )
         thread = QThread(self.host)
@@ -1578,8 +1593,11 @@ class AIWorkflowController:
             action=AIActionKind.GROUND_TRUTH,
             model=model_name,
             prompt_text=prompt_text,
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
+            enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+            thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
             use_few_shot=True,
-            few_shot_preset=FEW_SHOT_PRESET_2015_TWO_SHOT,
+            few_shot_preset=DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET,
         )
         few_shot_examples = self._load_gemini_no_bbox_few_shot_examples(request)
 
@@ -1604,9 +1622,9 @@ class AIWorkflowController:
             model_name=model_name,
             gemini_api_key=gemini_api_key,
             system_prompt=None,
-            temperature=None,
-            enable_thinking=False,
-            thinking_level="minimal",
+            temperature=DESKTOP_AI_FIXED_TEMPERATURE,
+            enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+            thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
             few_shot_examples=few_shot_examples,
             mode="no_bbox_test",
             max_facts=0,
@@ -1750,7 +1768,6 @@ class AIWorkflowController:
                 supports_thinking=True,
                 supports_thinking_level=True,
                 supports_few_shot=True,
-                supports_temperature=True,
                 supports_max_facts=True,
                 replaces_existing_page_facts=True,
             )
@@ -1759,7 +1776,6 @@ class AIWorkflowController:
                 supports_thinking=True,
                 supports_thinking_level=True,
                 supports_few_shot=True,
-                supports_temperature=True,
                 supports_max_facts=True,
                 replaces_existing_page_facts=True,
             )
@@ -1768,7 +1784,6 @@ class AIWorkflowController:
                 supports_thinking=True,
                 supports_thinking_level=True,
                 supports_few_shot=True,
-                supports_temperature=True,
                 supports_max_facts=True,
                 requires_existing_facts=True,
             )
@@ -1776,14 +1791,12 @@ class AIWorkflowController:
             return AIActionCapabilities(
                 supports_thinking=True,
                 supports_thinking_level=True,
-                supports_temperature=True,
                 requires_existing_facts=True,
                 requires_hand_drawn_facts=True,
             )
         return AIActionCapabilities(
             supports_thinking=True,
             supports_thinking_level=True,
-            supports_temperature=True,
             supports_fix_fields=True,
             supports_statement_type_toggle=True,
             requires_selected_facts=True,
@@ -1818,42 +1831,30 @@ class AIWorkflowController:
                 action=action,
                 model=self.host._qwen_model_name,
                 temperature=None,
-                enable_thinking=bool(self.host._qwen_enable_thinking),
-                thinking_level="high" if self.host._qwen_enable_thinking else "minimal",
-                use_few_shot=(action == AIActionKind.BBOX_ONLY),
-                few_shot_preset=FEW_SHOT_PRESET_CLASSIC,
-                few_shot_source=FEW_SHOT_SOURCE_PRESET,
-                few_shot_previous_count=2,
+                enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+                thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
+                use_few_shot=self._capabilities_for(provider, action).supports_few_shot,
+                few_shot_preset=DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET,
+                few_shot_source=DESKTOP_AI_DEFAULT_FEW_SHOT_SOURCE,
+                few_shot_previous_count=DESKTOP_AI_DEFAULT_FEW_SHOT_PREVIOUS_COUNT,
                 few_shot_page_spec="",
                 max_facts=0,
                 selected_fact_fields=default_fix_fields,
                 include_statement_type=False,
             )
-        if action == AIActionKind.GROUND_TRUTH:
-            few_shot_default = FEW_SHOT_PRESET_2015_TWO_SHOT
-            use_few_shot = False
-        elif action == AIActionKind.BBOX_ONLY:
-            few_shot_default = FEW_SHOT_PRESET_CLASSIC
-            use_few_shot = True
-        elif action == AIActionKind.AUTO_COMPLETE:
-            few_shot_default = FEW_SHOT_PRESET_CLASSIC
-            use_few_shot = False
-        else:
-            few_shot_default = FEW_SHOT_PRESET_CLASSIC
-            use_few_shot = False
+        use_few_shot = self._capabilities_for(provider, action).supports_few_shot
         model_name = self.host._gemini_model_name
-        temperature = getattr(self.host, "_gemini_temperature", None)
         return AIDialogDefaults(
             provider=provider,
             action=action,
             model=model_name,
-            temperature=temperature,
-            enable_thinking=bool(self.host._gemini_enable_thinking),
-            thinking_level=self.host._gemini_thinking_level,
+            temperature=None,
+            enable_thinking=DESKTOP_AI_DEFAULT_ENABLE_THINKING,
+            thinking_level=DESKTOP_AI_DEFAULT_THINKING_LEVEL,
             use_few_shot=use_few_shot,
-            few_shot_preset=few_shot_default,
-            few_shot_source=FEW_SHOT_SOURCE_PRESET,
-            few_shot_previous_count=2,
+            few_shot_preset=DESKTOP_AI_DEFAULT_FEW_SHOT_PRESET,
+            few_shot_source=DESKTOP_AI_DEFAULT_FEW_SHOT_SOURCE,
+            few_shot_previous_count=DESKTOP_AI_DEFAULT_FEW_SHOT_PREVIOUS_COUNT,
             few_shot_page_spec="",
             max_facts=0,
             selected_fact_fields=default_fix_fields,

@@ -154,6 +154,16 @@ Run focused suites while working on a subsystem:
 ./.env/bin/pytest -q tests/test_benchmark_web.py tests/test_benchmark_runner.py
 ```
 
+## Backup
+
+Create a workspace backup archive under `backups/`:
+
+```bash
+PYTHONPATH=src python -m finetree_annotator.workspace_backup
+```
+
+By default this snapshots `data/raw_pdfs`, `data/pdf_images`, `data/annotations`, `data/finetune`, `data/workspace_review_state.json`, and `db/finetree.db`, while excluding generated noise such as `data/doctr_logs/` and annotation backup history.
+
 ## Current Caveats
 
 - The annotator and dashboard code still live in large modules and need further decomposition.

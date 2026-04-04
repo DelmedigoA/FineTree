@@ -1289,7 +1289,7 @@ def _stream_content_from_qwen_flash_endpoint(
 
     resolved_max_new_tokens = int(max_new_tokens) if max_new_tokens is not None else _DEFAULT_QWEN_MAX_NEW_TOKENS
     effective_do_sample = True if do_sample is None else bool(do_sample)
-    effective_temperature = 0.7 if temperature is None else float(temperature)
+    effective_temperature = 0.0 if temperature is None else float(temperature)
     effective_top_p = 0.8 if top_p is None else float(top_p)
     effective_timeout_sec = 180.0 if timeout_sec is None else float(timeout_sec)
 
@@ -1831,7 +1831,7 @@ def stream_content_from_image(
             if enable_thinking is not None:
                 exact_request["payload"]["enable_thinking"] = bool(enable_thinking)
             if effective_do_sample:
-                exact_request["payload"]["temperature"] = 0.7 if temperature is None else float(temperature)
+                exact_request["payload"]["temperature"] = 0.0 if temperature is None else float(temperature)
                 exact_request["payload"]["top_p"] = 0.8 if top_p is None else float(top_p)
             request_summary = _qwen_request_summary(
                 model=resolved_model_name,

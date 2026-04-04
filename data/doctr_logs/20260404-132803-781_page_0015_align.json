@@ -1,0 +1,7411 @@
+{
+  "page_name": "page_0015.png",
+  "gemini_count": 50,
+  "detector_count": 51,
+  "matched_count": 50,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 300.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(16,560)",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 362.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(10,341)",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "השתלמויות וספרות מקצועית"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 393.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(32,567)",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משחקים וכיבוד למטופלים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 424.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(10,164)",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 455.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(45,902)",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פחת"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 486.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(4,698)",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שאלונים והרשאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 287.0,
+        "y": 517.0,
+        "w": 89.0,
+        "h": 35.0
+      },
+      "value": "(627,943)",
+      "fact_num": 7,
+      "equations": [
+        {
+          "equation": "- 389,230 - 82,342 - 16,560 - 36,139 - 10,341 - 32,567 - 10,164 - 45,902 - 4,698",
+          "fact_equation": "f9 + f11 + f1 + f16 + f2 + f3 + f4 + f5 + f6"
+        },
+        {
+          "equation": "(389,230)+(82,342)+(16,560)+(36,139)+(10,341)+(32,567)+(10,164)+(45,902)+(4,698)",
+          "fact_equation": "f9+f11+f1+f16+f2+f3+f4+f5+f6"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 141.0,
+        "y": 517.0,
+        "w": 89.0,
+        "h": 35.0
+      },
+      "value": "(597,010)",
+      "fact_num": 8,
+      "equations": [
+        {
+          "equation": "(348,530)+(73,596)+(24,891)+(32,351)+(16,099)+(31,737)+(4,897)+(48,075)+(16,834)",
+          "fact_equation": null
+        },
+        {
+          "equation": "(348,530)+(73,596)+(24,891)+(32,351)+(16,099)+(31,737)+(4,897)+(48,075)+(16,834)",
+          "fact_equation": "f2+f4+f6+f8+f10+l12+f14+f16+f18"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 474.7,
+        "y": 557.16,
+        "w": 147.21,
+        "h": 81.94
+      },
+      "value": "(389,230)",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי שכירות מבנים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 233.21,
+        "y": 557.16,
+        "w": 147.21,
+        "h": 81.94
+      },
+      "value": "(348,530)",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי שכירות מבנים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 489.58,
+        "y": 629.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(82,342)",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון נקיון ואחזקה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 629.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(73,596)",
+      "fact_num": 12,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון נקיון ואחזקה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 702.3,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(24,891)",
+      "fact_num": 13,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 278.0,
+        "y": 747.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,036,339)",
+      "fact_num": 14,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משכורות ונלוות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 778.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(45,492)",
+      "fact_num": 15,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דואר תקשורת ואחזקת מחשב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 489.58,
+        "y": 774.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(36,139)",
+      "fact_num": 16,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 809.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(25,978)",
+      "fact_num": 17,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משרדיות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 774.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(32,351)",
+      "fact_num": 18,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 840.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,548)",
+      "fact_num": 19,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פרסום"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 871.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(28,367)",
+      "fact_num": 20,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שכר דירה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 847.44,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(16,099)",
+      "fact_num": 21,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "השתלמויות וספרות מקצועית"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 871.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(32,254)",
+      "fact_num": 22,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שכר דירה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 902.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(61,361)",
+      "fact_num": 23,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שרותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 902.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(51,281)",
+      "fact_num": 24,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שרותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 933.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(6,023)",
+      "fact_num": 25,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי טיפול קופות פנסיוניות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 920.01,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(31,737)",
+      "fact_num": 26,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משחקים וכיבוד למטופלים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 933.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(6,067)",
+      "fact_num": 27,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי טיפול קופות פנסיוניות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 964.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(8,254)",
+      "fact_num": 28,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 964.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,140)",
+      "fact_num": 29,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 995.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,619)",
+      "fact_num": 30,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון אחזקה ונקיון"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 995.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,156)",
+      "fact_num": 31,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון אחזקה ונקיון"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1026.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(2,751)",
+      "fact_num": 32,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 992.58,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(4,897)",
+      "fact_num": 33,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 1026.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,784)",
+      "fact_num": 34,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 1057.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(23,545)",
+      "fact_num": 35,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מחשוב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1057.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(21,863)",
+      "fact_num": 36,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מחשוב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1088.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(2,714)",
+      "fact_num": 37,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1065.15,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(48,075)",
+      "fact_num": 38,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פחת"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 1088.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,716)",
+      "fact_num": 39,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1119.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "29,560",
+      "fact_num": 40,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חובות אבודים ושינוי בעתודה לחומ\"ס"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1119.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(46,585)",
+      "fact_num": 41,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חובות אבודים ושינוי בעתודה לחומ\"ס"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1150.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,255)",
+      "fact_num": 42,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ימי גיבוש והשתלמויות הנהלה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1137.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(16,834)",
+      "fact_num": 43,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שאלונים והרשאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1150.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(14,177)",
+      "fact_num": 44,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ימי גיבוש והשתלמויות הנהלה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 278.0,
+        "y": 1181.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,229,686)",
+      "fact_num": 45,
+      "equations": [
+        {
+          "equation": "- 1,036,339 - 45,492 - 25,978 - 7,548 - 28,367 - 61,361 - 6,023 - 8,254 - 3,619 - 2,751 - 23,545 - 2,714 - 29,560 - 7,255",
+          "fact_equation": "f14 + f15 + f17 + f19 + f20 + f23 + f25 + f28 + f30 + f32 + f35 + f37 - f40 + f42"
+        },
+        {
+          "equation": "(1,036,339)+(45,492)+(25,978)+(7,548)+(28,367)+(61,361)+(6,023)+(8,254)+(3,619)+(2,751)+(23,545)+(2,714)-29,560+(7,255)",
+          "fact_equation": "f14+f15+f17+f19+f20+f23+f25+f28+f30+f32+f35+f37-f40+f42"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 132.0,
+        "y": 1181.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,229,485)",
+      "fact_num": 46,
+      "equations": [
+        {
+          "equation": "- 956,227 - 49,454 - 25,320 - 8,461 - 32,254 - 51,281 - 6,067 - 7,140 - 3,156 - 3,784 - 21,863 - 3,716 - 46,585 - 14,177",
+          "fact_equation": "f47 + f48 + f49 + f50 + f22 + f24 + f27 + f29 + f31 + f34 + f36 + f39 + f41 + f44"
+        },
+        {
+          "equation": "(956,227)+(49,454)+(25,320)+(8,461)+(32,254)+(51,281)+(6,067)+(7,140)+(3,156)+(3,784)+(21,863)+(3,716)+(46,585)+(14,177)",
+          "fact_equation": "f47+f48+f49+f50+f22+f24+f27+f29+f31+f34+f36+f39+f41+f44"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 218.33,
+        "y": 1748.73,
+        "w": 176.98,
+        "h": 81.94
+      },
+      "value": "(956,227)",
+      "fact_num": 47,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משכורות ונלוות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1821.3,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(49,454)",
+      "fact_num": 48,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דואר תקשורת ואחזקת מחשב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1893.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(25,320)",
+      "fact_num": 49,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משרדיות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 262.99,
+        "y": 1966.44,
+        "w": 117.43,
+        "h": 81.94
+      },
+      "value": "(8,461)",
+      "fact_num": 50,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פרסום"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        504.0,
+        550.0,
+        119.0,
+        35.0
+      ],
+      "value": "(389,230)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        266.0,
+        553.0,
+        119.0,
+        39.0
+      ],
+      "value": "(348,530)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        520.0,
+        596.0,
+        103.0,
+        34.0
+      ],
+      "value": "(82,342)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        280.0,
+        601.0,
+        105.0,
+        34.0
+      ],
+      "value": "(73,596)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        522.0,
+        644.0,
+        101.0,
+        34.0
+      ],
+      "value": "(16,560)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        282.0,
+        646.0,
+        103.0,
+        37.0
+      ],
+      "value": "(24,891)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        522.0,
+        690.0,
+        103.0,
+        36.0
+      ],
+      "value": "(36,139)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        282.0,
+        694.0,
+        106.0,
+        35.0
+      ],
+      "value": "(32,351)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        522.0,
+        738.0,
+        103.0,
+        34.0
+      ],
+      "value": "(10,341)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        285.0,
+        740.0,
+        103.0,
+        37.0
+      ],
+      "value": "(16,099)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        522.0,
+        784.0,
+        106.0,
+        34.0
+      ],
+      "value": "(32,567)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        285.0,
+        788.0,
+        103.0,
+        35.0
+      ],
+      "value": "(31,737)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        525.0,
+        829.0,
+        103.0,
+        37.0
+      ],
+      "value": "(10,164)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        301.0,
+        834.0,
+        89.0,
+        34.0
+      ],
+      "value": "(4,897)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        525.0,
+        875.0,
+        105.0,
+        37.0
+      ],
+      "value": "(45,902)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        285.0,
+        880.0,
+        105.0,
+        34.0
+      ],
+      "value": "(48,075)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        541.0,
+        923.0,
+        89.0,
+        37.0
+      ],
+      "value": "(4,698)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        287.0,
+        925.0,
+        105.0,
+        37.0
+      ],
+      "value": "(16,834)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        513.0,
+        969.0,
+        119.0,
+        39.0
+      ],
+      "value": "(627,943)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        273.0,
+        973.0,
+        119.0,
+        35.0
+      ],
+      "value": "(597,010)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        495.0,
+        1277.0,
+        144.0,
+        42.0
+      ],
+      "value": "(1,036,339)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        280.0,
+        1284.0,
+        119.0,
+        35.0
+      ],
+      "value": "(956,227)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        534.0,
+        1325.0,
+        105.0,
+        35.0
+      ],
+      "value": "(45,492)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        296.0,
+        1330.0,
+        103.0,
+        34.0
+      ],
+      "value": "(49,454)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        534.0,
+        1371.0,
+        105.0,
+        37.0
+      ],
+      "value": "(25,978)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        298.0,
+        1376.0,
+        103.0,
+        34.0
+      ],
+      "value": "(25,320)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        552.0,
+        1417.0,
+        89.0,
+        36.0
+      ],
+      "value": "(7,548)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        312.0,
+        1421.0,
+        89.0,
+        35.0
+      ],
+      "value": "(8,461)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        538.0,
+        1463.0,
+        103.0,
+        36.0
+      ],
+      "value": "(28,367)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        298.0,
+        1467.0,
+        106.0,
+        34.0
+      ],
+      "value": "(32,254)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        538.0,
+        1508.0,
+        103.0,
+        37.0
+      ],
+      "value": "(61,361)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        301.0,
+        1513.0,
+        103.0,
+        36.0
+      ],
+      "value": "(51,281)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        554.0,
+        1554.0,
+        90.0,
+        37.0
+      ],
+      "value": "(6,023)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        314.0,
+        1559.0,
+        92.0,
+        36.0
+      ],
+      "value": "(6,067)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        554.0,
+        1600.0,
+        90.0,
+        36.0
+      ],
+      "value": "(8,254)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        317.0,
+        1604.0,
+        89.0,
+        37.0
+      ],
+      "value": "(7,140)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        557.0,
+        1648.0,
+        89.0,
+        34.0
+      ],
+      "value": "(3,619)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        317.0,
+        1650.0,
+        91.0,
+        37.0
+      ],
+      "value": "(3,156)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        557.0,
+        1694.0,
+        89.0,
+        34.0
+      ],
+      "value": "(2,751)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        319.0,
+        1698.0,
+        89.0,
+        34.0
+      ],
+      "value": "(3,784)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        543.0,
+        1742.0,
+        103.0,
+        34.0
+      ],
+      "value": "(23,545)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        305.0,
+        1744.0,
+        105.0,
+        36.0
+      ],
+      "value": "(21,863)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        559.0,
+        1787.0,
+        89.0,
+        35.0
+      ],
+      "value": "(2,714)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        321.0,
+        1790.0,
+        89.0,
+        36.0
+      ],
+      "value": "(3,716)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        554.0,
+        1833.0,
+        90.0,
+        34.0
+      ],
+      "value": "29,560",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        308.0,
+        1835.0,
+        102.0,
+        37.0
+      ],
+      "value": "(46,585)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        561.0,
+        1879.0,
+        89.0,
+        34.0
+      ],
+      "value": "(7,255)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        308.0,
+        1883.0,
+        105.0,
+        35.0
+      ],
+      "value": "(14,177)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        511.0,
+        1924.0,
+        139.0,
+        35.0
+      ],
+      "value": "(1,229,686)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        266.0,
+        1924.0,
+        149.0,
+        42.0
+      ],
+      "value": "(1,229,485)",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    },
+    {
+      "bbox": [
+        836.0,
+        2098.0,
+        39.0,
+        30.0
+      ],
+      "value": "14",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 300.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(16,560)",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 362.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(10,341)",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "השתלמויות וספרות מקצועית"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 393.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(32,567)",
+      "fact_num": 3,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משחקים וכיבוד למטופלים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 424.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(10,164)",
+      "fact_num": 4,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 455.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(45,902)",
+      "fact_num": 5,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פחת"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 486.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(4,698)",
+      "fact_num": 6,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שאלונים והרשאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 287.0,
+        "y": 517.0,
+        "w": 89.0,
+        "h": 35.0
+      },
+      "value": "(627,943)",
+      "fact_num": 7,
+      "equations": [
+        {
+          "equation": "- 389,230 - 82,342 - 16,560 - 36,139 - 10,341 - 32,567 - 10,164 - 45,902 - 4,698",
+          "fact_equation": "f9 + f11 + f1 + f16 + f2 + f3 + f4 + f5 + f6"
+        },
+        {
+          "equation": "(389,230)+(82,342)+(16,560)+(36,139)+(10,341)+(32,567)+(10,164)+(45,902)+(4,698)",
+          "fact_equation": "f9+f11+f1+f16+f2+f3+f4+f5+f6"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 141.0,
+        "y": 517.0,
+        "w": 89.0,
+        "h": 35.0
+      },
+      "value": "(597,010)",
+      "fact_num": 8,
+      "equations": [
+        {
+          "equation": "(348,530)+(73,596)+(24,891)+(32,351)+(16,099)+(31,737)+(4,897)+(48,075)+(16,834)",
+          "fact_equation": null
+        },
+        {
+          "equation": "(348,530)+(73,596)+(24,891)+(32,351)+(16,099)+(31,737)+(4,897)+(48,075)+(16,834)",
+          "fact_equation": "f2+f4+f6+f8+f10+l12+f14+f16+f18"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 474.7,
+        "y": 557.16,
+        "w": 147.21,
+        "h": 81.94
+      },
+      "value": "(389,230)",
+      "fact_num": 9,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי שכירות מבנים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 233.21,
+        "y": 557.16,
+        "w": 147.21,
+        "h": 81.94
+      },
+      "value": "(348,530)",
+      "fact_num": 10,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי שכירות מבנים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 489.58,
+        "y": 629.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(82,342)",
+      "fact_num": 11,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון נקיון ואחזקה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 629.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(73,596)",
+      "fact_num": 12,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון נקיון ואחזקה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 702.3,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(24,891)",
+      "fact_num": 13,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 278.0,
+        "y": 747.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,036,339)",
+      "fact_num": 14,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משכורות ונלוות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 778.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(45,492)",
+      "fact_num": 15,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דואר תקשורת ואחזקת מחשב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 489.58,
+        "y": 774.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(36,139)",
+      "fact_num": 16,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 809.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(25,978)",
+      "fact_num": 17,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משרדיות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 774.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(32,351)",
+      "fact_num": 18,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 840.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,548)",
+      "fact_num": 19,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פרסום"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 871.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(28,367)",
+      "fact_num": 20,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שכר דירה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 847.44,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(16,099)",
+      "fact_num": 21,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "השתלמויות וספרות מקצועית"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 871.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(32,254)",
+      "fact_num": 22,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שכר דירה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 902.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(61,361)",
+      "fact_num": 23,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שרותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 902.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(51,281)",
+      "fact_num": 24,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שרותים מקצועיים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 933.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(6,023)",
+      "fact_num": 25,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי טיפול קופות פנסיוניות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 920.01,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(31,737)",
+      "fact_num": 26,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משחקים וכיבוד למטופלים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 933.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(6,067)",
+      "fact_num": 27,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דמי טיפול קופות פנסיוניות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 964.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(8,254)",
+      "fact_num": 28,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 964.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,140)",
+      "fact_num": 29,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 995.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,619)",
+      "fact_num": 30,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון אחזקה ונקיון"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 995.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,156)",
+      "fact_num": 31,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "גינון אחזקה ונקיון"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1026.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(2,751)",
+      "fact_num": 32,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 992.58,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(4,897)",
+      "fact_num": 33,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ביטוחים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 1026.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,784)",
+      "fact_num": 34,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חשמל ומים"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 296.0,
+        "y": 1057.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(23,545)",
+      "fact_num": 35,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מחשוב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1057.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(21,863)",
+      "fact_num": 36,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מחשוב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1088.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(2,714)",
+      "fact_num": 37,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1065.15,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(48,075)",
+      "fact_num": 38,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פחת"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 159.0,
+        "y": 1088.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(3,716)",
+      "fact_num": 39,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "מיסים ואגרות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1119.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "29,560",
+      "fact_num": 40,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חובות אבודים ושינוי בעתודה לחומ\"ס"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1119.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(46,585)",
+      "fact_num": 41,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "חובות אבודים ושינוי בעתודה לחומ\"ס"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 305.0,
+        "y": 1150.0,
+        "w": 71.0,
+        "h": 35.0
+      },
+      "value": "(7,255)",
+      "fact_num": 42,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ימי גיבוש והשתלמויות הנהלה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1137.73,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(16,834)",
+      "fact_num": 43,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות ישירות אחרות",
+      "note_num": "13",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "שאלונים והרשאות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 150.0,
+        "y": 1150.0,
+        "w": 80.0,
+        "h": 35.0
+      },
+      "value": "(14,177)",
+      "fact_num": 44,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "ימי גיבוש והשתלמויות הנהלה"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 278.0,
+        "y": 1181.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,229,686)",
+      "fact_num": 45,
+      "equations": [
+        {
+          "equation": "- 1,036,339 - 45,492 - 25,978 - 7,548 - 28,367 - 61,361 - 6,023 - 8,254 - 3,619 - 2,751 - 23,545 - 2,714 - 29,560 - 7,255",
+          "fact_equation": "f14 + f15 + f17 + f19 + f20 + f23 + f25 + f28 + f30 + f32 + f35 + f37 - f40 + f42"
+        },
+        {
+          "equation": "(1,036,339)+(45,492)+(25,978)+(7,548)+(28,367)+(61,361)+(6,023)+(8,254)+(3,619)+(2,751)+(23,545)+(2,714)-29,560+(7,255)",
+          "fact_equation": "f14+f15+f17+f19+f20+f23+f25+f28+f30+f32+f35+f37-f40+f42"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2020-01-01",
+      "period_end": "2020-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 132.0,
+        "y": 1181.0,
+        "w": 107.0,
+        "h": 35.0
+      },
+      "value": "(1,229,485)",
+      "fact_num": 46,
+      "equations": [
+        {
+          "equation": "- 956,227 - 49,454 - 25,320 - 8,461 - 32,254 - 51,281 - 6,067 - 7,140 - 3,156 - 3,784 - 21,863 - 3,716 - 46,585 - 14,177",
+          "fact_equation": "f47 + f48 + f49 + f50 + f22 + f24 + f27 + f29 + f31 + f34 + f36 + f39 + f41 + f44"
+        },
+        {
+          "equation": "(956,227)+(49,454)+(25,320)+(8,461)+(32,254)+(51,281)+(6,067)+(7,140)+(3,156)+(3,784)+(21,863)+(3,716)+(46,585)+(14,177)",
+          "fact_equation": "f47+f48+f49+f50+f22+f24+f27+f29+f31+f34+f36+f39+f41+f44"
+        }
+      ],
+      "natural_sign": "negative",
+      "row_role": "total",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "סה\"כ"
+      ],
+      "path_source": "inferred",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 218.33,
+        "y": 1748.73,
+        "w": 176.98,
+        "h": 81.94
+      },
+      "value": "(956,227)",
+      "fact_num": 47,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משכורות ונלוות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1821.3,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(49,454)",
+      "fact_num": 48,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "דואר תקשורת ואחזקת מחשב"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 248.1,
+        "y": 1893.87,
+        "w": 132.32,
+        "h": 81.94
+      },
+      "value": "(25,320)",
+      "fact_num": 49,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "משרדיות"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 262.99,
+        "y": 1966.44,
+        "w": 117.43,
+        "h": 81.94
+      },
+      "value": "(8,461)",
+      "fact_num": 50,
+      "equations": null,
+      "natural_sign": "negative",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "הוצאות הנהלה וכלליות",
+      "note_num": "14",
+      "note_ref": null,
+      "date": null,
+      "period_type": "duration",
+      "period_start": "2019-01-01",
+      "period_end": "2019-12-31",
+      "duration_type": null,
+      "recurring_period": "yearly",
+      "path": [
+        "פרסום"
+      ],
+      "path_source": "observed",
+      "currency": "ILS",
+      "scale": 1,
+      "value_type": "amount",
+      "value_context": "tabular"
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 4,
+      "gemini_value": "(16,560)",
+      "detector_value": "(16,560)",
+      "match_key": "num:-16560"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 8,
+      "gemini_value": "(10,341)",
+      "detector_value": "(10,341)",
+      "match_key": "num:-10341"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 10,
+      "gemini_value": "(32,567)",
+      "detector_value": "(32,567)",
+      "match_key": "num:-32567"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 12,
+      "gemini_value": "(10,164)",
+      "detector_value": "(10,164)",
+      "match_key": "num:-10164"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 14,
+      "gemini_value": "(45,902)",
+      "detector_value": "(45,902)",
+      "match_key": "num:-45902"
+    },
+    {
+      "gemini_index": 5,
+      "detector_index": 16,
+      "gemini_value": "(4,698)",
+      "detector_value": "(4,698)",
+      "match_key": "num:-4698"
+    },
+    {
+      "gemini_index": 6,
+      "detector_index": 18,
+      "gemini_value": "(627,943)",
+      "detector_value": "(627,943)",
+      "match_key": "num:-627943"
+    },
+    {
+      "gemini_index": 7,
+      "detector_index": 19,
+      "gemini_value": "(597,010)",
+      "detector_value": "(597,010)",
+      "match_key": "num:-597010"
+    },
+    {
+      "gemini_index": 8,
+      "detector_index": 0,
+      "gemini_value": "(389,230)",
+      "detector_value": "(389,230)",
+      "match_key": "num:-389230"
+    },
+    {
+      "gemini_index": 9,
+      "detector_index": 1,
+      "gemini_value": "(348,530)",
+      "detector_value": "(348,530)",
+      "match_key": "num:-348530"
+    },
+    {
+      "gemini_index": 10,
+      "detector_index": 2,
+      "gemini_value": "(82,342)",
+      "detector_value": "(82,342)",
+      "match_key": "num:-82342"
+    },
+    {
+      "gemini_index": 11,
+      "detector_index": 3,
+      "gemini_value": "(73,596)",
+      "detector_value": "(73,596)",
+      "match_key": "num:-73596"
+    },
+    {
+      "gemini_index": 12,
+      "detector_index": 5,
+      "gemini_value": "(24,891)",
+      "detector_value": "(24,891)",
+      "match_key": "num:-24891"
+    },
+    {
+      "gemini_index": 13,
+      "detector_index": 20,
+      "gemini_value": "(1,036,339)",
+      "detector_value": "(1,036,339)",
+      "match_key": "num:-1036339"
+    },
+    {
+      "gemini_index": 14,
+      "detector_index": 22,
+      "gemini_value": "(45,492)",
+      "detector_value": "(45,492)",
+      "match_key": "num:-45492"
+    },
+    {
+      "gemini_index": 15,
+      "detector_index": 6,
+      "gemini_value": "(36,139)",
+      "detector_value": "(36,139)",
+      "match_key": "num:-36139"
+    },
+    {
+      "gemini_index": 16,
+      "detector_index": 24,
+      "gemini_value": "(25,978)",
+      "detector_value": "(25,978)",
+      "match_key": "num:-25978"
+    },
+    {
+      "gemini_index": 17,
+      "detector_index": 7,
+      "gemini_value": "(32,351)",
+      "detector_value": "(32,351)",
+      "match_key": "num:-32351"
+    },
+    {
+      "gemini_index": 18,
+      "detector_index": 26,
+      "gemini_value": "(7,548)",
+      "detector_value": "(7,548)",
+      "match_key": "num:-7548"
+    },
+    {
+      "gemini_index": 19,
+      "detector_index": 28,
+      "gemini_value": "(28,367)",
+      "detector_value": "(28,367)",
+      "match_key": "num:-28367"
+    },
+    {
+      "gemini_index": 20,
+      "detector_index": 9,
+      "gemini_value": "(16,099)",
+      "detector_value": "(16,099)",
+      "match_key": "num:-16099"
+    },
+    {
+      "gemini_index": 21,
+      "detector_index": 29,
+      "gemini_value": "(32,254)",
+      "detector_value": "(32,254)",
+      "match_key": "num:-32254"
+    },
+    {
+      "gemini_index": 22,
+      "detector_index": 30,
+      "gemini_value": "(61,361)",
+      "detector_value": "(61,361)",
+      "match_key": "num:-61361"
+    },
+    {
+      "gemini_index": 23,
+      "detector_index": 31,
+      "gemini_value": "(51,281)",
+      "detector_value": "(51,281)",
+      "match_key": "num:-51281"
+    },
+    {
+      "gemini_index": 24,
+      "detector_index": 32,
+      "gemini_value": "(6,023)",
+      "detector_value": "(6,023)",
+      "match_key": "num:-6023"
+    },
+    {
+      "gemini_index": 25,
+      "detector_index": 11,
+      "gemini_value": "(31,737)",
+      "detector_value": "(31,737)",
+      "match_key": "num:-31737"
+    },
+    {
+      "gemini_index": 26,
+      "detector_index": 33,
+      "gemini_value": "(6,067)",
+      "detector_value": "(6,067)",
+      "match_key": "num:-6067"
+    },
+    {
+      "gemini_index": 27,
+      "detector_index": 34,
+      "gemini_value": "(8,254)",
+      "detector_value": "(8,254)",
+      "match_key": "num:-8254"
+    },
+    {
+      "gemini_index": 28,
+      "detector_index": 35,
+      "gemini_value": "(7,140)",
+      "detector_value": "(7,140)",
+      "match_key": "num:-7140"
+    },
+    {
+      "gemini_index": 29,
+      "detector_index": 36,
+      "gemini_value": "(3,619)",
+      "detector_value": "(3,619)",
+      "match_key": "num:-3619"
+    },
+    {
+      "gemini_index": 30,
+      "detector_index": 37,
+      "gemini_value": "(3,156)",
+      "detector_value": "(3,156)",
+      "match_key": "num:-3156"
+    },
+    {
+      "gemini_index": 31,
+      "detector_index": 38,
+      "gemini_value": "(2,751)",
+      "detector_value": "(2,751)",
+      "match_key": "num:-2751"
+    },
+    {
+      "gemini_index": 32,
+      "detector_index": 13,
+      "gemini_value": "(4,897)",
+      "detector_value": "(4,897)",
+      "match_key": "num:-4897"
+    },
+    {
+      "gemini_index": 33,
+      "detector_index": 39,
+      "gemini_value": "(3,784)",
+      "detector_value": "(3,784)",
+      "match_key": "num:-3784"
+    },
+    {
+      "gemini_index": 34,
+      "detector_index": 40,
+      "gemini_value": "(23,545)",
+      "detector_value": "(23,545)",
+      "match_key": "num:-23545"
+    },
+    {
+      "gemini_index": 35,
+      "detector_index": 41,
+      "gemini_value": "(21,863)",
+      "detector_value": "(21,863)",
+      "match_key": "num:-21863"
+    },
+    {
+      "gemini_index": 36,
+      "detector_index": 42,
+      "gemini_value": "(2,714)",
+      "detector_value": "(2,714)",
+      "match_key": "num:-2714"
+    },
+    {
+      "gemini_index": 37,
+      "detector_index": 15,
+      "gemini_value": "(48,075)",
+      "detector_value": "(48,075)",
+      "match_key": "num:-48075"
+    },
+    {
+      "gemini_index": 38,
+      "detector_index": 43,
+      "gemini_value": "(3,716)",
+      "detector_value": "(3,716)",
+      "match_key": "num:-3716"
+    },
+    {
+      "gemini_index": 39,
+      "detector_index": 44,
+      "gemini_value": "29,560",
+      "detector_value": "29,560",
+      "match_key": "num:29560"
+    },
+    {
+      "gemini_index": 40,
+      "detector_index": 45,
+      "gemini_value": "(46,585)",
+      "detector_value": "(46,585)",
+      "match_key": "num:-46585"
+    },
+    {
+      "gemini_index": 41,
+      "detector_index": 46,
+      "gemini_value": "(7,255)",
+      "detector_value": "(7,255)",
+      "match_key": "num:-7255"
+    },
+    {
+      "gemini_index": 42,
+      "detector_index": 17,
+      "gemini_value": "(16,834)",
+      "detector_value": "(16,834)",
+      "match_key": "num:-16834"
+    },
+    {
+      "gemini_index": 43,
+      "detector_index": 47,
+      "gemini_value": "(14,177)",
+      "detector_value": "(14,177)",
+      "match_key": "num:-14177"
+    },
+    {
+      "gemini_index": 44,
+      "detector_index": 48,
+      "gemini_value": "(1,229,686)",
+      "detector_value": "(1,229,686)",
+      "match_key": "num:-1229686"
+    },
+    {
+      "gemini_index": 45,
+      "detector_index": 49,
+      "gemini_value": "(1,229,485)",
+      "detector_value": "(1,229,485)",
+      "match_key": "num:-1229485"
+    },
+    {
+      "gemini_index": 46,
+      "detector_index": 21,
+      "gemini_value": "(956,227)",
+      "detector_value": "(956,227)",
+      "match_key": "num:-956227"
+    },
+    {
+      "gemini_index": 47,
+      "detector_index": 23,
+      "gemini_value": "(49,454)",
+      "detector_value": "(49,454)",
+      "match_key": "num:-49454"
+    },
+    {
+      "gemini_index": 48,
+      "detector_index": 25,
+      "gemini_value": "(25,320)",
+      "detector_value": "(25,320)",
+      "match_key": "num:-25320"
+    },
+    {
+      "gemini_index": 49,
+      "detector_index": 27,
+      "gemini_value": "(8,461)",
+      "detector_value": "(8,461)",
+      "match_key": "num:-8461"
+    }
+  ],
+  "unmatched_gemini_indices": [],
+  "unmatched_detector_indices": [
+    50
+  ],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "(16,560)"
+      ],
+      "match_keys": [
+        "num:-16560"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "(10,341)"
+      ],
+      "match_keys": [
+        "num:-10341"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "(32,567)"
+      ],
+      "match_keys": [
+        "num:-32567"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "(10,164)"
+      ],
+      "match_keys": [
+        "num:-10164"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "(45,902)"
+      ],
+      "match_keys": [
+        "num:-45902"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "(4,698)"
+      ],
+      "match_keys": [
+        "num:-4698"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "(627,943)"
+      ],
+      "match_keys": [
+        "num:-627943"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "(597,010)"
+      ],
+      "match_keys": [
+        "num:-597010"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "(389,230)"
+      ],
+      "match_keys": [
+        "num:-389230"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "(348,530)"
+      ],
+      "match_keys": [
+        "num:-348530"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "(82,342)"
+      ],
+      "match_keys": [
+        "num:-82342"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "(73,596)"
+      ],
+      "match_keys": [
+        "num:-73596"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "(24,891)"
+      ],
+      "match_keys": [
+        "num:-24891"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "(1,036,339)"
+      ],
+      "match_keys": [
+        "num:-1036339"
+      ]
+    },
+    {
+      "row_index": 14,
+      "indices": [
+        14
+      ],
+      "values": [
+        "(45,492)"
+      ],
+      "match_keys": [
+        "num:-45492"
+      ]
+    },
+    {
+      "row_index": 15,
+      "indices": [
+        15
+      ],
+      "values": [
+        "(36,139)"
+      ],
+      "match_keys": [
+        "num:-36139"
+      ]
+    },
+    {
+      "row_index": 16,
+      "indices": [
+        16
+      ],
+      "values": [
+        "(25,978)"
+      ],
+      "match_keys": [
+        "num:-25978"
+      ]
+    },
+    {
+      "row_index": 17,
+      "indices": [
+        17
+      ],
+      "values": [
+        "(32,351)"
+      ],
+      "match_keys": [
+        "num:-32351"
+      ]
+    },
+    {
+      "row_index": 18,
+      "indices": [
+        18
+      ],
+      "values": [
+        "(7,548)"
+      ],
+      "match_keys": [
+        "num:-7548"
+      ]
+    },
+    {
+      "row_index": 19,
+      "indices": [
+        19
+      ],
+      "values": [
+        "(28,367)"
+      ],
+      "match_keys": [
+        "num:-28367"
+      ]
+    },
+    {
+      "row_index": 20,
+      "indices": [
+        20
+      ],
+      "values": [
+        "(16,099)"
+      ],
+      "match_keys": [
+        "num:-16099"
+      ]
+    },
+    {
+      "row_index": 21,
+      "indices": [
+        21
+      ],
+      "values": [
+        "(32,254)"
+      ],
+      "match_keys": [
+        "num:-32254"
+      ]
+    },
+    {
+      "row_index": 22,
+      "indices": [
+        22
+      ],
+      "values": [
+        "(61,361)"
+      ],
+      "match_keys": [
+        "num:-61361"
+      ]
+    },
+    {
+      "row_index": 23,
+      "indices": [
+        23
+      ],
+      "values": [
+        "(51,281)"
+      ],
+      "match_keys": [
+        "num:-51281"
+      ]
+    },
+    {
+      "row_index": 24,
+      "indices": [
+        24
+      ],
+      "values": [
+        "(6,023)"
+      ],
+      "match_keys": [
+        "num:-6023"
+      ]
+    },
+    {
+      "row_index": 25,
+      "indices": [
+        25
+      ],
+      "values": [
+        "(31,737)"
+      ],
+      "match_keys": [
+        "num:-31737"
+      ]
+    },
+    {
+      "row_index": 26,
+      "indices": [
+        26
+      ],
+      "values": [
+        "(6,067)"
+      ],
+      "match_keys": [
+        "num:-6067"
+      ]
+    },
+    {
+      "row_index": 27,
+      "indices": [
+        27
+      ],
+      "values": [
+        "(8,254)"
+      ],
+      "match_keys": [
+        "num:-8254"
+      ]
+    },
+    {
+      "row_index": 28,
+      "indices": [
+        28
+      ],
+      "values": [
+        "(7,140)"
+      ],
+      "match_keys": [
+        "num:-7140"
+      ]
+    },
+    {
+      "row_index": 29,
+      "indices": [
+        29
+      ],
+      "values": [
+        "(3,619)"
+      ],
+      "match_keys": [
+        "num:-3619"
+      ]
+    },
+    {
+      "row_index": 30,
+      "indices": [
+        30
+      ],
+      "values": [
+        "(3,156)"
+      ],
+      "match_keys": [
+        "num:-3156"
+      ]
+    },
+    {
+      "row_index": 31,
+      "indices": [
+        31
+      ],
+      "values": [
+        "(2,751)"
+      ],
+      "match_keys": [
+        "num:-2751"
+      ]
+    },
+    {
+      "row_index": 32,
+      "indices": [
+        32
+      ],
+      "values": [
+        "(4,897)"
+      ],
+      "match_keys": [
+        "num:-4897"
+      ]
+    },
+    {
+      "row_index": 33,
+      "indices": [
+        33
+      ],
+      "values": [
+        "(3,784)"
+      ],
+      "match_keys": [
+        "num:-3784"
+      ]
+    },
+    {
+      "row_index": 34,
+      "indices": [
+        34
+      ],
+      "values": [
+        "(23,545)"
+      ],
+      "match_keys": [
+        "num:-23545"
+      ]
+    },
+    {
+      "row_index": 35,
+      "indices": [
+        35
+      ],
+      "values": [
+        "(21,863)"
+      ],
+      "match_keys": [
+        "num:-21863"
+      ]
+    },
+    {
+      "row_index": 36,
+      "indices": [
+        36
+      ],
+      "values": [
+        "(2,714)"
+      ],
+      "match_keys": [
+        "num:-2714"
+      ]
+    },
+    {
+      "row_index": 37,
+      "indices": [
+        37
+      ],
+      "values": [
+        "(48,075)"
+      ],
+      "match_keys": [
+        "num:-48075"
+      ]
+    },
+    {
+      "row_index": 38,
+      "indices": [
+        38
+      ],
+      "values": [
+        "(3,716)"
+      ],
+      "match_keys": [
+        "num:-3716"
+      ]
+    },
+    {
+      "row_index": 39,
+      "indices": [
+        39
+      ],
+      "values": [
+        "29,560"
+      ],
+      "match_keys": [
+        "num:29560"
+      ]
+    },
+    {
+      "row_index": 40,
+      "indices": [
+        40
+      ],
+      "values": [
+        "(46,585)"
+      ],
+      "match_keys": [
+        "num:-46585"
+      ]
+    },
+    {
+      "row_index": 41,
+      "indices": [
+        41
+      ],
+      "values": [
+        "(7,255)"
+      ],
+      "match_keys": [
+        "num:-7255"
+      ]
+    },
+    {
+      "row_index": 42,
+      "indices": [
+        42
+      ],
+      "values": [
+        "(16,834)"
+      ],
+      "match_keys": [
+        "num:-16834"
+      ]
+    },
+    {
+      "row_index": 43,
+      "indices": [
+        43
+      ],
+      "values": [
+        "(14,177)"
+      ],
+      "match_keys": [
+        "num:-14177"
+      ]
+    },
+    {
+      "row_index": 44,
+      "indices": [
+        44
+      ],
+      "values": [
+        "(1,229,686)"
+      ],
+      "match_keys": [
+        "num:-1229686"
+      ]
+    },
+    {
+      "row_index": 45,
+      "indices": [
+        45
+      ],
+      "values": [
+        "(1,229,485)"
+      ],
+      "match_keys": [
+        "num:-1229485"
+      ]
+    },
+    {
+      "row_index": 46,
+      "indices": [
+        46
+      ],
+      "values": [
+        "(956,227)"
+      ],
+      "match_keys": [
+        "num:-956227"
+      ]
+    },
+    {
+      "row_index": 47,
+      "indices": [
+        47
+      ],
+      "values": [
+        "(49,454)"
+      ],
+      "match_keys": [
+        "num:-49454"
+      ]
+    },
+    {
+      "row_index": 48,
+      "indices": [
+        48
+      ],
+      "values": [
+        "(25,320)"
+      ],
+      "match_keys": [
+        "num:-25320"
+      ]
+    },
+    {
+      "row_index": 49,
+      "indices": [
+        49
+      ],
+      "values": [
+        "(8,461)"
+      ],
+      "match_keys": [
+        "num:-8461"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "(389,230)"
+      ],
+      "match_keys": [
+        "num:-389230"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "(348,530)"
+      ],
+      "match_keys": [
+        "num:-348530"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "(82,342)"
+      ],
+      "match_keys": [
+        "num:-82342"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "(73,596)"
+      ],
+      "match_keys": [
+        "num:-73596"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "(16,560)"
+      ],
+      "match_keys": [
+        "num:-16560"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "(24,891)"
+      ],
+      "match_keys": [
+        "num:-24891"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "(36,139)"
+      ],
+      "match_keys": [
+        "num:-36139"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "(32,351)"
+      ],
+      "match_keys": [
+        "num:-32351"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "(10,341)"
+      ],
+      "match_keys": [
+        "num:-10341"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "(16,099)"
+      ],
+      "match_keys": [
+        "num:-16099"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "(32,567)"
+      ],
+      "match_keys": [
+        "num:-32567"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "(31,737)"
+      ],
+      "match_keys": [
+        "num:-31737"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "(10,164)"
+      ],
+      "match_keys": [
+        "num:-10164"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "(4,897)"
+      ],
+      "match_keys": [
+        "num:-4897"
+      ]
+    },
+    {
+      "row_index": 14,
+      "indices": [
+        14
+      ],
+      "values": [
+        "(45,902)"
+      ],
+      "match_keys": [
+        "num:-45902"
+      ]
+    },
+    {
+      "row_index": 15,
+      "indices": [
+        15
+      ],
+      "values": [
+        "(48,075)"
+      ],
+      "match_keys": [
+        "num:-48075"
+      ]
+    },
+    {
+      "row_index": 16,
+      "indices": [
+        16
+      ],
+      "values": [
+        "(4,698)"
+      ],
+      "match_keys": [
+        "num:-4698"
+      ]
+    },
+    {
+      "row_index": 17,
+      "indices": [
+        17
+      ],
+      "values": [
+        "(16,834)"
+      ],
+      "match_keys": [
+        "num:-16834"
+      ]
+    },
+    {
+      "row_index": 18,
+      "indices": [
+        18
+      ],
+      "values": [
+        "(627,943)"
+      ],
+      "match_keys": [
+        "num:-627943"
+      ]
+    },
+    {
+      "row_index": 19,
+      "indices": [
+        19
+      ],
+      "values": [
+        "(597,010)"
+      ],
+      "match_keys": [
+        "num:-597010"
+      ]
+    },
+    {
+      "row_index": 20,
+      "indices": [
+        20
+      ],
+      "values": [
+        "(1,036,339)"
+      ],
+      "match_keys": [
+        "num:-1036339"
+      ]
+    },
+    {
+      "row_index": 21,
+      "indices": [
+        21
+      ],
+      "values": [
+        "(956,227)"
+      ],
+      "match_keys": [
+        "num:-956227"
+      ]
+    },
+    {
+      "row_index": 22,
+      "indices": [
+        22
+      ],
+      "values": [
+        "(45,492)"
+      ],
+      "match_keys": [
+        "num:-45492"
+      ]
+    },
+    {
+      "row_index": 23,
+      "indices": [
+        23
+      ],
+      "values": [
+        "(49,454)"
+      ],
+      "match_keys": [
+        "num:-49454"
+      ]
+    },
+    {
+      "row_index": 24,
+      "indices": [
+        24
+      ],
+      "values": [
+        "(25,978)"
+      ],
+      "match_keys": [
+        "num:-25978"
+      ]
+    },
+    {
+      "row_index": 25,
+      "indices": [
+        25
+      ],
+      "values": [
+        "(25,320)"
+      ],
+      "match_keys": [
+        "num:-25320"
+      ]
+    },
+    {
+      "row_index": 26,
+      "indices": [
+        26
+      ],
+      "values": [
+        "(7,548)"
+      ],
+      "match_keys": [
+        "num:-7548"
+      ]
+    },
+    {
+      "row_index": 27,
+      "indices": [
+        27
+      ],
+      "values": [
+        "(8,461)"
+      ],
+      "match_keys": [
+        "num:-8461"
+      ]
+    },
+    {
+      "row_index": 28,
+      "indices": [
+        28
+      ],
+      "values": [
+        "(28,367)"
+      ],
+      "match_keys": [
+        "num:-28367"
+      ]
+    },
+    {
+      "row_index": 29,
+      "indices": [
+        29
+      ],
+      "values": [
+        "(32,254)"
+      ],
+      "match_keys": [
+        "num:-32254"
+      ]
+    },
+    {
+      "row_index": 30,
+      "indices": [
+        30
+      ],
+      "values": [
+        "(61,361)"
+      ],
+      "match_keys": [
+        "num:-61361"
+      ]
+    },
+    {
+      "row_index": 31,
+      "indices": [
+        31
+      ],
+      "values": [
+        "(51,281)"
+      ],
+      "match_keys": [
+        "num:-51281"
+      ]
+    },
+    {
+      "row_index": 32,
+      "indices": [
+        32
+      ],
+      "values": [
+        "(6,023)"
+      ],
+      "match_keys": [
+        "num:-6023"
+      ]
+    },
+    {
+      "row_index": 33,
+      "indices": [
+        33
+      ],
+      "values": [
+        "(6,067)"
+      ],
+      "match_keys": [
+        "num:-6067"
+      ]
+    },
+    {
+      "row_index": 34,
+      "indices": [
+        34
+      ],
+      "values": [
+        "(8,254)"
+      ],
+      "match_keys": [
+        "num:-8254"
+      ]
+    },
+    {
+      "row_index": 35,
+      "indices": [
+        35
+      ],
+      "values": [
+        "(7,140)"
+      ],
+      "match_keys": [
+        "num:-7140"
+      ]
+    },
+    {
+      "row_index": 36,
+      "indices": [
+        36
+      ],
+      "values": [
+        "(3,619)"
+      ],
+      "match_keys": [
+        "num:-3619"
+      ]
+    },
+    {
+      "row_index": 37,
+      "indices": [
+        37
+      ],
+      "values": [
+        "(3,156)"
+      ],
+      "match_keys": [
+        "num:-3156"
+      ]
+    },
+    {
+      "row_index": 38,
+      "indices": [
+        38
+      ],
+      "values": [
+        "(2,751)"
+      ],
+      "match_keys": [
+        "num:-2751"
+      ]
+    },
+    {
+      "row_index": 39,
+      "indices": [
+        39
+      ],
+      "values": [
+        "(3,784)"
+      ],
+      "match_keys": [
+        "num:-3784"
+      ]
+    },
+    {
+      "row_index": 40,
+      "indices": [
+        40
+      ],
+      "values": [
+        "(23,545)"
+      ],
+      "match_keys": [
+        "num:-23545"
+      ]
+    },
+    {
+      "row_index": 41,
+      "indices": [
+        41
+      ],
+      "values": [
+        "(21,863)"
+      ],
+      "match_keys": [
+        "num:-21863"
+      ]
+    },
+    {
+      "row_index": 42,
+      "indices": [
+        42
+      ],
+      "values": [
+        "(2,714)"
+      ],
+      "match_keys": [
+        "num:-2714"
+      ]
+    },
+    {
+      "row_index": 43,
+      "indices": [
+        43
+      ],
+      "values": [
+        "(3,716)"
+      ],
+      "match_keys": [
+        "num:-3716"
+      ]
+    },
+    {
+      "row_index": 44,
+      "indices": [
+        44
+      ],
+      "values": [
+        "29,560"
+      ],
+      "match_keys": [
+        "num:29560"
+      ]
+    },
+    {
+      "row_index": 45,
+      "indices": [
+        45
+      ],
+      "values": [
+        "(46,585)"
+      ],
+      "match_keys": [
+        "num:-46585"
+      ]
+    },
+    {
+      "row_index": 46,
+      "indices": [
+        46
+      ],
+      "values": [
+        "(7,255)"
+      ],
+      "match_keys": [
+        "num:-7255"
+      ]
+    },
+    {
+      "row_index": 47,
+      "indices": [
+        47
+      ],
+      "values": [
+        "(14,177)"
+      ],
+      "match_keys": [
+        "num:-14177"
+      ]
+    },
+    {
+      "row_index": 48,
+      "indices": [
+        48
+      ],
+      "values": [
+        "(1,229,686)"
+      ],
+      "match_keys": [
+        "num:-1229686"
+      ]
+    },
+    {
+      "row_index": 49,
+      "indices": [
+        49
+      ],
+      "values": [
+        "(1,229,485)"
+      ],
+      "match_keys": [
+        "num:-1229485"
+      ]
+    },
+    {
+      "row_index": 50,
+      "indices": [
+        50
+      ],
+      "values": [
+        "14"
+      ],
+      "match_keys": [
+        "num:14"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [
+    {
+      "row_index": 50,
+      "indices": [
+        50
+      ],
+      "values": [
+        "14"
+      ],
+      "match_keys": [
+        "num:14"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "(16,560)"
+      ],
+      "detector_indices": [
+        4
+      ],
+      "detector_values": [
+        "(16,560)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-16560",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "(10,341)"
+      ],
+      "detector_indices": [
+        8
+      ],
+      "detector_values": [
+        "(10,341)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-10341",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        2
+      ],
+      "import_values": [
+        "(32,567)"
+      ],
+      "detector_indices": [
+        10
+      ],
+      "detector_values": [
+        "(32,567)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-32567",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        3
+      ],
+      "import_values": [
+        "(10,164)"
+      ],
+      "detector_indices": [
+        12
+      ],
+      "detector_values": [
+        "(10,164)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-10164",
+      "ordered_detector_pool_index": 9
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        4
+      ],
+      "import_values": [
+        "(45,902)"
+      ],
+      "detector_indices": [
+        14
+      ],
+      "detector_values": [
+        "(45,902)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-45902",
+      "ordered_detector_pool_index": 10
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        5
+      ],
+      "import_values": [
+        "(4,698)"
+      ],
+      "detector_indices": [
+        16
+      ],
+      "detector_values": [
+        "(4,698)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-4698",
+      "ordered_detector_pool_index": 11
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        6
+      ],
+      "import_values": [
+        "(627,943)"
+      ],
+      "detector_indices": [
+        18
+      ],
+      "detector_values": [
+        "(627,943)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-627943",
+      "ordered_detector_pool_index": 12
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        7
+      ],
+      "import_values": [
+        "(597,010)"
+      ],
+      "detector_indices": [
+        19
+      ],
+      "detector_values": [
+        "(597,010)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-597010",
+      "ordered_detector_pool_index": 12
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        8
+      ],
+      "import_values": [
+        "(389,230)"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "(389,230)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-389230",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        9
+      ],
+      "import_values": [
+        "(348,530)"
+      ],
+      "detector_indices": [
+        1
+      ],
+      "detector_values": [
+        "(348,530)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-348530",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        10
+      ],
+      "import_values": [
+        "(82,342)"
+      ],
+      "detector_indices": [
+        2
+      ],
+      "detector_values": [
+        "(82,342)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-82342",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        11
+      ],
+      "import_values": [
+        "(73,596)"
+      ],
+      "detector_indices": [
+        3
+      ],
+      "detector_values": [
+        "(73,596)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-73596",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        12
+      ],
+      "import_values": [
+        "(24,891)"
+      ],
+      "detector_indices": [
+        5
+      ],
+      "detector_values": [
+        "(24,891)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-24891",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        13
+      ],
+      "import_values": [
+        "(1,036,339)"
+      ],
+      "detector_indices": [
+        20
+      ],
+      "detector_values": [
+        "(1,036,339)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-1036339",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        14
+      ],
+      "import_values": [
+        "(45,492)"
+      ],
+      "detector_indices": [
+        22
+      ],
+      "detector_values": [
+        "(45,492)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-45492",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        15
+      ],
+      "import_values": [
+        "(36,139)"
+      ],
+      "detector_indices": [
+        6
+      ],
+      "detector_values": [
+        "(36,139)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-36139",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        16
+      ],
+      "import_values": [
+        "(25,978)"
+      ],
+      "detector_indices": [
+        24
+      ],
+      "detector_values": [
+        "(25,978)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-25978",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        17
+      ],
+      "import_values": [
+        "(32,351)"
+      ],
+      "detector_indices": [
+        7
+      ],
+      "detector_values": [
+        "(32,351)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-32351",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        18
+      ],
+      "import_values": [
+        "(7,548)"
+      ],
+      "detector_indices": [
+        26
+      ],
+      "detector_values": [
+        "(7,548)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-7548",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        19
+      ],
+      "import_values": [
+        "(28,367)"
+      ],
+      "detector_indices": [
+        28
+      ],
+      "detector_values": [
+        "(28,367)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-28367",
+      "ordered_detector_pool_index": 9
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        20
+      ],
+      "import_values": [
+        "(16,099)"
+      ],
+      "detector_indices": [
+        9
+      ],
+      "detector_values": [
+        "(16,099)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-16099",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        21
+      ],
+      "import_values": [
+        "(32,254)"
+      ],
+      "detector_indices": [
+        29
+      ],
+      "detector_values": [
+        "(32,254)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-32254",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        22
+      ],
+      "import_values": [
+        "(61,361)"
+      ],
+      "detector_indices": [
+        30
+      ],
+      "detector_values": [
+        "(61,361)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-61361",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        23
+      ],
+      "import_values": [
+        "(51,281)"
+      ],
+      "detector_indices": [
+        31
+      ],
+      "detector_values": [
+        "(51,281)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-51281",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        24
+      ],
+      "import_values": [
+        "(6,023)"
+      ],
+      "detector_indices": [
+        32
+      ],
+      "detector_values": [
+        "(6,023)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-6023",
+      "ordered_detector_pool_index": 8
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        25
+      ],
+      "import_values": [
+        "(31,737)"
+      ],
+      "detector_indices": [
+        11
+      ],
+      "detector_values": [
+        "(31,737)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-31737",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        26
+      ],
+      "import_values": [
+        "(6,067)"
+      ],
+      "detector_indices": [
+        33
+      ],
+      "detector_values": [
+        "(6,067)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-6067",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        27
+      ],
+      "import_values": [
+        "(8,254)"
+      ],
+      "detector_indices": [
+        34
+      ],
+      "detector_values": [
+        "(8,254)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-8254",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        28
+      ],
+      "import_values": [
+        "(7,140)"
+      ],
+      "detector_indices": [
+        35
+      ],
+      "detector_values": [
+        "(7,140)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-7140",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        29
+      ],
+      "import_values": [
+        "(3,619)"
+      ],
+      "detector_indices": [
+        36
+      ],
+      "detector_values": [
+        "(3,619)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-3619",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        30
+      ],
+      "import_values": [
+        "(3,156)"
+      ],
+      "detector_indices": [
+        37
+      ],
+      "detector_values": [
+        "(3,156)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-3156",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        31
+      ],
+      "import_values": [
+        "(2,751)"
+      ],
+      "detector_indices": [
+        38
+      ],
+      "detector_values": [
+        "(2,751)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-2751",
+      "ordered_detector_pool_index": 7
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        32
+      ],
+      "import_values": [
+        "(4,897)"
+      ],
+      "detector_indices": [
+        13
+      ],
+      "detector_values": [
+        "(4,897)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-4897",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        33
+      ],
+      "import_values": [
+        "(3,784)"
+      ],
+      "detector_indices": [
+        39
+      ],
+      "detector_values": [
+        "(3,784)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-3784",
+      "ordered_detector_pool_index": 6
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        34
+      ],
+      "import_values": [
+        "(23,545)"
+      ],
+      "detector_indices": [
+        40
+      ],
+      "detector_values": [
+        "(23,545)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-23545",
+      "ordered_detector_pool_index": 6
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        35
+      ],
+      "import_values": [
+        "(21,863)"
+      ],
+      "detector_indices": [
+        41
+      ],
+      "detector_values": [
+        "(21,863)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-21863",
+      "ordered_detector_pool_index": 6
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        36
+      ],
+      "import_values": [
+        "(2,714)"
+      ],
+      "detector_indices": [
+        42
+      ],
+      "detector_values": [
+        "(2,714)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-2714",
+      "ordered_detector_pool_index": 6
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        37
+      ],
+      "import_values": [
+        "(48,075)"
+      ],
+      "detector_indices": [
+        15
+      ],
+      "detector_values": [
+        "(48,075)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-48075",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        38
+      ],
+      "import_values": [
+        "(3,716)"
+      ],
+      "detector_indices": [
+        43
+      ],
+      "detector_values": [
+        "(3,716)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-3716",
+      "ordered_detector_pool_index": 5
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        39
+      ],
+      "import_values": [
+        "29,560"
+      ],
+      "detector_indices": [
+        44
+      ],
+      "detector_values": [
+        "29,560"
+      ],
+      "matched_count": 1,
+      "match_key": "num:29560",
+      "ordered_detector_pool_index": 5
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        40
+      ],
+      "import_values": [
+        "(46,585)"
+      ],
+      "detector_indices": [
+        45
+      ],
+      "detector_values": [
+        "(46,585)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-46585",
+      "ordered_detector_pool_index": 5
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        41
+      ],
+      "import_values": [
+        "(7,255)"
+      ],
+      "detector_indices": [
+        46
+      ],
+      "detector_values": [
+        "(7,255)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-7255",
+      "ordered_detector_pool_index": 5
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        42
+      ],
+      "import_values": [
+        "(16,834)"
+      ],
+      "detector_indices": [
+        17
+      ],
+      "detector_values": [
+        "(16,834)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-16834",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        43
+      ],
+      "import_values": [
+        "(14,177)"
+      ],
+      "detector_indices": [
+        47
+      ],
+      "detector_values": [
+        "(14,177)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-14177",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        44
+      ],
+      "import_values": [
+        "(1,229,686)"
+      ],
+      "detector_indices": [
+        48
+      ],
+      "detector_values": [
+        "(1,229,686)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-1229686",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        45
+      ],
+      "import_values": [
+        "(1,229,485)"
+      ],
+      "detector_indices": [
+        49
+      ],
+      "detector_values": [
+        "(1,229,485)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-1229485",
+      "ordered_detector_pool_index": 4
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        46
+      ],
+      "import_values": [
+        "(956,227)"
+      ],
+      "detector_indices": [
+        21
+      ],
+      "detector_values": [
+        "(956,227)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-956227",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        47
+      ],
+      "import_values": [
+        "(49,454)"
+      ],
+      "detector_indices": [
+        23
+      ],
+      "detector_values": [
+        "(49,454)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-49454",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        48
+      ],
+      "import_values": [
+        "(25,320)"
+      ],
+      "detector_indices": [
+        25
+      ],
+      "detector_values": [
+        "(25,320)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-25320",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        49
+      ],
+      "import_values": [
+        "(8,461)"
+      ],
+      "detector_indices": [
+        27
+      ],
+      "detector_values": [
+        "(8,461)"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-8461",
+      "ordered_detector_pool_index": 0
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "rtl",
+  "placeholder_count": 0,
+  "detector_index_by_gemini_index": {
+    "0": 4,
+    "1": 8,
+    "2": 10,
+    "3": 12,
+    "4": 14,
+    "5": 16,
+    "6": 18,
+    "7": 19,
+    "8": 0,
+    "9": 1,
+    "10": 2,
+    "11": 3,
+    "12": 5,
+    "13": 20,
+    "14": 22,
+    "15": 6,
+    "16": 24,
+    "17": 7,
+    "18": 26,
+    "19": 28,
+    "20": 9,
+    "21": 29,
+    "22": 30,
+    "23": 31,
+    "24": 32,
+    "25": 11,
+    "26": 33,
+    "27": 34,
+    "28": 35,
+    "29": 36,
+    "30": 37,
+    "31": 38,
+    "32": 13,
+    "33": 39,
+    "34": 40,
+    "35": 41,
+    "36": 42,
+    "37": 15,
+    "38": 43,
+    "39": 44,
+    "40": 45,
+    "41": 46,
+    "42": 17,
+    "43": 47,
+    "44": 48,
+    "45": 49,
+    "46": 21,
+    "47": 23,
+    "48": 25,
+    "49": 27
+  }
+}

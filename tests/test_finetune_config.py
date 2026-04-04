@@ -23,7 +23,7 @@ def test_finetune_config_defaults_validate() -> None:
     assert cfg.inference.quantization_mode == "none"
     assert cfg.inference.attn_implementation == "sdpa"
     assert cfg.inference.require_flash_attention is False
-    assert cfg.inference.temperature == 0.7
+    assert cfg.inference.temperature == 0.0
     assert cfg.inference.top_p == 0.8
     assert cfg.inference.do_sample is True
     assert cfg.inference.enable_thinking is False
