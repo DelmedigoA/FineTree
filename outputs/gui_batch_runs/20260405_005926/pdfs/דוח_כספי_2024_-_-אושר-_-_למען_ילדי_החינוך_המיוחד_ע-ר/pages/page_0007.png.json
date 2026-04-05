@@ -1,0 +1,528 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר",
+  "page_index": 7,
+  "page_name": "page_0007.png",
+  "page_type": "statements",
+  "statement_type": "cash_flow_statement",
+  "fact_count": 24,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״אושר״ - למען ילדי החינוך המיוחד (ע״ר)\", \"page_num\": \"6\", \"page_type\": \"statements\", \"statement_type\": \"cash_flow_statement\", \"title\": \"דוחות על תזרימי המזומנים\"}, \"facts\": [{\"value\": \"(30,278)\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"רווח (הפסד) נקי לפי דוח התוצאות העסקיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"471,403\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"רווח (הפסד) נקי לפי דוח התוצאות העסקיות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"110,339\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,049\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(255,635)\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"שינויים בסעיפי רכוש והתחייבויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"309,564\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"שינויים בסעיפי רכוש והתחייבויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(145,296)\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"סה\\\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"312,613\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\", \"סה\\\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(175,574)\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) שוטפת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"784,016\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות שוטפת\", \"מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) שוטפת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(493,686)\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"רכישת נכסים קבועים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(182,947)\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"רכישת נכסים קבועים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"675,996\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"משיכת (הפקדה) פקדונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(1,837,126)\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"משיכת (הפקדה) פקדונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"182,310\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) השקעה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(2,020,073)\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות השקעה\", \"מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) השקעה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות מימון\", \"קבלת הלוואות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,294,075\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות מימון\", \"קבלת הלוואות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"תזרימי מזומנים מפעילות מימון\", \"מזומנים נטו ששימשו לפעילות מימון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,294,075\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"תזרימי מזומנים מפעילות מימון\", \"מזומנים נטו ששימשו לפעילות מימון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"6,736\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עליה במזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"58,018\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"עליה במזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"58,045\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"יתרת מזומנים ושווי מזומנים לתחילת השנה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"27\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-01-01\", \"path\": [\"יתרת מזומנים ושווי מזומנים לתחילת השנה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"64,781",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "״אושר״ - למען ילדי החינוך המיוחד (ע״ר)",
+      "page_num": "6",
+      "page_type": "statements",
+      "statement_type": "cash_flow_statement",
+      "title": "דוחות על תזרימי המזומנים"
+    },
+    "facts": [
+      {
+        "value": "(30,278)",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "רווח (הפסד) נקי לפי דוח התוצאות העסקיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "471,403",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "רווח (הפסד) נקי לפי דוח התוצאות העסקיות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "110,339",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,049",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(255,635)",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "שינויים בסעיפי רכוש והתחייבויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "309,564",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "שינויים בסעיפי רכוש והתחייבויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(145,296)",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "312,613",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'",
+          "סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א'"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(175,574)",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) שוטפת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "784,016",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות שוטפת",
+          "מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) שוטפת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(493,686)",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "רכישת נכסים קבועים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(182,947)",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "רכישת נכסים קבועים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "675,996",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "משיכת (הפקדה) פקדונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(1,837,126)",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "משיכת (הפקדה) פקדונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "182,310",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) השקעה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(2,020,073)",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות השקעה",
+          "מזומנים נטו ששימשו לפעילות (ששימשו מפעילות) השקעה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות מימון",
+          "קבלת הלוואות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,294,075",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות מימון",
+          "קבלת הלוואות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות מימון",
+          "מזומנים נטו ששימשו לפעילות מימון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,294,075",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "תזרימי מזומנים מפעילות מימון",
+          "מזומנים נטו ששימשו לפעילות מימון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "6,736",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עליה במזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "58,018",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "עליה במזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "58,045",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "27",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-01-01",
+        "path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0007.png"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "updated_at": "2026-04-05T01:34:17",
+  "state": "completed",
+  "base_url": "https://80ad-35-192-165-221.ngrok-free.app/v1",
+  "model": "asafd60/FineTree-27B-3.0",
+  "log_dir": "/Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260405_012935",
+  "elapsed_seconds": 281.529,
+  "total_tokens_received": 112793,
+  "overall_tokens_per_second": 400.644,
+  "recent_tokens_per_second": 0.0,
+  "completed_pages": 57,
+  "failed_pages": 0,
+  "total_pages": 57,
+  "documents": {
+    "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר": {
+      "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+      "state": "completed",
+      "current_page": "page_0018.png",
+      "completed_pages": 31,
+      "failed_pages": 0,
+      "total_pages": 31,
+      "fact_count": 388,
+      "tokens_received": 59166,
+      "overall_tokens_per_second": 210.16
+    },
+    "דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר": {
+      "doc_id": "דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר",
+      "state": "completed",
+      "current_page": "page_0006.png",
+      "completed_pages": 11,
+      "failed_pages": 0,
+      "total_pages": 11,
+      "fact_count": 169,
+      "tokens_received": 24487,
+      "overall_tokens_per_second": 86.979
+    },
+    "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר": {
+      "doc_id": "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר",
+      "state": "completed",
+      "current_page": "page_0011.png",
+      "completed_pages": 15,
+      "failed_pages": 0,
+      "total_pages": 15,
+      "fact_count": 202,
+      "tokens_received": 29140,
+      "overall_tokens_per_second": 103.506
+    }
+  }
+}

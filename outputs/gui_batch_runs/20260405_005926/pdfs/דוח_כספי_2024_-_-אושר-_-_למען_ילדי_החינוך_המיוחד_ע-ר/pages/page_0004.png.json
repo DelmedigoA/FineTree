@@ -1,0 +1,612 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר",
+  "page_index": 4,
+  "page_name": "page_0004.png",
+  "page_type": "statements",
+  "statement_type": "balance_sheet",
+  "fact_count": 28,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״אושר״ - למען ילדי החינוך המיוחד (ע״ר)\", \"page_num\": \"3\", \"page_type\": \"statements\", \"statement_type\": \"balance_sheet\", \"title\": \"מאזנים\"}, \"facts\": [{\"value\": \"64,781\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש שוטף\", \"מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"58,045\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש שוטף\", \"מזומנים ושווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,161,130\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש שוטף\", \"פקדונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,837,126\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש שוטף\", \"פקדונות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"791,656\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש שוטף\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"482,448\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש שוטף\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"531,787\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש שוטף\", \"חייבים אחרים ויתרות חובה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"456,973\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש שוטף\", \"חייבים אחרים ויתרות חובה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,549,354\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש שוטף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,834,592\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש שוטף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"607,163\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"רכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"179,898\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"רכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,156,517\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"נכסים\", \"סה״כ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,014,490\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"נכסים\", \"סה״כ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,300,000\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות שוטפות\", \"הלוואות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,300,000\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות שוטפות\", \"הלוואות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"421,818\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות שוטפות\", \"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"485,433\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות שוטפות\", \"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"955,554\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"5\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות שוטפות\", \"זכאים שונים ויתרות זכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"763,552\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"5\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות שוטפות\", \"זכאים שונים ויתרות זכות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,677,372\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות שוטפות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,548,985\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות שוטפות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"43,918\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות לזמן ארוך\", \"עתודות לזכויות עובדים בעת פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות לזמן ארוך\", \"עתודות לזכויות עובדים בעת פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,721,290\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"התחייבויות\", \"סה״כ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,548,985\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"התחייבויות\", \"סה״כ\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(171,936)\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"נכסים נטו\", \"נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"285,607\", \"fact_num\": 28, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"נכסים נטו\", \"נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)\", \"נכסים נטו לשימוש לפעילויות\", \"שלא יועדו על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"607,163\", \"fact_num\": 29, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"נכסים נטו\", \"נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)\", \"נכסים נטו לשימוש לפעילויות\", \"נכסים נ",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "״אושר״ - למען ילדי החינוך המיוחד (ע״ר)",
+      "page_num": "3",
+      "page_type": "statements",
+      "statement_type": "balance_sheet",
+      "title": "מאזנים"
+    },
+    "facts": [
+      {
+        "value": "64,781",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש שוטף",
+          "מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "58,045",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש שוטף",
+          "מזומנים ושווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,161,130",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש שוטף",
+          "פקדונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,837,126",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש שוטף",
+          "פקדונות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "791,656",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש שוטף",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "482,448",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש שוטף",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "531,787",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש שוטף",
+          "חייבים אחרים ויתרות חובה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "456,973",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש שוטף",
+          "חייבים אחרים ויתרות חובה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,549,354",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש שוטף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,834,592",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש שוטף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "607,163",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "179,898",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,156,517",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "נכסים",
+          "סה״כ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,014,490",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "נכסים",
+          "סה״כ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,300,000",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "הלוואות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,300,000",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "הלוואות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "421,818",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "485,433",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "955,554",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "5",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "זכאים שונים ויתרות זכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "763,552",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "5",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "זכאים שונים ויתרות זכות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,677,372",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,548,985",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות שוטפות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "43,918",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות לזמן ארוך",
+          "עתודות לזכויות עובדים בעת פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות לזמן ארוך",
+          "עתודות לזכויות עובדים בעת פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,721,290",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "התחייבויות",
+          "סה״כ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,548,985",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "התחייבויות",
+          "סה״כ"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(171,936)",
+        "fact_num": 27,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "נכסים נטו",
+          "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "285,607",
+        "fact_num": 28,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "נכסים נטו",
+          "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+          "נכסים נטו לשימוש לפעילויות",
+          "שלא יועדו על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0004.png"
+  }
+}

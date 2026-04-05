@@ -20,7 +20,7 @@ from .workspace import page_image_paths
 
 
 DEFAULT_MAX_PIXELS = 1_400_000
-DEFAULT_MAX_TOKENS = 4096
+DEFAULT_MAX_TOKENS = 24_000
 DEFAULT_TEMPERATURE = 0.0
 _TOKEN_PATTERN = re.compile(r"\w+|[^\w\s]", flags=re.UNICODE)
 _PROGRESS_EMIT_INTERVAL_SECONDS = 0.25

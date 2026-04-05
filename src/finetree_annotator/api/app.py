@@ -13,6 +13,7 @@ from .annotation_router import router as annotation_router
 from .image_router import router as image_router
 from .schema_router import router as schema_router
 from .ai_router import router as ai_router
+from .batch_infer_router import router as batch_infer_router
 
 
 def create_app(*, data_root: Path | None = None) -> FastAPI:
@@ -39,6 +40,7 @@ def create_app(*, data_root: Path | None = None) -> FastAPI:
     app.include_router(image_router)
     app.include_router(schema_router)
     app.include_router(ai_router)
+    app.include_router(batch_infer_router)
 
     @app.get("/api/health")
     def health() -> dict[str, str]:

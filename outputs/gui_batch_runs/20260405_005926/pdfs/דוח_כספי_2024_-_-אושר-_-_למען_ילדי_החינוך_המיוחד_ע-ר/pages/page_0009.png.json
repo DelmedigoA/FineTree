@@ -1,0 +1,132 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר",
+  "page_index": 9,
+  "page_name": "page_0009.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 5,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״אשרי״ - למען ילדי החינוך המיוחד (ע״ר)\", \"page_num\": \"8\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"4\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שיעורי הפחת השנתיים\", \"מבנים\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"6-10\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שיעורי הפחת השנתיים\", \"ריהוט וציוד משרדי\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"15\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שיעורי הפחת השנתיים\", \"כלי רכב\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"20-33\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שיעורי הפחת השנתיים\", \"מחשבים\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"במשך תקופת השכירות\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שיעורי הפחת השנתיים\", \"שופרים במושכר\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0009.png",
+    "meta": {
+      "entity_name": "״אשרי״ - למען ילדי החינוך המיוחד (ע״ר)",
+      "page_num": "8",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "4",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שיעורי הפחת השנתיים",
+          "מבנים"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "6-10",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שיעורי הפחת השנתיים",
+          "ריהוט וציוד משרדי"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "15",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שיעורי הפחת השנתיים",
+          "כלי רכב"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "20-33",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שיעורי הפחת השנתיים",
+          "מחשבים"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "במשך תקופת השכירות",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שיעורי הפחת השנתיים",
+          "שופרים במושכר"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

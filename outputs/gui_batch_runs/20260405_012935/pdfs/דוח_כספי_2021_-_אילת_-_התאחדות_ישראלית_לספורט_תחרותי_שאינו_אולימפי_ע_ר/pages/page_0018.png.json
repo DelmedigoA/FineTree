@@ -1,0 +1,606 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 18,
+  "page_name": "page_0018.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 28,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אלת- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"13\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"874,322\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ציוד היחידה לספורט תחרותי\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"795,668\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ציוד היחידה לספורט תחרותי\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"78,654\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ציוד היחידה לספורט תחרותי\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"160,371\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"ציוד היחידה לספורט תחרותי\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(583,271)\", \"fact_num\": 5, \"comment_ref\": \"א' להלן\", \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מענקים עבור ציוד (א' להלן)\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"568,032\", \"fact_num\": 6, \"comment_ref\": \"א' להלן\", \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מענקים עבור ציוד (א' להלן)\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(15,239)\", \"fact_num\": 7, \"comment_ref\": \"א' להלן\", \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מענקים עבור ציוד (א' להלן)\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(70,449)\", \"fact_num\": 8, \"comment_ref\": \"א' להלן\", \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"מענקים עבור ציוד (א' להלן)\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"195,901\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ריהוט וציוד משרדי\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"168,598\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ריהוט וציוד משרדי\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"27,303\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"ריהוט וציוד משרדי\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,628\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"ריהוט וציוד משרדי\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"45,281\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"אתר אינטרנט\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"45,281\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"אתר אינטרנט\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"אתר אינטרנט\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"אתר אינטרנט\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"411,456\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"שיפורים במושכר\", \"עלות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"39,814\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"שיפורים במושכר\", \"פחת שנצבר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"371,642\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"שיפורים במושכר\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"291,785\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"שיפורים במושכר\", \"עלות מופחתת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"943,689\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה״כ\", \"עלות\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"481,329\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה״כ\", \"פחת שנצבר\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"462,360\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה״כ\", \"עלות מופחתת\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"401,335\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סה״כ\", \"עלות מופחתת\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,875\", \"fact_num\": 25, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"ספקים ונותני שירותים\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"חובות פתוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"31,628\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"ספקים ונותני שירותים\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"חובות פתוחים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,870,762\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"ספקים ונותני שירותים\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"המחאות לפרעון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"528,647\", \"fact_num\": 28, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"ספקים ונותני שירותים\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"המחאות לפרעון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,873,637\", \"fact_num\": 29, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"ספקים ונותני שירותים\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-1",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "אלת- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "13",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "874,322",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ציוד היחידה לספורט תחרותי",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "795,668",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ציוד היחידה לספורט תחרותי",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "78,654",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ציוד היחידה לספורט תחרותי",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "160,371",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "ציוד היחידה לספורט תחרותי",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(583,271)",
+        "fact_num": 5,
+        "comment_ref": "א' להלן",
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מענקים עבור ציוד (א' להלן)",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "568,032",
+        "fact_num": 6,
+        "comment_ref": "א' להלן",
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מענקים עבור ציוד (א' להלן)",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(15,239)",
+        "fact_num": 7,
+        "comment_ref": "א' להלן",
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מענקים עבור ציוד (א' להלן)",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(70,449)",
+        "fact_num": 8,
+        "comment_ref": "א' להלן",
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "מענקים עבור ציוד (א' להלן)",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "195,901",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ריהוט וציוד משרדי",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "168,598",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ריהוט וציוד משרדי",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "27,303",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "ריהוט וציוד משרדי",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,628",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "ריהוט וציוד משרדי",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "45,281",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "אתר אינטרנט",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "45,281",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "אתר אינטרנט",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "אתר אינטרנט",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "אתר אינטרנט",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "411,456",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "שיפורים במושכר",
+          "עלות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "39,814",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "שיפורים במושכר",
+          "פחת שנצבר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "371,642",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "שיפורים במושכר",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "291,785",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "שיפורים במושכר",
+          "עלות מופחתת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "943,689",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה״כ",
+          "עלות"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "481,329",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה״כ",
+          "פחת שנצבר"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "462,360",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה״כ",
+          "עלות מופחתת"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "401,335",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סה״כ",
+          "עלות מופחתת"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,875",
+        "fact_num": 25,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "ספקים ונותני שירותים",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "חובות פתוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "31,628",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "ספקים ונותני שירותים",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "חובות פתוחים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,870,762",
+        "fact_num": 27,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "ספקים ונותני שירותים",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "המחאות לפרעון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "528,647",
+        "fact_num": 28,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "ספקים ונותני שירותים",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "המחאות לפרעון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0018.png"
+  }
+}

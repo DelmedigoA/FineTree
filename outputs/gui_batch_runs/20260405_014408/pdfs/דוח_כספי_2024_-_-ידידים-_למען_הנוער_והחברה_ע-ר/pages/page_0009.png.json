@@ -1,0 +1,68 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר",
+  "page_index": 9,
+  "page_name": "page_0009.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 2,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"דיידיס למען הנוער והחברה (ע.ר.)\", \"page_num\": \"8\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים ליום 31 בדצמבר 2024\"}, \"facts\": [{\"value\": \"20-6\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שעורי הפחת השנתיים\", \"ריהוט וציוד\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"33\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"שעורי הפחת השנתיים\", \"שיפורים במושכר\", \"מחשבים\", \"על פני תקופת השכירות\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0009.png",
+    "meta": {
+      "entity_name": "דיידיס למען הנוער והחברה (ע.ר.)",
+      "page_num": "8",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים ליום 31 בדצמבר 2024"
+    },
+    "facts": [
+      {
+        "value": "20-6",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שעורי הפחת השנתיים",
+          "ריהוט וציוד"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "33",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "שעורי הפחת השנתיים",
+          "שיפורים במושכר",
+          "מחשבים",
+          "על פני תקופת השכירות"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

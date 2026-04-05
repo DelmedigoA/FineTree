@@ -1,6 +1,6 @@
 /** AI inference dialog — all actions: Extract, Fill, Fix Spelling, Detect, Align, Batch. */
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAIStore } from "../../stores/aiStore";
 import { useDocumentStore } from "../../stores/documentStore";
 import { useCanvasStore } from "../../stores/canvasStore";
@@ -71,9 +71,15 @@ export function AIDialog() {
   const [batchStatus, setBatchStatus] = useState<string | null>(null);
   const [batchRunning, setBatchRunning] = useState(false);
 
-  const [tab, setTab] = useState<ActionTab>("extract");
+  const { initialTab } = useAIStore();
+  const [tab, setTab] = useState<ActionTab>((initialTab as ActionTab) ?? "extract");
   const [applyStatus, setApplyStatus] = useState<string | null>(null);
   const accumulatedRef = useRef("");
+
+  // Sync tab when dialog opens with a specific initialTab.
+  useEffect(() => {
+    if (dialogOpen && initialTab) setTab(initialTab as ActionTab);
+  }, [dialogOpen, initialTab]);
 
   if (!dialogOpen) return null;
 

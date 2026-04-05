@@ -5,6 +5,7 @@ import { useDocumentStore } from "../stores/documentStore";
 import { useCanvasStore } from "../stores/canvasStore";
 import { useSelectionStore } from "../stores/selectionStore";
 import { pushUndoSnapshot } from "./useUndoRedo";
+import { applyEquation } from "./useEquationWorkflow";
 import type { BBox, PageState } from "../types/schema";
 
 const NUDGE_SMALL = 1;
@@ -29,6 +30,19 @@ export function useKeyboardShortcuts() {
         const name = doc.pageNames[doc.currentPageIndex];
         return name ? doc.pageStates.get(name) : undefined;
       };
+
+      // Alt+Shift: apply pending equation to selected target.
+      if (e.altKey && e.shiftKey) {
+        const { selectedIndices, equationTermIndices } = useSelectionStore.getState();
+        if (selectedIndices.size === 1 && equationTermIndices.size > 0) {
+          e.preventDefault();
+          pushUndoSnapshot();
+          const targetIndex = [...selectedIndices][0]!;
+          const termIndices = [...equationTermIndices];
+          applyEquation(targetIndex, termIndices, new Map());
+          return;
+        }
+      }
 
       switch (e.key) {
         // Page navigation.
@@ -109,8 +123,8 @@ export function useKeyboardShortcuts() {
           break;
         }
 
-        // Equation mode via Alt key.
         case "Alt":
+          // equationModeActive drives canvas highlight; actual interaction uses e.altKey.
           if (selection.selectedIndices.size === 1) {
             selection.setEquationModeActive(true);
           }

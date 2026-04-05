@@ -139,7 +139,7 @@ export function useCanvasInteraction(
       const bboxes = getBboxes();
       const hit = hitTest(sx, sy, bboxes, transform);
       const selection = useSelectionStore.getState();
-      const isEquationMode = selection.equationModeActive;
+      const isEquationMode = e.altKey;
 
       const ctx: DragContext = {
         mode: "none",

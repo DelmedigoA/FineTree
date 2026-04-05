@@ -1,0 +1,462 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר",
+  "page_index": 12,
+  "page_name": "page_0012.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 22,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"ידידים למען הנוער והחברה (ע.ר.)\", \"page_num\": \"11\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"275\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"הלוואה לזמן ארוך מהבנק\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"462\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"הלוואה לזמן ארוך מהבנק\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(108)\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"בניכוי - חלויות שוטפות של הלוואה לזמן ארוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"(187)\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"בניכוי - חלויות שוטפות של הלוואה לזמן ארוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"167\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"275\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הלוואה לזמן ארוך\", \"note_num\": \"7\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"389\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"613\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"ספקים ונותני שירותים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"989\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"עובדים ומוסדות בגין שכר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,406\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"עובדים ומוסדות בגין שכר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,649\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"המחאות לפירעון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,364\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"המחאות לפירעון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"204\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"הפרשה לחופשה והבראה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"206\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"הפרשה לחופשה והבראה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,231\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,589\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים ויתרות זכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"9,888\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"משרד הרווחה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,356\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"משרד הרווחה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"670\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"משרד החינוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,394\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"משרד החינוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,558\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"9,750\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הכנסות ממשרדי ממשלה\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0012.png",
+    "meta": {
+      "entity_name": "ידידים למען הנוער והחברה (ע.ר.)",
+      "page_num": "11",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "275",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "הלוואה לזמן ארוך מהבנק"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "462",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "הלוואה לזמן ארוך מהבנק"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(108)",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "בניכוי - חלויות שוטפות של הלוואה לזמן ארוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "(187)",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "בניכוי - חלויות שוטפות של הלוואה לזמן ארוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "167",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "275",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הלוואה לזמן ארוך",
+        "note_num": "7",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "389",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "613",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "ספקים ונותני שירותים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "989",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "עובדים ומוסדות בגין שכר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,406",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "עובדים ומוסדות בגין שכר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,649",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "המחאות לפירעון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,364",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "המחאות לפירעון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "204",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "הפרשה לחופשה והבראה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "206",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "הפרשה לחופשה והבראה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,231",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,589",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים ויתרות זכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "9,888",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "משרד הרווחה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,356",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "משרד הרווחה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "670",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "משרד החינוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,394",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "משרד החינוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,558",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "9,750",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הכנסות ממשרדי ממשלה",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

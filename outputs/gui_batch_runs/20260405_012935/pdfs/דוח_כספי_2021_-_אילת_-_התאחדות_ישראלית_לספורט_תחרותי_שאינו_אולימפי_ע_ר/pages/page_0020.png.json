@@ -1,0 +1,62 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 20,
+  "page_name": "page_0020.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 2,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אילת- התאחדות ישראלית לספורט תחרותי אל אולומפי (ע״ר)\", \"page_num\": \"15\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"3,500,000\", \"fact_num\": 1, \"comment_ref\": \"א, להלן\", \"note_flag\": true, \"note_name\": \"שיועז על ידי מוסדות המלכ\\\"ר\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"יתרה לחתימת התקופה - שיועז על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,500,000\", \"fact_num\": 2, \"comment_ref\": \"א, להלן\", \"note_flag\": true, \"note_name\": \"שיועז על ידי מוסדות המלכ\\\"ר\", \"note_num\": \"11\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"יתרה לחתימת התקופה - שיועז על ידי מוסדות המלכ\\\"ר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0020.png",
+    "meta": {
+      "entity_name": "אילת- התאחדות ישראלית לספורט תחרותי אל אולומפי (ע״ר)",
+      "page_num": "15",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "3,500,000",
+        "fact_num": 1,
+        "comment_ref": "א, להלן",
+        "note_flag": true,
+        "note_name": "שיועז על ידי מוסדות המלכ\"ר",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "יתרה לחתימת התקופה - שיועז על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,500,000",
+        "fact_num": 2,
+        "comment_ref": "א, להלן",
+        "note_flag": true,
+        "note_name": "שיועז על ידי מוסדות המלכ\"ר",
+        "note_num": "11",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "יתרה לחתימת התקופה - שיועז על ידי מוסדות המלכ\"ר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

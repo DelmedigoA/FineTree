@@ -1,6 +1,6 @@
-/** Right sidebar inspector panel — document/page meta, facts list, fact editor. */
+/** Right sidebar inspector panel — accordion sections, resizable, RTL. */
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useDocumentStore } from "../../stores/documentStore";
 import { useSelectionStore } from "../../stores/selectionStore";
 import { DocumentMetaSection } from "./DocumentMetaSection";
@@ -11,12 +11,29 @@ import { BatchEditSection } from "./BatchEditSection";
 import { PageIssuesSection } from "./PageIssuesSection";
 import type { PageState, BoxRecord } from "../../types/schema";
 
+const DEFAULT_WIDTH = 500;
+const MIN_WIDTH = 300;
+const MAX_WIDTH = 900;
+
+// Which sections start open
+const DEFAULT_OPEN: Record<string, boolean> = {
+  Document: false,
+  Page: true,
+  Issues: false,
+  Facts: false,
+  "Edit Fact": true,
+  "Batch Edit": true,
+};
+
 export function InspectorPanel() {
   const { docId, pageStates, pageNames, currentPageIndex, documentMeta } =
     useDocumentStore();
   const { selectedIndices } = useSelectionStore();
-  const panelRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+
+  const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH);
+  const [open, setOpen] = useState<Record<string, boolean>>(DEFAULT_OPEN);
+  const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   // Auto-scroll to fact editor when selection changes.
   useEffect(() => {
@@ -26,6 +43,30 @@ export function InspectorPanel() {
     }, 50);
     return () => clearTimeout(timer);
   }, [selectedIndices]);
+
+  // Resize drag
+  const onResizeStart = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    dragRef.current = { startX: e.clientX, startWidth: panelWidth };
+
+    const onMove = (ev: MouseEvent) => {
+      if (!dragRef.current) return;
+      const delta = dragRef.current.startX - ev.clientX;
+      setPanelWidth(
+        Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, dragRef.current.startWidth + delta)),
+      );
+    };
+    const onUp = () => {
+      dragRef.current = null;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, [panelWidth]);
+
+  const toggle = (title: string) =>
+    setOpen((prev) => ({ ...prev, [title]: !prev[title] }));
 
   const pageName = pageNames[currentPageIndex] ?? null;
   const page: PageState | undefined = pageName
@@ -42,139 +83,238 @@ export function InspectorPanel() {
 
   if (!docId) {
     return (
-      <div style={panelStyle}>
+      <div style={{ ...panelBaseStyle(panelWidth) }}>
+        <ResizeHandle onMouseDown={onResizeStart} />
         <EmptyMsg>Open a document to inspect.</EmptyMsg>
       </div>
     );
   }
 
   return (
-    <div ref={panelRef} style={panelStyle}>
-      {/* Document metadata */}
-      <Section title="Document">
-        <DocumentMetaSection meta={documentMeta} />
-      </Section>
+    <div style={panelBaseStyle(panelWidth)}>
+      <ResizeHandle onMouseDown={onResizeStart} />
 
-      {/* Page metadata */}
-      {page && (
-        <Section
-          title="Page"
-          badge={pageName ? `${currentPageIndex + 1}` : undefined}
+      <div style={{ overflowY: "auto", flex: 1 }}>
+
+        <AccordionSection
+          title="Document"
+          isOpen={open["Document"] ?? false}
+          onToggle={() => toggle("Document")}
         >
-          <PageMetaSection meta={page.meta} pageName={pageName} />
-        </Section>
-      )}
+          <DocumentMetaSection meta={documentMeta} />
+        </AccordionSection>
 
-      {/* Page issues */}
-      {page && (
-        <Section title="Issues">
-          <PageIssuesSection />
-        </Section>
-      )}
-
-      {/* Facts list */}
-      {page && (
-        <Section title="Facts" badge={`${page.facts.length}`}>
-          <FactsListSection facts={page.facts} pageName={pageName} />
-        </Section>
-      )}
-
-      {/* Fact editor (when selected) */}
-      {selectedFacts.length > 0 && (
-        <div ref={editorRef}>
-          <Section
-            title={
-              selectedFacts.length === 1
-                ? "Edit Fact"
-                : `Edit ${selectedFacts.length} Facts`
-            }
+        {page && (
+          <AccordionSection
+            title="Page"
+            badge={pageName ? `${currentPageIndex + 1}` : undefined}
+            isOpen={open["Page"] ?? true}
+            onToggle={() => toggle("Page")}
           >
-            <FactEditorSection
+            <PageMetaSection meta={page.meta} pageName={pageName} />
+          </AccordionSection>
+        )}
+
+        {page && (
+          <AccordionSection
+            title="Issues"
+            isOpen={open["Issues"] ?? false}
+            onToggle={() => toggle("Issues")}
+          >
+            <PageIssuesSection />
+          </AccordionSection>
+        )}
+
+        {page && (
+          <AccordionSection
+            title="Facts"
+            badge={`${page.facts.length}`}
+            isOpen={open["Facts"] ?? false}
+            onToggle={() => toggle("Facts")}
+          >
+            <FactsListSection facts={page.facts} pageName={pageName} />
+          </AccordionSection>
+        )}
+
+        {selectedFacts.length > 0 && (
+          <div ref={editorRef}>
+            <AccordionSection
+              title={selectedFacts.length === 1 ? "Edit Fact" : `Edit ${selectedFacts.length} Facts`}
+              isOpen={open["Edit Fact"] ?? true}
+              onToggle={() => toggle("Edit Fact")}
+              highlight
+            >
+              <FactEditorSection
+                selectedFacts={selectedFacts}
+                pageName={pageName}
+              />
+            </AccordionSection>
+          </div>
+        )}
+
+        {selectedFacts.length > 1 && (
+          <AccordionSection
+            title="Batch Edit"
+            isOpen={open["Batch Edit"] ?? true}
+            onToggle={() => toggle("Batch Edit")}
+          >
+            <BatchEditSection
               selectedFacts={selectedFacts}
               pageName={pageName}
             />
-          </Section>
-        </div>
-      )}
+          </AccordionSection>
+        )}
 
-      {/* Batch edit (multi-select only) */}
-      {selectedFacts.length > 1 && (
-        <Section title="Batch Edit">
-          <BatchEditSection
-            selectedFacts={selectedFacts}
-            pageName={pageName}
-          />
-        </Section>
-      )}
+      </div>
     </div>
   );
 }
 
-const panelStyle: React.CSSProperties = {
-  width: 400,
-  minWidth: 400,
-  background: "var(--surface)",
-  borderLeft: "1px solid var(--surface-border)",
-  overflowY: "auto",
-  padding: "12px 0",
-  display: "flex",
-  flexDirection: "column",
-  gap: 0,
-};
+// ── sub-components ────────────────────────────────────────────────
 
-function Section({
+function panelBaseStyle(width: number): React.CSSProperties {
+  return {
+    width,
+    minWidth: MIN_WIDTH,
+    maxWidth: MAX_WIDTH,
+    background: "var(--surface)",
+    borderLeft: "1px solid var(--surface-border)",
+    display: "flex",
+    flexDirection: "column",
+    position: "relative",
+    direction: "rtl",
+    flexShrink: 0,
+  };
+}
+
+function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => void }) {
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      style={{
+        position: "absolute",
+        left: 0,
+        top: 0,
+        bottom: 0,
+        width: 5,
+        cursor: "ew-resize",
+        zIndex: 10,
+        background: "transparent",
+        transition: "background 0.15s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = "var(--accent)";
+        e.currentTarget.style.opacity = "0.4";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+        e.currentTarget.style.opacity = "1";
+      }}
+    />
+  );
+}
+
+function AccordionSection({
   title,
   badge,
+  isOpen,
+  onToggle,
+  highlight,
   children,
 }: {
   title: string;
   badge?: string;
+  isOpen: boolean;
+  onToggle: () => void;
+  highlight?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <div
       style={{
         borderBottom: "1px solid var(--surface-border)",
-        padding: "12px 16px",
       }}
     >
-      <div
+      {/* Header */}
+      <button
+        onClick={onToggle}
         style={{
+          width: "100%",
           display: "flex",
           alignItems: "center",
-          gap: 8,
-          marginBottom: 12,
+          justifyContent: "space-between",
+          padding: "10px 16px",
+          background: highlight && isOpen ? "var(--accent-soft)" : "transparent",
+          border: "none",
+          cursor: "pointer",
+          textAlign: "right",
+          direction: "rtl",
+          transition: "background 0.15s",
+        }}
+        onMouseEnter={(e) => {
+          if (!(highlight && isOpen))
+            e.currentTarget.style.background = "var(--surface-alt)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background =
+            highlight && isOpen ? "var(--accent-soft)" : "transparent";
         }}
       >
-        <h3
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontSize: 11,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            letterSpacing: "0.06em",
-            color: "var(--text-soft)",
-          }}
-        >
-          {title}
-        </h3>
-        {badge && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span
             style={{
-              fontSize: 10,
+              fontFamily: "var(--font-heading)",
+              fontSize: 11,
               fontWeight: 700,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-soft)",
-              background: "var(--surface-alt)",
-              padding: "1px 6px",
-              borderRadius: "var(--radius-pill)",
+              textTransform: "uppercase",
+              letterSpacing: "0.06em",
+              color: highlight ? "var(--accent)" : "var(--text-soft)",
             }}
           >
-            {badge}
+            {title}
           </span>
-        )}
-      </div>
-      {children}
+          {badge && (
+            <span
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                fontFamily: "var(--font-mono)",
+                color: "var(--text-soft)",
+                background: "var(--surface-alt)",
+                padding: "1px 6px",
+                borderRadius: "var(--radius-pill)",
+              }}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
+        {/* Chevron */}
+        <span
+          style={{
+            fontSize: 11,
+            color: "var(--text-soft)",
+            transform: isOpen ? "rotate(0deg)" : "rotate(-90deg)",
+            transition: "transform 0.2s ease",
+            display: "inline-block",
+            lineHeight: 1,
+          }}
+        >
+          ▾
+        </span>
+      </button>
+
+      {/* Body */}
+      {isOpen && (
+        <div
+          style={{
+            padding: "0 16px 14px",
+            direction: "rtl",
+          }}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 }

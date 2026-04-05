@@ -1,0 +1,570 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר",
+  "page_index": 11,
+  "page_name": "page_0011.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 26,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"דידיום למען הנוער והחברה (ע.ר.)\", \"page_num\": \"10\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים ליום 31 בדצמבר 2024\"}, \"facts\": [{\"value\": \"690\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"מזומנים בשקל חדש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"416\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"מזומנים בשקל חדש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"690\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"416\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"4\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"640\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"הכנסות לקבל - מעירייות, רשויות וגופים שונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,049\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"הכנסות לקבל - מעירייות, רשויות וגופים שונים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,692\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"משרד ממשלה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,348\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"משרד ממשלה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"הוצאות מראש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"32\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"הוצאות מראש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,332\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,429\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"חייבים ויתרות חובה\", \"note_num\": \"5\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2023-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,664\", \"fact_num\": 13, \"comment_ref\": \"ראה ביאור 16 לגנין הסכם עם עיריית אשדוד\", \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": \"16\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2024\", \"שיפורים במושכר (*)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,441\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2024\", \"ריהוט, ציוד ומחשוב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"312\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2024\", \"ריהוט וציוד בבתי דידים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,417\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"עלות\", \"יתרה ליום 1 בינואר 2024\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 17, \"comment_ref\": \"ראה ביאור 16 לגנין הסכם עם עיריית אשדוד\", \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": \"16\", \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"תוספות\", \"שיפורים במושכר (*)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"תוספות\", \"ריהוט, ציוד ומחשוב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"תוספות\", \"ריהוט וציוד בבתי דידים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"21\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"תוספות\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,664\", \"fact_num\": 21, \"comment_ref\": \"ראה ביאור 16 לגנין הסכם עם עיריית אשדוד\", \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": \"16\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"שיפורים במושכר (*)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,460\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"ריהוט, ציוד ומחשוב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"314\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"ריהוט וציוד בבתי דידים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,438\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-12-31\", \"path\": [\"עלות\", \"יתרה ליום 31 בדצמבר 2024\", \"סך הכל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"875\", \"fact_num\": 25, \"comment_ref\": \"ראה ביאור 16 לגנין הסכם עם עיריית אשדוד\", \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": \"16\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2024\", \"שיפורים במושכר (*)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,372\", \"fact_num\": 26, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2024-01-01\", \"path\": [\"פחת שנצבר\", \"יתרה ליום 1 בינואר 2024\", \"ריהוט, ציוד ומחשוב\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1000, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"271\", \"fact_num\": 27, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"רכוש קבוע, נטו\", \"note_num\": \"6\", \"note_ref\": null, \"period_type\": \"instant\", \"period",
+  "parsed_page": {
+    "meta": {
+      "entity_name": "דידיום למען הנוער והחברה (ע.ר.)",
+      "page_num": "10",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים ליום 31 בדצמבר 2024"
+    },
+    "facts": [
+      {
+        "value": "690",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "מזומנים בשקל חדש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "416",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "מזומנים בשקל חדש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "690",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "416",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "4",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "640",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "הכנסות לקבל - מעירייות, רשויות וגופים שונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,049",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "הכנסות לקבל - מעירייות, רשויות וגופים שונים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,692",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "משרד ממשלה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,348",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "משרד ממשלה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "הוצאות מראש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "32",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "הוצאות מראש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,332",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,429",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "חייבים ויתרות חובה",
+        "note_num": "5",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2023-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,664",
+        "fact_num": 13,
+        "comment_ref": "ראה ביאור 16 לגנין הסכם עם עיריית אשדוד",
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": "16",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2024",
+          "שיפורים במושכר (*)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,441",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2024",
+          "ריהוט, ציוד ומחשוב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "312",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2024",
+          "ריהוט וציוד בבתי דידים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,417",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "עלות",
+          "יתרה ליום 1 בינואר 2024",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 17,
+        "comment_ref": "ראה ביאור 16 לגנין הסכם עם עיריית אשדוד",
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": "16",
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "תוספות",
+          "שיפורים במושכר (*)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "תוספות",
+          "ריהוט, ציוד ומחשוב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "תוספות",
+          "ריהוט וציוד בבתי דידים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "21",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "תוספות",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,664",
+        "fact_num": 21,
+        "comment_ref": "ראה ביאור 16 לגנין הסכם עם עיריית אשדוד",
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": "16",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "יתרה ליום 31 בדצמבר 2024",
+          "שיפורים במושכר (*)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,460",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "יתרה ליום 31 בדצמבר 2024",
+          "ריהוט, ציוד ומחשוב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "314",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "יתרה ליום 31 בדצמבר 2024",
+          "ריהוט וציוד בבתי דידים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,438",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-12-31",
+        "path": [
+          "עלות",
+          "יתרה ליום 31 בדצמבר 2024",
+          "סך הכל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "875",
+        "fact_num": 25,
+        "comment_ref": "ראה ביאור 16 לגנין הסכם עם עיריית אשדוד",
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": "16",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 1 בינואר 2024",
+          "שיפורים במושכר (*)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,372",
+        "fact_num": 26,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "רכוש קבוע, נטו",
+        "note_num": "6",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2024-01-01",
+        "path": [
+          "פחת שנצבר",
+          "יתרה ליום 1 בינואר 2024",
+          "ריהוט, ציוד ומחשוב"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1000,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ],
+    "image": "page_0011.png"
+  }
+}

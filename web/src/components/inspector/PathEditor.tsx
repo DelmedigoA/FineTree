@@ -1,4 +1,4 @@
-/** Path editor — reorderable hierarchy levels. */
+/** Path editor — reorderable hierarchy levels. Supports multi-fact selection. */
 
 import { useDocumentStore } from "../../stores/documentStore";
 import { useCanvasStore } from "../../stores/canvasStore";
@@ -6,16 +6,23 @@ import { pushUndoSnapshot } from "../../hooks/useUndoRedo";
 import type { BoxRecord } from "../../types/schema";
 
 interface Props {
-  factIndex: number;
-  record: BoxRecord;
+  selectedFacts: { index: number; record: BoxRecord }[];
   pageName: string | null;
 }
 
-export function PathEditor({ factIndex, record, pageName }: Props) {
+export function PathEditor({ selectedFacts, pageName }: Props) {
   const { pageStates, updatePageState } = useDocumentStore();
   const markDirty = useCanvasStore((s) => s.markDirty);
 
-  const path = (record.fact.path as string[]) ?? [];
+  const primaryRecord = selectedFacts[0]?.record;
+  const path = (primaryRecord?.fact.path as string[]) ?? [];
+
+  const isMulti = selectedFacts.length > 1;
+  const allSamePath = isMulti
+    ? selectedFacts.every(
+        (f) => JSON.stringify(f.record.fact.path ?? []) === JSON.stringify(path),
+      )
+    : true;
 
   const updatePath = (next: string[]) => {
     if (!pageName) return;
@@ -23,9 +30,11 @@ export function PathEditor({ factIndex, record, pageName }: Props) {
     const page = pageStates.get(pageName);
     if (!page) return;
     const newFacts = [...page.facts];
-    const fact = newFacts[factIndex];
-    if (!fact) return;
-    newFacts[factIndex] = { ...fact, fact: { ...fact.fact, path: next } };
+    for (const { index } of selectedFacts) {
+      const fact = newFacts[index];
+      if (!fact) continue;
+      newFacts[index] = { ...fact, fact: { ...fact.fact, path: next } };
+    }
     updatePageState(pageName, { ...page, facts: newFacts });
     markDirty("bbox");
   };
@@ -53,6 +62,13 @@ export function PathEditor({ factIndex, record, pageName }: Props) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+      {isMulti && (
+        <div style={{ fontSize: 11, color: "var(--text-soft)", marginBottom: 2 }}>
+          {allSamePath
+            ? `Shared path · edits apply to all ${selectedFacts.length} facts`
+            : `Mixed paths · editing applies to all ${selectedFacts.length} facts`}
+        </div>
+      )}
       {path.length === 0 ? (
         <div style={{ fontSize: 12, color: "var(--text-soft)" }}>
           No path levels.

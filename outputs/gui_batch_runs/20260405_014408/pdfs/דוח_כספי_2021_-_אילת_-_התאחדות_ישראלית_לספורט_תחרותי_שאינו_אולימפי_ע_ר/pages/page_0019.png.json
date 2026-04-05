@@ -1,0 +1,342 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 19,
+  "page_name": "page_0019.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 16,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אלית- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"14\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"100,000\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות מראש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"הכנסות מראש\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"55,501\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"59,303\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"הוצאות לשלם\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"עובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"71,263\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"עובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"27,278\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"קופות גמל ופיצויים לעובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"-\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"קופות גמל ופיצויים לעובדים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"73,604\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"מוסדות נכויים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"62,643\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"מוסדות נכויים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,593\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"אחרים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,007\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"אחרים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"257,976\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"194,216\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"זכאים שונים ויתרות זכות\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"30,890\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"התחייבויות בגין יחסי עובד מעביד\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"עתודה לפיצויי פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"53,400\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"התחייבויות בגין יחסי עובד מעביד\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"עתודה לפיצויי פרישה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0019.png",
+    "meta": {
+      "entity_name": "אלית- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "14",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "100,000",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות מראש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "הכנסות מראש"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "55,501",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "59,303",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "הוצאות לשלם"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "עובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "71,263",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "עובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "27,278",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "קופות גמל ופיצויים לעובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "-",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "קופות גמל ופיצויים לעובדים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "73,604",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "מוסדות נכויים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "62,643",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "מוסדות נכויים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,593",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "אחרים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,007",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "אחרים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "257,976",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "194,216",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "זכאים שונים ויתרות זכות",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "30,890",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "התחייבויות בגין יחסי עובד מעביד",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "עתודה לפיצויי פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "53,400",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "התחייבויות בגין יחסי עובד מעביד",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "עתודה לפיצויי פרישה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

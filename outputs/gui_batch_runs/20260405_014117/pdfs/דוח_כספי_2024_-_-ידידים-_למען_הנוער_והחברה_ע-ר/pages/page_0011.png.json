@@ -1,0 +1,11 @@
+{
+  "doc_id": "דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר",
+  "page_index": 11,
+  "page_name": "page_0011.png",
+  "page_type": null,
+  "statement_type": null,
+  "fact_count": 0,
+  "error": "Error code: 400 - {'error': {'message': \"This model's maximum context length is 32000 tokens. However, you requested 32000 output tokens and your prompt contains 2868 characters (more than 0 characters, which is the upper bound for 0 input tokens). Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_text, value=2868)\", 'type': 'BadRequestError', 'param': 'input_text', 'code': 400}}",
+  "assistant_text": "",
+  "parsed_page": null
+}

@@ -7,9 +7,13 @@ import { useSelectionStore } from "../../stores/selectionStore";
 export function AnnotationToolbar({
   onSave,
   onAI,
+  onBatch,
+  onBatchInfer,
 }: {
   onSave?: () => void;
   onAI?: () => void;
+  onBatch?: () => void;
+  onBatchInfer?: () => void;
 }) {
   const { pageNames, currentPageIndex, setCurrentPageIndex, isDirty, docId } =
     useDocumentStore();
@@ -131,6 +135,12 @@ export function AnnotationToolbar({
         }}
       >
         Select All
+      </ActionBtn>
+      <ActionBtn onClick={onBatch}>
+        Batch
+      </ActionBtn>
+      <ActionBtn onClick={onBatchInfer} variant="primary">
+        Batch Infer
       </ActionBtn>
       <ActionBtn onClick={onAI}>
         AI

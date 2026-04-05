@@ -1,0 +1,85 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 14,
+  "page_name": "page_0014.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 3,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אלית - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"9\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"15-7\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"ריהוט וציוד משרדי\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"33\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"מחשבים ורהוט וציוד\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}, {\"value\": \"33\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"עיקרי המדיניות החשבונאית (המשך)\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"רכוש קבוע\", \"אתר אינטרנט\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0014.png",
+    "meta": {
+      "entity_name": "אלית - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "9",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "15-7",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "ריהוט וציוד משרדי"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "33",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "מחשבים ורהוט וציוד"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      },
+      {
+        "value": "33",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "רכוש קבוע",
+          "אתר אינטרנט"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

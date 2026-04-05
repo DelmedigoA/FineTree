@@ -1,0 +1,312 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 8,
+  "page_name": "page_0008.png",
+  "page_type": "statements",
+  "statement_type": "balance_sheet",
+  "fact_count": 14,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אילת- התאחדות ישראלית לספורט התרבותי לאולילמפי (ע״ר)\", \"page_num\": \"3\", \"page_type\": \"statements\", \"statement_type\": \"balance_sheet\", \"title\": \"דוחות על המצב הכספי\"}, \"facts\": [{\"value\": \"4,963,512\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש שוטף\", \"מזומנים ושוווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,109,300\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"3\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש שוטף\", \"מזומנים ושוווי מזומנים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"4,458,025\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש שוטף\", \"השקעות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,731,072\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"4\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש שוטף\", \"השקעות לזמן קצר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"206,625\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"5\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש שוטף\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"304,277\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"5\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש שוטף\", \"הכנסות לקבל\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"622,065\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"6\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש שוטף\", \"חייבים אחרים ויתרות חובה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"819,503\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"6\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש שוטף\", \"חייבים אחרים ויתרות חובה\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,250,227\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש שוטף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,964,152\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש שוטף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"462,360\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"7\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"רכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"401,335\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"7\", \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"רכוש קבוע\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,712,587\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"סה\\\"כ נכסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,365,487\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"סה\\\"כ נכסים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0008.png",
+    "meta": {
+      "entity_name": "אילת- התאחדות ישראלית לספורט התרבותי לאולילמפי (ע״ר)",
+      "page_num": "3",
+      "page_type": "statements",
+      "statement_type": "balance_sheet",
+      "title": "דוחות על המצב הכספי"
+    },
+    "facts": [
+      {
+        "value": "4,963,512",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש שוטף",
+          "מזומנים ושוווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,109,300",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "3",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש שוטף",
+          "מזומנים ושוווי מזומנים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "4,458,025",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש שוטף",
+          "השקעות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,731,072",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "4",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש שוטף",
+          "השקעות לזמן קצר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "206,625",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "5",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש שוטף",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "304,277",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "5",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש שוטף",
+          "הכנסות לקבל"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "622,065",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "6",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש שוטף",
+          "חייבים אחרים ויתרות חובה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "819,503",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "6",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש שוטף",
+          "חייבים אחרים ויתרות חובה"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,250,227",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש שוטף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,964,152",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש שוטף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "462,360",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "7",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "401,335",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "7",
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,712,587",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "סה\"כ נכסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,365,487",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "סה\"כ נכסים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

@@ -1,0 +1,272 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 22,
+  "page_name": "page_0022.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 12,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אלית - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"17\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"294,168\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תרומות\", \"תרומות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"73,737\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תרומות\", \"תרומות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"5,054\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תרומות בשווה כסף\", \"עלות מוצרים שהתקבלו בשווה כסף (ג' לחלק)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"163,075\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תרומות בשווה כסף\", \"עלות מוצרים שהתקבלו בשווה כסף (ג' לחלק)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,834\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תרומות בשווה כסף\", \"שירותים שהתקבלו על ידי מתנדבים (ד' לחלק)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"19,834\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תרומות בשווה כסף\", \"שירותים שהתקבלו על ידי מתנדבים (ד' לחלק)\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"24,888\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תרומות בשווה כסף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"182,909\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תרומות בשווה כסף\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"319,056\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"תרומות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"256,646\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"תרומות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"12,661,663\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"11,106,544\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מחזור הפעילויות (הממשך)\", \"note_num\": \"12\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0022.png",
+    "meta": {
+      "entity_name": "אלית - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "17",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "294,168",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תרומות",
+          "תרומות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "73,737",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תרומות",
+          "תרומות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "5,054",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "עלות מוצרים שהתקבלו בשווה כסף (ג' לחלק)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "163,075",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "עלות מוצרים שהתקבלו בשווה כסף (ג' לחלק)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,834",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "שירותים שהתקבלו על ידי מתנדבים (ד' לחלק)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "19,834",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "שירותים שהתקבלו על ידי מתנדבים (ד' לחלק)"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "24,888",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "182,909",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תרומות בשווה כסף",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "319,056",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "תרומות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "256,646",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "תרומות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "12,661,663",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "11,106,544",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מחזור הפעילויות (הממשך)",
+        "note_num": "12",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

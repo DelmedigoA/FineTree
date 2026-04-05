@@ -29,6 +29,8 @@ def _summary_to_dict(summary: WorkspaceDocumentSummary) -> dict[str, Any]:
     for key in ("source_pdf", "images_dir", "annotations_path", "thumbnail_path"):
         val = data.get(key)
         data[key] = str(val) if val is not None else None
+    # Expose just the filename so the frontend can build the thumbnail URL easily.
+    data["thumbnail_name"] = summary.thumbnail_path.name if summary.thumbnail_path else None
     return data
 
 

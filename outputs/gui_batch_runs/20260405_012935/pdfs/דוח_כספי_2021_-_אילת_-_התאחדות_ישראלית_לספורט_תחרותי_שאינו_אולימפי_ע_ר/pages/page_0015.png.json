@@ -1,0 +1,148 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 15,
+  "page_name": "page_0015.png",
+  "page_type": "statements",
+  "statement_type": "notes_to_financial_statements",
+  "fact_count": 6,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אילת - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"10\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"4,809,643\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"במטבע ישראלי\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,108,022\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"במטבע ישראלי\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"153,869\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"במטבע זר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,278\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"במטבע זר\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"4,963,512\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2021-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"3,109,300\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"מזומנים ושווי מזומנים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": \"instant\", \"period_start\": null, \"period_end\": \"2020-12-31\", \"path\": [\"בחשבון עובר ושב בבנקים\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0015.png",
+    "meta": {
+      "entity_name": "אילת - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "10",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "4,809,643",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "במטבע ישראלי"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,108,022",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "במטבע ישראלי"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "153,869",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "במטבע זר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,278",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "במטבע זר"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "4,963,512",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2021-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "3,109,300",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "מזומנים ושווי מזומנים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": "instant",
+        "period_start": null,
+        "period_end": "2020-12-31",
+        "path": [
+          "בחשבון עובר ושב בבנקים",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

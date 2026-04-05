@@ -1,0 +1,43 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 28,
+  "page_name": "page_0028.png",
+  "page_type": "declaration",
+  "statement_type": "auditors_report",
+  "fact_count": 1,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אילת- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"2\", \"page_type\": \"declaration\", \"statement_type\": \"auditors_report\", \"title\": \"דוח המאמץ לצרכי משרד הרווחה\"}, \"facts\": [{\"value\": \"992,488\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"לשנת המס 2021\", \"שקלים חדשים\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0028.png",
+    "meta": {
+      "entity_name": "אילת- התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "2",
+      "page_type": "declaration",
+      "statement_type": "auditors_report",
+      "title": "דוח המאמץ לצרכי משרד הרווחה"
+    },
+    "facts": [
+      {
+        "value": "992,488",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "לשנת המס 2021",
+          "שקלים חדשים"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

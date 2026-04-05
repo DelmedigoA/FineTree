@@ -1,0 +1,388 @@
+{
+  "doc_id": "דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר",
+  "page_index": 10,
+  "page_name": "page_0010.png",
+  "page_type": "statements",
+  "statement_type": "statement_of_activities",
+  "fact_count": 18,
+  "error": null,
+  "assistant_text": "{\"meta\": {\"entity_name\": \"אילת - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)\", \"page_num\": \"5\", \"page_type\": \"statements\", \"statement_type\": \"statement_of_activities\", \"title\": \"דוחות על הפעילויות\"}, \"facts\": [{\"value\": \"12,342,607\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מחזור הפעילויות\", \"מחזור הפעילות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,849,898\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מחזור הפעילויות\", \"מחזור הפעילות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"319,056\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מחזור הפעילויות\", \"תרומות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"256,646\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מחזור הפעילויות\", \"תרומות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"12,661,663\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"מחזור הפעילויות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"11,106,544\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"12\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"מחזור הפעילויות\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"10,693,072\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"13\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"עלות הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"8,634,269\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"13\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"עלות הפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,968,591\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות נטו מפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,472,275\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הכנסות נטו מפעילויות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,246,660\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"14\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,230,930\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"14\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הוצאות הנהלה וכלליות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"721,931\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות נטו לפני מימון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,241,345\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הכנסות נטו לפני מימון\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"270,557\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"15\", \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות מימון, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"24,989\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": \"15\", \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הכנסות מימון, נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"992,488\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2021-01-01\", \"period_end\": \"2021-12-31\", \"path\": [\"הכנסות נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,266,334\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": false, \"note_name\": null, \"note_num\": null, \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2020-01-01\", \"period_end\": \"2020-12-31\", \"path\": [\"הכנסות נטו\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0010.png",
+    "meta": {
+      "entity_name": "אילת - התאחדות ישראלית לספורט תחרותי לא אולימפי (ע״ר)",
+      "page_num": "5",
+      "page_type": "statements",
+      "statement_type": "statement_of_activities",
+      "title": "דוחות על הפעילויות"
+    },
+    "facts": [
+      {
+        "value": "12,342,607",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "מחזור הפעילות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,849,898",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "מחזור הפעילות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "319,056",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "תרומות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "256,646",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "תרומות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "12,661,663",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "11,106,544",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "12",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "מחזור הפעילויות",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "10,693,072",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "13",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "עלות הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "8,634,269",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "13",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "עלות הפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,968,591",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות נטו מפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,472,275",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הכנסות נטו מפעילויות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,246,660",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "14",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הוצאות הנהלה וכלליות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,230,930",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "14",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הוצאות הנהלה וכלליות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "721,931",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות נטו לפני מימון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,241,345",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הכנסות נטו לפני מימון"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "270,557",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "15",
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות מימון, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "24,989",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": "15",
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הכנסות מימון, נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "992,488",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2021-01-01",
+        "period_end": "2021-12-31",
+        "path": [
+          "הכנסות נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,266,334",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": false,
+        "note_name": null,
+        "note_num": null,
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2020-01-01",
+        "period_end": "2020-12-31",
+        "path": [
+          "הכנסות נטו"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  }
+}

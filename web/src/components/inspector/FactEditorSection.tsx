@@ -287,16 +287,13 @@ export function FactEditorSection({ selectedFacts, pageName }: Props) {
         />
       </FieldRow>
 
-      {/* Path editor (single select only) */}
-      {selectedFacts.length === 1 && (
-        <SubSection title="Path">
-          <PathEditor
-            factIndex={selectedFacts[0]!.index}
-            record={selectedFacts[0]!.record}
-            pageName={pageName}
-          />
-        </SubSection>
-      )}
+      {/* Path editor */}
+      <SubSection title="Path">
+        <PathEditor
+          selectedFacts={selectedFacts}
+          pageName={pageName}
+        />
+      </SubSection>
 
       {/* Equations editor (single select only) */}
       {selectedFacts.length === 1 && (

@@ -6,15 +6,27 @@ import type { PageState } from "./schema";
 
 export interface WorkspaceDocument {
   doc_id: string;
-  pdf_path: string | null;
+  source_pdf: string | null;
   images_dir: string;
-  page_count: number;
   annotations_path: string | null;
-  has_annotations: boolean;
+  thumbnail_path: string | null;
+  thumbnail_name: string | null;
+  page_count: number;
+  annotated_page_count: number;
+  approved_page_count: number;
+  progress_pct: number;
+  status: string;
+  updated_at: number | null;
+  fact_count: number;
+  annotated_token_count: number;
+  reg_flag_count: number;
+  warning_count: number;
+  pages_with_reg_flags: number;
+  pages_with_warnings: number;
   checked: boolean;
   reviewed: boolean;
-  thumbnail: string | null;
-  fact_count?: number;
+  // Legacy compat
+  has_annotations?: boolean;
 }
 
 // ── Annotations ────────────────────────────────────────────────────

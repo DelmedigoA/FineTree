@@ -1,6 +1,6 @@
 /** Annotation page: canvas + toolbar + thumbnail strip + inspector. */
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { get } from "../api/client";
 import { useDocumentStore } from "../stores/documentStore";
@@ -9,6 +9,7 @@ import { CanvasContainer } from "../canvas/CanvasContainer";
 import { AnnotationToolbar } from "../components/toolbar/AnnotationToolbar";
 import { PageThumbnailStrip } from "../components/thumbnail/PageThumbnailStrip";
 import { InspectorPanel } from "../components/inspector/InspectorPanel";
+import { BatchInferDialog } from "../components/dialogs/BatchInferDialog";
 import { useSave } from "../hooks/useSave";
 import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useAIStore } from "../stores/aiStore";
@@ -24,7 +25,10 @@ export function AnnotationPage() {
 
   const { save } = useSave();
   useUndoRedo();
-  const openAI = useAIStore((s) => s.openDialog);
+  const openDialog = useAIStore((s) => s.openDialog);
+  const openAI = () => openDialog();
+  const openBatch = () => openDialog("batch");
+  const [batchInferOpen, setBatchInferOpen] = useState(false);
 
   useEffect(() => {
     if (!docId || docId === currentDocId) return;
@@ -69,8 +73,19 @@ export function AnnotationPage() {
         overflow: "hidden",
       }}
     >
-      <AnnotationToolbar onSave={save} onAI={openAI} />
+      <AnnotationToolbar
+        onSave={save}
+        onAI={openAI}
+        onBatch={openBatch}
+        onBatchInfer={() => setBatchInferOpen(true)}
+      />
       <AIDialog />
+      {batchInferOpen && docId && (
+        <BatchInferDialog
+          docIds={[docId]}
+          onClose={() => setBatchInferOpen(false)}
+        />
+      )}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <PageThumbnailStrip />
         <div style={{ flex: 1, overflow: "hidden" }}>

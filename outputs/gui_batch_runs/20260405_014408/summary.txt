@@ -1,0 +1,35 @@
+Batch state: completed
+Updated: 2026-04-05T02:03:09
+Endpoint: https://80ad-35-192-165-221.ngrok-free.app/v1
+Model: asafd60/FineTree-27B-3.0
+Elapsed seconds: 1140.381
+Pages: 57/57 failed=0
+Estimated output tokens: 204914
+Overall est tokens/s: 179.689
+Recent est tokens/s: 0.0
+Progress JSON: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260405_014408/progress.json
+Events JSONL: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260405_014408/events.jsonl
+Requests JSONL: /Users/delmedigo/Dev/FineTree/outputs/gui_batch_runs/20260405_014408/requests.jsonl
+
+Documents:
+- דוח_כספי_2021_-_אילת_-_התאחדות_ישראלית_לספורט_תחרותי_שאינו_אולימפי_ע_ר
+  state: completed
+  page: page_0030.png
+  pages: 31/31 failed=0
+  facts: 587
+  estimated_output_tokens: 129331
+  est_tokens_per_second: 113.41
+- דוח_כספי_2024_-_-אושר-_-_למען_ילדי_החינוך_המיוחד_ע-ר
+  state: completed
+  page: page_0006.png
+  pages: 11/11 failed=0
+  facts: 200
+  estimated_output_tokens: 28526
+  est_tokens_per_second: 25.014
+- דוח_כספי_2024_-_-ידידים-_למען_הנוער_והחברה_ע-ר
+  state: completed
+  page: page_0006.png
+  pages: 15/15 failed=0
+  facts: 332
+  estimated_output_tokens: 47057
+  est_tokens_per_second: 41.264
