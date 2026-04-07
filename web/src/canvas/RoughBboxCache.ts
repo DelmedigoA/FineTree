@@ -35,6 +35,7 @@ export class RoughBboxCache {
       existing.style.strokeWidth === style.strokeWidth &&
       existing.style.roughness === style.roughness &&
       (existing.style.bowing ?? 0) === (style.bowing ?? 0) &&
+      (existing.style.cornerRadius ?? 0) === (style.cornerRadius ?? 0) &&
       existing.zoom === zoom &&
       areDashesEqual(existing.style.strokeLineDash, style.strokeLineDash)
     ) {
@@ -52,16 +53,26 @@ export class RoughBboxCache {
     const ctx = osc.getContext("2d");
     if (ctx) {
       const rc = rough.canvas(osc as unknown as HTMLCanvasElement) as RoughCanvas;
-      rc.rectangle(PADDING, PADDING, bbox.w * zoom, bbox.h * zoom, {
+      const rw = bbox.w * zoom;
+      const rh = bbox.h * zoom;
+      const r = Math.min(style.cornerRadius ?? 0, rw / 2, rh / 2);
+      const opts = {
         stroke: style.stroke,
         strokeWidth: style.strokeWidth,
         roughness: style.roughness,
         bowing: style.bowing ?? 0,
         strokeLineDash: style.strokeLineDash,
         fill: "transparent",
-        fillStyle: "solid",
+        fillStyle: "solid" as const,
         seed: hashKey(key),
-      });
+      };
+      if (r > 0) {
+        const x = PADDING, y = PADDING;
+        const path = `M ${x + r} ${y} L ${x + rw - r} ${y} Q ${x + rw} ${y} ${x + rw} ${y + r} L ${x + rw} ${y + rh - r} Q ${x + rw} ${y + rh} ${x + rw - r} ${y + rh} L ${x + r} ${y + rh} Q ${x} ${y + rh} ${x} ${y + rh - r} L ${x} ${y + r} Q ${x} ${y} ${x + r} ${y} Z`;
+        rc.path(path, opts);
+      } else {
+        rc.rectangle(PADDING, PADDING, rw, rh, opts);
+      }
     }
 
     const entry: CacheEntry = { bbox: { ...bbox }, style: { ...style }, zoom, canvas: osc };

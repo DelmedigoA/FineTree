@@ -33,6 +33,7 @@ export function InspectorPanel() {
 
   const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH);
   const [open, setOpen] = useState<Record<string, boolean>>(DEFAULT_OPEN);
+  const [issueCount, setIssueCount] = useState<number | null>(null);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   // Auto-scroll to fact editor when selection changes.
@@ -118,10 +119,12 @@ export function InspectorPanel() {
         {page && (
           <AccordionSection
             title="Issues"
+            badge={issueCount !== null && issueCount > 0 ? `${issueCount}` : undefined}
+            badgeTone={issueCount !== null && issueCount > 0 ? "danger" : undefined}
             isOpen={open["Issues"] ?? false}
             onToggle={() => toggle("Issues")}
           >
-            <PageIssuesSection />
+            <PageIssuesSection onIssueCount={setIssueCount} />
           </AccordionSection>
         )}
 
@@ -217,6 +220,7 @@ function ResizeHandle({ onMouseDown }: { onMouseDown: (e: React.MouseEvent) => v
 function AccordionSection({
   title,
   badge,
+  badgeTone,
   isOpen,
   onToggle,
   highlight,
@@ -224,6 +228,7 @@ function AccordionSection({
 }: {
   title: string;
   badge?: string;
+  badgeTone?: "danger" | "warn";
   isOpen: boolean;
   onToggle: () => void;
   highlight?: boolean;
@@ -279,7 +284,11 @@ function AccordionSection({
                 fontSize: 10,
                 fontWeight: 700,
                 fontFamily: "var(--font-mono)",
-                color: "var(--text-soft)",
+                color: badgeTone === "danger"
+                  ? "var(--danger)"
+                  : badgeTone === "warn"
+                    ? "var(--warn)"
+                    : "var(--text-soft)",
                 background: "var(--surface-alt)",
                 padding: "1px 6px",
                 borderRadius: "var(--radius-pill)",

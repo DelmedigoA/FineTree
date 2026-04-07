@@ -115,7 +115,13 @@ def save_document(doc_id: str, request: SaveDocumentRequest) -> dict[str, Any]:
         ) from exc
 
     json_text = serialize_annotations_json(canonical)
-    create_annotation_backup(annotations_path, reason="web_save")
+    if annotations_path.is_file():
+        create_annotation_backup(
+            get_data_root(),
+            annotations_path,
+            reason="web_save",
+            algo_version="web_annotator_v1",
+        )
     atomic_write_text(annotations_path, json_text)
     return {"ok": True, "warnings": equation_findings if equation_findings else []}
 
@@ -149,11 +155,11 @@ def validate_document(doc_id: str) -> dict[str, Any]:
     page_names = [p.name for p in page_paths]
     states = load_page_states(payload, page_names, placeholder_missing_bboxes=True)
     document_meta = extract_document_meta(payload)
-    issue_summary = validate_document_issues(
-        page_images=[p for p in page_paths],
-        page_states=states,
-        document_meta=document_meta,
-    )
+    ordered_states = [
+        (name, states.get(name, PageState(meta={}, facts=[])))
+        for name in page_names
+    ]
+    issue_summary = validate_document_issues(ordered_states)
     return {
         "reg_flag_count": issue_summary.reg_flag_count,
         "warning_count": issue_summary.warning_count,
@@ -168,7 +174,7 @@ def validate_document(doc_id: str) -> dict[str, Any]:
                     for issue in page_summary.warnings
                 ],
             }
-            for page_name, page_summary in issue_summary.pages.items()
+            for page_name, page_summary in issue_summary.page_summaries.items()
         },
     }
 

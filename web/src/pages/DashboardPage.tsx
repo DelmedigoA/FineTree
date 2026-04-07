@@ -262,7 +262,7 @@ export function DashboardPage() {
               <input type="checkbox" checked={allSelected} onChange={selectAll} style={{ accentColor: "var(--accent)" }} />
               <span>{allSelected ? "Deselect all" : "Select all"} ({filteredDocs.length})</span>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
               {filteredDocs.map((doc) => (
                 <DocumentCard
                   key={doc.doc_id}
@@ -361,10 +361,10 @@ function DocumentCard({
       {/* Thumbnail */}
       <div
         onClick={onOpen}
-        style={{ height: 160, background: "var(--surface-alt)", overflow: "hidden", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}
+        style={{ height: 130, background: "#111", overflow: "hidden", cursor: "pointer", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}
       >
         {thumbSrc ? (
-          <img src={thumbSrc} alt={doc.doc_id} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+          <img src={thumbSrc} alt={doc.doc_id} style={{ width: "100%", height: "100%", objectFit: "contain", padding: "4px", boxSizing: "border-box" }} loading="lazy" />
         ) : (
           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, color: "var(--text-soft)" }}>
             <span style={{ fontSize: 36 }}>{"\uD83D\uDCC4"}</span>
@@ -380,7 +380,7 @@ function DocumentCard({
       </div>
 
       {/* Info body */}
-      <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 6, flex: 1 }}>
+      <div style={{ padding: "10px 10px", display: "flex", flexDirection: "column", gap: 5, flex: 1 }}>
 
         {/* Title + status */}
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 6 }}>
@@ -466,7 +466,7 @@ function EmptyState({ onImport }: { onImport: () => void }) {
 
 function LoadingGrid() {
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 20 }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 16 }}>
       {Array.from({ length: 6 }).map((_, i) => (
         <div key={i} style={{ height: 260, borderRadius: "var(--radius-lg)", background: "var(--surface-alt)", border: "1px solid var(--surface-border)", animation: "pulse 1.5s ease infinite" }} />
       ))}

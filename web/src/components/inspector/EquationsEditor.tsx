@@ -3,6 +3,7 @@
 import { useDocumentStore } from "../../stores/documentStore";
 import { useCanvasStore } from "../../stores/canvasStore";
 import { pushUndoSnapshot } from "../../hooks/useUndoRedo";
+import { evaluateEquationString, equationMatchState } from "../../hooks/useEquationWorkflow";
 import type { BoxRecord } from "../../types/schema";
 
 interface Props {
@@ -51,14 +52,8 @@ export function EquationsEditor({ factIndex, record, pageName }: Props) {
 
   if (equations.length === 0) {
     return (
-      <div
-        style={{
-          fontSize: 12,
-          color: "var(--text-soft)",
-          padding: "4px 0",
-        }}
-      >
-        No equations. Use Alt+drag to assign.
+      <div style={{ fontSize: 12, color: "var(--text-soft)", padding: "4px 0" }}>
+        No equations. Alt+drag to select terms, then press Shift to confirm.
       </div>
     );
   }
@@ -66,49 +61,83 @@ export function EquationsEditor({ factIndex, record, pageName }: Props) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       {equations.map((eq, idx) => (
-        <div
+        <EquationRow
           key={idx}
+          equationText={eq.equation}
+          factEquationText={eq.fact_equation ?? undefined}
+          targetValue={String(record.fact.value ?? "")}
+          onMoveUp={idx > 0 ? () => moveUp(idx) : undefined}
+          onRemove={() => removeVariant(idx)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function EquationRow({
+  equationText,
+  factEquationText,
+  targetValue,
+  onMoveUp,
+  onRemove,
+}: {
+  equationText: string;
+  factEquationText?: string;
+  targetValue: string;
+  onMoveUp?: () => void;
+  onRemove?: () => void;
+}) {
+  const result = evaluateEquationString(equationText);
+  const state = equationMatchState(result, targetValue);
+  const resultColor = state === "ok" ? "#00e500" : state === "mismatch" ? "#f87171" : "var(--text-soft)";
+
+  return (
+    <div
+      style={{
+        padding: "8px 10px",
+        background: "var(--surface-alt)",
+        borderRadius: "var(--radius-xs)",
+        border: "1px solid var(--surface-border)",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 12,
+          fontFamily: "var(--font-mono)",
+          color: "var(--text)",
+          wordBreak: "break-all",
+          marginBottom: factEquationText ? 4 : (onRemove ? 4 : 0),
+          display: "flex",
+          alignItems: "baseline",
+          gap: 6,
+        }}
+      >
+        <span>{equationText || "\u2026"}</span>
+        {result !== null && (
+          <span style={{ color: resultColor, fontWeight: 600, whiteSpace: "nowrap" }}>
+            = {result.toLocaleString()}
+          </span>
+        )}
+      </div>
+      {factEquationText && (
+        <div
           style={{
-            padding: "8px 10px",
-            background: "var(--surface-alt)",
-            borderRadius: "var(--radius-xs)",
-            border: "1px solid var(--surface-border)",
+            fontSize: 11,
+            fontFamily: "var(--font-mono)",
+            color: "var(--text-soft)",
+            wordBreak: "break-all",
+            marginBottom: onRemove ? 6 : 0,
           }}
         >
-          <div
-            style={{
-              fontSize: 12,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text)",
-              wordBreak: "break-all",
-              marginBottom: 4,
-            }}
-          >
-            {eq.equation}
-          </div>
-          {eq.fact_equation && (
-            <div
-              style={{
-                fontSize: 11,
-                fontFamily: "var(--font-mono)",
-                color: "var(--text-soft)",
-                wordBreak: "break-all",
-                marginBottom: 6,
-              }}
-            >
-              {eq.fact_equation}
-            </div>
-          )}
-          <div style={{ display: "flex", gap: 4 }}>
-            {idx > 0 && (
-              <MiniBtn onClick={() => moveUp(idx)}>Move up</MiniBtn>
-            )}
-            <MiniBtn onClick={() => removeVariant(idx)} danger>
-              Remove
-            </MiniBtn>
-          </div>
+          {factEquationText}
         </div>
-      ))}
+      )}
+      {onRemove && (
+        <div style={{ display: "flex", gap: 4 }}>
+          {onMoveUp && <MiniBtn onClick={onMoveUp}>Move up</MiniBtn>}
+          <MiniBtn onClick={onRemove} danger>Remove</MiniBtn>
+        </div>
+      )}
     </div>
   );
 }

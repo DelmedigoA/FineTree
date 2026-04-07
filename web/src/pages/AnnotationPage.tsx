@@ -1,7 +1,7 @@
 /** Annotation page: canvas + toolbar + thumbnail strip + inspector. */
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import { get } from "../api/client";
 import { useDocumentStore } from "../stores/documentStore";
 import { useCanvasStore } from "../stores/canvasStore";
@@ -13,12 +13,15 @@ import { BatchInferDialog } from "../components/dialogs/BatchInferDialog";
 import { useSave } from "../hooks/useSave";
 import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useAIStore } from "../stores/aiStore";
+import { useUIStore } from "../stores/uiStore";
 import { AIDialog } from "../components/dialogs/AIDialog";
 import type { DocumentPayload } from "../types/api";
 
 export function AnnotationPage() {
   const { docId } = useParams<{ docId: string }>();
+  const [searchParams] = useSearchParams();
   const loadDocument = useDocumentStore((s) => s.loadDocument);
+  const setCurrentPageIndex = useDocumentStore((s) => s.setCurrentPageIndex);
   const isLoading = useDocumentStore((s) => s.isLoading);
   const currentDocId = useDocumentStore((s) => s.docId);
   const fitToView = useCanvasStore((s) => s.fitToView);
@@ -32,6 +35,7 @@ export function AnnotationPage() {
 
   useEffect(() => {
     if (!docId || docId === currentDocId) return;
+    const initialPage = parseInt(searchParams.get("page") ?? "0", 10);
     get<DocumentPayload>(`/annotations/${docId}`)
       .then((payload) => {
         loadDocument(docId, {
@@ -40,12 +44,15 @@ export function AnnotationPage() {
           document_meta: payload.document_meta,
           page_names: payload.page_images,
         });
+        if (!isNaN(initialPage) && initialPage > 0) {
+          setCurrentPageIndex(initialPage);
+        }
         requestAnimationFrame(() => {
           requestAnimationFrame(fitToView);
         });
       })
       .catch(console.error);
-  }, [docId, currentDocId, loadDocument, fitToView]);
+  }, [docId, currentDocId, loadDocument, setCurrentPageIndex, fitToView, searchParams]);
 
   if (isLoading) {
     return (
@@ -93,6 +100,52 @@ export function AnnotationPage() {
         </div>
         <InspectorPanel />
       </div>
+      <StatusBar />
+    </div>
+  );
+}
+
+function StatusBar() {
+  const saveStatus = useUIStore((s) => s.saveStatus);
+  const savedAt = useUIStore((s) => s.savedAt);
+
+  const label =
+    saveStatus === "saving" ? "Saving…"
+    : saveStatus === "saved" ? `Saved ✓${savedAt ? "  " + new Date(savedAt).toLocaleTimeString() : ""}`
+    : saveStatus === "error" ? "Save failed ✗"
+    : null;
+
+  const color =
+    saveStatus === "saving" ? "var(--text-muted)"
+    : saveStatus === "saved" ? "var(--accent)"
+    : saveStatus === "error" ? "var(--warn)"
+    : "transparent";
+
+  return (
+    <div
+      style={{
+        height: 24,
+        padding: "0 16px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "flex-end",
+        background: "var(--surface)",
+        borderTop: "1px solid var(--surface-border)",
+        flexShrink: 0,
+      }}
+    >
+      <span
+        style={{
+          fontSize: 11,
+          fontWeight: 500,
+          color,
+          fontFamily: "var(--font-mono)",
+          transition: "opacity 0.3s ease",
+          opacity: label ? 1 : 0,
+        }}
+      >
+        {label ?? ""}
+      </span>
     </div>
   );
 }

@@ -44,12 +44,18 @@ export interface SaveDocumentRequest {
   page_states?: Record<string, PageState>;
 }
 
+export interface ValidationIssue {
+  code: string;
+  message: string;
+  fact_index: number | null;
+}
+
 export interface ValidationResult {
   pages: Record<
     string,
     {
-      reg_flags: string[];
-      warnings: string[];
+      reg_flags: ValidationIssue[];
+      warnings: ValidationIssue[];
     }
   >;
 }

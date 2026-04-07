@@ -10,9 +10,12 @@ import {
   BBOX_SELECTED,
   BBOX_HOVERED,
   BBOX_EQUATION_TERM,
+  BBOX_EQUATION_OK,
+  BBOX_EQUATION_BAD,
 } from "./bboxStyles";
+import { equationMatchState, evaluateEquationString } from "../hooks/useEquationWorkflow";
 import type { BBoxStyle } from "../types/canvas";
-import type { BBox } from "../types/schema";
+import type { BBox, BoxRecord } from "../types/schema";
 
 const roughCache = new RoughBboxCache();
 
@@ -84,6 +87,18 @@ function renderImageLayer(refs: CanvasRefs) {
   ctx.restore();
 }
 
+/** Check if a fact's equations match its value. Returns "ok", "bad", or "none". */
+function getFactEquationState(fact: BoxRecord): "ok" | "bad" | "none" {
+  const equations = fact.fact.equations as Array<{ equation: string }> | null;
+  if (!equations || equations.length === 0) return "none";
+  const targetValue = String(fact.fact.value ?? "");
+  for (const eq of equations) {
+    const result = evaluateEquationString(eq.equation);
+    if (equationMatchState(result, targetValue) === "ok") return "ok";
+  }
+  return "bad";
+}
+
 function renderBboxLayer(refs: CanvasRefs) {
   const canvas = refs.bboxCanvas;
   if (!canvas) return;
@@ -129,7 +144,14 @@ function renderBboxLayer(refs: CanvasRefs) {
     } else if (selection.hoveredIndex === i) {
       style = BBOX_HOVERED;
     } else {
-      style = BBOX_DEFAULT;
+      const eqState = getFactEquationState(fact);
+      if (eqState === "ok") {
+        style = BBOX_EQUATION_OK;
+      } else if (eqState === "bad") {
+        style = BBOX_EQUATION_BAD;
+      } else {
+        style = BBOX_DEFAULT;
+      }
     }
 
     // Use rough cache.

@@ -31,6 +31,59 @@ export function FieldRow({
   );
 }
 
+// ── Two-column pair ─────────────────────────────────────────────────
+
+/** Render two labelled fields side by side. Each cell stacks label → field. */
+export function FieldPair({
+  children,
+}: {
+  children: [React.ReactNode, React.ReactNode];
+}) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+      {children}
+    </div>
+  );
+}
+
+/** Render three labelled fields side by side. Each cell stacks label → field. */
+export function FieldTriple({
+  children,
+}: {
+  children: [React.ReactNode, React.ReactNode, React.ReactNode];
+}) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
+      {children}
+    </div>
+  );
+}
+
+/** Compact field cell: label on top, field below. Used inside FieldPair. */
+export function FieldCell({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <span
+        style={{
+          fontSize: 11,
+          fontWeight: 500,
+          color: "var(--text-soft)",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+}
+
 // ── Input ───────────────────────────────────────────────────────────
 
 const inputStyle: CSSProperties = {

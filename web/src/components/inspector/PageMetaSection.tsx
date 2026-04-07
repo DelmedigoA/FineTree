@@ -2,7 +2,7 @@
 
 import { useDocumentStore } from "../../stores/documentStore";
 import { pushUndoSnapshot } from "../../hooks/useUndoRedo";
-import { FieldRow, FieldSelect, FieldInput } from "./FieldWidgets";
+import { FieldRow, FieldTriple, FieldCell, FieldSelect, FieldInput } from "./FieldWidgets";
 
 interface Props {
   meta: Record<string, unknown>;
@@ -25,6 +25,42 @@ export function PageMetaSection({ meta, pageName }: Props) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* Page # | Type | Status */}
+      <FieldTriple>
+        <FieldCell label="Page #">
+          <FieldInput
+            value={(meta.page_num as string) ?? ""}
+            placeholder="#"
+            onChange={(v) => update("page_num", v)}
+          />
+        </FieldCell>
+        <FieldCell label="Type">
+          <FieldSelect
+            value={(meta.page_type as string) ?? "other"}
+            options={[
+              { value: "title", label: "Title" },
+              { value: "contents", label: "Contents" },
+              { value: "declaration", label: "Declaration" },
+              { value: "statements", label: "Statements" },
+              { value: "other", label: "Other" },
+            ]}
+            onChange={(v) => update("page_type", v)}
+          />
+        </FieldCell>
+        <FieldCell label="Status">
+          <FieldSelect
+            value={(meta.annotation_status as string) ?? ""}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "approved", label: "Approved" },
+              { value: "flagged", label: "Flagged" },
+            ]}
+            onChange={(v) => update("annotation_status", v)}
+          />
+        </FieldCell>
+      </FieldTriple>
+
+      {/* Entity — full width */}
       <FieldRow label="Entity">
         <FieldInput
           value={(meta.entity_name as string) ?? ""}
@@ -32,26 +68,8 @@ export function PageMetaSection({ meta, pageName }: Props) {
           onChange={(v) => update("entity_name", v)}
         />
       </FieldRow>
-      <FieldRow label="Page #">
-        <FieldInput
-          value={(meta.page_num as string) ?? ""}
-          placeholder="#"
-          onChange={(v) => update("page_num", v)}
-        />
-      </FieldRow>
-      <FieldRow label="Type">
-        <FieldSelect
-          value={(meta.page_type as string) ?? "other"}
-          options={[
-            { value: "title", label: "Title" },
-            { value: "contents", label: "Contents" },
-            { value: "declaration", label: "Declaration" },
-            { value: "statements", label: "Statements" },
-            { value: "other", label: "Other" },
-          ]}
-          onChange={(v) => update("page_type", v)}
-        />
-      </FieldRow>
+
+      {/* Statement — full width (many long options) */}
       <FieldRow label="Statement">
         <FieldSelect
           value={(meta.statement_type as string) ?? ""}
@@ -60,14 +78,8 @@ export function PageMetaSection({ meta, pageName }: Props) {
             { value: "balance_sheet", label: "Balance Sheet" },
             { value: "income_statement", label: "Income Statement" },
             { value: "cash_flow_statement", label: "Cash Flow" },
-            {
-              value: "statement_of_changes_in_equity",
-              label: "Changes in Equity",
-            },
-            {
-              value: "notes_to_financial_statements",
-              label: "Notes",
-            },
+            { value: "statement_of_changes_in_equity", label: "Changes in Equity" },
+            { value: "notes_to_financial_statements", label: "Notes" },
             { value: "board_of_directors_report", label: "Board Report" },
             { value: "auditors_report", label: "Auditors Report" },
             { value: "statement_of_activities", label: "Activities" },
@@ -76,6 +88,8 @@ export function PageMetaSection({ meta, pageName }: Props) {
           onChange={(v) => update("statement_type", v)}
         />
       </FieldRow>
+
+      {/* Title — full width */}
       <FieldRow label="Title">
         <FieldInput
           value={(meta.title as string) ?? ""}
@@ -83,22 +97,13 @@ export function PageMetaSection({ meta, pageName }: Props) {
           onChange={(v) => update("title", v)}
         />
       </FieldRow>
+
+      {/* Note — full width */}
       <FieldRow label="Note">
         <FieldInput
           value={(meta.annotation_note as string) ?? ""}
           placeholder="Annotation note"
           onChange={(v) => update("annotation_note", v)}
-        />
-      </FieldRow>
-      <FieldRow label="Status">
-        <FieldSelect
-          value={(meta.annotation_status as string) ?? ""}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "approved", label: "Approved" },
-            { value: "flagged", label: "Flagged" },
-          ]}
-          onChange={(v) => update("annotation_status", v)}
         />
       </FieldRow>
     </div>

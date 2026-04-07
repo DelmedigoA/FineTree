@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 from .deps import get_data_root
 from .sse_helpers import sse_event, sse_response
-from ..workspace import page_image_paths, pdf_images_root
+from ..workspace import page_image_paths, pdf_images_root, annotations_root
 
 router = APIRouter(prefix="/api/ai", tags=["ai"])
 
@@ -180,10 +180,26 @@ async def fix_spelling(request: FixSpellingRequest) -> dict[str, Any]:
 async def align_bboxes(request: AlignBboxesRequest) -> dict[str, Any]:
     image_path = _page_image_path(request.doc_id, request.page_name)
     try:
+        from ..local_doctr import extract_numeric_bbox_facts
         from ..qwen_import_matcher import match_qwen_import_payloads
-        aligned = match_qwen_import_payloads(
-            image_path=image_path,
-            import_facts=request.facts,
+
+        # Load reading_direction from document annotations.
+        data_root = get_data_root()
+        annotations_path = annotations_root(data_root) / f"{request.doc_id}.json"
+        reading_direction = "rtl"
+        if annotations_path.is_file():
+            raw = json.loads(annotations_path.read_text(encoding="utf-8"))
+            reading_direction = (raw.get("document_meta") or {}).get("reading_direction") or "rtl"
+
+        # Run local detector to get candidate bboxes.
+        detector_payloads = extract_numeric_bbox_facts(image_path)
+
+        # Align imported facts against detected bboxes.
+        aligned, _ = match_qwen_import_payloads(
+            page_name=request.page_name,
+            imported_payloads=request.facts,
+            detector_payloads=detector_payloads,
+            reading_direction=reading_direction,
         )
         return {"aligned_facts": aligned}
     except Exception as exc:

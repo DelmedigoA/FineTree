@@ -60,6 +60,7 @@ export interface BBoxStyle {
   bowing?: number;
   strokeLineDash?: number[];
   fillStyle?: string;
+  cornerRadius?: number;
 }
 
 /** Cached rough rendering of a single bbox. */

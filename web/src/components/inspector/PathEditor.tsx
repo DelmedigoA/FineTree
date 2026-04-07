@@ -10,19 +10,53 @@ interface Props {
   pageName: string | null;
 }
 
+/** Longest common prefix of all paths (like PyQt5 _shared_path_prefix). */
+function sharedPathPrefix(paths: string[][]): string[] {
+  if (paths.length === 0) return [];
+  const first = paths[0]!;
+  let len = first.length;
+  for (const p of paths.slice(1)) {
+    let k = 0;
+    while (k < len && k < p.length && p[k] === first[k]) k++;
+    len = k;
+  }
+  return first.slice(0, len);
+}
+
+/** Elements of the first path that exist in ALL paths (like PyQt5 _shared_path_elements). */
+function sharedPathElements(paths: string[][]): string[] {
+  if (paths.length === 0) return [];
+  const first = paths[0]!;
+  if (paths.length === 1) return first;
+  return first.filter((el) => paths.slice(1).every((p) => p.includes(el)));
+}
+
 export function PathEditor({ selectedFacts, pageName }: Props) {
   const { pageStates, updatePageState } = useDocumentStore();
   const markDirty = useCanvasStore((s) => s.markDirty);
 
-  const primaryRecord = selectedFacts[0]?.record;
-  const path = (primaryRecord?.fact.path as string[]) ?? [];
-
   const isMulti = selectedFacts.length > 1;
+
+  // Compute the display path using shared prefix logic (matches PyQt5).
+  const allPaths = selectedFacts.map(
+    (f) => (f.record.fact.path as string[]) ?? [],
+  );
+  const path = isMulti ? sharedPathPrefix(allPaths) : (allPaths[0] ?? []);
+  const sharedElements = isMulti ? sharedPathElements(allPaths) : path;
+
   const allSamePath = isMulti
     ? selectedFacts.every(
-        (f) => JSON.stringify(f.record.fact.path ?? []) === JSON.stringify(path),
+        (f) =>
+          JSON.stringify(f.record.fact.path ?? []) ===
+          JSON.stringify(allPaths[0] ?? []),
       )
     : true;
+
+  // How many levels diverge beyond the shared prefix?
+  const maxOtherLen = isMulti
+    ? Math.max(...allPaths.map((p) => p.length))
+    : 0;
+  const hasMixedBeyondPrefix = isMulti && maxOtherLen > path.length;
 
   const updatePath = (next: string[]) => {
     if (!pageName) return;
@@ -66,7 +100,21 @@ export function PathEditor({ selectedFacts, pageName }: Props) {
         <div style={{ fontSize: 11, color: "var(--text-soft)", marginBottom: 2 }}>
           {allSamePath
             ? `Shared path · edits apply to all ${selectedFacts.length} facts`
-            : `Mixed paths · editing applies to all ${selectedFacts.length} facts`}
+            : path.length > 0
+              ? `Shared prefix (${path.length} level${path.length !== 1 ? "s" : ""}) · mixed paths beyond`
+              : `Mixed paths · edits apply to all ${selectedFacts.length} facts`}
+        </div>
+      )}
+      {isMulti && hasMixedBeyondPrefix && (
+        <div
+          style={{
+            fontSize: 11,
+            color: "var(--warn)",
+            fontStyle: "italic",
+            marginBottom: 2,
+          }}
+        >
+          ⚠ Levels beyond prefix differ across selection
         </div>
       )}
       {path.length === 0 ? (
@@ -102,17 +150,31 @@ export function PathEditor({ selectedFacts, pageName }: Props) {
                 padding: "4px 8px",
                 fontSize: 12,
                 background: "var(--surface-alt)",
-                border: "1px solid var(--surface-border)",
+                border: `1px solid ${
+                  isMulti && !sharedElements.includes(level)
+                    ? "var(--warn)"
+                    : "var(--surface-border)"
+                }`,
                 borderRadius: 4,
-                color: "var(--text)",
+                color: isMulti && !sharedElements.includes(level)
+                  ? "var(--warn)"
+                  : "var(--text)",
                 outline: "none",
               }}
+              title={
+                isMulti && !sharedElements.includes(level)
+                  ? "This level is not shared across all selected facts"
+                  : undefined
+              }
               onFocus={(e) =>
                 (e.currentTarget.style.borderColor = "var(--accent)")
               }
-              onBlur={(e) =>
-                (e.currentTarget.style.borderColor = "var(--surface-border)")
-              }
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor =
+                  isMulti && !sharedElements.includes(e.currentTarget.value)
+                    ? "var(--warn)"
+                    : "var(--surface-border)";
+              }}
             />
             <MiniBtn onClick={() => moveUp(idx)} disabled={idx === 0}>
               {"\u2191"}

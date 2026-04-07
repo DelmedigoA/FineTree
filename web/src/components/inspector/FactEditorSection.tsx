@@ -5,6 +5,9 @@ import { useCanvasStore } from "../../stores/canvasStore";
 import { pushUndoSnapshot } from "../../hooks/useUndoRedo";
 import {
   FieldRow,
+  FieldPair,
+  FieldTriple,
+  FieldCell,
   FieldInput,
   FieldSelect,
   FieldCheckbox,
@@ -83,159 +86,135 @@ export function FactEditorSection({ selectedFacts, pageName }: Props) {
         </div>
       )}
 
-      {/* Core fields */}
-      <FieldRow label="Value">
-        <FieldInput
-          value={v("value")}
-          placeholder={placeholder("value") || "Fact value"}
-          onChange={(val) => updateField("value", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Row role">
-        <FieldSelect
-          value={v("row_role") || "detail"}
-          options={[
-            { value: "detail", label: "Detail" },
-            { value: "total", label: "Total" },
-          ]}
-          onChange={(val) => updateField("row_role", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Nat. sign">
-        <FieldSelect
-          value={v("natural_sign")}
-          options={[
-            { value: "", label: "\u2014 (auto)" },
-            { value: "positive", label: "Positive" },
-            { value: "negative", label: "Negative" },
-          ]}
-          onChange={(val) => updateField("natural_sign", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Fact #">
-        <FieldInput
-          value={v("fact_num")}
-          placeholder={placeholder("fact_num")}
-          onChange={(val) =>
-            updateField("fact_num", val ? parseInt(val, 10) || null : null)
-          }
-        />
-      </FieldRow>
-
-      {/* Value context */}
-      <FieldRow label="Val. type">
-        <FieldSelect
-          value={v("value_type")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "amount", label: "Amount" },
-            { value: "percent", label: "Percent" },
-            { value: "ratio", label: "Ratio" },
-            { value: "count", label: "Count" },
-            { value: "points", label: "Points" },
-          ]}
-          onChange={(val) => updateField("value_type", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Context">
-        <FieldSelect
-          value={v("value_context")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "textual", label: "Textual" },
-            { value: "tabular", label: "Tabular" },
-            { value: "mixed", label: "Mixed" },
-          ]}
-          onChange={(val) => updateField("value_context", val)}
-        />
-      </FieldRow>
-
-      {/* Currency & scale */}
-      <FieldRow label="Currency">
-        <FieldSelect
-          value={v("currency")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "ILS", label: "ILS" },
-            { value: "USD", label: "USD" },
-            { value: "EUR", label: "EUR" },
-            { value: "GBP", label: "GBP" },
-          ]}
-          onChange={(val) => updateField("currency", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Scale">
-        <FieldSelect
-          value={v("scale")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "1", label: "1" },
-            { value: "1000", label: "1,000" },
-            { value: "1000000", label: "1,000,000" },
-          ]}
-          onChange={(val) =>
-            updateField("scale", val ? parseInt(val, 10) : null)
-          }
-        />
-      </FieldRow>
-
-      {/* Date fields */}
-      <FieldRow label="Date">
-        <FieldInput
-          value={v("date")}
-          placeholder={placeholder("date") || "YYYY-MM-DD"}
-          onChange={(val) => updateField("date", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Period">
-        <FieldSelect
-          value={v("period_type")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "instant", label: "Instant" },
-            { value: "duration", label: "Duration" },
-            { value: "expected", label: "Expected" },
-          ]}
-          onChange={(val) => updateField("period_type", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Start">
-        <FieldInput
-          value={v("period_start")}
-          placeholder={placeholder("period_start") || "YYYY-MM-DD"}
-          onChange={(val) => updateField("period_start", val)}
-        />
-      </FieldRow>
-      <FieldRow label="End">
-        <FieldInput
-          value={v("period_end")}
-          placeholder={placeholder("period_end") || "YYYY-MM-DD"}
-          onChange={(val) => updateField("period_end", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Duration">
-        <FieldSelect
-          value={v("duration_type")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "recurrent", label: "Recurrent" },
-          ]}
-          onChange={(val) => updateField("duration_type", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Recurring">
-        <FieldSelect
-          value={v("recurring_period")}
-          options={[
-            { value: "", label: "\u2014" },
-            { value: "daily", label: "Daily" },
-            { value: "quarterly", label: "Quarterly" },
-            { value: "monthly", label: "Monthly" },
-            { value: "yearly", label: "Yearly" },
-          ]}
-          onChange={(val) => updateField("recurring_period", val)}
-        />
-      </FieldRow>
+      {/* Two-per-row fields above Note flag */}
+      <FieldPair>
+        <FieldCell label="Fact #">
+          <div
+            style={{
+              fontSize: 12,
+              fontFamily: "var(--font-mono)",
+              color: "var(--text-soft)",
+              background: "var(--surface-alt)",
+              padding: "4px 8px",
+              borderRadius: "var(--radius-xs)",
+              minHeight: 28,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            {v("fact_num") || "—"}
+          </div>
+        </FieldCell>
+        <FieldCell label="Value">
+          <FieldInput
+            value={v("value")}
+            placeholder={placeholder("value") || "Value"}
+            onChange={(val) => updateField("value", val)}
+          />
+        </FieldCell>
+      </FieldPair>
+      <FieldTriple>
+        <FieldCell label="Row role">
+          <FieldSelect
+            value={v("row_role") || "detail"}
+            options={[
+              { value: "detail", label: "Detail" },
+              { value: "total", label: "Total" },
+            ]}
+            onChange={(val) => updateField("row_role", val)}
+          />
+        </FieldCell>
+        <FieldCell label="Context">
+          <FieldSelect
+            value={v("value_context")}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "textual", label: "Textual" },
+              { value: "tabular", label: "Tabular" },
+              { value: "mixed", label: "Mixed" },
+            ]}
+            onChange={(val) => updateField("value_context", val)}
+          />
+        </FieldCell>
+        <FieldCell label="Note ref">
+          <FieldInput
+            value={v("note_ref")}
+            placeholder={placeholder("note_ref")}
+            onChange={(val) => updateField("note_ref", val)}
+          />
+        </FieldCell>
+      </FieldTriple>
+      <FieldTriple>
+        <FieldCell label="Scale">
+          <FieldSelect
+            value={v("scale")}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "1", label: "1" },
+              { value: "1000", label: "1K" },
+              { value: "1000000", label: "1M" },
+            ]}
+            onChange={(val) =>
+              updateField("scale", val ? parseInt(val, 10) : null)
+            }
+          />
+        </FieldCell>
+        <FieldCell label="Currency">
+          <FieldSelect
+            value={v("currency")}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "ILS", label: "ILS" },
+              { value: "USD", label: "USD" },
+              { value: "EUR", label: "EUR" },
+              { value: "GBP", label: "GBP" },
+            ]}
+            onChange={(val) => updateField("currency", val)}
+          />
+        </FieldCell>
+        <FieldCell label="Val. type">
+          <FieldSelect
+            value={v("value_type")}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "amount", label: "Amount" },
+              { value: "percent", label: "%" },
+              { value: "ratio", label: "Ratio" },
+              { value: "count", label: "Count" },
+              { value: "points", label: "Points" },
+            ]}
+            onChange={(val) => updateField("value_type", val)}
+          />
+        </FieldCell>
+      </FieldTriple>
+      <FieldTriple>
+        <FieldCell label="End">
+          <FieldInput
+            value={v("period_end")}
+            placeholder={placeholder("period_end") || "YYYY-MM-DD"}
+            onChange={(val) => updateField("period_end", val)}
+          />
+        </FieldCell>
+        <FieldCell label="Start">
+          <FieldInput
+            value={v("period_start")}
+            placeholder={placeholder("period_start") || "YYYY-MM-DD"}
+            onChange={(val) => updateField("period_start", val)}
+          />
+        </FieldCell>
+        <FieldCell label="Period">
+          <FieldSelect
+            value={v("period_type")}
+            options={[
+              { value: "", label: "\u2014" },
+              { value: "instant", label: "Instant" },
+              { value: "duration", label: "Duration" },
+              { value: "expected", label: "Expected" },
+            ]}
+            onChange={(val) => updateField("period_type", val)}
+          />
+        </FieldCell>
+      </FieldTriple>
 
       {/* Notes */}
       <FieldRow label="Note flag">
@@ -257,13 +236,6 @@ export function FactEditorSection({ selectedFacts, pageName }: Props) {
           value={v("note_name")}
           placeholder={placeholder("note_name")}
           onChange={(val) => updateField("note_name", val)}
-        />
-      </FieldRow>
-      <FieldRow label="Note ref">
-        <FieldInput
-          value={v("note_ref")}
-          placeholder={placeholder("note_ref")}
-          onChange={(val) => updateField("note_ref", val)}
         />
       </FieldRow>
       <FieldRow label="Comment">
@@ -306,23 +278,6 @@ export function FactEditorSection({ selectedFacts, pageName }: Props) {
         </SubSection>
       )}
 
-      {/* BBox display (read-only) */}
-      {selectedFacts.length === 1 && (
-        <FieldRow label="BBox">
-          <div
-            style={{
-              fontSize: 11,
-              fontFamily: "var(--font-mono)",
-              color: "var(--text-soft)",
-              background: "var(--surface-alt)",
-              padding: "4px 8px",
-              borderRadius: "var(--radius-xs)",
-            }}
-          >
-            {`${Math.round(selectedFacts[0]!.record.bbox.x)}, ${Math.round(selectedFacts[0]!.record.bbox.y)} \u2014 ${Math.round(selectedFacts[0]!.record.bbox.w)}\u00d7${Math.round(selectedFacts[0]!.record.bbox.h)}`}
-          </div>
-        </FieldRow>
-      )}
     </div>
   );
 }

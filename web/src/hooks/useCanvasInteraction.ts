@@ -34,6 +34,8 @@ interface DragContext {
   origPanY?: number;
   /** Has the drag passed the 4px threshold? */
   dragging: boolean;
+  /** For equation-sweep: ordered list of term indices by entry order. */
+  sweptOrder?: number[];
 }
 
 const DRAG_THRESHOLD = 4;
@@ -50,6 +52,9 @@ export function useCanvasInteraction(
     startWorldY: 0,
     dragging: false,
   });
+
+  // Double-click detection for equation term operator toggle.
+  const lastClickRef = useRef<{ index: number; time: number } | null>(null);
 
   const getTransform = useCallback(() => {
     const { zoom, panX, panY } = useCanvasStore.getState();
@@ -161,12 +166,27 @@ export function useCanvasInteraction(
         return;
       }
 
-      // Equation mode: Alt+click toggles term.
-      if (isEquationMode && hit.type !== "none") {
-        selection.toggleEquationTerm(hit.factIndex);
-        useCanvasStore.getState().markDirty("bbox");
-        // Start equation sweep drag context.
+      // Equation sweep mode: Alt held + exactly 1 fact selected.
+      if (isEquationMode && selection.selectedIndices.size === 1) {
+        // Double-click on an existing term → toggle its operator (+/-).
+        if (hit.type === "body" && selection.equationTermIndices.has(hit.factIndex)) {
+          const now = Date.now();
+          const last = lastClickRef.current;
+          if (last && last.index === hit.factIndex && now - last.time < 350) {
+            selection.toggleEquationTermOperator(hit.factIndex);
+            useCanvasStore.getState().markDirty("bbox");
+            lastClickRef.current = null;
+            dragRef.current = ctx;
+            return;
+          }
+          lastClickRef.current = { index: hit.factIndex, time: now };
+          dragRef.current = ctx;
+          return;
+        }
+        lastClickRef.current = null;
+        selection.clearEquationTerms();
         ctx.mode = "equation-sweep";
+        ctx.sweptOrder = [];
         dragRef.current = ctx;
         return;
       }
@@ -274,7 +294,11 @@ export function useCanvasInteraction(
         const hit = hitTest(sx, sy, bboxes, transform);
         const selection = useSelectionStore.getState();
 
-        if (hit.type === "handle") {
+        // In equation sweep mode (Alt held + 1 selected), show crosshair everywhere.
+        const inEquationMode = e.altKey && selection.selectedIndices.size === 1;
+        if (inEquationMode) {
+          canvas.style.cursor = "crosshair";
+        } else if (hit.type === "handle") {
           canvas.style.cursor = cursorForHandle(hit.handle!);
         } else if (hit.type === "body") {
           canvas.style.cursor = "move";
@@ -391,7 +415,7 @@ export function useCanvasInteraction(
         }
 
         case "equation-sweep": {
-          // Sweep-select equation terms intersecting drag rect.
+          // Sweep-select equation terms intersecting drag rect, preserving entry order.
           const x1 = Math.min(ctx.startWorldX, wx);
           const y1 = Math.min(ctx.startWorldY, wy);
           const x2 = Math.max(ctx.startWorldX, wx);
@@ -406,20 +430,29 @@ export function useCanvasInteraction(
           const bboxes = getBboxes();
           const selection = useSelectionStore.getState();
           const target = [...selection.selectedIndices][0];
-          const swept = new Set(selection.equationTermIndices);
+
+          // Compute which indices are now in the rect.
+          const inRect = new Set<number>();
           for (let i = 0; i < bboxes.length; i++) {
             if (i === target) continue;
             const b = bboxes[i]!;
-            if (
-              b.x < x2 &&
-              b.x + b.w > x1 &&
-              b.y < y2 &&
-              b.y + b.h > y1
-            ) {
-              swept.add(i);
+            if (b.x < x2 && b.x + b.w > x1 && b.y < y2 && b.y + b.h > y1) {
+              inRect.add(i);
             }
           }
-          selection.setEquationTerms(swept);
+
+          // Maintain sweptOrder: remove indices no longer in rect, append new ones.
+          if (!ctx.sweptOrder) ctx.sweptOrder = [];
+          // Remove indices that left the rect.
+          ctx.sweptOrder = ctx.sweptOrder.filter((i) => inRect.has(i));
+          // Append newly entered indices (preserving entry order).
+          for (const i of inRect) {
+            if (!ctx.sweptOrder.includes(i)) {
+              ctx.sweptOrder.push(i);
+            }
+          }
+
+          selection.setEquationTermsOrdered(ctx.sweptOrder);
           useCanvasStore.getState().markDirty("bbox");
           useCanvasStore.getState().markDirty("interaction");
           break;

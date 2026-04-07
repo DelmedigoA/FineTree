@@ -1,16 +1,37 @@
-import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router-dom";
 import { AppShell } from "./components/layout/AppShell";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AnnotationPage } from "./pages/AnnotationPage";
 import { useTheme } from "./hooks/useTheme";
 import { useUIStore } from "./stores/uiStore";
+import { get } from "./api/client";
 
-export default function App() {
+interface RandomApprovedPage {
+  doc_id: string | null;
+  page_index: number | null;
+}
+
+// ── Inner nav components (must be inside BrowserRouter for useNavigate) ──────
+
+function SidebarNav() {
   const { themeName, toggleTheme } = useTheme();
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const navigate = useNavigate();
 
-  // Full sidebar
-  const nav = (
+  async function handleRandomCheck() {
+    try {
+      const result = await get<RandomApprovedPage>("/workspace/random-approved-page");
+      if (!result.doc_id) {
+        alert("No approved pages found.");
+        return;
+      }
+      navigate(`/annotate/${result.doc_id}?page=${result.page_index ?? 0}`);
+    } catch {
+      alert("Could not fetch a random approved page.");
+    }
+  }
+
+  return (
     <>
       {/* Brand */}
       <div style={{ padding: "0 8px", marginBottom: 24 }}>
@@ -34,6 +55,9 @@ export default function App() {
         <SidebarLink to="/" icon={"\u25A6"}>
           Projects
         </SidebarLink>
+        <SidebarBtn onClick={handleRandomCheck} icon={"🎲"}>
+          Random Check
+        </SidebarBtn>
       </nav>
 
       <div style={{ flex: 1 }} />
@@ -57,9 +81,24 @@ export default function App() {
       </div>
     </>
   );
+}
 
-  // Collapsed sidebar (icons only)
-  const navCollapsed = (
+function SidebarNavCollapsed() {
+  const { themeName, toggleTheme } = useTheme();
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const navigate = useNavigate();
+
+  async function handleRandomCheck() {
+    try {
+      const result = await get<RandomApprovedPage>("/workspace/random-approved-page");
+      if (!result.doc_id) return;
+      navigate(`/annotate/${result.doc_id}?page=${result.page_index ?? 0}`);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return (
     <>
       <div
         style={{
@@ -76,6 +115,7 @@ export default function App() {
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
         <CollapsedLink to="/" icon={"\u25A6"} />
+        <CollapsedBtn onClick={handleRandomCheck} icon={"🎲"} />
       </nav>
 
       <div style={{ flex: 1 }} />
@@ -86,10 +126,14 @@ export default function App() {
       </div>
     </>
   );
+}
 
+// ── Root component ────────────────────────────────────────────────────────────
+
+export default function App() {
   return (
     <BrowserRouter>
-      <AppShell nav={nav} navCollapsed={navCollapsed}>
+      <AppShell nav={<SidebarNav />} navCollapsed={<SidebarNavCollapsed />}>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/annotate/:docId" element={<AnnotationPage />} />
@@ -99,7 +143,7 @@ export default function App() {
   );
 }
 
-// ── Sidebar components ──────────────────────────────────────────────
+// ── Sidebar primitives ────────────────────────────────────────────────────────
 
 function SidebarLink({
   to,

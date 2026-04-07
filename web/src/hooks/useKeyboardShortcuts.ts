@@ -31,15 +31,17 @@ export function useKeyboardShortcuts() {
         return name ? doc.pageStates.get(name) : undefined;
       };
 
-      // Alt+Shift: apply pending equation to selected target.
-      if (e.altKey && e.shiftKey) {
-        const { selectedIndices, equationTermIndices } = useSelectionStore.getState();
+      // Shift: apply pending equation to selected target.
+      if (e.key === "Shift" && !e.ctrlKey && !e.metaKey) {
+        const { selectedIndices, equationTermIndices, equationTermOrder, equationTermOperators } = useSelectionStore.getState();
         if (selectedIndices.size === 1 && equationTermIndices.size > 0) {
           e.preventDefault();
           pushUndoSnapshot();
           const targetIndex = [...selectedIndices][0]!;
-          const termIndices = [...equationTermIndices];
-          applyEquation(targetIndex, termIndices, new Map());
+          const termIndices = equationTermOrder.length > 0
+            ? equationTermOrder
+            : [...equationTermIndices];
+          applyEquation(targetIndex, termIndices, equationTermOperators);
           return;
         }
       }

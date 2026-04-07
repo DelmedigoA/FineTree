@@ -1,6 +1,7 @@
 """Workspace document management endpoints."""
 from __future__ import annotations
 
+import random
 import shutil
 import tempfile
 from dataclasses import asdict
@@ -19,7 +20,13 @@ from ..workspace import (
     reset_document_approved_pages,
     set_document_checked,
     set_document_reviewed,
+    page_is_approved,
+    page_image_paths,
+    annotations_root,
+    pdf_images_root,
 )
+from ..annotation_core import load_page_states
+from ..schema_io import load_any_schema
 
 router = APIRouter(prefix="/api/workspace", tags=["workspace"])
 
@@ -87,6 +94,39 @@ def mark_checked(doc_id: str, checked: bool = True) -> dict[str, bool]:
 def mark_reviewed(doc_id: str, reviewed: bool = True) -> dict[str, bool]:
     set_document_reviewed(doc_id, reviewed, data_root=get_data_root())
     return {"ok": True}
+
+
+@router.get("/random-approved-page")
+def random_approved_page() -> dict[str, Any]:
+    """Return a random (doc_id, page_index) from all approved pages across all documents."""
+    data_root = get_data_root()
+    images_root = pdf_images_root(data_root)
+    ann_root = annotations_root(data_root)
+
+    candidates: list[dict[str, Any]] = []
+    for images_dir in sorted(images_root.iterdir()):
+        if not images_dir.is_dir():
+            continue
+        doc_id = images_dir.name
+        ann_path = ann_root / f"{doc_id}.json"
+        pages = page_image_paths(images_dir)
+        if not pages:
+            continue
+        payload: dict[str, Any] = {}
+        if ann_path.is_file():
+            import json
+            raw = json.loads(ann_path.read_text(encoding="utf-8"))
+            payload = load_any_schema(raw)
+        states = load_page_states(payload, [p.name for p in pages])
+        for idx, page in enumerate(pages):
+            from ..annotation_core import PageState
+            state = states.get(page.name, PageState(meta={}, facts=[]))
+            if page_is_approved(state):
+                candidates.append({"doc_id": doc_id, "page_index": idx})
+
+    if not candidates:
+        return {"doc_id": None, "page_index": None}
+    return random.choice(candidates)
 
 
 @router.post("/documents/{doc_id}/reset-approved")

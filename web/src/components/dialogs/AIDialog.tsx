@@ -75,6 +75,8 @@ export function AIDialog() {
   const [tab, setTab] = useState<ActionTab>((initialTab as ActionTab) ?? "extract");
   const [applyStatus, setApplyStatus] = useState<string | null>(null);
   const accumulatedRef = useRef("");
+  // Must be declared unconditionally (before conditional return) to satisfy rules of hooks.
+  const useSSEStreamRef = useRef(stream);
 
   // Sync tab when dialog opens with a specific initialTab.
   useEffect(() => {
@@ -302,7 +304,6 @@ export function AIDialog() {
     setBatchRunning(false);
   };
 
-  const useSSEStreamRef = useRef(stream);
   useSSEStreamRef.current = stream;
 
   // ── UI ────────────────────────────────────────────────────────────
