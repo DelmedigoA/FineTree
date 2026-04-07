@@ -1,0 +1,282 @@
+{
+  "page_name": "page_0009.png",
+  "gemini_count": 2,
+  "detector_count": 1,
+  "matched_count": 0,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "33",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "רכוש קבוע",
+        "שעורי הפחת השנתיים",
+        "שיפורים במושכר",
+        "מחשבים",
+        "על פני תקופת השכירות"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "20-6",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "רכוש קבוע",
+        "שעורי הפחת השנתיים",
+        "ריהוט וציוד"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        1314.0,
+        1308.0,
+        21.0,
+        21.0
+      ],
+      "value": "2",
+      "fact_num": null,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": false,
+      "note_name": null,
+      "note_num": null,
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [],
+      "path_source": null,
+      "currency": null,
+      "scale": null,
+      "value_type": null,
+      "value_context": null
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": {
+        "x": 88.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "33",
+      "fact_num": 1,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "רכוש קבוע",
+        "שעורי הפחת השנתיים",
+        "שיפורים במושכר",
+        "מחשבים",
+        "על פני תקופת השכירות"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    },
+    {
+      "bbox": {
+        "x": 8.0,
+        "y": 8.0,
+        "w": 72.0,
+        "h": 28.0
+      },
+      "value": "20-6",
+      "fact_num": 2,
+      "equations": null,
+      "natural_sign": "positive",
+      "row_role": "detail",
+      "comment_ref": null,
+      "note_flag": true,
+      "note_name": "עיקרי המדיניות החשבונאית (המשך)",
+      "note_num": "3",
+      "note_ref": null,
+      "date": null,
+      "period_type": null,
+      "period_start": null,
+      "period_end": null,
+      "duration_type": null,
+      "recurring_period": null,
+      "path": [
+        "רכוש קבוע",
+        "שעורי הפחת השנתיים",
+        "ריהוט וציוד"
+      ],
+      "path_source": "observed",
+      "currency": null,
+      "scale": null,
+      "value_type": "percent",
+      "value_context": "tabular"
+    }
+  ],
+  "matches": [],
+  "unmatched_gemini_indices": [
+    0,
+    1
+  ],
+  "unmatched_detector_indices": [
+    0
+  ],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "33"
+      ],
+      "match_keys": [
+        "num:33"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "20-6"
+      ],
+      "match_keys": [
+        "text:20-6"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "2"
+      ],
+      "match_keys": [
+        "num:2"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "2"
+      ],
+      "match_keys": [
+        "num:2"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": false,
+      "reason": "detector_missing",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "33"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "num:33"
+    },
+    {
+      "matched": false,
+      "reason": "detector_missing",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "20-6"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "text:20-6"
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "rtl",
+  "placeholder_count": 2,
+  "detector_index_by_gemini_index": {}
+}

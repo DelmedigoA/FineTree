@@ -1,0 +1,121 @@
+diff --git a/experiments/instructions.md b/experiments/instructions.md
+--- a/experiments/instructions.md
++++ b/experiments/instructions.md
+@@
+ A. English Title: If the source is in English, use the exact title from the source. If there is no title (for example in X posts), compose a short title that sums up content. If the source is in Hebrew, translate the Hebrew title as accurately as possible.
++➔ Do not use poster-attribution phrasing such as "by [author/account name]" when the author is already captured in the Author fields.
++➔ A person or organization name may still appear in the title when that person or organization is the subject of the post, not merely the posting account.
++➔ Example:
++Bad: "Thread by Warfare Analysis claiming to provide evidence of beheaded Palestinian babies in Gaza"
++Good: "Post claiming to provide evidence of beheaded Palestinian babies in Gaza"
+ 
+ B. Hebrew Title: If the source is in Hebrew, use the exact title from the source. If there is no title (for example in X posts), compose a short title that sums up content. If the source is in English, translate the English title as accurately as possible.
+ 
+ ➔ Do not add period (.) at the end of the title
+ ➔ Specifically for Twitter (X) posts, try to refrain from repeating the use of controversial or emotive words like “genocide” or “massacre”. Instead try to use objective description. For example, use the form “the post claims that…” or “the post describes…” etc.
+ 
+ C. English Description: If the source is in English, write a brief summary of content in 2-3 sentences In English. If the source is in Hebrew, translate the Hebrew description into English as accurately as possible.
++➔ Do not repeat the posting account or use poster-attribution phrasing when the author is already captured in the Author fields.
++➔ A person or organization name may still appear in the description when that person or organization is the subject of the post, not merely the posting account.
++➔ Example:
++Bad: "Warfare Analysis claims that the post provides evidence of beheaded Palestinian babies in Gaza."
++Good: "The post claims to provide evidence of beheaded Palestinian babies in Gaza."
+ 
+ D. Hebrew Description: A brief summary of content in 2-3 sentences In Hebrew. If the source is in English, translate the English description into Hebrew as accurately as possible.
+ 
+ ➔ Please use proper punctuation, and always add a period at the end of the description.
+@@
+ I. Author English: If the author’s name is in English, write it the way it appears on the source. If the name appears in Hebrew, translate it to English. We recommend looking it up in Google for the correct English spelling.
+ 
+-J. Author Hebrew: If the author’s name is Hebrew name, write it the way it appears in the source. If the author’s name is English, write it in English in this column too. (i.e. Amnesty International, or Marco Rubio).
++J. Author Hebrew: If the author is Israeli and a Hebrew rendering is available, write the Hebrew form of the name. If the author is not Israeli, whether a person or an organization, write the exact same value as Author English in this field. Do not leave Author Hebrew empty for non-Israeli authors.
++➔ Example:
++Author English: Warfare Analysis (@warfareanalysis)
++Author Hebrew: Warfare Analysis (@warfareanalysis)
+ 
+ K. Source: Drop-down list of the original source of data i.e. the platform on which the information originally appeared. This will be used more often in social media when a post of one platform will be reposted in a different platform. If the source mentioned does not appear in the drop-down list leave this column blank. If it seems important to you that it should be listed – ask to add it in the comments in Column AA.
++➔ A publisher such as Al Jazeera belongs in Source when it is the originating source of quoted, embedded, or reposted material.
++➔ Example: If a post embeds Al Jazeera footage, set Source to "Al Jazeera".
++➔ Example:
++Raw post excerpt: "Imagine a news story saying 'Israeli child desperately scribbled her name on her arm to be identified after death...'" and "But she's Gazan, so there's only radio silence."
++Video evidence: The embedded video is described as an "Al Jazeera video reporting on the death of 8-year-old Noor Alloush," and the OCR includes "WARNING: DISTRESSING THEMES... Noor Alloush and her family were killed..."
++Decision: Set Source to "Al Jazeera". Do not add "Al Jazeera" to Countries and Organizations.
+ 
+ L. Reference: If the source refers to a published article or report– add the appropriate URL of the referenced source. If no URL is given you can track the reference via Google if it seems relevant.
+ 
+ ➔ Please do not include anything else but the link.
+ 
+-M. Language: Multi-option drop-down list. Particularly on Twitter you may find that the post contains more than one language. For example, the text will be in English, but the video will feature Arabic speakers. In this case, please enter both languages
++M. Language: Multi-option drop-down list. Particularly on Twitter you may find that the post contains more than one language. For example, the text will be in English, but the video will feature Arabic speakers. In this case, please enter both languages.
++➔ Count a language only when it is clearly present as substantive spoken or written content.
++➔ Do not add a language based only on scrambled yelling, indistinct shouting, background chatter, ambient crowd noise, or other non-substantive audio.
++➔ This rule applies equally to Arabic, Hebrew, English, and any other language.
++➔ Example: If a video contains only unclear Arabic yelling in the background and no clear spoken or written Arabic content, do not add "Arabic" to Languages.
+@@
+ R. Themes: Choose as many relevant tags as possible from the existing drop-down list.
++➔ Add "Disturbing Content" whenever X/Twitter itself shows a sensitive, graphic, or disturbing content warning.
++➔ The model may also add "Disturbing Content" based on the content itself even without an X/Twitter warning.
++➔ Example: If the tweet shows a content warning before viewing the media, include "Disturbing Content".
+ 
+ S. Countries and Organizations: Choose any country or organization that is mentioned in the source.
++➔ Do not add a publisher such as Al Jazeera here unless the post is actually about that publisher as a subject.
++➔ Example: If a post embeds Al Jazeera footage, do not add "Al Jazeera" to Countries and Organizations unless the post itself is about Al Jazeera.
++➔ In the Noor Alloush example above, the post is not about Al Jazeera as a subject, so "Al Jazeera" should not be added here.
+ 
+ T. Locations: Drop-down list that complements the precise location list in Columns S and T. This list is in English only and refers to major locations and sites. Multiple options. Choose the most precise location you find. Multiple options exist to support cases when the source covers different locations. However, if you choose a location, there is no need to add the area or country. For example, if you chose “Al-Shifa Hospital” there is no need to add Gaza City or Gaza Strip.
+
+diff --git a/tests/test_gemini.py b/tests/test_gemini.py
+--- a/tests/test_gemini.py
++++ b/tests/test_gemini.py
+@@
+ def test_gemini_prompt_uses_media_first_stepwise_rules(repository, settings):
+@@
+     assert '"quoted_post_url": "https://x.com/example/status/99"' in prompt
+     assert "Think carefully before finalizing the JSON, especially when reconciling raw text, image summaries, and OCR text." not in prompt
+ 
+ 
++def test_gemini_prompt_embeds_archive_instruction_rules(repository, settings, monkeypatch):
++    monkeypatch.setattr(
++        "inference.gemini_few_shots.build_few_shot_prompt_block",
++        lambda **_: "",
++    )
++    payload = _build_gemini_base_document(
++        {
++            "document_id": "sheet1-r0002",
++            "catalog_number": "2384",
++            "source_url": "https://x.com/example/status/1",
++            "raw_text": "Visible source text",
++        }
++    )
++    annotation_instructions = (
++        Path(__file__).resolve().parents[1] / "experiments" / "instructions.md"
++    ).read_text(encoding="utf-8")
++
++    prompt = _build_gemini_review_prompt(
++        payload,
++        repository,
++        outputs_dir=settings.outputs_dir,
++        few_shot_config=GeminiFewShotConfig(),
++        annotation_instructions=annotation_instructions,
++    )
++
++    assert 'Do not use poster-attribution phrasing such as "by [author/account name]" when the author is already captured in the Author fields.' in prompt
++    assert "Do not repeat the posting account or use poster-attribution phrasing when the author is already captured in the Author fields." in prompt
++    assert "If the author is not Israeli, whether a person or an organization, write the exact same value as Author English in this field." in prompt
++    assert "Do not leave Author Hebrew empty for non-Israeli authors." in prompt
++    assert "A publisher such as Al Jazeera belongs in Source when it is the originating source of quoted, embedded, or reposted material." in prompt
++    assert 'Do not add a publisher such as Al Jazeera here unless the post is actually about that publisher as a subject.' in prompt
++    assert 'Add "Disturbing Content" whenever X/Twitter itself shows a sensitive, graphic, or disturbing content warning.' in prompt
++    assert 'The model may also add "Disturbing Content" based on the content itself even without an X/Twitter warning.' in prompt
++    assert "Count a language only when it is clearly present as substantive spoken or written content." in prompt
++    assert "Do not add a language based only on scrambled yelling, indistinct shouting, background chatter, ambient crowd noise, or other non-substantive audio." in prompt
++    assert "But she's Gazan, so there's only radio silence." in prompt
++    assert "Al Jazeera video reporting on the death of 8-year-old Noor Alloush" in prompt
++    assert 'Set Source to "Al Jazeera".' in prompt
++    assert 'Do not add "Al Jazeera" to Countries and Organizations.' in prompt
++
++
+ def test_format_gemini_vocabulary_block_uses_tab_separated_plain_text():
+     formatted = format_gemini_vocabulary_block(
+         [
+             {"value": "BBC", "he_label": "BBC"},
