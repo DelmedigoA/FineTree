@@ -1,0 +1,86 @@
+{
+  "page_index": 7,
+  "page_name": "page_0007.png",
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״המעין״ קרן מלגות למחוננים (ע״ר)\", \"page_num\": \"7\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"39-כ\", \"fact_num\": 1, \"comment_ref\": \"ש״ח\", \"comment_ref\": \"ש״ח\", \"note_flag\": true, \"note_name\": \"עקר המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"הערכה\", \"הפחת\", \"רכוש קבוע\", \"מבנה\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"textual\"}, {\"value\": \"7-10\", \"fact_num\": 2, \"comment_ref\": \"ש״ח\", \"note_flag\": true, \"note_name\": \"עקר המדיניות החשבונאית\", \"note_num\": \"2\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"הערכה\", \"הפחת\", \"רכוש קבוע\", \"רהוט וציוד\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"textual\"}, {\"value\": \"4.5%-כ\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"פקדונות בנכסים\", \"note_num\": \"3\", \"note_ref\": null, \"period_type\": null, \"period_start\": null, \"period_end\": null, \"path\": [\"ריבית שנתי\", \"פקדונות נושאים\"], \"path_source\": \"observed\", \"currency\": null, \"scale\": null, \"value_type\": \"percent\", \"value_context\": \"textual\"}]}",
+  "parsed_page": {
+    "image": "page_0007.png",
+    "meta": {
+      "entity_name": "״המעין״ קרן מלגות למחוננים (ע״ר)",
+      "page_num": "7",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "39-כ",
+        "fact_num": 1,
+        "comment_ref": "ש״ח",
+        "note_flag": true,
+        "note_name": "עקר המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "מבנה"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "textual"
+      },
+      {
+        "value": "7-10",
+        "fact_num": 2,
+        "comment_ref": "ש״ח",
+        "note_flag": true,
+        "note_name": "עקר המדיניות החשבונאית",
+        "note_num": "2",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "רהוט וציוד"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "textual"
+      },
+      {
+        "value": "4.5%-כ",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "פקדונות בנכסים",
+        "note_num": "3",
+        "note_ref": null,
+        "period_type": null,
+        "period_start": null,
+        "period_end": null,
+        "path": [
+          "ריבית שנתי",
+          "פקדונות נושאים"
+        ],
+        "path_source": "observed",
+        "currency": null,
+        "scale": null,
+        "value_type": "percent",
+        "value_context": "textual"
+      }
+    ]
+  },
+  "error": null,
+  "received_tokens": 0
+}

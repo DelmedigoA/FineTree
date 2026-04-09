@@ -1,4 +1,4 @@
-/** AI inference dialog — all actions: Extract, Fill, Fix Spelling, Detect, Align, Batch. */
+/** AI inference dialog — extract, fill, detect, batch pages, and infer PDFs. */
 
 import { useState, useRef, useEffect } from "react";
 import { useAIStore } from "../../stores/aiStore";
@@ -9,22 +9,21 @@ import { useSSEStream } from "../../hooks/useSSEStream";
 import { pushUndoSnapshot } from "../../hooks/useUndoRedo";
 import { post } from "../../api/client";
 import type { BoxRecord } from "../../types/schema";
+import { BatchInferSection } from "./BatchInferSection";
 
-type ActionTab = "extract" | "fill" | "fix" | "detect" | "align" | "batch";
+type ActionTab = "extract" | "fill" | "fix" | "detect" | "batch" | "infer";
 
 const GEMINI_MODELS = [
-  { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
-  { id: "gemini-2.0-flash-thinking-exp", label: "Gemini 2.0 Flash Thinking" },
-  { id: "gemini-2.5-pro-preview-03-25", label: "Gemini 2.5 Pro" },
-  { id: "gemini-1.5-pro", label: "Gemini 1.5 Pro" },
-  { id: "gemini-1.5-flash", label: "Gemini 1.5 Flash" },
+  { id: "gemini-3-flash-preview", label: "Gemini 3 Flash Preview" },
+  { id: "gemini-pro", label: "Gemini Pro" },
 ];
 
-const QWEN_MODELS = [
-  { id: "Qwen/Qwen2-VL-72B-Instruct", label: "Qwen2-VL 72B" },
-  { id: "Qwen/Qwen2-VL-7B-Instruct", label: "Qwen2-VL 7B" },
-  { id: "Qwen/Qwen2.5-VL-72B-Instruct", label: "Qwen2.5-VL 72B" },
-  { id: "Qwen/QVQ-72B-Preview", label: "QVQ 72B" },
+type ExtractEngine = "gemini-3-flash-preview" | "gemini-pro" | "custom-endpoint";
+
+const EXTRACT_ENGINES: { id: ExtractEngine; label: string }[] = [
+  { id: "gemini-3-flash-preview", label: "Gemini 3 Flash Preview" },
+  { id: "gemini-pro", label: "Gemini Pro" },
+  { id: "custom-endpoint", label: "Custom Endpoint" },
 ];
 
 const FILL_FIELDS = [
@@ -38,6 +37,9 @@ const DOCTR_BACKENDS = [
   { id: "doctr", label: "DocTR only" },
 ];
 
+const DEFAULT_CUSTOM_ENDPOINT_URL = "https://your-endpoint.ngrok-free.app/v1";
+const DEFAULT_CUSTOM_ENDPOINT_MODEL = "asafd60/FineTree-27B-v2.9-merged";
+
 const EMPTY_FACT: BoxRecord["fact"] = {
   value: "", fact_num: null, equations: null, natural_sign: null,
   row_role: "detail", comment_ref: null, note_flag: false, note_name: null,
@@ -48,15 +50,16 @@ const EMPTY_FACT: BoxRecord["fact"] = {
 };
 
 export function AIDialog() {
-  const { dialogOpen, closeDialog, activeProvider, setProvider } = useAIStore();
+  const { dialogOpen, closeDialog } = useAIStore();
   const { docId, pageNames, currentPageIndex } = useDocumentStore();
   const stream = useSSEStream();
 
   // Extract options
   const [action, setAction] = useState<string>("gt");
-  const [enableThinking, setEnableThinking] = useState(false);
-  const [geminiModel, setGeminiModel] = useState(GEMINI_MODELS[0]!.id);
-  const [qwenModel, setQwenModel] = useState(QWEN_MODELS[0]!.id);
+  const [extractEngine, setExtractEngine] = useState<ExtractEngine>("gemini-3-flash-preview");
+  const [fillGeminiModel, setFillGeminiModel] = useState(GEMINI_MODELS[0]!.id);
+  const [customEndpointUrl, setCustomEndpointUrl] = useState(DEFAULT_CUSTOM_ENDPOINT_URL);
+  const [customEndpointModel, setCustomEndpointModel] = useState(DEFAULT_CUSTOM_ENDPOINT_MODEL);
 
   // Fill options
   const [fillFields, setFillFields] = useState<Set<string>>(new Set(["value", "currency", "scale"]));
@@ -86,10 +89,20 @@ export function AIDialog() {
   if (!dialogOpen) return null;
 
   const currentPage = pageNames[currentPageIndex] ?? "";
-  const modelConfig =
-    activeProvider === "gemini"
-      ? { model: geminiModel, enable_thinking: enableThinking }
-      : { model_id: qwenModel, enable_thinking: enableThinking };
+  const isCustomEndpoint = extractEngine === "custom-endpoint";
+  const extractRequest =
+    isCustomEndpoint
+      ? {
+          provider: "custom_endpoint" as const,
+          config: {
+            base_url: customEndpointUrl.trim(),
+            model_id: customEndpointModel.trim(),
+          },
+        }
+      : {
+          provider: "gemini" as const,
+          config: { model: extractEngine },
+        };
 
   // ── helpers ───────────────────────────────────────────────────────
 
@@ -141,7 +154,13 @@ export function AIDialog() {
     accumulatedRef.current = "";
     stream.start(
       "/ai/extract",
-      { doc_id: docId, page_name: currentPage, provider: activeProvider, action, config: modelConfig },
+      {
+        doc_id: docId,
+        page_name: currentPage,
+        provider: extractRequest.provider,
+        action,
+        config: extractRequest.config,
+      },
       (ev) => {
         const obj = ev.data as Record<string, unknown>;
         if (obj?.type === "chunk" && typeof obj.text === "string") {
@@ -174,10 +193,10 @@ export function AIDialog() {
         {
           doc_id: docId,
           page_name: currentPage,
-          provider: activeProvider,
+          provider: "gemini",
           facts: targetFacts.map((f) => f!.fact),
           fields: [...fillFields],
-          config: modelConfig,
+          config: { model: fillGeminiModel },
         },
       );
 
@@ -245,28 +264,6 @@ export function AIDialog() {
     );
   };
 
-  const handleAlign = async () => {
-    if (!docId || !currentPage) return;
-    setApplyStatus(null);
-    const { pageStates, updatePageState } = useDocumentStore.getState();
-    const page = pageStates.get(currentPage);
-    if (!page || page.facts.length === 0) { setApplyStatus("No facts to align"); return; }
-
-    try {
-      const result = await post<{ aligned_facts: BoxRecord[] }>(
-        "/ai/align-bboxes",
-        { doc_id: docId, page_name: currentPage, facts: page.facts.map((f) => f.fact) },
-      );
-      if (!result.aligned_facts?.length) { setApplyStatus("No aligned facts returned"); return; }
-      pushUndoSnapshot();
-      updatePageState(currentPage, { ...page, facts: result.aligned_facts });
-      useCanvasStore.getState().markDirty("bbox");
-      setApplyStatus(`✓ Aligned ${result.aligned_facts.length} facts`);
-    } catch (err) {
-      setApplyStatus(`Error: ${String(err)}`);
-    }
-  };
-
   const handleBatch = async () => {
     if (!docId) return;
     setBatchRunning(true);
@@ -285,7 +282,13 @@ export function AIDialog() {
           useSSEStreamRef.current?.cancel();
           stream.start(
             "/ai/extract",
-            { doc_id: docId, page_name: pageName, provider: activeProvider, action: batchAction, config: modelConfig },
+            {
+              doc_id: docId,
+              page_name: pageName,
+              provider: extractRequest.provider,
+              action: batchAction,
+              config: extractRequest.config,
+            },
             (ev) => {
               const obj = ev.data as Record<string, unknown>;
               if (obj?.type === "chunk" && typeof obj.text === "string") acc += obj.text;
@@ -313,8 +316,8 @@ export function AIDialog() {
     { id: "fill", label: "Fill Fields" },
     { id: "fix", label: "Fix Spelling" },
     { id: "detect", label: "Detect BBoxes" },
-    { id: "align", label: "Align BBoxes" },
-    { id: "batch", label: "Batch" },
+    { id: "batch", label: "Batch Pages" },
+    { id: "infer", label: "Infer PDF" },
   ];
 
   return (
@@ -344,24 +347,6 @@ export function AIDialog() {
 
         <div style={{ padding: "16px 20px", flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 14 }}>
 
-          {/* Provider + model row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {(["gemini", "qwen"] as const).map((p) => (
-              <ProviderPill key={p} active={activeProvider === p} onClick={() => setProvider(p)}>
-                {p === "gemini" ? "Gemini" : "Qwen"}
-              </ProviderPill>
-            ))}
-            <select
-              value={activeProvider === "gemini" ? geminiModel : qwenModel}
-              onChange={(e) => activeProvider === "gemini" ? setGeminiModel(e.target.value) : setQwenModel(e.target.value)}
-              style={selectStyle}
-            >
-              {(activeProvider === "gemini" ? GEMINI_MODELS : QWEN_MODELS).map((m) => (
-                <option key={m.id} value={m.id}>{m.label}</option>
-              ))}
-            </select>
-          </div>
-
           {/* Action tabs */}
           <div style={{ display: "flex", gap: 4, borderBottom: "1px solid var(--surface-border)", paddingBottom: 12 }}>
             {TABS.map((t) => (
@@ -387,18 +372,45 @@ export function AIDialog() {
           {/* Tab body */}
           {tab === "extract" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <Row label="Model">
+                <select value={extractEngine} onChange={(e) => setExtractEngine(e.target.value as ExtractEngine)} style={selectStyle}>
+                  {EXTRACT_ENGINES.map((engine) => (
+                    <option key={engine.id} value={engine.id}>{engine.label}</option>
+                  ))}
+                </select>
+              </Row>
+              {isCustomEndpoint && (
+                <>
+                  <Row label="Endpoint">
+                    <input
+                      value={customEndpointUrl}
+                      onChange={(e) => setCustomEndpointUrl(e.target.value)}
+                      placeholder="https://your-endpoint/v1"
+                      style={selectStyle}
+                    />
+                  </Row>
+                  <Row label="Model ID">
+                    <input
+                      value={customEndpointModel}
+                      onChange={(e) => setCustomEndpointModel(e.target.value)}
+                      placeholder="asafd60/FineTree-27B-v2.9-merged"
+                      style={selectStyle}
+                    />
+                  </Row>
+                </>
+              )}
               <Row label="Action">
                 <select value={action} onChange={(e) => setAction(e.target.value)} style={selectStyle}>
                   <option value="gt">Ground Truth (replace all)</option>
                   <option value="autocomplete">Autocomplete (append)</option>
                 </select>
               </Row>
-              <label style={checkLabel}>
-                <input type="checkbox" checked={enableThinking} onChange={(e) => setEnableThinking(e.target.checked)} style={{ accentColor: "var(--accent)" }} />
-                Enable extended thinking
-              </label>
               <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                <ActionButton onClick={handleExtract} disabled={stream.isStreaming} primary>
+                <ActionButton
+                  onClick={handleExtract}
+                  disabled={stream.isStreaming || (isCustomEndpoint && (!customEndpointUrl.trim() || !customEndpointModel.trim()))}
+                  primary
+                >
                   {stream.isStreaming ? "Extracting…" : "Extract"}
                 </ActionButton>
                 {stream.isStreaming && <ActionButton onClick={stream.cancel} danger>Cancel</ActionButton>}
@@ -408,8 +420,23 @@ export function AIDialog() {
 
           {tab === "fill" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <Row label="Gemini">
+                <select value={fillGeminiModel} onChange={(e) => setFillGeminiModel(e.target.value)} style={selectStyle}>
+                  {GEMINI_MODELS.map((model) => (
+                    <option key={model.id} value={model.id}>{model.label}</option>
+                  ))}
+                </select>
+              </Row>
               <div style={{ fontSize: 12, color: "var(--text-muted)" }}>
                 Fields to fill (applies to selected facts, or all if none selected):
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <ActionButton onClick={() => setFillFields(new Set(FILL_FIELDS))}>
+                  Select All
+                </ActionButton>
+                <ActionButton onClick={() => setFillFields(new Set())}>
+                  Deselect All
+                </ActionButton>
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {FILL_FIELDS.map((f) => (
@@ -428,10 +455,6 @@ export function AIDialog() {
                   </label>
                 ))}
               </div>
-              <label style={checkLabel}>
-                <input type="checkbox" checked={enableThinking} onChange={(e) => setEnableThinking(e.target.checked)} style={{ accentColor: "var(--accent)" }} />
-                Enable extended thinking
-              </label>
               <ActionButton onClick={handleFill} disabled={stream.isStreaming || fillFields.size === 0} primary>
                 Fill Fields
               </ActionButton>
@@ -468,20 +491,38 @@ export function AIDialog() {
             </div>
           )}
 
-          {tab === "align" && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              <p style={{ fontSize: 13, color: "var(--text-muted)", lineHeight: 1.5 }}>
-                Re-align existing fact bboxes using the Qwen import matcher. Matches visual regions to annotated facts.
-              </p>
-              <ActionButton onClick={handleAlign} primary>Align BBoxes</ActionButton>
-            </div>
-          )}
-
           {tab === "batch" && (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
                 Run extraction across a range of pages sequentially.
               </p>
+              <Row label="Model">
+                <select value={extractEngine} onChange={(e) => setExtractEngine(e.target.value as ExtractEngine)} style={selectStyle}>
+                  {EXTRACT_ENGINES.map((engine) => (
+                    <option key={engine.id} value={engine.id}>{engine.label}</option>
+                  ))}
+                </select>
+              </Row>
+              {isCustomEndpoint && (
+                <>
+                  <Row label="Endpoint">
+                    <input
+                      value={customEndpointUrl}
+                      onChange={(e) => setCustomEndpointUrl(e.target.value)}
+                      placeholder="https://your-endpoint/v1"
+                      style={selectStyle}
+                    />
+                  </Row>
+                  <Row label="Model ID">
+                    <input
+                      value={customEndpointModel}
+                      onChange={(e) => setCustomEndpointModel(e.target.value)}
+                      placeholder="asafd60/FineTree-27B-v2.9-merged"
+                      style={selectStyle}
+                    />
+                  </Row>
+                </>
+              )}
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <Row label="Pages">
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -508,12 +549,12 @@ export function AIDialog() {
                   <option value="autocomplete">Autocomplete (append)</option>
                 </select>
               </Row>
-              <label style={checkLabel}>
-                <input type="checkbox" checked={enableThinking} onChange={(e) => setEnableThinking(e.target.checked)} style={{ accentColor: "var(--accent)" }} />
-                Enable extended thinking
-              </label>
               <div style={{ display: "flex", gap: 8 }}>
-                <ActionButton onClick={handleBatch} disabled={batchRunning} primary>
+                <ActionButton
+                  onClick={handleBatch}
+                  disabled={batchRunning || (isCustomEndpoint && (!customEndpointUrl.trim() || !customEndpointModel.trim()))}
+                  primary
+                >
                   {batchRunning ? "Running batch…" : `Run Batch (${Math.min(pageNames.length, batchTo) - (batchFrom - 1)} pages)`}
                 </ActionButton>
                 {batchRunning && <ActionButton onClick={() => { stream.cancel(); setBatchRunning(false); }} danger>Stop</ActionButton>}
@@ -526,15 +567,19 @@ export function AIDialog() {
             </div>
           )}
 
+          {tab === "infer" && (
+            <BatchInferSection docIds={docId ? [docId] : []} />
+          )}
+
           {/* Status */}
-          {applyStatus && tab !== "batch" && (
+          {applyStatus && tab !== "batch" && tab !== "infer" && (
             <div style={{ fontSize: 12, fontWeight: 600, color: applyStatus.startsWith("✓") ? "var(--ok)" : "var(--warn)" }}>
               {applyStatus}
             </div>
           )}
 
           {/* Stream output */}
-          {(stream.fullText || stream.error) && tab !== "batch" && (
+          {(stream.fullText || stream.error) && tab !== "batch" && tab !== "infer" && (
             <div style={{ background: "var(--surface-alt)", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-sm)", padding: 12, maxHeight: 260, overflowY: "auto" }}>
               {stream.error ? (
                 <div style={{ color: "var(--danger)", fontSize: 13 }}>Error: {stream.error}</div>
@@ -559,24 +604,6 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
       <span style={{ minWidth: 60, fontWeight: 500 }}>{label}</span>
       {children}
     </label>
-  );
-}
-
-function ProviderPill({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        padding: "5px 14px", fontSize: 13, fontWeight: 600,
-        borderRadius: "var(--radius-pill)",
-        border: active ? "1px solid var(--accent)" : "1px solid var(--surface-border)",
-        background: active ? "var(--accent-soft)" : "transparent",
-        color: active ? "var(--accent)" : "var(--text-muted)",
-        cursor: "pointer", transition: "var(--transition-fast)",
-      }}
-    >
-      {children}
-    </button>
   );
 }
 

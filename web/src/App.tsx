@@ -2,6 +2,10 @@ import { BrowserRouter, Routes, Route, NavLink, useNavigate } from "react-router
 import { AppShell } from "./components/layout/AppShell";
 import { DashboardPage } from "./pages/DashboardPage";
 import { AnnotationPage } from "./pages/AnnotationPage";
+import { DatasetsPage } from "./pages/DatasetsPage";
+import { DatasetVersionPage } from "./pages/DatasetVersionPage";
+import { SettingsDialog } from "./components/dialogs/SettingsDialog";
+import { AddDatasetDialog } from "./components/dialogs/AddDatasetDialog";
 import { useTheme } from "./hooks/useTheme";
 import { useUIStore } from "./stores/uiStore";
 import { get } from "./api/client";
@@ -16,6 +20,7 @@ interface RandomApprovedPage {
 function SidebarNav() {
   const { themeName, toggleTheme } = useTheme();
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const toggleSettings = useUIStore((s) => s.toggleSettings);
   const navigate = useNavigate();
 
   async function handleRandomCheck() {
@@ -52,12 +57,15 @@ function SidebarNav() {
       </div>
 
       <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <SidebarLink to="/" icon={"\u25A6"}>
-          Projects
+        <SidebarLink to="/" icon={"\u25A6"} end>
+          Documents
         </SidebarLink>
         <SidebarBtn onClick={handleRandomCheck} icon={"🎲"}>
           Random Check
         </SidebarBtn>
+        <SidebarLink to="/datasets" icon={"🗃"}>
+          Datasets
+        </SidebarLink>
       </nav>
 
       <div style={{ flex: 1 }} />
@@ -72,6 +80,9 @@ function SidebarNav() {
           marginTop: 12,
         }}
       >
+        <SidebarBtn onClick={toggleSettings} icon={"\u2699"}>
+          Settings
+        </SidebarBtn>
         <SidebarBtn onClick={toggleTheme} icon={themeName === "light" ? "\u263E" : "\u2600"}>
           {themeName === "light" ? "Dark mode" : "Light mode"}
         </SidebarBtn>
@@ -86,6 +97,7 @@ function SidebarNav() {
 function SidebarNavCollapsed() {
   const { themeName, toggleTheme } = useTheme();
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
+  const toggleSettings = useUIStore((s) => s.toggleSettings);
   const navigate = useNavigate();
 
   async function handleRandomCheck() {
@@ -116,11 +128,13 @@ function SidebarNavCollapsed() {
       <nav style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
         <CollapsedLink to="/" icon={"\u25A6"} />
         <CollapsedBtn onClick={handleRandomCheck} icon={"🎲"} />
+        <CollapsedLink to="/datasets" icon={"🗃"} />
       </nav>
 
       <div style={{ flex: 1 }} />
 
       <div style={{ display: "flex", flexDirection: "column", gap: 2, alignItems: "center" }}>
+        <CollapsedBtn onClick={toggleSettings} icon={"\u2699"} />
         <CollapsedBtn onClick={toggleTheme} icon={themeName === "light" ? "\u263E" : "\u2600"} />
         <CollapsedBtn onClick={toggleSidebar} icon={"\u00BB"} />
       </div>
@@ -136,8 +150,12 @@ export default function App() {
       <AppShell nav={<SidebarNav />} navCollapsed={<SidebarNavCollapsed />}>
         <Routes>
           <Route path="/" element={<DashboardPage />} />
+          <Route path="/datasets" element={<DatasetsPage />} />
+          <Route path="/datasets/:versionId" element={<DatasetVersionPage />} />
           <Route path="/annotate/:docId" element={<AnnotationPage />} />
         </Routes>
+        <SettingsDialog />
+        <AddDatasetDialog />
       </AppShell>
     </BrowserRouter>
   );
@@ -149,15 +167,17 @@ function SidebarLink({
   to,
   icon,
   children,
+  end,
 }: {
   to: string;
   icon: string;
   children: React.ReactNode;
+  end?: boolean;
 }) {
   return (
     <NavLink
       to={to}
-      end
+      end={end}
       style={({ isActive }) => ({
         display: "flex",
         alignItems: "center",
@@ -218,7 +238,7 @@ function CollapsedLink({ to, icon }: { to: string; icon: string }) {
   return (
     <NavLink
       to={to}
-      end
+      end={to === "/"}
       style={({ isActive }) => ({
         display: "flex",
         alignItems: "center",

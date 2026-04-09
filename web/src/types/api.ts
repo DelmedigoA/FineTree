@@ -1,6 +1,6 @@
 /** API request/response types for the FineTree backend. */
 
-import type { PageState } from "./schema";
+import type { BBox, PageState } from "./schema";
 
 // ── Workspace ──────────────────────────────────────────────────────
 
@@ -65,7 +65,7 @@ export interface ValidationResult {
 export interface ExtractRequest {
   doc_id: string;
   page_name: string;
-  provider: "gemini" | "qwen";
+  provider: "gemini" | "custom_endpoint";
   action?: string;
   config?: Record<string, unknown>;
 }
@@ -75,7 +75,7 @@ export interface FillRequest {
   page_name: string;
   facts: Record<string, unknown>[];
   fields: string[];
-  provider?: string;
+  provider?: "gemini";
   config?: Record<string, unknown>;
 }
 
@@ -83,6 +83,21 @@ export interface DetectBboxRequest {
   doc_id: string;
   page_name: string;
   backend?: string;
+}
+
+export type AlignBboxesFactRequest = Record<string, unknown> & {
+  bbox?: BBox;
+  page_index: number;
+};
+
+export interface AlignBboxesResponseItem {
+  page_index: number;
+  bbox: BBox;
+  fact: Record<string, unknown>;
+}
+
+export interface AlignBboxesResponse {
+  aligned_facts: AlignBboxesResponseItem[];
 }
 
 // ── Schema options ─────────────────────────────────────────────────

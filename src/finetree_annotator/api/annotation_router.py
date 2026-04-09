@@ -167,11 +167,11 @@ def validate_document(doc_id: str) -> dict[str, Any]:
             page_name: {
                 "reg_flags": [
                     {"code": issue.code, "message": issue.message, "fact_index": issue.fact_index}
-                    for issue in page_summary.reg_flags
+                    for issue in page_summary.issues if issue.severity == "reg_flag"
                 ],
                 "warnings": [
                     {"code": issue.code, "message": issue.message, "fact_index": issue.fact_index}
-                    for issue in page_summary.warnings
+                    for issue in page_summary.issues if issue.severity == "warning"
                 ],
             }
             for page_name, page_summary in issue_summary.page_summaries.items()

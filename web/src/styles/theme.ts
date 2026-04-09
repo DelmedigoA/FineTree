@@ -22,6 +22,9 @@ export interface ThemeTokens {
   ok: string;
   warn: string;
   danger: string;
+  variantTailText: string;
+  variantTailBg: string;
+  variantTailBorder: string;
   shadow: string;
   canvas: string;
 }
@@ -48,6 +51,9 @@ export const lightTheme: ThemeTokens = {
   ok: "#22c55e",
   warn: "#eab308",
   danger: "#ef4444",
+  variantTailText: "#1d4ed8",
+  variantTailBg: "#dbeafe",
+  variantTailBorder: "#3b82f6",
   shadow: "rgba(0, 0, 0, 0.04)",
   canvas: "#e4e4e7",
 };
@@ -74,6 +80,9 @@ export const darkTheme: ThemeTokens = {
   ok: "#34d399",
   warn: "#facc15",
   danger: "#f87171",
+  variantTailText: "#facc15",
+  variantTailBg: "rgba(245,158,11,0.08)",
+  variantTailBorder: "#facc15",
   shadow: "rgba(0, 0, 0, 0.3)",
   canvas: "#0c0c0f",
 };
@@ -107,6 +116,9 @@ export function applyThemeToElement(
   s.setProperty("--ok", theme.ok);
   s.setProperty("--warn", theme.warn);
   s.setProperty("--danger", theme.danger);
+  s.setProperty("--variant-tail-text", theme.variantTailText);
+  s.setProperty("--variant-tail-bg", theme.variantTailBg);
+  s.setProperty("--variant-tail-border", theme.variantTailBorder);
   s.setProperty("--shadow", theme.shadow);
   s.setProperty("--canvas", theme.canvas);
 }

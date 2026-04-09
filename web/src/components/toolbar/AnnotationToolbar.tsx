@@ -2,23 +2,19 @@
 
 import { useDocumentStore } from "../../stores/documentStore";
 import { useCanvasStore } from "../../stores/canvasStore";
-import { useSelectionStore } from "../../stores/selectionStore";
+import { useAlignBBoxes } from "../../hooks/useAlignBBoxes";
 
 export function AnnotationToolbar({
   onSave,
   onAI,
-  onBatch,
-  onBatchInfer,
 }: {
   onSave?: () => void;
   onAI?: () => void;
-  onBatch?: () => void;
-  onBatchInfer?: () => void;
 }) {
   const { pageNames, currentPageIndex, setCurrentPageIndex, isDirty, docId } =
     useDocumentStore();
   const { fitToView, zoomBy, zoom } = useCanvasStore();
-  const { selectAll } = useSelectionStore();
+  const { alignBBoxes, canAlign, isAligning } = useAlignBBoxes();
 
   const pageCount = pageNames.length;
   const currentPage = pageNames[currentPageIndex] ?? "";
@@ -127,20 +123,10 @@ export function AnnotationToolbar({
 
       {/* Right actions */}
       <ActionBtn
-        onClick={() => {
-          const page = useDocumentStore
-            .getState()
-            .pageStates.get(currentPage);
-          if (page) selectAll(page.facts.length);
-        }}
+        onClick={alignBBoxes}
+        disabled={!canAlign || isAligning}
       >
-        Select All
-      </ActionBtn>
-      <ActionBtn onClick={onBatch}>
-        Batch
-      </ActionBtn>
-      <ActionBtn onClick={onBatchInfer} variant="primary">
-        Batch Infer
+        {isAligning ? "Aligning…" : "Align BBoxes"}
       </ActionBtn>
       <ActionBtn onClick={onAI}>
         AI
@@ -214,27 +200,32 @@ function ActionBtn({
   children,
   onClick,
   variant = "ghost",
+  disabled = false,
 }: {
   children: React.ReactNode;
   onClick?: () => void;
   variant?: "ghost" | "primary";
+  disabled?: boolean;
 }) {
   const isPrimary = variant === "primary";
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       style={{
         padding: "6px 14px",
         fontSize: 13,
         fontWeight: 600,
-        color: isPrimary ? "#fff" : "var(--text-muted)",
-        background: isPrimary ? "var(--accent)" : "transparent",
+        color: disabled ? "var(--text-soft)" : isPrimary ? "#fff" : "var(--text-muted)",
+        background: disabled ? "transparent" : isPrimary ? "var(--accent)" : "transparent",
         border: isPrimary ? "none" : "1px solid var(--surface-border)",
         borderRadius: "var(--radius-xs)",
-        cursor: "pointer",
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.5 : 1,
         transition: "var(--transition-fast)",
       }}
       onMouseEnter={(e) => {
+        if (disabled) return;
         if (isPrimary) {
           e.currentTarget.style.background = "var(--accent-strong)";
         } else {
@@ -242,7 +233,9 @@ function ActionBtn({
         }
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = isPrimary
+        e.currentTarget.style.background = disabled
+          ? "transparent"
+          : isPrimary
           ? "var(--accent)"
           : "transparent";
       }}

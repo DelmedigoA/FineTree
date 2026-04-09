@@ -6,7 +6,7 @@ from decimal import Decimal, InvalidOperation
 import re
 from typing import Any, Callable, Sequence
 
-from .annotation_core import bbox_to_list, make_placeholder_bbox, normalize_bbox_data, normalize_fact_data
+from .annotation_core import make_placeholder_bbox, normalize_bbox_data, normalize_fact_data
 from .fact_ordering import canonical_fact_geometry_rows
 from .numeric_text import normalize_angle_bracketed_numeric_text
 
@@ -123,9 +123,9 @@ def match_qwen_import_payloads(
         if index not in matched_detector_indices_by_imported_index
     ]
     for placeholder_index, import_index in enumerate(unmatched_import_indices):
-        merged_payloads[int(import_index)]["bbox"] = bbox_to_list(placeholder_bbox_factory(placeholder_index))
+        merged_payloads[int(import_index)]["bbox"] = normalize_bbox_data(placeholder_bbox_factory(placeholder_index))
     for import_index, detector_index in matched_detector_indices_by_imported_index.items():
-        merged_payloads[int(import_index)]["bbox"] = bbox_to_list(
+        merged_payloads[int(import_index)]["bbox"] = normalize_bbox_data(
             ordered_detector_payloads[int(detector_index)].get("bbox")
         )
 

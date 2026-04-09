@@ -1,13 +1,13 @@
 # FineTree
 
-FineTree is a desktop-first workflow for annotating financial-report pages, building training datasets, serving multimodal extraction models, and benchmarking model runs against ground truth.
+FineTree is a desktop-first workflow for annotating financial-report pages, building training datasets, serving multimodal extraction models, and evaluating model runs against ground truth.
 
 The repository contains four connected surfaces:
 
 - a PyQt5 desktop dashboard and annotator for page-level review
 - dataset-building and Hugging Face export tooling for training runs
 - local and RunPod-facing inference and serving entrypoints
-- a benchmark UI and headless runner for comparing model submissions
+- a standalone benchmark runner for comparing model outputs against ground truth
 
 ## Key Features
 
@@ -16,7 +16,7 @@ The repository contains four connected surfaces:
 - Generate or patch annotations with Gemini and Qwen-backed flows.
 - Build page-level training JSONL files and push dataset exports to Hugging Face.
 - Serve models through FastAPI, Gradio, RunPod queue, or RunPod serverless entrypoints.
-- Score model outputs against ground truth with a persisted benchmark report and leaderboard.
+- Score model outputs against ground truth with persisted run reports and CSV metrics.
 
 ## Example Output
 
@@ -35,7 +35,7 @@ Canonical page-level output is a JSON object with page metadata plus ordered fac
 }
 ```
 
-The exact predicted page schema is documented in [PAGE_LEVEL_PREDICTED_SCHEMA.md](/Users/delmedigo/Dev/FineTree/PAGE_LEVEL_PREDICTED_SCHEMA.md).
+The exact predicted page schema is documented in [PAGE_LEVEL_PREDICTED_SCHEMA.md](/Users/delmedigo/Dev/FineTree/docs/schemas/PAGE_LEVEL_PREDICTED_SCHEMA.md).
 
 ## Quickstart
 
@@ -61,10 +61,10 @@ Open a PDF directly:
 ./.env/bin/python -m finetree_annotator /absolute/path/to/report.pdf
 ```
 
-Run the benchmark UI:
+Run a benchmark dataset listing:
 
 ```bash
-./.env/bin/finetree-benchmark --config benchmark/config.example.yaml --host 127.0.0.1 --port 8123
+./.env/bin/benchmark-new datasets list
 ```
 
 ## Main Entry Points
@@ -78,8 +78,8 @@ Installed console scripts:
 - `finetree-ft-train`
 - `finetree-ft-merge-push`
 - `finetree-ft-export-quantized`
-- `finetree-benchmark`
-- `finetree-benchmark-run`
+- `benchmark-new`
+- `benchmark_new.cli`
 - `finetree-pod-api`
 - `finetree-pod-gradio`
 - `finetree-simple-infer-api`
@@ -104,7 +104,7 @@ src/finetree_annotator/
   gemini_vlm.py           Gemini generation, streaming, parsing, and logging
   qwen_vlm.py             Qwen local/endpoint inference flows
   ai/                     UI-facing AI dialog, controller, bbox helpers
-  benchmark/              benchmark config, scoring, storage, web UI, CLI
+src/benchmark_new/        standalone benchmark package, CLI, inference, evaluation
   deploy/                 FastAPI, Gradio, RunPod serverless/pod entrypoints
   finetune/               dataset build, validation, train, export, push flows
   schemas.py              canonical Pydantic models
@@ -113,7 +113,7 @@ src/finetree_annotator/
 configs/                  local and remote config files
 scripts/                  one-off utilities and repo maintenance scripts
 tests/                    pytest suite
-benchmark/                benchmark inputs, config, reports, examples
+benchmark_new/            benchmark run inputs and outputs kept out of source package
 docs/                     developer, architecture, and workflow docs
 data/                     managed PDFs, extracted images, annotations, backups
 prompts/                  extraction and Gemini prompt templates
@@ -125,9 +125,9 @@ Generated and experimental content also exists in this repository today, especia
 
 - Developer guide: [docs/developer.md](/Users/delmedigo/Dev/FineTree/docs/developer.md)
 - Architecture guide: [docs/architecture.md](/Users/delmedigo/Dev/FineTree/docs/architecture.md)
-- Training and benchmark guide: [docs/training_and_benchmark.md](/Users/delmedigo/Dev/FineTree/docs/training_and_benchmark.md)
+- Training and evaluation guide: [docs/training_and_benchmark.md](/Users/delmedigo/Dev/FineTree/docs/training_and_benchmark.md)
 - Workflow overview: [docs/finetree_workflow.md](/Users/delmedigo/Dev/FineTree/docs/finetree_workflow.md)
-- Benchmark-specific README: [benchmark/README.md](/Users/delmedigo/Dev/FineTree/benchmark/README.md)
+- Benchmark package README: [src/benchmark_new/README.md](/Users/delmedigo/Dev/FineTree/src/benchmark_new/README.md)
 
 ## Typical Workflow
 
@@ -135,8 +135,8 @@ Generated and experimental content also exists in this repository today, especia
 2. Save canonical page JSON under `data/annotations/`.
 3. Build training JSONL from approved annotations.
 4. Train or export models locally or on a remote machine.
-5. Run predictions and package benchmark submissions.
-6. Score those submissions through the benchmark UI or headless runner.
+5. Run predictions through Gemini or the FineTree vLLM endpoint.
+6. Evaluate outputs through `benchmark-new infer`, `benchmark-new eval`, or `benchmark-new batch-eval`.
 
 ## Testing
 
@@ -151,7 +151,7 @@ Run focused suites while working on a subsystem:
 ```bash
 ./.env/bin/pytest -q tests/test_dashboard_shell.py tests/test_app_layout.py
 ./.env/bin/pytest -q tests/test_gemini_vlm.py tests/test_qwen_vlm.py
-./.env/bin/pytest -q tests/test_benchmark_web.py tests/test_benchmark_runner.py
+./.env/bin/pytest -q tests/test_benchmark_new.py
 ```
 
 ## Backup

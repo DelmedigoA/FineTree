@@ -1,0 +1,4155 @@
+{
+  "run_score": 0.6715033235081717,
+  "meta_score": 0.8076690445704531,
+  "facts_score": 0.5353376024458903,
+  "documents": [
+    {
+      "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+      "meta_score": 0.8076690445704531,
+      "facts_score": 0.5353376024458903,
+      "document_score": 0.6715033235081717,
+      "pages": [
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 1,
+          "image_name": "page_0001.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": null,
+              "pred_value": null,
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "title",
+              "pred_value": "title",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": null,
+              "pred_value": null,
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוחות כספיים",
+              "pred_value": "דוחות כספיים ליום 31 בדצמבר 2020",
+              "score": 0.5454545454545454,
+              "is_exact_match": false
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.0,
+                "elementwise_path_similarity": 0.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.9090909090909091,
+          "facts_score": 0.0,
+          "page_score": 0.45454545454545453,
+          "row_diff_diagnostics": []
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 2,
+          "image_name": "page_0002.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": null,
+              "pred_value": null,
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "contents",
+              "pred_value": "contents",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": null,
+              "pred_value": null,
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "תוכן הענינים",
+              "pred_value": "תוכן הענינים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.0,
+                "elementwise_path_similarity": 0.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 1.0,
+          "facts_score": 0.0,
+          "page_score": 0.5,
+          "row_diff_diagnostics": []
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 3,
+          "image_name": "page_0003.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "2",
+              "pred_value": "2",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "declaration",
+              "pred_value": "statements",
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "auditors_report",
+              "pred_value": "auditors_report",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוח רואה החשבון המבקר לחברי העמותה",
+              "pred_value": "דוח רואה החשבון המבקר לחברי העמותה",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.0,
+                "elementwise_path_similarity": 0.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.8,
+          "facts_score": 0.0,
+          "page_score": 0.4,
+          "row_diff_diagnostics": []
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 4,
+          "image_name": "page_0004.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "3",
+              "pred_value": "3",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "balance_sheet",
+              "pred_value": "balance_sheet",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "מאזנים",
+              "pred_value": "מאזנים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 1.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 1.0,
+                "elementwise_path_similarity": 1.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.5,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 14,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 1.0,
+          "facts_score": 0.95,
+          "page_score": 0.975,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 14,
+              "pred_start": 0,
+              "pred_end": 14,
+              "gt_rows": [
+                "1 | נכסים שוטפים / מזומנים ושווי מזומנים | 640,908",
+                "2 | נכסים שוטפים / מזומנים ושווי מזומנים | 271,708",
+                "3 | נכסים שוטפים / לקוחות, המחאות ואשראי לגבייה | 1,595,972",
+                "4 | נכסים שוטפים / לקוחות, המחאות ואשראי לגבייה | 1,739,257",
+                "5 | נכסים שוטפים / חייבים אחרים ויתרות חובה | 45,810",
+                "6 | נכסים שוטפים / חייבים אחרים ויתרות חובה | 10,910",
+                "7 | נכסים שוטפים / סה״כ | 2,282,690",
+                "8 | נכסים שוטפים / סה״כ | 2,021,875",
+                "9 | נכסים בלתי שוטפים / רכוש קבוע, נטו | 244,749",
+                "10 | נכסים בלתי שוטפים / רכוש קבוע, נטו | 168,037",
+                "11 | נכסים בלתי שוטפים / יעודה לפיצויים נטו | 37,379",
+                "12 | נכסים בלתי שוטפים / יעודה לפיצויים נטו | 36,112",
+                "13 | סה\"כ נכסים | 2,564,818",
+                "14 | סה\"כ נכסים | 2,226,024"
+              ],
+              "pred_rows": [
+                "1 | נכסים שוטפים / מזומנים ושווי מזומנים | 640,908",
+                "2 | נכסים שוטפים / מזומנים ושווי מזומנים | 271,708",
+                "3 | נכסים שוטפים / לקוחות, המחאות ואשראי לגבייה | 1,595,972",
+                "4 | נכסים שוטפים / לקוחות, המחאות ואשראי לגבייה | 1,739,257",
+                "5 | נכסים שוטפים / חייבים אחרים ויתרות חובה | 45,810",
+                "6 | נכסים שוטפים / חייבים אחרים ויתרות חובה | 10,910",
+                "7 | נכסים שוטפים / סה״כ | 2,282,690",
+                "8 | נכסים שוטפים / סה״כ | 2,021,875",
+                "9 | נכסים בלתי שוטפים / רכוש קבוע, נטו | 244,749",
+                "10 | נכסים בלתי שוטפים / רכוש קבוע, נטו | 168,037",
+                "11 | נכסים בלתי שוטפים / יעודה לפיצויים נטו | 37,379",
+                "12 | נכסים בלתי שוטפים / יעודה לפיצויים נטו | 36,112",
+                "13 | סה\"כ נכסים | 2,564,818",
+                "14 | סה\"כ נכסים | 2,226,024"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 5,
+          "image_name": "page_0005.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "4",
+              "pred_value": "4",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "balance_sheet",
+              "pred_value": "balance_sheet",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "מאזנים",
+              "pred_value": "מאזנים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 1.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.882998056445211,
+              "exact_metrics": {
+                "matches": 16,
+                "precision": 0.8,
+                "recall": 0.8,
+                "f1": 0.8000000000000002,
+                "accuracy": 0.8
+              },
+              "string_similarity": 0.9255934959349593,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.9255934959349593,
+                "elementwise_path_similarity": 0.9234006734006734
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.5,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 20,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 1.0,
+          "facts_score": 0.9382998056445211,
+          "page_score": 0.9691499028222605,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 6,
+              "pred_start": 0,
+              "pred_end": 6,
+              "gt_rows": [
+                "1 | התחייבויות שוטפות / ספקים ונותני שירותים | 85,205",
+                "2 | התחייבויות שוטפות / ספקים ונותני שירותים | 105,660",
+                "3 | התחייבויות שוטפות / זכאים שונים ויתרות זכות | 421,242",
+                "4 | התחייבויות שוטפות / זכאים שונים ויתרות זכות | 371,825",
+                "5 | התחייבויות שוטפות / סה״כ | 506,447",
+                "6 | התחייבויות שוטפות / סה״כ | 477,485"
+              ],
+              "pred_rows": [
+                "1 | התחייבויות שוטפות / ספקים ונותני שירותים | 85,205",
+                "2 | התחייבויות שוטפות / ספקים ונותני שירותים | 105,660",
+                "3 | התחייבויות שוטפות / זכאים שונים ויתרות זכות | 421,242",
+                "4 | התחייבויות שוטפות / זכאים שונים ויתרות זכות | 371,825",
+                "5 | התחייבויות שוטפות / סה״כ | 506,447",
+                "6 | התחייבויות שוטפות / סה״כ | 477,485"
+              ]
+            },
+            {
+              "op": "replace",
+              "gt_start": 6,
+              "gt_end": 8,
+              "pred_start": 6,
+              "pred_end": 8,
+              "gt_rows": [
+                "7 | התחייבויות / סה״כ | 506,447",
+                "8 | התחייבויות / סה״כ | 477,485"
+              ],
+              "pred_rows": [
+                "7 | התחייבויות שוטפות / סה״כ | 506,447",
+                "8 | התחייבויות שוטפות / סה״כ | 477,485"
+              ]
+            },
+            {
+              "op": "equal",
+              "gt_start": 8,
+              "gt_end": 16,
+              "pred_start": 8,
+              "pred_end": 16,
+              "gt_rows": [
+                "9 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "10 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "11 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שלא יועדו על ידי מוסדות המלכ\"ר | 1,713,621",
+                "12 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שלא יועדו על ידי מוסדות המלכ\"ר | 1,480,503",
+                "13 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / סה״כ | 1,813,621",
+                "14 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / סה״כ | 1,580,503",
+                "15 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו ששימשו לרכוש קבוע | 244,750",
+                "16 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו ששימשו לרכוש קבוע | 168,036"
+              ],
+              "pred_rows": [
+                "9 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "10 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "11 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שלא יועדו על ידי מוסדות המלכ\"ר | 1,713,621",
+                "12 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / שלא יועדו על ידי מוסדות המלכ\"ר | 1,480,503",
+                "13 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / סה״כ | 1,813,621",
+                "14 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו לשימוש לפעילויות / סה״כ | 1,580,503",
+                "15 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו ששימשו לרכוש קבוע | 244,750",
+                "16 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / נכסים נטו ששימשו לרכוש קבוע | 168,036"
+              ]
+            },
+            {
+              "op": "replace",
+              "gt_start": 16,
+              "gt_end": 18,
+              "pred_start": 16,
+              "pred_end": 18,
+              "gt_rows": [
+                "17 | נכסים נטו / סה״כ | 2,058,371",
+                "18 | נכסים נטו / סה״כ | 1,748,539"
+              ],
+              "pred_rows": [
+                "17 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / סה״כ | 2,058,371",
+                "18 | נכסים נטו / נכסים נטו שלא קיימת לגביהם הגבלה (גרעון) / סה״כ | 1,748,539"
+              ]
+            },
+            {
+              "op": "equal",
+              "gt_start": 18,
+              "gt_end": 20,
+              "pred_start": 18,
+              "pred_end": 20,
+              "gt_rows": [
+                "19 | סה\"כ התחייבויות ונכסים נטו | 2,564,818",
+                "20 | סה\"כ התחייבויות ונכסים נטו | 2,226,024"
+              ],
+              "pred_rows": [
+                "19 | סה\"כ התחייבויות ונכסים נטו | 2,564,818",
+                "20 | סה\"כ התחייבויות ונכסים נטו | 2,226,024"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 6,
+          "image_name": "page_0006.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול ביולד ובמשפחה",
+              "score": 0.9859154929577465,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "5",
+              "pred_value": "5",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "statement_of_activities",
+              "pred_value": "statement_of_activities",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוחות על הפעילויות",
+              "pred_value": "דוחות על הפעילויות",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.7875418782606227,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": 980537.2307692308,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.5939516810495472
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.8406737735500216,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 0.9230769230769231,
+                "recall": 0.8888888888888888,
+                "f1": 0.9056603773584906,
+                "accuracy": 0.8888888888888888
+              },
+              "string_similarity": 0.8141997588454752,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.8141997588454752,
+                "elementwise_path_similarity": 0.8021611844460989
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.6757512229210343,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 224.6153846153846,
+              "details": {
+                "date_diff_score": 0.37037037037037035
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.6757512229210343,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 225.23076923076923,
+              "details": {
+                "date_diff_score": 0.37037037037037035
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.9056603773584906,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 0.9230769230769231,
+                "recall": 0.8888888888888888,
+                "f1": 0.9056603773584906,
+                "accuracy": 0.8888888888888888
+              },
+              "string_similarity": 0.8148148148148148,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.9811320754716981,
+              "exact_metrics": {
+                "matches": 26,
+                "precision": 1.0,
+                "recall": 0.9629629629629629,
+                "f1": 0.9811320754716981,
+                "accuracy": 0.9629629629629629
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.9971830985915493,
+          "facts_score": 0.8866510550482901,
+          "page_score": 0.9419170768199197,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 10,
+              "pred_start": 0,
+              "pred_end": 10,
+              "gt_rows": [
+                "1 | מחזור הפעילויות / הכנסות מטיפולים ואבחונים | 7,653,927",
+                "2 | מחזור הפעילויות / הכנסות מטיפולים ואבחונים | 7,214,462",
+                "3 | מחזור הפעילויות / הכנסות מקצבות אחרות | 360,755",
+                "4 | מחזור הפעילויות / הכנסות מקצבות אחרות | 387,440",
+                "5 | מחזור הפעילויות / תרומות | 16,250",
+                "6 | מחזור הפעילויות / תרומות | 8,750",
+                "7 | מחזור הפעילויות / סה״כ | 8,030,932",
+                "8 | מחזור הפעילויות / סה״כ | 7,610,652",
+                "9 | עלות הפעילויות / שכר עבודה ומטפלי חוץ | (5,675,608)",
+                "10 | עלות הפעילויות / שכר עבודה ומטפלי חוץ | (5,098,806)"
+              ],
+              "pred_rows": [
+                "1 | מחזור הפעילויות / הכנסות מטיפולים ואבחונים | 7,653,927",
+                "2 | מחזור הפעילויות / הכנסות מטיפולים ואבחונים | 7,214,462",
+                "3 | מחזור הפעילויות / הכנסות מקצבות אחרות | 360,755",
+                "4 | מחזור הפעילויות / הכנסות מקצבות אחרות | 387,440",
+                "5 | מחזור הפעילויות / תרומות | 16,250",
+                "6 | מחזור הפעילויות / תרומות | 8,750",
+                "7 | מחזור הפעילויות / סה״כ | 8,030,932",
+                "8 | מחזור הפעילויות / סה״כ | 7,610,652",
+                "9 | עלות הפעילויות / שכר עבודה ומטפלי חוץ | (5,675,608)",
+                "10 | עלות הפעילויות / שכר עבודה ומטפלי חוץ | (5,098,806)"
+              ]
+            },
+            {
+              "op": "replace",
+              "gt_start": 10,
+              "gt_end": 27,
+              "pred_start": 10,
+              "pred_end": 26,
+              "gt_rows": [
+                "11 | עלות הפעילויות / שכר עבודה ומטפלי חוץ | (5,098,806)",
+                "12 | עלות הפעילויות / הדרכת עמיתים | (163,160)",
+                "13 | עלות הפעילויות / הדרכת עמיתים | (139,539)",
+                "14 | עלות הפעילויות / הוצאות ישירות אחרות | (627,943)",
+                "15 | עלות הפעילויות / הוצאות ישירות אחרות | (597,010)",
+                "16 | עלות הפעילויות / סה״כ | (6,466,711)",
+                "17 | עלות הפעילויות / סה״כ | (5,835,355)",
+                "18 | הכנסות נטו מפעילויות | 1,564,221",
+                "19 | הכנסות נטו מפעילויות | 1,775,297",
+                "20 | הוצאות הנהלה וכלליות | (1,229,686)",
+                "21 | הוצאות הנהלה וכלליות | (1,229,485)",
+                "22 | הכנסות נטו לפני מימון | 334,535",
+                "23 | הכנסות נטו לפני מימון | 545,812",
+                "24 | מימון, נטו | (24,703)",
+                "25 | מימון, נטו | (31,550)",
+                "26 | עודף לתקופה | 309,832",
+                "27 | עודף לתקופה | 514,262"
+              ],
+              "pred_rows": [
+                "11 | עלות הפעילויות / הדרכת עמייתים | (163,160)",
+                "12 | עלות הפעילויות / הדרכת עמייתים | (139,539)",
+                "13 | עלות הפעילויות / הוצאות ישירות אחרות | (627,943)",
+                "14 | עלות הפעילויות / הוצאות ישירות אחרות | (597,010)",
+                "15 | עלות הפעילויות / סה״כ | (6,466,711)",
+                "16 | עלות הפעילויות / סה״כ | (5,835,355)",
+                "17 | הכנסות נטו מפעילויות | 1,564,221",
+                "18 | הכנסות נטו מפעילויות | 1,775,297",
+                "19 | הוצאות הנהלה וכלליות | (1,229,686)",
+                "20 | הוצאות הנהלה וכלליות | (1,229,485)",
+                "21 | הכנסות נטו לפני מימון | 334,535",
+                "22 | הכנסות נטו לפני מימון | 545,812",
+                "23 | מימון, נטו | (24,703)",
+                "24 | מימון, נטו | (31,550)",
+                "25 | עודף לתקופה | 309,832",
+                "26 | עודף לתקופה | 514,262"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 7,
+          "image_name": "page_0007.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "6",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "statement_of_changes_in_equity",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוחות על השינויים בנכסים נטו",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.0,
+                "elementwise_path_similarity": 0.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.0,
+          "facts_score": 0.0,
+          "page_score": 0.0,
+          "row_diff_diagnostics": [
+            {
+              "op": "delete",
+              "gt_start": 0,
+              "gt_end": 44,
+              "pred_start": 0,
+              "pred_end": 0,
+              "gt_rows": [
+                "1 | יתרות ליום 1 בינואר 2019 / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 983,541",
+                "2 | יתרות ליום 1 בינואר 2019 / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "3 | יתרות ליום 1 בינואר 2019 / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 150,736",
+                "4 | יתרות ליום 1 בינואר 2019 / סה\"כ | 1,234,277",
+                "5 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 514,262",
+                "6 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "7 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | -",
+                "8 | תוספות במהלך השנה / הכנסות נטו לשנה / סה\"כ | 514,262",
+                "9 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | (65,375)",
+                "10 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "11 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 65,375",
+                "12 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / סה\"כ | -",
+                "13 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 48,075",
+                "14 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "15 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | (48,075)",
+                "16 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / סה\"כ | -",
+                "17 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | (17,300)",
+                "18 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "19 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 17,300",
+                "20 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / סה\"כ | -",
+                "21 | יתרות ליום 31 בדצמבר 2019 / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 1,480,503",
+                "22 | יתרות ליום 31 בדצמבר 2019 / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "23 | יתרות ליום 31 בדצמבר 2019 / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 168,036",
+                "24 | יתרות ליום 31 בדצמבר 2019 / סה\"כ | 1,748,539",
+                "25 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 309,832",
+                "26 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "27 | תוספות במהלך השנה / הכנסות נטו לשנה / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | -",
+                "28 | תוספות במהלך השנה / הכנסות נטו לשנה / סה\"כ | 309,832",
+                "29 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | (122,616)",
+                "30 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "31 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 122,616",
+                "32 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / ששימשו לרכוש קבוע / סה\"כ | -",
+                "33 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 45,902",
+                "34 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "35 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | (45,902)",
+                "36 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סכומים שהועברו לכיסוי הוצאות פחת / סה\"כ | -",
+                "37 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | (76,714)",
+                "38 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | -",
+                "39 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 76,714",
+                "40 | גריעות במהלך השנה / העברת סכומים שלא קיימת לגביהם הגבלה / סה\"כ / סה\"כ | -",
+                "41 | יתרות ליום 31 בדצמבר 2020 / שאין לגביהם הגבלה / לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר | 1,713,621",
+                "42 | יתרות ליום 31 בדצמבר 2020 / שאין לגביהם הגבלה / לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר | 100,000",
+                "43 | יתרות ליום 31 בדצמבר 2020 / שאין לגביהם הגבלה / נכסים נטו ששימשו לרכוש קבוע | 244,750",
+                "44 | יתרות ליום 31 בדצמבר 2020 / סה\"כ | 2,058,371"
+              ],
+              "pred_rows": []
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 8,
+          "image_name": "page_0008.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגלים אגודה לטיפול בילד ובמשפחה",
+              "score": 0.9714285714285714,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "7",
+              "pred_value": "7",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "cash_flow_statement",
+              "pred_value": "cash_flow_statement",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוחות על תזרימי המזומנים",
+              "pred_value": "דוחות על תזרימי המזומנים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.9583333333333333,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.9166666666666666
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.948679507645352,
+              "exact_metrics": {
+                "matches": 22,
+                "precision": 0.9166666666666666,
+                "recall": 0.9166666666666666,
+                "f1": 0.9166666666666666,
+                "accuracy": 0.9166666666666666
+              },
+              "string_similarity": 0.9798387096774194,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.9798387096774194,
+                "elementwise_path_similarity": 0.9495331465919701
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.9166666666666667,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 0.8333333333333334
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.9942857142857143,
+          "facts_score": 0.9823679507645352,
+          "page_score": 0.9883268325251248,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 6,
+              "pred_start": 0,
+              "pred_end": 6,
+              "gt_rows": [
+                "1 | תזרימי מזומנים מפעילות שוטפת / רווח נקי לפי דוח התוצאות העסקיות | 309,832",
+                "2 | תזרימי מזומנים מפעילות שוטפת / רווח נקי לפי דוח התוצאות העסקיות | 514,262",
+                "3 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים | 44,635",
+                "4 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים | 43,737",
+                "5 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות | 137,347",
+                "6 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות | (331,730)"
+              ],
+              "pred_rows": [
+                "1 | תזרימי מזומנים מפעילות שוטפת / רווח נקי לפי דוח התוצאות העסקיות | 309,832",
+                "2 | תזרימי מזומנים מפעילות שוטפת / רווח נקי לפי דוח התוצאות העסקיות | 514,262",
+                "3 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים | 44,635",
+                "4 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים | 43,737",
+                "5 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות | 137,347",
+                "6 | תזרימי מזומנים מפעילות שוטפת / התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות | (331,730)"
+              ]
+            },
+            {
+              "op": "replace",
+              "gt_start": 6,
+              "gt_end": 8,
+              "pred_start": 6,
+              "pred_end": 8,
+              "gt_rows": [
+                "7 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / תזרימי מזומנים מפעילות שוטפת / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | 181,982",
+                "8 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / תזרימי מזומנים מפעילות שוטפת / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | (287,993)"
+              ],
+              "pred_rows": [
+                "7 | תזרימי מזומנים מפעילות שוטפת / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | 181,982",
+                "8 | תזרימי מזומנים מפעילות שוטפת / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | (287,993)"
+              ]
+            },
+            {
+              "op": "equal",
+              "gt_start": 8,
+              "gt_end": 24,
+              "pred_start": 8,
+              "pred_end": 24,
+              "gt_rows": [
+                "9 | תזרימי מזומנים מפעילות שוטפת / מזומנים נטו ששימשו לפעילות שוטפת | 491,814",
+                "10 | תזרימי מזומנים מפעילות שוטפת / מזומנים נטו ששימשו לפעילות שוטפת | 226,269",
+                "11 | תזרימי מזומנים מפעילות השקעה / רכישת נכסים קבועים | (122,614)",
+                "12 | תזרימי מזומנים מפעילות השקעה / רכישת נכסים קבועים | (65,376)",
+                "13 | תזרימי מזומנים מפעילות השקעה / מזומנים נטו שנבעו מפעילות השקעה | (122,614)",
+                "14 | תזרימי מזומנים מפעילות השקעה / מזומנים נטו שנבעו מפעילות השקעה | (65,376)",
+                "15 | תזרימי מזומנים מפעילות מימון / פרעון הלוואות לזמן קצר | -",
+                "16 | תזרימי מזומנים מפעילות מימון / פרעון הלוואות לזמן קצר | (5,199)",
+                "17 | תזרימי מזומנים מפעילות מימון / מזומנים נטו שנבעו מפעילות מימון | -",
+                "18 | תזרימי מזומנים מפעילות מימון / מזומנים נטו שנבעו מפעילות מימון | (5,199)",
+                "19 | עליה במזומנים ושווי מזומנים | 369,200",
+                "20 | עליה במזומנים ושווי מזומנים | 155,694",
+                "21 | יתרת מזומנים ושווי מזומנים לתחילת השנה | 271,708",
+                "22 | יתרת מזומנים ושווי מזומנים לתחילת השנה | 116,014",
+                "23 | יתרת מזומנים ושווי מזומנים לסוף השנה | 640,908",
+                "24 | יתרת מזומנים ושווי מזומנים לסוף השנה | 271,708"
+              ],
+              "pred_rows": [
+                "9 | תזרימי מזומנים מפעילות שוטפת / מזומנים נטו ששימשו לפעילות שוטפת | 491,814",
+                "10 | תזרימי מזומנים מפעילות שוטפת / מזומנים נטו ששימשו לפעילות שוטפת | 226,269",
+                "11 | תזרימי מזומנים מפעילות השקעה / רכישת נכסים קבועים | (122,614)",
+                "12 | תזרימי מזומנים מפעילות השקעה / רכישת נכסים קבועים | (65,376)",
+                "13 | תזרימי מזומנים מפעילות השקעה / מזומנים נטו שנבעו מפעילות השקעה | (122,614)",
+                "14 | תזרימי מזומנים מפעילות השקעה / מזומנים נטו שנבעו מפעילות השקעה | (65,376)",
+                "15 | תזרימי מזומנים מפעילות מימון / פרעון הלוואות לזמן קצר | -",
+                "16 | תזרימי מזומנים מפעילות מימון / פרעון הלוואות לזמן קצר | (5,199)",
+                "17 | תזרימי מזומנים מפעילות מימון / מזומנים נטו שנבעו מפעילות מימון | -",
+                "18 | תזרימי מזומנים מפעילות מימון / מזומנים נטו שנבעו מפעילות מימון | (5,199)",
+                "19 | עליה במזומנים ושווי מזומנים | 369,200",
+                "20 | עליה במזומנים ושווי מזומנים | 155,694",
+                "21 | יתרת מזומנים ושווי מזומנים לתחילת השנה | 271,708",
+                "22 | יתרת מזומנים ושווי מזומנים לתחילת השנה | 116,014",
+                "23 | יתרת מזומנים ושווי מזומנים לסוף השנה | 640,908",
+                "24 | יתרת מזומנים ושווי מזומנים לסוף השנה | 271,708"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 9,
+          "image_name": "page_0009.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "8",
+              "pred_value": "8",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "cash_flow_statement",
+              "pred_value": "cash_flow_statement",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "דוחות על תזרימי המזומנים",
+              "pred_value": "דוחות על תזרימי המזומנים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 1.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 1.0,
+                "elementwise_path_similarity": 1.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 18,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 1.0,
+          "facts_score": 1.0,
+          "page_score": 1.0,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 18,
+              "pred_start": 0,
+              "pred_end": 18,
+              "gt_rows": [
+                "1 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / פחת והפחתות | 45,902",
+                "2 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / פחת והפחתות | 48,075",
+                "3 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / ירידה בעודף של יעודה לפיצויי פרישה - נטו | (1,267)",
+                "4 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / ירידה בעודף של יעודה לפיצויי פרישה - נטו | (4,338)",
+                "5 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / סה״כ | 44,635",
+                "6 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / סה״כ | 43,737",
+                "7 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בלקוחות | 143,285",
+                "8 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בלקוחות | (309,502)",
+                "9 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בחייבים ויתרות חובה | (34,900)",
+                "10 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בחייבים ויתרות חובה | 13,337",
+                "11 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה בספקים ובהמחאות לפרעון | (20,455)",
+                "12 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה בספקים ובהמחאות לפרעון | (68,848)",
+                "13 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / עליה בזכאים אחרים ויתרות זכות | 49,417",
+                "14 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / עליה בזכאים אחרים ויתרות זכות | 33,283",
+                "15 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / סה״כ | 137,347",
+                "16 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / סה״כ | (331,730)",
+                "17 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | 181,982",
+                "18 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | (287,993)"
+              ],
+              "pred_rows": [
+                "1 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / פחת והפחתות | 45,902",
+                "2 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / פחת והפחתות | 48,075",
+                "3 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / ירידה בעודף של יעודה לפיצויי פרישה - נטו | (1,267)",
+                "4 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / ירידה בעודף של יעודה לפיצויי פרישה - נטו | (4,338)",
+                "5 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / סה״כ | 44,635",
+                "6 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / הכנסות והוצאות שאינן כרוכות בתזרימי מזומנים / סה״כ | 43,737",
+                "7 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בלקוחות | 143,285",
+                "8 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בלקוחות | (309,502)",
+                "9 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בחייבים ויתרות חובה | (34,900)",
+                "10 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה (עליה) בחייבים ויתרות חובה | 13,337",
+                "11 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה בספקים ובהמחאות לפרעון | (20,455)",
+                "12 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / ירידה בספקים ובהמחאות לפרעון | (68,848)",
+                "13 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / עליה בזכאים אחרים ויתרות זכות | 49,417",
+                "14 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / עליה בזכאים אחרים ויתרות זכות | 33,283",
+                "15 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / סה״כ | 137,347",
+                "16 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / שינויים בסעיפי רכוש והתחייבויות / סה״כ | (331,730)",
+                "17 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | 181,982",
+                "18 | התאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' / סה\"כ ההתאמות הדרושות להצגת תזרים המזומנים מפעילות שוטפת-נספח א' | (287,993)"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 10,
+          "image_name": "page_0010.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול ביזל ובמשפחה",
+              "score": 0.9714285714285714,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "9",
+              "pred_value": "9",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "notes_to_financial_statements",
+              "pred_value": "notes_to_financial_statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "באורים לדוחות הכספיים",
+              "pred_value": "באורים לדוחות הכספיים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.8333333333333333,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.6666666666666666
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.3756575122667077,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.6827974526250389,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.6827974526250389,
+                "elementwise_path_similarity": 0.44417508417508417
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.5,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.5,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 3,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.9942857142857143,
+          "facts_score": 0.7208990845600041,
+          "page_score": 0.8575923994228591,
+          "row_diff_diagnostics": [
+            {
+              "op": "replace",
+              "gt_start": 0,
+              "gt_end": 3,
+              "pred_start": 0,
+              "pred_end": 3,
+              "gt_rows": [
+                "1 | רכוש קבוע / שיעורי הפחת השנתיים / ריהוט וציוד משרדי | 7-10",
+                "2 | רכוש קבוע / שיעורי הפחת השנתיים / מחשבים | 33",
+                "3 | רכוש קבוע / שיעורי הפחת השנתיים / שיפורים במושכר | 10"
+              ],
+              "pred_rows": [
+                "1 | רכוש קבוע / ריהוט וציוד משרדי | 7-10",
+                "2 | רכוש קבוע / מחשבים | 33",
+                "3 | רכוש קבוע / שיפורים במושכר | 10"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 11,
+          "image_name": "page_0011.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": "חוף הגליל אגודה לטיפול ביילד ובמשפחה",
+              "score": 0.9859154929577465,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "10",
+              "pred_value": "10",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": "statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "notes_to_financial_statements",
+              "pred_value": "notes_to_financial_statements",
+              "score": 1.0,
+              "is_exact_match": true
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "באורים לדוחות הכספיים",
+              "pred_value": "באורים לדוחות הכספיים",
+              "score": 1.0,
+              "is_exact_match": true
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.9583333333333333,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": 0.0,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.9166666666666666
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 1.0,
+                "elementwise_path_similarity": 1.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.5,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": 0.0,
+              "details": {
+                "date_diff_score": 1.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 1.0,
+              "exact_metrics": {
+                "matches": 24,
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "accuracy": 1.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.9971830985915493,
+          "facts_score": 0.9458333333333333,
+          "page_score": 0.9715082159624413,
+          "row_diff_diagnostics": [
+            {
+              "op": "equal",
+              "gt_start": 0,
+              "gt_end": 24,
+              "pred_start": 0,
+              "pred_end": 24,
+              "gt_rows": [
+                "1 | מזומנים בקופת העסק | 6,630",
+                "2 | מזומנים בקופת העסק | 1,631",
+                "3 | מזומנים בבנקים | 333,931",
+                "4 | מזומנים בבנקים | 129,949",
+                "5 | פקדונות בבנקים | 300,347",
+                "6 | פקדונות בבנקים | 140,128",
+                "7 | סה״כ | 640,908",
+                "8 | סה״כ | 271,708",
+                "9 | חובות פתוחים | 1,536,393",
+                "10 | חובות פתוחים | 1,652,776",
+                "11 | הכנסות לקבל | -",
+                "12 | הכנסות לקבל | 80,840",
+                "13 | המחאות לגבייה וחברות אשראי | 59,579",
+                "14 | המחאות לגבייה וחברות אשראי | 44,051",
+                "15 | הפרשה לחובות מסופקים | -",
+                "16 | הפרשה לחובות מסופקים | (38,410)",
+                "17 | סה״כ | 1,595,972",
+                "18 | סה״כ | 1,739,257",
+                "19 | פקדונות בנאמנות | 10,000",
+                "20 | פקדונות בנאמנות | 10,000",
+                "21 | הוצאות מראש | 35,810",
+                "22 | הוצאות מראש | 910",
+                "23 | סה״כ | 45,810",
+                "24 | סה״כ | 10,910"
+              ],
+              "pred_rows": [
+                "1 | מזומנים בקופת העסק | 6,630",
+                "2 | מזומנים בקופת העסק | 1,631",
+                "3 | מזומנים בבנקים | 333,931",
+                "4 | מזומנים בבנקים | 129,949",
+                "5 | פקדונות בבנקים | 300,347",
+                "6 | פקדונות בבנקים | 140,128",
+                "7 | סה״כ | 640,908",
+                "8 | סה״כ | 271,708",
+                "9 | חובות פתוחים | 1,536,393",
+                "10 | חובות פתוחים | 1,652,776",
+                "11 | הכנסות לקבל | -",
+                "12 | הכנסות לקבל | 80,840",
+                "13 | המחאות לגבייה וחברות אשראי | 59,579",
+                "14 | המחאות לגבייה וחברות אשראי | 44,051",
+                "15 | הפרשה לחובות מסופקים | -",
+                "16 | הפרשה לחובות מסופקים | (38,410)",
+                "17 | סה״כ | 1,595,972",
+                "18 | סה״כ | 1,739,257",
+                "19 | פקדונות בנאמנות | 10,000",
+                "20 | פקדונות בנאמנות | 10,000",
+                "21 | הוצאות מראש | 35,810",
+                "22 | הוצאות מראש | 910",
+                "23 | סה״כ | 45,810",
+                "24 | סה״כ | 10,910"
+              ]
+            }
+          ]
+        },
+        {
+          "doc_id": "דוח כספי 2020 - -חוף הגליל- אגודה לטפול בילד ובמשפחה (ע-ר)",
+          "page_index": 12,
+          "image_name": "page_0012.png",
+          "meta_result": {
+            "entity_name": {
+              "field": "entity_name",
+              "comparison_type": "soft",
+              "gt_value": "חוף הגליל אגודה לטיפול בילד ובמשפחה",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "page_num": {
+              "field": "page_num",
+              "comparison_type": "hard",
+              "gt_value": "11",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "page_type": {
+              "field": "page_type",
+              "comparison_type": "hard",
+              "gt_value": "statements",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "statement_type": {
+              "field": "statement_type",
+              "comparison_type": "hard",
+              "gt_value": "notes_to_financial_statements",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            },
+            "title": {
+              "field": "title",
+              "comparison_type": "soft",
+              "gt_value": "באורים לדוחות הכספיים",
+              "pred_value": null,
+              "score": 0.0,
+              "is_exact_match": false
+            }
+          },
+          "facts_result": {
+            "value": {
+              "field": "value",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "numeric_closeness_score": 0.0
+              }
+            },
+            "path": {
+              "field": "path",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "joined_path_similarity": 0.0,
+                "elementwise_path_similarity": 0.0
+              }
+            },
+            "fact_num": {
+              "field": "fact_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_type": {
+              "field": "period_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "period_start": {
+              "field": "period_start",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "period_end": {
+              "field": "period_end",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {
+                "date_diff_score": 0.0
+              }
+            },
+            "currency": {
+              "field": "currency",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "scale": {
+              "field": "scale",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_type": {
+              "field": "value_type",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "value_context": {
+              "field": "value_context",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "comment_ref": {
+              "field": "comment_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 1.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_name": {
+              "field": "note_name",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": 0.0,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_flag": {
+              "field": "note_flag",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_num": {
+              "field": "note_num",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "note_ref": {
+              "field": "note_ref",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            },
+            "path_source": {
+              "field": "path_source",
+              "score": 0.0,
+              "exact_metrics": {
+                "matches": 0,
+                "precision": 0.0,
+                "recall": 0.0,
+                "f1": 0.0,
+                "accuracy": 0.0
+              },
+              "string_similarity": null,
+              "numeric_mae": null,
+              "date_mae_days": null,
+              "details": {}
+            }
+          },
+          "meta_score": 0.0,
+          "facts_score": 0.0,
+          "page_score": 0.0,
+          "row_diff_diagnostics": [
+            {
+              "op": "delete",
+              "gt_start": 0,
+              "gt_end": 30,
+              "pred_start": 0,
+              "pred_end": 0,
+              "gt_rows": [
+                "1 | קופה מרכזית לפיצויים | 37,379",
+                "2 | קופה מרכזית לפיצויים | 41,370",
+                "3 | עתודה לפיצויים | -",
+                "4 | עתודה לפיצויים | (5,258)",
+                "5 | סה\"כ | 37,379",
+                "6 | סה\"כ | 36,112",
+                "7 | עלות / יתרה ליום 1 בינואר 2020 / ריהוט וציוד | 386,818",
+                "8 | עלות / יתרה ליום 1 בינואר 2020 / שיפורים במושכר | 152,685",
+                "9 | עלות / יתרה ליום 1 בינואר 2020 / סה\"כ | 539,503",
+                "10 | עלות / תוספות במשך השנה / ריהוט וציוד | 46,196",
+                "11 | עלות / תוספות במשך השנה / שיפורים במושכר | 76,420",
+                "12 | עלות / תוספות במשך השנה / סה\"כ | 122,616",
+                "13 | עלות / יתרה ליום 31 בדצמבר 2020 / ריהוט וציוד | 433,014",
+                "14 | עלות / יתרה ליום 31 בדצמבר 2020 / שיפורים במושכר | 229,105",
+                "15 | עלות / יתרה ליום 31 בדצמבר 2020 / סה\"כ | 662,119",
+                "16 | פחת שנצבר / יתרה ליום 1 בינואר 2020 / ריהוט וציוד | 276,938",
+                "17 | פחת שנצבר / יתרה ליום 1 בינואר 2020 / שיפורים במושכר | 94,530",
+                "18 | פחת שנצבר / יתרה ליום 1 בינואר 2020 / סה\"כ | 371,468",
+                "19 | פחת שנצבר / תוספות במשך השנה / ריהוט וציוד | 32,276",
+                "20 | פחת שנצבר / תוספות במשך השנה / שיפורים במושכר | 13,626",
+                "21 | פחת שנצבר / תוספות במשך השנה / סה\"כ | 45,902",
+                "22 | פחת שנצבר / יתרה ליום 31 בדצמבר 2020 / ריהוט וציוד | 309,214",
+                "23 | פחת שנצבר / יתרה ליום 31 בדצמבר 2020 / שיפורים במושכר | 108,156",
+                "24 | פחת שנצבר / יתרה ליום 31 בדצמבר 2020 / סה\"כ | 417,370",
+                "25 | עלות מופחתת ליום 31 בדצמבר 2020 / ריהוט וציוד | 123,800",
+                "26 | עלות מופחתת ליום 31 בדצמבר 2020 / שיפורים במושכר | 120,949",
+                "27 | עלות מופחתת ליום 31 בדצמבר 2020 / סה\"כ | 244,749",
+                "28 | עלות מופחתת ליום 31 בדצמבר 2019 / ריהוט וציוד | 109,881",
+                "29 | עלות מופחתת ליום 31 בדצמבר 2019 / שיפורים במושכר | 58,156",
+                "30 | עלות מופחתת ליום 31 בדצמבר 2019 / סה\"כ | 168,037"
+              ],
+              "pred_rows": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -44,8 +44,6 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
   const [baseUrl,   setBaseUrl]   = useState(DEFAULT_BASE_URL);
   const [modelId,   setModelId]   = useState(DEFAULT_MODEL);
   const [action,    setAction]    = useState<"gt" | "autocomplete">("gt");
-  const [thinking,  setThinking]  = useState(false);
-  const [maxTokens, setMaxTokens] = useState(24000);
 
   const [running,   setRunning]   = useState(false);
   const [finished,  setFinished]  = useState(false);
@@ -100,8 +98,6 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
           base_url: baseUrl.trim(),
           model_id: modelId.trim(),
           action,
-          max_tokens: maxTokens,
-          enable_thinking: thinking,
         }),
         signal: abort.signal,
       });
@@ -238,26 +234,12 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
                   style={inputStyle}
                 />
               </ConfigRow>
-              <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                <ConfigRow label="Action">
-                  <select value={action} onChange={(e) => setAction(e.target.value as "gt" | "autocomplete")} style={inputStyle}>
-                    <option value="gt">Ground Truth (replace all)</option>
-                    <option value="autocomplete">Autocomplete (merge)</option>
-                  </select>
-                </ConfigRow>
-                <ConfigRow label="Max tokens">
-                  <input
-                    type="number" min={512} max={16384} step={512}
-                    value={maxTokens}
-                    onChange={(e) => setMaxTokens(Number(e.target.value))}
-                    style={{ ...inputStyle, width: 90 }}
-                  />
-                </ConfigRow>
-              </div>
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--text-muted)", cursor: "pointer" }}>
-                <input type="checkbox" checked={thinking} onChange={(e) => setThinking(e.target.checked)} style={{ accentColor: "var(--accent)" }} />
-                Enable extended thinking
-              </label>
+              <ConfigRow label="Action">
+                <select value={action} onChange={(e) => setAction(e.target.value as "gt" | "autocomplete")} style={inputStyle}>
+                  <option value="gt">Ground Truth (replace all)</option>
+                  <option value="autocomplete">Autocomplete (merge)</option>
+                </select>
+              </ConfigRow>
             </div>
           )}
 

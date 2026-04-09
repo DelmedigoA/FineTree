@@ -1,6 +1,6 @@
 /** Annotation page: canvas + toolbar + thumbnail strip + inspector. */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { get } from "../api/client";
 import { useDocumentStore } from "../stores/documentStore";
@@ -9,35 +9,37 @@ import { CanvasContainer } from "../canvas/CanvasContainer";
 import { AnnotationToolbar } from "../components/toolbar/AnnotationToolbar";
 import { PageThumbnailStrip } from "../components/thumbnail/PageThumbnailStrip";
 import { InspectorPanel } from "../components/inspector/InspectorPanel";
-import { BatchInferDialog } from "../components/dialogs/BatchInferDialog";
 import { useSave } from "../hooks/useSave";
 import { useUndoRedo } from "../hooks/useUndoRedo";
 import { useAIStore } from "../stores/aiStore";
+import { useSelectionStore } from "../stores/selectionStore";
 import { useUIStore } from "../stores/uiStore";
 import { AIDialog } from "../components/dialogs/AIDialog";
 import type { DocumentPayload } from "../types/api";
+import { recordView } from "./DashboardPage";
 
 export function AnnotationPage() {
   const { docId } = useParams<{ docId: string }>();
   const [searchParams] = useSearchParams();
   const loadDocument = useDocumentStore((s) => s.loadDocument);
   const setCurrentPageIndex = useDocumentStore((s) => s.setCurrentPageIndex);
+  const currentPageIndex = useDocumentStore((s) => s.currentPageIndex);
   const isLoading = useDocumentStore((s) => s.isLoading);
   const currentDocId = useDocumentStore((s) => s.docId);
   const fitToView = useCanvasStore((s) => s.fitToView);
+  const clearPageSelection = useSelectionStore((s) => s.clearPageSelection);
 
   const { save } = useSave();
   useUndoRedo();
   const openDialog = useAIStore((s) => s.openDialog);
   const openAI = () => openDialog();
-  const openBatch = () => openDialog("batch");
-  const [batchInferOpen, setBatchInferOpen] = useState(false);
 
   useEffect(() => {
     if (!docId || docId === currentDocId) return;
     const initialPage = parseInt(searchParams.get("page") ?? "0", 10);
     get<DocumentPayload>(`/annotations/${docId}`)
       .then((payload) => {
+        recordView(docId);
         loadDocument(docId, {
           raw_payload: {},
           page_states: payload.page_states,
@@ -53,6 +55,10 @@ export function AnnotationPage() {
       })
       .catch(console.error);
   }, [docId, currentDocId, loadDocument, setCurrentPageIndex, fitToView, searchParams]);
+
+  useEffect(() => {
+    clearPageSelection();
+  }, [clearPageSelection, currentDocId, currentPageIndex]);
 
   if (isLoading) {
     return (
@@ -83,16 +89,8 @@ export function AnnotationPage() {
       <AnnotationToolbar
         onSave={save}
         onAI={openAI}
-        onBatch={openBatch}
-        onBatchInfer={() => setBatchInferOpen(true)}
       />
       <AIDialog />
-      {batchInferOpen && docId && (
-        <BatchInferDialog
-          docIds={[docId]}
-          onClose={() => setBatchInferOpen(false)}
-        />
-      )}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <PageThumbnailStrip />
         <div style={{ flex: 1, overflow: "hidden" }}>
@@ -108,15 +106,21 @@ export function AnnotationPage() {
 function StatusBar() {
   const saveStatus = useUIStore((s) => s.saveStatus);
   const savedAt = useUIStore((s) => s.savedAt);
+  const aiStatus = useUIStore((s) => s.aiStatus);
+  const aiMessage = useUIStore((s) => s.aiMessage);
 
   const label =
-    saveStatus === "saving" ? "Saving…"
+    aiStatus !== "idle" ? aiMessage
+    : saveStatus === "saving" ? "Saving…"
     : saveStatus === "saved" ? `Saved ✓${savedAt ? "  " + new Date(savedAt).toLocaleTimeString() : ""}`
     : saveStatus === "error" ? "Save failed ✗"
     : null;
 
   const color =
-    saveStatus === "saving" ? "var(--text-muted)"
+    aiStatus === "running" ? "var(--text-muted)"
+    : aiStatus === "success" ? "var(--accent)"
+    : aiStatus === "error" ? "var(--warn)"
+    : saveStatus === "saving" ? "var(--text-muted)"
     : saveStatus === "saved" ? "var(--accent)"
     : saveStatus === "error" ? "var(--warn)"
     : "transparent";

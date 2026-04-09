@@ -1,0 +1,5641 @@
+{
+  "schema_version": 4,
+  "images_dir": "data/pdf_images/P907062-00",
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+    "report_year": 2009,
+    "entity_type": "limited_partnership"
+  },
+  "pages": [
+    {
+      "image": "page_0001.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": null,
+        "page_type": "title",
+        "statement_type": null,
+        "title": "דוחות כספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0002.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "1",
+        "page_type": "contents",
+        "statement_type": null,
+        "title": "תוכן העניינים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0003.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "2",
+        "page_type": "declaration",
+        "statement_type": "auditors_report",
+        "title": "דוח רואי החשבון המבקרים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0004.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "3",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
+        "title": "דוחות על המצב הכספי",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "9",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            664.56,
+            542.99,
+            16.54,
+            25.73
+          ]
+        },
+        {
+          "value": "31",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            417.12,
+            543.99,
+            26.81,
+            25.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "חייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            666.56,
+            582.73,
+            16.54,
+            9.36
+          ]
+        },
+        {
+          "value": "8",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "חייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            428.69,
+            574.39,
+            15.23,
+            25.73
+          ]
+        },
+        {
+          "value": "9",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "9 + 0",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            666.56,
+            608.14,
+            16.54,
+            25.73
+          ]
+        },
+        {
+          "value": "39",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "31 + 8",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            417.12,
+            607.14,
+            26.81,
+            25.73
+          ]
+        },
+        {
+          "value": "1793",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            616.6,
+            795.94,
+            68.51,
+            29.73
+          ]
+        },
+        {
+          "value": "1795",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            378.42,
+            795.94,
+            68.51,
+            29.73
+          ]
+        },
+        {
+          "value": "(1784)",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "6",
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון השותפות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            600.4,
+            924.24,
+            82.7,
+            27.73
+          ]
+        },
+        {
+          "value": "(1756)",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "6",
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון השותפות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            362.23,
+            924.24,
+            82.7,
+            27.73
+          ]
+        },
+        {
+          "value": "9",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "1793 - 1784",
+              "fact_equation": "f7 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות והון",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            662.56,
+            987.4,
+            20.54,
+            27.73
+          ]
+        },
+        {
+          "value": "39",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "1795 - 1756",
+              "fact_equation": "f8 + f10"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות והון",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            416.12,
+            987.4,
+            28.81,
+            27.73
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0005.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "4",
+        "page_type": "statements",
+        "statement_type": "income_statement",
+        "title": "דוחות על הרווח או ההפסד ורווח כולל אחר",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "-",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "7",
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "חיפושי נפט וגז"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            829.31,
+            585.09,
+            33.16,
+            25.05
+          ]
+        },
+        {
+          "value": "43",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "7",
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "חיפושי נפט וגז"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            579.86,
+            585.09,
+            48.04,
+            27.39
+          ]
+        },
+        {
+          "value": "315",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "7",
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "חיפושי נפט וגז"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            338.38,
+            585.09,
+            54.66,
+            27.39
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            829.31,
+            613.16,
+            33.16,
+            25.05
+          ]
+        },
+        {
+          "value": "314",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            566.63,
+            613.16,
+            61.27,
+            27.39
+          ]
+        },
+        {
+          "value": "392",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            338.38,
+            613.16,
+            54.66,
+            27.39
+          ]
+        },
+        {
+          "value": "27",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "8",
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            826.45,
+            641.76,
+            33.91,
+            29.19
+          ]
+        },
+        {
+          "value": "524",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "8",
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            564.83,
+            645.36,
+            61.27,
+            27.39
+          ]
+        },
+        {
+          "value": "876",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "8",
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות",
+            "הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            338.38,
+            645.36,
+            54.66,
+            27.39
+          ]
+        },
+        {
+          "value": "27",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "0 + 0 + 27",
+              "fact_equation": "f1 + f4 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד תפעולי"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            824.65,
+            706.72,
+            44.73,
+            27.39
+          ]
+        },
+        {
+          "value": "881",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "43 + 314 + 524",
+              "fact_equation": "f2 + f5 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד תפעולי"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            568.28,
+            706.72,
+            61.27,
+            27.39
+          ]
+        },
+        {
+          "value": "1583",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "315 + 392 + 876",
+              "fact_equation": "f3 + f6 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד תפעולי"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            320.04,
+            706.72,
+            72.4,
+            29.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            839.54,
+            767.53,
+            27.75,
+            25.05
+          ]
+        },
+        {
+          "value": "2",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            598.09,
+            767.53,
+            24.89,
+            27.39
+          ]
+        },
+        {
+          "value": "17",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            351.61,
+            767.53,
+            36.46,
+            27.39
+          ]
+        },
+        {
+          "value": "1",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            842.85,
+            828.35,
+            19.92,
+            27.39
+          ]
+        },
+        {
+          "value": "2",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            598.09,
+            828.35,
+            24.89,
+            27.39
+          ]
+        },
+        {
+          "value": "4",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            363.19,
+            828.35,
+            24.89,
+            27.39
+          ]
+        },
+        {
+          "value": "28",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "27 - 0 + 1",
+              "fact_equation": "f10 - f13 + f16"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            824.65,
+            889.16,
+            44.73,
+            27.39
+          ]
+        },
+        {
+          "value": "881",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "881 - 2 + 2",
+              "fact_equation": "f11 - f14 + f17"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            568.28,
+            889.16,
+            61.27,
+            27.39
+          ]
+        },
+        {
+          "value": "1570",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "1583 - 17 + 4",
+              "fact_equation": "f12 - f15 + f18"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            321.84,
+            889.16,
+            77.81,
+            29.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל אחר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            839.54,
+            949.97,
+            27.75,
+            25.05
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 23,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל אחר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            593.09,
+            949.97,
+            33.16,
+            25.05
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל אחר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            363.19,
+            949.97,
+            33.16,
+            25.05
+          ]
+        },
+        {
+          "value": "28",
+          "fact_num": 25,
+          "equations": [
+            {
+              "equation": "28 + 0",
+              "fact_equation": "f19 + f22"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            821.65,
+            1016.13,
+            44.73,
+            27.39
+          ]
+        },
+        {
+          "value": "881",
+          "fact_num": 26,
+          "equations": [
+            {
+              "equation": "881 + 0",
+              "fact_equation": "f20 + f23"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            565.28,
+            1016.13,
+            61.27,
+            27.39
+          ]
+        },
+        {
+          "value": "1570",
+          "fact_num": 27,
+          "equations": [
+            {
+              "equation": "1570 + 0",
+              "fact_equation": "f21 + f24"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד כולל לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            318.84,
+            1016.13,
+            77.81,
+            29.73
+          ]
+        },
+        {
+          "value": "0.00002",
+          "fact_num": 28,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": null,
+          "value_type": "ratio",
+          "value_context": "tabular",
+          "bbox": [
+            760.25,
+            1115.7,
+            103.14,
+            28.8
+          ]
+        },
+        {
+          "value": "0.00066",
+          "fact_num": 29,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": null,
+          "value_type": "ratio",
+          "value_context": "tabular",
+          "bbox": [
+            527.63,
+            1115.7,
+            95.93,
+            27.0
+          ]
+        },
+        {
+          "value": "0.00117",
+          "fact_num": 30,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": null,
+          "value_type": "ratio",
+          "value_context": "tabular",
+          "bbox": [
+            292.76,
+            1115.7,
+            92.62,
+            27.0
+          ]
+        },
+        {
+          "value": "1339201163",
+          "fact_num": 31,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מספר יחידות ההשתתפות ששימשו בחישוב ההפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": 1,
+          "value_type": "count",
+          "value_context": "tabular",
+          "bbox": [
+            696.33,
+            1216.62,
+            167.05,
+            27.73
+          ]
+        },
+        {
+          "value": "1339201163",
+          "fact_num": 32,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מספר יחידות ההשתתפות ששימשו בחישוב ההפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": 1,
+          "value_type": "count",
+          "value_context": "tabular",
+          "bbox": [
+            459.81,
+            1216.62,
+            165.4,
+            27.73
+          ]
+        },
+        {
+          "value": "1339201163",
+          "fact_num": 33,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מספר יחידות ההשתתפות ששימשו בחישוב ההפסד ליחידת השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": 1,
+          "value_type": "count",
+          "value_context": "tabular",
+          "bbox": [
+            223.29,
+            1216.62,
+            170.36,
+            27.73
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "5",
+        "page_type": "statements",
+        "statement_type": "statement_of_changes_in_equity",
+        "title": "דוחות על השינויים בהון (גרעון בהון) המשותפות",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "121",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            964.28,
+            472.82,
+            46.73,
+            30.41
+          ]
+        },
+        {
+          "value": "574",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            670.83,
+            470.82,
+            48.66,
+            34.41
+          ]
+        },
+        {
+          "value": "695",
+          "fact_num": 3,
+          "equations": [
+            {
+              "equation": "121 + 574",
+              "fact_equation": "f1 + f2"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            373.8,
+            471.82,
+            46.31,
+            32.41
+          ]
+        },
+        {
+          "value": "(1570)",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            927.89,
+            571.05,
+            83.12,
+            32.75
+          ]
+        },
+        {
+          "value": "(*)-",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": "סכום קטן מ - 1 אלף ש\"ח.",
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            672.49,
+            569.05,
+            47.0,
+            36.75
+          ]
+        },
+        {
+          "value": "(1570)",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "- 1570",
+              "fact_equation": "f4"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            335.76,
+            570.05,
+            84.35,
+            34.75
+          ]
+        },
+        {
+          "value": "(1449)",
+          "fact_num": 7,
+          "equations": [
+            {
+              "equation": "121 - 1570",
+              "fact_equation": "f1 + f4"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            926.24,
+            665.53,
+            84.78,
+            32.75
+          ]
+        },
+        {
+          "value": "574",
+          "fact_num": 8,
+          "equations": [
+            {
+              "equation": "574",
+              "fact_equation": "f2"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            670.83,
+            667.29,
+            48.66,
+            34.41
+          ]
+        },
+        {
+          "value": "(875)",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "695 - 1570",
+              "fact_equation": "f3 + f6"
+            },
+            {
+              "equation": "- 1449 + 574",
+              "fact_equation": "f7 + f8"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            355.61,
+            666.29,
+            64.51,
+            34.75
+          ]
+        },
+        {
+          "value": "(881)",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            944.43,
+            727.77,
+            66.58,
+            32.75
+          ]
+        },
+        {
+          "value": "(*)-",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": "סכום קטן מ - 1 אלף ש\"ח.",
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            672.49,
+            725.77,
+            47.0,
+            36.75
+          ]
+        },
+        {
+          "value": "(881)",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "- 881",
+              "fact_equation": "f10"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            355.61,
+            726.77,
+            64.51,
+            34.75
+          ]
+        },
+        {
+          "value": "(2330)",
+          "fact_num": 13,
+          "equations": [
+            {
+              "equation": "- 1449 - 881",
+              "fact_equation": "f7 + f10"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            928.04,
+            823.67,
+            84.78,
+            32.75
+          ]
+        },
+        {
+          "value": "574",
+          "fact_num": 14,
+          "equations": [
+            {
+              "equation": "574",
+              "fact_equation": "f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            669.03,
+            821.67,
+            48.66,
+            34.41
+          ]
+        },
+        {
+          "value": "(1756)",
+          "fact_num": 15,
+          "equations": [
+            {
+              "equation": "- 875 - 881",
+              "fact_equation": "f9 + f12"
+            },
+            {
+              "equation": "- 2330 + 574",
+              "fact_equation": "f13 + f14"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            335.76,
+            820.87,
+            84.35,
+            34.75
+          ]
+        },
+        {
+          "value": "(28)",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            956.01,
+            882.14,
+            55.0,
+            32.75
+          ]
+        },
+        {
+          "value": "(*)-",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": "סכום קטן מ - 1 אלף ש\"ח.",
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            672.49,
+            877.98,
+            47.0,
+            36.75
+          ]
+        },
+        {
+          "value": "(28)",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "- 28",
+              "fact_equation": "f16"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפסד נקי וכולל לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            365.53,
+            881.14,
+            54.58,
+            34.75
+          ]
+        },
+        {
+          "value": "(2358)",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "- 2330 - 28",
+              "fact_equation": "f13 + f16"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2009",
+            "השותף המוגבל שדות נפט נאמנויות (1992) בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            928.4,
+            978.22,
+            84.78,
+            32.75
+          ]
+        },
+        {
+          "value": "574",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "574",
+              "fact_equation": "f14"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2009",
+            "השותף הכללי שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            670.83,
+            976.22,
+            48.66,
+            34.41
+          ]
+        },
+        {
+          "value": "(1784)",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "- 1756 - 28",
+              "fact_equation": "f15 + f18"
+            },
+            {
+              "equation": "- 2358 + 574",
+              "fact_equation": "f19 + f20"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2009",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            335.76,
+            977.22,
+            84.35,
+            34.75
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "cash_flow_statement",
+        "title": "דוחות על תזרימי המזומנים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "(28)",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            833.62,
+            530.95,
+            43.7,
+            28.07
+          ]
+        },
+        {
+          "value": "(881)",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            621.9,
+            530.95,
+            60.24,
+            28.07
+          ]
+        },
+        {
+          "value": "(1570)",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תזרימי מזומנים מפעילות שוטפת",
+            "הפסד נקי לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            364.73,
+            530.95,
+            76.78,
+            28.07
+          ]
+        },
+        {
+          "value": "8",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בחייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            861.73,
+            657.26,
+            17.84,
+            24.64
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בחייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            666.56,
+            657.26,
+            11.58,
+            23.39
+          ]
+        },
+        {
+          "value": "248",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בחייבים ויתרות חובה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            401.92,
+            657.26,
+            39.7,
+            23.39
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בספקים ונותני שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            861.73,
+            697.02,
+            22.85,
+            23.39
+          ]
+        },
+        {
+          "value": "(1)",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בספקים ונותני שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            649.97,
+            697.02,
+            28.17,
+            28.4
+          ]
+        },
+        {
+          "value": "(4)",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "ירידה בספקים ונותני שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            413.45,
+            697.02,
+            30.67,
+            28.4
+          ]
+        },
+        {
+          "value": "(2)",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה) בזכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            845.15,
+            740.37,
+            35.68,
+            25.89
+          ]
+        },
+        {
+          "value": "564",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה) בזכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            638.44,
+            739.12,
+            39.7,
+            23.39
+          ]
+        },
+        {
+          "value": "845",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "עליה (ירידה) בזכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            400.67,
+            739.12,
+            40.95,
+            24.64
+          ]
+        },
+        {
+          "value": "6",
+          "fact_num": 13,
+          "equations": [
+            {
+              "equation": "8 + 0 - 2",
+              "fact_equation": "f4 + f7 + f10"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            861.73,
+            774.21,
+            14.08,
+            23.39
+          ]
+        },
+        {
+          "value": "563",
+          "fact_num": 14,
+          "equations": [
+            {
+              "equation": "0 - 1 + 564",
+              "fact_equation": "f5 + f8 + f11"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            638.44,
+            774.21,
+            39.7,
+            23.39
+          ]
+        },
+        {
+          "value": "1089",
+          "fact_num": 15,
+          "equations": [
+            {
+              "equation": "248 - 4 + 845",
+              "fact_equation": "f6 + f9 + f12"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            382.88,
+            774.21,
+            58.74,
+            25.89
+          ]
+        },
+        {
+          "value": "(22)",
+          "fact_num": 16,
+          "equations": [
+            {
+              "equation": "- 28 + 6",
+              "fact_equation": "f1 + f13"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מזומנים נטו ששימשו לפעילות שוטפת"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            831.82,
+            854.82,
+            42.2,
+            29.32
+          ]
+        },
+        {
+          "value": "(318)",
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "- 881 + 563",
+              "fact_equation": "f2 + f14"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מזומנים נטו ששימשו לפעילות שוטפת"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            621.9,
+            856.07,
+            56.24,
+            28.07
+          ]
+        },
+        {
+          "value": "(481)",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "- 1570 + 1089",
+              "fact_equation": "f3 + f15"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מזומנים נטו ששימשו לפעילות שוטפת"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.38,
+            856.07,
+            56.24,
+            28.07
+          ]
+        },
+        {
+          "value": "(22)",
+          "fact_num": 19,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינוי במזומנים ושווי מזומנים לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            833.62,
+            982.38,
+            42.2,
+            28.07
+          ]
+        },
+        {
+          "value": "(318)",
+          "fact_num": 20,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינוי במזומנים ושווי מזומנים לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            621.9,
+            982.38,
+            56.24,
+            28.07
+          ]
+        },
+        {
+          "value": "(481)",
+          "fact_num": 21,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שינוי במזומנים ושווי מזומנים לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.38,
+            982.38,
+            56.24,
+            28.07
+          ]
+        },
+        {
+          "value": "31",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            850.16,
+            1028.07,
+            26.92,
+            22.14
+          ]
+        },
+        {
+          "value": "349",
+          "fact_num": 23,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            638.44,
+            1026.82,
+            39.7,
+            23.39
+          ]
+        },
+        {
+          "value": "830",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            401.92,
+            1026.82,
+            39.7,
+            23.39
+          ]
+        },
+        {
+          "value": "9",
+          "fact_num": 25,
+          "equations": [
+            {
+              "equation": "- 22 + 31",
+              "fact_equation": "f19 + f22"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לסוף השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            861.73,
+            1066.58,
+            15.34,
+            28.4
+          ]
+        },
+        {
+          "value": "31",
+          "fact_num": 26,
+          "equations": [
+            {
+              "equation": "- 318 + 349",
+              "fact_equation": "f20 + f23"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לסוף השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            650.02,
+            1066.58,
+            28.12,
+            23.39
+          ]
+        },
+        {
+          "value": "349",
+          "fact_num": 27,
+          "equations": [
+            {
+              "equation": "- 481 + 830",
+              "fact_equation": "f21 + f24"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרת מזומנים ושווי מזומנים לסוף השנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            401.92,
+            1066.58,
+            39.7,
+            23.39
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0008.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "7",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "114.77",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "על פי המדד בגין החודש המסתיים בתאריך המאזן לפי ממוצע 2002 = 100 נקודות.",
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2009",
+            "מדד המחירים לצרכן",
+            "נקודות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "points",
+          "value_context": "mixed",
+          "bbox": [
+            713.92,
+            1334.57,
+            79.74,
+            23.39
+          ]
+        },
+        {
+          "value": "3.775",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2009",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "mixed",
+          "bbox": [
+            463.08,
+            1333.57,
+            67.81,
+            23.39
+          ]
+        },
+        {
+          "value": "110.44",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "על פי המדד בגין החודש המסתיים בתאריך המאזן לפי ממוצע 2002 = 100 נקודות.",
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2008",
+            "מדד המחירים לצרכן",
+            "נקודות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "points",
+          "value_context": "mixed",
+          "bbox": [
+            712.26,
+            1364.98,
+            78.08,
+            25.73
+          ]
+        },
+        {
+          "value": "3.802",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2008",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "mixed",
+          "bbox": [
+            463.08,
+            1366.32,
+            67.81,
+            23.39
+          ]
+        },
+        {
+          "value": "106.40",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "על פי המדד בגין החודש המסתיים בתאריך המאזן לפי ממוצע 2002 = 100 נקודות.",
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2007",
+            "מדד המחירים לצרכן",
+            "נקודות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "points",
+          "value_context": "mixed",
+          "bbox": [
+            712.26,
+            1395.38,
+            79.74,
+            23.39
+          ]
+        },
+        {
+          "value": "3.846",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ליום 31 בדצמבר 2007",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "mixed",
+          "bbox": [
+            461.39,
+            1396.72,
+            69.47,
+            25.73
+          ]
+        },
+        {
+          "value": "3.92",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2009",
+            "מדד המחירים לצרכן"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            719.23,
+            1487.77,
+            62.99,
+            24.89
+          ]
+        },
+        {
+          "value": "(0.71)",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2009-12-31",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2009",
+            "path_3",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            458.16,
+            1488.28,
+            73.81,
+            29.73
+          ]
+        },
+        {
+          "value": "3.80",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2008",
+            "מדד המחירים לצרכן"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            725.24,
+            1518.85,
+            47.97,
+            25.73
+          ]
+        },
+        {
+          "value": "(1.14)",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2008",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            458.16,
+            1518.69,
+            73.81,
+            29.73
+          ]
+        },
+        {
+          "value": "3.40",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2007",
+            "מדד המחירים לצרכן"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            726.74,
+            1550.76,
+            47.97,
+            25.73
+          ]
+        },
+        {
+          "value": "(8.97)",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "כללי",
+          "note_num": "1",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שיעור השינוי במשך התקופה",
+            "לשנה שהסתיימה ביום 31 בדצמבר 2007",
+            "שער החליפין של $1 ארה\"ב"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "mixed",
+          "bbox": [
+            458.16,
+            1549.1,
+            73.81,
+            29.73
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0009.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "8",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0010.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "9",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0011.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "10",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0012.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "11",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "-",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "היתרה אינה צמודה ואינה נושאת ריבית.",
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "בעל עניין - שדות נפט בע\"מ (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            747.03,
+            440.63,
+            17.17,
+            25.73
+          ]
+        },
+        {
+          "value": "8",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "היתרה אינה צמודה ואינה נושאת ריבית.",
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "בעל עניין - שדות נפט בע\"מ (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            469.04,
+            435.39,
+            19.23,
+            27.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מקדמות לנותני שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            744.52,
+            470.14,
+            18.67,
+            25.73
+          ]
+        },
+        {
+          "value": "5",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מקדמות לנותני שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            469.04,
+            468.14,
+            19.23,
+            27.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            744.52,
+            502.88,
+            18.67,
+            25.73
+          ]
+        },
+        {
+          "value": "13",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "8 + 5",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "חייבים ויתרות חובה",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            455.81,
+            500.88,
+            32.46,
+            27.73
+          ]
+        },
+        {
+          "value": "11",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "בעל עניין - שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            725.11,
+            660.28,
+            34.46,
+            27.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "בעל עניין - שדות נפט בע\"מ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            473.04,
+            664.28,
+            13.23,
+            25.73
+          ]
+        },
+        {
+          "value": "1782",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "כולל סך של כ- 1.3 מיליון ש״ח לשותף הכללי.",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות לשלם (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            700.3,
+            693.02,
+            59.27,
+            27.73
+          ]
+        },
+        {
+          "value": "1795",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "כולל סך של כ- 1.3 מיליון ש״ח לשותף הכללי.",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות לשלם (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            424.0,
+            696.02,
+            63.27,
+            25.73
+          ]
+        },
+        {
+          "value": "1793",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "11 + 1782",
+              "fact_equation": "f7 + f9"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            700.3,
+            725.77,
+            59.27,
+            27.73
+          ]
+        },
+        {
+          "value": "1795",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "0 + 1795",
+              "fact_equation": "f8 + f10"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            424.0,
+            728.77,
+            63.27,
+            25.73
+          ]
+        },
+        {
+          "value": "1339201163",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הון השותפות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מספר יחידות השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": 1,
+          "value_type": "count",
+          "value_context": "tabular",
+          "bbox": [
+            587.17,
+            916.23,
+            175.92,
+            28.73
+          ]
+        },
+        {
+          "value": "1339201163",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הון השותפות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מספר יחידות השתתפות"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": 1,
+          "value_type": "count",
+          "value_context": "tabular",
+          "bbox": [
+            314.26,
+            916.23,
+            179.53,
+            28.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון אבטח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            743.32,
+            1238.67,
+            19.87,
+            23.93
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון אבטח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            467.04,
+            1235.67,
+            19.23,
+            31.73
+          ]
+        },
+        {
+          "value": "315",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון אבטח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            225.91,
+            1231.67,
+            42.04,
+            35.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון מד אשדוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            741.52,
+            1271.42,
+            21.67,
+            23.93
+          ]
+        },
+        {
+          "value": "43",
+          "fact_num": 19,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון מד אשדוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            453.81,
+            1268.42,
+            32.46,
+            31.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 20,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רישיון מד אשדוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            252.33,
+            1271.63,
+            19.03,
+            21.31
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f15 + f18"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            743.32,
+            1305.96,
+            19.87,
+            23.93
+          ]
+        },
+        {
+          "value": "43",
+          "fact_num": 22,
+          "equations": [
+            {
+              "equation": "0 + 43",
+              "fact_equation": "f16 + f19"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            453.81,
+            1301.16,
+            32.46,
+            31.73
+          ]
+        },
+        {
+          "value": "315",
+          "fact_num": 23,
+          "equations": [
+            {
+              "equation": "315 + 0",
+              "fact_equation": "f17 + f20"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות חיפושי גז ונפט",
+          "note_num": "7",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            225.91,
+            1297.16,
+            42.04,
+            35.73
+          ]
+        },
+        {
+          "value": "25",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי ניהול ושירותים מקצועיים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            726.11,
+            1441.36,
+            39.08,
+            27.53
+          ]
+        },
+        {
+          "value": "454",
+          "fact_num": 25,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי ניהול ושירותים מקצועיים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            440.58,
+            1443.16,
+            45.7,
+            25.73
+          ]
+        },
+        {
+          "value": "709",
+          "fact_num": 26,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי ניהול ושירותים מקצועיים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            227.91,
+            1443.16,
+            42.04,
+            29.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 27,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכר מפקח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            739.32,
+            1475.91,
+            19.87,
+            25.73
+          ]
+        },
+        {
+          "value": "47",
+          "fact_num": 28,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכר מפקח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            453.81,
+            1475.91,
+            32.46,
+            25.73
+          ]
+        },
+        {
+          "value": "97",
+          "fact_num": 29,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכר מפקח"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            241.14,
+            1475.91,
+            28.81,
+            29.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 30,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ביטוח דירקטורים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            739.32,
+            1514.6,
+            25.28,
+            25.73
+          ]
+        },
+        {
+          "value": "21",
+          "fact_num": 31,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ביטוח דירקטורים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            453.81,
+            1511.99,
+            32.46,
+            25.73
+          ]
+        },
+        {
+          "value": "36",
+          "fact_num": 32,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ביטוח דירקטורים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            241.14,
+            1510.99,
+            28.81,
+            29.73
+          ]
+        },
+        {
+          "value": "2",
+          "fact_num": 33,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחרות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            745.34,
+            1549.74,
+            13.23,
+            25.73
+          ]
+        },
+        {
+          "value": "2",
+          "fact_num": 34,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחרות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            461.63,
+            1545.54,
+            24.64,
+            31.14
+          ]
+        },
+        {
+          "value": "34",
+          "fact_num": 35,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחרות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            241.14,
+            1543.74,
+            28.81,
+            35.14
+          ]
+        },
+        {
+          "value": "27",
+          "fact_num": 36,
+          "equations": [
+            {
+              "equation": "25 + 0 + 0 + 2",
+              "fact_equation": "f24 + f27 + f30 + f33"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            724.11,
+            1585.49,
+            36.46,
+            29.73
+          ]
+        },
+        {
+          "value": "524",
+          "fact_num": 37,
+          "equations": [
+            {
+              "equation": "454 + 47 + 21 + 2",
+              "fact_equation": "f25 + f28 + f31 + f34"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            434.58,
+            1585.49,
+            55.7,
+            29.73
+          ]
+        },
+        {
+          "value": "876",
+          "fact_num": 38,
+          "equations": [
+            {
+              "equation": "709 + 97 + 36 + 34",
+              "fact_equation": "f26 + f29 + f32 + f35"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "8",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            223.91,
+            1585.49,
+            48.04,
+            29.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 39,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": "10בֿ׳",
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תשלומים לשותף הכללי",
+            "דמי ניהול והחזר הוצאות (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            743.32,
+            1752.64,
+            19.87,
+            20.32
+          ]
+        },
+        {
+          "value": "454",
+          "fact_num": 40,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": "10בֿ׳",
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תשלומים לשותף הכללי",
+            "דמי ניהול והחזר הוצאות (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            442.58,
+            1748.23,
+            41.7,
+            27.73
+          ]
+        },
+        {
+          "value": "709",
+          "fact_num": 41,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": "10בֿ׳",
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תשלומים לשותף הכללי",
+            "דמי ניהול והחזר הוצאות (*)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            225.91,
+            1748.23,
+            40.04,
+            27.73
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 42,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": null,
+          "date": "2009",
+          "period_type": "duration",
+          "period_start": "2009-01-01",
+          "period_end": "2009-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            741.52,
+            1825.15,
+            21.67,
+            20.32
+          ]
+        },
+        {
+          "value": "314",
+          "fact_num": 43,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            442.58,
+            1820.74,
+            41.7,
+            27.73
+          ]
+        },
+        {
+          "value": "392",
+          "fact_num": 44,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עסקאות עם בעלי עניין וצדדים קשורים",
+          "note_num": "9",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "דמי מפעיל"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            225.91,
+            1820.74,
+            40.04,
+            27.73
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0013.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "12",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "2000",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": "monthly",
+          "path": [
+            "לשלם למפקח שכר"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            804.96,
+            320.44,
+            71.12,
+            32.75
+          ]
+        },
+        {
+          "value": "3500",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "לחודש",
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": "monthly",
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "תשלום לשותף הכללי",
+            "שימוש במשרדים והחזקתם ועבור שרותי משרד"
+          ],
+          "path_source": "inferred",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            1043.44,
+            580.34,
+            63.77,
+            29.21
+          ]
+        },
+        {
+          "value": "4000",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "לחודש",
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": "monthly",
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "תשלום לשותף הכללי",
+            "שכר טרחת רואה חשבון ועורך דין"
+          ],
+          "path_source": "inferred",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            1037.57,
+            659.0,
+            66.9,
+            32.15
+          ]
+        },
+        {
+          "value": "7000",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "לחודש",
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": "monthly",
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "תשלום לשותף הכללי",
+            "שירותי ניהול"
+          ],
+          "path_source": "inferred",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            1048.58,
+            749.35,
+            67.08,
+            29.81
+          ]
+        },
+        {
+          "value": "8",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "מכל חלקה",
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": "12ה'",
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "תשלום לשותף הכללי",
+            "תמלוגים"
+          ],
+          "path_source": "inferred",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "textual",
+          "bbox": [
+            1077.49,
+            812.5,
+            38.04,
+            32.75
+          ]
+        },
+        {
+          "value": "7.5",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "הוצאות בגין פעולות חיפושי נפט, פיתוח נכסי נפט והפקת נפט בלבד"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "textual",
+          "bbox": [
+            1222.27,
+            1291.46,
+            60.46,
+            25.4
+          ]
+        },
+        {
+          "value": ">8000",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": "monthly",
+          "path": [
+            "התקשרויות עם בעלי עניין",
+            "הוצאות בגין פעולות חיפושי נפט, פיתוח נכסי נפט והפקת נפט בלבד"
+          ],
+          "path_source": "observed",
+          "currency": "USD",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            1353.15,
+            1323.87,
+            65.24,
+            24.8
+          ]
+        },
+        {
+          "value": "1/8",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "למעט הנפט שבו השתמש בעל החזקה בהפעלת שטח החזקה",
+          "note_flag": true,
+          "note_name": "התחייבויות תלויות והתקשרויות",
+          "note_num": "10",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תמלוגים למדינת ישראל",
+            "כמות הנפט שהופקה"
+          ],
+          "path_source": "observed",
+          "currency": null,
+          "scale": null,
+          "value_type": "ratio",
+          "value_context": "textual",
+          "bbox": [
+            167.05,
+            1597.54,
+            56.24,
+            37.42
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0014.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "13",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0015.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "14",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באור 12 - אירועים לאחר הדוח על המצב הכספי",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "144",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "אירועים לאחר הדוח על המצב הכספי",
+          "note_num": "12",
+          "note_ref": "10ד׳",
+          "date": null,
+          "period_type": "expected",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            1412.18,
+            527.31,
+            46.57,
+            25.54
+          ]
+        },
+        {
+          "value": "1.3",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "אירועים לאחר הדוח על המצב הכספי",
+          "note_num": "12",
+          "note_ref": null,
+          "date": null,
+          "period_type": "expected",
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1000,
+          "value_type": "amount",
+          "value_context": "textual",
+          "bbox": [
+            674.54,
+            719.61,
+            36.06,
+            24.04
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0016.png",
+      "meta": {
+        "entity_name": "שדות נפט חיפושים (1992) - שותפות מוגבלת",
+        "page_num": "15",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים\nבאור 12 - אירועים לאחר הדוח על המצב הכספי (המשך)",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    }
+  ]
+}

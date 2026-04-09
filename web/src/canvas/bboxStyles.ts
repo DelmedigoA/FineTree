@@ -1,53 +1,64 @@
 /** Bbox rendering style constants for Rough.js. */
 
 import type { BBoxStyle } from "../types/canvas";
+import { useSettingsStore } from "../stores/settingsStore";
 
-/** Default unselected bbox style. */
-export const BBOX_DEFAULT: BBoxStyle = {
-  stroke: "rgba(75, 158, 255, 0.2)",
-  strokeWidth: 1.5,
-  roughness: 0.7,
-  cornerRadius: 3,
-};
+/** Convert a hex color + opacity to an rgba() string. */
+function toRgba(hex: string, opacity: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
 
-/** Selected bbox style (dashed). */
-export const BBOX_SELECTED: BBoxStyle = {
-  stroke: "rgba(20, 184, 166, 0.6)",
-  strokeWidth: 2,
-  roughness: 0.55,
-  strokeLineDash: [7, 4],
-  cornerRadius: 3,
-};
-
-/** Equation OK / valid. */
-export const BBOX_EQUATION_OK: BBoxStyle = {
-  stroke: "rgba(0, 229, 0, 0.35)",
-  strokeWidth: 1.5,
-  roughness: 0.6,
-  cornerRadius: 3,
-};
-
-/** Equation bad / invalid. */
-export const BBOX_EQUATION_BAD: BBoxStyle = {
-  stroke: "rgba(248, 113, 113, 0.35)",
-  strokeWidth: 1.5,
-  roughness: 0.6,
-  cornerRadius: 3,
-};
-
-/** Equation term (being selected as part of an equation). */
-export const BBOX_EQUATION_TERM: BBoxStyle = {
-  stroke: "rgba(250, 204, 21, 0.55)",
-  strokeWidth: 2,
-  roughness: 0.55,
-  strokeLineDash: [6, 3],
-  cornerRadius: 3,
-};
-
-/** Hovered bbox style. */
-export const BBOX_HOVERED: BBoxStyle = {
-  stroke: "rgba(20, 184, 166, 0.6)",
-  strokeWidth: 2,
-  roughness: 0.55,
-  cornerRadius: 3,
-};
+/** Returns bbox styles derived from user settings. Called per render pass. */
+export function getBboxStyles(): {
+  default: BBoxStyle;
+  selected: BBoxStyle;
+  hovered: BBoxStyle;
+  equationOk: BBoxStyle;
+  equationBad: BBoxStyle;
+  equationTerm: BBoxStyle;
+} {
+  const c = useSettingsStore.getState().bboxColors;
+  return {
+    default: {
+      stroke: toRgba(c.default.color, c.default.opacity),
+      strokeWidth: 1.5,
+      roughness: 0.7,
+      cornerRadius: 3,
+    },
+    selected: {
+      stroke: toRgba(c.selected.color, c.selected.opacity),
+      strokeWidth: 2,
+      roughness: 0.55,
+      strokeLineDash: [7, 4],
+      cornerRadius: 3,
+    },
+    hovered: {
+      stroke: toRgba(c.hovered.color, c.hovered.opacity),
+      strokeWidth: 2,
+      roughness: 0.55,
+      cornerRadius: 3,
+    },
+    equationOk: {
+      stroke: toRgba(c.equationOk.color, c.equationOk.opacity),
+      strokeWidth: 1.5,
+      roughness: 0.6,
+      cornerRadius: 3,
+    },
+    equationBad: {
+      stroke: toRgba(c.equationBad.color, c.equationBad.opacity),
+      strokeWidth: 1.5,
+      roughness: 0.6,
+      cornerRadius: 3,
+    },
+    equationTerm: {
+      stroke: toRgba(c.equationTerm.color, c.equationTerm.opacity),
+      strokeWidth: 2,
+      roughness: 0.55,
+      strokeLineDash: [6, 3],
+      cornerRadius: 3,
+    },
+  };
+}

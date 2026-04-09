@@ -2,11 +2,16 @@
 
 import { create } from "zustand";
 
-export type AIProvider = "gemini" | "qwen";
-export type AIInitialTab = "extract" | "fill" | "fix" | "detect" | "align" | "batch" | null;
+export type AIInitialTab =
+  | "extract"
+  | "fill"
+  | "fix"
+  | "detect"
+  | "batch"
+  | "infer"
+  | null;
 
 export interface AIStoreState {
-  activeProvider: AIProvider;
   isStreaming: boolean;
   streamedText: string;
   dialogOpen: boolean;
@@ -15,7 +20,6 @@ export interface AIStoreState {
 }
 
 export interface AIStoreActions {
-  setProvider(provider: AIProvider): void;
   setStreaming(streaming: boolean): void;
   setStreamedText(text: string): void;
   appendStreamedText(chunk: string): void;
@@ -26,16 +30,11 @@ export interface AIStoreActions {
 }
 
 export const useAIStore = create<AIStoreState & AIStoreActions>((set) => ({
-  activeProvider: "gemini",
   isStreaming: false,
   streamedText: "",
   dialogOpen: false,
   lastError: null,
   initialTab: null,
-
-  setProvider(provider) {
-    set({ activeProvider: provider });
-  },
 
   setStreaming(streaming) {
     set({ isStreaming: streaming });

@@ -1,8 +1,8 @@
-# Training And Benchmark Guide
+# Training And Evaluation Guide
 
 ## Scope
 
-This document covers the model-facing half of FineTree: dataset generation, training configuration, remote execution, prediction packaging, and benchmark evaluation.
+This document covers the model-facing half of FineTree: dataset generation, training configuration, remote execution, prediction generation, and benchmark evaluation.
 
 ## Dataset Build
 
@@ -90,7 +90,7 @@ Typical remote split:
 2. upload configs and scripts to the remote machine
 3. run preflight and training remotely
 4. run prediction/inference remotely or against a served endpoint
-5. bring benchmark bundle back to the benchmark machine
+5. run `benchmark-new` locally against the selected dataset version and outputs
 
 ## Prediction Structure
 
@@ -111,54 +111,57 @@ Example page-level prediction:
 }
 ```
 
-The exact schema is defined in [PAGE_LEVEL_PREDICTED_SCHEMA.md](/Users/delmedigo/Dev/FineTree/PAGE_LEVEL_PREDICTED_SCHEMA.md).
+The exact schema is defined in [PAGE_LEVEL_PREDICTED_SCHEMA.md](/Users/delmedigo/Dev/FineTree/docs/schemas/PAGE_LEVEL_PREDICTED_SCHEMA.md).
 
 ## Benchmark Inputs
 
-Benchmark config:
+Canonical benchmark selection comes from saved dataset versions in the web GUI. `benchmark-new` resolves the chosen version and split directly from workspace data.
 
-- [benchmark/config.example.yaml](/Users/delmedigo/Dev/FineTree/benchmark/config.example.yaml)
-
-Expected submission bundle shape:
+Typical generated run layout:
 
 ```text
-benchmark_submission/
-  info.json
-  logging.jsonl
-  predictions/
-    pred_0001.json
-    pred_0002.json
-    ...
+benchmark_new/outputs/<timestamp>_<provider>_<dataset>/
+  manifest.json
+  progress.json
+  events.jsonl
+  requests.jsonl
+  documents/<doc_id>/pages/page_XXXX.json
+  evaluation/run_metrics.json
+  evaluation/summary.csv
+  evaluation/full_metrics.csv
 ```
 
-`info.json` should carry model metadata and any run context that you want persisted into the benchmark report.
+## Benchmark CLI
 
-## Benchmark UI
-
-Start the local web UI:
+List available dataset versions:
 
 ```bash
-./.env/bin/finetree-benchmark --config benchmark/config.example.yaml --host 127.0.0.1 --port 8123
+./.env/bin/benchmark-new datasets list
 ```
 
-Submission page:
-
-- `/submission`
-
-Leaderboard page:
-
-- `/leaderboard`
-
-The UI persists reports under `benchmark/output/submissions/<submission_id>/`.
-
-## Headless Benchmark Run
-
-Run a bundle without opening the UI:
+Run provider inference only:
 
 ```bash
-./.env/bin/finetree-benchmark-run \
-  --config benchmark/config.example.yaml \
-  --submission /absolute/path/to/benchmark_submission
+./.env/bin/benchmark-new infer \
+  --dataset-version-id <dataset_version_id> \
+  --provider gemini \
+  --model <model_name>
+```
+
+Run evaluation on an existing output directory:
+
+```bash
+./.env/bin/benchmark-new eval --run-dir /absolute/path/to/run_dir
+```
+
+Run inference and evaluation end to end:
+
+```bash
+./.env/bin/benchmark-new batch-eval \
+  --dataset-version-id <dataset_version_id> \
+  --provider finetree_vllm \
+  --model <model_name> \
+  --base-url <openai_compatible_endpoint>
 ```
 
 ## Reproducing Results
@@ -166,18 +169,17 @@ Run a bundle without opening the UI:
 To reproduce a historical benchmark result:
 
 1. check out the commit that produced the model-serving and scoring behavior
-2. use the same benchmark config and mappings
-3. use the same prediction bundle or rerun inference against the same dataset version
-4. keep `benchmark.timezone` at `Asia/Jerusalem` so submission IDs and report timestamps remain comparable
+2. use the same dataset version id and split
+3. use the same provider settings or rerun inference against the same endpoint
+4. compare `summary.csv` and `run_metrics.json` from the persisted run directory
 
 ## Benchmark Outputs
 
 Each persisted report includes:
 
-- submission metadata
-- logging summary
-- mapping-level metrics
-- aggregate metrics
-- leaderboard row data
-
-The headless runner prints a small JSON summary to stdout with `submission_id`, `submission_dir`, and `overall_score`.
+- run metadata
+- provider and request logs
+- page/document/run metrics
+- `summary.csv`
+- `full_metrics.csv`
+- `run_metrics.json`

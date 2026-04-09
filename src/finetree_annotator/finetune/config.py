@@ -28,6 +28,7 @@ class DataConfig(BaseModel):
     images_root: Path = Path(".")
     output_train_jsonl: Path = Path("data/finetune/train.jsonl")
     output_val_jsonl: Path = Path("data/finetune/val.jsonl")
+    output_test_jsonl: Path = Path("data/finetune/test.jsonl")
     split_strategy: Literal["by_document"] = "by_document"
     val_ratio: float = 0.1
     val_doc_ids: list[str] = Field(default_factory=list)
@@ -228,6 +229,7 @@ def load_finetune_config(config_path: Path | str) -> FinetuneConfig:
     cfg.data.images_root = cfg.data.images_root.expanduser()
     cfg.data.output_train_jsonl = cfg.data.output_train_jsonl.expanduser()
     cfg.data.output_val_jsonl = cfg.data.output_val_jsonl.expanduser()
+    cfg.data.output_test_jsonl = cfg.data.output_test_jsonl.expanduser()
     cfg.prompt.prompt_path = cfg.prompt.prompt_path.expanduser()
     cfg.run.output_dir = cfg.run.output_dir.expanduser()
     return cfg

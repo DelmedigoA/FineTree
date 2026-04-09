@@ -7,6 +7,16 @@ import { startRenderLoop, clearRoughCache } from "./CanvasRenderer";
 import { useCanvasInteraction } from "../hooks/useCanvasInteraction";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
 
+function normalizeWheelDelta(delta: number, deltaMode: number): number {
+  if (deltaMode === WheelEvent.DOM_DELTA_LINE) {
+    return delta * 16;
+  }
+  if (deltaMode === WheelEvent.DOM_DELTA_PAGE) {
+    return delta * window.innerHeight;
+  }
+  return delta;
+}
+
 export function CanvasContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const imageCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -64,19 +74,26 @@ export function CanvasContainer() {
       return;
     }
 
+    let disposed = false;
     clearRoughCache();
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.src = `/api/images/${docId}/pages/${currentPageName}`;
     img.onload = () => {
+      if (disposed) return;
       pageImageRef.current = img;
       setImageSize({ width: img.naturalWidth, height: img.naturalHeight });
-      markDirty("all");
+      useCanvasStore.getState().fitToView();
     };
     img.onerror = () => {
+      if (disposed) return;
       pageImageRef.current = null;
       setImageSize({ width: 0, height: 0 });
       markDirty("all");
+    };
+
+    return () => {
+      disposed = true;
     };
   }, [docId, currentPageName, setImageSize, markDirty]);
 
@@ -93,7 +110,7 @@ export function CanvasContainer() {
     return stop;
   }, []);
 
-  // Handle wheel zoom.
+  // Handle wheel zoom and scroll-to-pan.
   useEffect(() => {
     const el = interactCanvasRef.current;
     if (!el) return;
@@ -101,7 +118,18 @@ export function CanvasContainer() {
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
         useCanvasStore.getState().zoomBy(-e.deltaY);
+        return;
       }
+
+      e.preventDefault();
+      const deltaX = normalizeWheelDelta(e.deltaX, e.deltaMode);
+      const deltaY = normalizeWheelDelta(e.deltaY, e.deltaMode);
+      const horizontalDelta =
+        e.shiftKey && Math.abs(deltaX) < Math.abs(deltaY) ? deltaY : deltaX;
+      const verticalDelta =
+        e.shiftKey && Math.abs(deltaX) < Math.abs(deltaY) ? 0 : deltaY;
+      const { panX, panY, setPan } = useCanvasStore.getState();
+      setPan(panX - horizontalDelta, panY - verticalDelta);
     };
     el.addEventListener("wheel", onWheel, { passive: false });
     return () => el.removeEventListener("wheel", onWheel);

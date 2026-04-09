@@ -1,10 +1,18 @@
 from __future__ import annotations
 
 import os
+import sys
+from pathlib import Path
 
 import pytest
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+for candidate in (_REPO_ROOT / "src", _REPO_ROOT):
+    candidate_text = str(candidate)
+    if candidate.is_dir() and candidate_text not in sys.path:
+        sys.path.insert(0, candidate_text)
 
 try:
     from PyQt5.QtCore import qInstallMessageHandler

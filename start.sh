@@ -12,11 +12,14 @@ YLW='\033[1;33m'
 RST='\033[0m'
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-PYTHON="${ROOT}/.venv/bin/python"
+PYTHON="${ROOT}/.env/bin/python3"
 
-# Fallback if no venv
+# Fallbacks if no local env
 if [ ! -f "$PYTHON" ]; then
-  PYTHON="$(which python3)"
+  PYTHON="${ROOT}/.venv/bin/python3"
+fi
+if [ ! -f "$PYTHON" ]; then
+  PYTHON="$(command -v python3)"
 fi
 
 echo -e "${YLW}FineTree starting…${RST}"
@@ -26,15 +29,28 @@ echo -e "  Data     → ${ROOT}/${DATA_ROOT}"
 echo -e "  Python   → ${PYTHON}"
 echo ""
 
-# Kill any stale processes on those ports
-for PORT in "${BACKEND_PORT}" "${FRONTEND_PORT}"; do
-  PID=$(lsof -ti tcp:"$PORT" 2>/dev/null)
-  if [ -n "$PID" ]; then
-    echo -e "${YLW}Killing stale process on port ${PORT} (PID ${PID})${RST}"
-    kill -9 $PID 2>/dev/null
+free_port() {
+  local port="$1"
+  local pids
+  pids="$(lsof -nP -tiTCP:"${port}" -sTCP:LISTEN 2>/dev/null | tr '\n' ' ' | xargs)"
+  if [ -n "$pids" ]; then
+    echo -e "${YLW}Killing stale process on port ${port} (PID ${pids})${RST}"
+    kill -9 ${pids} 2>/dev/null || true
+    for _ in $(seq 1 20); do
+      sleep 0.25
+      if ! lsof -nP -tiTCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1; then
+        break
+      fi
+    done
   fi
-done
-sleep 0.5
+  if lsof -nP -tiTCP:"${port}" -sTCP:LISTEN >/dev/null 2>&1; then
+    echo -e "${YLW}Port ${port} is still busy after cleanup.${RST}"
+    exit 1
+  fi
+}
+
+free_port "${BACKEND_PORT}"
+free_port "${FRONTEND_PORT}"
 
 # Kill children on Ctrl+C
 cleanup() {
@@ -66,7 +82,7 @@ fi
 # Start frontend
 cd "${ROOT}/web"
 export PATH="/opt/homebrew/Cellar/node/24.9.0/bin:$PATH"
-npm run dev -- --port "${FRONTEND_PORT}" 2>&1 | sed "s/^/[frontend] /" &
+npm run dev -- --host 127.0.0.1 --port "${FRONTEND_PORT}" --strictPort 2>&1 | sed "s/^/[frontend] /" &
 FRONTEND_PID=$!
 
 # Open browser after a short wait

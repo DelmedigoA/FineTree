@@ -1,0 +1,3821 @@
+{
+  "schema_version": 4,
+  "images_dir": "data/pdf_images/pdf_6",
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
+    "report_year": 2008,
+    "entity_type": "registered_nonprofit",
+    "report_scope": "consolidated"
+  },
+  "pages": [
+    {
+      "image": "page_0001.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
+        "page_num": null,
+        "page_type": "contents",
+        "statement_type": null,
+        "title": "תוכן",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0002.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״ ברמת גן",
+        "page_num": "1",
+        "page_type": "declaration",
+        "statement_type": "auditors_report",
+        "title": "דוח רואה החשבון המבקר לחברי העמותה",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0003.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "page_num": "2",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
+        "title": "מאזנים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "135493",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            384.44,
+            626.12,
+            99.18,
+            26.75
+          ]
+        },
+        {
+          "value": "116887",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            197.6,
+            623.62,
+            99.18,
+            29.25
+          ]
+        },
+        {
+          "value": "255",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "חייבים ויתרות חובה – הוצאות מראש"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            430.67,
+            665.64,
+            51.7,
+            26.5
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "חייבים ויתרות חובה – הוצאות מראש"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            239.43,
+            669.15,
+            20.54,
+            16.73
+          ]
+        },
+        {
+          "value": "135748",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "135493 + 255",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            383.19,
+            702.9,
+            99.18,
+            27.45
+          ]
+        },
+        {
+          "value": "116887",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "116887 + 0",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            201.36,
+            703.4,
+            99.18,
+            31.76
+          ]
+        },
+        {
+          "value": "502745",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "3",
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            383.19,
+            779.84,
+            99.18,
+            29.25
+          ]
+        },
+        {
+          "value": "509563",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "3",
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "רכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            199.3,
+            779.84,
+            99.18,
+            29.25
+          ]
+        },
+        {
+          "value": "638493",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "135748 + 502745",
+              "fact_equation": "f5 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.25,
+            850.01,
+            99.18,
+            29.25
+          ]
+        },
+        {
+          "value": "626450",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "116887 + 509563",
+              "fact_equation": "f6 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "נכסים",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            201.36,
+            850.01,
+            99.18,
+            29.25
+          ]
+        },
+        {
+          "value": "62929",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            396.47,
+            1080.95,
+            82.9,
+            30.5
+          ]
+        },
+        {
+          "value": "62715",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "התחייבויות שוטפות",
+            "זכאים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            213.38,
+            1082.2,
+            84.16,
+            31.76
+          ]
+        },
+        {
+          "value": "72819",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            401.31,
+            1268.98,
+            80.05,
+            26.92
+          ]
+        },
+        {
+          "value": "54172",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            215.75,
+            1265.44,
+            81.79,
+            30.4
+          ]
+        },
+        {
+          "value": "502745",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            386.28,
+            1306.13,
+            99.18,
+            28.66
+          ]
+        },
+        {
+          "value": "509563",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            198.36,
+            1309.61,
+            99.18,
+            26.92
+          ]
+        },
+        {
+          "value": "575564",
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "72819 + 502745",
+              "fact_equation": "f13 + f15"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            383.95,
+            1343.87,
+            99.18,
+            26.75
+          ]
+        },
+        {
+          "value": "563735",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "54172 + 509563",
+              "fact_equation": "f14 + f16"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            202.12,
+            1343.87,
+            99.18,
+            26.75
+          ]
+        },
+        {
+          "value": "638493",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "62929 + 575564",
+              "fact_equation": "f11 + f17"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            384.32,
+            1424.5,
+            99.18,
+            24.25
+          ]
+        },
+        {
+          "value": "626450",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "62715 + 563735",
+              "fact_equation": "f12 + f18"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות ונכסים נטו",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            199.06,
+            1424.76,
+            99.18,
+            28.0
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0004.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "page_num": "3",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
+        "title": "דוחות על הפעילויות",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "111161",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מהשכרת אולמות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.15,
+            670.97,
+            98.22,
+            32.07
+          ]
+        },
+        {
+          "value": "132083",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מהשכרת אולמות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            201.67,
+            670.97,
+            99.87,
+            32.07
+          ]
+        },
+        {
+          "value": "100605",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.15,
+            785.9,
+            94.22,
+            28.07
+          ]
+        },
+        {
+          "value": "32742",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            216.54,
+            785.9,
+            82.65,
+            28.07
+          ]
+        },
+        {
+          "value": "10556",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "111161 - 100605",
+              "fact_equation": "f1 - f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות לפני הכנסות מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            398.23,
+            893.5,
+            79.34,
+            28.07
+          ]
+        },
+        {
+          "value": "99341",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "132083 - 32742",
+              "fact_equation": "f2 - f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות לפני הכנסות מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            209.4,
+            898.79,
+            82.65,
+            24.54
+          ]
+        },
+        {
+          "value": "1273",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            411.6,
+            1010.45,
+            67.77,
+            28.07
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            235.64,
+            1020.47,
+            28.1,
+            9.36
+          ]
+        },
+        {
+          "value": "11829",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "10556 + 1273",
+              "fact_equation": "f5 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו מפעולות רגילות לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.48,
+            1128.98,
+            79.34,
+            26.82
+          ]
+        },
+        {
+          "value": "99341",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "99341 + 0",
+              "fact_equation": "f6 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו מפעולות רגילות לשנה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            216.54,
+            1125.22,
+            82.65,
+            25.57
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0005.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "page_num": "4",
+        "page_type": "statements",
+        "statement_type": "income_statement",
+        "title": "דוחות על השינויים בנכסים נטו",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "(66406)",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            855.91,
+            754.85,
+            103.61,
+            45.09
+          ]
+        },
+        {
+          "value": "530800",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            581.86,
+            764.85,
+            94.22,
+            35.09
+          ]
+        },
+        {
+          "value": "464394",
+          "fact_num": 3,
+          "equations": [
+            {
+              "equation": "- 66406 + 530800",
+              "fact_equation": "f1 + f2"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 1 בינואר 2007",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            317.38,
+            764.85,
+            95.87,
+            35.09
+          ]
+        },
+        {
+          "value": "99341",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            859.21,
+            832.04,
+            103.61,
+            45.09
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            633.89,
+            845.48,
+            25.73,
+            21.34
+          ]
+        },
+        {
+          "value": "99341",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "99341 + 0",
+              "fact_equation": "f4 + f5"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            328.95,
+            842.04,
+            84.3,
+            35.09
+          ]
+        },
+        {
+          "value": "21237",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            859.21,
+            1028.52,
+            100.3,
+            45.09
+          ]
+        },
+        {
+          "value": "(21237)",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            583.51,
+            1031.64,
+            101.16,
+            36.81
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "21237 - 21237",
+              "fact_equation": "f7 + f8"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            345.58,
+            1037.71,
+            31.02,
+            19.52
+          ]
+        },
+        {
+          "value": "54172",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "- 66406 + 99341 + 21237",
+              "fact_equation": "f1 + f4 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            857.56,
+            1103.36,
+            101.96,
+            45.09
+          ]
+        },
+        {
+          "value": "509563",
+          "fact_num": 11,
+          "equations": [
+            {
+              "equation": "530800 + 0 - 21237",
+              "fact_equation": "f2 + f5 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            581.01,
+            1107.36,
+            102.22,
+            37.09
+          ]
+        },
+        {
+          "value": "563735",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "54172 + 509563",
+              "fact_equation": "f10 + f11"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2007",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            312.88,
+            1107.36,
+            102.22,
+            41.09
+          ]
+        },
+        {
+          "value": "11829",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            859.21,
+            1173.53,
+            100.3,
+            45.09
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            630.89,
+            1192.12,
+            24.14,
+            17.9
+          ]
+        },
+        {
+          "value": "11829",
+          "fact_num": 15,
+          "equations": [
+            {
+              "equation": "11829 + 0",
+              "fact_equation": "f13 + f14"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות נטו לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            326.25,
+            1177.53,
+            87.34,
+            41.09
+          ]
+        },
+        {
+          "value": "(13420)",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            850.95,
+            1327.91,
+            110.22,
+            45.09
+          ]
+        },
+        {
+          "value": "13420",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            577.86,
+            1335.91,
+            99.96,
+            37.09
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "- 13420 + 13420",
+              "fact_equation": "f16 + f17"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לרכישת רכוש קבוע",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            359.58,
+            1347.94,
+            32.99,
+            16.68
+          ]
+        },
+        {
+          "value": "20238",
+          "fact_num": 19,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            859.21,
+            1402.76,
+            101.96,
+            45.09
+          ]
+        },
+        {
+          "value": "(20238)",
+          "fact_num": 20,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            576.2,
+            1410.76,
+            109.87,
+            37.09
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "20238 - 20238",
+              "fact_equation": "f19 + f20"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "העברת סכומים שלא קיימת לגביהם הגבלה :",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            359.58,
+            1421.07,
+            34.7,
+            18.4
+          ]
+        },
+        {
+          "value": "72819",
+          "fact_num": 22,
+          "equations": [
+            {
+              "equation": "54172 + 11829 - 13420 + 20238",
+              "fact_equation": "f10 + f13 + f16 + f19"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "לשימוש לפעילות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            864.32,
+            1495.8,
+            89.94,
+            30.07
+          ]
+        },
+        {
+          "value": "502745",
+          "fact_num": 23,
+          "equations": [
+            {
+              "equation": "509563 + 0 + 13420 - 20238",
+              "fact_equation": "f11 + f14 + f17 + f20"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "נכסים נטו שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            583.51,
+            1492.28,
+            92.57,
+            35.09
+          ]
+        },
+        {
+          "value": "575564",
+          "fact_num": 24,
+          "equations": [
+            {
+              "equation": "563735 + 11829 + 0 + 0",
+              "fact_equation": "f12 + f15 + f18 + f21"
+            },
+            {
+              "equation": "72819 + 502745",
+              "fact_equation": "f22 + f23"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרה ליום 31 בדצמבר 2008",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            317.38,
+            1492.28,
+            95.87,
+            35.09
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "page_num": "5",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "3.8%",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "בשנת הדוח",
+          "note_flag": true,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "note_num": "2",
+          "note_ref": null,
+          "date": "2008",
+          "period_type": "duration",
+          "period_start": "2008-01-01",
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "א. ירידת כח הקניה של המטבע הישראלי",
+            "עליית מדד המחירים לצרכן"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "textual",
+          "bbox": [
+            1197.83,
+            762.03,
+            67.77,
+            32.75
+          ]
+        },
+        {
+          "value": "3.4%",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "אשתקד",
+          "note_flag": true,
+          "note_name": "עיקרי המדיניות החשבונאית",
+          "note_num": "2",
+          "note_ref": null,
+          "date": "2007",
+          "period_type": "duration",
+          "period_start": "2007-01-01",
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "א. ירידת כח הקניה של המטבע הישראלי",
+            "עליית מדד המחירים לצרכן"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "textual",
+          "bbox": [
+            796.75,
+            763.75,
+            78.08,
+            36.19
+          ]
+        },
+        {
+          "value": "743166",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "בניינים",
+            "עלות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            846.95,
+            1373.33,
+            99.52,
+            37.09
+          ]
+        },
+        {
+          "value": "265746",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "בניינים",
+            "פחת שנצבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            598.73,
+            1375.33,
+            103.87,
+            35.09
+          ]
+        },
+        {
+          "value": "477420",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "743166 - 265746",
+              "fact_equation": "f3 - f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "בניינים",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            367.05,
+            1375.33,
+            103.53,
+            35.09
+          ]
+        },
+        {
+          "value": "492391",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "בניינים",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            158.69,
+            1375.33,
+            97.53,
+            35.09
+          ]
+        },
+        {
+          "value": "74901",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מתקני ספורט",
+            "עלות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            855.21,
+            1412.75,
+            95.76,
+            25.07
+          ]
+        },
+        {
+          "value": "58619",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מתקני ספורט",
+            "פחת שנצבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            615.2,
+            1405.74,
+            85.69,
+            35.09
+          ]
+        },
+        {
+          "value": "16282",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "74901 - 58619",
+              "fact_equation": "f7 - f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מתקני ספורט",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            385.23,
+            1405.74,
+            85.34,
+            35.09
+          ]
+        },
+        {
+          "value": "4700",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מתקני ספורט",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            181.83,
+            1405.74,
+            74.39,
+            35.09
+          ]
+        },
+        {
+          "value": "90244",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "ריהוט וציוד",
+            "עלות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            855.21,
+            1443.16,
+            95.76,
+            25.07
+          ]
+        },
+        {
+          "value": "81201",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "ריהוט וציוד",
+            "פחת שנצבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            618.57,
+            1436.15,
+            84.04,
+            35.09
+          ]
+        },
+        {
+          "value": "9043",
+          "fact_num": 13,
+          "equations": [
+            {
+              "equation": "90244 - 81201",
+              "fact_equation": "f11 - f12"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "ריהוט וציוד",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.89,
+            1437.87,
+            67.16,
+            35.09
+          ]
+        },
+        {
+          "value": "12472",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "ריהוט וציוד",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            175.22,
+            1436.15,
+            81.0,
+            35.09
+          ]
+        },
+        {
+          "value": "49149",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מחשבים",
+            "עלות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            853.56,
+            1473.56,
+            97.42,
+            25.07
+          ]
+        },
+        {
+          "value": "49149",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מחשבים",
+            "פחת שנצבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            616.92,
+            1466.55,
+            85.69,
+            35.09
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "49149 - 49149",
+              "fact_equation": "f15 - f16"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מחשבים",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            432.25,
+            1478.74,
+            18.55,
+            14.27
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מחשבים",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            196.07,
+            1476.14,
+            23.35,
+            19.07
+          ]
+        },
+        {
+          "value": "957460",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "743166 + 74901 + 90244 + 49149",
+              "fact_equation": "f3 + f7 + f11 + f15"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "עלות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            846.95,
+            1506.31,
+            96.66,
+            28.08
+          ]
+        },
+        {
+          "value": "454715",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "265746 + 58619 + 81201 + 49149",
+              "fact_equation": "f4 + f8 + f12 + f16"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "פחת שנצבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            598.73,
+            1499.3,
+            103.87,
+            35.09
+          ]
+        },
+        {
+          "value": "502745",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "477420 + 16282 + 9043 + 0",
+              "fact_equation": "f5 + f9 + f13 + f17"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            369.52,
+            1501.22,
+            99.18,
+            35.09
+          ]
+        },
+        {
+          "value": "509563",
+          "fact_num": 22,
+          "equations": [
+            {
+              "equation": "492391 + 4700 + 12472 + 0",
+              "fact_equation": "f6 + f10 + f14 + f18"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "יתרה להפחתה ליום 31 בדצמבר"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            157.03,
+            1499.3,
+            99.18,
+            35.09
+          ]
+        },
+        {
+          "value": "2% - 10%",
+          "fact_num": 23,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שעורי פחת",
+            "בניינים"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "bbox": [
+            774.6,
+            1633.36,
+            119.54,
+            27.27
+          ]
+        },
+        {
+          "value": "7%",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שעורי פחת",
+            "מתקני ספורט"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "bbox": [
+            858.2,
+            1668.29,
+            38.37,
+            25.19
+          ]
+        },
+        {
+          "value": "7% - 15%",
+          "fact_num": 25,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שעורי פחת",
+            "ריהוט וציוד"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "bbox": [
+            777.03,
+            1703.05,
+            117.46,
+            23.97
+          ]
+        },
+        {
+          "value": "25% - 33%",
+          "fact_num": 26,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": null,
+          "period_type": null,
+          "period_start": null,
+          "period_end": null,
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שעורי פחת",
+            "מחשבים"
+          ],
+          "path_source": null,
+          "currency": null,
+          "scale": null,
+          "value_type": "percent",
+          "value_context": "tabular",
+          "bbox": [
+            763.98,
+            1734.66,
+            130.51,
+            27.97
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "אגודת ״מכבי רמת יצחק״",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "6041",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מס ערך מוסף"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            396.39,
+            556.6,
+            68.01,
+            27.32
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "מס ערך מוסף"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            219.77,
+            563.04,
+            21.02,
+            14.02
+          ]
+        },
+        {
+          "value": "51818",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "הכנסות מראש"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            383.16,
+            591.85,
+            84.98,
+            32.16
+          ]
+        },
+        {
+          "value": "50350",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "הכנסות מראש"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            178.19,
+            596.04,
+            78.68,
+            26.72
+          ]
+        },
+        {
+          "value": "1070",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "המחאות לפרעון"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            394.73,
+            632.12,
+            73.41,
+            26.07
+          ]
+        },
+        {
+          "value": "9365",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "המחאות לפרעון"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            190.96,
+            635.05,
+            69.66,
+            24.38
+          ]
+        },
+        {
+          "value": "4000",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "הוצאות לשלם"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            396.39,
+            670.95,
+            71.76,
+            24.65
+          ]
+        },
+        {
+          "value": "3000",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "הוצאות לשלם"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            190.11,
+            673.89,
+            68.01,
+            26.72
+          ]
+        },
+        {
+          "value": "62929",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "6041 + 51818 + 1070 + 4000",
+              "fact_equation": "f1 + f3 + f5 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            383.16,
+            710.22,
+            82.89,
+            26.83
+          ]
+        },
+        {
+          "value": "62715",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "0 + 50350 + 9365 + 3000",
+              "fact_equation": "f2 + f4 + f6 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "4",
+          "note_flag": true,
+          "note_name": "זכאים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ההרכב",
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            175.28,
+            710.65,
+            84.49,
+            31.4
+          ]
+        },
+        {
+          "value": "66000",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מלגות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            388.16,
+            890.75,
+            82.83,
+            29.66
+          ]
+        },
+        {
+          "value": "5000",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מלגות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            190.11,
+            889.5,
+            68.01,
+            29.66
+          ]
+        },
+        {
+          "value": "7500",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שירותים מקצועיים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            400.14,
+            924.58,
+            68.01,
+            27.32
+          ]
+        },
+        {
+          "value": "3000",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שירותים מקצועיים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            191.77,
+            924.58,
+            71.37,
+            26.07
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אירוע"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            439.87,
+            964.04,
+            18.22,
+            13.92
+          ]
+        },
+        {
+          "value": "1700",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אירוע"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            193.02,
+            956.57,
+            67.61,
+            27.16
+          ]
+        },
+        {
+          "value": "2503",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מסי עירייה ואגרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.0,
+            986.99,
+            68.86,
+            29.82
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מסי עירייה ואגרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            222.77,
+            994.41,
+            17.26,
+            14.45
+          ]
+        },
+        {
+          "value": "4081",
+          "fact_num": 19,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משרדיות ואחזקה"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.29,
+            1023.15,
+            68.86,
+            24.82
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 20,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משרדיות ואחזקה"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            222.77,
+            1029.5,
+            17.26,
+            14.45
+          ]
+        },
+        {
+          "value": "20238",
+          "fact_num": 21,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            387.32,
+            1056.06,
+            81.64,
+            27.16
+          ]
+        },
+        {
+          "value": "21237",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פחת"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            175.24,
+            1056.06,
+            81.64,
+            23.4
+          ]
+        },
+        {
+          "value": "283",
+          "fact_num": 23,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שונות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            428.45,
+            1087.46,
+            39.86,
+            28.57
+          ]
+        },
+        {
+          "value": "1805",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שונות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            194.27,
+            1087.22,
+            62.6,
+            27.32
+          ]
+        },
+        {
+          "value": "100605",
+          "fact_num": 25,
+          "equations": [
+            {
+              "equation": "66000 + 7500 + 0 + 2503 + 4081 + 20238 + 283",
+              "fact_equation": "f11 + f13 + f15 + f17 + f19 + f21 + f23"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2008-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2008-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            373.64,
+            1118.88,
+            96.51,
+            32.93
+          ]
+        },
+        {
+          "value": "32742",
+          "fact_num": 26,
+          "equations": [
+            {
+              "equation": "5000 + 3000 + 1700 + 0 + 0 + 21237 + 1805",
+              "fact_equation": "f12 + f14 + f16 + f18 + f20 + f22 + f24"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "5",
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2007-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2007-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            176.76,
+            1121.39,
+            83.99,
+            26.67
+          ]
+        }
+      ]
+    }
+  ]
+}

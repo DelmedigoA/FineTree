@@ -1,6 +1,6 @@
 {
   "schema_version": 4,
-  "images_dir": "data/pdf_images/pdf_4",
+  "images_dir": "/Users/delmedigo/Dev/FineTree/data/pdf_images/pdf_4",
   "metadata": {
     "language": "he",
     "reading_direction": "rtl",
@@ -12,7 +12,7 @@
     {
       "image": "page_0001.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "1",
         "page_type": "contents",
         "statement_type": null,
@@ -25,7 +25,7 @@
     {
       "image": "page_0002.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "2",
         "page_type": "declaration",
         "statement_type": "auditors_report",
@@ -38,7 +38,7 @@
     {
       "image": "page_0003.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "3",
         "page_type": "statements",
         "statement_type": "balance_sheet",
@@ -67,7 +67,7 @@
           "path": [
             "רכוש",
             "רכוש שוטף",
-            "מזומנים ושווה מזומנים"
+            "מזומנים ושווי מזומנים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -101,7 +101,7 @@
           "path": [
             "רכוש",
             "רכוש שוטף",
-            "מזומנים ושווה מזומנים"
+            "מזומנים ושווי מזומנים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -1250,7 +1250,7 @@
     {
       "image": "page_0004.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "4",
         "page_type": "statements",
         "statement_type": "statement_of_activities",
@@ -1816,7 +1816,7 @@
           "recurring_period": null,
           "path": [
             "עלות הפעילויות",
-            "אירועים וכנסים חברתיים"
+            "ארועים וכנסים חברתיים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -1849,7 +1849,7 @@
           "recurring_period": null,
           "path": [
             "עלות הפעילויות",
-            "אירועים וכנסים חברתיים"
+            "ארועים וכנסים חברתיים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -2308,7 +2308,7 @@
             "הכנסות נטו מפעילויות",
             "הכנסות מימון, נטו"
           ],
-          "path_source": "observed",
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -2341,7 +2341,7 @@
             "הכנסות נטו מפעילויות",
             "הכנסות מימון, נטו"
           ],
-          "path_source": "observed",
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -2576,7 +2576,7 @@
     {
       "image": "page_0005.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "5",
         "page_type": "statements",
         "statement_type": "cash_flow_statement",
@@ -2657,7 +2657,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "ראה להלן",
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -2670,7 +2670,7 @@
           "recurring_period": null,
           "path": [
             "תזרימי מזומנים מפעילות שוטפת",
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת"
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת (ראה להלן)"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -2690,7 +2690,7 @@
           "equations": null,
           "natural_sign": "negative",
           "row_role": "detail",
-          "comment_ref": "ראה להלן",
+          "comment_ref": null,
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -2703,7 +2703,7 @@
           "recurring_period": null,
           "path": [
             "תזרימי מזומנים מפעילות שוטפת",
-            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת"
+            "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת (ראה להלן)"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -3151,7 +3151,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "גידול (קיטון) במזומנים ושווה מזומנים"
+            "גידול (קיטון) במזומנים ושווי מזומנים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -3183,7 +3183,7 @@
           "duration_type": null,
           "recurring_period": null,
           "path": [
-            "גידול (קיטון) במזומנים ושווה מזומנים"
+            "גידול (קיטון) במזומנים ושווי מזומנים"
           ],
           "path_source": "observed",
           "currency": "ILS",
@@ -3795,10 +3795,10 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            462.62,
-            1672.57,
-            135.15,
-            41.77
+            481.07,
+            1679.67,
+            86.5,
+            33.12
           ]
         },
         {
@@ -3844,7 +3844,7 @@
     {
       "image": "page_0006.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "6",
         "page_type": "statements",
         "statement_type": "statement_of_changes_in_equity",
@@ -3913,8 +3913,8 @@
           "value_type": "amount",
           "value_context": "tabular",
           "bbox": [
-            614.31,
-            760.12,
+            609.74,
+            764.69,
             111.88,
             43.67
           ]
@@ -4712,7 +4712,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": null,
+          "comment_ref": "ראה באור 1ב.",
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -4746,7 +4746,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": null,
+          "comment_ref": "ראה באור 1ב.",
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -4780,7 +4780,7 @@
           "equations": null,
           "natural_sign": null,
           "row_role": "detail",
-          "comment_ref": null,
+          "comment_ref": "ראה באור 1ב.",
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -4819,7 +4819,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": null,
+          "comment_ref": "ראה באור 1ב.",
           "note_flag": false,
           "note_name": null,
           "note_num": null,
@@ -5427,7 +5427,7 @@
     {
       "image": "page_0007.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "7",
         "page_type": "statements",
         "statement_type": "notes_to_financial_statements",
@@ -5509,7 +5509,7 @@
     {
       "image": "page_0008.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "8",
         "page_type": "statements",
         "statement_type": "notes_to_financial_statements",
@@ -5678,7 +5678,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "ריהוט וציוד",
+            "רהוט וציוד",
             "עלות"
           ],
           "path_source": "observed",
@@ -5712,7 +5712,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "ריהוט וציוד",
+            "רהוט וציוד",
             "פחת שנצבר"
           ],
           "path_source": "observed",
@@ -5751,7 +5751,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "ריהוט וציוד",
+            "רהוט וציוד",
             "עלות מופחתת"
           ],
           "path_source": "observed",
@@ -5785,7 +5785,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "ריהוט וציוד",
+            "רהוט וציוד",
             "עלות מופחתת"
           ],
           "path_source": "observed",
@@ -5947,7 +5947,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": null,
+          "comment_ref": "ב. להלן",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": "4",
@@ -5981,7 +5981,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": null,
+          "comment_ref": "ב. להלן",
           "note_flag": true,
           "note_name": "רכוש קבוע",
           "note_num": "4",
@@ -6366,7 +6366,7 @@
     {
       "image": "page_0009.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "9",
         "page_type": "statements",
         "statement_type": "notes_to_financial_statements",
@@ -6381,7 +6381,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6414,7 +6414,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6447,7 +6447,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6480,7 +6480,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6518,7 +6518,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6556,7 +6556,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "8",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הקצבות ותמיכות",
           "note_num": "8",
@@ -6589,7 +6589,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6622,7 +6622,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6655,7 +6655,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6688,7 +6688,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6726,7 +6726,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6764,7 +6764,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "9",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "כלכלת תלמידים",
           "note_num": "9",
@@ -6797,7 +6797,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6830,7 +6830,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6863,7 +6863,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6896,7 +6896,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6929,7 +6929,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6962,7 +6962,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -6995,7 +6995,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7028,7 +7028,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7061,7 +7061,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7094,7 +7094,7 @@
           "equations": null,
           "natural_sign": "positive",
           "row_role": "detail",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7132,7 +7132,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7170,7 +7170,7 @@
           ],
           "natural_sign": "positive",
           "row_role": "total",
-          "comment_ref": "10",
+          "comment_ref": null,
           "note_flag": true,
           "note_name": "הוצאות הנהלה וכלליות",
           "note_num": "10",
@@ -7202,7 +7202,7 @@
     {
       "image": "page_0010.png",
       "meta": {
-        "entity_name": "\"המעיין\" קרן מלגות למחוננים (ע\"ר)",
+        "entity_name": "\"המעין\" קרן מלגות למחוננים (ע\"ר)",
         "page_num": "10",
         "page_type": "statements",
         "statement_type": "notes_to_financial_statements",

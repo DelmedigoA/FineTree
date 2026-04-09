@@ -1,0 +1,523 @@
+{
+  "page_index": 9,
+  "page_name": "page_0009.png",
+  "assistant_text": "{\"meta\": {\"entity_name\": \"״המעין״ קרן מלגות למחוננים (ע״ר)\", \"page_num\": \"9\", \"page_type\": \"statements\", \"statement_type\": \"notes_to_financial_statements\", \"title\": \"באורים לדוחות הכספיים\"}, \"facts\": [{\"value\": \"990,027\", \"fact_num\": 1, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"ממשרד החינוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"973,336\", \"fact_num\": 2, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"ממשרד החינוך\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"192,662\", \"fact_num\": 3, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"ממשרד החינוך - מוסדות דת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"227,368\", \"fact_num\": 4, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"ממשרד החינוך - מוסדות דת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,182,689\", \"fact_num\": 5, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"1,200,704\", \"fact_num\": 6, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הקצבות ותמיכות\", \"note_num\": \"8\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"81,990\", \"fact_num\": 7, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"משכורות ונלוות לעובדי מטבח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"81,529\", \"fact_num\": 8, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"משכורות ונלוות לעובדי מטבח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"389,850\", \"fact_num\": 9, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"קניות מזון וכלי מטבח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"367,331\", \"fact_num\": 10, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"קניות מזון וכלי מטבח\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"471,840\", \"fact_num\": 11, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"448,860\", \"fact_num\": 12, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"כלכלת תלמידים\", \"note_num\": \"9\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"382,675\", \"fact_num\": 13, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"משכורות ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"217,349\", \"fact_num\": 14, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"משכורות ונלוות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"80,212\", \"fact_num\": 15, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"שכר מקצועי\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"51,728\", \"fact_num\": 16, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"שכר מקצועי\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"7,093\", \"fact_num\": 17, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"טלפון ותקשורת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"6,533\", \"fact_num\": 18, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"טלפון ותקשורת\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"16,484\", \"fact_num\": 19, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"משרדיות ונסיעות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"12,203\", \"fact_num\": 20, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"משרדיות ונסיעות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,662\", \"fact_num\": 21, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"אגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"2,415\", \"fact_num\": 22, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"אגרות\"], \"path_source\": \"observed\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"489,126\", \"fact_num\": 23, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2024-01-01\", \"period_end\": \"2024-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}, {\"value\": \"290,228\", \"fact_num\": 24, \"comment_ref\": null, \"note_flag\": true, \"note_name\": \"הוצאות הנהלה וכלליות\", \"note_num\": \"10\", \"note_ref\": null, \"period_type\": \"duration\", \"period_start\": \"2023-01-01\", \"period_end\": \"2023-12-31\", \"path\": [\"הרכב\", \"סה״כ\"], \"path_source\": \"inferred\", \"currency\": \"ILS\", \"scale\": 1, \"value_type\": \"amount\", \"value_context\": \"tabular\"}]}",
+  "parsed_page": {
+    "image": "page_0009.png",
+    "meta": {
+      "entity_name": "״המעין״ קרן מלגות למחוננים (ע״ר)",
+      "page_num": "9",
+      "page_type": "statements",
+      "statement_type": "notes_to_financial_statements",
+      "title": "באורים לדוחות הכספיים"
+    },
+    "facts": [
+      {
+        "value": "990,027",
+        "fact_num": 1,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "ממשרד החינוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "973,336",
+        "fact_num": 2,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "ממשרד החינוך"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "192,662",
+        "fact_num": 3,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "ממשרד החינוך - מוסדות דת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "227,368",
+        "fact_num": 4,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "ממשרד החינוך - מוסדות דת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,182,689",
+        "fact_num": 5,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "1,200,704",
+        "fact_num": 6,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הקצבות ותמיכות",
+        "note_num": "8",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "81,990",
+        "fact_num": 7,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "משכורות ונלוות לעובדי מטבח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "81,529",
+        "fact_num": 8,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "משכורות ונלוות לעובדי מטבח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "389,850",
+        "fact_num": 9,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "קניות מזון וכלי מטבח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "367,331",
+        "fact_num": 10,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "קניות מזון וכלי מטבח"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "471,840",
+        "fact_num": 11,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "448,860",
+        "fact_num": 12,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "כלכלת תלמידים",
+        "note_num": "9",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "382,675",
+        "fact_num": 13,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "משכורות ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "217,349",
+        "fact_num": 14,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "משכורות ונלוות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "80,212",
+        "fact_num": 15,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "שכר מקצועי"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "51,728",
+        "fact_num": 16,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "שכר מקצועי"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "7,093",
+        "fact_num": 17,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "טלפון ותקשורת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "6,533",
+        "fact_num": 18,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "טלפון ותקשורת"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "16,484",
+        "fact_num": 19,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "משרדיות ונסיעות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "12,203",
+        "fact_num": 20,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "משרדיות ונסיעות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,662",
+        "fact_num": 21,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "אגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "2,415",
+        "fact_num": 22,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "אגרות"
+        ],
+        "path_source": "observed",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "489,126",
+        "fact_num": 23,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2024-01-01",
+        "period_end": "2024-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      },
+      {
+        "value": "290,228",
+        "fact_num": 24,
+        "comment_ref": null,
+        "note_flag": true,
+        "note_name": "הוצאות הנהלה וכלליות",
+        "note_num": "10",
+        "note_ref": null,
+        "period_type": "duration",
+        "period_start": "2023-01-01",
+        "period_end": "2023-12-31",
+        "path": [
+          "הרכב",
+          "סה״כ"
+        ],
+        "path_source": "inferred",
+        "currency": "ILS",
+        "scale": 1,
+        "value_type": "amount",
+        "value_context": "tabular"
+      }
+    ]
+  },
+  "error": null,
+  "received_tokens": 0
+}

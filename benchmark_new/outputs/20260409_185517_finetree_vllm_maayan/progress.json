@@ -1,0 +1,28 @@
+{
+  "phase": "infer",
+  "provider": "finetree_vllm",
+  "dataset_version_id": "4ee1c00b-ef4d-4bc9-8fe3-e34ce38f9b69",
+  "dataset_name": "maayan",
+  "split": "val",
+  "current_doc_id": "pdf_4",
+  "total_documents": 1,
+  "completed_documents": 1,
+  "total_pages": 10,
+  "completed_pages": 10,
+  "failed_pages": 0,
+  "fact_count": 211,
+  "total_tokens_received": 30172,
+  "elapsed_seconds": 334.9026934579015,
+  "tokens_per_second": 90.0918403745019,
+  "documents": {
+    "pdf_4": {
+      "doc_id": "pdf_4",
+      "total_pages": 10,
+      "completed_pages": 10,
+      "failed_pages": 0,
+      "fact_count": 211,
+      "tokens_received": 30172,
+      "current_page": "page_0006.png"
+    }
+  }
+}

@@ -34,6 +34,20 @@ function statusColor(doc: WorkspaceDocument): string {
   return STATUS_COLOR[statusLabel(doc)] ?? "var(--text-soft)";
 }
 
+const RECENT_VIEWS_KEY = "finetree:recent_views";
+
+export function getRecentViews(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_VIEWS_KEY) || "{}");
+  } catch { return {}; }
+}
+
+export function recordView(docId: string): void {
+  const views = getRecentViews();
+  views[docId] = Date.now() / 1000;
+  localStorage.setItem(RECENT_VIEWS_KEY, JSON.stringify(views));
+}
+
 function formatUpdated(ts: number | null): string {
   if (!ts) return "";
   const d = new Date(ts * 1000);
@@ -80,14 +94,18 @@ export function DashboardPage() {
       }
     });
 
+    const recentViews = getRecentViews();
     docs = [...docs].sort((a, b) => {
       switch (sort) {
         case "name":     return a.doc_id.localeCompare(b.doc_id);
         case "issues":   return (b.reg_flag_count + b.warning_count) - (a.reg_flag_count + a.warning_count);
         case "progress": return b.progress_pct - a.progress_pct;
         case "recent":
-        default:
-          return (b.updated_at ?? 0) - (a.updated_at ?? 0);
+        default: {
+          const aRecent = Math.max(a.updated_at ?? 0, recentViews[a.doc_id] ?? 0);
+          const bRecent = Math.max(b.updated_at ?? 0, recentViews[b.doc_id] ?? 0);
+          return bRecent - aRecent;
+        }
       }
     });
     return docs;
@@ -98,10 +116,12 @@ export function DashboardPage() {
     const total = documents.length;
     const totalPages = documents.reduce((s, d) => s + d.page_count, 0);
     const annotatedPages = documents.reduce((s, d) => s + (d.annotated_page_count ?? 0), 0);
+    const approvedPages = documents.reduce((s, d) => s + (d.approved_page_count ?? 0), 0);
     const totalFacts = documents.reduce((s, d) => s + (d.fact_count ?? 0), 0);
     const coveragePct = totalPages > 0 ? Math.round((annotatedPages / totalPages) * 100) : 0;
+    const approvedPct = totalPages > 0 ? Math.round((approvedPages / totalPages) * 100) : 0;
     const totalTokens = documents.reduce((s, d) => s + (d.annotated_token_count ?? 0), 0);
-    return { total, totalPages, annotatedPages, totalFacts, coveragePct, totalTokens };
+    return { total, totalPages, annotatedPages, approvedPages, totalFacts, coveragePct, approvedPct, totalTokens };
   }, [documents]);
 
   const toggleSelect = (id: string) => {
@@ -158,7 +178,7 @@ export function DashboardPage() {
               Projects
             </h1>
             <p style={{ color: "var(--text-muted)", fontSize: 13 }}>
-              {loading ? "Loading..." : `${stats.total} document${stats.total !== 1 ? "s" : ""} · ${stats.annotatedPages}/${stats.totalPages} pages annotated`}
+              {loading ? "Loading..." : `${stats.total} document${stats.total !== 1 ? "s" : ""} · ${stats.annotatedPages}/${stats.totalPages} pages annotated · ${stats.approvedPages}/${stats.totalPages} pages approved`}
             </p>
           </div>
           <button onClick={handleImportPdf} style={primaryBtnStyle}>
@@ -170,9 +190,10 @@ export function DashboardPage() {
         {!loading && stats.total > 0 && (
           <div style={{ display: "flex", gap: 24, marginBottom: 16, flexWrap: "wrap" }}>
             <Stat label="Coverage" value={`${stats.coveragePct}%`} color="var(--accent)" />
+            <Stat label="% Approved Pages" value={`${stats.approvedPct}%`} color="var(--ok)" />
             <Stat label="Facts"    value={stats.totalFacts.toLocaleString()} />
             <Stat label="Tokens"   value={`${(stats.totalTokens / 1000).toFixed(1)}k`} />
-            <Stat label="Pages"    value={`${stats.annotatedPages} / ${stats.totalPages}`} />
+            <Stat label="Approved Pages" value={`${stats.approvedPages} / ${stats.totalPages}`} />
           </div>
         )}
 
@@ -305,6 +326,9 @@ function DocumentCard({
   const thumbSrc = doc.thumbnail_name
     ? `/api/images/${doc.doc_id}/thumbnails/${doc.thumbnail_name}`
     : null;
+  const approvedPct = doc.page_count > 0
+    ? Math.round(((doc.approved_page_count ?? 0) / doc.page_count) * 100)
+    : 0;
 
   return (
     <div
@@ -396,9 +420,10 @@ function DocumentCard({
           </span>
         </div>
 
-        {/* Page / fact counts */}
+        {/* Approval / fact counts */}
         <div style={{ display: "flex", gap: 10, fontSize: 12, color: "var(--text-muted)" }}>
-          <span>{doc.annotated_page_count ?? 0}/{doc.page_count} pages</span>
+          <span>Approved {doc.approved_page_count ?? 0}/{doc.page_count} pages</span>
+          <span>{approvedPct}% approved</span>
           {doc.fact_count > 0 && <span>{doc.fact_count.toLocaleString()} facts</span>}
           {doc.annotated_token_count > 0 && (
             <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-soft)" }}>
@@ -426,7 +451,7 @@ function DocumentCard({
         {/* Footer: last updated + open button */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 2 }}>
           <span style={{ fontSize: 11, color: "var(--text-soft)" }}>
-            {formatUpdated(doc.updated_at)}
+            {formatUpdated(Math.max(doc.updated_at ?? 0, getRecentViews()[doc.doc_id] ?? 0) || null)}
           </span>
           <button
             onClick={onOpen}

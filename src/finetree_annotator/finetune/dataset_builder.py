@@ -6,7 +6,7 @@ import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Sequence
+from typing import Any, Dict, Iterable, List, Literal, Sequence
 
 from ..annotation_core import bbox_to_list
 from ..fact_normalization import assert_fact_format
@@ -25,6 +25,7 @@ class DatasetBuildStats:
     pages_seen: int = 0
     samples_written_train: int = 0
     samples_written_val: int = 0
+    samples_written_test: int = 0
     pages_skipped_empty: int = 0
     pages_skipped_missing_image: int = 0
     pages_skipped_unapproved: int = 0
@@ -66,24 +67,38 @@ def _doc_split_map(
     *,
     forced_val_doc_ids: set[str] | None = None,
     force_explicit_val_doc_ids: bool = False,
-) -> Dict[str, bool]:
+    forced_test_doc_ids: set[str] | None = None,
+) -> Dict[str, Literal["train", "val", "test"]]:
     doc_ids = [p.stem for p in annotation_files]
     if not doc_ids:
         return {}
 
-    forced = {doc_id.strip() for doc_id in (forced_val_doc_ids or set()) if str(doc_id).strip()}
+    forced_test = {doc_id.strip() for doc_id in (forced_test_doc_ids or set()) if str(doc_id).strip()}
+    forced_val = {doc_id.strip() for doc_id in (forced_val_doc_ids or set()) if str(doc_id).strip()}
+
+    if forced_test:
+        result: Dict[str, Literal["train", "val", "test"]] = {}
+        for doc_id in doc_ids:
+            if doc_id in forced_test:
+                result[doc_id] = "test"
+            elif doc_id in forced_val:
+                result[doc_id] = "val"
+            else:
+                result[doc_id] = "train"
+        return result
+
     if force_explicit_val_doc_ids:
-        return {doc_id: (doc_id in forced) for doc_id in doc_ids}
-    if forced:
-        return {doc_id: (doc_id in forced) for doc_id in doc_ids}
+        return {doc_id: ("val" if doc_id in forced_val else "train") for doc_id in doc_ids}
+    if forced_val:
+        return {doc_id: ("val" if doc_id in forced_val else "train") for doc_id in doc_ids}
 
     if val_ratio <= 0.0:
-        return {doc_id: False for doc_id in doc_ids}
+        return {doc_id: "train" for doc_id in doc_ids}
 
     if len(doc_ids) == 1:
         # Keep single-doc datasets in train by default. Validation requirement is
         # enforced later in training when needed.
-        return {doc_ids[0]: False}
+        return {doc_ids[0]: "train"}
 
     in_val = {doc_id for doc_id in doc_ids if _doc_in_val_split(doc_id, val_ratio)}
     if not in_val:
@@ -91,7 +106,7 @@ def _doc_split_map(
     if len(in_val) == len(doc_ids):
         in_val.remove(sorted(doc_ids)[0])
 
-    return {doc_id: (doc_id in in_val) for doc_id in doc_ids}
+    return {doc_id: ("val" if doc_id in in_val else "train") for doc_id in doc_ids}
 
 
 def _resolve_page_image_path(
@@ -210,6 +225,7 @@ def build_unsloth_chat_datasets(
     *,
     include_doc_ids: set[str] | None = None,
     forced_val_doc_ids: set[str] | None = None,
+    forced_test_doc_ids: set[str] | None = None,
     force_explicit_val_doc_ids: bool = False,
     approved_pages_only: bool = False,
     drop_date: bool = False,
@@ -234,23 +250,40 @@ def build_unsloth_chat_datasets(
         if forced_val_doc_ids is not None
         else set(cfg.data.val_doc_ids)
     )
+    resolved_forced_test_doc_ids = (
+        {doc_id.strip() for doc_id in forced_test_doc_ids if str(doc_id).strip()}
+        if forced_test_doc_ids is not None
+        else None
+    )
     split_map = _doc_split_map(
         annotation_files,
         cfg.data.val_ratio,
         forced_val_doc_ids=resolved_forced_val_doc_ids,
         force_explicit_val_doc_ids=force_explicit_val_doc_ids,
+        forced_test_doc_ids=resolved_forced_test_doc_ids,
     )
     train_path = cfg.data.output_train_jsonl
     val_path = cfg.data.output_val_jsonl
+    test_path = cfg.data.output_test_jsonl
     train_path.parent.mkdir(parents=True, exist_ok=True)
     val_path.parent.mkdir(parents=True, exist_ok=True)
+    test_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with train_path.open("w", encoding="utf-8") as train_f, val_path.open("w", encoding="utf-8") as val_f:
+    with (
+        train_path.open("w", encoding="utf-8") as train_f,
+        val_path.open("w", encoding="utf-8") as val_f,
+        test_path.open("w", encoding="utf-8") as test_f,
+    ):
         for annotation_path in annotation_files:
             stats.annotation_files += 1
             doc_id = annotation_path.stem
-            is_val_doc = bool(split_map.get(doc_id, False))
-            out_f = val_f if is_val_doc else train_f
+            doc_split = split_map.get(doc_id, "train")
+            if doc_split == "val":
+                out_f = val_f
+            elif doc_split == "test":
+                out_f = test_f
+            else:
+                out_f = train_f
 
             payload = load_any_schema(json.loads(annotation_path.read_text(encoding="utf-8")))
             metadata = normalize_document_meta(payload.get("metadata"))
@@ -336,8 +369,10 @@ def build_unsloth_chat_datasets(
                 }
 
                 out_f.write(json.dumps(sample, ensure_ascii=False) + "\n")
-                if is_val_doc:
+                if doc_split == "val":
                     stats.samples_written_val += 1
+                elif doc_split == "test":
+                    stats.samples_written_test += 1
                 else:
                     stats.samples_written_train += 1
 
@@ -376,6 +411,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Pages seen: {stats.pages_seen}")
     print(f"Train samples: {stats.samples_written_train}")
     print(f"Val samples: {stats.samples_written_val}")
+    print(f"Test samples: {stats.samples_written_test}")
     print(f"Skipped empty pages: {stats.pages_skipped_empty}")
     print(f"Skipped missing images: {stats.pages_skipped_missing_image}")
     print(f"Skipped unapproved pages: {stats.pages_skipped_unapproved}")

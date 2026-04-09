@@ -24,6 +24,7 @@ export interface SelectionStoreActions {
   addToSelection(indices: Iterable<number>): void;
   selectAll(count: number): void;
   clearSelection(): void;
+  clearPageSelection(): void;
   setHovered(index: number | null): void;
   setSelectionRect(rect: SelectionRect | null): void;
   setEquationModeActive(active: boolean): void;
@@ -79,6 +80,18 @@ export const useSelectionStore = create<
 
   clearSelection() {
     set({ selectedIndices: new Set() });
+  },
+
+  clearPageSelection() {
+    set({
+      selectedIndices: new Set(),
+      hoveredIndex: null,
+      selectionRect: null,
+      equationTermIndices: new Set(),
+      equationTermOrder: [],
+      equationTermOperators: new Map(),
+      equationModeActive: false,
+    });
   },
 
   setHovered(index) {

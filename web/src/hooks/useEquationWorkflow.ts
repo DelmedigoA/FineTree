@@ -17,28 +17,123 @@ import { useSelectionStore } from "../stores/selectionStore";
 import { useCanvasStore } from "../stores/canvasStore";
 import type { BoxRecord } from "../types/schema";
 
-/** Evaluate an equation string like "123 - 254" or "- 131 + 50" → number.
- *  Handles leading "- " prefix, blank/dash tokens as 0. */
-export function evaluateEquationString(equation: string): number | null {
-  const trimmed = equation.trim();
-  if (!trimmed) return null;
-  // Split on whitespace before a +/- operator token.
-  const tokens = trimmed.split(/\s+(?=[+-])/);
-  let result: number | null = null;
-  for (const token of tokens) {
-    const t = token.trim();
-    if (!t) continue;
-    let sign = 1;
-    let valueStr = t;
-    if (t.startsWith("-")) { sign = -1; valueStr = t.slice(1).trim(); }
-    else if (t.startsWith("+")) { sign = 1; valueStr = t.slice(1).trim(); }
-    // Strip any remaining brackets/commas.
-    const cleaned = valueStr.replace(/[<>()[\],]/g, "").replace(/\s/g, "").trim();
-    const num = (cleaned === "" || cleaned === "-") ? 0 : parseFloat(cleaned);
-    if (isNaN(num)) return null;
-    result = result === null ? sign * num : result + sign * num;
+export interface EquationPreviewTerm {
+  index: number;
+  factNum: number | null;
+  operator: "+" | "-";
+  rawValue: string;
+  status: "ok" | "normalized_dash" | "invalid";
+}
+
+export interface EquationPreview {
+  equation: string | null;
+  factEquation: string | null;
+  result: number | null;
+  terms: EquationPreviewTerm[];
+}
+
+function normalizeEquationOperator(value: unknown): "+" | "-" {
+  const text = String(value ?? "").trim().toLowerCase();
+  if (["-", "minus", "subtractive"].includes(text)) return "-";
+  return "+";
+}
+
+function deriveNaturalSignFromValueText(value: unknown): "positive" | "negative" | null {
+  const text = String(value ?? "").trim();
+  if (!text || text === "-") return null;
+  const normalized = normalizeAngleBracketedNumericText(text);
+  if (!normalized || normalized === "-") return null;
+  if ((normalized.startsWith("(") && normalized.endsWith(")")) || normalized.startsWith("-")) {
+    return "negative";
   }
-  return result;
+  return "positive";
+}
+
+function naturalSignMultiplier(value: unknown): 1 | -1 {
+  return deriveNaturalSignFromValueText(value) === "negative" || String(value ?? "").trim().toLowerCase() === "negative"
+    ? -1
+    : 1;
+}
+
+function operatorMultiplier(value: unknown): 1 | -1 {
+  return normalizeEquationOperator(value) === "-" ? -1 : 1;
+}
+
+function normalizeAngleBracketedNumericText(value: unknown): string {
+  const raw = String(value ?? "").trim();
+  if (raw.length < 3 || !raw.startsWith("<") || !raw.endsWith(">")) {
+    return raw;
+  }
+  const inner = raw.slice(1, -1).trim();
+  if ((inner.startsWith("(") && inner.endsWith(")")) || inner.startsWith("-")) {
+    return inner;
+  }
+  return raw;
+}
+
+function parseFactValueForEquation(value: unknown): {
+  parsed: number | null;
+  display: string | null;
+  status: "ok" | "normalized_dash" | "invalid";
+} {
+  const raw = normalizeAngleBracketedNumericText(value);
+  if (!raw) {
+    return { parsed: null, display: null, status: "invalid" };
+  }
+  if (raw === "-") {
+    return { parsed: 0, display: "0", status: "normalized_dash" };
+  }
+
+  let negative = false;
+  let text = raw;
+  if (text.startsWith("(") && text.endsWith(")")) {
+    negative = true;
+    text = text.slice(1, -1).trim();
+  }
+  if (text.startsWith("+")) {
+    text = text.slice(1).trim();
+  } else if (text.startsWith("-")) {
+    negative = true;
+    text = text.slice(1).trim();
+  }
+
+  if (!/^\d[\d,]*(?:\.\d+)?$/.test(text)) {
+    return { parsed: null, display: null, status: "invalid" };
+  }
+
+  const parsed = Number.parseFloat(text.replace(/,/g, ""));
+  if (Number.isNaN(parsed)) {
+    return { parsed: null, display: null, status: "invalid" };
+  }
+  return {
+    parsed: negative ? -parsed : parsed,
+    display: text,
+    status: "ok",
+  };
+}
+
+/** Evaluate an equation string like "123 - 254" or "- 131 + 50" → number. */
+export function evaluateEquationString(equation: string): number | null {
+  let text = equation.trim();
+  if (!text) return null;
+  if (text.includes("=")) {
+    text = text.split("=", 1)[0]!.trim();
+  }
+  if (!text) return null;
+
+  const tokens = text.match(/[+-]?\s*\d[\d,]*(?:\.\d+)?/g);
+  if (!tokens || tokens.join("").replace(/\s+/g, "") !== text.replace(/\s+/g, "")) {
+    return null;
+  }
+
+  let total = 0;
+  for (const token of tokens) {
+    const normalized = token.replace(/\s+/g, "").replace(/,/g, "");
+    const value = Number.parseFloat(normalized);
+    if (Number.isNaN(value)) return null;
+    total += value;
+  }
+  return total;
 }
 
 /** Order bbox indices by projecting their centers onto a drag direction vector. */
@@ -86,8 +181,22 @@ export function buildEquationText(
   facts: BoxRecord[],
   operators: Map<number, "+" | "-">,
 ): { equation: string; factEquation: string; result: number | null } {
+  const preview = buildEquationPreview(termIndices, facts, operators);
+  return {
+    equation: preview.equation ?? "",
+    factEquation: preview.factEquation ?? "",
+    result: preview.result,
+  };
+}
+
+export function buildEquationPreview(
+  termIndices: number[],
+  facts: BoxRecord[],
+  operators: Map<number, "+" | "-">,
+): EquationPreview {
   const parts: string[] = [];
   const factParts: string[] = [];
+  const terms: EquationPreviewTerm[] = [];
   let result: number | null = 0;
   let validCount = 0;
 
@@ -95,64 +204,61 @@ export function buildEquationText(
     const fact = facts[idx];
     if (!fact) continue;
 
-    const manualOp = operators.get(idx) ?? "+";
+    const manualOp = normalizeEquationOperator(operators.get(idx));
     const factNum = fact.fact.fact_num as number | null;
-    const rawValue = String(fact.fact.value ?? "");
+    const rawValue = fact.fact.value;
+    const naturalSign = (fact.fact as Record<string, unknown>).natural_sign;
+    const { parsed, display, status } = parseFactValueForEquation(rawValue);
+    const magnitude = parsed === null ? null : Math.abs(parsed);
+    const contributionSign = naturalSignMultiplier(naturalSign ?? rawValue) * operatorMultiplier(manualOp);
+    const effectiveValue = magnitude === null ? null : magnitude * contributionSign;
+    const rawValueText = String(rawValue ?? "").trim() || "<empty>";
 
-    // 1. Detect parentheses negative: "(254)" → isParenNeg=true, workValue="254"
-    let isParenNeg = false;
-    let workValue = rawValue.trim();
-    if (workValue.startsWith("(") && workValue.endsWith(")")) {
-      isParenNeg = true;
-      workValue = workValue.slice(1, -1).trim();
+    terms.push({
+      index: idx,
+      factNum,
+      operator: manualOp,
+      rawValue: rawValueText,
+      status,
+    });
+
+    if (parsed === null || display === null || factNum === null) {
+      result = null;
+      continue;
     }
 
-    // 2. Strip angle brackets, commas for numeric parsing.
-    const cleaned = workValue.replace(/[<>[\]]/g, "").replace(/,/g, "").trim();
+    const forceOperatorSign = status === "normalized_dash";
+    let prefix = "";
+    if (validCount > 0) {
+      prefix = forceOperatorSign
+        ? contributionSign < 0 ? "- " : "+ "
+        : (effectiveValue ?? 0) < 0 ? "- " : "+ ";
+    } else if (forceOperatorSign) {
+      prefix = contributionSign < 0 ? "- " : "";
+    } else if ((effectiveValue ?? 0) < 0) {
+      prefix = "- ";
+    }
 
-    // 3. Handle blank / dash as zero.
-    const isBlankOrDash = cleaned === "" || cleaned === "-";
-    const absNum = isBlankOrDash ? 0 : parseFloat(cleaned);
+    parts.push(prefix ? `${prefix}${display}` : display);
 
-    // 4. Intrinsic sign = parens × natural_sign field.
-    const naturalSign = (fact.fact as Record<string, unknown>).natural_sign as string | null;
-    const naturalSignMult = naturalSign === "negative" ? -1 : 1;
-    const intrinsicSign = (isParenNeg ? -1 : 1) * naturalSignMult; // ±1
+    const factPrefix =
+      validCount > 0 ? (manualOp === "-" ? "- " : "+ ")
+      : manualOp === "-" ? "- "
+      : "";
+    factParts.push(factPrefix ? `${factPrefix}f${factNum}` : `f${factNum}`);
 
-    // 5. Effective sign = intrinsic × manual operator override.
-    const opMult = manualOp === "-" ? -1 : 1;
-    const effectiveSign = intrinsicSign * opMult; // ±1
-
-    // 6. Display value — stripped number, no parens.
-    const displayValue = isBlankOrDash ? "0" : cleaned;
-
-    // 7. Display prefix — based on effective sign.
-    //    First term: no prefix if positive, "- " if negative.
-    //    Subsequent terms: always explicit "+ " or "- ".
-    const prefix = validCount === 0
-      ? (effectiveSign < 0 ? "- " : "")
-      : (effectiveSign < 0 ? "- " : "+ ");
-
-    parts.push(`${prefix}${displayValue}`);
-
-    // 8. Fact reference uses same prefix.
-    const factLabel = factNum ? `f${factNum}` : `[${idx + 1}]`;
-    factParts.push(`${prefix}${factLabel}`);
-
-    // 9. Contribution to result.
-    if (isNaN(absNum)) {
-      result = null;
-    } else if (result !== null) {
-      result += absNum * effectiveSign;
+    if (result !== null) {
+      result += effectiveValue ?? 0;
     }
 
     validCount++;
   }
 
   return {
-    equation: parts.join(" "),
-    factEquation: factParts.join(" "),
-    result,
+    equation: validCount > 0 ? parts.join(" ") : null,
+    factEquation: validCount > 0 ? factParts.join(" ") : null,
+    result: validCount > 0 ? result : null,
+    terms,
   };
 }
 
@@ -204,13 +310,12 @@ export function applyEquation(
 export function equationMatchState(
   result: number | null,
   targetValue: string,
+  targetNaturalSign?: string | null,
 ): "ok" | "mismatch" | "unknown" {
   if (result === null) return "unknown";
-  const cleaned = targetValue
-    .replace(/[<>(),]/g, "")
-    .replace(/\s/g, "")
-    .trim();
-  const targetNum = parseFloat(cleaned);
-  if (isNaN(targetNum)) return "unknown";
+  const { parsed } = parseFactValueForEquation(targetValue);
+  if (parsed === null) return "unknown";
+  const signSource = targetNaturalSign ?? deriveNaturalSignFromValueText(targetValue);
+  const targetNum = Math.abs(parsed) * naturalSignMultiplier(signSource);
   return Math.abs(result - targetNum) < 0.01 ? "ok" : "mismatch";
 }

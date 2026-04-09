@@ -1,0 +1,73 @@
+{
+  "version_id": "4ee1c00b-ef4d-4bc9-8fe3-e34ce38f9b69",
+  "name": "maayan",
+  "created_at": 1775749476.278678,
+  "updated_at": 1775749499.100301,
+  "split_assignments": {
+    "pdf_4": "val"
+  },
+  "export_config": {
+    "hf_repo": "",
+    "push_mode": "single",
+    "image_scaling": true,
+    "max_pixels": 1400000,
+    "min_pixels": null,
+    "bbox_grid_norm": true,
+    "values_norm": true,
+    "compact_mode": "raw",
+    "drop_date": false,
+    "selected_fact_keys": [
+      "value",
+      "fact_num",
+      "equations",
+      "natural_sign",
+      "row_role",
+      "comment_ref",
+      "note_flag",
+      "note_name",
+      "note_num",
+      "note_ref",
+      "period_type",
+      "period_start",
+      "period_end",
+      "duration_type",
+      "recurring_period",
+      "path",
+      "path_source",
+      "currency",
+      "scale",
+      "value_type",
+      "value_context"
+    ],
+    "selected_page_meta_keys": [
+      "entity_name",
+      "page_num",
+      "page_type",
+      "statement_type",
+      "title"
+    ],
+    "include_bbox": true,
+    "approved_pages_only": true
+  },
+  "split_stats": {
+    "train": {
+      "doc_count": 0,
+      "page_count": 0
+    },
+    "test": {
+      "doc_count": 0,
+      "page_count": 0
+    },
+    "val": {
+      "doc_count": 1,
+      "page_count": 10
+    },
+    "exclude": {
+      "doc_count": 0,
+      "page_count": 0
+    }
+  },
+  "push_status": "never",
+  "last_pushed_at": null,
+  "pushed_repos": {}
+}

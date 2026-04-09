@@ -10,6 +10,13 @@ interface Props {
   pageName: string | null;
 }
 
+interface PathRow {
+  key: string;
+  label: string;
+  indicesByPath: number[];
+  isPrefix: boolean;
+}
+
 /** Longest common prefix of all paths (like PyQt5 _shared_path_prefix). */
 function sharedPathPrefix(paths: string[][]): string[] {
   if (paths.length === 0) return [];
@@ -23,12 +30,74 @@ function sharedPathPrefix(paths: string[][]): string[] {
   return first.slice(0, len);
 }
 
-/** Elements of the first path that exist in ALL paths (like PyQt5 _shared_path_elements). */
-function sharedPathElements(paths: string[][]): string[] {
+function pathRowsEqual(a: string[], b: string[]): boolean {
+  return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
+function occurrenceIndices(path: string[]): Map<string, number[]> {
+  const indices = new Map<string, number[]>();
+  path.forEach((label, index) => {
+    const existing = indices.get(label);
+    if (existing) {
+      existing.push(index);
+    } else {
+      indices.set(label, [index]);
+    }
+  });
+  return indices;
+}
+
+function buildSharedRows(paths: string[][]): PathRow[] {
   if (paths.length === 0) return [];
-  const first = paths[0]!;
-  if (paths.length === 1) return first;
-  return first.filter((el) => paths.slice(1).every((p) => p.includes(el)));
+  if (paths.length === 1) {
+    return paths[0]!.map((label, index) => ({
+      key: `single-${index}`,
+      label,
+      indicesByPath: [index],
+      isPrefix: true,
+    }));
+  }
+
+  const firstPath = paths[0]!;
+  const prefixLength = sharedPathPrefix(paths).length;
+  const indicesByLabel = paths.map(occurrenceIndices);
+  const seenCounts = new Map<string, number>();
+
+  return firstPath.flatMap((label, firstIndex) => {
+    const occurrence = seenCounts.get(label) ?? 0;
+    seenCounts.set(label, occurrence + 1);
+
+    const indicesByPath = indicesByLabel.map(
+      (map) => map.get(label)?.[occurrence] ?? -1,
+    );
+    if (indicesByPath.some((index) => index < 0)) {
+      return [];
+    }
+
+    return [{
+      key: `${label}-${occurrence}-${firstIndex}`,
+      label,
+      indicesByPath,
+      isPrefix:
+        firstIndex < prefixLength &&
+        indicesByPath.every((index) => index === firstIndex),
+    }];
+  });
+}
+
+function buildVariantTails(paths: string[][], rows: PathRow[]): string[] {
+  const rendered = paths.map((path, pathIndex) => {
+    const matched = new Set(
+      rows
+        .map((row) => row.indicesByPath[pathIndex] ?? -1)
+        .filter((index) => index >= 0),
+    );
+    return path
+      .filter((_, index) => !matched.has(index))
+      .join(" > ");
+  });
+
+  return Array.from(new Set(rendered)).filter(Boolean);
 }
 
 export function PathEditor({ selectedFacts, pageName }: Props) {
@@ -42,7 +111,6 @@ export function PathEditor({ selectedFacts, pageName }: Props) {
     (f) => (f.record.fact.path as string[]) ?? [],
   );
   const path = isMulti ? sharedPathPrefix(allPaths) : (allPaths[0] ?? []);
-  const sharedElements = isMulti ? sharedPathElements(allPaths) : path;
 
   const allSamePath = isMulti
     ? selectedFacts.every(
@@ -52,79 +120,134 @@ export function PathEditor({ selectedFacts, pageName }: Props) {
       )
     : true;
 
-  // How many levels diverge beyond the shared prefix?
-  const maxOtherLen = isMulti
-    ? Math.max(...allPaths.map((p) => p.length))
-    : 0;
-  const hasMixedBeyondPrefix = isMulti && maxOtherLen > path.length;
+  const sharedRows = isMulti && !allSamePath
+    ? buildSharedRows(allPaths)
+    : (allPaths[0] ?? []).map((label, index) => ({
+        key: `path-${index}`,
+        label,
+        indicesByPath: [index],
+        isPrefix: true,
+      }));
+  const displayRows = sharedRows;
+  const variantTails = isMulti && !allSamePath
+    ? buildVariantTails(allPaths, sharedRows)
+    : [];
+  const canAddLevel = !isMulti || allSamePath;
+  const canInvert = allPaths.some((currentPath) => currentPath.length > 1);
 
-  const updatePath = (next: string[]) => {
+  const updateSelectedPaths = (
+    updater: (currentPath: string[], selectedPathIndex: number) => string[],
+  ) => {
     if (!pageName) return;
-    pushUndoSnapshot();
     const page = pageStates.get(pageName);
     if (!page) return;
+
     const newFacts = [...page.facts];
-    for (const { index } of selectedFacts) {
+    let changed = false;
+
+    for (const [selectedPathIndex, { index }] of selectedFacts.entries()) {
       const fact = newFacts[index];
       if (!fact) continue;
-      newFacts[index] = { ...fact, fact: { ...fact.fact, path: next } };
+      const currentPath = [...((fact.fact.path as string[]) ?? [])];
+      const nextPath = updater(currentPath, selectedPathIndex);
+      if (pathRowsEqual(currentPath, nextPath)) {
+        continue;
+      }
+      newFacts[index] = { ...fact, fact: { ...fact.fact, path: nextPath } };
+      changed = true;
     }
+
+    if (!changed) return;
+
+    pushUndoSnapshot();
     updatePageState(pageName, { ...page, facts: newFacts });
     markDirty("bbox");
   };
 
-  const addLevel = () => updatePath([...path, ""]);
-  const removeLevel = (idx: number) => updatePath(path.filter((_, i) => i !== idx));
-  const moveUp = (idx: number) => {
-    if (idx <= 0) return;
-    const next = [...path];
-    [next[idx - 1], next[idx]] = [next[idx]!, next[idx - 1]!];
-    updatePath(next);
+  /** Replace the entire path for all selected facts (safe when all paths are identical). */
+  const updateFullPath = (next: string[]) => {
+    updateSelectedPaths(() => [...next]);
   };
-  const moveDown = (idx: number) => {
-    if (idx >= path.length - 1) return;
-    const next = [...path];
-    [next[idx], next[idx + 1]] = [next[idx + 1]!, next[idx]!];
-    updatePath(next);
+
+  const renameRow = (row: PathRow, value: string) => {
+    if (!isMulti || allSamePath) {
+      const next = [...path];
+      const targetIndex = row.indicesByPath[0] ?? -1;
+      if (targetIndex < 0 || targetIndex >= next.length) return;
+      next[targetIndex] = value;
+      updateFullPath(next);
+      return;
+    }
+
+    updateSelectedPaths((currentPath, selectedPathIndex) => {
+      const targetIndex = row.indicesByPath[selectedPathIndex] ?? -1;
+      if (targetIndex < 0 || targetIndex >= currentPath.length) {
+        return currentPath;
+      }
+      const next = [...currentPath];
+      next[targetIndex] = value;
+      return next;
+    });
   };
-  const editLevel = (idx: number, value: string) => {
-    const next = [...path];
-    next[idx] = value;
-    updatePath(next);
+
+  const addLevel = () => updateFullPath([...path, ""]);
+  const removeRow = (row: PathRow) => {
+    if (!isMulti || allSamePath) {
+      const targetIndex = row.indicesByPath[0] ?? -1;
+      if (targetIndex < 0) return;
+      updateFullPath(path.filter((_, index) => index !== targetIndex));
+      return;
+    }
+
+    updateSelectedPaths((currentPath, selectedPathIndex) => {
+      const targetIndex = row.indicesByPath[selectedPathIndex] ?? -1;
+      if (targetIndex < 0 || targetIndex >= currentPath.length) {
+        return currentPath;
+      }
+      return currentPath.filter((_, index) => index !== targetIndex);
+    });
   };
-  const invertPath = () => updatePath([...path].reverse());
+  const moveRow = (row: PathRow, direction: -1 | 1) => {
+    if (!isMulti || allSamePath) {
+      const targetIndex = row.indicesByPath[0] ?? -1;
+      const swapIndex = targetIndex + direction;
+      if (targetIndex < 0 || swapIndex < 0 || swapIndex >= path.length) return;
+      const next = [...path];
+      [next[targetIndex], next[swapIndex]] = [next[swapIndex]!, next[targetIndex]!];
+      updateFullPath(next);
+      return;
+    }
+
+    updateSelectedPaths((currentPath, selectedPathIndex) => {
+      const targetIndex = row.indicesByPath[selectedPathIndex] ?? -1;
+      const swapIndex = targetIndex + direction;
+      if (targetIndex < 0 || swapIndex < 0 || swapIndex >= currentPath.length) {
+        return currentPath;
+      }
+      const next = [...currentPath];
+      [next[targetIndex], next[swapIndex]] = [next[swapIndex]!, next[targetIndex]!];
+      return next;
+    });
+  };
+  const canMoveRow = (row: PathRow, direction: -1 | 1) =>
+    row.indicesByPath.every((index, pathIndex) => {
+      const nextIndex = index + direction;
+      return nextIndex >= 0 && nextIndex < (allPaths[pathIndex]?.length ?? 0);
+    });
+  const invertPath = () => {
+    updateSelectedPaths((currentPath) => [...currentPath].reverse());
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-      {isMulti && (
-        <div style={{ fontSize: 11, color: "var(--text-soft)", marginBottom: 2 }}>
-          {allSamePath
-            ? `Shared path · edits apply to all ${selectedFacts.length} facts`
-            : path.length > 0
-              ? `Shared prefix (${path.length} level${path.length !== 1 ? "s" : ""}) · mixed paths beyond`
-              : `Mixed paths · edits apply to all ${selectedFacts.length} facts`}
-        </div>
-      )}
-      {isMulti && hasMixedBeyondPrefix && (
-        <div
-          style={{
-            fontSize: 11,
-            color: "var(--warn)",
-            fontStyle: "italic",
-            marginBottom: 2,
-          }}
-        >
-          ⚠ Levels beyond prefix differ across selection
-        </div>
-      )}
-      {path.length === 0 ? (
+      {displayRows.length === 0 ? (
         <div style={{ fontSize: 12, color: "var(--text-soft)" }}>
-          No path levels.
+          {isMulti && !allSamePath ? "No shared path levels." : "No path levels."}
         </div>
       ) : (
-        path.map((level, idx) => (
+        displayRows.map((row, idx) => (
           <div
-            key={idx}
+            key={row.key}
             style={{
               display: "flex",
               alignItems: "center",
@@ -143,57 +266,67 @@ export function PathEditor({ selectedFacts, pageName }: Props) {
               {idx + 1}
             </span>
             <input
-              value={level}
-              onChange={(e) => editLevel(idx, e.target.value)}
+              value={row.label}
+              onChange={(e) => renameRow(row, e.target.value)}
               style={{
                 flex: 1,
                 padding: "4px 8px",
                 fontSize: 12,
                 background: "var(--surface-alt)",
-                border: `1px solid ${
-                  isMulti && !sharedElements.includes(level)
-                    ? "var(--warn)"
-                    : "var(--surface-border)"
-                }`,
+                border: "1px solid var(--surface-border)",
                 borderRadius: 4,
-                color: isMulti && !sharedElements.includes(level)
-                  ? "var(--warn)"
-                  : "var(--text)",
+                color: isMulti && !allSamePath ? "var(--ok)" : "var(--text)",
                 outline: "none",
               }}
-              title={
-                isMulti && !sharedElements.includes(level)
-                  ? "This level is not shared across all selected facts"
-                  : undefined
-              }
               onFocus={(e) =>
                 (e.currentTarget.style.borderColor = "var(--accent)")
               }
               onBlur={(e) => {
-                e.currentTarget.style.borderColor =
-                  isMulti && !sharedElements.includes(e.currentTarget.value)
-                    ? "var(--warn)"
-                    : "var(--surface-border)";
+                e.currentTarget.style.borderColor = "var(--surface-border)";
               }}
             />
-            <MiniBtn onClick={() => moveUp(idx)} disabled={idx === 0}>
+            <MiniBtn onClick={() => moveRow(row, -1)} disabled={!canMoveRow(row, -1)}>
               {"\u2191"}
             </MiniBtn>
             <MiniBtn
-              onClick={() => moveDown(idx)}
-              disabled={idx === path.length - 1}
+              onClick={() => moveRow(row, 1)}
+              disabled={!canMoveRow(row, 1)}
             >
               {"\u2193"}
             </MiniBtn>
-            <MiniBtn onClick={() => removeLevel(idx)} danger>
+            <MiniBtn onClick={() => removeRow(row)} danger>
               {"\u00D7"}
             </MiniBtn>
           </div>
         ))
       )}
+      {/* Variant tail nodes (read-only) */}
+      {variantTails.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 4 }}>
+          <span style={{ fontSize: 11, color: "var(--text-soft)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+            Variants ({variantTails.length})
+          </span>
+          {variantTails.map((tail, i) => (
+            <div
+              key={`tail-${i}`}
+              style={{
+                padding: "5px 9px",
+                fontSize: 13,
+                background: "var(--variant-tail-bg)",
+                borderLeft: "3px solid var(--variant-tail-border)",
+                borderRadius: 4,
+                color: "var(--variant-tail-text)",
+                fontFamily: "var(--font-mono)",
+              }}
+            >
+              {tail}
+            </div>
+          ))}
+        </div>
+      )}
       <div style={{ display: "flex", gap: 4, marginTop: 2 }}>
-        <MiniBtn onClick={addLevel}>+ Add level</MiniBtn>
-        {path.length > 1 && (
+        <MiniBtn onClick={addLevel} disabled={!canAddLevel}>+ Add level</MiniBtn>
+        {canInvert && (
           <MiniBtn onClick={invertPath}>Invert</MiniBtn>
         )}
       </div>

@@ -9,7 +9,7 @@ FineTree is organized around a page-annotation and evaluation loop:
 3. save canonical JSON
 4. convert approved pages into training datasets
 5. run or serve models
-6. benchmark predictions against ground truth
+6. evaluate predictions against ground truth
 
 ## Data Flow
 
@@ -21,8 +21,8 @@ flowchart LR
     D --> E["Dataset Builder / HF Export"]
     E --> F["Training / Serving"]
     F --> G["Predictions"]
-    G --> H["Benchmark Runner / UI"]
-    H --> I["Persisted Report + Leaderboard"]
+    G --> H["Benchmark Runner"]
+    H --> I["Persisted Report + CSV Metrics"]
 ```
 
 ## Primary Boundaries
@@ -72,10 +72,10 @@ flowchart LR
 
 ### Benchmark
 
-- [benchmark/config.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/benchmark/config.py): config validation
-- [benchmark/scoring.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/benchmark/scoring.py): scoring logic
-- [benchmark/runner.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/benchmark/runner.py): headless submission evaluation
-- [benchmark/web.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/benchmark/web.py): FastAPI benchmark UI
+- [spec.py](/Users/delmedigo/Dev/FineTree/src/benchmark_new/spec.py): section definitions, field lists, normalization rules
+- [cli.py](/Users/delmedigo/Dev/FineTree/src/benchmark_new/cli.py): CLI entrypoint
+- [infer/run.py](/Users/delmedigo/Dev/FineTree/src/benchmark_new/infer/run.py): inference orchestration and run artifacts
+- [eval/scoring.py](/Users/delmedigo/Dev/FineTree/src/benchmark_new/eval/scoring.py): page, document, and run scoring
 
 ## Design Decisions
 
@@ -85,7 +85,7 @@ Everything converges on canonical page/document JSON before dataset build, bench
 
 ### Managed Workspace Over Ad Hoc File Selection
 
-The dashboard treats `data/raw_pdfs`, `data/pdf_images`, and `data/annotations` as a coherent workspace so document progress, approval state, and benchmark-ready assets can be tracked consistently.
+The dashboard treats `data/raw_pdfs`, `data/pdf_images`, and `data/annotations` as a coherent workspace so document progress, approval state, and evaluation-ready assets can be tracked consistently.
 
 ### Long-Running UI Work Uses Worker Objects
 
@@ -107,4 +107,4 @@ Gemini and Qwen flows both persist request and response artifacts. This makes de
 1. Split annotator code into document model, scene tools, editor panels, and persistence modules.
 2. Extract provider logging and transport layers from provider-specific parsing logic.
 3. Merge dataset push variants under one export pipeline with policy flags.
-4. Move generated assets and benchmark outputs out of tracked source paths.
+4. Keep generated assets and benchmark outputs out of tracked source paths.

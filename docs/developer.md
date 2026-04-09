@@ -69,7 +69,7 @@ Model/provider flows:
 Benchmark:
 
 ```bash
-./.env/bin/pytest -q tests/test_benchmark_config.py tests/test_benchmark_runner.py tests/test_benchmark_web.py
+./.env/bin/pytest -q tests/test_benchmark_new.py
 ```
 
 Full suite:
@@ -83,7 +83,7 @@ Full suite:
 Preferred sequence:
 
 1. Put canonical data rules in a non-Qt module first.
-2. Add or update tests for normalization, schema handling, or benchmark behavior before wiring UI.
+2. Add or update tests for normalization, schema handling, or evaluation behavior before wiring UI.
 3. Keep Qt widgets thin and move non-visual logic into reusable helpers.
 4. Route long-running work through worker objects on `QThread`; do not block the UI thread with PDF conversion, model calls, or dataset export.
 5. Update docs when adding a new CLI, config field, or workflow.
@@ -97,7 +97,7 @@ Repository expectations:
 - Prefer deterministic transforms over implicit mutation.
 - Normalize IO at module boundaries.
 - Use canonical schema models from [schemas.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/schemas.py) and [schema_io.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/schema_io.py).
-- Keep logging structured and file-backed for model calls and benchmark runs.
+- Keep logging structured and file-backed for model calls and benchmark/evaluation runs.
 - Preserve backward compatibility only where existing data files require it.
 
 What to avoid:
@@ -105,12 +105,12 @@ What to avoid:
 - new logic in `build/`, `dist/`, notebook outputs, or log directories
 - Qt-side network calls or PDF rendering on the main thread
 - duplicated schema normalization or duplicated startup/import logic
-- new tracked generated artifacts under `gemini_logs/`, `qwen_logs/`, `benchmark/output/`, or backup directories
+- new tracked generated artifacts under `gemini_logs/`, `qwen_logs/`, `benchmark_new/outputs/`, or backup directories
 
 ## Config Conventions
 
 - Fine-tuning config lives under `configs/` and is validated by [finetune/config.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/finetune/config.py).
-- Benchmark config lives under `benchmark/` and is validated by [benchmark/config.py](/Users/delmedigo/Dev/FineTree/src/finetree_annotator/benchmark/config.py).
+- Benchmark configuration and scoring live under [src/benchmark_new](/Users/delmedigo/Dev/FineTree/src/benchmark_new).
 - Prompt templates live under `prompts/`.
 - Do not hardcode environment-specific secrets or endpoints; use env vars or YAML config.
 
@@ -118,8 +118,8 @@ What to avoid:
 
 Typical split:
 
-- local machine: annotation, quick tests, dataset inspection, benchmark UI
-- remote machine or RunPod: fine-tuning, model serving, benchmark bundle generation
+- local machine: annotation, quick tests, dataset inspection, benchmark evaluation
+- remote machine or RunPod: fine-tuning, model serving, and batch inference generation
 
 Relevant CLIs:
 
@@ -138,7 +138,7 @@ Treat these as generated outputs:
 - `gemini_logs/`
 - `qwen_logs/`
 - `artifacts/`
-- `benchmark/output/`
+- `benchmark_new/outputs/`
 - `build/`
 - `dist/`
 - `data/annotations/_backup/`

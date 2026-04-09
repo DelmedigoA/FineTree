@@ -18,6 +18,7 @@ dependencies = [
   "datasets",
   "httpx",
   "openai",
+  "scikit-learn",
   "trl",
   "peft",
   "fastapi",
@@ -60,8 +61,8 @@ finetree-pod-api = "finetree_annotator.deploy.pod_api:main"
 finetree-simple-infer-api = "finetree_annotator.deploy.simple_infer_api:main"
 finetree-pod-gradio = "finetree_annotator.deploy.pod_gradio:main"
 finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
-finetree-benchmark = "finetree_annotator.benchmark.web:main"
-finetree-benchmark-run = "finetree_annotator.benchmark.runner:main"
+benchmark-new = "benchmark_new.cli:main"
+"benchmark_new.cli" = "benchmark_new.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -71,3 +72,4 @@ finetree_annotator = ["assets/icons/*.png"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["finetree_annotator*", "benchmark_new*"]

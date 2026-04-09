@@ -5,14 +5,7 @@ import { useDocumentStore } from "../stores/documentStore";
 import { useSelectionStore } from "../stores/selectionStore";
 import { createTransform } from "./WorldTransform";
 import { RoughBboxCache } from "./RoughBboxCache";
-import {
-  BBOX_DEFAULT,
-  BBOX_SELECTED,
-  BBOX_HOVERED,
-  BBOX_EQUATION_TERM,
-  BBOX_EQUATION_OK,
-  BBOX_EQUATION_BAD,
-} from "./bboxStyles";
+import { getBboxStyles } from "./bboxStyles";
 import { equationMatchState, evaluateEquationString } from "../hooks/useEquationWorkflow";
 import type { BBoxStyle } from "../types/canvas";
 import type { BBox, BoxRecord } from "../types/schema";
@@ -92,9 +85,10 @@ function getFactEquationState(fact: BoxRecord): "ok" | "bad" | "none" {
   const equations = fact.fact.equations as Array<{ equation: string }> | null;
   if (!equations || equations.length === 0) return "none";
   const targetValue = String(fact.fact.value ?? "");
+  const targetNaturalSign = String(fact.fact.natural_sign ?? "") || null;
   for (const eq of equations) {
     const result = evaluateEquationString(eq.equation);
-    if (equationMatchState(result, targetValue) === "ok") return "ok";
+    if (equationMatchState(result, targetValue, targetNaturalSign) === "ok") return "ok";
   }
   return "bad";
 }
@@ -130,6 +124,7 @@ function renderBboxLayer(refs: CanvasRefs) {
   }
 
   const selection = useSelectionStore.getState();
+  const styles = getBboxStyles();
 
   for (let i = 0; i < page.facts.length; i++) {
     const fact = page.facts[i]!;
@@ -138,19 +133,19 @@ function renderBboxLayer(refs: CanvasRefs) {
     // Determine style.
     let style: BBoxStyle;
     if (selection.equationTermIndices.has(i)) {
-      style = BBOX_EQUATION_TERM;
+      style = styles.equationTerm;
     } else if (selection.selectedIndices.has(i)) {
-      style = BBOX_SELECTED;
+      style = styles.selected;
     } else if (selection.hoveredIndex === i) {
-      style = BBOX_HOVERED;
+      style = styles.hovered;
     } else {
       const eqState = getFactEquationState(fact);
       if (eqState === "ok") {
-        style = BBOX_EQUATION_OK;
+        style = styles.equationOk;
       } else if (eqState === "bad") {
-        style = BBOX_EQUATION_BAD;
+        style = styles.equationBad;
       } else {
-        style = BBOX_DEFAULT;
+        style = styles.default;
       }
     }
 

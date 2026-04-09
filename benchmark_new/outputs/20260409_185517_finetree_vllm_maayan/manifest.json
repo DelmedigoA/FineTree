@@ -1,0 +1,12 @@
+{
+  "provider": "finetree_vllm",
+  "model": "asafd60/FineTree-27B-3.0",
+  "dataset_version_id": "4ee1c00b-ef4d-4bc9-8fe3-e34ce38f9b69",
+  "dataset_name": "maayan",
+  "split": "val",
+  "started_at": 1775750117.051384,
+  "run_dir": "benchmark_new/outputs/20260409_185517_finetree_vllm_maayan",
+  "documents": [
+    "pdf_4"
+  ]
+}
