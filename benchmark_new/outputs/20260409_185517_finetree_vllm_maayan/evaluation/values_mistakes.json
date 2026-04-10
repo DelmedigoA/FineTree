@@ -1,0 +1,80 @@
+{
+  "mistake_count": 3,
+  "items": [
+    {
+      "doc_id": "pdf_4",
+      "page_index": 7,
+      "image_name": "page_0007.png",
+      "kind": "unmatched_gt",
+      "gt": {
+        "fact_index": 1,
+        "fact_num": 1,
+        "path": [
+          "רכוש קבוע",
+          "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
+          "מבנה"
+        ],
+        "value": "4",
+        "raw_fact_num": 1,
+        "raw_path": [
+          "רכוש קבוע",
+          "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
+          "מבנה"
+        ],
+        "raw_value": "4",
+        "alignment_key": "4"
+      },
+      "pred": null
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 7,
+      "image_name": "page_0007.png",
+      "kind": "unmatched_pred",
+      "gt": null,
+      "pred": {
+        "fact_index": 1,
+        "fact_num": 1,
+        "path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "מבנה"
+        ],
+        "value": "39-כ",
+        "raw_fact_num": 1,
+        "raw_path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "מבנה"
+        ],
+        "raw_value": "39-כ",
+        "alignment_key": "39-כ"
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 7,
+      "image_name": "page_0007.png",
+      "kind": "unmatched_pred",
+      "gt": null,
+      "pred": {
+        "fact_index": 3,
+        "fact_num": 3,
+        "path": [
+          "ריבית שנתי",
+          "פקדונות נושאים"
+        ],
+        "value": "4.5%-כ",
+        "raw_fact_num": 3,
+        "raw_path": [
+          "ריבית שנתי",
+          "פקדונות נושאים"
+        ],
+        "raw_value": "4.5%-כ",
+        "alignment_key": "4.5%-כ"
+      }
+    }
+  ]
+}

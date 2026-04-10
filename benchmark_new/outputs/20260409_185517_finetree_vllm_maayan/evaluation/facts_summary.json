@@ -1,0 +1,87 @@
+{
+  "benchmark_version": "v1.0",
+  "evaluator": "facts",
+  "label": "Facts",
+  "run_dir": "benchmark_new/outputs/20260409_185517_finetree_vllm_maayan",
+  "dataset_version_id": "4ee1c00b-ef4d-4bc9-8fe3-e34ce38f9b69",
+  "dataset_name": "maayan",
+  "split": "val",
+  "global_aggregation_method": "weighted_mean",
+  "overall_score": 0.8937586171688006,
+  "page_count": 10,
+  "fact_count": 210,
+  "channels": [
+    {
+      "field": "value",
+      "channel": "value",
+      "metric": "accuracy",
+      "score": 1.0,
+      "weight": 0.5,
+      "fact_count": 209
+    },
+    {
+      "field": "value",
+      "channel": "alignment",
+      "metric": "precision",
+      "score": 0.990521327014218,
+      "weight": 0.0,
+      "fact_count": 211
+    },
+    {
+      "field": "value",
+      "channel": "alignment",
+      "metric": "recall",
+      "score": 0.9952380952380953,
+      "weight": 0.0,
+      "fact_count": 211
+    },
+    {
+      "field": "value",
+      "channel": "alignment",
+      "metric": "f1",
+      "score": 0.9928741092636579,
+      "weight": 0.5,
+      "fact_count": 211
+    },
+    {
+      "field": "path",
+      "channel": "strict",
+      "metric": "accuracy",
+      "score": 0.6966824644549763,
+      "weight": 0.3333333333333333,
+      "fact_count": 211
+    },
+    {
+      "field": "path",
+      "channel": "leaf",
+      "metric": "accuracy",
+      "score": 0.8056872037914692,
+      "weight": 0.3333333333333333,
+      "fact_count": 211
+    },
+    {
+      "field": "path",
+      "channel": "soft_overlap",
+      "metric": "precision",
+      "score": 0.87,
+      "weight": 0.0,
+      "fact_count": 500
+    },
+    {
+      "field": "path",
+      "channel": "soft_overlap",
+      "metric": "recall",
+      "score": 0.8717434869739479,
+      "weight": 0.0,
+      "fact_count": 499
+    },
+    {
+      "field": "path",
+      "channel": "soft_overlap",
+      "metric": "f1",
+      "score": 0.8708708708708709,
+      "weight": 0.3333333333333333,
+      "fact_count": 500
+    }
+  ]
+}

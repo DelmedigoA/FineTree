@@ -21,6 +21,9 @@ export interface DocumentStoreState {
 }
 
 export interface DocumentStoreActions {
+  /** Start loading a new document and clear stale state. */
+  beginLoadingDocument(docId: string): void;
+
   /** Load a document from the API response. */
   loadDocument(
     docId: string,
@@ -37,6 +40,9 @@ export interface DocumentStoreActions {
 
   /** Update a single page state. Marks dirty. */
   updatePageState(pageName: string, state: PageState): void;
+
+  /** Update a page state only when the expected document is still current. */
+  updatePageStateForDocument(expectedDocId: string, pageName: string, state: PageState): boolean;
 
   /** Update document metadata. Marks dirty. */
   updateDocumentMeta(meta: Record<string, unknown>): void;
@@ -59,6 +65,19 @@ export const useDocumentStore = create<
   currentPageIndex: 0,
   isDirty: false,
   isLoading: false,
+
+  beginLoadingDocument(docId) {
+    set({
+      docId,
+      rawPayload: null,
+      documentMeta: {},
+      pageStates: new Map(),
+      pageNames: [],
+      currentPageIndex: 0,
+      isDirty: false,
+      isLoading: true,
+    });
+  },
 
   loadDocument(docId, payload) {
     const pageStates = new Map<string, PageState>();
@@ -90,6 +109,20 @@ export const useDocumentStore = create<
       next.set(pageName, pageState);
       return { pageStates: next, isDirty: true };
     });
+  },
+
+  updatePageStateForDocument(expectedDocId, pageName, pageState) {
+    let updated = false;
+    set((state) => {
+      if (state.docId !== expectedDocId || !state.pageNames.includes(pageName)) {
+        return state;
+      }
+      const next = new Map(state.pageStates);
+      next.set(pageName, pageState);
+      updated = true;
+      return { pageStates: next, isDirty: true };
+    });
+    return updated;
   },
 
   updateDocumentMeta(meta) {

@@ -1,7 +1,7 @@
 from .alignment import align_sequences_by_index, build_row_diff_diagnostics
 from .dates import date_diff_details
 from .difflib_metrics import sequence_ratio
-from .lcs import lcs_metrics
+from .lcs import lcs_index_pairs, lcs_metrics
 from .numeric import numeric_closeness_details
 
 __all__ = [
@@ -9,6 +9,7 @@ __all__ = [
     "build_row_diff_diagnostics",
     "date_diff_details",
     "sequence_ratio",
+    "lcs_index_pairs",
     "lcs_metrics",
     "numeric_closeness_details",
 ]

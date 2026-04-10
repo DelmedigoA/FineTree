@@ -9,6 +9,7 @@ import { FactsListSection } from "./FactsListSection";
 import { FactEditorSection } from "./FactEditorSection";
 import { BatchEditSection } from "./BatchEditSection";
 import { PageIssuesSection } from "./PageIssuesSection";
+import type { IssueSummaryCounts } from "./PageIssuesSection";
 import type { PageState, BoxRecord } from "../../types/schema";
 
 const DEFAULT_WIDTH = 500;
@@ -33,7 +34,7 @@ export function InspectorPanel() {
 
   const [panelWidth, setPanelWidth] = useState(DEFAULT_WIDTH);
   const [open, setOpen] = useState<Record<string, boolean>>(DEFAULT_OPEN);
-  const [issueCount, setIssueCount] = useState<number | null>(null);
+  const [issueSummary, setIssueSummary] = useState<IssueSummaryCounts | null>(null);
   const dragRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   // Auto-scroll to fact editor when selection changes.
@@ -117,15 +118,28 @@ export function InspectorPanel() {
         )}
 
         {page && (
-          <AccordionSection
-            title="Issues"
-            badge={issueCount !== null && issueCount > 0 ? `${issueCount}` : undefined}
-            badgeTone={issueCount !== null && issueCount > 0 ? "danger" : undefined}
-            isOpen={open["Issues"] ?? false}
-            onToggle={() => toggle("Issues")}
-          >
-            <PageIssuesSection onIssueCount={setIssueCount} />
-          </AccordionSection>
+          <>
+            <div style={{ display: "none" }} aria-hidden="true">
+              <PageIssuesSection onIssueCount={setIssueSummary} />
+            </div>
+            <AccordionSection
+              title="Issues"
+              badge={issueSummary && issueSummary.visibleCount > 0 ? `${issueSummary.visibleCount}` : undefined}
+              badgeTone={
+                issueSummary && issueSummary.visibleCount > 0
+                  ? issueSummary.visibleFlagCount > 0
+                    ? "danger"
+                    : issueSummary.visibleWarningCount > 0
+                      ? "warn"
+                      : undefined
+                  : undefined
+              }
+              isOpen={open["Issues"] ?? false}
+              onToggle={() => toggle("Issues")}
+            >
+              <PageIssuesSection />
+            </AccordionSection>
+          </>
         )}
 
         {page && (

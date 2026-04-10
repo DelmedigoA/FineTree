@@ -26,8 +26,11 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`);
+export async function get<T>(
+  path: string,
+  options?: { signal?: AbortSignal },
+): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, { signal: options?.signal });
   return handleResponse<T>(res);
 }
 

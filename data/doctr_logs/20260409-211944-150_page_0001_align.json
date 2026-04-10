@@ -1,0 +1,1716 @@
+{
+  "page_name": "page_0001.png",
+  "gemini_count": 20,
+  "detector_count": 20,
+  "matched_count": 19,
+  "ordered_gemini_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "100",
+      "path": [
+        "Row 0"
+      ]
+    },
+    {
+      "bbox": [
+        45,
+        10,
+        20,
+        20
+      ],
+      "value": "(200)",
+      "path": [
+        "Row 1"
+      ]
+    },
+    {
+      "bbox": [
+        70,
+        10,
+        20,
+        20
+      ],
+      "value": "300",
+      "path": [
+        "Row 2"
+      ]
+    },
+    {
+      "bbox": [
+        95,
+        10,
+        20,
+        20
+      ],
+      "value": "1,000",
+      "path": [
+        "Row 3"
+      ]
+    },
+    {
+      "bbox": [
+        120,
+        10,
+        20,
+        20
+      ],
+      "value": "50.0",
+      "path": [
+        "Row 4"
+      ]
+    },
+    {
+      "bbox": [
+        145,
+        10,
+        20,
+        20
+      ],
+      "value": "75",
+      "path": [
+        "Row 5"
+      ]
+    },
+    {
+      "bbox": [
+        170,
+        10,
+        20,
+        20
+      ],
+      "value": "125",
+      "path": [
+        "Row 6"
+      ]
+    },
+    {
+      "bbox": [
+        195,
+        10,
+        20,
+        20
+      ],
+      "value": "1,250",
+      "path": [
+        "Row 7"
+      ]
+    },
+    {
+      "bbox": [
+        220,
+        10,
+        20,
+        20
+      ],
+      "value": "88",
+      "path": [
+        "Row 8"
+      ]
+    },
+    {
+      "bbox": [
+        245,
+        10,
+        20,
+        20
+      ],
+      "value": "990",
+      "path": [
+        "Row 9"
+      ]
+    },
+    {
+      "bbox": [
+        270,
+        10,
+        20,
+        20
+      ],
+      "value": "410",
+      "path": [
+        "Row 10"
+      ]
+    },
+    {
+      "bbox": [
+        295,
+        10,
+        20,
+        20
+      ],
+      "value": "620",
+      "path": [
+        "Row 11"
+      ]
+    },
+    {
+      "bbox": [
+        320,
+        10,
+        20,
+        20
+      ],
+      "value": "730",
+      "path": [
+        "Row 12"
+      ]
+    },
+    {
+      "bbox": [
+        345,
+        10,
+        20,
+        20
+      ],
+      "value": "840",
+      "path": [
+        "Row 13"
+      ]
+    },
+    {
+      "bbox": [
+        370,
+        10,
+        20,
+        20
+      ],
+      "value": "950",
+      "path": [
+        "Row 14"
+      ]
+    },
+    {
+      "bbox": [
+        395,
+        10,
+        20,
+        20
+      ],
+      "value": "1,060",
+      "path": [
+        "Row 15"
+      ]
+    },
+    {
+      "bbox": [
+        420,
+        10,
+        20,
+        20
+      ],
+      "value": "1,170",
+      "path": [
+        "Row 16"
+      ]
+    },
+    {
+      "bbox": [
+        445,
+        10,
+        20,
+        20
+      ],
+      "value": "1,280",
+      "path": [
+        "Row 17"
+      ]
+    },
+    {
+      "bbox": [
+        470,
+        10,
+        20,
+        20
+      ],
+      "value": "1,390",
+      "path": [
+        "Row 18"
+      ]
+    },
+    {
+      "bbox": [
+        495,
+        10,
+        20,
+        20
+      ],
+      "value": "1,500",
+      "path": [
+        "Row 19"
+      ]
+    }
+  ],
+  "ordered_detector_payloads": [
+    {
+      "bbox": [
+        300,
+        12,
+        14,
+        18
+      ],
+      "value": "100.0"
+    },
+    {
+      "bbox": [
+        312,
+        12,
+        14,
+        18
+      ],
+      "value": "-200"
+    },
+    {
+      "bbox": [
+        324,
+        12,
+        14,
+        18
+      ],
+      "value": "300"
+    },
+    {
+      "bbox": [
+        336,
+        12,
+        14,
+        18
+      ],
+      "value": "1000"
+    },
+    {
+      "bbox": [
+        348,
+        12,
+        14,
+        18
+      ],
+      "value": "50"
+    },
+    {
+      "bbox": [
+        360,
+        12,
+        14,
+        18
+      ],
+      "value": "75.00"
+    },
+    {
+      "bbox": [
+        372,
+        12,
+        14,
+        18
+      ],
+      "value": "125"
+    },
+    {
+      "bbox": [
+        384,
+        12,
+        14,
+        18
+      ],
+      "value": "1250"
+    },
+    {
+      "bbox": [
+        396,
+        12,
+        14,
+        18
+      ],
+      "value": "88"
+    },
+    {
+      "bbox": [
+        408,
+        12,
+        14,
+        18
+      ],
+      "value": "990"
+    },
+    {
+      "bbox": [
+        420,
+        12,
+        14,
+        18
+      ],
+      "value": "410"
+    },
+    {
+      "bbox": [
+        432,
+        12,
+        14,
+        18
+      ],
+      "value": "620"
+    },
+    {
+      "bbox": [
+        444,
+        12,
+        14,
+        18
+      ],
+      "value": "730"
+    },
+    {
+      "bbox": [
+        456,
+        12,
+        14,
+        18
+      ],
+      "value": "840"
+    },
+    {
+      "bbox": [
+        468,
+        12,
+        14,
+        18
+      ],
+      "value": "950"
+    },
+    {
+      "bbox": [
+        480,
+        12,
+        14,
+        18
+      ],
+      "value": "1060"
+    },
+    {
+      "bbox": [
+        492,
+        12,
+        14,
+        18
+      ],
+      "value": "1170"
+    },
+    {
+      "bbox": [
+        504,
+        12,
+        14,
+        18
+      ],
+      "value": "1280"
+    },
+    {
+      "bbox": [
+        516,
+        12,
+        14,
+        18
+      ],
+      "value": "1390"
+    },
+    {
+      "bbox": [
+        528,
+        12,
+        14,
+        18
+      ],
+      "value": "not-a-match"
+    }
+  ],
+  "raw_imported_payloads": [
+    {
+      "bbox": [
+        20,
+        10,
+        20,
+        20
+      ],
+      "value": "100",
+      "path": [
+        "Row 0"
+      ]
+    },
+    {
+      "bbox": [
+        45,
+        10,
+        20,
+        20
+      ],
+      "value": "(200)",
+      "path": [
+        "Row 1"
+      ]
+    },
+    {
+      "bbox": [
+        70,
+        10,
+        20,
+        20
+      ],
+      "value": "300",
+      "path": [
+        "Row 2"
+      ]
+    },
+    {
+      "bbox": [
+        95,
+        10,
+        20,
+        20
+      ],
+      "value": "1,000",
+      "path": [
+        "Row 3"
+      ]
+    },
+    {
+      "bbox": [
+        120,
+        10,
+        20,
+        20
+      ],
+      "value": "50.0",
+      "path": [
+        "Row 4"
+      ]
+    },
+    {
+      "bbox": [
+        145,
+        10,
+        20,
+        20
+      ],
+      "value": "75",
+      "path": [
+        "Row 5"
+      ]
+    },
+    {
+      "bbox": [
+        170,
+        10,
+        20,
+        20
+      ],
+      "value": "125",
+      "path": [
+        "Row 6"
+      ]
+    },
+    {
+      "bbox": [
+        195,
+        10,
+        20,
+        20
+      ],
+      "value": "1,250",
+      "path": [
+        "Row 7"
+      ]
+    },
+    {
+      "bbox": [
+        220,
+        10,
+        20,
+        20
+      ],
+      "value": "88",
+      "path": [
+        "Row 8"
+      ]
+    },
+    {
+      "bbox": [
+        245,
+        10,
+        20,
+        20
+      ],
+      "value": "990",
+      "path": [
+        "Row 9"
+      ]
+    },
+    {
+      "bbox": [
+        270,
+        10,
+        20,
+        20
+      ],
+      "value": "410",
+      "path": [
+        "Row 10"
+      ]
+    },
+    {
+      "bbox": [
+        295,
+        10,
+        20,
+        20
+      ],
+      "value": "620",
+      "path": [
+        "Row 11"
+      ]
+    },
+    {
+      "bbox": [
+        320,
+        10,
+        20,
+        20
+      ],
+      "value": "730",
+      "path": [
+        "Row 12"
+      ]
+    },
+    {
+      "bbox": [
+        345,
+        10,
+        20,
+        20
+      ],
+      "value": "840",
+      "path": [
+        "Row 13"
+      ]
+    },
+    {
+      "bbox": [
+        370,
+        10,
+        20,
+        20
+      ],
+      "value": "950",
+      "path": [
+        "Row 14"
+      ]
+    },
+    {
+      "bbox": [
+        395,
+        10,
+        20,
+        20
+      ],
+      "value": "1,060",
+      "path": [
+        "Row 15"
+      ]
+    },
+    {
+      "bbox": [
+        420,
+        10,
+        20,
+        20
+      ],
+      "value": "1,170",
+      "path": [
+        "Row 16"
+      ]
+    },
+    {
+      "bbox": [
+        445,
+        10,
+        20,
+        20
+      ],
+      "value": "1,280",
+      "path": [
+        "Row 17"
+      ]
+    },
+    {
+      "bbox": [
+        470,
+        10,
+        20,
+        20
+      ],
+      "value": "1,390",
+      "path": [
+        "Row 18"
+      ]
+    },
+    {
+      "bbox": [
+        495,
+        10,
+        20,
+        20
+      ],
+      "value": "1,500",
+      "path": [
+        "Row 19"
+      ]
+    }
+  ],
+  "matches": [
+    {
+      "gemini_index": 0,
+      "detector_index": 0,
+      "gemini_value": "100",
+      "detector_value": "100.0",
+      "match_key": "num:100"
+    },
+    {
+      "gemini_index": 1,
+      "detector_index": 1,
+      "gemini_value": "(200)",
+      "detector_value": "-200",
+      "match_key": "num:-200"
+    },
+    {
+      "gemini_index": 2,
+      "detector_index": 2,
+      "gemini_value": "300",
+      "detector_value": "300",
+      "match_key": "num:300"
+    },
+    {
+      "gemini_index": 3,
+      "detector_index": 3,
+      "gemini_value": "1,000",
+      "detector_value": "1000",
+      "match_key": "num:1000"
+    },
+    {
+      "gemini_index": 4,
+      "detector_index": 4,
+      "gemini_value": "50.0",
+      "detector_value": "50",
+      "match_key": "num:50"
+    },
+    {
+      "gemini_index": 5,
+      "detector_index": 5,
+      "gemini_value": "75",
+      "detector_value": "75.00",
+      "match_key": "num:75"
+    },
+    {
+      "gemini_index": 6,
+      "detector_index": 6,
+      "gemini_value": "125",
+      "detector_value": "125",
+      "match_key": "num:125"
+    },
+    {
+      "gemini_index": 7,
+      "detector_index": 7,
+      "gemini_value": "1,250",
+      "detector_value": "1250",
+      "match_key": "num:1250"
+    },
+    {
+      "gemini_index": 8,
+      "detector_index": 8,
+      "gemini_value": "88",
+      "detector_value": "88",
+      "match_key": "num:88"
+    },
+    {
+      "gemini_index": 9,
+      "detector_index": 9,
+      "gemini_value": "990",
+      "detector_value": "990",
+      "match_key": "num:990"
+    },
+    {
+      "gemini_index": 10,
+      "detector_index": 10,
+      "gemini_value": "410",
+      "detector_value": "410",
+      "match_key": "num:410"
+    },
+    {
+      "gemini_index": 11,
+      "detector_index": 11,
+      "gemini_value": "620",
+      "detector_value": "620",
+      "match_key": "num:620"
+    },
+    {
+      "gemini_index": 12,
+      "detector_index": 12,
+      "gemini_value": "730",
+      "detector_value": "730",
+      "match_key": "num:730"
+    },
+    {
+      "gemini_index": 13,
+      "detector_index": 13,
+      "gemini_value": "840",
+      "detector_value": "840",
+      "match_key": "num:840"
+    },
+    {
+      "gemini_index": 14,
+      "detector_index": 14,
+      "gemini_value": "950",
+      "detector_value": "950",
+      "match_key": "num:950"
+    },
+    {
+      "gemini_index": 15,
+      "detector_index": 15,
+      "gemini_value": "1,060",
+      "detector_value": "1060",
+      "match_key": "num:1060"
+    },
+    {
+      "gemini_index": 16,
+      "detector_index": 16,
+      "gemini_value": "1,170",
+      "detector_value": "1170",
+      "match_key": "num:1170"
+    },
+    {
+      "gemini_index": 17,
+      "detector_index": 17,
+      "gemini_value": "1,280",
+      "detector_value": "1280",
+      "match_key": "num:1280"
+    },
+    {
+      "gemini_index": 18,
+      "detector_index": 18,
+      "gemini_value": "1,390",
+      "detector_value": "1390",
+      "match_key": "num:1390"
+    }
+  ],
+  "unmatched_gemini_indices": [
+    19
+  ],
+  "unmatched_detector_indices": [
+    19
+  ],
+  "ambiguous_gemini_indices": [],
+  "ambiguous_detector_indices": [],
+  "ignored_detector_indices": [],
+  "imported_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "100"
+      ],
+      "match_keys": [
+        "num:100"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "(200)"
+      ],
+      "match_keys": [
+        "num:-200"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "300"
+      ],
+      "match_keys": [
+        "num:300"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "1,000"
+      ],
+      "match_keys": [
+        "num:1000"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "50.0"
+      ],
+      "match_keys": [
+        "num:50"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "75"
+      ],
+      "match_keys": [
+        "num:75"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "125"
+      ],
+      "match_keys": [
+        "num:125"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "1,250"
+      ],
+      "match_keys": [
+        "num:1250"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "88"
+      ],
+      "match_keys": [
+        "num:88"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "990"
+      ],
+      "match_keys": [
+        "num:990"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "410"
+      ],
+      "match_keys": [
+        "num:410"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "620"
+      ],
+      "match_keys": [
+        "num:620"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "730"
+      ],
+      "match_keys": [
+        "num:730"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "840"
+      ],
+      "match_keys": [
+        "num:840"
+      ]
+    },
+    {
+      "row_index": 14,
+      "indices": [
+        14
+      ],
+      "values": [
+        "950"
+      ],
+      "match_keys": [
+        "num:950"
+      ]
+    },
+    {
+      "row_index": 15,
+      "indices": [
+        15
+      ],
+      "values": [
+        "1,060"
+      ],
+      "match_keys": [
+        "num:1060"
+      ]
+    },
+    {
+      "row_index": 16,
+      "indices": [
+        16
+      ],
+      "values": [
+        "1,170"
+      ],
+      "match_keys": [
+        "num:1170"
+      ]
+    },
+    {
+      "row_index": 17,
+      "indices": [
+        17
+      ],
+      "values": [
+        "1,280"
+      ],
+      "match_keys": [
+        "num:1280"
+      ]
+    },
+    {
+      "row_index": 18,
+      "indices": [
+        18
+      ],
+      "values": [
+        "1,390"
+      ],
+      "match_keys": [
+        "num:1390"
+      ]
+    },
+    {
+      "row_index": 19,
+      "indices": [
+        19
+      ],
+      "values": [
+        "1,500"
+      ],
+      "match_keys": [
+        "num:1500"
+      ]
+    }
+  ],
+  "detector_row_groups": [
+    {
+      "row_index": 0,
+      "indices": [
+        0
+      ],
+      "values": [
+        "100.0"
+      ],
+      "match_keys": [
+        "num:100"
+      ]
+    },
+    {
+      "row_index": 1,
+      "indices": [
+        1
+      ],
+      "values": [
+        "-200"
+      ],
+      "match_keys": [
+        "num:-200"
+      ]
+    },
+    {
+      "row_index": 2,
+      "indices": [
+        2
+      ],
+      "values": [
+        "300"
+      ],
+      "match_keys": [
+        "num:300"
+      ]
+    },
+    {
+      "row_index": 3,
+      "indices": [
+        3
+      ],
+      "values": [
+        "1000"
+      ],
+      "match_keys": [
+        "num:1000"
+      ]
+    },
+    {
+      "row_index": 4,
+      "indices": [
+        4
+      ],
+      "values": [
+        "50"
+      ],
+      "match_keys": [
+        "num:50"
+      ]
+    },
+    {
+      "row_index": 5,
+      "indices": [
+        5
+      ],
+      "values": [
+        "75.00"
+      ],
+      "match_keys": [
+        "num:75"
+      ]
+    },
+    {
+      "row_index": 6,
+      "indices": [
+        6
+      ],
+      "values": [
+        "125"
+      ],
+      "match_keys": [
+        "num:125"
+      ]
+    },
+    {
+      "row_index": 7,
+      "indices": [
+        7
+      ],
+      "values": [
+        "1250"
+      ],
+      "match_keys": [
+        "num:1250"
+      ]
+    },
+    {
+      "row_index": 8,
+      "indices": [
+        8
+      ],
+      "values": [
+        "88"
+      ],
+      "match_keys": [
+        "num:88"
+      ]
+    },
+    {
+      "row_index": 9,
+      "indices": [
+        9
+      ],
+      "values": [
+        "990"
+      ],
+      "match_keys": [
+        "num:990"
+      ]
+    },
+    {
+      "row_index": 10,
+      "indices": [
+        10
+      ],
+      "values": [
+        "410"
+      ],
+      "match_keys": [
+        "num:410"
+      ]
+    },
+    {
+      "row_index": 11,
+      "indices": [
+        11
+      ],
+      "values": [
+        "620"
+      ],
+      "match_keys": [
+        "num:620"
+      ]
+    },
+    {
+      "row_index": 12,
+      "indices": [
+        12
+      ],
+      "values": [
+        "730"
+      ],
+      "match_keys": [
+        "num:730"
+      ]
+    },
+    {
+      "row_index": 13,
+      "indices": [
+        13
+      ],
+      "values": [
+        "840"
+      ],
+      "match_keys": [
+        "num:840"
+      ]
+    },
+    {
+      "row_index": 14,
+      "indices": [
+        14
+      ],
+      "values": [
+        "950"
+      ],
+      "match_keys": [
+        "num:950"
+      ]
+    },
+    {
+      "row_index": 15,
+      "indices": [
+        15
+      ],
+      "values": [
+        "1060"
+      ],
+      "match_keys": [
+        "num:1060"
+      ]
+    },
+    {
+      "row_index": 16,
+      "indices": [
+        16
+      ],
+      "values": [
+        "1170"
+      ],
+      "match_keys": [
+        "num:1170"
+      ]
+    },
+    {
+      "row_index": 17,
+      "indices": [
+        17
+      ],
+      "values": [
+        "1280"
+      ],
+      "match_keys": [
+        "num:1280"
+      ]
+    },
+    {
+      "row_index": 18,
+      "indices": [
+        18
+      ],
+      "values": [
+        "1390"
+      ],
+      "match_keys": [
+        "num:1390"
+      ]
+    },
+    {
+      "row_index": 19,
+      "indices": [
+        19
+      ],
+      "values": [
+        "not-a-match"
+      ],
+      "match_keys": [
+        "text:not-a-match"
+      ]
+    }
+  ],
+  "available_detector_pool_after_match": [
+    {
+      "row_index": 19,
+      "indices": [
+        19
+      ],
+      "values": [
+        "not-a-match"
+      ],
+      "match_keys": [
+        "text:not-a-match"
+      ]
+    }
+  ],
+  "row_matches": [
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        0
+      ],
+      "import_values": [
+        "100"
+      ],
+      "detector_indices": [
+        0
+      ],
+      "detector_values": [
+        "100.0"
+      ],
+      "matched_count": 1,
+      "match_key": "num:100",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        1
+      ],
+      "import_values": [
+        "(200)"
+      ],
+      "detector_indices": [
+        1
+      ],
+      "detector_values": [
+        "-200"
+      ],
+      "matched_count": 1,
+      "match_key": "num:-200",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        2
+      ],
+      "import_values": [
+        "300"
+      ],
+      "detector_indices": [
+        2
+      ],
+      "detector_values": [
+        "300"
+      ],
+      "matched_count": 1,
+      "match_key": "num:300",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        3
+      ],
+      "import_values": [
+        "1,000"
+      ],
+      "detector_indices": [
+        3
+      ],
+      "detector_values": [
+        "1000"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1000",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        4
+      ],
+      "import_values": [
+        "50.0"
+      ],
+      "detector_indices": [
+        4
+      ],
+      "detector_values": [
+        "50"
+      ],
+      "matched_count": 1,
+      "match_key": "num:50",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        5
+      ],
+      "import_values": [
+        "75"
+      ],
+      "detector_indices": [
+        5
+      ],
+      "detector_values": [
+        "75.00"
+      ],
+      "matched_count": 1,
+      "match_key": "num:75",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        6
+      ],
+      "import_values": [
+        "125"
+      ],
+      "detector_indices": [
+        6
+      ],
+      "detector_values": [
+        "125"
+      ],
+      "matched_count": 1,
+      "match_key": "num:125",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        7
+      ],
+      "import_values": [
+        "1,250"
+      ],
+      "detector_indices": [
+        7
+      ],
+      "detector_values": [
+        "1250"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1250",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        8
+      ],
+      "import_values": [
+        "88"
+      ],
+      "detector_indices": [
+        8
+      ],
+      "detector_values": [
+        "88"
+      ],
+      "matched_count": 1,
+      "match_key": "num:88",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        9
+      ],
+      "import_values": [
+        "990"
+      ],
+      "detector_indices": [
+        9
+      ],
+      "detector_values": [
+        "990"
+      ],
+      "matched_count": 1,
+      "match_key": "num:990",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        10
+      ],
+      "import_values": [
+        "410"
+      ],
+      "detector_indices": [
+        10
+      ],
+      "detector_values": [
+        "410"
+      ],
+      "matched_count": 1,
+      "match_key": "num:410",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        11
+      ],
+      "import_values": [
+        "620"
+      ],
+      "detector_indices": [
+        11
+      ],
+      "detector_values": [
+        "620"
+      ],
+      "matched_count": 1,
+      "match_key": "num:620",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        12
+      ],
+      "import_values": [
+        "730"
+      ],
+      "detector_indices": [
+        12
+      ],
+      "detector_values": [
+        "730"
+      ],
+      "matched_count": 1,
+      "match_key": "num:730",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        13
+      ],
+      "import_values": [
+        "840"
+      ],
+      "detector_indices": [
+        13
+      ],
+      "detector_values": [
+        "840"
+      ],
+      "matched_count": 1,
+      "match_key": "num:840",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        14
+      ],
+      "import_values": [
+        "950"
+      ],
+      "detector_indices": [
+        14
+      ],
+      "detector_values": [
+        "950"
+      ],
+      "matched_count": 1,
+      "match_key": "num:950",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        15
+      ],
+      "import_values": [
+        "1,060"
+      ],
+      "detector_indices": [
+        15
+      ],
+      "detector_values": [
+        "1060"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1060",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        16
+      ],
+      "import_values": [
+        "1,170"
+      ],
+      "detector_indices": [
+        16
+      ],
+      "detector_values": [
+        "1170"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1170",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        17
+      ],
+      "import_values": [
+        "1,280"
+      ],
+      "detector_indices": [
+        17
+      ],
+      "detector_values": [
+        "1280"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1280",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": true,
+      "reason": "ordered_pool_value_match",
+      "import_indices": [
+        18
+      ],
+      "import_values": [
+        "1,390"
+      ],
+      "detector_indices": [
+        18
+      ],
+      "detector_values": [
+        "1390"
+      ],
+      "matched_count": 1,
+      "match_key": "num:1390",
+      "ordered_detector_pool_index": 0
+    },
+    {
+      "matched": false,
+      "reason": "detector_missing",
+      "import_indices": [
+        19
+      ],
+      "import_values": [
+        "1,500"
+      ],
+      "detector_indices": [],
+      "detector_values": [],
+      "matched_count": 0,
+      "match_key": "num:1500"
+    }
+  ],
+  "column_clusters": [],
+  "row_match_strategy": "ordered_pool_value_match",
+  "reading_direction": "ltr",
+  "placeholder_count": 1,
+  "detector_index_by_gemini_index": {
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3,
+    "4": 4,
+    "5": 5,
+    "6": 6,
+    "7": 7,
+    "8": 8,
+    "9": 9,
+    "10": 10,
+    "11": 11,
+    "12": 12,
+    "13": 13,
+    "14": 14,
+    "15": 15,
+    "16": 16,
+    "17": 17,
+    "18": 18
+  }
+}

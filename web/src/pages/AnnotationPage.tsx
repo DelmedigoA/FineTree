@@ -22,10 +22,10 @@ export function AnnotationPage() {
   const { docId } = useParams<{ docId: string }>();
   const [searchParams] = useSearchParams();
   const loadDocument = useDocumentStore((s) => s.loadDocument);
+  const beginLoadingDocument = useDocumentStore((s) => s.beginLoadingDocument);
   const setCurrentPageIndex = useDocumentStore((s) => s.setCurrentPageIndex);
   const currentPageIndex = useDocumentStore((s) => s.currentPageIndex);
   const isLoading = useDocumentStore((s) => s.isLoading);
-  const currentDocId = useDocumentStore((s) => s.docId);
   const fitToView = useCanvasStore((s) => s.fitToView);
   const clearPageSelection = useSelectionStore((s) => s.clearPageSelection);
 
@@ -35,10 +35,13 @@ export function AnnotationPage() {
   const openAI = () => openDialog();
 
   useEffect(() => {
-    if (!docId || docId === currentDocId) return;
+    if (!docId) return;
+    const abort = new AbortController();
     const initialPage = parseInt(searchParams.get("page") ?? "0", 10);
-    get<DocumentPayload>(`/annotations/${docId}`)
+    beginLoadingDocument(docId);
+    get<DocumentPayload>(`/annotations/${docId}`, { signal: abort.signal })
       .then((payload) => {
+        if (abort.signal.aborted) return;
         recordView(docId);
         loadDocument(docId, {
           raw_payload: {},
@@ -53,12 +56,16 @@ export function AnnotationPage() {
           requestAnimationFrame(fitToView);
         });
       })
-      .catch(console.error);
-  }, [docId, currentDocId, loadDocument, setCurrentPageIndex, fitToView, searchParams]);
+      .catch((error) => {
+        if ((error as Error).name === "AbortError") return;
+        console.error(error);
+      });
+    return () => abort.abort();
+  }, [docId, beginLoadingDocument, loadDocument, setCurrentPageIndex, fitToView, searchParams]);
 
   useEffect(() => {
     clearPageSelection();
-  }, [clearPageSelection, currentDocId, currentPageIndex]);
+  }, [clearPageSelection, docId, currentPageIndex]);
 
   if (isLoading) {
     return (

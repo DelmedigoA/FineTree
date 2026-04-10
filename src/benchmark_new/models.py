@@ -23,6 +23,144 @@ class FactFieldSpec:
 
 
 @dataclass(frozen=True)
+class MetricGroupSpec:
+    metrics: tuple[str, ...]
+    on: str | None = None
+
+
+@dataclass(frozen=True)
+class EvaluatorFieldSpec:
+    key: str
+    field: str
+    label: str
+    section: str
+    compare_method: str
+    averaging_rule: str
+    aggregate_on: str | None
+    normalize: bool
+    null_handling: str
+    comparison_type: ComparisonType
+    aggregation: str
+    summary_metric: str
+    compare_methods: tuple[str, ...] = ()
+    metrics: tuple[str, ...] = ()
+    metric_groups: dict[str, MetricGroupSpec] = field(default_factory=dict)
+    matcher: str | None = None
+    alignment_on: tuple[str, ...] = ()
+    threshold: float | None = None
+    require_same_length: bool | None = None
+    dash_normalizer: str | None = None
+    special_value_normalization: dict[str, str] = field(default_factory=dict)
+    weight: float = 1.0
+
+
+@dataclass(frozen=True)
+class BenchmarkGlobalAggregationSpec:
+    method: str
+    normalize_weights: bool
+
+
+@dataclass(frozen=True)
+class BenchmarkReportSpec:
+    per_field: bool
+    per_document: bool
+    include_std: bool
+
+
+@dataclass(frozen=True)
+class BenchmarkNormalizeConfig:
+    strip: bool
+    quotes_unify: bool
+    lowercase: bool
+
+
+@dataclass(frozen=True)
+class EvaluatorSectionSpec:
+    name: str
+    label: str
+    fields: tuple[EvaluatorFieldSpec, ...]
+
+
+@dataclass(frozen=True)
+class EvaluatorSpec:
+    name: str
+    label: str
+    benchmark_version: str | None = None
+    global_aggregation: BenchmarkGlobalAggregationSpec | None = None
+    report: BenchmarkReportSpec | None = None
+    normalize_config: BenchmarkNormalizeConfig | None = None
+    output_file: str | None = None
+    under_development_message: str | None = None
+    sections: tuple[EvaluatorSectionSpec, ...] = ()
+
+
+@dataclass(frozen=True)
+class NativeRunInfo:
+    run_id: str
+    run_dir: Path
+    model_name: str
+    dataset_version_id: str | None
+    dataset_name: str | None
+    split: str | None
+    started_at: float | None
+
+
+@dataclass(frozen=True)
+class PageMetaFieldSummary:
+    field: str
+    label: str
+    key: str
+    aggregation: str
+    summary_metric: str
+    metrics: tuple[str, ...]
+    weight: float
+    score: float
+    evaluated_page_count: int
+    std: float | None = None
+
+
+@dataclass(frozen=True)
+class PageMetaSummary:
+    benchmark_version: str | None
+    evaluator: str
+    label: str
+    run_dir: Path
+    dataset_version_id: str | None
+    dataset_name: str | None
+    split: str | None
+    global_aggregation_method: str | None
+    overall_score: float
+    page_count: int
+    fields: tuple[PageMetaFieldSummary, ...]
+
+
+@dataclass(frozen=True)
+class FactsChannelSummary:
+    field: str
+    channel: str
+    metric: str
+    score: float
+    weight: float
+    fact_count: int
+
+
+@dataclass(frozen=True)
+class FactsSummary:
+    benchmark_version: str | None
+    evaluator: str
+    label: str
+    run_dir: Path
+    dataset_version_id: str | None
+    dataset_name: str | None
+    split: str | None
+    global_aggregation_method: str | None
+    overall_score: float
+    page_count: int
+    fact_count: int
+    channels: tuple[FactsChannelSummary, ...]
+
+
+@dataclass(frozen=True)
 class FieldExactMetrics:
     matches: int
     precision: float

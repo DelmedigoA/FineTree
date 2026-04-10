@@ -9,7 +9,17 @@ from typing import Any
 from ..eval import evaluate_predictions_bundle
 from ..models import ProgressSnapshot, ProviderRunOutput, to_jsonable
 from ..providers import ProviderOptions, get_provider_runner
-from ..reports import write_full_metrics_csv, write_mistakes_json, write_run_metrics_json, write_summary_csv
+from ..reports import (
+    build_path_comparison_report,
+    write_full_metrics_csv,
+    write_mistakes_json,
+    write_mistakes_values_json,
+    write_path_comparison_report,
+    write_path_mistakes_json,
+    write_run_metrics_json,
+    write_summary_csv,
+    write_values_mistakes_json,
+)
 
 
 def create_run_dir(
@@ -204,6 +214,28 @@ def run_inference_pipeline(
             run_result=run_result,
             bundle=bundle,
             data_root=data_root,
+        )
+        write_mistakes_values_json(
+            evaluation_dir / "mistakes_values.json",
+            run_result=run_result,
+            bundle=bundle,
+            data_root=data_root,
+        )
+        write_values_mistakes_json(
+            evaluation_dir / "values_mistakes.json",
+            run_result=run_result,
+            bundle=bundle,
+            data_root=data_root,
+        )
+        write_path_mistakes_json(
+            evaluation_dir / "path_mistakes.json",
+            run_result=run_result,
+            bundle=bundle,
+            data_root=data_root,
+        )
+        write_path_comparison_report(
+            evaluation_dir / "path_comparison_report.json",
+            build_path_comparison_report(run_result=run_result, bundle=bundle, data_root=data_root),
         )
         writer.append_event({"ts": datetime.now().isoformat(), "event": "evaluation_completed"})
         output["run_result"] = run_result

@@ -1,0 +1,207 @@
+{
+  "matcher": "lcs",
+  "matching_on": [
+    "value"
+  ],
+  "threshold": 0.8,
+  "example_count": 5,
+  "counts": {
+    "missing_ancestor": 20,
+    "extra_ancestor": 0,
+    "wrong_ancestor": 3,
+    "wrong_leaf": 0
+  },
+  "groups": [
+    {
+      "error_type": "missing_ancestor",
+      "count": 20,
+      "examples": [
+        {
+          "doc_id": "pdf_4",
+          "page_index": 3,
+          "image_name": "page_0003.png",
+          "value": "(1537213)",
+          "gt_path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו",
+            "שלא יועדו ע\"י מוסדות המלכ\"ר"
+          ],
+          "pred_path": [
+            "נכסים נטו",
+            "שלא יועדו ע\"י מוסדות המלכ\"ר"
+          ],
+          "strict": 0,
+          "leaf": 1,
+          "soft_overlap": {
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8
+          }
+        },
+        {
+          "doc_id": "pdf_4",
+          "page_index": 3,
+          "image_name": "page_0003.png",
+          "value": "1006233",
+          "gt_path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו",
+            "סה\"כ"
+          ],
+          "pred_path": [
+            "נכסים נטו",
+            "סה\"כ"
+          ],
+          "strict": 0,
+          "leaf": 1,
+          "soft_overlap": {
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8
+          }
+        },
+        {
+          "doc_id": "pdf_4",
+          "page_index": 3,
+          "image_name": "page_0003.png",
+          "value": "1642248",
+          "gt_path": [
+            "התחייבויות ונכסים נטו",
+            "נכסים נטו",
+            "ששימשו לרכוש קבוע"
+          ],
+          "pred_path": [
+            "נכסים נטו",
+            "ששימשו לרכוש קבוע"
+          ],
+          "strict": 0,
+          "leaf": 1,
+          "soft_overlap": {
+            "precision": 1.0,
+            "recall": 0.6666666666666666,
+            "f1": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "error_type": "wrong_ancestor",
+      "count": 3,
+      "examples": [
+        {
+          "doc_id": "pdf_4",
+          "page_index": 3,
+          "image_name": "page_0003.png",
+          "value": "42724005",
+          "gt_path": [
+            "רכוש",
+            "סה\"כ"
+          ],
+          "pred_path": [
+            "נכסים",
+            "סה\"כ"
+          ],
+          "strict": 0,
+          "leaf": 1,
+          "soft_overlap": {
+            "precision": 0.5,
+            "recall": 0.5,
+            "f1": 0.5
+          }
+        },
+        {
+          "doc_id": "pdf_4",
+          "page_index": 7,
+          "image_name": "page_0007.png",
+          "value": "7-10",
+          "gt_path": [
+            "רכוש קבוע",
+            "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
+            "ריהוט וציוד"
+          ],
+          "pred_path": [
+            "הערכה",
+            "הפחת",
+            "רכוש קבוע",
+            "רהוט וציוד"
+          ],
+          "strict": 0,
+          "leaf": 1,
+          "soft_overlap": {
+            "precision": 0.5,
+            "recall": 0.6666666666666666,
+            "f1": 0.5714285714285715
+          }
+        }
+      ]
+    }
+  ],
+  "representative_examples": [
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "(1537213)",
+      "gt_path": [
+        "התחייבויות ונכסים נטו",
+        "נכסים נטו",
+        "שלא יועדו ע\"י מוסדות המלכ\"ר"
+      ],
+      "pred_path": [
+        "נכסים נטו",
+        "שלא יועדו ע\"י מוסדות המלכ\"ר"
+      ],
+      "strict": 0,
+      "leaf": 1,
+      "soft_overlap": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "1006233",
+      "gt_path": [
+        "התחייבויות ונכסים נטו",
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "pred_path": [
+        "נכסים נטו",
+        "סה\"כ"
+      ],
+      "strict": 0,
+      "leaf": 1,
+      "soft_overlap": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "1642248",
+      "gt_path": [
+        "התחייבויות ונכסים נטו",
+        "נכסים נטו",
+        "ששימשו לרכוש קבוע"
+      ],
+      "pred_path": [
+        "נכסים נטו",
+        "ששימשו לרכוש קבוע"
+      ],
+      "strict": 0,
+      "leaf": 1,
+      "soft_overlap": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8
+      }
+    }
+  ]
+}

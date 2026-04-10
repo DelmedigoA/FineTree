@@ -7,10 +7,16 @@ import { useSelectionStore } from "../../stores/selectionStore";
 import { useCanvasStore } from "../../stores/canvasStore";
 import type { ValidationResult, ValidationIssue } from "../../types/api";
 
+export interface IssueSummaryCounts {
+  visibleCount: number;
+  visibleFlagCount: number;
+  visibleWarningCount: number;
+}
+
 export function PageIssuesSection({
   onIssueCount,
 }: {
-  onIssueCount?: (count: number | null) => void;
+  onIssueCount?: (counts: IssueSummaryCounts | null) => void;
 }) {
   const { docId, pageNames, currentPageIndex } = useDocumentStore();
   const [issues, setIssues] = useState<{ flags: ValidationIssue[]; warnings: ValidationIssue[] } | null>(null);
@@ -39,7 +45,11 @@ export function PageIssuesSection({
         ? { flags: pageResult.reg_flags ?? [], warnings: pageResult.warnings ?? [] }
         : { flags: [], warnings: [] };
       setIssues(resolved);
-      onIssueCountRef.current?.(resolved.flags.length + resolved.warnings.length);
+      onIssueCountRef.current?.({
+        visibleCount: resolved.flags.length + resolved.warnings.length,
+        visibleFlagCount: resolved.flags.length,
+        visibleWarningCount: resolved.warnings.length,
+      });
     } catch {
       setIssues(null);
       onIssueCountRef.current?.(null);
@@ -73,9 +83,28 @@ export function PageIssuesSection({
     setAcknowledged((prev) => new Set([...prev, issueKey(issue)]));
   };
 
+  const handleResolveAll = () => {
+    const next = new Set(acknowledged);
+    for (const issue of visibleFlags) next.add(issueKey(issue));
+    for (const issue of visibleWarnings) next.add(issueKey(issue));
+    setAcknowledged(next);
+  };
+
+  useEffect(() => {
+    onIssueCountRef.current?.(
+      issues
+        ? {
+            visibleCount: totalVisible,
+            visibleFlagCount: visibleFlags.length,
+            visibleWarningCount: visibleWarnings.length,
+          }
+        : null,
+    );
+  }, [issues, totalVisible, visibleFlags.length, visibleWarnings.length]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {totalVisible > 0 && (
           <span
             style={{
@@ -94,6 +123,24 @@ export function PageIssuesSection({
           <span style={{ fontSize: 11, color: "var(--ok)", fontWeight: 600 }}>
             {totalCount > 0 ? `All ${totalCount} resolved` : "No issues"}
           </span>
+        )}
+        {issues && totalVisible > 0 && (
+          <button
+            onClick={handleResolveAll}
+            style={{
+              fontSize: 10,
+              fontWeight: 600,
+              color: "var(--text-muted)",
+              background: "transparent",
+              border: "1px solid var(--surface-border)",
+              borderRadius: "var(--radius-xs)",
+              padding: "2px 8px",
+              cursor: "pointer",
+              transition: "var(--transition-fast)",
+            }}
+          >
+            Resolve All
+          </button>
         )}
         <button
           onClick={() => { setAcknowledged(new Set()); validate(); }}
@@ -151,11 +198,6 @@ function IssueItem({
     }
   };
 
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    onResolve();
-  };
-
   // Use manual double-click tracking to avoid firing single-click after double-click.
   const handlePointerDown = () => {
     const now = Date.now();
@@ -177,7 +219,6 @@ function IssueItem({
   return (
     <div
       onPointerDown={handlePointerDown}
-      onDoubleClick={handleDoubleClick}
       title="Click to navigate · Double-click to resolve"
       style={{
         display: "flex",

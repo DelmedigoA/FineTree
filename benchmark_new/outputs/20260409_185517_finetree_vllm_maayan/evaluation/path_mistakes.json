@@ -1,0 +1,2397 @@
+{
+  "mistake_count": 62,
+  "matcher": "lcs",
+  "matching_on": [
+    "value"
+  ],
+  "compare_methods": [
+    "path_all_levels_threshold",
+    "path_last_leaf_threshold",
+    "path_soft_overlap"
+  ],
+  "threshold": 0.8,
+  "items": [
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "40006913",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 9,
+        "value": "40006913",
+        "path": [
+          "רכוש",
+          "השקעות - פקדונות בבנקים"
+        ],
+        "raw_value": "40006913",
+        "raw_path": [
+          "רכוש",
+          "השקעות - פקדונות בבנקים"
+        ]
+      },
+      "pred": {
+        "fact_index": 9,
+        "value": "40006913",
+        "path": [
+          "השקעות - פקדונות בבנקים"
+        ],
+        "raw_value": "40,006,913",
+        "raw_path": [
+          "השקעות - פקדונות בבנקים"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "7016757",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 10,
+        "value": "7016757",
+        "path": [
+          "רכוש",
+          "השקעות - פקדונות בבנקים"
+        ],
+        "raw_value": "7016757",
+        "raw_path": [
+          "רכוש",
+          "השקעות - פקדונות בבנקים"
+        ]
+      },
+      "pred": {
+        "fact_index": 10,
+        "value": "7016757",
+        "path": [
+          "השקעות - פקדונות בבנקים"
+        ],
+        "raw_value": "7,016,757",
+        "raw_path": [
+          "השקעות - פקדונות בבנקים"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "1642248",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 11,
+        "value": "1642248",
+        "path": [
+          "רכוש",
+          "רכוש קבוע"
+        ],
+        "raw_value": "1642248",
+        "raw_path": [
+          "רכוש",
+          "רכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 11,
+        "value": "1642248",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "raw_value": "1,642,248",
+        "raw_path": [
+          "רכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "810066",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 12,
+        "value": "810066",
+        "path": [
+          "רכוש",
+          "רכוש קבוע"
+        ],
+        "raw_value": "810066",
+        "raw_path": [
+          "רכוש",
+          "רכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 12,
+        "value": "810066",
+        "path": [
+          "רכוש קבוע"
+        ],
+        "raw_value": "810,066",
+        "raw_path": [
+          "רכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "42724005",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 13,
+        "value": "42724005",
+        "path": [
+          "רכוש",
+          "סה\"כ"
+        ],
+        "raw_value": "42724005",
+        "raw_path": [
+          "רכוש",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 13,
+        "value": "42724005",
+        "path": [
+          "נכסים",
+          "סה\"כ"
+        ],
+        "raw_value": "42,724,005",
+        "raw_path": [
+          "נכסים",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "9216410",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 14,
+        "value": "9216410",
+        "path": [
+          "רכוש",
+          "סה\"כ"
+        ],
+        "raw_value": "9216410",
+        "raw_path": [
+          "רכוש",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 14,
+        "value": "9216410",
+        "path": [
+          "נכסים",
+          "סה\"כ"
+        ],
+        "raw_value": "9,216,410",
+        "raw_path": [
+          "נכסים",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "(1537213)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 25,
+        "value": "(1537213)",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(1537213)",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 25,
+        "value": "(1537213)",
+        "path": [
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(1,537,213)",
+        "raw_path": [
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "(464404)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 26,
+        "value": "(464404)",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(464404)",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 26,
+        "value": "(464404)",
+        "path": [
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(464,404)",
+        "raw_path": [
+          "נכסים נטו",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "42190723",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 27,
+        "value": "42190723",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "42190723",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 27,
+        "value": "42190723",
+        "path": [
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "42,190,723",
+        "raw_path": [
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "660571",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 28,
+        "value": "660571",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "660571",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 28,
+        "value": "660571",
+        "path": [
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "660,571",
+        "raw_path": [
+          "נכסים נטו",
+          "שיועדו ע\"י מוסדות המלכ\"ר להשקעה ברכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "1642248",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 29,
+        "value": "1642248",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ],
+        "raw_value": "1642248",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 29,
+        "value": "1642248",
+        "path": [
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ],
+        "raw_value": "1,642,248",
+        "raw_path": [
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "810066",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 30,
+        "value": "810066",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ],
+        "raw_value": "810066",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 30,
+        "value": "810066",
+        "path": [
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ],
+        "raw_value": "810,066",
+        "raw_path": [
+          "נכסים נטו",
+          "ששימשו לרכוש קבוע"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "42295758",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 31,
+        "value": "42295758",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "42295758",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 31,
+        "value": "42295758",
+        "path": [
+          "נכסים נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "42,295,758",
+        "raw_path": [
+          "נכסים נטו",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 3,
+      "image_name": "page_0003.png",
+      "value": "1006233",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 32,
+        "value": "1006233",
+        "path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "1006233",
+        "raw_path": [
+          "התחייבויות ונכסים נטו",
+          "נכסים נטו",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 32,
+        "value": "1006233",
+        "path": [
+          "נכסים נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "1,006,233",
+        "raw_path": [
+          "נכסים נטו",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "489126",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 27,
+        "value": "489126",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "489126",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות הנהלה וכלליות"
+        ]
+      },
+      "pred": {
+        "fact_index": 27,
+        "value": "489126",
+        "path": [
+          "הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "489,126",
+        "raw_path": [
+          "הוצאות הנהלה וכלליות"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "290228",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 28,
+        "value": "290228",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "290228",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות הנהלה וכלליות"
+        ]
+      },
+      "pred": {
+        "fact_index": 28,
+        "value": "290228",
+        "path": [
+          "הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "290,228",
+        "raw_path": [
+          "הוצאות הנהלה וכלליות"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "(259511)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 29,
+        "value": "(259511)",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "(259511)",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות"
+        ]
+      },
+      "pred": {
+        "fact_index": 29,
+        "value": "(259511)",
+        "path": [
+          "הוצאות הנהלה וכלליות",
+          "סה\"כ"
+        ],
+        "raw_value": "(259,511)",
+        "raw_path": [
+          "הוצאות הנהלה וכלליות",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "(140580)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 30,
+        "value": "(140580)",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות"
+        ],
+        "raw_value": "(140580)",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות"
+        ]
+      },
+      "pred": {
+        "fact_index": 30,
+        "value": "(140580)",
+        "path": [
+          "הוצאות הנהלה וכלליות",
+          "סה\"כ"
+        ],
+        "raw_value": "(140,580)",
+        "raw_path": [
+          "הוצאות הנהלה וכלליות",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "18884",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 31,
+        "value": "18884",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הכנסות מימון, נטו"
+        ],
+        "raw_value": "18884",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הכנסות מימון, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 31,
+        "value": "18884",
+        "path": [
+          "הכנסות מימון, נטו"
+        ],
+        "raw_value": "18,884",
+        "raw_path": [
+          "הכנסות מימון, נטו"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "98807",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 32,
+        "value": "98807",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הכנסות מימון, נטו"
+        ],
+        "raw_value": "98807",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הכנסות מימון, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 32,
+        "value": "98807",
+        "path": [
+          "הכנסות מימון, נטו"
+        ],
+        "raw_value": "98,807",
+        "raw_path": [
+          "הכנסות מימון, נטו"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "(240627)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 33,
+        "value": "(240627)",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות",
+          "בתוספת הכנסות מימון, נטו"
+        ],
+        "raw_value": "(240627)",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות",
+          "בתוספת הכנסות מימון, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 33,
+        "value": "(240627)",
+        "path": [
+          "הכנסות מימון, נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "(240,627)",
+        "raw_path": [
+          "הכנסות מימון, נטו",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "(41773)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 34,
+        "value": "(41773)",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות",
+          "בתוספת הכנסות מימון, נטו"
+        ],
+        "raw_value": "(41773)",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "בניכוי הוצאות הנהלה וכלליות",
+          "בתוספת הכנסות מימון, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 34,
+        "value": "(41773)",
+        "path": [
+          "הכנסות מימון, נטו",
+          "סה\"כ"
+        ],
+        "raw_value": "(41,773)",
+        "raw_path": [
+          "הכנסות מימון, נטו",
+          "סה״כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 35,
+        "value": "0",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות אחרות, נטו"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות אחרות, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 35,
+        "value": "0",
+        "path": [
+          "הוצאות אחרות, נטו"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "הוצאות אחרות, נטו"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 4,
+      "image_name": "page_0004.png",
+      "value": "85099",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 36,
+        "value": "85099",
+        "path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות אחרות, נטו"
+        ],
+        "raw_value": "85099",
+        "raw_path": [
+          "הכנסות נטו מפעילויות",
+          "הוצאות אחרות, נטו"
+        ]
+      },
+      "pred": {
+        "fact_index": 36,
+        "value": "85099",
+        "path": [
+          "הוצאות אחרות, נטו"
+        ],
+        "raw_value": "85,099",
+        "raw_path": [
+          "הוצאות אחרות, נטו"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 5,
+      "image_name": "page_0005.png",
+      "value": "851625",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 19,
+        "value": "851625",
+        "path": [
+          "גידול (קיטון) במזומנים ושווה מזומנים",
+          "יתרת מזומנים ושווה מזומנים לתחילת השנה"
+        ],
+        "raw_value": "851625",
+        "raw_path": [
+          "גידול (קיטון) במזומנים ושווה מזומנים",
+          "יתרת מזומנים ושווה מזומנים לתחילת השנה"
+        ]
+      },
+      "pred": {
+        "fact_index": 19,
+        "value": "851625",
+        "path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ],
+        "raw_value": "851,625",
+        "raw_path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 5,
+      "image_name": "page_0005.png",
+      "value": "321057",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 20,
+        "value": "321057",
+        "path": [
+          "גידול (קיטון) במזומנים ושווה מזומנים",
+          "יתרת מזומנים ושווה מזומנים לתחילת השנה"
+        ],
+        "raw_value": "321057",
+        "raw_path": [
+          "גידול (קיטון) במזומנים ושווה מזומנים",
+          "יתרת מזומנים ושווה מזומנים לתחילת השנה"
+        ]
+      },
+      "pred": {
+        "fact_index": 20,
+        "value": "321057",
+        "path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ],
+        "raw_value": "321,057",
+        "raw_path": [
+          "יתרת מזומנים ושווי מזומנים לתחילת השנה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(238349)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 1,
+        "value": "(238349)",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(238349)",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 1,
+        "value": "(238349)",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(238,349)",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "660571",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 2,
+        "value": "660571",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "660571",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 2,
+        "value": "660571",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "660,571",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "962907",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 4,
+        "value": "962907",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "סה''כ"
+        ],
+        "raw_value": "962907",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 4,
+        "value": "962907",
+        "path": [
+          "יתרה ליום 1 בינואר 2023",
+          "סה\"כ"
+        ],
+        "raw_value": "962,907",
+        "raw_path": [
+          "יתרה ליום 1 בינואר 2023",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "43326",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 5,
+        "value": "43326",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "43326",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 5,
+        "value": "43326",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "43,326",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 6,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 6,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "43326",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 8,
+        "value": "43326",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "סה''כ"
+        ],
+        "raw_value": "43326",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 8,
+        "value": "43326",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "סה\"כ"
+        ],
+        "raw_value": "43,326",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "הכנסות נטו לשנה",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(286449)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 9,
+        "value": "(286449)",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(286449)",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 9,
+        "value": "(286449)",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(286,449)",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 10,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 10,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 12,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה''כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 12,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה\"כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "17068",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 13,
+        "value": "17068",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "17068",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 13,
+        "value": "17068",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "17,068",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 14,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 14,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 16,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה''כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 16,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה\"כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2023",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(464404)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 17,
+        "value": "(464404)",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(464404)",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 17,
+        "value": "(464404)",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(464,404)",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "660571",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 18,
+        "value": "660571",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "660571",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 18,
+        "value": "660571",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "660,571",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "1006233",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 20,
+        "value": "1006233",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "סה''כ"
+        ],
+        "raw_value": "1006233",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 20,
+        "value": "1006233",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "סה\"כ"
+        ],
+        "raw_value": "1,006,233",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2023",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(240627)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 21,
+        "value": "(240627)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(240627)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 21,
+        "value": "(240627)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(240,627)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 22,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 22,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(240627)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 24,
+        "value": "(240627)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "סה''כ"
+        ],
+        "raw_value": "(240627)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 24,
+        "value": "(240627)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "סה\"כ"
+        ],
+        "raw_value": "(240,627)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הוצאות נטו לשנה",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 25,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 25,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "40532323",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 26,
+        "value": "40532323",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "40532323",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 26,
+        "value": "40532323",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "40,532,323",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "40532323",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 28,
+        "value": "40532323",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "סה''כ"
+        ],
+        "raw_value": "40532323",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 28,
+        "value": "40532323",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "סה\"כ"
+        ],
+        "raw_value": "40,532,323",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שהתקבלו ויועדו לרכישת רכוש קבוע (ראה באור 1ב)",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 29,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 29,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "997829",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 30,
+        "value": "997829",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "997829",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 30,
+        "value": "997829",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "997,829",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "997829",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 32,
+        "value": "997829",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "סה''כ"
+        ],
+        "raw_value": "997829",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 32,
+        "value": "997829",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "סה\"כ"
+        ],
+        "raw_value": "997,829",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "הכנסות מימון שנצברו בפקדונות בבנק",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(848212)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 33,
+        "value": "(848212)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(848212)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 33,
+        "value": "(848212)",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(848,212)",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 34,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 34,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 36,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה''כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 36,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה\"כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "העברת סכומים לרכישת רכוש קבוע",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "16030",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 37,
+        "value": "16030",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "16030",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 37,
+        "value": "16030",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "16,030",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 38,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 38,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "0",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 40,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה''כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 40,
+        "value": "0",
+        "path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה\"כ"
+        ],
+        "raw_value": "-",
+        "raw_path": [
+          "שינויים במהלך שנת 2024",
+          "סכומים שיועדו לכיסוי הוצאות פחת",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "(1537213)",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 41,
+        "value": "(1537213)",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ],
+        "raw_value": "(1537213)",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "לשימוש לפעילויות שלא יועדו ע''י מוסדות המלכ''ר"
+        ]
+      },
+      "pred": {
+        "fact_index": 41,
+        "value": "(1537213)",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ],
+        "raw_value": "(1,537,213)",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "לשימוש לפעילויות",
+          "שלא יועדו ע\"י מוסדות המלכ\"ר"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "42190723",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 42,
+        "value": "42190723",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ],
+        "raw_value": "42190723",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "שיועדו ע''י מוסדות המלכ''ר להשקעה ברכוש קבוע"
+        ]
+      },
+      "pred": {
+        "fact_index": 42,
+        "value": "42190723",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ],
+        "raw_value": "42,190,723",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "שיועדו ע\"י מוסדות המלכ\"ר",
+          "להשקעה"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 6,
+      "image_name": "page_0006.png",
+      "value": "42295758",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 44,
+        "value": "42295758",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "סה''כ"
+        ],
+        "raw_value": "42295758",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "סה''כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 44,
+        "value": "42295758",
+        "path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "סה\"כ"
+        ],
+        "raw_value": "42,295,758",
+        "raw_path": [
+          "יתרה ליום 31 בדצמבר 2024",
+          "סה\"כ"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 7,
+      "image_name": "page_0007.png",
+      "value": "7-10",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": true
+      },
+      "gt": {
+        "fact_index": 2,
+        "value": "7-10",
+        "path": [
+          "רכוש קבוע",
+          "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
+          "ריהוט וציוד"
+        ],
+        "raw_value": "7-10",
+        "raw_path": [
+          "רכוש קבוע",
+          "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
+          "ריהוט וציוד"
+        ]
+      },
+      "pred": {
+        "fact_index": 2,
+        "value": "7-10",
+        "path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "רהוט וציוד"
+        ],
+        "raw_value": "7-10",
+        "raw_path": [
+          "הערכה",
+          "הפחת",
+          "רכוש קבוע",
+          "רהוט וציוד"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 8,
+      "image_name": "page_0008.png",
+      "value": "1642248",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 15,
+        "value": "1642248",
+        "path": [
+          "הרכב",
+          "עלות מופחתת",
+          "סה\"כ"
+        ],
+        "raw_value": "1642248",
+        "raw_path": [
+          "הרכב",
+          "עלות מופחתת",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 15,
+        "value": "1642248",
+        "path": [
+          "הרכב",
+          "סה\"כ",
+          "עלות מופחתת"
+        ],
+        "raw_value": "1,642,248",
+        "raw_path": [
+          "הרכב",
+          "סה״כ",
+          "עלות מופחתת"
+        ]
+      }
+    },
+    {
+      "doc_id": "pdf_4",
+      "page_index": 8,
+      "image_name": "page_0008.png",
+      "value": "810066",
+      "method_results": {
+        "path_all_levels_threshold": false,
+        "path_last_leaf_threshold": false
+      },
+      "gt": {
+        "fact_index": 16,
+        "value": "810066",
+        "path": [
+          "הרכב",
+          "עלות מופחתת",
+          "סה\"כ"
+        ],
+        "raw_value": "810066",
+        "raw_path": [
+          "הרכב",
+          "עלות מופחתת",
+          "סה״כ"
+        ]
+      },
+      "pred": {
+        "fact_index": 16,
+        "value": "810066",
+        "path": [
+          "הרכב",
+          "סה\"כ",
+          "עלות מופחתת"
+        ],
+        "raw_value": "810,066",
+        "raw_path": [
+          "הרכב",
+          "סה״כ",
+          "עלות מופחתת"
+        ]
+      }
+    }
+  ]
+}

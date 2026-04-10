@@ -51,7 +51,7 @@ export function useAlignBBoxes() {
   const currentPageIndex = useDocumentStore((s) => s.currentPageIndex);
   const pageNames = useDocumentStore((s) => s.pageNames);
   const pageStates = useDocumentStore((s) => s.pageStates);
-  const updatePageState = useDocumentStore((s) => s.updatePageState);
+  const updatePageStateForDocument = useDocumentStore((s) => s.updatePageStateForDocument);
   const selectedIndices = useSelectionStore((s) => s.selectedIndices);
   const setAIStatus = useUIStore((s) => s.setAIStatus);
 
@@ -109,6 +109,8 @@ export function useAlignBBoxes() {
     if (isAligning || !canAlign || !docId || !currentPageName || !currentPage || targetIndices.length === 0) {
       return;
     }
+    const activeDocId = docId;
+    const activePageName = currentPageName;
 
     const selectedOnly = selectedIndices.size > 0;
     const requestFacts: AlignBboxesFactRequest[] = [];
@@ -182,8 +184,18 @@ export function useAlignBBoxes() {
         return;
       }
 
+      const { docId: currentDocId } = useDocumentStore.getState();
+      if (currentDocId !== activeDocId) {
+        showAIStatus("error", "Align skipped after document switch", 5000);
+        return;
+      }
+
       pushUndoSnapshot();
-      updatePageState(currentPageName, { ...currentPage, facts: nextFacts });
+      const updated = updatePageStateForDocument(activeDocId, activePageName, { ...currentPage, facts: nextFacts });
+      if (!updated) {
+        showAIStatus("error", "Align skipped after document switch", 5000);
+        return;
+      }
       useCanvasStore.getState().markDirty("bbox");
       showAIStatus("success", formatAlignScopeMessage(appliedCount, selectedOnly, "success"), 3000);
     } catch (err) {
@@ -200,7 +212,7 @@ export function useAlignBBoxes() {
     selectedIndices.size,
     showAIStatus,
     targetIndices,
-    updatePageState,
+    updatePageStateForDocument,
   ]);
 
   return {

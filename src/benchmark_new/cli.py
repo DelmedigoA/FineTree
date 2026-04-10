@@ -6,10 +6,21 @@ from pathlib import Path
 
 from .eval import evaluate_predictions_bundle
 from .infer import create_run_dir, run_inference_pipeline
+from .interactive import run_interactive_benchmark
 from .io import list_dataset_versions, load_dataset_selection, load_predictions_from_run_dir
 from .io.workspace_paths import DEFAULT_DATA_ROOT
 from .providers import ProviderOptions
-from .reports import write_full_metrics_csv, write_mistakes_json, write_run_metrics_json, write_summary_csv
+from .reports import (
+    build_path_comparison_report,
+    write_full_metrics_csv,
+    write_path_comparison_report,
+    write_mistakes_json,
+    write_mistakes_values_json,
+    write_path_mistakes_json,
+    write_run_metrics_json,
+    write_summary_csv,
+    write_values_mistakes_json,
+)
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -146,12 +157,43 @@ def _run_eval(args: argparse.Namespace) -> int:
         bundle=bundle,
         data_root=data_root,
     )
+    write_mistakes_values_json(
+        evaluation_dir / "mistakes_values.json",
+        run_result=run_result,
+        bundle=bundle,
+        data_root=data_root,
+    )
+    write_values_mistakes_json(
+        evaluation_dir / "values_mistakes.json",
+        run_result=run_result,
+        bundle=bundle,
+        data_root=data_root,
+    )
+    write_path_mistakes_json(
+        evaluation_dir / "path_mistakes.json",
+        run_result=run_result,
+        bundle=bundle,
+        data_root=data_root,
+    )
+    write_path_comparison_report(
+        evaluation_dir / "path_comparison_report.json",
+        build_path_comparison_report(run_result=run_result, bundle=bundle, data_root=data_root),
+    )
     print(f"run_score={run_result.run_score:.6f}")
     print(f"evaluation_dir={evaluation_dir}")
     return 0
 
 
 def main(argv: list[str] | None = None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if not argv:
+        if not sys.stdin.isatty() or not sys.stdout.isatty():
+            print(
+                "Interactive benchmark CLI requires a TTY. Use explicit commands such as `benchmark.cli datasets list` or `benchmark.cli eval --run-dir <run_dir>`.",
+                file=sys.stderr,
+            )
+            return 2
+        return run_interactive_benchmark()
     parser = _build_parser()
     args = parser.parse_args(argv)
     if args.command == "datasets" and args.datasets_command == "list":

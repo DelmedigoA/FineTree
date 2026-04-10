@@ -1,0 +1,96 @@
+{
+  "benchmark_version": "v1.0",
+  "output_file": "page_meta_summary.json",
+  "under_development_messages": {
+    "facts": "Facts evaluation is under development."
+  },
+  "global_aggregation": {
+    "method": "weighted_mean",
+    "normalize_weights": true
+  },
+  "report": {
+    "per_field": true,
+    "per_document": false,
+    "include_std": false
+  },
+  "normalize_config": {
+    "strip": true,
+    "quotes_unify": true,
+    "lowercase": true
+  },
+  "fields": {
+    "meta.entity_name": {
+      "compare_method": "string_similarity",
+      "averaging_rule": "micro",
+      "normalize": true,
+      "null_handling": "regular",
+      "metrics": ["mean"],
+      "weight": 1.0
+    },
+    "meta.page_num": {
+      "compare_method": "exact_match",
+      "averaging_rule": "micro",
+      "null_handling": "regular",
+      "metrics": ["accuracy"],
+      "weight": 1.0
+    },
+    "meta.page_type": {
+      "compare_method": "exact_match",
+      "averaging_rule": "micro",
+      "null_handling": "regular",
+      "metrics": ["accuracy"],
+      "weight": 1.0
+    },
+    "meta.statement_type": {
+      "compare_method": "exact_match",
+      "averaging_rule": "micro",
+      "null_handling": "regular",
+      "metrics": ["accuracy"],
+      "weight": 1.0
+    },
+    "meta.title": {
+      "compare_method": "string_similarity",
+      "averaging_rule": "micro",
+      "normalize": true,
+      "null_handling": "regular",
+      "metrics": ["mean"],
+      "weight": 1.0
+    },
+    "facts.value": {
+      "matcher": "lcs",
+      "alignment_on": ["value"],
+      "compare_method": "exact_match",
+      "metrics": {
+        "value": {
+          "metrics": ["accuracy"],
+          "on": "matched_pairs"
+        },
+        "alignment": ["precision", "recall", "f1"]
+      },
+      "averaging_rule": "micro",
+      "aggregate_on": "facts",
+      "normalize": true,
+      "null_handling": "regular",
+      "dash_normalizer": "treat_as_zero",
+      "special_value_normalization": {
+        "-": "0"
+      },
+      "weight": 1.0
+    },
+    "facts.path": {
+      "compare_methods": ["path_all_levels_threshold", "path_last_leaf_threshold", "path_soft_overlap"],
+      "threshold": 0.8,
+      "require_same_length": true,
+      "metrics": {
+        "strict": ["accuracy"],
+        "leaf": ["accuracy"],
+        "soft_overlap": ["precision", "recall", "f1"]
+      },
+      "averaging_rule": "micro",
+      "aggregate_on": "facts",
+      "normalize": true,
+      "null_handling": "regular",
+      "weight": 1.0
+    }
+  }
+}

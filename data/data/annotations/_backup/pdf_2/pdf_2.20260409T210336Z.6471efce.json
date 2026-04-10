@@ -1,0 +1,5152 @@
+{
+  "schema_version": 4,
+  "images_dir": "data/pdf_images/pdf_2",
+  "metadata": {
+    "language": "he",
+    "reading_direction": "rtl",
+    "company_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+    "report_year": 2023,
+    "entity_type": "registered_nonprofit"
+  },
+  "pages": [
+    {
+      "image": "page_0001.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": null,
+        "page_type": "title",
+        "statement_type": null,
+        "title": "דוחות כספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0002.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": null,
+        "page_type": "contents",
+        "statement_type": null,
+        "title": "תוכן העניינים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0003.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "2",
+        "page_type": "declaration",
+        "statement_type": "auditors_report",
+        "title": "דוח רואה החשבון המבקר לחברי העמותה",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": []
+    },
+    {
+      "image": "page_0004.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "3",
+        "page_type": "statements",
+        "statement_type": "balance_sheet",
+        "title": "מאזנים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "2002",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            495.11,
+            542.3,
+            99.42,
+            46.44
+          ]
+        },
+        {
+          "value": "8196",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "מזומנים ושווי מזומנים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            290.31,
+            542.3,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "14854",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "דמי חבר לקבל / לקוחות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            492.67,
+            593.83,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "3800",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "דמי חבר לקבל / לקוחות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            287.87,
+            585.88,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "16856",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "2002 + 14854",
+              "fact_equation": "f1 + f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            640.31,
+            99.42,
+            38.49
+          ]
+        },
+        {
+          "value": "11996",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "8196 + 3800",
+              "fact_equation": "f2 + f4"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש שוטף",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            274.41,
+            638.32,
+            99.42,
+            28.56
+          ]
+        },
+        {
+          "value": "26003",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "3",
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            716.45,
+            99.42,
+            52.4
+          ]
+        },
+        {
+          "value": "8281",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "3",
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "רכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            284.35,
+            724.4,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "42859",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "16856 + 26003",
+              "fact_equation": "f5 + f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה״כ נכסים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            770.42,
+            99.42,
+            46.44
+          ]
+        },
+        {
+          "value": "20277",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "11996 + 8281",
+              "fact_equation": "f6 + f8"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה״כ נכסים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            278.39,
+            768.43,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "27709",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "אשראי מתאגידים בנקאיים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            493.13,
+            910.46,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "11460",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "אשראי מתאגידים בנקאיים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            274.42,
+            912.45,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "15927",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "ספקים ונותני שרותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            493.13,
+            958.47,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "12230",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "ספקים ונותני שרותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            280.38,
+            958.47,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "37348",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים שונים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            495.11,
+            1002.5,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "30594",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "4",
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "זכאים שונים ויתרות זכות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            276.4,
+            1004.49,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "80984",
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "27709 + 15927 + 37348",
+              "fact_equation": "f11 + f13 + f15"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            1046.54,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "54284",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "11460 + 12230 + 30594",
+              "fact_equation": "f12 + f14 + f16"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "התחייבויות שוטפות",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            276.4,
+            1048.52,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "80984",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "80984",
+              "fact_equation": "f17"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ התחייבויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            493.13,
+            1094.54,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "54284",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "54284",
+              "fact_equation": "f18"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ התחייבויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            278.39,
+            1094.54,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 21,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            565.58,
+            1321.4,
+            28.04,
+            30.18
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            350.98,
+            1324.81,
+            29.51,
+            27.23
+          ]
+        },
+        {
+          "value": "(64128)",
+          "fact_num": 23,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            1362.72,
+            100.9,
+            41.55
+          ]
+        },
+        {
+          "value": "(42288)",
+          "fact_num": 24,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            272.43,
+            1368.68,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "(64128)",
+          "fact_num": 25,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            493.18,
+            1409.24,
+            106.81,
+            40.07
+          ]
+        },
+        {
+          "value": "(42288)",
+          "fact_num": 26,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו לשימוש לפעילויות",
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            277.81,
+            1408.18,
+            107.11,
+            41.55
+          ]
+        },
+        {
+          "value": "26003",
+          "fact_num": 27,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            492.16,
+            1459.74,
+            99.42,
+            28.25
+          ]
+        },
+        {
+          "value": "8281",
+          "fact_num": 28,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            296.92,
+            1455.86,
+            81.69,
+            38.6
+          ]
+        },
+        {
+          "value": "(38125)",
+          "fact_num": 29,
+          "equations": [
+            {
+              "equation": "- 64128 + 26003",
+              "fact_equation": "f25 + f27"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "גרעון בנכסים נטו",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.32,
+            1490.84,
+            99.42,
+            48.43
+          ]
+        },
+        {
+          "value": "(34007)",
+          "fact_num": 30,
+          "equations": [
+            {
+              "equation": "- 42288 + 8281",
+              "fact_equation": "f26 + f28"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון בהון",
+            "נכסים נטו שלא קיימת לגביהם הגבלה (גרעון)",
+            "גרעון בנכסים נטו",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            275.9,
+            1502.26,
+            105.53,
+            39.1
+          ]
+        },
+        {
+          "value": "42859",
+          "fact_num": 31,
+          "equations": [
+            {
+              "equation": "80984 - 38125",
+              "fact_equation": "f19 + f29"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            497.1,
+            1552.76,
+            99.42,
+            34.52
+          ]
+        },
+        {
+          "value": "20277",
+          "fact_num": 32,
+          "equations": [
+            {
+              "equation": "54284 - 34007",
+              "fact_equation": "f20 + f30"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ התחייבויות ונכסים נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            284.35,
+            1550.77,
+            99.42,
+            34.52
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0005.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "4",
+        "page_type": "statements",
+        "statement_type": "statement_of_activities",
+        "title": "דוחות על הפעילויות",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "1445674",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מחזור הפעילויות",
+            "הכנסות ממתן שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            464.57,
+            575.2,
+            130.77,
+            34.5
+          ]
+        },
+        {
+          "value": "1280395",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מחזור הפעילויות",
+            "הכנסות ממתן שירותים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            240.72,
+            569.88,
+            132.55,
+            36.27
+          ]
+        },
+        {
+          "value": "1304248",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            463.99,
+            621.08,
+            136.09,
+            34.5
+          ]
+        },
+        {
+          "value": "1344239",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "5",
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            238.05,
+            617.79,
+            139.64,
+            35.14
+          ]
+        },
+        {
+          "value": "141426",
+          "fact_num": 5,
+          "equations": [
+            {
+              "equation": "1445674 - 1304248",
+              "fact_equation": "f1 - f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות",
+            "הכנסות (הוצאות) נטו מפעילויות (לפעילויות)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            484.87,
+            663.52,
+            114.82,
+            34.5
+          ]
+        },
+        {
+          "value": "(63844)",
+          "fact_num": 6,
+          "equations": [
+            {
+              "equation": "1280395 - 1344239",
+              "fact_equation": "f2 - f4"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עלות הפעילויות",
+            "הכנסות (הוצאות) נטו מפעילויות (לפעילויות)"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            275.72,
+            666.99,
+            100.64,
+            32.51
+          ]
+        },
+        {
+          "value": "134960",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "6",
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            488.01,
+            758.05,
+            121.91,
+            32.73
+          ]
+        },
+        {
+          "value": "142051",
+          "fact_num": 8,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": "6",
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות הנהלה וכלליות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            265.64,
+            756.06,
+            113.05,
+            32.73
+          ]
+        },
+        {
+          "value": "6466",
+          "fact_num": 9,
+          "equations": [
+            {
+              "equation": "141426 - 134960",
+              "fact_equation": "f5 - f7"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות (הוצאות) נטו לפני מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            518.9,
+            800.51,
+            86.45,
+            34.5
+          ]
+        },
+        {
+          "value": "(205895)",
+          "fact_num": 10,
+          "equations": [
+            {
+              "equation": "- 63844 - 142051",
+              "fact_equation": "f6 - f8"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הכנסות (הוצאות) נטו לפני מימון"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            248.73,
+            799.83,
+            129.68,
+            38.05
+          ]
+        },
+        {
+          "value": "10584",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            503.37,
+            891.15,
+            105.95,
+            34.5
+          ]
+        },
+        {
+          "value": "9102",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מימון, נטו"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            281.99,
+            893.14,
+            95.32,
+            34.5
+          ]
+        },
+        {
+          "value": "(4118)",
+          "fact_num": 13,
+          "equations": [
+            {
+              "equation": "6466 - 10584",
+              "fact_equation": "f9 - f11"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון לתקופה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            513.36,
+            940.39,
+            91.77,
+            34.5
+          ]
+        },
+        {
+          "value": "(214997)",
+          "fact_num": 14,
+          "equations": [
+            {
+              "equation": "- 205895 - 9102",
+              "fact_equation": "f10 - f12"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גרעון לתקופה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            250.77,
+            939.03,
+            125.45,
+            34.5
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0006.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "5",
+        "page_type": "statements",
+        "statement_type": "statement_of_changes_in_equity",
+        "title": "דוחות על השינויים בגרעון בהון",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "180990",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 1 בינואר 2022",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            743.44,
+            654.97,
+            110.62,
+            29.28
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 1 בינואר 2022",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            651.4,
+            663.97,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 1 בינואר 2022",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            468.55,
+            660.97,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "180990",
+          "fact_num": 4,
+          "equations": [
+            {
+              "equation": "180990 + 0 + 0",
+              "fact_equation": "f1 + f2 + f3"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-01-01",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-01-01",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 1 בינואר 2022",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            221.03,
+            651.99,
+            99.0,
+            32.12
+          ]
+        },
+        {
+          "value": "(214997)",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            739.61,
+            740.84,
+            114.45,
+            38.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            651.4,
+            752.73,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 7,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            468.55,
+            752.73,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "(214997)",
+          "fact_num": 8,
+          "equations": [
+            {
+              "equation": "- 214997 + 0 + 0",
+              "fact_equation": "f5 + f6 + f7"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            210.71,
+            741.68,
+            115.25,
+            32.12
+          ]
+        },
+        {
+          "value": "(9401)",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            764.48,
+            880.72,
+            91.06,
+            34.59
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            650.99,
+            889.55,
+            15.26,
+            9.11
+          ]
+        },
+        {
+          "value": "9401",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            400.95,
+            882.19,
+            84.15,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 12,
+          "equations": [
+            {
+              "equation": "- 9401 + 0 + 9401",
+              "fact_equation": "f9 + f10 + f11"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            306.14,
+            888.73,
+            11.56,
+            9.93
+          ]
+        },
+        {
+          "value": "1120",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            766.95,
+            922.19,
+            85.3,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            651.46,
+            934.96,
+            12.79,
+            8.7
+          ]
+        },
+        {
+          "value": "(1120)",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            397.65,
+            921.19,
+            89.1,
+            36.23
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 16,
+          "equations": [
+            {
+              "equation": "1120 + 0 - 1120",
+              "fact_equation": "f13 + f14 + f15"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            305.37,
+            934.96,
+            14.03,
+            8.7
+          ]
+        },
+        {
+          "value": "(8281)",
+          "fact_num": 17,
+          "equations": [
+            {
+              "equation": "- 9401 + 1120",
+              "fact_equation": "f9 + f13"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            765.95,
+            971.19,
+            87.95,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 18,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f10 + f14"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            649.93,
+            978.55,
+            13.62,
+            9.11
+          ]
+        },
+        {
+          "value": "8281",
+          "fact_num": 19,
+          "equations": [
+            {
+              "equation": "9401 - 1120",
+              "fact_equation": "f11 + f15"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.48,
+            970.19,
+            84.15,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 20,
+          "equations": [
+            {
+              "equation": "- 8281 + 0 + 8281",
+              "fact_equation": "f17 + f18 + f19"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סה\"כ",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            304.08,
+            977.78,
+            14.74,
+            11.88
+          ]
+        },
+        {
+          "value": "(42288)",
+          "fact_num": 21,
+          "equations": [
+            {
+              "equation": "180990 - 214997 - 8281",
+              "fact_equation": "f1 + f5 + f17"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            751.03,
+            1016.42,
+            106.87,
+            32.53
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            650.4,
+            1025.71,
+            14.85,
+            8.59
+          ]
+        },
+        {
+          "value": "8281",
+          "fact_num": 23,
+          "equations": [
+            {
+              "equation": "0 + 0 + 8281",
+              "fact_equation": "f3 + f7 + f19"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            400.95,
+            1018.06,
+            84.15,
+            32.12
+          ]
+        },
+        {
+          "value": "(34007)",
+          "fact_num": 24,
+          "equations": [
+            {
+              "equation": "180990 - 214997 + 0",
+              "fact_equation": "f4 + f8 + f20"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2022",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            219.81,
+            1016.31,
+            107.25,
+            32.12
+          ]
+        },
+        {
+          "value": "(4118)",
+          "fact_num": 25,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            760.87,
+            1106.3,
+            99.38,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 26,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            650.4,
+            1115.18,
+            14.85,
+            8.59
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 27,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            467.55,
+            1118.18,
+            14.85,
+            4.59
+          ]
+        },
+        {
+          "value": "(4118)",
+          "fact_num": 28,
+          "equations": [
+            {
+              "equation": "- 4118 + 0 + 0",
+              "fact_equation": "f25 + f26 + f27"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "תוספות במהלך השנה",
+            "גרעון לשנה",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            234.24,
+            1106.6,
+            90.75,
+            32.12
+          ]
+        },
+        {
+          "value": "(20160)",
+          "fact_num": 29,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            753.91,
+            1241.96,
+            103.99,
+            33.35
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 30,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            649.29,
+            1250.54,
+            15.67,
+            13.56
+          ]
+        },
+        {
+          "value": "20160",
+          "fact_num": 31,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            387.75,
+            1245.64,
+            97.35,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 32,
+          "equations": [
+            {
+              "equation": "- 20160 + 0 + 20160",
+              "fact_equation": "f29 + f30 + f31"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "ששימשו לרכוש קבוע",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            304.55,
+            1252.52,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "2438",
+          "fact_num": 33,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            772.6,
+            1284.64,
+            85.3,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 34,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            649.88,
+            1294.8,
+            14.03,
+            12.78
+          ]
+        },
+        {
+          "value": "(2438)",
+          "fact_num": 35,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            399.3,
+            1284.64,
+            87.45,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 36,
+          "equations": [
+            {
+              "equation": "2438 + 0 - 2438",
+              "fact_equation": "f33 + f34 + f35"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סכומים שהועברו לכיסוי הוצאות פחת",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            304.55,
+            1296.52,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "(17722)",
+          "fact_num": 37,
+          "equations": [
+            {
+              "equation": "- 20160 + 2438",
+              "fact_equation": "f29 + f33"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            747.77,
+            1332.81,
+            110.13,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 38,
+          "equations": [
+            {
+              "equation": "0 + 0",
+              "fact_equation": "f30 + f34"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            650.4,
+            1341.59,
+            14.85,
+            10.76
+          ]
+        },
+        {
+          "value": "17722",
+          "fact_num": 39,
+          "equations": [
+            {
+              "equation": "20160 - 2438",
+              "fact_equation": "f31 + f35"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            387.75,
+            1332.81,
+            97.35,
+            32.12
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 40,
+          "equations": [
+            {
+              "equation": "- 17722 + 0 + 17722",
+              "fact_equation": "f37 + f38 + f39"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "גריעות במהלך השנה",
+            "העברת סכומים שלא קיימת לגביהם הגבלה",
+            "סה\"כ",
+            "סה״כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            303.55,
+            1341.7,
+            14.85,
+            12.59
+          ]
+        },
+        {
+          "value": "(64128)",
+          "fact_num": 41,
+          "equations": [
+            {
+              "equation": "- 42288 - 4118 - 17722",
+              "fact_equation": "f21 + f25 + f37"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2023",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שלא יועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            749.0,
+            1380.99,
+            108.9,
+            27.21
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 42,
+          "equations": [
+            {
+              "equation": "0 + 0 + 0",
+              "fact_equation": "f22 + f26 + f38"
+            }
+          ],
+          "natural_sign": null,
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2023",
+            "שאין לגביהם הגבלה",
+            "לשימוש לפעילויות שיועדו על ידי מוסדות המלכ\"ר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            649.76,
+            1387.99,
+            16.49,
+            7.47
+          ]
+        },
+        {
+          "value": "26003",
+          "fact_num": 43,
+          "equations": [
+            {
+              "equation": "8281 + 0 + 17722",
+              "fact_equation": "f23 + f27 + f39"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2023",
+            "שאין לגביהם הגבלה",
+            "נכסים נטו ששימשו לרכוש קבוע"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            387.75,
+            1380.99,
+            97.35,
+            32.12
+          ]
+        },
+        {
+          "value": "(38125)",
+          "fact_num": 44,
+          "equations": [
+            {
+              "equation": "- 64128 + 0 + 26003",
+              "fact_equation": "f41 + f42 + f43"
+            },
+            {
+              "equation": "26003 - 64128",
+              "fact_equation": "f43 + f41"
+            }
+          ],
+          "natural_sign": "negative",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": false,
+          "note_name": null,
+          "note_num": null,
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "יתרות ליום 31 בדצמבר 2023",
+            "סה\"כ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            222.62,
+            1377.92,
+            105.6,
+            32.12
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0007.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "6",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "29561",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ריהוט וציוד משרדי",
+            "עלות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            686.45,
+            1935.74,
+            95.65,
+            32.21
+          ]
+        },
+        {
+          "value": "3558",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ריהוט וציוד משרדי",
+            "פחת שנצבר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            546.2,
+            1935.74,
+            85.75,
+            32.21
+          ]
+        },
+        {
+          "value": "26003",
+          "fact_num": 3,
+          "equations": [
+            {
+              "equation": "29561 - 3558",
+              "fact_equation": "f1 - f2"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ריהוט וציוד משרדי",
+            "עלות מופחתת"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            381.2,
+            1935.74,
+            100.6,
+            32.21
+          ]
+        },
+        {
+          "value": "8281",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": "3",
+          "note_flag": true,
+          "note_name": "רכוש קבוע",
+          "note_num": "3",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ריהוט וציוד משרדי",
+            "עלות מופחתת"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            226.1,
+            1935.74,
+            90.7,
+            32.21
+          ]
+        }
+      ]
+    },
+    {
+      "image": "page_0008.png",
+      "meta": {
+        "entity_name": "עתיד הטניס - עמותה לקידום הטניס באזור ראשון לציון והסביבה (ע״ר)",
+        "page_num": "7",
+        "page_type": "statements",
+        "statement_type": "notes_to_financial_statements",
+        "title": "באורים לדוחות הכספיים",
+        "annotation_note": null,
+        "annotation_status": "approved"
+      },
+      "facts": [
+        {
+          "value": "8230",
+          "fact_num": 1,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מוסדות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            520.77,
+            507.05,
+            81.53,
+            35.5
+          ]
+        },
+        {
+          "value": "20021",
+          "fact_num": 2,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מוסדות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            281.61,
+            507.05,
+            87.84,
+            30.22
+          ]
+        },
+        {
+          "value": "25780",
+          "fact_num": 3,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עובדים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            508.44,
+            545.88,
+            99.78,
+            31.98
+          ]
+        },
+        {
+          "value": "10573",
+          "fact_num": 4,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "עובדים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            282.0,
+            545.88,
+            86.08,
+            30.22
+          ]
+        },
+        {
+          "value": "3338",
+          "fact_num": 5,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחרים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            526.27,
+            582.42,
+            78.01,
+            31.98
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 6,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחרים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            351.44,
+            580.24,
+            23.57,
+            32.19
+          ]
+        },
+        {
+          "value": "37348",
+          "fact_num": 7,
+          "equations": [
+            {
+              "equation": "8230 + 25780 + 3338",
+              "fact_equation": "f1 + f3 + f5"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            508.68,
+            619.49,
+            99.55,
+            33.74
+          ]
+        },
+        {
+          "value": "30594",
+          "fact_num": 8,
+          "equations": [
+            {
+              "equation": "20021 + 10573 + 0",
+              "fact_equation": "f2 + f4 + f6"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "זכאים שונים ויתרות זכות",
+          "note_num": "4",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "instant",
+          "period_start": null,
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            279.85,
+            617.73,
+            89.6,
+            35.5
+          ]
+        },
+        {
+          "value": "483409",
+          "fact_num": 9,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכר עבודה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            486.38,
+            904.46,
+            108.37,
+            31.98
+          ]
+        },
+        {
+          "value": "389331",
+          "fact_num": 10,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכר עבודה"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            258.07,
+            904.46,
+            111.66,
+            31.98
+          ]
+        },
+        {
+          "value": "88943",
+          "fact_num": 11,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות נלוות לשכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            499.51,
+            941.01,
+            95.24,
+            31.98
+          ]
+        },
+        {
+          "value": "80649",
+          "fact_num": 12,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות נלוות לשכר"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            274.21,
+            941.01,
+            96.88,
+            31.98
+          ]
+        },
+        {
+          "value": "330793",
+          "fact_num": 13,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "קבלני משנה ועבודות חוץ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            489.66,
+            976.64,
+            105.09,
+            31.98
+          ]
+        },
+        {
+          "value": "434594",
+          "fact_num": 14,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "קבלני משנה ועבודות חוץ"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            262.72,
+            975.27,
+            108.37,
+            31.98
+          ]
+        },
+        {
+          "value": "118105",
+          "fact_num": 15,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכירות מתקנים ומגרשים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            494.32,
+            1012.73,
+            101.8,
+            31.98
+          ]
+        },
+        {
+          "value": "168043",
+          "fact_num": 16,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שכירות מתקנים ומגרשים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            266.0,
+            1014.1,
+            105.09,
+            31.98
+          ]
+        },
+        {
+          "value": "4461",
+          "fact_num": 17,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הסעות והובלות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            522.23,
+            1051.55,
+            73.89,
+            31.98
+          ]
+        },
+        {
+          "value": "8495",
+          "fact_num": 18,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הסעות והובלות"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            297.2,
+            1052.92,
+            73.89,
+            31.98
+          ]
+        },
+        {
+          "value": "80865",
+          "fact_num": 19,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "קניות פרסים, ציוד וביגוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            505.81,
+            1085.36,
+            90.31,
+            33.35
+          ]
+        },
+        {
+          "value": "91309",
+          "fact_num": 20,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "קניות פרסים, ציוד וביגוד"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            280.51,
+            1085.36,
+            91.95,
+            31.98
+          ]
+        },
+        {
+          "value": "197672",
+          "fact_num": 21,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפקת פרוייקטים ואירועים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            494.8,
+            1124.19,
+            101.8,
+            31.98
+          ]
+        },
+        {
+          "value": "171818",
+          "fact_num": 22,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הפקת פרוייקטים ואירועים"
+          ],
+          "path_source": "observed",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            266.55,
+            1118.71,
+            101.8,
+            31.98
+          ]
+        },
+        {
+          "value": "1304248",
+          "fact_num": 23,
+          "equations": [
+            {
+              "equation": "483409 + 88943 + 330793 + 118105 + 4461 + 80865 + 197672",
+              "fact_equation": "f9 + f11 + f13 + f15 + f17 + f19 + f21"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            471.81,
+            1160.73,
+            128.08,
+            31.98
+          ]
+        },
+        {
+          "value": "1344239",
+          "fact_num": 24,
+          "equations": [
+            {
+              "equation": "389331 + 80649 + 434594 + 168043 + 8495 + 91309 + 171818",
+              "fact_equation": "f10 + f12 + f14 + f16 + f18 + f20 + f22"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "עלות הפעילויות",
+          "note_num": "5",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": "inferred",
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            247.67,
+            1157.99,
+            124.79,
+            31.98
+          ]
+        },
+        {
+          "value": "10389",
+          "fact_num": 25,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משרדיות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            510.92,
+            1443.49,
+            84.2,
+            27.74
+          ]
+        },
+        {
+          "value": "11572",
+          "fact_num": 26,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משרדיות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            277.5,
+            1443.49,
+            93.59,
+            26.89
+          ]
+        },
+        {
+          "value": "10134",
+          "fact_num": 27,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחזקה"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            510.92,
+            1480.03,
+            84.2,
+            27.74
+          ]
+        },
+        {
+          "value": "4983",
+          "fact_num": 28,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחזקה"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            297.2,
+            1480.03,
+            73.89,
+            26.89
+          ]
+        },
+        {
+          "value": "31856",
+          "fact_num": 29,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שירותים מקצועיים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            510.92,
+            1518.86,
+            84.2,
+            27.74
+          ]
+        },
+        {
+          "value": "39560",
+          "fact_num": 30,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שירותים מקצועיים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            281.0,
+            1518.86,
+            90.09,
+            26.89
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 31,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "כיבודים ואש\"ל"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            577.99,
+            1553.58,
+            20.47,
+            31.98
+          ]
+        },
+        {
+          "value": "4384",
+          "fact_num": 32,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "כיבודים ואש\"ל"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            295.83,
+            1554.95,
+            73.89,
+            28.58
+          ]
+        },
+        {
+          "value": "11658",
+          "fact_num": 33,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ביטוחים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            504.81,
+            1589.67,
+            92.92,
+            29.49
+          ]
+        },
+        {
+          "value": "12971",
+          "fact_num": 34,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "ביטוחים"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            282.54,
+            1591.37,
+            84.31,
+            28.58
+          ]
+        },
+        {
+          "value": "45309",
+          "fact_num": 35,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחזקת רכב"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            510.92,
+            1627.97,
+            86.87,
+            27.47
+          ]
+        },
+        {
+          "value": "45984",
+          "fact_num": 36,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "אחזקת רכב"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            285.44,
+            1628.3,
+            82.45,
+            27.74
+          ]
+        },
+        {
+          "value": "702",
+          "fact_num": 37,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משפטיות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            552.43,
+            1666.89,
+            40.14,
+            24.34
+          ]
+        },
+        {
+          "value": "-",
+          "fact_num": 38,
+          "equations": null,
+          "natural_sign": null,
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "משפטיות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            351.17,
+            1667.68,
+            21.47,
+            18.4
+          ]
+        },
+        {
+          "value": "18964",
+          "fact_num": 39,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרסום"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            513.46,
+            1702.32,
+            84.2,
+            26.89
+          ]
+        },
+        {
+          "value": "13122",
+          "fact_num": 40,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "פרסום"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            285.08,
+            1702.98,
+            83.46,
+            26.37
+          ]
+        },
+        {
+          "value": "1715",
+          "fact_num": 41,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מיסים ואגרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            528.81,
+            1737.5,
+            69.05,
+            28.84
+          ]
+        },
+        {
+          "value": "4966",
+          "fact_num": 42,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מיסים ואגרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            297.2,
+            1734.95,
+            73.89,
+            33.08
+          ]
+        },
+        {
+          "value": "(35)",
+          "fact_num": 43,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שונות ובטולי יתרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            558.54,
+            1775.42,
+            42.78,
+            24.15
+          ]
+        },
+        {
+          "value": "(261)",
+          "fact_num": 44,
+          "equations": null,
+          "natural_sign": "negative",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "שונות ובטולי יתרות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            314.38,
+            1774.94,
+            59.11,
+            28.58
+          ]
+        },
+        {
+          "value": "1830",
+          "fact_num": 45,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מתנות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            527.11,
+            1809.48,
+            68.01,
+            27.14
+          ]
+        },
+        {
+          "value": "3650",
+          "fact_num": 46,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "מתנות"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            297.9,
+            1812.07,
+            73.89,
+            26.04
+          ]
+        },
+        {
+          "value": "2438",
+          "fact_num": 47,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות פחת"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            522.87,
+            1847.91,
+            72.25,
+            24.78
+          ]
+        },
+        {
+          "value": "1120",
+          "fact_num": 48,
+          "equations": null,
+          "natural_sign": "positive",
+          "row_role": "detail",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "הוצאות פחת"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            301.13,
+            1849.19,
+            68.96,
+            26.89
+          ]
+        },
+        {
+          "value": "134960",
+          "fact_num": 49,
+          "equations": [
+            {
+              "equation": "10389 + 10134 + 31856 + 0 + 11658 + 45309 + 702 + 18964 + 1715 - 35 + 1830 + 2438",
+              "fact_equation": "f25 + f27 + f29 + f31 + f33 + f35 + f37 + f39 + f41 + f43 + f45 + f47"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2023-12-31",
+          "period_type": "duration",
+          "period_start": "2023-01-01",
+          "period_end": "2023-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            490.14,
+            1885.7,
+            105.09,
+            26.04
+          ]
+        },
+        {
+          "value": "142051",
+          "fact_num": 50,
+          "equations": [
+            {
+              "equation": "11572 + 4983 + 39560 + 4384 + 12971 + 45984 + 0 + 13122 + 4966 - 261 + 3650 + 1120",
+              "fact_equation": "f26 + f28 + f30 + f32 + f34 + f36 + f38 + f40 + f42 + f44 + f46 + f48"
+            }
+          ],
+          "natural_sign": "positive",
+          "row_role": "total",
+          "comment_ref": null,
+          "note_flag": true,
+          "note_name": "הוצאות הנהלה וכלליות",
+          "note_num": "6",
+          "note_ref": null,
+          "date": "2022-12-31",
+          "period_type": "duration",
+          "period_start": "2022-01-01",
+          "period_end": "2022-12-31",
+          "duration_type": null,
+          "recurring_period": null,
+          "path": [
+            "סה\"כ"
+          ],
+          "path_source": null,
+          "currency": "ILS",
+          "scale": 1,
+          "value_type": "amount",
+          "value_context": "tabular",
+          "bbox": [
+            265.0,
+            1888.29,
+            105.09,
+            23.49
+          ]
+        }
+      ]
+    }
+  ]
+}

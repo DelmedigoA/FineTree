@@ -28,6 +28,27 @@ def lcs_length(left: list[Any], right: list[Any]) -> int:
     return table[len(left)][len(right)]
 
 
+def lcs_index_pairs(left: list[Any], right: list[Any]) -> list[tuple[int, int]]:
+    if not left or not right:
+        return []
+    table = _lcs_table(left, right)
+    left_index = len(left)
+    right_index = len(right)
+    pairs: list[tuple[int, int]] = []
+    while left_index > 0 and right_index > 0:
+        if left[left_index - 1] == right[right_index - 1]:
+            pairs.append((left_index - 1, right_index - 1))
+            left_index -= 1
+            right_index -= 1
+            continue
+        if table[left_index - 1][right_index] >= table[left_index][right_index - 1]:
+            left_index -= 1
+        else:
+            right_index -= 1
+    pairs.reverse()
+    return pairs
+
+
 def lcs_metrics(ground_truth: list[Any], prediction: list[Any]) -> FieldExactMetrics:
     matches = lcs_length(ground_truth, prediction)
     if not ground_truth and not prediction:

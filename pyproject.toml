@@ -63,12 +63,14 @@ finetree-pod-gradio = "finetree_annotator.deploy.pod_gradio:main"
 finetree-runpod-pod-start = "finetree_annotator.deploy.runpod_pod_start:main"
 benchmark-new = "benchmark_new.cli:main"
 "benchmark_new.cli" = "benchmark_new.cli:main"
+"benchmark.cli" = "benchmark_new.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools.package-data]
 finetree_annotator = ["assets/icons/*.png"]
+benchmark_new = ["configs/*.yaml"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

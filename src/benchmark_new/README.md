@@ -5,11 +5,14 @@ Standalone benchmark runner for FineTree.
 ## Commands
 
 ```bash
+benchmark.cli
 python3 -m benchmark_new.cli datasets list
 python3 -m benchmark_new.cli infer --dataset-version-id <id> --provider finetree_vllm --model <model> --base-url <url>
 python3 -m benchmark_new.cli eval --run-dir <run_dir>
 python3 -m benchmark_new.cli batch-eval --dataset-version-id <id> --provider gemini --model gemini-3-flash-preview
 ```
+
+`benchmark.cli` opens the interactive benchmark wizard. Existing explicit subcommands remain available for scripted usage.
 
 ## Output layout
 

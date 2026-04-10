@@ -1,6 +1,6 @@
 {
   "schema_version": 4,
-  "images_dir": "/Users/delmedigo/Dev/FineTree/data/pdf_images/pdf_4",
+  "images_dir": "/Users/delmedigo/dev/finetree/data/pdf_images/pdf_4",
   "metadata": {
     "language": "he",
     "reading_direction": "rtl",
@@ -2308,7 +2308,7 @@
             "הכנסות נטו מפעילויות",
             "הכנסות מימון, נטו"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -2341,7 +2341,7 @@
             "הכנסות נטו מפעילויות",
             "הכנסות מימון, נטו"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -2452,7 +2452,7 @@
             "הכנסות נטו מפעילויות",
             "הוצאות אחרות, נטו"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -2485,7 +2485,7 @@
             "הכנסות נטו מפעילויות",
             "הוצאות אחרות, נטו"
           ],
-          "path_source": "inferred",
+          "path_source": "observed",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -3711,9 +3711,10 @@
           "recurring_period": null,
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "שינויים בסעיפי רכוש והתחייבויות"
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "סה״כ"
           ],
-          "path_source": "observed",
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -3749,9 +3750,10 @@
           "recurring_period": null,
           "path": [
             "התאמות הדרושות כדי להציג את תזרימי המזומנים מפעילות שוטפת",
-            "שינויים בסעיפי רכוש והתחייבויות"
+            "שינויים בסעיפי רכוש והתחייבויות",
+            "סה״כ"
           ],
-          "path_source": "observed",
+          "path_source": "inferred",
           "currency": "ILS",
           "scale": 1,
           "value_type": "amount",
@@ -5458,7 +5460,7 @@
             "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
             "מבנה"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": null,
           "scale": null,
           "value_type": "percent",
@@ -5492,7 +5494,7 @@
             "פחת מהרכוש הקבוע מחושב בשיטת הקו הישר בשיעורים השנתיים הבאים",
             "ריהוט וציוד"
           ],
-          "path_source": null,
+          "path_source": "observed",
           "currency": null,
           "scale": null,
           "value_type": "percent",
@@ -5819,7 +5821,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "סה״כ מבנה ריהוט וציוד",
+            "סה״כ",
             "עלות"
           ],
           "path_source": "inferred",
@@ -5853,7 +5855,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "סה״כ מבנה ריהוט וציוד",
+            "סה״כ",
             "פחת שנצבר"
           ],
           "path_source": "inferred",
@@ -5892,7 +5894,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "סה״כ מבנה ריהוט וציוד",
+            "סה״כ",
             "עלות מופחתת"
           ],
           "path_source": "inferred",
@@ -5926,7 +5928,7 @@
           "recurring_period": null,
           "path": [
             "הרכב",
-            "סה״כ מבנה ריהוט וציוד",
+            "סה״כ",
             "עלות מופחתת"
           ],
           "path_source": "inferred",

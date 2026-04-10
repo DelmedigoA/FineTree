@@ -86,6 +86,14 @@ export function AIDialog() {
     if (dialogOpen && initialTab) setTab(initialTab as ActionTab);
   }, [dialogOpen, initialTab]);
 
+  useEffect(() => {
+    stream.cancel();
+    setBatchRunning(false);
+    setBatchStatus(null);
+  }, [docId, stream.cancel]);
+
+  useEffect(() => () => stream.cancel(), [stream.cancel]);
+
   if (!dialogOpen) return null;
 
   const currentPage = pageNames[currentPageIndex] ?? "";
@@ -106,10 +114,14 @@ export function AIDialog() {
 
   // ── helpers ───────────────────────────────────────────────────────
 
-  const applyExtractedFacts = (jsonText: string, isGT: boolean): number => {
-    const { pageStates, updatePageState } = useDocumentStore.getState();
-    const pageName = pageNames[currentPageIndex];
-    if (!pageName) return 0;
+  const applyExtractedFacts = (
+    jsonText: string,
+    isGT: boolean,
+    expectedDocId: string,
+    pageName: string,
+  ): number => {
+    const { docId: currentDocId, pageStates, updatePageStateForDocument } = useDocumentStore.getState();
+    if (currentDocId !== expectedDocId || !pageName) return 0;
     const page = pageStates.get(pageName);
     if (!page) return 0;
 
@@ -138,10 +150,11 @@ export function AIDialog() {
       fact: (item.fact as BoxRecord["fact"]) ?? (item as BoxRecord["fact"]),
     }));
 
-    updatePageState(pageName, {
+    const updated = updatePageStateForDocument(expectedDocId, pageName, {
       ...page,
       facts: isGT ? newFacts : [...page.facts, ...newFacts],
     });
+    if (!updated) return 0;
     useCanvasStore.getState().markDirty("bbox");
     return newFacts.length;
   };
@@ -150,13 +163,15 @@ export function AIDialog() {
 
   const handleExtract = () => {
     if (!docId || !currentPage) return;
+    const activeDocId = docId;
+    const activePage = currentPage;
     setApplyStatus(null);
     accumulatedRef.current = "";
     stream.start(
       "/ai/extract",
       {
-        doc_id: docId,
-        page_name: currentPage,
+        doc_id: activeDocId,
+        page_name: activePage,
         provider: extractRequest.provider,
         action,
         config: extractRequest.config,
@@ -166,7 +181,7 @@ export function AIDialog() {
         if (obj?.type === "chunk" && typeof obj.text === "string") {
           accumulatedRef.current += obj.text;
         } else if (obj?.type === "done") {
-          const n = applyExtractedFacts(accumulatedRef.current, action === "gt");
+          const n = applyExtractedFacts(accumulatedRef.current, action === "gt", activeDocId, activePage);
           setApplyStatus(n > 0 ? `✓ Applied ${n} facts` : "No facts parsed");
         }
       },
@@ -175,8 +190,10 @@ export function AIDialog() {
 
   const handleFill = async () => {
     if (!docId || !currentPage) return;
-    const { pageStates, updatePageState } = useDocumentStore.getState();
-    const page = pageStates.get(currentPage);
+    const activeDocId = docId;
+    const activePage = currentPage;
+    const { pageStates } = useDocumentStore.getState();
+    const page = pageStates.get(activePage);
     if (!page) return;
 
     const selectedIds = useSelectionStore.getState().selectedIndices;
@@ -191,8 +208,8 @@ export function AIDialog() {
       const result = await post<{ patch: Record<string, unknown>[] }>(
         "/ai/fill",
         {
-          doc_id: docId,
-          page_name: currentPage,
+          doc_id: activeDocId,
+          page_name: activePage,
           provider: "gemini",
           facts: targetFacts.map((f) => f!.fact),
           fields: [...fillFields],
@@ -201,12 +218,22 @@ export function AIDialog() {
       );
 
       if (!result.patch?.length) { setApplyStatus("No patch returned"); return; }
+      const { docId: currentDocId, pageStates: currentStates, updatePageStateForDocument } = useDocumentStore.getState();
+      if (currentDocId !== activeDocId) {
+        setApplyStatus("Skipped stale fill result after document switch");
+        return;
+      }
+      const latestPage = currentStates.get(activePage);
+      if (!latestPage) {
+        setApplyStatus("Skipped fill result: page no longer active");
+        return;
+      }
       pushUndoSnapshot();
 
-      const newFacts = [...page.facts];
+      const newFacts = [...latestPage.facts];
       const targetIndices = selectedIds.size > 0
         ? [...selectedIds]
-        : page.facts.map((_, i) => i);
+        : latestPage.facts.map((_, i) => i);
 
       result.patch.forEach((patch, pi) => {
         const idx = targetIndices[pi];
@@ -216,7 +243,7 @@ export function AIDialog() {
         newFacts[idx] = { ...f, fact: { ...f.fact, ...patch } };
       });
 
-      updatePageState(currentPage, { ...page, facts: newFacts });
+      updatePageStateForDocument(activeDocId, activePage, { ...latestPage, facts: newFacts });
       useCanvasStore.getState().markDirty("bbox");
       setApplyStatus(`✓ Filled ${result.patch.length} facts`);
     } catch (err) {
@@ -226,9 +253,11 @@ export function AIDialog() {
 
   const handleFixSpelling = async () => {
     if (!docId || !currentPage) return;
+    const activeDocId = docId;
+    const activePage = currentPage;
     setApplyStatus(null);
     try {
-      await post("/ai/fix-spelling", { doc_id: docId, page_name: currentPage });
+      await post("/ai/fix-spelling", { doc_id: activeDocId, page_name: activePage });
       setApplyStatus("✓ Fix spelling request sent (reload to see changes)");
     } catch (err) {
       setApplyStatus(`Error: ${String(err)}`);
@@ -237,23 +266,27 @@ export function AIDialog() {
 
   const handleDetect = () => {
     if (!docId || !currentPage) return;
+    const activeDocId = docId;
+    const activePage = currentPage;
     setApplyStatus(null);
     accumulatedRef.current = "";
     let count = 0;
     stream.start(
       "/ai/detect-bbox",
-      { doc_id: docId, page_name: currentPage, backend: doctrBackend },
+      { doc_id: activeDocId, page_name: activePage, backend: doctrBackend },
       (ev) => {
         const obj = ev.data as Record<string, unknown>;
         if (obj?.type === "bbox" && obj.data) {
-          const { pageStates, updatePageState } = useDocumentStore.getState();
-          const page = pageStates.get(currentPage);
+          const { docId: currentDocId, pageStates, updatePageStateForDocument } = useDocumentStore.getState();
+          if (currentDocId !== activeDocId) return;
+          const page = pageStates.get(activePage);
           if (!page) return;
           const bbox = obj.data as BoxRecord["bbox"];
-          updatePageState(currentPage, {
+          const updated = updatePageStateForDocument(activeDocId, activePage, {
             ...page,
             facts: [...page.facts, { bbox, fact: { ...EMPTY_FACT } }],
           });
+          if (!updated) return;
           useCanvasStore.getState().markDirty("bbox");
           count++;
           setApplyStatus(`Detecting... ${count} bboxes`);
@@ -266,6 +299,7 @@ export function AIDialog() {
 
   const handleBatch = async () => {
     if (!docId) return;
+    const activeDocId = docId;
     setBatchRunning(true);
     setBatchStatus(null);
 
@@ -275,6 +309,10 @@ export function AIDialog() {
 
     let done = 0;
     for (const pageName of pages) {
+      if (useDocumentStore.getState().docId !== activeDocId) {
+        setBatchStatus("Batch stopped after document switch");
+        break;
+      }
       setBatchStatus(`Processing ${pageName} (${done + 1}/${pages.length})…`);
       try {
         await new Promise<void>((resolve) => {
@@ -283,7 +321,7 @@ export function AIDialog() {
           stream.start(
             "/ai/extract",
             {
-              doc_id: docId,
+              doc_id: activeDocId,
               page_name: pageName,
               provider: extractRequest.provider,
               action: batchAction,
@@ -293,7 +331,7 @@ export function AIDialog() {
               const obj = ev.data as Record<string, unknown>;
               if (obj?.type === "chunk" && typeof obj.text === "string") acc += obj.text;
               else if (obj?.type === "done" || obj?.type === "error" || obj?.type === "cancelled") {
-                if (obj.type === "done") applyExtractedFacts(acc, batchAction === "gt");
+                if (obj.type === "done") applyExtractedFacts(acc, batchAction === "gt", activeDocId, pageName);
                 resolve();
               }
             },

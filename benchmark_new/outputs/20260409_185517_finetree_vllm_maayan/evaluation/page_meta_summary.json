@@ -1,0 +1,84 @@
+{
+  "benchmark_version": "v1.0",
+  "evaluator": "page_meta",
+  "label": "Page Meta",
+  "run_dir": "benchmark_new/outputs/20260409_185517_finetree_vllm_maayan",
+  "dataset_version_id": "4ee1c00b-ef4d-4bc9-8fe3-e34ce38f9b69",
+  "dataset_name": "maayan",
+  "split": "val",
+  "global_aggregation_method": "weighted_mean",
+  "overall_score": 0.9930505050505051,
+  "page_count": 10,
+  "fields": [
+    {
+      "field": "entity_name",
+      "label": "entity_name",
+      "key": "meta.entity_name",
+      "aggregation": "micro/mean",
+      "summary_metric": "mean",
+      "metrics": [
+        "mean"
+      ],
+      "weight": 1.0,
+      "score": 1.0,
+      "evaluated_page_count": 10,
+      "std": null
+    },
+    {
+      "field": "page_num",
+      "label": "page_num",
+      "key": "meta.page_num",
+      "aggregation": "micro/accuracy",
+      "summary_metric": "accuracy",
+      "metrics": [
+        "accuracy"
+      ],
+      "weight": 1.0,
+      "score": 1.0,
+      "evaluated_page_count": 10,
+      "std": null
+    },
+    {
+      "field": "page_type",
+      "label": "page_type",
+      "key": "meta.page_type",
+      "aggregation": "micro/accuracy",
+      "summary_metric": "accuracy",
+      "metrics": [
+        "accuracy"
+      ],
+      "weight": 1.0,
+      "score": 1.0,
+      "evaluated_page_count": 10,
+      "std": null
+    },
+    {
+      "field": "statement_type",
+      "label": "statement_type",
+      "key": "meta.statement_type",
+      "aggregation": "micro/accuracy",
+      "summary_metric": "accuracy",
+      "metrics": [
+        "accuracy"
+      ],
+      "weight": 1.0,
+      "score": 1.0,
+      "evaluated_page_count": 10,
+      "std": null
+    },
+    {
+      "field": "title",
+      "label": "title",
+      "key": "meta.title",
+      "aggregation": "micro/mean",
+      "summary_metric": "mean",
+      "metrics": [
+        "mean"
+      ],
+      "weight": 1.0,
+      "score": 0.9652525252525253,
+      "evaluated_page_count": 10,
+      "std": null
+    }
+  ]
+}
