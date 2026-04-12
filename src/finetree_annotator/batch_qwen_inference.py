@@ -356,12 +356,27 @@ def _page_fact_count(page_obj: dict[str, Any]) -> int:
     return len([fact for fact in facts if isinstance(fact, dict)])
 
 
+def _write_raw_output_cache(cache_dir: Path, doc_id: str, page_name: str, assistant_text: str) -> None:
+    """Persist raw VLM output immediately so nothing is lost if downstream save fails.
+
+    Writes to: <cache_dir>/<doc_id>/<page_name>.txt
+    Any exception is swallowed — caching must never break inference.
+    """
+    try:
+        target_dir = Path(cache_dir) / str(doc_id)
+        target_dir.mkdir(parents=True, exist_ok=True)
+        (target_dir / f"{page_name}.txt").write_text(str(assistant_text or ""), encoding="utf-8")
+    except Exception:
+        pass
+
+
 def run_batch_qwen_inference(
     jobs: list[BatchQwenDocumentJob],
     *,
     settings: BatchQwenSettings,
     progress_callback: Optional[Callable[[BatchQwenPageProgress], None]] = None,
     max_workers: Optional[int] = None,
+    raw_output_cache_dir: Optional[Path] = None,
 ) -> dict[str, BatchQwenDocumentResult]:
     try:
         from openai import OpenAI
@@ -498,6 +513,11 @@ def run_batch_qwen_inference(
                 assistant_text = ""
                 page_obj = None
                 error = str(exc)
+            # CRITICAL: persist raw VLM output to disk BEFORE any counter updates,
+            # parsing, or annotation save. If anything downstream breaks, the raw
+            # response survives and can be re-parsed without another inference call.
+            if raw_output_cache_dir is not None and assistant_text:
+                _write_raw_output_cache(raw_output_cache_dir, job.doc_id, page_name, assistant_text)
             with lock:
                 state = doc_states[job.doc_id]
                 state["completed_pages"] = int(state["completed_pages"]) + 1

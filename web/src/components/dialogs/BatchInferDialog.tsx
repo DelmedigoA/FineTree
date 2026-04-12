@@ -18,13 +18,16 @@ interface DocProgress {
   received_tokens: number;
   fact_count: number;
   current_page: string | null;
-  status: "pending" | "running" | "done" | "error";
+  status: "pending" | "extracting" | "running" | "done" | "error";
   failures: { page: string; error: string }[];
   save_error: string | null;
+  extract_error: string | null;
 }
 
 type SSEEvent =
-  | { type: "start";    doc_id: string; total_pages: number }
+  | { type: "start";         doc_id: string; total_pages: number }
+  | { type: "extracting";    doc_id: string; message: string }
+  | { type: "extract_error"; doc_id: string; message: string }
   | { type: "progress"; doc_id: string; page_name: string; page_index: number; total_pages: number; completed_pages: number; failed_pages: number; received_tokens: number; fact_count: number }
   | { type: "doc_done"; doc_id: string; completed_pages: number; failed_pages: number; fact_count: number; received_tokens: number; save_error: string | null; failures: { page: string; error: string }[] }
   | { type: "done";     total_docs: number; total_facts: number }
@@ -55,7 +58,7 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
       docIds.map((id) => [id, {
         doc_id: id, total_pages: 0, completed_pages: 0, failed_pages: 0,
         received_tokens: 0, fact_count: 0, current_page: null,
-        status: "pending", failures: [], save_error: null,
+        status: "pending", failures: [], save_error: null, extract_error: null,
       }]),
     ),
   );
@@ -81,7 +84,7 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
         Object.values(prev).map((d) => [d.doc_id, {
           ...d, completed_pages: 0, failed_pages: 0, received_tokens: 0,
           fact_count: 0, current_page: null, status: "pending" as const,
-          failures: [], save_error: null,
+          failures: [], save_error: null, extract_error: null,
         }]),
       ),
     );
@@ -124,7 +127,11 @@ export function BatchInferDialog({ docIds, onClose }: Props) {
           let ev: SSEEvent;
           try { ev = JSON.parse(raw); } catch { continue; }
 
-          if (ev.type === "start") {
+          if (ev.type === "extracting") {
+            updateDoc(ev.doc_id, { status: "extracting" });
+          } else if (ev.type === "extract_error") {
+            updateDoc(ev.doc_id, { status: "error", extract_error: ev.message });
+          } else if (ev.type === "start") {
             updateDoc(ev.doc_id, { total_pages: ev.total_pages, status: "running" });
           } else if (ev.type === "progress") {
             updateDoc(ev.doc_id, {
@@ -314,9 +321,10 @@ function DocRow({ doc }: { doc: DocProgress }) {
     ? Math.round((doc.completed_pages / doc.total_pages) * 100)
     : 0;
   const statusColor =
-    doc.status === "done"    ? "var(--ok)"
-    : doc.status === "error" ? "var(--danger)"
-    : doc.status === "running" ? "var(--accent)"
+    doc.status === "done"       ? "var(--ok)"
+    : doc.status === "error"    ? "var(--danger)"
+    : doc.status === "running"  ? "var(--accent)"
+    : doc.status === "extracting" ? "var(--warn)"
     : "var(--text-soft)";
 
   return (
@@ -331,7 +339,8 @@ function DocRow({ doc }: { doc: DocProgress }) {
             {doc.doc_id}
           </span>
           <span style={{ fontSize: 11, fontWeight: 700, color: statusColor }}>
-            {doc.status === "pending" ? "Pending"
+            {doc.status === "pending"    ? "Pending"
+              : doc.status === "extracting" ? "Extracting…"
               : doc.status === "running" ? `${doc.completed_pages}/${doc.total_pages}`
               : doc.status === "done"    ? `✓ ${doc.fact_count} facts`
               : `✗ ${doc.failed_pages} failed`}
@@ -352,6 +361,13 @@ function DocRow({ doc }: { doc: DocProgress }) {
         {doc.current_page && doc.status === "running" && (
           <div style={{ marginTop: 4, fontSize: 11, color: "var(--text-soft)", fontFamily: "var(--font-mono)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {doc.current_page}
+          </div>
+        )}
+
+        {/* Extraction error */}
+        {doc.extract_error && (
+          <div style={{ marginTop: 4, fontSize: 11, color: "var(--danger)" }}>
+            Extraction error: {doc.extract_error}
           </div>
         )}
 

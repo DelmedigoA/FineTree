@@ -223,12 +223,22 @@ function DatasetSplitsTab() {
       .finally(() => setDocsLoading(false));
   }, []);
 
+  // Only documents with at least one approved page are eligible for dataset creation
+  const eligibleDocs = docs.filter((doc) => (doc.approved_page_count ?? 0) > 0);
+
   const unassigned = 100 - trainPct - testPct - valPct;
   const counts = { train: 0, test: 0, val: 0, exclude: 0, unassigned: 0 };
-  docs.forEach((doc) => {
+  const pageCounts = { train: 0, test: 0, val: 0, exclude: 0, unassigned: 0 };
+  eligibleDocs.forEach((doc) => {
     const split = assignments[doc.doc_id];
-    if (split) counts[split] += 1;
-    else counts.unassigned += 1;
+    const approvedPages = doc.approved_page_count ?? 0;
+    if (split) {
+      counts[split] += 1;
+      pageCounts[split] += approvedPages;
+    } else {
+      counts.unassigned += 1;
+      pageCounts.unassigned += approvedPages;
+    }
   });
 
   return (
@@ -306,11 +316,11 @@ function DatasetSplitsTab() {
           </label>
 
           <ActionBtn
-            onClick={() => applyRandomSplit(docs.map((doc) => doc.doc_id))}
+            onClick={() => applyRandomSplit(eligibleDocs.map((doc) => doc.doc_id))}
             primary
-            disabled={docsLoading || docs.length === 0}
+            disabled={docsLoading || eligibleDocs.length === 0}
           >
-            {docsLoading ? "Loading docs…" : `Apply Random Split (${docs.length} docs)`}
+            {docsLoading ? "Loading docs…" : `Apply Random Split (${eligibleDocs.length} docs)`}
           </ActionBtn>
         </div>
       )}
@@ -319,13 +329,13 @@ function DatasetSplitsTab() {
         <div style={{ maxHeight: 420, overflowY: "auto", border: "1px solid var(--surface-border)", borderRadius: "var(--radius-sm)" }}>
           {docsLoading ? (
             <div style={tableMessageStyle}>Loading documents…</div>
-          ) : docs.length === 0 ? (
-            <div style={tableMessageStyle}>No documents found</div>
+          ) : eligibleDocs.length === 0 ? (
+            <div style={tableMessageStyle}>No documents with approved pages found</div>
           ) : (
             <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
               <thead>
                 <tr style={{ background: "var(--surface-alt)", position: "sticky", top: 0 }}>
-                  {["Doc ID", "Pages", "Approved", "Status", "Split"].map((header) => (
+                  {["Doc ID", "Pages", "Status", "Split"].map((header) => (
                     <th key={header} style={tableHeaderStyle}>
                       {header}
                     </th>
@@ -333,12 +343,11 @@ function DatasetSplitsTab() {
                 </tr>
               </thead>
               <tbody>
-                {docs.map((doc, index) => {
+                {eligibleDocs.map((doc, index) => {
                   const currentSplit = assignments[doc.doc_id];
                   return (
                     <tr key={doc.doc_id} style={{ background: index % 2 === 0 ? "transparent" : "var(--surface-alt)" }}>
                       <td style={tableCellStyle} title={doc.doc_id}>{doc.doc_id}</td>
-                      <td style={tableCellStyle}>{doc.page_count}</td>
                       <td style={tableCellStyle}>{doc.approved_page_count ?? 0}</td>
                       <td style={tableCellStyle}>{doc.status}</td>
                       <td style={tableCellStyle}>
@@ -376,10 +385,10 @@ function DatasetSplitsTab() {
         {(["train", "test", "val", "exclude"] as const).map((split) => (
           <span key={split}>
             <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: splitColor(split), marginRight: 5 }} />
-            <strong style={{ color: "var(--text)" }}>{split.charAt(0).toUpperCase() + split.slice(1)}:</strong> {counts[split]} docs
+            <strong style={{ color: "var(--text)" }}>{split.charAt(0).toUpperCase() + split.slice(1)}:</strong> {counts[split]} docs · {pageCounts[split]} pages
           </span>
         ))}
-        {counts.unassigned > 0 && <span>Unassigned: {counts.unassigned}</span>}
+        {counts.unassigned > 0 && <span>Unassigned: {counts.unassigned} docs · {pageCounts.unassigned} pages</span>}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ from ..annotation_backups import atomic_write_text, create_annotation_backup
 from ..annotation_core import (
     PageState,
     build_annotations_payload_with_findings,
+    default_page_meta,
     extract_document_meta,
     load_page_states,
     serialize_annotations_json,
@@ -47,20 +48,32 @@ def get_document(doc_id: str) -> dict[str, Any]:
     page_names = [p.name for p in page_paths]
     states = load_page_states(payload, page_names, placeholder_missing_bboxes=True)
     document_meta = extract_document_meta(payload)
-    return {
-        "images_dir": str(images_dir),
-        "page_images": page_names,
-        "document_meta": document_meta,
-        "page_states": {
-            name: {
+
+    # Guarantee an entry for EVERY page image on disk, even when the annotation
+    # file is missing or incomplete. Without this the frontend inspector hides
+    # Page/Facts/Edit sections entirely and the document becomes uneditable.
+    page_states_response: dict[str, dict[str, Any]] = {}
+    for index, name in enumerate(page_names):
+        state = states.get(name)
+        if state is None:
+            page_states_response[name] = {
+                "meta": default_page_meta(index),
+                "facts": [],
+            }
+        else:
+            page_states_response[name] = {
                 "meta": state.meta,
                 "facts": [
                     {"bbox": box.bbox, "fact": box.fact}
                     for box in state.facts
                 ],
             }
-            for name, state in states.items()
-        },
+
+    return {
+        "images_dir": str(images_dir),
+        "page_images": page_names,
+        "document_meta": document_meta,
+        "page_states": page_states_response,
     }
 
 

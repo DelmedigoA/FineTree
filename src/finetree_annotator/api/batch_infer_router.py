@@ -24,7 +24,7 @@ from ..batch_qwen_inference import (
     _normalize_base_url,
 )
 from ..schema_io import canonicalize_with_findings
-from ..workspace import annotations_root, pdf_images_root
+from ..workspace import annotations_root, ensure_pdf_images, page_image_paths, pdf_images_root, _resolve_source_pdf
 
 router = APIRouter(prefix="/api/ai", tags=["ai-batch"])
 
@@ -80,8 +80,26 @@ def _save_batch_results(
     except Exception:
         canonical = payload
 
-    json_text = serialize_annotations_json(canonical)
-    create_annotation_backup(annotations_path, reason="batch_infer")
+    try:
+        json_text = serialize_annotations_json(canonical)
+    except Exception:
+        # Last-resort fallback: raw JSON dump so we NEVER lose inference results
+        # to a serialization edge case.
+        json_text = json.dumps(canonical, ensure_ascii=False, indent=2)
+
+    # Backup is best-effort — it must never block the save. A failing backup
+    # used to silently discard every batch inference result (bug: 2026-04-11).
+    if annotations_path.is_file():
+        try:
+            create_annotation_backup(
+                data_root,
+                annotations_path,
+                reason="batch_infer",
+                algo_version="batch_infer_v1",
+            )
+        except Exception:
+            pass
+
     atomic_write_text(annotations_path, json_text)
 
     return sum(
@@ -99,12 +117,6 @@ def batch_infer_stream(request: BatchInferRequest) -> StreamingResponse:
         (doc_id, pdf_images_root(data_root) / doc_id)
         for doc_id in request.doc_ids
     ]
-    jobs = build_batch_jobs_for_doc_ids(doc_summaries)
-
-    if not jobs:
-        def _empty() -> Generator[str, None, None]:
-            yield f"data: {json.dumps({'type': 'error', 'message': 'No valid documents or page images found.'})}\n\n"
-        return StreamingResponse(_empty(), media_type="text/event-stream")
 
     event_queue: queue.Queue[dict[str, Any] | None] = queue.Queue()
 
@@ -122,6 +134,24 @@ def batch_infer_stream(request: BatchInferRequest) -> StreamingResponse:
         })
 
     def _run() -> None:
+        # Phase 1: auto-extract PDF images for any docs that haven't been processed yet.
+        for doc_id, images_dir in doc_summaries:
+            if not page_image_paths(images_dir):
+                pdf_path = _resolve_source_pdf(doc_id, data_root)
+                if pdf_path.is_file():
+                    event_queue.put({"type": "extracting", "doc_id": doc_id, "message": "Extracting PDF pages…"})
+                    try:
+                        ensure_pdf_images(pdf_path, images_dir)
+                    except Exception as exc:
+                        event_queue.put({"type": "extract_error", "doc_id": doc_id, "message": str(exc)})
+
+        # Phase 2: build jobs from (now-available) images.
+        jobs = build_batch_jobs_for_doc_ids(doc_summaries)
+        if not jobs:
+            event_queue.put({"type": "error", "message": "No valid documents or page images found."})
+            event_queue.put(None)
+            return
+
         # Announce all jobs upfront.
         for job in jobs:
             event_queue.put({
@@ -146,6 +176,7 @@ def batch_infer_stream(request: BatchInferRequest) -> StreamingResponse:
                 jobs,
                 settings=settings,
                 progress_callback=_progress,
+                raw_output_cache_dir=data_root / "batch_infer_cache",
             )
 
             total_facts = 0

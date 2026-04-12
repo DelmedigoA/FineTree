@@ -1,0 +1,351 @@
+{
+  "backend": "merged",
+  "image_path": "/Users/delmedigo/Dev/FineTree/data/pdf_images/companies-reports_diraleahskir_financial_report_2023_year/page_0015.png",
+  "old_candidates": [
+    {
+      "bbox": [
+        658,
+        694,
+        74,
+        34
+      ],
+      "score": 0.5102807283401489,
+      "value": "1,902",
+      "confidence": 0.9960170388221741,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        640,
+        733,
+        89,
+        34
+      ],
+      "score": 0.5638501644134521,
+      "value": "(1,902)",
+      "confidence": 0.9997814297676086,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        695,
+        774,
+        34,
+        30
+      ],
+      "score": 0.49900755286216736,
+      "value": "83",
+      "confidence": 0.999372661113739,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        672,
+        810,
+        57,
+        37
+      ],
+      "score": 0.4813491702079773,
+      "value": "(83)",
+      "confidence": 0.9987879395484924,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        750,
+        2199,
+        36,
+        34
+      ],
+      "score": 0.4607602059841156,
+      "value": "14",
+      "confidence": 0.9903613328933716,
+      "source": "old"
+    }
+  ],
+  "fine_candidates": [
+    {
+      "bbox": [
+        647,
+        685,
+        94,
+        55
+      ],
+      "score": 0.5591907501220703,
+      "value": "1,902",
+      "confidence": 0.9704735279083252,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        936,
+        702,
+        15,
+        16
+      ],
+      "score": 0.4544583559036255,
+      "value": "-",
+      "confidence": 0.9015188813209534,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        633,
+        724,
+        108,
+        54
+      ],
+      "score": 0.5918773412704468,
+      "value": "(1,902)",
+      "confidence": 0.8976093530654907,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        934,
+        744,
+        14,
+        15
+      ],
+      "score": 0.45185086131095886,
+      "value": "-",
+      "confidence": 0.9806767702102661,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        668,
+        762,
+        77,
+        58
+      ],
+      "score": 0.47882020473480225,
+      "value": "83",
+      "confidence": 0.9884054660797119,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        934,
+        783,
+        14,
+        16
+      ],
+      "score": 0.4079659581184387,
+      "value": "-",
+      "confidence": 0.608961284160614,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        663,
+        799,
+        80,
+        59
+      ],
+      "score": 0.5518839359283447,
+      "value": "(83)",
+      "confidence": 0.6514802575111389,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        934,
+        824,
+        12,
+        11
+      ],
+      "score": 0.485357403755188,
+      "value": "-",
+      "confidence": 0.9978894591331482,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        759,
+        2208,
+        25,
+        25
+      ],
+      "score": 0.3025137186050415,
+      "value": "4",
+      "confidence": 0.6346784830093384,
+      "source": "fine_tuned"
+    }
+  ],
+  "merged_candidates": [
+    {
+      "bbox": [
+        658,
+        694,
+        74,
+        34
+      ],
+      "value": "1,902",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        936,
+        702,
+        15,
+        16
+      ],
+      "value": "-",
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        640,
+        733,
+        89,
+        34
+      ],
+      "value": "(1,902)",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        934,
+        744,
+        14,
+        15
+      ],
+      "value": "-",
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        695,
+        774,
+        34,
+        30
+      ],
+      "value": "83",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        934,
+        783,
+        14,
+        16
+      ],
+      "value": "-",
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        672,
+        810,
+        57,
+        37
+      ],
+      "value": "(83)",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        934,
+        824,
+        12,
+        11
+      ],
+      "value": "-",
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        750,
+        2199,
+        36,
+        34
+      ],
+      "value": "14",
+      "source": "matched"
+    }
+  ],
+  "facts": [
+    {
+      "bbox": [
+        658,
+        694,
+        74,
+        34
+      ],
+      "value": "1,902"
+    },
+    {
+      "bbox": [
+        936,
+        702,
+        15,
+        16
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        640,
+        733,
+        89,
+        34
+      ],
+      "value": "(1,902)"
+    },
+    {
+      "bbox": [
+        934,
+        744,
+        14,
+        15
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        695,
+        774,
+        34,
+        30
+      ],
+      "value": "83"
+    },
+    {
+      "bbox": [
+        934,
+        783,
+        14,
+        16
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        672,
+        810,
+        57,
+        37
+      ],
+      "value": "(83)"
+    },
+    {
+      "bbox": [
+        934,
+        824,
+        12,
+        11
+      ],
+      "value": "-"
+    },
+    {
+      "bbox": [
+        750,
+        2199,
+        36,
+        34
+      ],
+      "value": "14"
+    }
+  ]
+}

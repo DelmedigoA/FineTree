@@ -1,0 +1,242 @@
+{
+  "backend": "merged",
+  "image_path": "/Users/delmedigo/Dev/FineTree/data/pdf_images/companies_data_and_reports_oldakko_financial_report_2025_year/page_0010.png",
+  "old_candidates": [
+    {
+      "bbox": [
+        1324,
+        447,
+        32,
+        34
+      ],
+      "score": 0.3923226594924927,
+      "value": "2",
+      "confidence": 0.9804054498672485,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1308,
+        452,
+        23,
+        25
+      ],
+      "score": 0.3569406270980835,
+      "value": "-",
+      "confidence": 0.9977626800537109,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        712,
+        1038,
+        35,
+        30
+      ],
+      "score": 0.49637240171432495,
+      "value": "15",
+      "confidence": 0.8802751302719116,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1267,
+        1047,
+        53,
+        28
+      ],
+      "score": 0.5004956722259521,
+      "value": "157",
+      "confidence": 0.47673097252845764,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        724,
+        1070,
+        20,
+        28
+      ],
+      "score": 0.4018496870994568,
+      "value": "4",
+      "confidence": 0.9999804496765137,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1288,
+        1198,
+        23,
+        30
+      ],
+      "score": 0.4614858031272888,
+      "value": "3",
+      "confidence": 0.9994568228721619,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        799,
+        1331,
+        14,
+        13
+      ],
+      "score": 0.3623163104057312,
+      "value": "1",
+      "confidence": 0.9365991353988647,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1080,
+        1509,
+        14,
+        13
+      ],
+      "score": 0.35907554626464844,
+      "value": "-",
+      "confidence": 0.9439698457717896,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1032,
+        1570,
+        14,
+        14
+      ],
+      "score": 0.342618852853775,
+      "value": "-",
+      "confidence": 0.9902554154396057,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        838,
+        1650,
+        52,
+        30
+      ],
+      "score": 0.5108388662338257,
+      "value": "555",
+      "confidence": 0.48758742213249207,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1046,
+        1714,
+        68,
+        28
+      ],
+      "score": 0.5134055018424988,
+      "value": "57)",
+      "confidence": 0.6280786991119385,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        416,
+        1739,
+        34,
+        30
+      ],
+      "score": 0.4319702684879303,
+      "value": "29",
+      "confidence": 0.5886401534080505,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        1178,
+        1806,
+        34,
+        31
+      ],
+      "score": 0.4340575039386749,
+      "value": "16",
+      "confidence": 0.5528081059455872,
+      "source": "old"
+    },
+    {
+      "bbox": [
+        772,
+        2066,
+        20,
+        27
+      ],
+      "score": 0.3678807318210602,
+      "value": "8",
+      "confidence": 0.9970343112945557,
+      "source": "old"
+    }
+  ],
+  "fine_candidates": [
+    {
+      "bbox": [
+        671,
+        993,
+        98,
+        98
+      ],
+      "score": 0.45574936270713806,
+      "value": "720",
+      "confidence": 0.3065081238746643,
+      "source": "fine_tuned"
+    },
+    {
+      "bbox": [
+        715,
+        1066,
+        43,
+        43
+      ],
+      "score": 0.40725836157798767,
+      "value": "4",
+      "confidence": 0.987403154373169,
+      "source": "fine_tuned"
+    }
+  ],
+  "merged_candidates": [
+    {
+      "bbox": [
+        712,
+        1038,
+        35,
+        30
+      ],
+      "value": "15",
+      "source": "matched"
+    },
+    {
+      "bbox": [
+        724,
+        1070,
+        20,
+        28
+      ],
+      "value": "4",
+      "source": "matched"
+    }
+  ],
+  "facts": [
+    {
+      "bbox": [
+        712,
+        1038,
+        35,
+        30
+      ],
+      "value": "15"
+    },
+    {
+      "bbox": [
+        724,
+        1070,
+        20,
+        28
+      ],
+      "value": "4"
+    }
+  ]
+}
